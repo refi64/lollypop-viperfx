@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-04 23:56+0200\n"
-"PO-Revision-Date: 2016-10-05 06:36+0000\n"
+"POT-Creation-Date: 2016-10-11 14:10+0200\n"
+"PO-Revision-Date: 2016-10-11 13:05+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -47,8 +47,8 @@ msgid "Search over network"
 msgstr "Etsi verkon välityksellä"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork in tags"
-msgstr "Tallenna kuvitus tunnisteisiin"
+msgid "Save artwork/popularity in tags"
+msgstr "Tallenna kuvitus/suosio tunnisteisiin"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
@@ -88,7 +88,7 @@ msgstr "Last.fm-kirjautuminen"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Google Custom Search API key"
-msgstr ""
+msgstr "Googlen Custom Searchin API-avain"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Favorite tag editor"
@@ -280,8 +280,8 @@ msgstr "Tyylilajin/esittäjän/kannen perusteella selaaminen"
 msgid "Search"
 msgstr "Etsi"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:493
-#: ../src/pop_menu.py:514 ../src/toolbar_end.py:407
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:495
+#: ../src/pop_menu.py:516 ../src/toolbar_end.py:407
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Jono"
@@ -330,14 +330,22 @@ msgstr "HiDPI-tuki"
 msgid "Tunein support"
 msgstr "Tunein-tuki"
 
-#: ../src/application.py:31
+#: ../src/application.py:33
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:463
+#: ../src/application.py:221
+msgid "Google Web Services need a custom API key"
+msgstr "Google Web Services vaatii oman API-avaimen"
+
+#: ../src/application.py:222
+msgid "Lollypop needs this to search artwork and music."
+msgstr "Lollypop vaatii tämän etsiäkseen kuvitusta ja musiikkia."
+
+#: ../src/application.py:477
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
@@ -493,32 +501,32 @@ msgstr "Lollypop havaitsee tyhjän kansion."
 msgid "Check your music settings."
 msgstr "Tarkista musiikkiasetuksesi."
 
-#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:247 ../src/selectionlist.py:388
-#: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
-#: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
-#: ../src/tagreader.py:191 ../src/tagreader.py:198
+#: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
+#: ../src/tagreader.py:161 ../src/tagreader.py:176 ../src/tagreader.py:179
+#: ../src/tagreader.py:189 ../src/tagreader.py:196
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/container.py:450
+#: ../src/container.py:446
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/container.py:474 ../src/playlists.py:223
+#: ../src/container.py:470 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Suositut kappaleet"
 
-#: ../src/container.py:475 ../src/playlists.py:225
+#: ../src/container.py:471 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Viimeksi toistettu"
 
-#: ../src/container.py:476 ../src/playlists.py:227
+#: ../src/container.py:472 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Ei koskaan toistettu"
 
-#: ../src/container.py:477 ../src/playlists.py:229
+#: ../src/container.py:473 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Satunnaiset kappaleet"
 
@@ -634,7 +642,7 @@ msgstr "Lisää kohteeseen \"%s\""
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:496 ../src/pop_menu.py:516
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:498 ../src/pop_menu.py:518
 #: ../src/selectionlist.py:309 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
@@ -652,29 +660,29 @@ msgstr "Poista kappale"
 msgid "Modify information"
 msgstr "Muokkaa tietoja"
 
-#: ../src/pop_menu.py:490 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:492 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Esittäjä"
 
-#: ../src/pop_menu.py:499 ../src/pop_menu.py:519 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:501 ../src/pop_menu.py:521 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: ../src/pop_menu.py:627
-msgid "Youtube video address"
-msgstr "Youtube-video-osoite"
+#: ../src/pop_menu.py:629
+msgid "YouTube video address"
+msgstr "YouTube-videon osoite"
 
-#: ../src/pop_menu.py:682
+#: ../src/pop_menu.py:684
 msgid "Save genre"
 msgstr "Tallenna tyylilaji"
 
-#: ../src/pop_menu.py:703 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:705 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Tallenna kokoelmaan"
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:329
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:330
 msgid "Add"
 msgstr "Lisää"
 
@@ -752,11 +760,11 @@ msgstr "Asetukset"
 msgid "You need to install kid3-cli"
 msgstr "Asenna kid3-cli"
 
-#: ../src/toolbar_end.py:55
+#: ../src/toolbar_end.py:50
 msgid "Populars"
 msgstr "Suositut"
 
-#: ../src/toolbar_end.py:56
+#: ../src/toolbar_end.py:51
 msgid "Recently added"
 msgstr "Viimeksi lisätty"
 
@@ -771,12 +779,12 @@ msgstr "Toistetaan soittolistat"
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:125
+#: ../src/utils.py:126
 msgid "The the"
 msgstr ""
 
 #. Translators: artist context
-#: ../src/view_artist.py:323 ../src/widgets_album.py:370
+#: ../src/view_artist.py:324 ../src/widgets_album.py:370
 msgid "Remove"
 msgstr "Poista"
 
@@ -784,18 +792,12 @@ msgstr "Poista"
 msgid "Please unlock your device"
 msgstr "Avaa laitteesi lukitus"
 
-#: ../src/view_device.py:52
-msgid ""
-"Lollypop sync changed due to limitations in some devices.\n"
-"Please remove Music/lollypop folder on your device..."
-msgstr "Lollypop-synkronointi muuttui joiden laitteiden rajoitusten vuoksi.\nPoista kansio Music/lollypop laitteeltasi..."
-
-#: ../src/view_device.py:112 ../src/view_device.py:209
+#: ../src/view_device.py:94 ../src/view_device.py:191
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synkronoi %s"
 
-#: ../src/view_device.py:163
+#: ../src/view_device.py:145
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
@@ -992,7 +994,7 @@ msgid ""
 "Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
 "Please create a \"Custom Search Engine\" here:"
-msgstr ""
+msgstr "Lollypop käyttää Googlen Custom Search -rajapintaa etsiäkseen kuvia internetistä. Rajapinta on rajoitettu, joten se ei välttämättä toimi oletusarvoisella API-avaimella. Luo \"oma\" hakukone tästä:"
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:38
 msgid "API key"
@@ -1119,8 +1121,8 @@ msgid "Do not repeat by default"
 msgstr "Älä kertaa oletuksena"
 
 #: ../data/SettingsDialog.ui.h:22
-msgid "Save artwork in files"
-msgstr "Tallenna kuvitus tiedostoihin"
+msgid "Save changes to files"
+msgstr "Tallenna muutokset tiedostoihin"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
@@ -1175,12 +1177,12 @@ msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
 "Lollypop needs this to search artwork and music."
-msgstr ""
+msgstr "Googlen Web Services tarvitsee oman API-avaimen.\nIlman sitä kohtaat oletusarvoisen kiintiön pian...\nLollypop vaatii Googlen hakupalvelun etsiäkseen kuvitusta ja musiikkia."
 
 #: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
-"and \"Youtube Data API\" for your project."
+"and \"YouTube Data API\" for your project."
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:41

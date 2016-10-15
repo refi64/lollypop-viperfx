@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-02 21:20+0200\n"
-"PO-Revision-Date: 2016-10-02 19:21+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-10-11 14:10+0200\n"
+"PO-Revision-Date: 2016-10-11 13:06+0000\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/gnumdk/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,8 +49,8 @@ msgid "Search over network"
 msgstr "Search over network"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork in tags"
-msgstr "Save artwork in tags"
+msgid "Save artwork/popularity in tags"
+msgstr "Save artwork/popularity in tags"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
@@ -82,7 +82,7 @@ msgstr "When empty, use XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Use Librefm instead of Lastfm"
-msgstr ""
+msgstr "Use Librefm instead of Lastfm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
@@ -282,8 +282,8 @@ msgstr "דפדוף סוגה/אמן/כיסוי"
 msgid "Search"
 msgstr "חיפוש"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
-#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:495
+#: ../src/pop_menu.py:516 ../src/toolbar_end.py:407
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "תור"
@@ -332,14 +332,22 @@ msgstr "תמיכה בהבחנה גבוהה"
 msgid "Tunein support"
 msgstr "תמיכה ב־‏Tunein"
 
-#: ../src/application.py:31
+#: ../src/application.py:33
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobbler disabled\n- Auto cover download disabled\n- Artist informations disabled"
 
-#: ../src/application.py:463
+#: ../src/application.py:221
+msgid "Google Web Services need a custom API key"
+msgstr "‏ Google Web Services דורש מפתח API מותאם"
+
+#: ../src/application.py:222
+msgid "Lollypop needs this to search artwork and music."
+msgstr ""
+
+#: ../src/application.py:477
 msgid "Lollypop: You need to install yelp."
 msgstr "‏ Lollypop: יש להתקין את yelp."
 
@@ -483,44 +491,44 @@ msgstr ""
 msgid "world"
 msgstr ""
 
-#: ../src/collectionscanner.py:68
+#: ../src/collectionscanner.py:66
 msgid "Your music is updating"
 msgstr "המוזיקה שלך מתעדכנת"
 
-#: ../src/collectionscanner.py:157
+#: ../src/collectionscanner.py:158
 msgid "Lollypop is detecting an empty folder."
 msgstr ""
 
-#: ../src/collectionscanner.py:158
+#: ../src/collectionscanner.py:159
 msgid "Check your music settings."
 msgstr ""
 
-#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
-#: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
-#: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
-#: ../src/tagreader.py:191 ../src/tagreader.py:198
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:388
+#: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
+#: ../src/tagreader.py:161 ../src/tagreader.py:176 ../src/tagreader.py:179
+#: ../src/tagreader.py:189 ../src/tagreader.py:196
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../src/container.py:488
+#: ../src/container.py:446
 msgid "Compilations"
 msgstr "אוספים"
 
-#: ../src/container.py:512 ../src/playlists.py:223
+#: ../src/container.py:470 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "רצועות אהובות"
 
-#: ../src/container.py:513 ../src/playlists.py:225
+#: ../src/container.py:471 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "נוגן לאחרונה"
 
-#: ../src/container.py:514 ../src/playlists.py:227
+#: ../src/container.py:472 ../src/playlists.py:227
 msgid "Never played"
 msgstr "לעולם לא נוגן"
 
-#: ../src/container.py:515 ../src/playlists.py:229
+#: ../src/container.py:473 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "רצועות אקראיות"
 
@@ -529,7 +537,7 @@ msgid "Pause"
 msgstr "השהיה"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -547,7 +555,7 @@ msgstr "אמנים שונים"
 msgid "Last.fm authentication disabled"
 msgstr "הושבת אימות Last.fm"
 
-#: ../src/lastfm.py:333
+#: ../src/lastfm.py:348
 msgid "Wrong Last.fm credentials"
 msgstr "אישורי Last.fm שגויים"
 
@@ -577,11 +585,11 @@ msgid "Clear albums"
 msgstr "ניקוי אלבומים"
 
 #: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
-#: ../data/ArtistView.ui.h:4
+#: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr "חזרה לרצועה הנוכחית"
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:400
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:411
 msgid "Playing albums"
 msgstr "ניגון אלבומים"
 
@@ -592,6 +600,10 @@ msgstr "מידע מתקדם אודות אמן מושבת"
 #: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "תמיכה ב־WebKit מושבתת"
+
+#: ../src/pop_info.py:250
+msgid "No lyrics found, please install gir1.2-webkit2-4.0"
+msgstr ""
 
 #: ../src/pop_menu.py:73
 msgid "Show albums from artist"
@@ -632,8 +644,8 @@ msgstr "הוספה אל „%s”"
 msgid "Playback"
 msgstr "בִצוע מוקלט"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
-#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:498 ../src/pop_menu.py:518
+#: ../src/selectionlist.py:309 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "רשימות השמעה"
@@ -650,29 +662,29 @@ msgstr ""
 msgid "Modify information"
 msgstr "שינוי מידע"
 
-#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:492 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "אמן"
 
-#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:501 ../src/pop_menu.py:521 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "עריכה"
 
-#: ../src/pop_menu.py:550
-msgid "Youtube video address"
+#: ../src/pop_menu.py:629
+msgid "YouTube video address"
 msgstr ""
 
-#: ../src/pop_menu.py:674
+#: ../src/pop_menu.py:684
 msgid "Save genre"
 msgstr "שמירת סוגה"
 
-#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:705 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr ""
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:330
 msgid "Add"
 msgstr "הוספה"
 
@@ -681,7 +693,7 @@ msgstr "הוספה"
 msgid "Modify"
 msgstr "שינוי"
 
-#: ../src/pop_search.py:288
+#: ../src/pop_search.py:290
 msgid "You need to install youtube-dl"
 msgstr "יש להתקין youtube-dl"
 
@@ -693,88 +705,88 @@ msgstr "נא להמתין…"
 msgid "Can't connect to TuneIn..."
 msgstr "לא ניתן להתחבר ל־TuneIn…"
 
-#: ../src/selectionlist.py:299
+#: ../src/selectionlist.py:306
 msgid "Popular albums"
 msgstr "אלבומים אהובים"
 
-#: ../src/selectionlist.py:300
+#: ../src/selectionlist.py:307
 msgid "Recently added albums"
 msgstr "אלבומים שנוספו לאחרונה"
 
-#: ../src/selectionlist.py:301
+#: ../src/selectionlist.py:308
 msgid "Random albums"
 msgstr "אלבומים אקראיים"
 
-#: ../src/selectionlist.py:303
+#: ../src/selectionlist.py:310
 msgid "Radios"
 msgstr "תחנות רדיו"
 
-#: ../src/selectionlist.py:305
+#: ../src/selectionlist.py:312
 msgid "The charts"
 msgstr ""
 
-#: ../src/selectionlist.py:307
+#: ../src/selectionlist.py:314
 msgid "All albums"
 msgstr "כל האלבומים"
 
-#: ../src/selectionlist.py:309
+#: ../src/selectionlist.py:316
 msgid "All artists"
 msgstr "כל האמנים"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d אמנים"
 msgstr[1] "%d אמנים"
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d אלבומים"
 msgstr[1] "%d אלבומים"
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d רצועות"
 msgstr[1] "%d רצועות"
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "העדפות"
 
-#: ../src/settings.py:145
+#: ../src/settings.py:144
 msgid "You need to install kid3-cli"
 msgstr "יש להתקין kid3-cli"
 
-#: ../src/toolbar_end.py:55
+#: ../src/toolbar_end.py:50
 msgid "Populars"
 msgstr "חביבים"
 
-#: ../src/toolbar_end.py:56
+#: ../src/toolbar_end.py:51
 msgid "Recently added"
 msgstr "נוסף לאחרונה"
 
-#: ../src/toolbar_end.py:394
+#: ../src/toolbar_end.py:405
 msgid "Externals tracks playing"
 msgstr "ניגון רצועות חיצוניות"
 
-#: ../src/toolbar_end.py:398
+#: ../src/toolbar_end.py:409
 msgid "Playing playlists"
 msgstr "ניגון רשימות השמעה"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:125
+#: ../src/utils.py:126
 msgid "The the"
 msgstr " ו"
 
 #. Translators: artist context
-#: ../src/view_artist.py:311 ../src/widgets_album.py:359
+#: ../src/view_artist.py:324 ../src/widgets_album.py:370
 msgid "Remove"
 msgstr "הסרה"
 
@@ -782,49 +794,43 @@ msgstr "הסרה"
 msgid "Please unlock your device"
 msgstr "יש לשחרר נעילת ההתקן שלל"
 
-#: ../src/view_device.py:52
-msgid ""
-"Lollypop sync changed due to limitations in some devices.\n"
-"Please remove Music/lollypop folder on your device..."
-msgstr "תיאום Lollypop משתנה בהתאם למגבלה בכמה התקנים.\nיש למחוק את תיקיית המוזיקה/lollypop שבהתקן שלך…"
-
-#: ../src/view_device.py:112 ../src/view_device.py:209
+#: ../src/view_device.py:94 ../src/view_device.py:191
 #, python-format
 msgid "Synchronize %s"
 msgstr "מתאם %s"
 
-#: ../src/view_device.py:163
+#: ../src/view_device.py:145
 msgid "Cancel synchronization"
 msgstr "ביטול התיאום"
 
-#: ../src/widgets_album.py:355
+#: ../src/widgets_album.py:366
 msgid "Append"
 msgstr "הוספה"
 
-#: ../src/widgets_album.py:518
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "ניגון אלבומים"
 
-#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "שינוי עטיפה"
 
-#: ../src/widgets_album.py:694
+#: ../src/widgets_album.py:863
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ש׳ ו־%s דק׳"
 
-#: ../src/widgets_album.py:696
+#: ../src/widgets_album.py:865
 #, python-format
 msgid "%s h"
 msgstr "%s שעות"
 
-#: ../src/widgets_album.py:698
+#: ../src/widgets_album.py:867
 #, python-format
 msgid "%s m"
 msgstr "%s דקות"
 
-#: ../src/widgets_album.py:985
+#: ../src/widgets_album.py:1018
 #, python-format
 msgid "Disc %s"
 msgstr "דיסק %s"
@@ -870,6 +876,10 @@ msgstr "ו"
 #: ../src/wikipedia.py:36
 msgid "musician;band"
 msgstr "זמר;מוזיקאי;להקה;תזמורת;"
+
+#: ../data/LastfmPopover.ui.h:1 ../data/ArtistView.ui.h:4
+msgid "Similar artists"
+msgstr ""
 
 #: ../data/PlaybackMenu.ui.h:1
 msgid "Continuous playback"
@@ -1113,8 +1123,8 @@ msgid "Do not repeat by default"
 msgstr "לא לחזור כברירת מחדל"
 
 #: ../data/SettingsDialog.ui.h:22
-msgid "Save artwork in files"
-msgstr "שמירת תמונה בקובץ"
+msgid "Save changes to files"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
@@ -1174,8 +1184,8 @@ msgstr ""
 #: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
-"and \"Youtube Data API\" for your project."
-msgstr "יש לאפשר את „Custom Search API” ו־„ Youtube Data API” עבור המיזם שלך."
+"and \"YouTube Data API\" for your project."
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:41
 msgid "Configure Last.fm credentials"

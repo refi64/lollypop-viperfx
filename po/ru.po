@@ -6,6 +6,7 @@
 # Alexey, 2016
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Derpy Crabs <derpycrabs@gmail.com>, 2015
+# Ilya Shaplyko <goldilb10xa@gmail.com>, 2016
 # Maxim region51 <murmansksity@gmail.com>, 2015
 # Maxim region51 <murmansksity@gmail.com>, 2015-2016
 # Maxim region51 <murmansksity@gmail.com>, 2016
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-02 21:20+0200\n"
-"PO-Revision-Date: 2016-10-02 19:21+0000\n"
+"POT-Creation-Date: 2016-10-11 14:10+0200\n"
+"PO-Revision-Date: 2016-10-11 12:11+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -52,8 +53,8 @@ msgid "Search over network"
 msgstr "Поиск по сети"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork in tags"
-msgstr "Сохранять изображения в тегах"
+msgid "Save artwork/popularity in tags"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
@@ -85,7 +86,7 @@ msgstr "Когда не установлено, используется XDG_MUS
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Use Librefm instead of Lastfm"
-msgstr ""
+msgstr "Использовать Librefm вместо Lastfm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
@@ -285,8 +286,8 @@ msgstr "Жанр/Исполнитель/Просмотр обложки"
 msgid "Search"
 msgstr "Поиск"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
-#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:495
+#: ../src/pop_menu.py:516 ../src/toolbar_end.py:407
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Очередь"
@@ -335,14 +336,22 @@ msgstr "Поддержка HiDPI"
 msgid "Tunein support"
 msgstr "Поддержка Tunein"
 
-#: ../src/application.py:31
+#: ../src/application.py:33
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:463
+#: ../src/application.py:221
+msgid "Google Web Services need a custom API key"
+msgstr ""
+
+#: ../src/application.py:222
+msgid "Lollypop needs this to search artwork and music."
+msgstr ""
+
+#: ../src/application.py:477
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -486,44 +495,44 @@ msgstr "саундтрек"
 msgid "world"
 msgstr "мировая"
 
-#: ../src/collectionscanner.py:68
+#: ../src/collectionscanner.py:66
 msgid "Your music is updating"
 msgstr "Ваша музыка обновляется"
 
-#: ../src/collectionscanner.py:157
+#: ../src/collectionscanner.py:158
 msgid "Lollypop is detecting an empty folder."
 msgstr "Lollypop обнаружил пустую папку."
 
-#: ../src/collectionscanner.py:158
+#: ../src/collectionscanner.py:159
 msgid "Check your music settings."
 msgstr "Проверьте ваши музыкальные настройки."
 
-#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
-#: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
-#: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
-#: ../src/tagreader.py:191 ../src/tagreader.py:198
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:388
+#: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
+#: ../src/tagreader.py:161 ../src/tagreader.py:176 ../src/tagreader.py:179
+#: ../src/tagreader.py:189 ../src/tagreader.py:196
 msgid "Unknown"
 msgstr "Неизвестный"
 
-#: ../src/container.py:488
+#: ../src/container.py:446
 msgid "Compilations"
 msgstr "Подборки"
 
-#: ../src/container.py:512 ../src/playlists.py:223
+#: ../src/container.py:470 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Популярные треки"
 
-#: ../src/container.py:513 ../src/playlists.py:225
+#: ../src/container.py:471 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Недавно прослушанные"
 
-#: ../src/container.py:514 ../src/playlists.py:227
+#: ../src/container.py:472 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Ни разу не проигрывались"
 
-#: ../src/container.py:515 ../src/playlists.py:229
+#: ../src/container.py:473 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Случайные треки"
 
@@ -532,7 +541,7 @@ msgid "Pause"
 msgstr "Приостановить"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -550,7 +559,7 @@ msgstr "Множество исполнителей"
 msgid "Last.fm authentication disabled"
 msgstr "Аутентификация Last.fm отключена"
 
-#: ../src/lastfm.py:333
+#: ../src/lastfm.py:348
 msgid "Wrong Last.fm credentials"
 msgstr "Неверные данные учётной записи Last.fm"
 
@@ -580,11 +589,11 @@ msgid "Clear albums"
 msgstr "Очистить альбомы"
 
 #: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
-#: ../data/ArtistView.ui.h:4
+#: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr "Перейти к текущему треку"
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:400
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:411
 msgid "Playing albums"
 msgstr "Воспроизведение альбомов"
 
@@ -595,6 +604,10 @@ msgstr "Подробная информация об исполнителе от
 #: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "Поддержка WebKit отключена"
+
+#: ../src/pop_info.py:250
+msgid "No lyrics found, please install gir1.2-webkit2-4.0"
+msgstr "Текст не найден, пожалуйста, установите gir1.2-webkit2-4.0"
 
 #: ../src/pop_menu.py:73
 msgid "Show albums from artist"
@@ -635,8 +648,8 @@ msgstr "Добавить к \"%s\" "
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
-#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:498 ../src/pop_menu.py:518
+#: ../src/selectionlist.py:309 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Плейлисты"
@@ -647,35 +660,35 @@ msgstr "Удалить альбом"
 
 #: ../src/pop_menu.py:417
 msgid "Remove track"
-msgstr ""
+msgstr "Удалить трек"
 
 #: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Изменить информацию"
 
-#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:492 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "по исполнителю"
 
-#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:501 ../src/pop_menu.py:521 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ../src/pop_menu.py:550
-msgid "Youtube video address"
+#: ../src/pop_menu.py:629
+msgid "YouTube video address"
 msgstr "Адрес видео на Youtube"
 
-#: ../src/pop_menu.py:674
+#: ../src/pop_menu.py:684
 msgid "Save genre"
 msgstr "Сохранить жанр"
 
-#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:705 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Сохранить в коллекции"
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:330
 msgid "Add"
 msgstr "Добавить"
 
@@ -684,7 +697,7 @@ msgstr "Добавить"
 msgid "Modify"
 msgstr "Изменить"
 
-#: ../src/pop_search.py:288
+#: ../src/pop_search.py:290
 msgid "You need to install youtube-dl"
 msgstr "Вам нужно установить youtube-dl"
 
@@ -696,35 +709,35 @@ msgstr "Пожалуйста, подождите…"
 msgid "Can't connect to TuneIn..."
 msgstr "Не удается подключиться к TuneIn…"
 
-#: ../src/selectionlist.py:299
+#: ../src/selectionlist.py:306
 msgid "Popular albums"
 msgstr "Популярные альбомы"
 
-#: ../src/selectionlist.py:300
+#: ../src/selectionlist.py:307
 msgid "Recently added albums"
 msgstr "Недавно добавленные альбомы"
 
-#: ../src/selectionlist.py:301
+#: ../src/selectionlist.py:308
 msgid "Random albums"
 msgstr "Случайные альбомы"
 
-#: ../src/selectionlist.py:303
+#: ../src/selectionlist.py:310
 msgid "Radios"
 msgstr "Радиостанции"
 
-#: ../src/selectionlist.py:305
+#: ../src/selectionlist.py:312
 msgid "The charts"
 msgstr "Чарты"
 
-#: ../src/selectionlist.py:307
+#: ../src/selectionlist.py:314
 msgid "All albums"
 msgstr "Все альбомы"
 
-#: ../src/selectionlist.py:309
+#: ../src/selectionlist.py:316
 msgid "All artists"
 msgstr "Все исполнители"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -733,7 +746,7 @@ msgstr[1] "%d исполнителя"
 msgstr[2] "%d исполнителей"
 msgstr[3] "%d исполнителей"
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -742,7 +755,7 @@ msgstr[1] "%d альбома"
 msgstr[2] "%d альбомов"
 msgstr[3] "%d альбомов"
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -751,39 +764,39 @@ msgstr[1] "%d трека"
 msgstr[2] "%d треков"
 msgstr[3] "%d треков"
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../src/settings.py:145
+#: ../src/settings.py:144
 msgid "You need to install kid3-cli"
 msgstr "Вам нужно установить kid3-cli"
 
-#: ../src/toolbar_end.py:55
+#: ../src/toolbar_end.py:50
 msgid "Populars"
 msgstr "Популярные"
 
-#: ../src/toolbar_end.py:56
+#: ../src/toolbar_end.py:51
 msgid "Recently added"
 msgstr "Недавно добавленные"
 
-#: ../src/toolbar_end.py:394
+#: ../src/toolbar_end.py:405
 msgid "Externals tracks playing"
 msgstr "Воспроизведение внешних треков"
 
-#: ../src/toolbar_end.py:398
+#: ../src/toolbar_end.py:409
 msgid "Playing playlists"
 msgstr "Воспроизведение плейлистов"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:125
+#: ../src/utils.py:126
 msgid "The the"
 msgstr "The the"
 
 #. Translators: artist context
-#: ../src/view_artist.py:311 ../src/widgets_album.py:359
+#: ../src/view_artist.py:324 ../src/widgets_album.py:370
 msgid "Remove"
 msgstr "Удалить"
 
@@ -791,49 +804,43 @@ msgstr "Удалить"
 msgid "Please unlock your device"
 msgstr "Пожалуйста, разблокируйте ваше устройство"
 
-#: ../src/view_device.py:52
-msgid ""
-"Lollypop sync changed due to limitations in some devices.\n"
-"Please remove Music/lollypop folder on your device..."
-msgstr "Синхронизация Lollypop изменилась, из-за ограничений на некоторых устройствах.\nПожалуйста, удалите папку Музыка/Lollypop на вашем устройстве ..."
-
-#: ../src/view_device.py:112 ../src/view_device.py:209
+#: ../src/view_device.py:94 ../src/view_device.py:191
 #, python-format
 msgid "Synchronize %s"
 msgstr "Синхронизировать %s"
 
-#: ../src/view_device.py:163
+#: ../src/view_device.py:145
 msgid "Cancel synchronization"
 msgstr "Отменить синхронизацию"
 
-#: ../src/widgets_album.py:355
+#: ../src/widgets_album.py:366
 msgid "Append"
 msgstr "Добавить"
 
-#: ../src/widgets_album.py:518
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "Проиграть альбомы"
 
-#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Изменить обложку"
 
-#: ../src/widgets_album.py:694
+#: ../src/widgets_album.py:863
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s мин"
 
-#: ../src/widgets_album.py:696
+#: ../src/widgets_album.py:865
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:698
+#: ../src/widgets_album.py:867
 #, python-format
 msgid "%s m"
 msgstr "%s мин"
 
-#: ../src/widgets_album.py:985
+#: ../src/widgets_album.py:1018
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -879,6 +886,10 @@ msgstr "Изменить радио"
 #: ../src/wikipedia.py:36
 msgid "musician;band"
 msgstr "музыкант;группа"
+
+#: ../data/LastfmPopover.ui.h:1 ../data/ArtistView.ui.h:4
+msgid "Similar artists"
+msgstr "Похожие исполнители"
 
 #: ../data/PlaybackMenu.ui.h:1
 msgid "Continuous playback"
@@ -1122,8 +1133,8 @@ msgid "Do not repeat by default"
 msgstr "Не повторять по умолчанию"
 
 #: ../data/SettingsDialog.ui.h:22
-msgid "Save artwork in files"
-msgstr "Сохранять изображения в файлах"
+msgid "Save changes to files"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
@@ -1171,7 +1182,7 @@ msgstr "Вам необходимо установить pylast и gi secret"
 
 #: ../data/SettingsDialog.ui.h:34
 msgid "Use Librefm"
-msgstr ""
+msgstr "Использовать Librefm"
 
 #: ../data/SettingsDialog.ui.h:35
 msgid ""
@@ -1183,7 +1194,7 @@ msgstr "Google Web Services нужен API ключ.\nБез него, вы ск
 #: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
-"and \"Youtube Data API\" for your project."
+"and \"YouTube Data API\" for your project."
 msgstr "Вам нужно включить «Custom Search API»\nи «Youtube Data API» для вашего проекта."
 
 #: ../data/SettingsDialog.ui.h:41

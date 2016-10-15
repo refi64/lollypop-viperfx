@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-02 21:20+0200\n"
-"PO-Revision-Date: 2016-10-02 19:21+0000\n"
+"POT-Creation-Date: 2016-10-11 14:10+0200\n"
+"PO-Revision-Date: 2016-10-11 12:11+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -47,11 +47,11 @@ msgstr "迷你播放器位置"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Search over network"
-msgstr ""
+msgstr "通过网络搜索"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork in tags"
-msgstr "在标签中存储图片"
+msgid "Save artwork/popularity in tags"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
@@ -83,7 +83,7 @@ msgstr "为空时，使用XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Use Librefm instead of Lastfm"
-msgstr ""
+msgstr "使用 Librefm 取代 Lastfm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
@@ -158,7 +158,7 @@ msgstr "自动更新音乐"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Split playlists view"
-msgstr ""
+msgstr "分割播放列表视图"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show genres list"
@@ -174,7 +174,7 @@ msgstr "使用黑色gtk主题"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Disable the use of client side window decorations (headerbar)"
-msgstr ""
+msgstr "不使用客户侧窗口装饰（标题栏）"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
@@ -186,11 +186,11 @@ msgstr "关闭后继续播放"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Smart sort for artist"
-msgstr ""
+msgstr "艺术家智能排序"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
-msgstr ""
+msgstr "例：将 The Beatles 排列为 Beatles。需要重置数据库。"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Restore previous state"
@@ -230,7 +230,7 @@ msgstr "专辑分类方式"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:52
 msgid "Charts provider"
-msgstr ""
+msgstr "排行提供者"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -283,8 +283,8 @@ msgstr "流派/艺术家/封面浏览"
 msgid "Search"
 msgstr "搜索"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
-#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:495
+#: ../src/pop_menu.py:516 ../src/toolbar_end.py:407
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "排队"
@@ -333,14 +333,22 @@ msgstr "高分辨率支持"
 msgid "Tunein support"
 msgstr "调音支持"
 
-#: ../src/application.py:31
+#: ../src/application.py:33
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "-收听习惯发布功能禁用\n-封面自动下载功能禁用\n-艺术家信息禁用"
 
-#: ../src/application.py:463
+#: ../src/application.py:221
+msgid "Google Web Services need a custom API key"
+msgstr ""
+
+#: ../src/application.py:222
+msgid "Lollypop needs this to search artwork and music."
+msgstr ""
+
+#: ../src/application.py:477
 msgid "Lollypop: You need to install yelp."
 msgstr "棒棒糖:您需要安装yelp"
 
@@ -356,172 +364,172 @@ msgstr "重置图片吗？"
 #. if it makes sense for you
 #: ../src/charts_itunes.py:37
 msgid "alternative"
-msgstr ""
+msgstr "另类"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:41
 msgid "anime"
-msgstr ""
+msgstr "动漫"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:45
 msgid "blues"
-msgstr ""
+msgstr "蓝调"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:49
 msgid "brazil"
-msgstr ""
+msgstr "巴西"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:53
 msgid "classic"
-msgstr ""
+msgstr "古典"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:57
 msgid "country"
-msgstr ""
+msgstr "乡村"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:61
 msgid "dance"
-msgstr ""
+msgstr "舞曲"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:65
 msgid "electro"
-msgstr ""
+msgstr "电子"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:69
 msgid "french"
-msgstr ""
+msgstr "法国"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:73
 msgid "german"
-msgstr ""
+msgstr "德国"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:77
 msgid "rap"
-msgstr ""
+msgstr "说唱"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:81
 msgid "hip hop"
-msgstr ""
+msgstr "嘻哈"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:85
 msgid "jazz"
-msgstr ""
+msgstr "爵士"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:89
 msgid "latin"
-msgstr ""
+msgstr "拉丁"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:93
 msgid "new age"
-msgstr ""
+msgstr "新纪元"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:97
 msgid "opera"
-msgstr ""
+msgstr "歌剧"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:101
 msgid "pop"
-msgstr ""
+msgstr "流行乐"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:105
 msgid "soul"
-msgstr ""
+msgstr "灵魂乐"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:110
 msgid "reggae"
-msgstr ""
+msgstr "雷鬼"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:114
 msgid "rock"
-msgstr ""
+msgstr "摇滚"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:118
 msgid "soundtrack"
-msgstr ""
+msgstr "原声"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:122
 msgid "world"
-msgstr ""
+msgstr "世界"
 
-#: ../src/collectionscanner.py:68
+#: ../src/collectionscanner.py:66
 msgid "Your music is updating"
 msgstr "您的音乐正在更新"
 
-#: ../src/collectionscanner.py:157
-msgid "Lollypop is detecting an empty folder."
-msgstr ""
-
 #: ../src/collectionscanner.py:158
-msgid "Check your music settings."
-msgstr ""
+msgid "Lollypop is detecting an empty folder."
+msgstr "Lollypop 正在探测一个空文件夹。"
 
-#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:159
+msgid "Check your music settings."
+msgstr "检查您的音乐设置。"
+
+#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
-#: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
-#: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
-#: ../src/tagreader.py:191 ../src/tagreader.py:198
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:388
+#: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
+#: ../src/tagreader.py:161 ../src/tagreader.py:176 ../src/tagreader.py:179
+#: ../src/tagreader.py:189 ../src/tagreader.py:196
 msgid "Unknown"
 msgstr "未知"
 
-#: ../src/container.py:488
+#: ../src/container.py:446
 msgid "Compilations"
 msgstr "曲集"
 
-#: ../src/container.py:512 ../src/playlists.py:223
+#: ../src/container.py:470 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "流行曲目"
 
-#: ../src/container.py:513 ../src/playlists.py:225
+#: ../src/container.py:471 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "最近播放"
 
-#: ../src/container.py:514 ../src/playlists.py:227
+#: ../src/container.py:472 ../src/playlists.py:227
 msgid "Never played"
 msgstr "从未播放"
 
-#: ../src/container.py:515 ../src/playlists.py:229
+#: ../src/container.py:473 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "随机曲目"
 
@@ -530,7 +538,7 @@ msgid "Pause"
 msgstr "暂停"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -538,7 +546,7 @@ msgstr "播放"
 
 #: ../src/controllers.py:193
 msgid "Volume"
-msgstr ""
+msgstr "音量"
 
 #: ../src/database_artists.py:97
 msgid "Many artists"
@@ -548,7 +556,7 @@ msgstr "许多艺术家"
 msgid "Last.fm authentication disabled"
 msgstr "关闭Last.fm 认证"
 
-#: ../src/lastfm.py:333
+#: ../src/lastfm.py:348
 msgid "Wrong Last.fm credentials"
 msgstr "错误的Last.fm登录凭证信息"
 
@@ -567,7 +575,7 @@ msgstr "由%s，来自%s"
 
 #: ../src/player.py:121 ../src/player_queue.py:43 ../src/player_queue.py:66
 msgid "No network available, can't play this track"
-msgstr ""
+msgstr "无可用网络，无法播放此曲目"
 
 #: ../src/playlists.py:54
 msgid "Loved tracks"
@@ -578,11 +586,11 @@ msgid "Clear albums"
 msgstr "清除专辑"
 
 #: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
-#: ../data/ArtistView.ui.h:4
+#: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr "转到当前曲目"
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:400
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:411
 msgid "Playing albums"
 msgstr "正在播放专辑"
 
@@ -594,9 +602,13 @@ msgstr "禁用高级艺术家信息"
 msgid "WebKit support disabled"
 msgstr "关闭WebKit 支持"
 
+#: ../src/pop_info.py:250
+msgid "No lyrics found, please install gir1.2-webkit2-4.0"
+msgstr "找不到歌词，请安装 gir1.2-webkit2-4.0"
+
 #: ../src/pop_menu.py:73
 msgid "Show albums from artist"
-msgstr ""
+msgstr "显示艺术家的专辑"
 
 #: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
 #: ../data/InternalSearchRow.ui.h:2
@@ -633,47 +645,47 @@ msgstr "增加到\"%s\""
 msgid "Playback"
 msgstr "回放"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
-#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:498 ../src/pop_menu.py:518
+#: ../src/selectionlist.py:309 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "播放列表"
 
 #: ../src/pop_menu.py:415
 msgid "Remove album"
-msgstr ""
+msgstr "移除专辑"
 
 #: ../src/pop_menu.py:417
 msgid "Remove track"
-msgstr ""
+msgstr "移除曲目"
 
 #: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "修改信息"
 
-#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:492 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "艺术家"
 
-#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:501 ../src/pop_menu.py:521 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "编辑"
 
-#: ../src/pop_menu.py:550
-msgid "Youtube video address"
+#: ../src/pop_menu.py:629
+msgid "YouTube video address"
 msgstr ""
 
-#: ../src/pop_menu.py:674
+#: ../src/pop_menu.py:684
 msgid "Save genre"
-msgstr ""
+msgstr "保存类别"
 
-#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:705 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
-msgstr ""
+msgstr "保存到收藏"
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:330
 msgid "Add"
 msgstr "添加"
 
@@ -682,9 +694,9 @@ msgstr "添加"
 msgid "Modify"
 msgstr "更改"
 
-#: ../src/pop_search.py:288
+#: ../src/pop_search.py:290
 msgid "You need to install youtube-dl"
-msgstr ""
+msgstr "您需要安装 youtube-dl"
 
 #: ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
 msgid "Please wait..."
@@ -694,85 +706,85 @@ msgstr "请稍后"
 msgid "Can't connect to TuneIn..."
 msgstr "无法连接到TuneIn..."
 
-#: ../src/selectionlist.py:299
+#: ../src/selectionlist.py:306
 msgid "Popular albums"
 msgstr "流行专辑"
 
-#: ../src/selectionlist.py:300
+#: ../src/selectionlist.py:307
 msgid "Recently added albums"
 msgstr "最近添加专辑"
 
-#: ../src/selectionlist.py:301
+#: ../src/selectionlist.py:308
 msgid "Random albums"
 msgstr "随机专辑"
 
-#: ../src/selectionlist.py:303
+#: ../src/selectionlist.py:310
 msgid "Radios"
 msgstr "电台"
 
-#: ../src/selectionlist.py:305
+#: ../src/selectionlist.py:312
 msgid "The charts"
-msgstr ""
+msgstr "排行榜"
 
-#: ../src/selectionlist.py:307
+#: ../src/selectionlist.py:314
 msgid "All albums"
 msgstr "所有专辑"
 
-#: ../src/selectionlist.py:309
+#: ../src/selectionlist.py:316
 msgid "All artists"
 msgstr "所有艺术家"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d 个艺术家"
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d 个专辑"
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d 个音轨"
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "首选项"
 
-#: ../src/settings.py:145
+#: ../src/settings.py:144
 msgid "You need to install kid3-cli"
 msgstr "您需要安装kid3-cli"
 
-#: ../src/toolbar_end.py:55
+#: ../src/toolbar_end.py:50
 msgid "Populars"
 msgstr "流行"
 
-#: ../src/toolbar_end.py:56
+#: ../src/toolbar_end.py:51
 msgid "Recently added"
 msgstr "最近添加"
 
-#: ../src/toolbar_end.py:394
+#: ../src/toolbar_end.py:405
 msgid "Externals tracks playing"
 msgstr "正在播放外部曲目"
 
-#: ../src/toolbar_end.py:398
+#: ../src/toolbar_end.py:409
 msgid "Playing playlists"
 msgstr "正在播放播放列表"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:125
+#: ../src/utils.py:126
 msgid "The the"
 msgstr "The the"
 
 #. Translators: artist context
-#: ../src/view_artist.py:311 ../src/widgets_album.py:359
+#: ../src/view_artist.py:324 ../src/widgets_album.py:370
 msgid "Remove"
 msgstr "移除"
 
@@ -780,49 +792,43 @@ msgstr "移除"
 msgid "Please unlock your device"
 msgstr "请解锁您的设备"
 
-#: ../src/view_device.py:52
-msgid ""
-"Lollypop sync changed due to limitations in some devices.\n"
-"Please remove Music/lollypop folder on your device..."
-msgstr "由于某些设备的限制，Lollypop同步已被更改。\n请删除您设备上的音乐/lollypop文件夹..."
-
-#: ../src/view_device.py:112 ../src/view_device.py:209
+#: ../src/view_device.py:94 ../src/view_device.py:191
 #, python-format
 msgid "Synchronize %s"
 msgstr "同步%s"
 
-#: ../src/view_device.py:163
+#: ../src/view_device.py:145
 msgid "Cancel synchronization"
 msgstr "取消同步"
 
-#: ../src/widgets_album.py:355
+#: ../src/widgets_album.py:366
 msgid "Append"
 msgstr "追加"
 
-#: ../src/widgets_album.py:518
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "播放专辑"
 
-#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "更改专辑封面"
 
-#: ../src/widgets_album.py:694
+#: ../src/widgets_album.py:863
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s小时%s分钟"
 
-#: ../src/widgets_album.py:696
+#: ../src/widgets_album.py:865
 #, python-format
 msgid "%s h"
 msgstr "%s小时"
 
-#: ../src/widgets_album.py:698
+#: ../src/widgets_album.py:867
 #, python-format
 msgid "%s m"
 msgstr "%s分钟"
 
-#: ../src/widgets_album.py:985
+#: ../src/widgets_album.py:1018
 #, python-format
 msgid "Disc %s"
 msgstr "光盘 %s"
@@ -869,6 +875,10 @@ msgstr "更改广播电台"
 msgid "musician;band"
 msgstr "音乐家；乐队"
 
+#: ../data/LastfmPopover.ui.h:1 ../data/ArtistView.ui.h:4
+msgid "Similar artists"
+msgstr "相似艺术家"
+
 #: ../data/PlaybackMenu.ui.h:1
 msgid "Continuous playback"
 msgstr "连续播放"
@@ -901,15 +911,15 @@ msgstr "塞居克.贝勒伽德 <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Donations:"
-msgstr ""
+msgstr "捐助："
 
 #: ../data/AboutDialog.ui.h:6
 msgid "Flattr"
-msgstr ""
+msgstr "Flattr"
 
 #: ../data/AboutDialog.ui.h:7
 msgid "Paypal"
-msgstr ""
+msgstr "Paypal"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -984,7 +994,7 @@ msgid ""
 "Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
 "Please create a \"Custom Search Engine\" here:"
-msgstr ""
+msgstr "Lollypop 使用“Google 自定义搜索 API”来搜索互联网上的图像。\n该 API 的使用受限，因而可能无法使用默认 API 密钥。\n请在此创建一个搜索引擎："
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:38
 msgid "API key"
@@ -992,7 +1002,7 @@ msgstr "API 密钥"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with these playlists"
-msgstr ""
+msgstr "与设备同步这些播放列表"
 
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
@@ -1008,7 +1018,7 @@ msgstr "新播放列表"
 
 #: ../data/PlaylistView.ui.h:2
 msgid "Unsplit view"
-msgstr ""
+msgstr "取消视图分割"
 
 #: ../data/QueuePopover.ui.h:1
 msgid "Clear queue"
@@ -1052,7 +1062,7 @@ msgstr "根据查询内容创建一个新的播放列表"
 
 #: ../data/SearchPopover.ui.h:2
 msgid "Search on the web"
-msgstr ""
+msgstr "通过互联网搜索"
 
 #: ../data/InternalSearchRow.ui.h:1
 msgid "Add to playlist"
@@ -1111,8 +1121,8 @@ msgid "Do not repeat by default"
 msgstr "默认不循环播放"
 
 #: ../data/SettingsDialog.ui.h:22
-msgid "Save artwork in files"
-msgstr "将图片存入文档"
+msgid "Save changes to files"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
@@ -1120,7 +1130,7 @@ msgstr "预览曲目"
 
 #: ../data/SettingsDialog.ui.h:24
 msgid "No audio device"
-msgstr ""
+msgstr "无音频设备"
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
@@ -1160,19 +1170,19 @@ msgstr "您需要安装pylast和gi secret"
 
 #: ../data/SettingsDialog.ui.h:34
 msgid "Use Librefm"
-msgstr ""
+msgstr "使用 Librefm"
 
 #: ../data/SettingsDialog.ui.h:35
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
 "Lollypop needs this to search artwork and music."
-msgstr ""
+msgstr "Google Web Service 需要一个自定义 API 密钥。\n如不使用自定义 API 密钥，你将很快耗尽使用配额。\nLollypop 需要此密钥来搜索专辑封面和音乐。"
 
 #: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
-"and \"Youtube Data API\" for your project."
+"and \"YouTube Data API\" for your project."
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:41
@@ -1271,7 +1281,7 @@ msgstr "锁定播放"
 #: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
 msgid "Show/Hide volume control"
-msgstr ""
+msgstr "显示/隐藏音量控制"
 
 #: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
