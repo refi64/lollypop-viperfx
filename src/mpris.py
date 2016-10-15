@@ -56,19 +56,23 @@ class Server:
                 fd_list = msg.get_unix_fd_list()
                 args[i] = fd_list.get(args[i])
 
-        result = getattr(self, method_name)(*args)
+        try:
+            result = getattr(self, method_name)(*args)
 
-        # out_args is atleast (signature1). We therefore always wrap the result
-        # as a tuple.
-        # Refer to https://bugzilla.gnome.org/show_bug.cgi?id=765603
-        result = (result,)
+            # out_args is atleast (signature1).
+            # We therefore always wrap the result as a tuple.
+            # Refer to https://bugzilla.gnome.org/show_bug.cgi?id=765603
+            result = (result,)
 
-        out_args = self.method_outargs[method_name]
-        if out_args != '()':
-            variant = GLib.Variant(out_args, result)
-            invocation.return_value(variant)
-        else:
-            invocation.return_value(None)
+            out_args = self.method_outargs[method_name]
+            if out_args != '()':
+                variant = GLib.Variant(out_args, result)
+                invocation.return_value(variant)
+            else:
+                invocation.return_value(None)
+        except Exception as e:
+            print("MPRISServer::on_method_call:", e, interface_name,
+                  method_name, args)
 
 
 class MPRIS(Server):
