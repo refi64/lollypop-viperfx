@@ -281,7 +281,15 @@ class MPRIS(Server):
                                   'CanSeek',
                                   'CanControl']:
                 ret[property_name] = self.Get(interface, property_name)
-        return ret
+        elif interface == 'org.freedesktop.DBus.Properties':
+            return {}
+        elif interface == 'org.freedesktop.DBus.Introspectable':
+            return {}
+        else:
+            raise Exception(
+                'org.mpris.MediaPlayer2.Lollypop',
+                'This object does not implement the %s interface'
+                % interface)
 
     def Set(self, interface, property_name, new_value):
         if property_name == 'Volume':
