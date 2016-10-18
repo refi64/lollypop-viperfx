@@ -71,8 +71,7 @@ class Server:
             else:
                 invocation.return_value(None)
         except Exception as e:
-            print("MPRISServer::on_method_call:", e, interface_name,
-                  method_name, args)
+            pass
 
 
 class MPRIS(Server):
