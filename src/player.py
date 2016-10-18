@@ -10,10 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
 from pickle import load
-from gettext import gettext as _
 
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
@@ -117,12 +116,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 if track.is_youtube and\
                         not Gio.NetworkMonitor.get_default(
                                                      ).get_network_available():
-                    if Lp().notify is not None:
-                        Lp().notify.send(_("No network available,"
-                                           " can't play this track"),
-                                         track.uri)
-                    # Force widgets to update (spinners)
-                    self.emit('current-changed')
+                    self._current_track = track
+                    self.set_next()
+                    GLib.idle_add(self.next)
                     return
                 # Do not update next if user clicked on a track
                 if self.is_party and track != self._next_track:
