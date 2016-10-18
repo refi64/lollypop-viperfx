@@ -547,8 +547,11 @@ class TracksDatabase:
             @return array of track ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  ORDER BY random() LIMIT 100")
+            result = sql.execute("SELECT tracks.rowid\
+                                  FROM tracks, track_genres\
+                                  WHERE track_genres.genre_id!=?\
+                                  AND track_genres.track_id=tracks.rowid\
+                                  ORDER BY random() LIMIT 100", (Type.CHARTS,))
             return list(itertools.chain(*result))
 
     def set_popularity(self, track_id, popularity, commit=False):
