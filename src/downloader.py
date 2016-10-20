@@ -328,7 +328,7 @@ class Downloader:
                         else:
                             InfoCache.add(artist, None, None, api)
                 except Exception as e:
-                    print("Downloader::__cache_artists_info():", e)
+                    print("Downloader::__cache_artists_info():", e, artist)
                     InfoCache.add(artist, None, None, api)
             if artwork_set:
                 GLib.idle_add(Lp().art.emit, 'artist-artwork-changed', artist)
