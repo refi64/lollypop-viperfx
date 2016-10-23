@@ -76,9 +76,11 @@ class AlbumRow(Gtk.ListBoxRow):
         row_widget.set_margin_end(self.__MARGIN)
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
-        self.__artist_label = Gtk.Label.new("<b>%s</b>" %
-                                            escape(", ".join(
-                                                        self.__album.artists)))
+        if self.__album.artists:
+            artists = escape(", ".join(self.__album.artists))
+        else:
+            artists = _("Compilation")
+        self.__artist_label = Gtk.Label.new("<b>%s</b>" % artists)
         self.__artist_label.set_use_markup(True)
         self.__artist_label.set_hexpand(True)
         self.__artist_label.set_property('halign', Gtk.Align.START)
