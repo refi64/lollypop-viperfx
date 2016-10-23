@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-11 14:10+0200\n"
+"POT-Creation-Date: 2016-10-23 13:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -540,7 +540,7 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/controllers.py:193
+#: ../src/controllers.py:195
 msgid "Volume"
 msgstr ""
 
@@ -569,7 +569,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player.py:121 ../src/player_queue.py:43 ../src/player_queue.py:66
+#: ../src/player_queue.py:43 ../src/player_queue.py:66
 msgid "No network available, can't play this track"
 msgstr ""
 
@@ -577,16 +577,20 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_albums.py:292
+#: ../src/pop_albums.py:82
+msgid "Compilation"
+msgstr ""
+
+#: ../src/pop_albums.py:294
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:302 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr ""
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:411
+#: ../src/pop_albums.py:303 ../src/toolbar_end.py:411
 msgid "Playing albums"
 msgstr ""
 
