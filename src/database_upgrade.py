@@ -250,9 +250,9 @@ class DatabaseUpgrade:
                             tmp_albums''')
             sql.execute("DROP TABLE tmp_albums")
             result = sql.execute("SELECT rowid, uri FROM albums")
-            for (rowid, uri) in list(itertools.chain(*result)):
+            for (rowid, uri) in result:
                 if uri.startswith("/"):
                     uri = GLib.filename_to_uri(uri)
-                    sql.execute("UPDATE tracks set uri=? WHERE rowid=?",
+                    sql.execute("UPDATE albums set uri=? WHERE rowid=?",
                                 (uri, rowid))
             sql.commit()
