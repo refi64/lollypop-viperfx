@@ -23,7 +23,6 @@ from pickle import dump
 from locale import getlocale
 from gettext import gettext as _
 from threading import Thread
-import os
 
 
 try:
@@ -68,8 +67,8 @@ class Application(Gtk.Application):
                             self,
                             application_id='org.gnome.Lollypop',
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
-        os.environ['PULSE_PROP_media.role'] = 'music'
-        os.environ['PULSE_PROP_application.icon_name'] = 'lollypop'
+        GLib.setenv('PULSE_PROP_media.role', 'music', True)
+        GLib.setenv('PULSE_PROP_application.icon_name', 'lollypop', True)
         self.cursors = {}
         self.window = None
         self.notify = None
@@ -321,7 +320,8 @@ class Application(Gtk.Application):
             h = settings.get_value('host').get_string()
             p = settings.get_value('port').get_int32()
             if h != '' and p != 0:
-                os.environ['HTTP_PROXY'] = "%s:%s" % (h, p)
+                GLib.setenv('http_proxy', "%s:%s" % (h, p), True)
+                GLib.setenv('https_proxy', "%s:%s" % (h, p), True)
         except:
             pass
 
