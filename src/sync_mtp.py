@@ -269,7 +269,7 @@ class MtpSync:
                     self.__in_thread = False
                     return
                 track = Track(track_id)
-                if not track.uri.startswith('file:'):
+                if track.uri.startswith('https:'):
                     continue
                 album_name = escape(track.album_name.lower())
                 is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
@@ -298,7 +298,6 @@ class MtpSync:
                         self.__retry(src_art.copy,
                                      (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
-
                 f = Gio.File.new_for_uri(track.uri)
                 track_name = f.get_basename()
                 # Check extension, if not mp3, convert
