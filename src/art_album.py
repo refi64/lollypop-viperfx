@@ -273,7 +273,7 @@ class AlbumArt(BaseArt, TagReader):
                 pixbuf.savev(store_path, "jpeg", ["quality"], ["90"])
                 dst = Gio.File.new_for_uri(arturi)
                 src = Gio.File.new_for_path(store_path)
-                src.move(dst)
+                src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
                 del pixbuf
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
