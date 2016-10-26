@@ -10,10 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Gio
 
 import sqlite3
-import os
 
 from lollypop.define import Lp
 from lollypop.objects import Album
@@ -27,7 +26,7 @@ class Database:
     """
         Base database object
     """
-    _LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    _LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
     DB_PATH = "%s/lollypop.db" % _LOCAL_PATH
 
     # SQLite documentation:
@@ -87,12 +86,14 @@ class Database:
         """
             Create database tables or manage update if needed
         """
-        if not os.path.exists(self.DB_PATH):
+        f = Gio.File.new_for_path(self.DB_PATH)
+        if not f.query_exists():
             db_version = Lp().settings.get_value('db-version').get_int32()
             upgrade = DatabaseUpgrade(db_version, self)
             try:
-                if not os.path.exists(self._LOCAL_PATH):
-                    os.mkdir(self._LOCAL_PATH)
+                d = Gio.File.new_for_path(self._LOCAL_PATH)
+                if not d.query_exists():
+                    d.make_directory_with_parents()
                 # Create db schema
                 with SqlCursor(self) as sql:
                     sql.execute(self.__create_albums)
@@ -119,7 +120,8 @@ class Database:
         """
         db_version = Lp().settings.get_value('db-version').get_int32()
         upgrade = DatabaseUpgrade(db_version, self)
-        if os.path.exists(self.DB_PATH):
+        f = Gio.File.new_for_path(self.DB_PATH)
+        if not f.query_exists():
             upgrade.do_db_upgrade()
             Lp().settings.set_value('db-version',
                                     GLib.Variant('i', upgrade.count()))
