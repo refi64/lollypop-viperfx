@@ -10,12 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
 from gettext import gettext as _
 from threading import Thread
 import unicodedata
-import os
 import socket
 import fcntl
 import struct
@@ -69,14 +68,14 @@ def is_unity():
     """
         Return True if desktop is Unity
     """
-    return os.environ.get("XDG_CURRENT_DESKTOP") == "Unity"
+    return GLib.getenv("XDG_CURRENT_DESKTOP") == "Unity"
 
 
 def is_gnome():
     """
         Return True if desktop is Gnome
     """
-    return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
+    return GLib.getenv("XDG_CURRENT_DESKTOP") == "GNOME"
 
 
 def is_audio(f):

@@ -12,8 +12,8 @@
 
 from gi.repository import GLib, Gio, Gst
 
-import os.path
 from time import sleep
+from re import match
 
 from lollypop.utils import escape
 from lollypop.define import Lp, Type
@@ -302,7 +302,8 @@ class MtpSync:
                 f = Gio.File.new_for_uri(track.uri)
                 track_name = f.get_basename()
                 # Check extension, if not mp3, convert
-                ext = os.path.splitext(track.uri)[1]
+                m = match('.*(\.[^.]*)', track.uri)
+                ext = m.group(1)
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
                     track_name = track_name.replace(ext, ".mp3")
@@ -411,7 +412,8 @@ class MtpSync:
             f = Gio.File.new_for_uri(track.uri)
             track_name = f.get_basename()
             # Check extension, if not mp3, convert
-            ext = os.path.splitext(track.uri)[1]
+            m = match('.*(\.[^.]*)', track.uri)
+            ext = m.group(1)
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
             on_disk = Gio.File.new_for_uri(track.uri)

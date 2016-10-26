@@ -12,7 +12,6 @@
 
 from gi.repository import GObject, GLib
 
-import os
 from gettext import gettext as _
 import itertools
 import sqlite3
@@ -28,7 +27,7 @@ class Playlists(GObject.GObject):
     """
         Playlists manager
     """
-    _LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    _LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
     _DB_PATH = "%s/playlists.db" % _LOCAL_PATH
     __gsignals__ = {
         # Add or remove a playlist
