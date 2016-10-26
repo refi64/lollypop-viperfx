@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
-from shutil import which
 from threading import Thread
 import re
 
@@ -239,7 +238,7 @@ class AlbumArt(BaseArt, TagReader):
         try:
             arturi = None
             save_to_tags = Lp().settings.get_value('save-to-tags') and\
-                which("kid3-cli") is not None
+                GLib.find_program_in_path("kid3-cli") is not None
             album = Album(album_id)
 
             uri_count = Lp().albums.get_uri_count(album.uri)
@@ -302,7 +301,7 @@ class AlbumArt(BaseArt, TagReader):
                 except:
                     f.delete(None)
             if Lp().settings.get_value('save-to-tags') and\
-                    which("kid3-cli") is not None:
+                    GLib.find_program_in_path("kid3-cli") is not None:
                 argv = ["kid3-cli", "-c", "select all", "-c",
                         "set picture:'' ''"]
                 for uri in Lp().albums.get_track_uris(album.id, [], []):

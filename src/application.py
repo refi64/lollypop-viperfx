@@ -204,8 +204,7 @@ class Application(Gtk.Application):
             self.inhibitor = Inhibitor()
             self.charts = None
             if self.settings.get_value('network-search'):
-                from shutil import which
-                if which("youtube-dl") is not None:
+                if GLib.find_program_in_path("youtube-dl") is not None:
                     from lollypop.charts import Charts
                     self.charts = Charts()
                     self.charts.update()

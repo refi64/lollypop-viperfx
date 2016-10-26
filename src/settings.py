@@ -20,7 +20,6 @@ except:
 from gettext import gettext as _
 from gettext import ngettext as ngettext
 from threading import Thread
-from shutil import which
 from re import findall, DOTALL
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
@@ -135,7 +134,7 @@ class SettingsDialog:
         switch_librefm.set_state(Lp().settings.get_value('use-librefm'))
 
         switch_artwork_tags = builder.get_object('switch_artwork_tags')
-        if which("kid3-cli") is None:
+        if GLib.find_program_in_path("kid3-cli") is None:
             grid = builder.get_object('grid_behaviour')
             h = grid.child_get_property(switch_artwork_tags, 'height')
             w = grid.child_get_property(switch_artwork_tags, 'width')

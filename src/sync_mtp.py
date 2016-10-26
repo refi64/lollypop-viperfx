@@ -397,7 +397,7 @@ class MtpSync:
                 self.__in_thread = False
                 return
             track = Track(track_id)
-            if not track.uri.startswith('file:'):
+            if track.uri.startswith('https:'):
                 continue
             album_name = escape(track.album_name.lower())
             if track.album.artist_ids[0] == Type.COMPILATIONS:
@@ -422,7 +422,7 @@ class MtpSync:
             # Prefix track with mtime to make sure updating it later
             mtime = info.get_attribute_as_string('time::modified')
             dst_uri = "%s/%s_%s" % (on_device_album_uri, mtime, track_name)
-            track_uris.append(dst_uri)
+            track_uris.append(GLib.uri_escape_string(dst_uri), "", False)
 
         on_mtp_files = self.__get_track_files()
 

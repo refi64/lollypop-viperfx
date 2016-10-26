@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib, Gio, Gdk, GdkPixbuf
 from gettext import gettext as _
 from cgi import escape
 from threading import Thread
-from shutil import which
 
 from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
@@ -285,7 +284,7 @@ class SearchPopover(Gtk.Popover):
         self.__stack = builder.get_object('stack')
 
         switch = builder.get_object('search-switch')
-        if which("youtube-dl") is None:
+        if GLib.find_program_in_path("youtube-dl") is None:
             switch.set_sensitive(False)
             switch.set_tooltip_text(_("You need to install youtube-dl"))
         else:
@@ -528,7 +527,7 @@ class SearchPopover(Gtk.Popover):
             @return True
         """
         return Lp().settings.get_value('network-search') and\
-            which("youtube-dl") is not None
+            GLib.find_program_in_path("youtube-dl") is not None
 
     def __on_local_item_found(self, search):
         """
