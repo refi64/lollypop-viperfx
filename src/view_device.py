@@ -46,7 +46,7 @@ class DeviceView(View):
             @return bool
         """
         d = Gio.File.new_for_uri(uri+"/Music/lollypop/tracks")
-        return d.query_exists(None)
+        return d.query_exists()
 
     def get_files(uri):
         """
@@ -57,7 +57,7 @@ class DeviceView(View):
         files = []
         try:
             d = Gio.File.new_for_uri(uri)
-            if not d.query_exists(None):
+            if not d.query_exists():
                 d.make_directory_with_parents(None)
             infos = d.enumerate_children(
                 'standard::name,standard::type',
@@ -70,7 +70,7 @@ class DeviceView(View):
                 # We look to this folder to select an already synced uri
                 suburi = f.get_uri() + "/Music/unsync"
                 sub = Gio.File.new_for_uri(suburi)
-                if sub.query_exists(None):
+                if sub.query_exists():
                     files.insert(0, info.get_name())
                 else:
                     files.append(info.get_name())

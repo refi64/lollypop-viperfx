@@ -124,7 +124,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._uri = uri
         d = Gio.File.new_for_uri(uri)
         try:
-            if not d.query_exists(None):
+            if not d.query_exists():
                 d.make_directory_with_parents(None)
         except:
             pass
@@ -300,7 +300,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
             playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
                                                 playlist_name + '.m3u')
-            selected = playlist_obj.query_exists(None)
+            selected = playlist_obj.query_exists()
             self.__model.append([selected, playlist[1], playlist[0]])
             GLib.idle_add(self.__append_playlists, playlists)
 

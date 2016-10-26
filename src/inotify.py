@@ -69,7 +69,7 @@ class Inotify:
         else:
             uri = changed_file.get_uri()
             d = Gio.File.new_for_uri(uri)
-            if d.query_exists(None):
+            if d.query_exists():
                 # If a directory, monitor it
                 if changed_file.query_file_type(
                                             Gio.FileQueryInfoFlags.NONE,

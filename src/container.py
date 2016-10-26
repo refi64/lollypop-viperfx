@@ -248,10 +248,10 @@ class Container:
         dev.name = "Android phone"
         dev.uri = "file:///tmp/android/"
         d = Gio.File.new_for_uri(dev.uri+"Internal Memory")
-        if not d.query_exists(None):
+        if not d.query_exists():
             d.make_directory_with_parents(None)
         d = Gio.File.new_for_uri(dev.uri+"SD Card")
-        if not d.query_exists(None):
+        if not d.query_exists():
             d.make_directory_with_parents(None)
         self.__devices[self.__devices_index] = dev
 

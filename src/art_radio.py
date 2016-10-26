@@ -29,7 +29,7 @@ class RadioArt(BaseArt):
         """
         BaseArt.__init__(self)
         d = Gio.File.new_for_path(self._RADIOS_PATH)
-        if not d.query_exists(None):
+        if not d.query_exists():
             try:
                 d.make_directory_with_parents(None)
             except Exception as e:
@@ -48,11 +48,11 @@ class RadioArt(BaseArt):
                                                filename,
                                                size)
             f = Gio.File.new_for_path(cache_path_png)
-            if f.query_exists(None):
+            if f.query_exists():
                 return cache_path_png
             else:
                 self.get_radio_artwork(name, size, 1)
-                if f.query_exists(None):
+                if f.query_exists():
                     return cache_path_png
                 else:
                     return self._get_default_icon_path(
@@ -78,7 +78,7 @@ class RadioArt(BaseArt):
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_png)
-            if f.query_exists(None):
+            if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
                                                                 size,
                                                                 size)
@@ -186,7 +186,7 @@ class RadioArt(BaseArt):
         try:
             name = name.replace('/', '-')
             f = Gio.File.new_for_path(self._RADIOS_PATH + "/" + name + ".png")
-            if f.query_exists(None):
+            if f.query_exists():
                 return self._RADIOS_PATH + "/" + name + ".png"
             return None
         except Exception as e:

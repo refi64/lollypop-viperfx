@@ -60,7 +60,7 @@ class BaseArt(GObject.GObject):
         try:
             filepath = self._STORE_PATH + "/" + filename + ".jpg"
             f = Gio.File.new_for_path(filepath)
-            if f.query_exists(None):
+            if f.query_exists():
                 f.delete()
         except Exception as e:
             print("Art::clean_store()", e)
@@ -78,7 +78,7 @@ class BaseArt(GObject.GObject):
             # First look in cache
             cache_path_jpg = self._get_default_icon_path(size, icon_name)
             f = Gio.File.new_for_path(cache_path_jpg)
-            if f.query_exists(None):
+            if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                                                                 cache_path_jpg,
                                                                 size,
@@ -152,7 +152,7 @@ class BaseArt(GObject.GObject):
             Create store dir
         """
         d = Gio.File.new_for_path(self._STORE_PATH)
-        if not d.query_exists(None):
+        if not d.query_exists():
             try:
                 d.make_directory_with_parents(None)
             except:
@@ -163,7 +163,7 @@ class BaseArt(GObject.GObject):
             Create cache dir
         """
         d = Gio.File.new_for_path(self._CACHE_PATH)
-        if not d.query_exists(None):
+        if not d.query_exists():
             try:
                 d.make_directory_with_parents(None)
             except:

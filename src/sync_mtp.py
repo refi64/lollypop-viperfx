@@ -132,7 +132,7 @@ class MtpSync:
                     self.__retry(d.delete, (None,))
 
             d = Gio.File.new_for_uri(self._uri+"/unsync")
-            if not d.query_exists(None):
+            if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
@@ -208,7 +208,7 @@ class MtpSync:
         children = []
         dir_uris = [self._uri]
         d = Gio.File.new_for_uri(self._uri)
-        if not d.query_exists(None):
+        if not d.query_exists():
             self.__retry(d.make_directory_with_parents, (None,))
         while dir_uris:
             try:
@@ -285,7 +285,7 @@ class MtpSync:
                                            album_name)
 
                 d = Gio.File.new_for_uri(on_device_album_uri)
-                if not d.query_exists(None):
+                if not d.query_exists():
                     self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
                 art = Lp().art.get_album_artwork_uri(track.album)
@@ -294,7 +294,7 @@ class MtpSync:
                     art_uri = "%s/cover.jpg" % on_device_album_uri
                     self.__copied_art_uris.append(art_uri)
                     dst_art = Gio.File.new_for_uri(art_uri)
-                    if not dst_art.query_exists(None):
+                    if not dst_art.query_exists():
                         self.__retry(src_art.copy,
                                      (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
@@ -331,7 +331,7 @@ class MtpSync:
                     self.__retry(stream.get_output_stream().write,
                                  (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
-                if not dst_track.query_exists(None):
+                if not dst_track.query_exists():
                     if convertion_needed:
                         mp3_uri = "file:///tmp/%s" % track_name
                         mp3_file = Gio.File.new_for_uri(mp3_uri)
