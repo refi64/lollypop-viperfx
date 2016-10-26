@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
 
 import os
 
@@ -124,13 +124,17 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
-    def _respect_ratio(self, path):
+    def _respect_ratio(self, uri):
         """
             Check for aspect ratio based on size
-            @param path as str
+            @param uri as str
             @return respect aspect ratio as bool
         """
-        cover = GdkPixbuf.Pixbuf.new_from_file(path)
+        f = Gio.File.new_for_uri(uri)
+        (status, data, tag) = f.load_contents(None)
+        stream = Gio.MemoryInputStream.new_from_data(data,
+                                                     None)
+        cover = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
         cover_width = cover.get_width()
         cover_height = cover.get_height()
         del cover

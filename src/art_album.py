@@ -66,30 +66,31 @@ class AlbumArt(BaseArt, TagReader):
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_album_artwork_path(self, album):
+    def get_album_artwork_uri(self, album):
         """
             Look for artwork in dir:
             - favorite from settings first
             - Artist_Album.jpg then
             - Any any supported image otherwise
             @param album as Album
-            @return cover file path as string
+            @return cover uri as string
         """
         if album.id is None:
             return None
         try:
             filename = self.get_album_cache_name(album) + ".jpg"
-            paths = [
-                # Used when album.path is readonly
-                os.path.join(self._STORE_PATH, filename),
+            uris = [
+                # Used when album.uri is readonly
+                GLib.filename_to_uri(self._STORE_PATH + "/" + filename),
                 # Default favorite artwork
-                os.path.join(album.path, self.__favorite),
+                album.uri + "/" + self.__favorite,
                 # Used when having muliple albums in same folder
-                os.path.join(album.path, filename),
+                album.uri + "/" + filename
             ]
-            for path in paths:
-                if os.path.exists(path):
-                    return path
+            for uri in uris:
+                f = Gio.File.new_for_uri(uri)
+                if f.query_exists(None):
+                    return uri
         except:
             pass
         return None
@@ -100,11 +101,16 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
             @return path or None
         """
-        all_paths = [os.path.join(album.path, f) for f in os.listdir(
-                                                                album.path)]
-        for path in filter(lambda p: p.lower().endswith(self._MIMES),
-                           all_paths):
-            return path
+        f = Gio.File.new_for_uri(album.uri)
+        infos = f.enumerate_children('standard::name',
+                                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                                     None)
+        all_uris = []
+        for info in infos:
+            f = infos.get_child(info)
+            all_uris.append(f.get_uri())
+        for uri in filter(lambda p: p.lower().endswith(self._MIMES), all_uris):
+            return uri
 
     def get_album_artworks(self, album):
         """
@@ -114,13 +120,19 @@ class AlbumArt(BaseArt, TagReader):
         """
         if album.is_youtube:
             return []
-        all_paths = [os.path.join(album.path, f) for f in os.listdir(
-                                                                album.path)]
-        paths = []
-        for path in filter(lambda p: p.lower().endswith(self._MIMES),
-                           all_paths):
-            paths.append(path)
-        return paths
+
+        f = Gio.File.new_for_uri(album.uri)
+        infos = f.enumerate_children('standard::name',
+                                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                                     None)
+        all_uris = []
+        for info in infos:
+            f = infos.get_child(info)
+            all_uris.append(f.get_uri())
+        uris = []
+        for uri in filter(lambda p: p.lower().endswith(self._MIMES), all_uris):
+            uris.append(uri)
+        return uris
 
     def get_album_artwork(self, album, size, scale):
         """
@@ -144,14 +156,20 @@ class AlbumArt(BaseArt, TagReader):
             else:
                 # Use favorite folder artwork
                 if pixbuf is None:
-                    path = self.get_album_artwork_path(album)
-                    # Look in album folder
-                    if path is not None:
-                        ratio = self._respect_ratio(path)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
-                                                                         size,
-                                                                         size,
-                                                                         ratio)
+                    uri = self.get_album_artwork_uri(album)
+                    data = None
+                    if uri is not None:
+                        f = Gio.File.new_for_uri(uri)
+                        (status, data, tag) = f.load_contents(None)
+                        ratio = self._respect_ratio(uri)
+                        stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                     None)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                                       stream,
+                                                                       size,
+                                                                       size,
+                                                                       ratio,
+                                                                       None)
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
                     try:
@@ -161,15 +179,21 @@ class AlbumArt(BaseArt, TagReader):
                         pass
 
                 # Use folder artwork
-                if pixbuf is None and album.path != "":
-                    path = self.get_first_album_artwork(album)
+                if pixbuf is None and album.uri != "":
+                    uri = self.get_first_album_artwork(album)
                     # Look in album folder
-                    if path is not None:
-                        ratio = self._respect_ratio(path)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
-                                                                         size,
-                                                                         size,
-                                                                         ratio)
+                    if uri is not None:
+                        f = Gio.File.new_for_uri(uri)
+                        (status, data, tag) = f.load_contents(None)
+                        ratio = self._respect_ratio(uri)
+                        stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                     None)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                                       stream,
+                                                                       size,
+                                                                       size,
+                                                                       ratio,
+                                                                       None)
                 # Use default artwork
                 if pixbuf is None:
                     self.cache_album_art(album.id)

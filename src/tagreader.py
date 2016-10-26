@@ -385,6 +385,10 @@ class TagReader(Discoverer):
         """
         f = Gio.File.new_for_uri(uri)
         d = f.get_parent()
+        if d is not None:
+            parent_uri = d.get_uri()
+        else:
+            parent_uri = ""
         new = False
         if artist_ids:
             album_id = Lp().albums.get_non_compilation_id(album_name,
@@ -394,10 +398,10 @@ class TagReader(Discoverer):
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids,
-                                       d.get_uri(), popularity, mtime)
+                                       parent_uri, popularity, mtime)
         # Now we have our album id, check if path doesn't change
-        if Lp().albums.get_uri(album_id) != d.get_uri():
-            Lp().albums.set_uri(album_id, d.get_uri())
+        if Lp().albums.get_uri(album_id) != parent_uri:
+            Lp().albums.set_uri(album_id, parent_uri)
 
         return (album_id, new)
 

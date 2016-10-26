@@ -288,9 +288,9 @@ class MtpSync:
                 if not d.query_exists(None):
                     self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
-                art = Lp().art.get_album_artwork_path(track.album)
+                art = Lp().art.get_album_artwork_uri(track.album)
                 if art is not None:
-                    src_art = Gio.File.new_for_path(art)
+                    src_art = Gio.File.new_for_uri(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
                     self.__copied_art_uris.append(art_uri)
                     dst_art = Gio.File.new_for_uri(art_uri)
