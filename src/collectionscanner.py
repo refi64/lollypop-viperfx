@@ -92,8 +92,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         tracks = []
         ignore_dirs = []
         track_dirs = list(uris)
-        while uris:
-            uri = uris.pop(0)
+        walk_uris = list(uris)
+        while walk_uris:
+            uri = walk_uris.pop(0)
             empty = True
             d = Gio.File.new_for_uri(uri)
             infos = d.enumerate_children(
@@ -106,7 +107,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 empty = False
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
                     track_dirs.append(child_uri)
-                    uris.append(child_uri)
+                    walk_uris.append(child_uri)
                 else:
                     try:
                         f = Gio.File.new_for_uri(child_uri)
@@ -119,9 +120,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                     except Exception as e:
                         print("CollectionScanner::"
                               "__get_objects_for_uris():", e)
-            # If an uri is empty
+            # If a root uri is empty
             # Ensure user is not doing something bad
-            if empty:
+            if empty and uri in uris:
                 ignore_dirs.append(uri)
         return (tracks, track_dirs, ignore_dirs)
 
@@ -164,7 +165,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         count = len(new_tracks) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:
-            for d in new_dirs + uris:
+            for d in new_dirs:
                 self.__inotify.add_monitor(d)
 
         with SqlCursor(Lp().db) as sql:
