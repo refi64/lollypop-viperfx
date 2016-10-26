@@ -14,7 +14,6 @@ from gi.repository import Gtk, GLib, Gio, GObject, Pango
 
 from gettext import gettext as _
 from threading import Thread
-from cgi import escape
 
 from lollypop.sync_mtp import MtpSync
 from lollypop.sqlcursor import SqlCursor
@@ -315,12 +314,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             # Do not sync youtube albums
             if synced != Type.NONE:
                 if album.artist_ids[0] == Type.COMPILATIONS:
-                    name = escape(album.name)
+                    name = GLib.markup_escape_text(album.name)
                 else:
                     artists = ", ".join(album.artists)
                     name = "<b>%s</b> - %s" % (
-                            escape(artists),
-                            escape(album.name))
+                            GLib.markup_escape_text(artists),
+                            GLib.markup_escape_text(album.name))
                 self.__model.append([synced, name, album.id])
             GLib.idle_add(self.__append_albums, albums)
 

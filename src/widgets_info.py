@@ -13,7 +13,6 @@
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio
 
 from threading import Thread
-from cgi import escape
 
 try:
     from lollypop.wikipedia import Wikipedia
@@ -133,7 +132,8 @@ class InfoContent(Gtk.Stack):
             @param data as Gio.MemoryInputStream
         """
         if content is not None:
-            self.__content.set_markup(escape(content.decode('utf-8')))
+            self.__content.set_markup(
+                              GLib.markup_escape_text(content.decode('utf-8')))
             if stream is not None:
                 scale = self.__image.get_scale_factor()
                 # Will happen if cache is broken or when reading empty files

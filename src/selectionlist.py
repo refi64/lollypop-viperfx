@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
-from cgi import escape
 from gettext import gettext as _
 from locale import strcoll
 
@@ -363,7 +362,7 @@ class SelectionList(Gtk.Bin):
                 layout.set_width(Pango.units_from_double(width))
                 layout.set_text(text, -1)
                 if layout.is_ellipsized():
-                    tooltip.set_markup(escape(text))
+                    tooltip.set_markup(GLib.markup_escape_text(text))
                     return True
         return False
 

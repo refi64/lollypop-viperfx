@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Gio, Gdk, GdkPixbuf
 
 from gettext import gettext as _
-from cgi import escape
 from threading import Thread
 
 from lollypop.define import Lp, ArtSize, Type, DbPersistent
@@ -240,8 +239,8 @@ class SearchRow(Gtk.ListBoxRow):
         layout_title = self.__name.get_layout()
         layout_artist = self.__artist.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
-            artist = escape(self.__artist.get_text())
-            title = escape(self.__name.get_text())
+            artist = GLib.markup_escape_text(self.__artist.get_text())
+            title = GLib.markup_escape_text(self.__name.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
             self.set_tooltip_text('')

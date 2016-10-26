@@ -11,7 +11,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, GLib, Gdk, Pango, GObject
-from cgi import escape
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
@@ -124,17 +123,18 @@ class QueueRow(Gtk.ListBoxRow):
         """
         track = Track(self.__id)
         self.__artist_label.set_markup(
-                                 "<b>"+escape(
+                                 "<b>" + GLib.markup_escape_text(
                                         ", ".join(track.album.artists))+"</b>")
         self.__album_label.set_text(track.album.name)
         # If we are listening to a compilation, prepend artist name
-        title = escape(track.name)
+        title = GLib.markup_escape_text(track.name)
         if track.album.artist_id == Type.COMPILATIONS or\
            len(track.artist_ids) > 1 or\
            track.album.artist_id not in track.artist_ids:
             if track.artist_names != track.album.artist_name:
-                title = "<b>%s</b>\n%s" % (escape(track.artist_names),
-                                           title)
+                title = "<b>%s</b>\n%s" % (
+                                   GLib.markup_escape_text(track.artist_names),
+                                   title)
         self.__title_label.set_markup(title)
 
     def set_cover(self, surface):
@@ -233,8 +233,8 @@ class QueueRow(Gtk.ListBoxRow):
         layout_title = self._title.get_layout()
         layout_artist = self._artist.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
-            artist = escape(self._artist.get_text())
-            title = escape(self._title.get_text())
+            artist = GLib.markup_escape_text(self._artist.get_text())
+            title = GLib.markup_escape_text(self._title.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
             self.set_tooltip_text('')

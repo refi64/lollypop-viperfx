@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, NextContext, Type
@@ -420,7 +419,10 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.__title_label = Gtk.Label()
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label.set_property('halign', Gtk.Align.CENTER)
-        self.__title_label.set_markup("<b>"+escape(self._album.name)+"</b>")
+        self.__title_label.set_markup("<b>" +
+                                      GLib.markup_escape_text(
+                                                            self._album.name) +
+                                      "</b>")
         self.__artist_label = Gtk.Label()
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__artist_label.set_property('halign', Gtk.Align.CENTER)
@@ -603,10 +605,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                 artist_text = self.__artist_label.get_text()
                 if artist_text:
                     text = "<b>%s</b> - %s" % (
-                                        escape(artist_text),
-                                        escape(self.__title_label.get_text()))
+                        GLib.markup_escape_text(artist_text),
+                        GLib.markup_escape_text(self.__title_label.get_text()))
                 else:
-                    text = escape(self.__title_label.get_text())
+                    text = GLib.markup_escape_text(
+                                                 self.__title_label.get_text())
                 eventbox.set_tooltip_markup(text)
                 break
 

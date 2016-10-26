@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
 from threading import Thread
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type, WindowSize, Loading
@@ -334,7 +333,7 @@ class PlaylistsWidget(Gtk.Grid):
                 break
         src_track = Track(src)
         prev_track = Track()
-        name = escape(src_track.name)
+        name = GLib.markup_escape_text(src_track.name)
         index = 0
         # Get previous track
         if dst != -1:
@@ -353,8 +352,9 @@ class PlaylistsWidget(Gtk.Grid):
             if (src_track.album.artist_id == Type.COMPILATIONS or
                     len(src_track.artist_ids) > 1 or
                     src_track.album.artist_id not in src_track.artist_ids):
-                name = "<b>%s</b>\n%s" % (escape(", ".join(src_track.artists)),
-                                          name)
+                name = "<b>%s</b>\n%s" % (
+                         GLib.markup_escape_text(", ".join(src_track.artists)),
+                         name)
             self.__tracks_left.insert(index, src_track.id)
         row = PlaylistRow(src_track.id,
                           index,
@@ -927,8 +927,8 @@ class PlaylistEditWidget(Gtk.Bin):
                 artists = ", ".join(track.album.artists)
             self.__model.append([track.album.id,
                                 "<b>%s</b>\n%s" % (
-                                   escape(artists),
-                                   escape(track.name)),
+                                   GLib.markup_escape_text(artists),
+                                   GLib.markup_escape_text(track.name)),
                                  'user-trash-symbolic', track.id])
             GLib.idle_add(self.__append_track, track_ids)
         else:

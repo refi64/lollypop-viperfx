@@ -11,7 +11,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gdk, GLib
-from cgi import escape
 
 from lollypop.controllers import InfosController
 from lollypop.define import Lp, Type, ArtSize
@@ -222,8 +221,8 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         layout_title = self._title_label.get_layout()
         layout_artist = self._artist_label.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
-            artist = escape(self._artist_label.get_text())
-            title = escape(self._title_label.get_text())
+            artist = GLib.markup_escape_text(self._artist_label.get_text())
+            title = GLib.markup_escape_text(self._title_label.get_text())
             tooltip.set_markup("<b>%s</b> - %s" % (artist, title))
         else:
             return False

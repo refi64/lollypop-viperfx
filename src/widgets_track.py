@@ -12,8 +12,6 @@
 
 from gi.repository import GObject, Gtk, Gdk, Pango, GLib, Gst
 
-from cgi import escape
-
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
@@ -56,7 +54,7 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property('halign', Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         if self._track.non_album_artists:
-            self._artists_label = Gtk.Label.new(escape(
+            self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
                                      ", ".join(self._track.non_album_artists)))
             self._artists_label.set_use_markup(True)
             self._artists_label.set_property('has-tooltip', True)
@@ -289,7 +287,7 @@ class Row(Gtk.ListBoxRow):
         layout = widget.get_layout()
         label = widget.get_text()
         if layout.is_ellipsized():
-            text = "%s" % (escape(label))
+            text = "%s" % (GLib.markup_escape_text(label))
         widget.set_tooltip_markup(text)
 
 
@@ -339,7 +337,8 @@ class PlaylistRow(Row):
             self.__album_artist_label = Gtk.Label()
             self.__album_artist_label.set_markup(
                                  "<b>" +
-                                 escape(", ".join(self._track.album.artists)) +
+                                 GLib.markup_escape_text(
+                                       ", ".join(self._track.album.artists)) +
                                  "</b>")
             self.__album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
             self.__album_artist_label.get_style_context().add_class(
