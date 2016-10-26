@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
-import os
 from shutil import which
 from threading import Thread
 
@@ -52,11 +51,12 @@ class AlbumArt(BaseArt, TagReader):
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            if os.path.exists(cache_path_jpg):
+            f = Gio.File.new_for_path(cache_path_jpg)
+            if f.query_exists(None):
                 return cache_path_jpg
             else:
                 self.get_album_artwork(album, size, 1)
-                if os.path.exists(cache_path_jpg):
+                if f.query_exists(None):
                     return cache_path_jpg
                 else:
                     return self._get_default_icon_path(
@@ -149,7 +149,8 @@ class AlbumArt(BaseArt, TagReader):
 
         try:
             # Look in cache
-            if os.path.exists(cache_path_jpg):
+            f = Gio.File.new_for_path(cache_path_jpg)
+            if f.query_exists(None):
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
                                                                 size,
                                                                 size)
@@ -406,6 +407,7 @@ class AlbumArt(BaseArt, TagReader):
             argv.append(None)
             GLib.spawn_sync(None, argv, None,
                             GLib.SpawnFlags.SEARCH_PATH, None)
-            os.remove("/tmp/lollypop_cover_tags.jpg")
+            f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
+            f.delete()
             self.clean_album_cache(album)
             GLib.idle_add(self.album_artwork_update, album.id)
