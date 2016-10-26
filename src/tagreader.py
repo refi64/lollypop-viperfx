@@ -10,9 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstPbutils
-
-import os
+from gi.repository import Gst, GstPbutils, GLib
 
 from re import match
 
@@ -70,10 +68,10 @@ class TagReader(Discoverer):
             @return title as string
         """
         if tags is None:
-            return os.path.basename(filepath)
+            return GLib.path_get_basename(filepath)
         (exists, title) = tags.get_string_index('title', 0)
         if not exists:
-            title = os.path.basename(filepath)
+            title = GLib.path_get_basename(filepath)
         return title
 
     def get_artists(self, tags):
@@ -385,7 +383,7 @@ class TagReader(Discoverer):
             @return (album id as int, new as bool)
             @commit needed
         """
-        path = os.path.dirname(filepath)
+        path = GLib.path_get_dirname(filepath)
         new = False
         if artist_ids:
             album_id = Lp().albums.get_non_compilation_id(album_name,

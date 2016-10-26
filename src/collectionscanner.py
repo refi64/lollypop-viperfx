@@ -240,10 +240,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
-        tracknumber = self.get_tracknumber(tags, GLib.basename(path))
+        name = GLib.path_get_basename(path)
+        tracknumber = self.get_tracknumber(tags, name)
         year = self.get_year(tags)
         duration = int(info.get_duration()/1000000000)
-        name = GLib.path_get_basename(path)
 
         # If no artists tag, use album artist
         if artists == '':

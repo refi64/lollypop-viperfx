@@ -298,7 +298,7 @@ class MtpSync:
                                       None, None))
 
                 filepath = GLib.filename_from_uri(track.uri)[0]
-                track_name = escape(GLib.basename(filepath))
+                track_name = escape(GLib.path_get_basename(filepath))
                 # Check extension, if not mp3, convert
                 ext = os.path.splitext(filepath)[1]
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
@@ -407,7 +407,7 @@ class MtpSync:
                                                     artists,
                                                     album_name)
             filepath = GLib.filename_from_uri(track.uri)[0]
-            track_name = escape(GLib.basename(filepath))
+            track_name = escape(GLib.path_get_basename(filepath))
             # Check extension, if not mp3, convert
             ext = os.path.splitext(filepath)[1]
             if ext != ".mp3" and self.__convert:
