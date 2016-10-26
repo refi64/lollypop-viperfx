@@ -85,10 +85,10 @@ class ArtworkSearch(Gtk.Bin):
 
         # First load local files
         if self.__album is not None:
-            paths = Lp().art.get_album_artworks(self.__album)
-            for path in paths:
+            uris = Lp().art.get_album_artworks(self.__album)
+            for uri in uris:
                 try:
-                    f = Gio.File.new_for_path(path)
+                    f = Gio.File.new_for_uri(uri)
                     (status, data, tag) = f.load_contents()
                     self.__add_pixbuf(data)
                 except Exception as e:
