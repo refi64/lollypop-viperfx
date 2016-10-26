@@ -39,7 +39,7 @@ class Database:
                                               name TEXT NOT NULL,
                                               no_album_artist BOOLEAN NOT NULL,
                                               year INT,
-                                              path TEXT NOT NULL,
+                                              uri TEXT NOT NULL,
                                               popularity INT NOT NULL,
                                               synced INT NOT NULL,
                                               mtime INT NOT NULL)'''

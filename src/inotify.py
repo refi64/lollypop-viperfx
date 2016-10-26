@@ -12,8 +12,6 @@
 
 from gi.repository import Gio, GLib
 
-import os
-
 from lollypop.define import Lp
 from lollypop.utils import is_audio
 
@@ -32,23 +30,23 @@ class Inotify:
         self.__monitors = {}
         self.__timeout = None
 
-    def add_monitor(self, path):
+    def add_monitor(self, uri):
         """
-            Add a monitor for path
-            @param path as string
+            Add a monitor for uri
+            @param uri as string
         """
-        # Check if there is already a monitor for this path
-        if path in self.__monitors.keys():
+        # Check if there is already a monitor for this uri
+        if uri in self.__monitors.keys():
             return
         try:
-            f = Gio.File.new_for_path(path)
+            f = Gio.File.new_for_uri(uri)
             monitor = f.monitor_directory(Gio.FileMonitorFlags.NONE,
                                           None)
             if monitor is not None:
                 monitor.connect('changed', self.__on_dir_changed)
-                self.__monitors[path] = monitor
-        except:
-            pass
+                self.__monitors[uri] = monitor
+        except Exception as e:
+            print("Inotify::add_monitor():", e)
 
 #######################
 # PRIVATE             #
@@ -69,13 +67,14 @@ class Inotify:
                              event)
         # Run update delayed
         else:
-            path = changed_file.get_path()
-            # If a directory, monitor it
-            if os.path.exists(path):
+            uri = changed_file.get_uri()
+            d = Gio.File.new_for_uri(uri)
+            if d.query_exists(None):
+                # If a directory, monitor it
                 if changed_file.query_file_type(
                                             Gio.FileQueryInfoFlags.NONE,
                                             None) == Gio.FileType.DIRECTORY:
-                    self.add_monitor(path)
+                    self.add_monitor(uri)
                 # If not an audio file, exit
                 elif is_audio(changed_file):
                     update = True

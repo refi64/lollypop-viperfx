@@ -66,8 +66,9 @@ class DeviceView(View):
             for info in infos:
                 if info.get_file_type() != Gio.FileType.DIRECTORY:
                     continue
-                # We look to this folder to select an already synced path
-                suburi = uri + "/" + info.get_name() + "/Music/unsync"
+                f = infos.get_child(info)
+                # We look to this folder to select an already synced uri
+                suburi = f.get_uri() + "/Music/unsync"
                 sub = Gio.File.new_for_uri(suburi)
                 if sub.query_exists(None):
                     files.insert(0, info.get_name())

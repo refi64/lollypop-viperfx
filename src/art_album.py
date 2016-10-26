@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
-import re
 import os
 from shutil import which
 from threading import Thread
@@ -212,12 +211,12 @@ class AlbumArt(BaseArt, TagReader):
             @param album id as int
         """
         try:
-            artpath = None
+            arturi = None
             save_to_tags = Lp().settings.get_value('save-to-tags') and\
                 which("kid3-cli") is not None
             album = Album(album_id)
 
-            path_count = Lp().albums.get_path_count(album.path)
+            uri_count = Lp().albums.get_uri_count(album.uri)
             filename = self.get_album_cache_name(album) + ".jpg"
             if save_to_tags:
                 t = Thread(target=self.__save_artwork_tags,
@@ -225,17 +224,21 @@ class AlbumArt(BaseArt, TagReader):
                 t.daemon = True
                 t.start()
 
-            if album.path == "" or is_readonly(album.path):
-                artpath = os.path.join(self._STORE_PATH, filename)
+            store_path = self._STORE_PATH + "/" + filename
+            if album.uri == "" or is_readonly(album.uri):
+                arturi = GLib.filename_to_uri(store_path)
             # Many albums with same path, suffix with artist_album name
-            elif path_count > 1:
-                artpath = os.path.join(album.path, filename)
-                if os.path.exists(os.path.join(album.path, self.__favorite)):
-                    os.remove(os.path.join(album.path, self.__favorite))
+            elif uri_count > 1:
+                arturi = album.uri + "/" + filename
+                favorite_uri = album.uri + "/" + self.__favorite
+                favorite = Gio.File.new_for_uri(favorite_uri)
+                if favorite.query_exists(None):
+                    favorite.trash()
             else:
-                artpath = os.path.join(album.path, self.__favorite)
-            # Update cover file if exists event if we have written to tags
-            if not save_to_tags or os.path.exists(artpath):
+                arturi = album.uri + "/" + self.__favorite
+            f = Gio.File.new_for_uri(arturi)
+            # Update cover file if exists even if we have written to tags
+            if not save_to_tags or f.query_exists(None):
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                stream,
@@ -243,7 +246,10 @@ class AlbumArt(BaseArt, TagReader):
                                                                ArtSize.MONSTER,
                                                                True,
                                                                None)
-                pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
+                pixbuf.savev(store_path, "jpeg", ["quality"], ["90"])
+                dst = Gio.File.new_for_uri(arturi)
+                src = Gio.File.new_for_path(store_path)
+                src.move(dst)
                 del pixbuf
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
@@ -264,16 +270,19 @@ class AlbumArt(BaseArt, TagReader):
         """
         try:
             for artwork in self.get_album_artworks(album):
-                path = os.path.join(album.path, artwork)
-                f = Gio.File.new_for_path(path)
+                uri = album.uri + "/" + artwork
+                f = Gio.File.new_for_uri(uri)
                 f.trash()
             if Lp().settings.get_value('save-to-tags') and\
                     which("kid3-cli") is not None:
                 argv = ["kid3-cli", "-c", "select all", "-c",
                         "set picture:'' ''"]
                 for uri in Lp().albums.get_track_uris(album.id, [], []):
-                    path = GLib.filename_from_uri(uri)[0]
-                    argv.append(path)
+                    try:
+                        path = GLib.filename_from_uri(uri)[0]
+                        argv.append(path)
+                    except:  # Gvfs can't find path for uri
+                        pass
                 argv.append(None)
                 GLib.spawn_sync(None, argv, None,
                                 GLib.SpawnFlags.SEARCH_PATH, None)
@@ -287,20 +296,26 @@ class AlbumArt(BaseArt, TagReader):
         """
         filename = self.get_album_cache_name(album)
         try:
-            for f in os.listdir(self._CACHE_PATH):
-                if re.search('%s_.*\.jpg' % re.escape(filename), f):
-                    os.remove(os.path.join(self._CACHE_PATH, f))
+            f = Gio.File.new_for_path(self._CACHE_PATH)
+            infos = f.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                None)
+            for info in infos:
+                f = infos.get_child(info)
+                if f.get_basename().endswith('.jpg'):
+                    f.delete()
         except Exception as e:
             print("Art::clean_album_cache(): ", e, filename)
 
     def pixbuf_from_tags(self, uri, size):
         """
             Return cover from tags
-            @param filepath as str
+            @param uri as str
             @param size as int
         """
         pixbuf = None
-        if not uri.startswith('file:'):
+        if uri.startswith('https:'):
             return
         try:
             info = self.get_info(uri)
@@ -354,12 +369,16 @@ class AlbumArt(BaseArt, TagReader):
         pixbuf.savev("/tmp/lollypop_cover_tags.jpg",
                      "jpeg", ["quality"], ["90"])
         del pixbuf
-        if os.path.exists("/tmp/lollypop_cover_tags.jpg"):
+        f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
+        if f.query_exists(None):
             argv = ["kid3-cli", "-c", "select all", "-c",
                     "set picture:'/tmp/lollypop_cover_tags.jpg' ''"]
             for uri in Lp().albums.get_track_uris(album.id, [], []):
-                path = GLib.filename_from_uri(uri)[0]
-                argv.append(path)
+                try:
+                    path = GLib.filename_from_uri(uri)[0]
+                    argv.append(path)
+                except:  # Gvfs can't find a path for uri
+                    pass
             argv.append(None)
             GLib.spawn_sync(None, argv, None,
                             GLib.SpawnFlags.SEARCH_PATH, None)

@@ -125,10 +125,10 @@ class MtpSync:
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
-                f = info.get_name()
-                if f.endswith(".m3u") and f[:-4] not in plnames:
-                    uri = self._uri+'/'+f
-                    d = Gio.File.new_for_uri(uri)
+                name = info.get_name()
+                if name.endswith(".m3u") and name[:-4] not in plnames:
+                    f = infos.get_child(info)
+                    d = Gio.File.new_for_uri(f.get_uri())
                     self.__retry(d.delete, (None,))
 
             d = Gio.File.new_for_uri(self._uri+"/unsync")
@@ -187,8 +187,9 @@ class MtpSync:
                 for info in infos:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
-                            dir_uris.append(uri + "/" + info.get_name())
-                            to_delete.append(uri + "/" + info.get_name())
+                            f = infos.get_child(info)
+                            dir_uris.append(f.get_uri())
+                            to_delete.append(f.get_uri())
             # Then delete
             for d in to_delete:
                 d = Gio.File.new_for_uri(d)
@@ -220,7 +221,8 @@ class MtpSync:
                 for info in infos:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
-                            dir_uris.append(uri + "/" + info.get_name())
+                            f = infos.get_child(info)
+                            dir_uris.append(f.get_uri())
                     else:
                         track = info.get_name()
                         if not track.endswith('m3u'):
@@ -297,10 +299,10 @@ class MtpSync:
                                      (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
 
-                filepath = GLib.filename_from_uri(track.uri)[0]
-                track_name = escape(GLib.path_get_basename(filepath))
+                f = Gio.File.new_for_uri(track.uri)
+                track_name = f.get_basename()
                 # Check extension, if not mp3, convert
-                ext = os.path.splitext(filepath)[1]
+                ext = os.path.splitext(track.uri)[1]
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
                     track_name = track_name.replace(ext, ".mp3")
@@ -406,13 +408,13 @@ class MtpSync:
                 on_device_album_uri = "%s/%s_%s" % (self._uri,
                                                     artists,
                                                     album_name)
-            filepath = GLib.filename_from_uri(track.uri)[0]
-            track_name = escape(GLib.path_get_basename(filepath))
+            f = Gio.File.new_for_uri(track.uri)
+            track_name = f.get_basename()
             # Check extension, if not mp3, convert
-            ext = os.path.splitext(filepath)[1]
+            ext = os.path.splitext(track.uri)[1]
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
-            on_disk = Gio.File.new_for_path(filepath)
+            on_disk = Gio.File.new_for_uri(track.uri)
             info = on_disk.query_info('time::modified',
                                       Gio.FileQueryInfoFlags.NONE,
                                       None)

@@ -153,11 +153,11 @@ def seconds_to_string(duration):
     return '%i:%02i' % (minutes, seconds)
 
 
-def is_readonly(path):
+def is_readonly(uri):
     """
-        Check if path is readonly
+        Check if uri is readonly
     """
-    f = Gio.File.new_for_path(path)
+    f = Gio.File.new_for_uri(uri)
     info = f.query_info('access::can-write',
                         Gio.FileQueryInfoFlags.NONE,
                         None)

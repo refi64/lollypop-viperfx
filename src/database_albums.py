@@ -10,10 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
-
 from gettext import gettext as _
-import os
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
@@ -32,12 +29,12 @@ class AlbumsDatabase:
         """
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, path, popularity, mtime):
+    def add(self, name, artist_ids, uri, popularity, mtime):
         """
             Add a new album to database
             @param Album name as string
             @param artist ids as int
-            @param path as string
+            @param uri as string
             @param mtime as int
             @return inserted rowid as int
             @warning: commit needed
@@ -45,10 +42,10 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, no_album_artist,\
-                                  path, popularity, mtime, synced)\
+                                  uri, popularity, mtime, synced)\
                                   VALUES (?, ?, ?, ?, ?, ?)",
                                  (name, artist_ids == [],
-                                  path, popularity, mtime, 0))
+                                  uri, popularity, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -132,15 +129,15 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET year=? WHERE rowid=?",
                         (year, album_id))
 
-    def set_path(self, album_id, path):
+    def set_uri(self, album_id, uri):
         """
-            Set album path for album id
-            @param Album id as int, path as string
+            Set album uri for album id
+            @param Album id as int, uri as string
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            sql.execute("UPDATE albums SET path=? WHERE rowid=?",
-                        (path, album_id))
+            sql.execute("UPDATE albums SET uri=? WHERE rowid=?",
+                        (uri, album_id))
 
     def set_popularity(self, album_id, popularity, commit=False):
         """
@@ -369,38 +366,28 @@ class AlbumsDatabase:
                 return str(v[0])
             return ""
 
-    def get_path(self, album_id):
+    def get_uri(self, album_id):
         """
-            Get album path for album id
+            Get album uri for album id
             @param Album id as int
-            @return Album path as string
+            @return Album uri as string
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT path FROM albums WHERE rowid=?",
+            result = sql.execute("SELECT uri FROM albums WHERE rowid=?",
                                  (album_id,))
-            path = ""
+            uri = ""
             v = result.fetchone()
             if v is not None:
-                path = v[0]
-            if path != "" and not os.path.exists(path):
-                tracks = self.get_track_ids(album_id, [], [])
-                if tracks:
-                    uri = Lp().tracks.get_uri(tracks[0])
-                    filepath = GLib.filename_from_uri(uri)[0]
-                    path = os.path.dirname(filepath)
-                    if os.path.exists(path):
-                        sql.execute("UPDATE albums SET path=? "
-                                    "WHERE rowid=?", (path, album_id))
-                        sql.commit()
-            return path
+                uri = v[0]
+            return uri
 
-    def get_path_count(self, path):
+    def get_uri_count(self, uri):
         """
-            Count album having path as album path
+            Count album having uri as album uri
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT count(path) FROM albums WHERE path=?",
-                                 (path,))
+            result = sql.execute("SELECT count(uri) FROM albums WHERE uri=?",
+                                 (uri,))
             v = result.fetchone()
             if v is not None:
                 return v[0]

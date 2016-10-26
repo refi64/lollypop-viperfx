@@ -48,20 +48,21 @@ class Settings(Gio.Settings):
         settings.__class__ = Settings
         return settings
 
-    def get_music_paths(self):
+    def get_music_uris(self):
         """
-            Return music paths
+            Return music uris
             @return [str]
         """
-        paths = self.get_value('music-path')
-        if not paths:
-            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
-                paths = [GLib.get_user_special_dir(
-                    GLib.UserDirectory.DIRECTORY_MUSIC)]
+        uris = self.get_value('music-uris')
+        if not uris:
+            filename = GLib.get_user_special_dir(
+                                            GLib.UserDirectory.DIRECTORY_MUSIC)
+            if filename:
+                uris = [GLib.filename_to_uri(filename)]
             else:
-                print("You need to add a music path"
+                print("You need to add a music uri"
                       " to org.gnome.Lollypop in dconf")
-        return paths
+        return list(uris)
 
 
 class SettingsDialog:
@@ -185,7 +186,7 @@ class SettingsDialog:
         # Music tab
         #
         dirs = []
-        for directory in Lp().settings.get_value('music-path'):
+        for directory in Lp().settings.get_value('music-uris'):
             dirs.append(directory)
 
         # Main chooser
@@ -196,11 +197,16 @@ class SettingsDialog:
         self.__main_chooser.set_action(self.__add_chooser)
         main_chooser_box.pack_start(self.__main_chooser, False, True, 0)
         if len(dirs) > 0:
-            path = dirs.pop(0)
+            uri = dirs.pop(0)
         else:
-            path = GLib.get_user_special_dir(
-                GLib.UserDirectory.DIRECTORY_MUSIC)
-        self.__main_chooser.set_dir(path)
+            filename = GLib.get_user_special_dir(
+                                            GLib.UserDirectory.DIRECTORY_MUSIC)
+            if filename:
+                uri = GLib.filename_to_uri(filename)
+            else:
+                uri = ""
+
+        self.__main_chooser.set_dir(uri)
 
         # Others choosers
         for directory in dirs:
@@ -534,7 +540,7 @@ class SettingsDialog:
     def __add_chooser(self, directory=None):
         """
             Add a new chooser widget
-            @param directory path as string
+            @param directory uri as string
         """
         chooser = ChooserWidget()
         image = Gtk.Image.new_from_icon_name("list-remove-symbolic",
@@ -565,23 +571,21 @@ class SettingsDialog:
             Close edit party dialog
             @param widget as Gtk.Window
         """
-        # Music path
-        paths = []
-        main_path = self.__main_chooser.get_dir()
+        # Music uris
+        uris = []
+        default = GLib.get_user_special_dir(
+                                            GLib.UserDirectory.DIRECTORY_MUSIC)
+        main_uri = self.__main_chooser.get_dir()
         choosers = self.__chooser_box.get_children()
-        if main_path == GLib.get_user_special_dir(
-            GLib.UserDirectory.DIRECTORY_MUSIC)\
-           and not choosers:
-            paths = []
-        else:
-            paths.append(main_path)
+        if main_uri != GLib.filename_to_uri(default) or choosers:
+            uris.append(main_uri)
             for chooser in choosers:
-                path = chooser.get_dir()
-                if path is not None and path not in paths:
-                    paths.append(path)
+                uri = chooser.get_dir()
+                if uri is not None and uri not in uris:
+                    uris.append(uri)
 
-        previous = Lp().settings.get_value('music-path')
-        Lp().settings.set_value('music-path', GLib.Variant('as', paths))
+        previous = Lp().settings.get_value('music-uris')
+        Lp().settings.set_value('music-uris', GLib.Variant('as', uris))
 
         # Last.fm
         try:
@@ -592,7 +596,7 @@ class SettingsDialog:
 
         self.__settings_dialog.hide()
         self.__settings_dialog.destroy()
-        if set(previous) != set(paths):
+        if set(previous) != set(uris):
             Lp().window.update_db()
         Lp().window.update_view()
 
@@ -649,8 +653,8 @@ class SettingsDialog:
         if track_ids:
             track_id = track_ids.pop(0)
             uri = Lp().tracks.get_uri(track_id)
-            filepath = GLib.filename_from_uri(uri)[0]
-            name = GLib.path_get_basename(filepath)
+            f = Gio.File.new_for_uri(uri)
+            name = f.get_basename()
             album_id = Lp().tracks.get_album_id(track_id)
             popularity = Lp().tracks.get_popularity(track_id)
             ltime = Lp().tracks.get_ltime(track_id)
@@ -708,6 +712,7 @@ class ChooserWidget(Gtk.Grid):
         self.set_property("orientation", Gtk.Orientation.HORIZONTAL)
         self.set_property("halign", Gtk.Align.CENTER)
         self.__chooser_btn = Gtk.FileChooserButton()
+        self.__chooser_btn.set_local_only(False)
         self.__chooser_btn.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         self.__chooser_btn.set_property("margin", 5)
         self.__chooser_btn.show()
@@ -719,13 +724,13 @@ class ChooserWidget(Gtk.Grid):
         self.__action_btn.connect("clicked", self.___do_action)
         self.show()
 
-    def set_dir(self, path):
+    def set_dir(self, uri):
         """
-            Set current selected path for chooser
-            @param directory path as string
+            Set current selected uri for chooser
+            @param directory uri as string
         """
-        if path:
-            self.__chooser_btn.set_uri("file://"+path)
+        if uri:
+            self.__chooser_btn.set_uri(uri)
 
     def set_icon(self, image):
         """
@@ -743,17 +748,10 @@ class ChooserWidget(Gtk.Grid):
 
     def get_dir(self):
         """
-            Return select directory path
-            @return path as string
+            Return select directory uri
+            @return uri as string
         """
-        path = None
-        uri = self.__chooser_btn.get_uri()
-        if uri is not None:
-            path = GLib.uri_unescape_string(uri, None)
-        if path is not None:
-            return path[7:]
-        else:
-            return None
+        return self.__chooser_btn.get_uri()
 
 #######################
 # PRIVATE             #

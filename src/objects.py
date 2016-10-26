@@ -143,7 +143,7 @@ class Album(Base):
         Represent an album
     """
     FIELDS = ['name', 'artists', 'artist_ids',
-              'year', 'path', 'duration', 'mtime', 'synced']
+              'year', 'uri', 'duration', 'mtime', 'synced']
     DEFAULTS = ['', '', [], '', '', 0, 0, False]
 
     def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
@@ -348,7 +348,7 @@ class Track(Base):
 
     def set_uri(self, uri):
         """
-            Set uri and path
+            Set uri
             @param uri as string
         """
         self._uri = uri
