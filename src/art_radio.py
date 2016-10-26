@@ -31,7 +31,7 @@ class RadioArt(BaseArt):
         d = Gio.File.new_for_path(self._RADIOS_PATH)
         if not d.query_exists():
             try:
-                d.make_directory_with_parents(None)
+                d.make_directory_with_parents()
             except Exception as e:
                 print("RadioArt.__init__(): %s" % e)
 

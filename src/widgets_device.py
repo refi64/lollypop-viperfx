@@ -125,7 +125,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         d = Gio.File.new_for_uri(uri)
         try:
             if not d.query_exists():
-                d.make_directory_with_parents(None)
+                d.make_directory_with_parents()
         except:
             pass
 

@@ -58,7 +58,7 @@ class DeviceView(View):
         try:
             d = Gio.File.new_for_uri(uri)
             if not d.query_exists():
-                d.make_directory_with_parents(None)
+                d.make_directory_with_parents()
             infos = d.enumerate_children(
                 'standard::name,standard::type',
                 Gio.FileQueryInfoFlags.NONE,

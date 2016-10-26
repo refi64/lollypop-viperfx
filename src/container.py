@@ -249,10 +249,10 @@ class Container:
         dev.uri = "file:///tmp/android/"
         d = Gio.File.new_for_uri(dev.uri+"Internal Memory")
         if not d.query_exists():
-            d.make_directory_with_parents(None)
+            d.make_directory_with_parents()
         d = Gio.File.new_for_uri(dev.uri+"SD Card")
         if not d.query_exists():
-            d.make_directory_with_parents(None)
+            d.make_directory_with_parents()
         self.__devices[self.__devices_index] = dev
 
     def show_artists_albums(self, artist_ids):

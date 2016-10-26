@@ -154,7 +154,7 @@ class BaseArt(GObject.GObject):
         d = Gio.File.new_for_path(self._STORE_PATH)
         if not d.query_exists():
             try:
-                d.make_directory_with_parents(None)
+                d.make_directory_with_parents()
             except:
                 print("Can't create %s" % self._STORE_PATH)
 
@@ -165,7 +165,7 @@ class BaseArt(GObject.GObject):
         d = Gio.File.new_for_path(self._CACHE_PATH)
         if not d.query_exists():
             try:
-                d.make_directory_with_parents(None)
+                d.make_directory_with_parents()
             except:
                 print("Can't create %s" % self._CACHE_PATH)
 
