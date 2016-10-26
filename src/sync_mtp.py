@@ -224,9 +224,9 @@ class MtpSync:
                             f = infos.get_child(info)
                             dir_uris.append(f.get_uri())
                     else:
-                        track = info.get_name()
-                        if not track.endswith('m3u'):
-                            children.append("%s/%s" % (uri, track))
+                        f = infos.get_child(info)
+                        if not f.get_uri().endswith('.m3u'):
+                            children.append(f.get_uri())
             except Exception as e:
                 print("MtpSync::__get_track_files():", e, uri)
         return children
@@ -292,7 +292,9 @@ class MtpSync:
                 if art is not None:
                     src_art = Gio.File.new_for_uri(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
-                    self.__copied_art_uris.append(art_uri)
+                    # To be sure to get uri correctly escaped for Gio
+                    f = Gio.File.new_for_uri(art_uri)
+                    self.__copied_art_uris.append(f.get_uri())
                     dst_art = Gio.File.new_for_uri(art_uri)
                     if not dst_art.query_exists():
                         self.__retry(src_art.copy,
@@ -422,7 +424,9 @@ class MtpSync:
             # Prefix track with mtime to make sure updating it later
             mtime = info.get_attribute_as_string('time::modified')
             dst_uri = "%s/%s_%s" % (on_device_album_uri, mtime, track_name)
-            track_uris.append(GLib.uri_escape_string(dst_uri), "", False)
+            # To be sure to get uri correctly escaped for Gio
+            f = Gio.File.new_for_uri(dst_uri)
+            track_uris.append(f.get_uri())
 
         on_mtp_files = self.__get_track_files()
 
