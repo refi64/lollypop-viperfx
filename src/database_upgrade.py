@@ -246,7 +246,7 @@ class DatabaseUpgrade:
             sql.execute('''INSERT INTO albums(id, name, no_album_artist,
                         year, uri, popularity, synced, mtime) SELECT
                             id, name, no_album_artist,
-                            year, uri, popularity, synced, mtime FROM
+                            year, path, popularity, synced, mtime FROM
                             tmp_albums''')
             sql.execute("DROP TABLE tmp_albums")
             result = sql.execute("SELECT rowid, uri FROM albums")
