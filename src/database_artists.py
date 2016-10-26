@@ -246,7 +246,7 @@ class ArtistsDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(1)\
+            result = sql.execute("SELECT COUNT(DISTINCT artists.rowid)\
                                   FROM artists, album_artists,\
                                   album_genres, albums\
                                   WHERE album_artists.album_id=albums.rowid\
