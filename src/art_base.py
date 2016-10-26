@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
-
-import os
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, GLib
 
 from lollypop.define import ArtSize, Lp
 
@@ -27,9 +25,9 @@ class BaseArt(GObject.GObject):
     """
         Base art manager
     """
-    _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
+    _CACHE_PATH = GLib.get_home_dir() + "/.cache/lollypop"
     # Fallback when album dir is readonly
-    _STORE_PATH = os.path.expanduser("~") + "/.local/share/lollypop/store"
+    _STORE_PATH = GLib.get_home_dir() + "/.local/share/lollypop/store"
     __gsignals__ = {
         'album-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'artist-artwork-changed': (GObject.SignalFlags.RUN_FIRST,
@@ -60,9 +58,10 @@ class BaseArt(GObject.GObject):
             @param filename as str
         """
         try:
-            filepath = os.path.join(self._STORE_PATH, filename + ".jpg")
-            if os.path.exists(filepath):
-                os.remove(filepath)
+            filepath = self._STORE_PATH + "/" + filename + ".jpg"
+            f = Gio.File.new_for_path(filepath)
+            if f.query_exists(None):
+                f.delete()
         except Exception as e:
             print("Art::clean_store()", e)
 
@@ -78,7 +77,8 @@ class BaseArt(GObject.GObject):
         try:
             # First look in cache
             cache_path_jpg = self._get_default_icon_path(size, icon_name)
-            if os.path.exists(cache_path_jpg):
+            f = Gio.File.new_for_path(cache_path_jpg)
+            if f.query_exists(None):
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                                                                 cache_path_jpg,
                                                                 size,
@@ -151,9 +151,10 @@ class BaseArt(GObject.GObject):
         """
             Create store dir
         """
-        if not os.path.exists(self._STORE_PATH):
+        d = Gio.File.new_for_path(self._STORE_PATH)
+        if not d.query_exists(None):
             try:
-                os.mkdir(self._STORE_PATH)
+                d.make_directory_with_parents(None)
             except:
                 print("Can't create %s" % self._STORE_PATH)
 
@@ -161,9 +162,10 @@ class BaseArt(GObject.GObject):
         """
             Create cache dir
         """
-        if not os.path.exists(self._CACHE_PATH):
+        d = Gio.File.new_for_path(self._CACHE_PATH)
+        if not d.query_exists(None):
             try:
-                os.mkdir(self._CACHE_PATH)
+                d.make_directory_with_parents(None)
             except:
                 print("Can't create %s" % self._CACHE_PATH)
 

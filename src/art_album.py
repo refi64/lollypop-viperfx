@@ -14,6 +14,7 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
 from shutil import which
 from threading import Thread
+import re
 
 from lollypop.art_base import BaseArt
 from lollypop.tagreader import TagReader
@@ -294,10 +295,12 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
         """
         try:
-            for artwork in self.get_album_artworks(album):
-                uri = album.uri + "/" + artwork
+            for uri in self.get_album_artworks(album):
                 f = Gio.File.new_for_uri(uri)
-                f.trash()
+                try:
+                    f.trash()
+                except:
+                    f.delete(None)
             if Lp().settings.get_value('save-to-tags') and\
                     which("kid3-cli") is not None:
                 argv = ["kid3-cli", "-c", "select all", "-c",
@@ -319,19 +322,21 @@ class AlbumArt(BaseArt, TagReader):
             Remove cover from cache for album id
             @param album as Album
         """
-        filename = self.get_album_cache_name(album)
+        cache_name = self.get_album_cache_name(album)
         try:
-            f = Gio.File.new_for_path(self._CACHE_PATH)
-            infos = f.enumerate_children(
+            d = Gio.File.new_for_path(self._CACHE_PATH)
+            infos = d.enumerate_children(
                 'standard::name',
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
                 f = infos.get_child(info)
-                if f.get_basename().endswith('.jpg'):
+                f = infos.get_child(info)
+                basename = f.get_basename()
+                if re.search('%s_.*\.jpg' % re.escape(cache_name), basename):
                     f.delete()
         except Exception as e:
-            print("Art::clean_album_cache(): ", e, filename)
+            print("Art::clean_album_cache(): ", e, cache_name)
 
     def pixbuf_from_tags(self, uri, size):
         """
