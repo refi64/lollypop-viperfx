@@ -170,17 +170,6 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         with SqlCursor(Lp().db) as sql:
             i = 0
-            # Get deleted files
-            deleted = list(orig_tracks)
-            for uri in new_tracks:
-                if uri in deleted:
-                    deleted.remove(uri)
-            # Clean deleted files
-            for uri in deleted:
-                i += 1
-                GLib.idle_add(self.__update_progress, i, count)
-                if not uri.startswith('https:'):
-                    self.__del_from_db(uri)
             # Look for new files/modified files
             for uri in new_tracks:
                 if self.__thread is None:
@@ -219,6 +208,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                     print("CollectionScanner::__scan()", e)
                 i += 1
             sql.commit()
+            # Clean deleted files
+            for uri in orig_tracks:
+                i += 1
+                GLib.idle_add(self.__update_progress, i, count)
+                if not uri.startswith('https:'):
+                    self.__del_from_db(uri)
         GLib.idle_add(self.__finish)
         del self.__history
         self.__history = None
