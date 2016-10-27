@@ -166,11 +166,12 @@ class CollectionScanner(GObject.GObject, TagReader):
         with SqlCursor(Lp().db) as sql:
             i = 0
             # Look for new files/modified files
-            for uri in new_tracks:
-                if self.__thread is None:
-                    return
-                GLib.idle_add(self.__update_progress, i, count)
-                try:
+            try:
+                to_add = []
+                for uri in new_tracks:
+                    if self.__thread is None:
+                        return
+                    GLib.idle_add(self.__update_progress, i, count)
                     f = Gio.File.new_for_uri(uri)
                     info = f.query_info('time::modified',
                                         Gio.FileQueryInfoFlags.NONE,
@@ -186,42 +187,46 @@ class CollectionScanner(GObject.GObject, TagReader):
                             continue
                         else:
                             self.__del_from_db(uri)
-                    info = self.get_info(uri)
                     # On first scan, use modification time
                     # Else, use current time
                     if not was_empty:
                         mtime = int(time())
                     debug("Adding file: %s" % uri)
-                    self.__add2db(uri, info, mtime)
-                except GLib.GError as e:
-                    print(e, uri)
-                    if e.message != gst_message:
-                        gst_message = e.message
-                        if Lp().notify is not None:
-                            Lp().notify.send(gst_message)
-                except Exception as e:
-                    print("CollectionScanner::__scan()", e)
-                i += 1
-            # Clean deleted files
-            for uri in orig_tracks:
-                i += 1
-                GLib.idle_add(self.__update_progress, i, count)
-                if uri.startswith('file:'):
-                    self.__del_from_db(uri)
-            sql.commit()
+                    to_add.append((uri, mtime))
+                # Clean deleted files
+                # Now because we need to populate history
+                for uri in orig_tracks:
+                    i += 1
+                    GLib.idle_add(self.__update_progress, i, count)
+                    if uri.startswith('file:'):
+                        self.__del_from_db(uri)
+                sql.commit()
+                # Add files to db
+                for (uri, mtime) in to_add:
+                    i += 1
+                    GLib.idle_add(self.__update_progress, i, count)
+                    self.__add2db(uri, mtime)
+            except GLib.GError as e:
+                print("CollectionScanner::__scan:", e)
+                if e.message != gst_message:
+                    gst_message = e.message
+                    if Lp().notify is not None:
+                        Lp().notify.send(gst_message)
+            except Exception as e:
+                print("CollectionScanner::__scan()", e)
         GLib.idle_add(self.__finish)
         del self.__history
         self.__history = None
 
-    def __add2db(self, uri, info, mtime):
+    def __add2db(self, uri, mtime):
         """
             Add new file to db with informations
             @param uri as string
-            @param info as GstPbutils.DiscovererInfo
             @param mtime as int
             @return track id as int
         """
         debug("CollectionScanner::add2db(): Read tags")
+        info = self.get_info(uri)
         path = GLib.filename_from_uri(uri)[0]
         tags = info.get_tags()
         title = self.get_title(tags, path)
