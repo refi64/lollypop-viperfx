@@ -207,13 +207,13 @@ class CollectionScanner(GObject.GObject, TagReader):
                 except Exception as e:
                     print("CollectionScanner::__scan()", e)
                 i += 1
-            sql.commit()
             # Clean deleted files
             for uri in orig_tracks:
                 i += 1
                 GLib.idle_add(self.__update_progress, i, count)
                 if not uri.startswith('https:'):
                     self.__del_from_db(uri)
+            sql.commit()
         GLib.idle_add(self.__finish)
         del self.__history
         self.__history = None
