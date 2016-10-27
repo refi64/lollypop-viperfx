@@ -63,6 +63,8 @@ class CoversPopover(CommonPopover):
             Init Popover
             @param album as album
         """
+        if not album.artist_ids:
+            return
         CommonPopover.__init__(self)
         # FIXME We only search with first artist
         self._widget = ArtworkSearch(album.artist_ids[0],
