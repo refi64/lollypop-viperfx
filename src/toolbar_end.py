@@ -209,12 +209,18 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PROTECTED           #
 #######################
-    def _on_shuffle_button_clicked(self, button):
+    def _on_shuffle_button_toggled(self, button):
         """
             Hide next popover
             @param button as Gtk.Button
         """
-        self.__next_popover.hide()
+        if button.get_active():
+            self.__next_popover.hide()
+            self.__next_popover.inhibit(True)
+        else:
+            self.__next_popover.inhibit(False)
+            if self.__next_popover.should_be_shown():
+                self.__next_popover.show()
 
     def _on_party_button_toggled(self, button):
         """

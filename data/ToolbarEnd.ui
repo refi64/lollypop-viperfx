@@ -65,7 +65,7 @@
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Shuffle</property>
             <property name="menu_model">shuffle-menu</property>
-            <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
+            <signal name="toggled" handler="_on_shuffle_button_toggled" swapped="no"/>
             <child>
               <object class="GtkImage" id="shuffle-button-image">
                 <property name="visible">True</property>
