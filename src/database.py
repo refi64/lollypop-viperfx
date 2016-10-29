@@ -121,7 +121,7 @@ class Database:
         db_version = Lp().settings.get_value('db-version').get_int32()
         upgrade = DatabaseUpgrade(db_version, self)
         f = Gio.File.new_for_path(self.DB_PATH)
-        if not f.query_exists():
+        if f.query_exists():
             upgrade.do_db_upgrade()
             Lp().settings.set_value('db-version',
                                     GLib.Variant('i', upgrade.count()))
