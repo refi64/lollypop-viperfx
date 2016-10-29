@@ -121,6 +121,17 @@ class Playlists(GObject.GObject):
             sql.commit()
             GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
+    def remove(self, uri):
+        """
+            Remove track from playlists
+            @param uri as str
+        """
+        with SqlCursor(self) as sql:
+            sql.execute("DELETE FROM tracks\
+                        WHERE uri=?",
+                        (uri,))
+            sql.commit()
+
     def get(self):
         """
             Return availables playlists

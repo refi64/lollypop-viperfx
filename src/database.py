@@ -150,6 +150,8 @@ class Database:
                 genre_ids = Lp().tracks.get_genre_ids(track_id)
                 album_artist_ids = Lp().albums.get_artist_ids(album_id)
                 artist_ids = Lp().tracks.get_artist_ids(track_id)
+                uri = Lp().tracks.get_uri(track_id)
+                Lp().playlists.remove(uri)
                 Lp().tracks.remove(track_id)
                 Lp().tracks.clean(track_id)
                 if Lp().albums.clean(album_id):

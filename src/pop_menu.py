@@ -435,6 +435,8 @@ class EditMenu(BaseMenu):
             album = Album(self._object_id)
             for track_id in album.track_ids:
                 artist_ids += Lp().tracks.get_artist_ids(track_id)
+                uri = Lp().tracks.get_uri(track_id)
+                Lp().playlists.remove(uri)
                 Lp().tracks.remove(track_id)
                 Lp().tracks.clean(track_id)
                 art_file = Lp().art.get_album_cache_name(album)
@@ -443,6 +445,8 @@ class EditMenu(BaseMenu):
             track = Track(self._object_id)
             album = track.album
             artist_ids = Lp().tracks.get_artist_ids(track.id)
+            uri = Lp().tracks.get_uri(track.id)
+            Lp().playlists.remove(uri)
             Lp().tracks.remove(track.id)
             Lp().tracks.clean(track.id)
         artist_ids += album.artist_ids
