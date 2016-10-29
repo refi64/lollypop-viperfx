@@ -29,7 +29,7 @@ class Inotify:
         """
             Init inode notification
         """
-        self.__monitors = {}
+        self.__monitors = []
         self.__timeout = None
 
     def add_monitor(self, path):
@@ -38,7 +38,7 @@ class Inotify:
             @param path as string
         """
         # Check if there is already a monitor for this path
-        if path in self.__monitors.keys():
+        if path in self.__monitors:
             return
         try:
             f = Gio.File.new_for_path(path)
@@ -46,7 +46,7 @@ class Inotify:
                                           None)
             if monitor is not None:
                 monitor.connect('changed', self.__on_dir_changed)
-                self.__monitors[path] = monitor
+                self.__monitors.append(path)
         except:
             pass
 
