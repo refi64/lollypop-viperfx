@@ -15,8 +15,6 @@ from gi.repository import Gtk, GLib
 from lollypop.objects import Track
 from lollypop.define import Lp
 
-from shutil import which
-
 
 class RatingWidget(Gtk.Bin):
     """
@@ -113,7 +111,7 @@ class RatingWidget(Gtk.Bin):
         self._object.set_popularity(pop)
         # Save to tags if needed
         if Lp().settings.get_value('save-to-tags') and\
-                which("kid3-cli") is not None and\
+                GLib.find_program_in_path("kid3-cli") is not None and\
                 isinstance(self._object, Track) and\
                 not self._object.is_youtube:
             if pop == 0:

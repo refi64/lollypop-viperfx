@@ -61,9 +61,14 @@
             <summary>Enabled genres in party mode</summary>
             <description>Ids for genres.</description>
         </key>
-  	    <key type="as" name="music-path">
+ 	<key type="as" name="music-path">
             <default>[]</default>
-            <summary>Music paths</summary>
+            <summary>unused</summary>
+            <description></description>
+        </key>
+ 	<key type="as" name="music-uris">
+            <default>[]</default>
+            <summary>Music uris</summary>
             <description>When empty, use XDG_MUSIC_DIR</description>
         </key>
         <key type="b" name="use-librefm">

@@ -12,7 +12,6 @@
 
 from gi.repository import Gio, GLib, Gtk
 
-from shutil import which
 from gettext import gettext as _
 from threading import Thread
 
@@ -396,7 +395,7 @@ class EditMenu(BaseMenu):
         elif is_album:
             favorite = Lp().settings.get_value('tag-editor').get_string()
             for editor in [favorite] + self.__TAG_EDITORS:
-                if which(editor) is not None:
+                if GLib.find_program_in_path(editor) is not None:
                     self.__tag_editor = editor
                     self.__set_edit_actions()
                     break

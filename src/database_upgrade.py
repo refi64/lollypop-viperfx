@@ -49,7 +49,8 @@ class DatabaseUpgrade:
             12: "ALTER TABLE tracks ADD persistent INT NOT NULL DEFAULT 1",
             13: self.__upgrade_13,
             14: "UPDATE albums SET synced=-1 where mtime=0",
-            15: self.__upgrade_15
+            15: self.__upgrade_15,
+            16: self.__upgrade_16
                          }
 
     """
@@ -220,3 +221,38 @@ class DatabaseUpgrade:
                                                  FROM track_genres\
                                                  WHERE track_id=tracks.rowid)")
             Lp().db.del_tracks(list(itertools.chain(*result)))
+
+    def __upgrade_16(self):
+        """
+            Get ride of paths
+        """
+        paths = Lp().settings.get_value('music-path')
+        uris = []
+        for path in paths:
+            uris.append(GLib.filename_to_uri(path))
+        Lp().settings.set_value('music-uris', GLib.Variant('as', uris))
+        with SqlCursor(self._db) as sql:
+            sql.execute("ALTER TABLE albums RENAME TO tmp_albums")
+            sql.execute('''CREATE TABLE albums (
+                                              id INTEGER PRIMARY KEY,
+                                              name TEXT NOT NULL,
+                                              no_album_artist BOOLEAN NOT NULL,
+                                              year INT,
+                                              uri TEXT NOT NULL,
+                                              popularity INT NOT NULL,
+                                              synced INT NOT NULL,
+                                              mtime INT NOT NULL)''')
+
+            sql.execute('''INSERT INTO albums(id, name, no_album_artist,
+                        year, uri, popularity, synced, mtime) SELECT
+                            id, name, no_album_artist,
+                            year, path, popularity, synced, mtime FROM
+                            tmp_albums''')
+            sql.execute("DROP TABLE tmp_albums")
+            result = sql.execute("SELECT rowid, uri FROM albums")
+            for (rowid, uri) in result:
+                if uri.startswith("/"):
+                    uri = GLib.filename_to_uri(uri)
+                    sql.execute("UPDATE albums set uri=? WHERE rowid=?",
+                                (uri, rowid))
+            sql.commit()

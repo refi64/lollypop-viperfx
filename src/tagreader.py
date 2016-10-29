@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstPbutils, GLib
+from gi.repository import Gst, GstPbutils, GLib, Gio
 
 from re import match
 
@@ -371,19 +371,24 @@ class TagReader(Discoverer):
         return genre_ids
 
     def add_album(self, album_name, artist_ids,
-                  filepath, popularity, mtime):
+                  uri, popularity, mtime):
         """
             Add album to db
             @param album name as string
             @param album artist ids as [int]
-            @param path to an album track as string
+            @param uri to an album track as string
             @param year as int
             @param popularity as int
             @param mtime as int
             @return (album id as int, new as bool)
             @commit needed
         """
-        path = GLib.path_get_dirname(filepath)
+        f = Gio.File.new_for_uri(uri)
+        d = f.get_parent()
+        if d is not None:
+            parent_uri = d.get_uri()
+        else:
+            parent_uri = ""
         new = False
         if artist_ids:
             album_id = Lp().albums.get_non_compilation_id(album_name,
@@ -393,10 +398,10 @@ class TagReader(Discoverer):
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids,
-                                       path, popularity, mtime)
+                                       parent_uri, popularity, mtime)
         # Now we have our album id, check if path doesn't change
-        if Lp().albums.get_path(album_id) != path:
-            Lp().albums.set_path(album_id, path)
+        if Lp().albums.get_uri(album_id) != parent_uri:
+            Lp().albums.set_uri(album_id, parent_uri)
 
         return (album_id, new)
 

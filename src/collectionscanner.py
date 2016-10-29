@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, GObject, Gio
 
-import os
 from gettext import gettext as _
 from threading import Thread
 from time import time
@@ -55,8 +54,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update database
         """
         if not self.is_locked():
-            paths = Lp().settings.get_music_paths()
-            if not paths:
+            uris = Lp().settings.get_music_uris()
+            if not uris:
                 return
 
             Lp().window.progress.add(self)
@@ -64,7 +63,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
             if Lp().notify is not None:
                 Lp().notify.send(_("Your music is updating"))
-            self.__thread = Thread(target=self.__scan, args=(paths,))
+            self.__thread = Thread(target=self.__scan, args=(uris,))
             self.__thread.daemon = True
             self.__thread.start()
 
@@ -83,42 +82,48 @@ class CollectionScanner(GObject.GObject, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def __get_objects_for_paths(self, paths):
+    def __get_objects_for_uris(self, uris):
         """
-            Return all tracks/dirs for paths
-            @param paths as string
-            @return (track path as [str], track dirs as [str],
+            Return all tracks/dirs for uris
+            @param uris as string
+            @return (track uri as [str], track dirs as [str],
                      ignore dirs as [str])
         """
         tracks = []
         ignore_dirs = []
-        track_dirs = list(paths)
-        for path in paths:
-            tracks_for_path = []
-            for root, dirs, files in os.walk(path, followlinks=True):
-                # Add dirs
-                for d in dirs:
-                    track_dirs.append(os.path.join(root, d))
-                # Add files
-                for name in files:
-                    path = os.path.join(root, name)
-                    uri = GLib.filename_to_uri(path)
+        track_dirs = list(uris)
+        walk_uris = list(uris)
+        while walk_uris:
+            uri = walk_uris.pop(0)
+            empty = True
+            d = Gio.File.new_for_uri(uri)
+            infos = d.enumerate_children(
+                'standard::name,standard::type',
+                Gio.FileQueryInfoFlags.NONE,
+                None)
+            for info in infos:
+                f = infos.get_child(info)
+                child_uri = f.get_uri()
+                empty = False
+                if info.get_file_type() == Gio.FileType.DIRECTORY:
+                    track_dirs.append(child_uri)
+                    walk_uris.append(child_uri)
+                else:
                     try:
-                        f = Gio.File.new_for_uri(uri)
+                        f = Gio.File.new_for_uri(child_uri)
                         if is_pls(f):
                             pass
                         elif is_audio(f):
-                            tracks_for_path.append(uri)
+                            tracks.append(child_uri)
                         else:
                             debug("%s not detected as a music file" % uri)
                     except Exception as e:
-                        print("CollectionScanner::__get_objects_for_paths: %s"
-                              % e)
-            # If a path is empty
+                        print("CollectionScanner::"
+                              "__get_objects_for_uris():", e)
+            # If a root uri is empty
             # Ensure user is not doing something bad
-            if not tracks_for_path:
-                ignore_dirs.append(GLib.filename_to_uri(path))
-            tracks += tracks_for_path
+            if empty and uri in uris:
+                ignore_dirs.append(uri)
         return (tracks, track_dirs, ignore_dirs)
 
     def __update_progress(self, current, total):
@@ -138,18 +143,18 @@ class CollectionScanner(GObject.GObject, TagReader):
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
 
-    def __scan(self, paths):
+    def __scan(self, uris):
         """
             Scan music collection for music files
-            @param paths as [string], paths to scan
+            @param uris as [string], uris to scan
             @thread safe
         """
         gst_message = None
         if self.__history is None:
             self.__history = History()
         mtimes = Lp().tracks.get_mtimes()
-        (new_tracks, new_dirs, ignore_dirs) = self.__get_objects_for_paths(
-                                                                         paths)
+        (new_tracks, new_dirs, ignore_dirs) = self.__get_objects_for_uris(
+                                                                         uris)
         orig_tracks = Lp().tracks.get_uris(ignore_dirs)
         was_empty = len(orig_tracks) == 0
 
@@ -191,7 +196,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # Else, use current time
                     if not was_empty:
                         mtime = int(time())
-                    debug("Adding file: %s" % uri)
                     to_add.append((uri, mtime))
                 # Clean deleted files
                 # Now because we need to populate history
@@ -203,6 +207,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 sql.commit()
                 # Add files to db
                 for (uri, mtime) in to_add:
+                    debug("Adding file: %s" % uri)
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
                     self.__add2db(uri, mtime)
@@ -225,11 +230,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param mtime as int
             @return track id as int
         """
+        f = Gio.File.new_for_uri(uri)
         debug("CollectionScanner::add2db(): Read tags")
         info = self.get_info(uri)
-        path = GLib.filename_from_uri(uri)[0]
         tags = info.get_tags()
-        title = self.get_title(tags, path)
+        name = f.get_basename()
+        title = self.get_title(tags, name)
         artists = self.get_artists(tags)
         composers = self.get_composers(tags)
         performers = self.get_performers(tags)
@@ -240,7 +246,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
-        name = GLib.path_get_basename(path)
         tracknumber = self.get_tracknumber(tags, name)
         year = self.get_year(tags)
         duration = int(info.get_duration()/1000000000)
@@ -278,7 +283,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
-                                               path, album_pop, amtime)
+                                               uri, album_pop, amtime)
 
         genre_ids = self.add_genres(genres, album_id)
 
@@ -306,8 +311,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             Delete track from db
             @param uri as str
         """
-        path = GLib.filename_from_uri(uri)[0]
-        name = GLib.path_get_basename(path)
+        f = Gio.File.new_for_uri(uri)
+        name = f.get_basename()
         track_id = Lp().tracks.get_id_by_uri(uri)
         album_id = Lp().tracks.get_album_id(track_id)
         genre_ids = Lp().tracks.get_genre_ids(track_id)

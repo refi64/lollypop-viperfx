@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, Gst
 
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Type, Lp
@@ -50,8 +49,9 @@ class PlaybackController:
             self._prev_btn.set_tooltip_text(
                                     ", ".join(player.prev_track.album_artists))
         elif player.prev_track.id is not None:
-            prev_artists = escape(", ".join(player.prev_track.artists))
-            prev_title = escape(player.prev_track.title)
+            prev_artists = GLib.markup_escape_text(
+                                          ", ".join(player.prev_track.artists))
+            prev_title = GLib.markup_escape_text(player.prev_track.title)
             self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
                                               (prev_artists,
                                                prev_title))
@@ -67,8 +67,9 @@ class PlaybackController:
             self._next_btn.set_tooltip_text(
                                     ", ".join(player.next_track.album_artists))
         elif player.next_track.id is not None:
-            next_artists = escape(", ".join(player.next_track.artists))
-            next_title = escape(player.next_track.title)
+            next_artists = GLib.markup_escape_text(
+                                          ", ".join(player.next_track.artists))
+            next_title = GLib.markup_escape_text(player.next_track.title)
             self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
                                               (next_artists,
                                                next_title))

@@ -10,8 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
 
-import os
 import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
@@ -21,7 +21,7 @@ class History:
     """
         Playlists manager
     """
-    __LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
     __DB_PATH = "%s/history.db" % __LOCAL_PATH
     __LIMIT = 1000000  # Delete when limit is reached
     __DELETE = 100     # How many elements to delete

@@ -12,7 +12,6 @@
 
 from gi.repository import GObject, GLib, Gio, TotemPlParser
 
-import os
 import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
@@ -22,7 +21,7 @@ class Radios(GObject.GObject):
     """
         Playlists manager
     """
-    LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
     DB_PATH = "%s/radios.db" % LOCAL_PATH
 
     create_radios = '''CREATE TABLE radios (
@@ -40,7 +39,8 @@ class Radios(GObject.GObject):
             Init playlists manager
         """
         GObject.GObject.__init__(self)
-        try_import = not os.path.exists(self.DB_PATH)
+        f = Gio.File.new_for_path(self.DB_PATH)
+        try_import = not f.query_exists()
         # Create db schema
         try:
             with SqlCursor(self) as sql:

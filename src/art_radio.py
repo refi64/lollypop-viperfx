@@ -13,7 +13,6 @@
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
 import re
-import os
 
 from lollypop.art_base import BaseArt
 
@@ -22,17 +21,17 @@ class RadioArt(BaseArt):
     """
         Manage radio artwork
     """
-    _RADIOS_PATH = os.path.expanduser("~") +\
-        "/.local/share/lollypop/radios"
+    _RADIOS_PATH = GLib.get_home_dir() + "/.local/share/lollypop/radios"
 
     def __init__(self):
         """
             Init radio art
         """
         BaseArt.__init__(self)
-        if not os.path.exists(self._RADIOS_PATH):
+        d = Gio.File.new_for_path(self._RADIOS_PATH)
+        if not d.query_exists():
             try:
-                os.mkdir(self._RADIOS_PATH)
+                d.make_directory_with_parents()
             except Exception as e:
                 print("RadioArt.__init__(): %s" % e)
 
@@ -48,11 +47,12 @@ class RadioArt(BaseArt):
             cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            if os.path.exists(cache_path_png):
+            f = Gio.File.new_for_path(cache_path_png)
+            if f.query_exists():
                 return cache_path_png
             else:
                 self.get_radio_artwork(name, size, 1)
-                if os.path.exists(cache_path_png):
+                if f.query_exists():
                     return cache_path_png
                 else:
                     return self._get_default_icon_path(
@@ -77,7 +77,8 @@ class RadioArt(BaseArt):
 
         try:
             # Look in cache
-            if os.path.exists(cache_path_png):
+            f = Gio.File.new_for_path(cache_path_png)
+            if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
                                                                 size,
                                                                 size)
@@ -127,7 +128,9 @@ class RadioArt(BaseArt):
         old = "%s/%s.png" % (self._RADIOS_PATH, old_name)
         new = "%s/%s.png" % (self._RADIOS_PATH, new_name)
         try:
-            os.rename(old, new)
+            src = Gio.File.new_for_path(old)
+            dst = Gio.File.new_for_path(new)
+            src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             print("RadioArt::rename_radio(): %s" % e)
 
@@ -156,13 +159,20 @@ class RadioArt(BaseArt):
             Remove logo from cache for radio
             @param radio name as string
         """
-        filename = self.__get_radio_cache_name(name)
+        cache_name = self.__get_radio_cache_name(name)
         try:
-            for f in os.listdir(self._CACHE_PATH):
-                if re.search('%s_.*\.png' % re.escape(filename), f):
-                    os.remove(os.path.join(self._CACHE_PATH, f))
+            f = Gio.File.new_for_path(self._CACHE_PATH)
+            infos = f.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                None)
+            for info in infos:
+                f = infos.get_child(info)
+                basename = f.get_basename()
+                if re.search('%s_.*\.png' % re.escape(cache_name), basename):
+                    f.delete()
         except Exception as e:
-            print("RadioArt::clean_radio_cache(): ", e, filename)
+            print("RadioArt::clean_radio_cache(): ", e, cache_name)
 
 #######################
 # PRIVATE             #
@@ -175,7 +185,8 @@ class RadioArt(BaseArt):
         """
         try:
             name = name.replace('/', '-')
-            if os.path.exists(self._RADIOS_PATH + "/" + name + ".png"):
+            f = Gio.File.new_for_path(self._RADIOS_PATH + "/" + name + ".png")
+            if f.query_exists():
                 return self._RADIOS_PATH + "/" + name + ".png"
             return None
         except Exception as e:

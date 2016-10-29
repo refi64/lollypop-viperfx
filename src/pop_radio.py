@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
-import os
 from threading import Thread
 
 from gettext import gettext as _
@@ -232,11 +231,12 @@ class RadioPopover(Gtk.Popover):
         """
         self.hide()
         if self.__name != '':
-            cache = Art._RADIOS_PATH
+            store = Art._RADIOS_PATH
             self.__radios_manager.delete(self.__name)
             Lp().art.clean_radio_cache(self.__name)
-            if os.path.exists(cache+"/%s.png" % self.__name):
-                os.remove(cache+"/%s.png" % self.__name)
+            f = Gio.File.new_for_path(store + "/%s.png" % self.__name)
+            if f.query_exists():
+                f.delete()
 
     def _on_entry_changed(self, entry):
         """

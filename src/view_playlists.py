@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib
 
-from cgi import escape
-
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
@@ -185,8 +183,9 @@ class PlaylistsView(View):
             self.__jump_button.set_sensitive(True)
             artists = ", ".join(Lp().player.current_track.artists)
             self.__jump_button.set_tooltip_markup(
-             "<b>%s</b>\n%s" % (escape(artists),
-                                escape(Lp().player.current_track.name)))
+             "<b>%s</b>\n%s" % (GLib.markup_escape_text(artists),
+                                GLib.markup_escape_text(
+                                              Lp().player.current_track.name)))
         else:
             self.__jump_button.set_sensitive(False)
             self.__jump_button.set_tooltip_text('')

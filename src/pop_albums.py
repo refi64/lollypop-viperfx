@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.pop_album import AlbumPopover
@@ -77,7 +76,7 @@ class AlbumRow(Gtk.ListBoxRow):
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         if self.__album.artists:
-            artists = escape(", ".join(self.__album.artists))
+            artists = GLib.markup_escape_text(", ".join(self.__album.artists))
         else:
             artists = _("Compilation")
         self.__artist_label = Gtk.Label.new("<b>%s</b>" % artists)
@@ -265,8 +264,8 @@ class AlbumRow(Gtk.ListBoxRow):
         layout_title = self.__title_label.get_layout()
         layout_artist = self.__artist_label.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
-            artist = escape(self.__artist_label.get_text())
-            title = escape(self.__title_label.get_text())
+            artist = GLib.markup_escape_text(self.__artist_label.get_text())
+            title = GLib.markup_escape_text(self.__title_label.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
             self.set_tooltip_text('')

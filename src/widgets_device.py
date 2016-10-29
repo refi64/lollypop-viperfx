@@ -14,7 +14,6 @@ from gi.repository import Gtk, GLib, Gio, GObject, Pango
 
 from gettext import gettext as _
 from threading import Thread
-from cgi import escape
 
 from lollypop.sync_mtp import MtpSync
 from lollypop.sqlcursor import SqlCursor
@@ -124,8 +123,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._uri = uri
         d = Gio.File.new_for_uri(uri)
         try:
-            if not d.query_exists(None):
-                d.make_directory_with_parents(None)
+            if not d.query_exists():
+                d.make_directory_with_parents()
         except:
             pass
 
@@ -300,7 +299,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
             playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
                                                 playlist_name + '.m3u')
-            selected = playlist_obj.query_exists(None)
+            selected = playlist_obj.query_exists()
             self.__model.append([selected, playlist[1], playlist[0]])
             GLib.idle_add(self.__append_playlists, playlists)
 
@@ -315,12 +314,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             # Do not sync youtube albums
             if synced != Type.NONE:
                 if album.artist_ids[0] == Type.COMPILATIONS:
-                    name = escape(album.name)
+                    name = GLib.markup_escape_text(album.name)
                 else:
                     artists = ", ".join(album.artists)
                     name = "<b>%s</b> - %s" % (
-                            escape(artists),
-                            escape(album.name))
+                            GLib.markup_escape_text(artists),
+                            GLib.markup_escape_text(album.name))
                 self.__model.append([synced, name, album.id])
             GLib.idle_add(self.__append_albums, albums)
 

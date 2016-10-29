@@ -14,7 +14,6 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk, Pango
 
 from threading import Thread
 from gettext import gettext as _
-from cgi import escape
 
 from lollypop.radios import Radios
 from lollypop.tunein import TuneIn
@@ -387,5 +386,6 @@ class TuneinPopover(Gtk.Popover):
             @param string as str
         """
         self.__timeout_id = None
-        url = "http://opml.radiotime.com/Search.ashx?query=%s" % escape(string)
+        url = "http://opml.radiotime.com/Search.ashx?query=%s" %\
+            GLib.uri_escape_string(string, "/", False)
         self.populate(url)

@@ -12,8 +12,8 @@
 
 from gi.repository import GLib, Gio, Gst
 
-import os.path
 from time import sleep
+from re import match
 
 from lollypop.utils import escape
 from lollypop.define import Lp, Type
@@ -125,14 +125,14 @@ class MtpSync:
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
-                f = info.get_name()
-                if f.endswith(".m3u") and f[:-4] not in plnames:
-                    uri = self._uri+'/'+f
-                    d = Gio.File.new_for_uri(uri)
+                name = info.get_name()
+                if name.endswith(".m3u") and name[:-4] not in plnames:
+                    f = infos.get_child(info)
+                    d = Gio.File.new_for_uri(f.get_uri())
                     self.__retry(d.delete, (None,))
 
             d = Gio.File.new_for_uri(self._uri+"/unsync")
-            if not d.query_exists(None):
+            if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
@@ -187,8 +187,9 @@ class MtpSync:
                 for info in infos:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
-                            dir_uris.append(uri + "/" + info.get_name())
-                            to_delete.append(uri + "/" + info.get_name())
+                            f = infos.get_child(info)
+                            dir_uris.append(f.get_uri())
+                            to_delete.append(f.get_uri())
             # Then delete
             for d in to_delete:
                 d = Gio.File.new_for_uri(d)
@@ -207,7 +208,7 @@ class MtpSync:
         children = []
         dir_uris = [self._uri]
         d = Gio.File.new_for_uri(self._uri)
-        if not d.query_exists(None):
+        if not d.query_exists():
             self.__retry(d.make_directory_with_parents, (None,))
         while dir_uris:
             try:
@@ -220,11 +221,12 @@ class MtpSync:
                 for info in infos:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
-                            dir_uris.append(uri + "/" + info.get_name())
+                            f = infos.get_child(info)
+                            dir_uris.append(f.get_uri())
                     else:
-                        track = info.get_name()
-                        if not track.endswith('m3u'):
-                            children.append("%s/%s" % (uri, track))
+                        f = infos.get_child(info)
+                        if not f.get_uri().endswith('.m3u'):
+                            children.append(f.get_uri())
             except Exception as e:
                 print("MtpSync::__get_track_files():", e, uri)
         return children
@@ -267,7 +269,7 @@ class MtpSync:
                     self.__in_thread = False
                     return
                 track = Track(track_id)
-                if not track.uri.startswith('file:'):
+                if track.uri.startswith('https:'):
                     continue
                 album_name = escape(track.album_name.lower())
                 is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
@@ -283,24 +285,26 @@ class MtpSync:
                                            album_name)
 
                 d = Gio.File.new_for_uri(on_device_album_uri)
-                if not d.query_exists(None):
+                if not d.query_exists():
                     self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
-                art = Lp().art.get_album_artwork_path(track.album)
+                art = Lp().art.get_album_artwork_uri(track.album)
                 if art is not None:
-                    src_art = Gio.File.new_for_path(art)
+                    src_art = Gio.File.new_for_uri(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
-                    self.__copied_art_uris.append(art_uri)
+                    # To be sure to get uri correctly escaped for Gio
+                    f = Gio.File.new_for_uri(art_uri)
+                    self.__copied_art_uris.append(f.get_uri())
                     dst_art = Gio.File.new_for_uri(art_uri)
-                    if not dst_art.query_exists(None):
+                    if not dst_art.query_exists():
                         self.__retry(src_art.copy,
                                      (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
-
-                filepath = GLib.filename_from_uri(track.uri)[0]
-                track_name = escape(GLib.path_get_basename(filepath))
+                f = Gio.File.new_for_uri(track.uri)
+                track_name = f.get_basename()
                 # Check extension, if not mp3, convert
-                ext = os.path.splitext(filepath)[1]
+                m = match('.*(\.[^.]*)', track.uri)
+                ext = m.group(1)
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
                     track_name = track_name.replace(ext, ".mp3")
@@ -329,7 +333,7 @@ class MtpSync:
                     self.__retry(stream.get_output_stream().write,
                                  (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
-                if not dst_track.query_exists(None):
+                if not dst_track.query_exists():
                     if convertion_needed:
                         mp3_uri = "file:///tmp/%s" % track_name
                         mp3_file = Gio.File.new_for_uri(mp3_uri)
@@ -395,7 +399,7 @@ class MtpSync:
                 self.__in_thread = False
                 return
             track = Track(track_id)
-            if not track.uri.startswith('file:'):
+            if track.uri.startswith('https:'):
                 continue
             album_name = escape(track.album_name.lower())
             if track.album.artist_ids[0] == Type.COMPILATIONS:
@@ -406,20 +410,23 @@ class MtpSync:
                 on_device_album_uri = "%s/%s_%s" % (self._uri,
                                                     artists,
                                                     album_name)
-            filepath = GLib.filename_from_uri(track.uri)[0]
-            track_name = escape(GLib.path_get_basename(filepath))
+            f = Gio.File.new_for_uri(track.uri)
+            track_name = f.get_basename()
             # Check extension, if not mp3, convert
-            ext = os.path.splitext(filepath)[1]
+            m = match('.*(\.[^.]*)', track.uri)
+            ext = m.group(1)
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
-            on_disk = Gio.File.new_for_path(filepath)
+            on_disk = Gio.File.new_for_uri(track.uri)
             info = on_disk.query_info('time::modified',
                                       Gio.FileQueryInfoFlags.NONE,
                                       None)
             # Prefix track with mtime to make sure updating it later
             mtime = info.get_attribute_as_string('time::modified')
             dst_uri = "%s/%s_%s" % (on_device_album_uri, mtime, track_name)
-            track_uris.append(dst_uri)
+            # To be sure to get uri correctly escaped for Gio
+            f = Gio.File.new_for_uri(dst_uri)
+            track_uris.append(f.get_uri())
 
         on_mtp_files = self.__get_track_files()
 

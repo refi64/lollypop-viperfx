@@ -10,11 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Pango, Gio
+from gi.repository import Gtk, Gdk, Pango, Gio, GLib
 
 from gettext import gettext as _
 from math import pi
-from cgi import escape
 
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Track, Album
@@ -70,13 +69,15 @@ class ArtistView(ArtistAlbumsView):
         for artist_id in artist_ids:
             artists.append(Lp().artists.get_name(artist_id))
         if Lp().settings.get_value('artist-artwork'):
-            self.__label.set_markup("<span size='x-large' weight='bold'>" +
-                                    escape(", ".join(artists)) +
-                                    "</span>")
+            self.__label.set_markup(
+                                "<span size='x-large' weight='bold'>" +
+                                GLib.markup_escape_text(", ".join(artists)) +
+                                "</span>")
         else:
-            self.__label.set_markup("<span size='large' weight='bold'>" +
-                                    escape(", ".join(artists)) +
-                                    "</span>")
+            self.__label.set_markup(
+                                "<span size='large' weight='bold'>" +
+                                GLib.markup_escape_text(", ".join(artists)) +
+                                "</span>")
 
     def jump_to_current(self):
         """
