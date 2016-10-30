@@ -204,7 +204,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                     GLib.idle_add(self.__update_progress, i, count)
                     if uri.startswith('file:'):
                         self.__del_from_db(uri)
-                sql.commit()
                 # Add files to db
                 for (uri, mtime) in to_add:
                     try:
@@ -218,6 +217,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             gst_message = e.message
                             if Lp().notify is not None:
                                 Lp().notify.send(gst_message)
+                sql.commit()
             except Exception as e:
                 print("CollectionScanner::__scan()", e)
         GLib.idle_add(self.__finish)
