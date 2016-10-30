@@ -19,6 +19,7 @@ try:
 except:
     pass
 from lollypop.define import Lp
+from lollypop.utils import get_network_available
 from lollypop.cache import InfoCache
 
 
@@ -189,7 +190,7 @@ class WikipediaContent(InfoContent):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
             self.__load_page_content(artist)
-        else:
+        elif get_network_available():
             t = Thread(target=self.__setup_menu,
                        args=(self._artist, self.__album))
             t.daemon = True
@@ -210,9 +211,11 @@ class WikipediaContent(InfoContent):
             Show not found child
         """
         self.set_visible_child_name('notfound')
-        t = Thread(target=self.__setup_menu, args=(self._artist, self.__album))
-        t.daemon = True
-        t.start()
+        if get_network_available():
+            t = Thread(target=self.__setup_menu,
+                       args=(self._artist, self.__album))
+            t.daemon = True
+            t.start()
 
 #######################
 # PRIVATE             #
@@ -231,10 +234,11 @@ class WikipediaContent(InfoContent):
         if not self._stop:
             InfoContent.set_content(self, self._artist, content,
                                     url, 'wikipedia')
-            t = Thread(target=self.__setup_menu,
-                       args=(self._artist, self.__album))
-            t.daemon = True
-            t.start()
+            if get_network_available():
+                t = Thread(target=self.__setup_menu,
+                           args=(self._artist, self.__album))
+                t.daemon = True
+                t.start()
 
     def __setup_menu(self, artist, album):
         """

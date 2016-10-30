@@ -17,6 +17,7 @@ from threading import Thread
 
 from lollypop.define import Lp, OpenLink
 from lollypop.objects import Track
+from lollypop.utils import get_network_available
 from lollypop.widgets_info import WikipediaContent, LastfmContent
 from lollypop.cache import InfoCache
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
@@ -83,7 +84,7 @@ class InfoPopover(Gtk.Popover):
         if Lp().lastfm is not None and\
                 not Lp().settings.get_value('use-librefm'):
             builder.get_object('scrolllastfm').show()
-        if InfoPopover.WebView is not None:
+        if InfoPopover.WebView is not None and get_network_available():
             builder.get_object('scrollduck').show()
         if not artist_ids:
             builder.get_object('scrolllyrics').show()
@@ -248,7 +249,7 @@ class InfoPopover(Gtk.Popover):
             else:
                 label.set_label(
                        _("No lyrics found, please install gir1.2-webkit2-4.0"))
-        else:
+        elif get_network_available():
             artists = ", ".join(Lp().player.current_track.artists)
             title = self.__current_track.name
             url = "http://genius.com/search?q=%s" % artists + " " + title
