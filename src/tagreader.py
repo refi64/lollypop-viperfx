@@ -371,7 +371,7 @@ class TagReader(Discoverer):
         return genre_ids
 
     def add_album(self, album_name, artist_ids,
-                  uri, popularity, mtime):
+                  uri, popularity, mtime, remote):
         """
             Add album to db
             @param album name as string
@@ -380,6 +380,7 @@ class TagReader(Discoverer):
             @param year as int
             @param popularity as int
             @param mtime as int
+            @param remote as bool
             @return (album id as int, new as bool)
             @commit needed
         """
@@ -390,7 +391,7 @@ class TagReader(Discoverer):
         else:
             parent_uri = ""
         new = False
-        album_id = Lp().albums.get_id(album_name, artist_ids)
+        album_id = Lp().albums.get_id(album_name, artist_ids, remote)
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids,

@@ -284,7 +284,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
-                                               uri, album_pop, amtime)
+                                               uri, album_pop, amtime, False)
 
         genre_ids = self.add_genres(genres, album_id)
 

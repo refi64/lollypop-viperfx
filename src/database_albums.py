@@ -243,11 +243,12 @@ class AlbumsDatabase:
                 return v[0]
             return 5
 
-    def get_id(self, album_name, artist_ids):
+    def get_id(self, album_name, artist_ids, remote):
         """
             Get non compilation album id
             @param Album name as string,
             @param artist ids as [int]
+            @param remote as bool
             @return Album id as int
         """
         with SqlCursor(Lp().db) as sql:
@@ -261,10 +262,14 @@ class AlbumsDatabase:
                 for artist_id in artist_ids:
                     request += "OR artist_id=? "
                 request += ")"
+                if remote:
+                    request += " AND synced=%s" % Type.NONE
             else:
                 request = "SELECT rowid FROM albums\
                            WHERE name=?\
                            AND no_album_artist=1"
+                if remote:
+                    request += " AND synced=%s" % Type.NONE
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
