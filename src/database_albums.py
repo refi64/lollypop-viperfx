@@ -264,12 +264,16 @@ class AlbumsDatabase:
                 request += ")"
                 if remote:
                     request += " AND synced=%s" % Type.NONE
+                else:
+                    request += " AND synced!=%s" % Type.NONE
             else:
                 request = "SELECT rowid FROM albums\
                            WHERE name=?\
                            AND no_album_artist=1"
                 if remote:
                     request += " AND synced=%s" % Type.NONE
+                else:
+                    request += " AND synced!=%s" % Type.NONE
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:

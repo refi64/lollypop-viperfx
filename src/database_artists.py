@@ -110,8 +110,11 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
-                       FROM album_artists, albums\
-                       WHERE albums.rowid=album_artists.album_id AND (1=0 "
+                       FROM album_artists, albums, album_genres\
+                       WHERE albums.rowid=album_artists.album_id AND\
+                       album_genres.genre_id!=%s AND\
+                       albums.rowid=album_genres.album_id AND\
+                       (1=0 " % Type.CHARTS
             for artist_id in artist_ids:
                 request += "OR album_artists.artist_id=%s " % artist_id
             request += ") ORDER BY year"
