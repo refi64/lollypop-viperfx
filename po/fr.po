@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-31 10:43+0100\n"
-"PO-Revision-Date: 2016-10-31 09:47+0000\n"
+"POT-Creation-Date: 2016-10-31 11:13+0100\n"
+"PO-Revision-Date: 2016-10-31 10:15+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -350,7 +350,7 @@ msgstr "Google Web Services a besoin d'une clé d'API personnalisée"
 msgid "Lollypop needs this to search artwork and music."
 msgstr "Lollypop a besoin de cela pour rechercher des pochettes et de la musique"
 
-#: ../src/application.py:485
+#: ../src/application.py:486
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -508,7 +508,7 @@ msgstr "Vérifiez vos paramètres de musique."
 
 #: ../src/collectionscanner.py:265 ../src/database_albums.py:326
 #: ../src/database_artists.py:104 ../src/database_genres.py:70
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:387
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:389
 #: ../src/tagreader.py:84 ../src/tagreader.py:99 ../src/tagreader.py:114
 #: ../src/tagreader.py:159 ../src/tagreader.py:174 ../src/tagreader.py:177
 #: ../src/tagreader.py:187 ../src/tagreader.py:194
@@ -652,7 +652,7 @@ msgid "Playback"
 msgstr "Lecture"
 
 #: ../src/pop_menu.py:362 ../src/pop_menu.py:501 ../src/pop_menu.py:521
-#: ../src/selectionlist.py:308 ../src/widgets_device.py:116
+#: ../src/selectionlist.py:309 ../src/widgets_device.py:116
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Listes de lecture"
@@ -700,7 +700,7 @@ msgstr "Ajouter"
 msgid "Modify"
 msgstr "Modifier"
 
-#: ../src/pop_search.py:288
+#: ../src/pop_search.py:287
 msgid "You need to install youtube-dl"
 msgstr "Vous devez installer youtube-dl"
 
@@ -712,31 +712,31 @@ msgstr "Veuillez patienter..."
 msgid "Can't connect to TuneIn..."
 msgstr "Impossible de se connecter à TuneIn..."
 
-#: ../src/selectionlist.py:305
+#: ../src/selectionlist.py:306
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/selectionlist.py:306
+#: ../src/selectionlist.py:307
 msgid "Recently added albums"
 msgstr "Albums ajoutés récemment"
 
-#: ../src/selectionlist.py:307
+#: ../src/selectionlist.py:308
 msgid "Random albums"
 msgstr "Albums aléatoires"
 
-#: ../src/selectionlist.py:309
+#: ../src/selectionlist.py:310
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/selectionlist.py:311
+#: ../src/selectionlist.py:313
 msgid "The charts"
 msgstr "Le hit-parade"
 
-#: ../src/selectionlist.py:313
+#: ../src/selectionlist.py:315
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/selectionlist.py:315
+#: ../src/selectionlist.py:317
 msgid "All artists"
 msgstr "Tous les artistes"
 
@@ -796,6 +796,10 @@ msgstr "The the La la Le le Les les"
 #: ../src/view_artist.py:326 ../src/widgets_album.py:369
 msgid "Remove"
 msgstr "Enlever"
+
+#: ../src/view_artist_albums.py:77
+msgid "Network access disabled"
+msgstr "Accès réseau désactivé"
 
 #: ../src/view_device.py:35
 msgid "Please unlock your device"
