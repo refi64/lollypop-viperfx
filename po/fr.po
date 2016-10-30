@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-31 11:13+0100\n"
-"PO-Revision-Date: 2016-10-31 10:15+0000\n"
+"POT-Creation-Date: 2016-10-31 13:26+0100\n"
+"PO-Revision-Date: 2016-10-31 12:28+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -358,7 +358,7 @@ msgstr "Lollypop: Vous devez installer yelp."
 msgid "Select artwork"
 msgstr "Choisissez une image"
 
-#: ../src/art_widgets.py:333
+#: ../src/art_widgets.py:335
 msgid "Reset artwork?"
 msgstr "Réinitialiser l'image?"
 
@@ -600,15 +600,20 @@ msgstr "Aller au morceau courant"
 msgid "Playing albums"
 msgstr "Albums en cours de lecture"
 
-#: ../src/pop_info.py:35
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Informations avancées sur l'artiste désactivée"
 
-#: ../src/pop_info.py:43
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "Support de WebKit désactivé"
 
-#: ../src/pop_info.py:250
+#: ../src/pop_info.py:252 ../src/view_artist_albums.py:77
+#: ../src/widgets_info.py:129
+msgid "Network access disabled"
+msgstr "Accès réseau désactivé"
+
+#: ../src/pop_info.py:259
 msgid "No lyrics found, please install gir1.2-webkit2-4.0"
 msgstr "Pas de paroles trouvées, merci d'installer gir1.2-webkit2-4.0"
 
@@ -797,10 +802,6 @@ msgstr "The the La la Le le Les les"
 msgid "Remove"
 msgstr "Enlever"
 
-#: ../src/view_artist_albums.py:77
-msgid "Network access disabled"
-msgstr "Accès réseau désactivé"
-
 #: ../src/view_device.py:35
 msgid "Please unlock your device"
 msgstr "Merci de déverrouiller votre appareil"
@@ -845,6 +846,10 @@ msgstr "%s m"
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
+
+#: ../src/widgets_info.py:127
+msgid "No information for this artist"
+msgstr "Aucune information pour cet artist"
 
 #: ../src/widgets_device.py:57
 msgid "You need to install gstreamer-plugins-ugly"
@@ -965,10 +970,6 @@ msgstr "À _propos"
 #: ../data/Appmenu.ui.h:8
 msgid "_Quit"
 msgstr "_Quitter"
-
-#: ../data/InfoContent.ui.h:1
-msgid "No information for this artist..."
-msgstr "Aucune information pour cet artiste..."
 
 #: ../data/ArtistInfo.ui.h:2
 msgid "Last.fm"
