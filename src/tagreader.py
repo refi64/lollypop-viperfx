@@ -390,11 +390,7 @@ class TagReader(Discoverer):
         else:
             parent_uri = ""
         new = False
-        if artist_ids:
-            album_id = Lp().albums.get_non_compilation_id(album_name,
-                                                          artist_ids)
-        else:
-            album_id = Lp().albums.get_compilation_id(album_name)
+        album_id = Lp().albums.get_id(album_name, artist_ids)
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids,

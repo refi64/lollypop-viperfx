@@ -243,7 +243,7 @@ class AlbumsDatabase:
                 return v[0]
             return 5
 
-    def get_non_compilation_id(self, album_name, artist_ids):
+    def get_id(self, album_name, artist_ids):
         """
             Get non compilation album id
             @param Album name as string,
@@ -252,30 +252,20 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             filters = (album_name,)
-            filters += tuple(artist_ids)
-            request = "SELECT albums.rowid FROM albums, album_artists\
-                       WHERE name=? AND\
-                       no_album_artist=0 AND\
-                       album_artists.album_id=albums.rowid AND (1=0 "
-            for artist_id in artist_ids:
-                request += "OR artist_id=? "
-            request += ")"
+            if artist_ids:
+                filters += tuple(artist_ids)
+                request = "SELECT albums.rowid FROM albums, album_artists\
+                           WHERE name=? AND\
+                           no_album_artist=0 AND\
+                           album_artists.album_id=albums.rowid AND (1=0 "
+                for artist_id in artist_ids:
+                    request += "OR artist_id=? "
+                request += ")"
+            else:
+                request = "SELECT rowid FROM albums\
+                           WHERE name=?\
+                           AND no_album_artist=1"
             result = sql.execute(request, filters)
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return None
-
-    def get_compilation_id(self, album_name):
-        """
-            Get compilation id
-            @param Album name as string,
-            @param year as int
-            @return Album id as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM albums where name=?\
-                                  AND no_album_artist=1", (album_name,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
