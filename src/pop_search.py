@@ -19,7 +19,7 @@ from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
-from lollypop.utils import noaccents
+from lollypop.utils import noaccents, get_network_available
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -282,12 +282,11 @@ class SearchPopover(Gtk.Popover):
         self.__spinner = builder.get_object('spinner')
         self.__stack = builder.get_object('stack')
 
-        switch = builder.get_object('search-switch')
+        self.__switch = builder.get_object('search-switch')
         if GLib.find_program_in_path("youtube-dl") is None:
-            switch.set_sensitive(False)
-            switch.set_tooltip_text(_("You need to install youtube-dl"))
+            self.__switch.set_tooltip_text(_("You need to install youtube-dl"))
         else:
-            switch.set_state(Lp().settings.get_value('network-search'))
+            self.__switch.set_state(Lp().settings.get_value('network-search'))
         builder.get_object('scrolled').add(self.__view)
         self.add(builder.get_object('widget'))
         # Connect here because we don't want previous switch.set_state()
@@ -351,6 +350,14 @@ class SearchPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __enable_network_search(self):
+        """
+            True if shoud enable network search
+            @return bool
+        """
+        return GLib.find_program_in_path("youtube-dl") and\
+            get_network_available()
+
     def __calculate_score(self, row):
         """
             Calculate score for row
@@ -580,6 +587,7 @@ class SearchPopover(Gtk.Popover):
             Disable global shortcuts and resize
             @param widget as Gtk.Widget
         """
+        self.__switch.set_sensitive(self.__enable_network_search())
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(False)
         height = Lp().window.get_size()[1]

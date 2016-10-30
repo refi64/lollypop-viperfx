@@ -407,6 +407,7 @@ class Application(Gtk.Application):
         """
         action.set_state(param)
         self.settings.set_value('network-access', param)
+        self.window.reload_view()
 
     def __fullscreen(self, action=None, param=None):
         """
