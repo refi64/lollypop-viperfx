@@ -220,10 +220,12 @@ class ArtworkSearch(Gtk.Bin):
                                                                  self.__artist,
                                                                  genre))
                 urls += Lp().art.get_google_arts(self.__artist)
-        if urls:
-            self.__add_pixbufs(urls, search)
+            if urls:
+                self.__add_pixbufs(urls, search)
+            else:
+                GLib.idle_add(self.__show_not_found)
         else:
-            GLib.idle_add(self.__show_not_found)
+            GLib.idle_add(self._spinner.stop)
 
     def __add_pixbufs(self, urls, search):
         """
