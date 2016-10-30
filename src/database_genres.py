@@ -14,7 +14,8 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
+from lollypop.utils import get_network_available
 
 
 class GenresDatabase:
@@ -86,11 +87,14 @@ class GenresDatabase:
             @return Array of id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT albums.rowid\
-                                 FROM albums, album_genres\
-                                 WHERE album_genres.genre_id=?\
-                                 AND album_genres.album_id=albums.rowid",
-                                 (genre_id,))
+            filters = (genre_id, )
+            request = "SELECT albums.rowid\
+                       FROM albums, album_genres\
+                       WHERE album_genres.genre_id=?\
+                       AND album_genres.album_id=albums.rowid"
+            if not get_network_available():
+                request += " AND albums.synced!=%s" % Type.NONE
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get(self):
