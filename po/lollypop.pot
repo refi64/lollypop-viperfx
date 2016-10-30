@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-31 11:13+0100\n"
+"POT-Creation-Date: 2016-10-31 13:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -356,7 +356,7 @@ msgstr ""
 msgid "Select artwork"
 msgstr ""
 
-#: ../src/art_widgets.py:333
+#: ../src/art_widgets.py:335
 msgid "Reset artwork?"
 msgstr ""
 
@@ -598,15 +598,20 @@ msgstr ""
 msgid "Playing albums"
 msgstr ""
 
-#: ../src/pop_info.py:35
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/pop_info.py:43
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr ""
 
-#: ../src/pop_info.py:250
+#: ../src/pop_info.py:252 ../src/view_artist_albums.py:77
+#: ../src/widgets_info.py:129
+msgid "Network access disabled"
+msgstr ""
+
+#: ../src/pop_info.py:259
 msgid "No lyrics found, please install gir1.2-webkit2-4.0"
 msgstr ""
 
@@ -795,10 +800,6 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../src/view_artist_albums.py:77
-msgid "Network access disabled"
-msgstr ""
-
 #: ../src/view_device.py:35
 msgid "Please unlock your device"
 msgstr ""
@@ -842,6 +843,10 @@ msgstr ""
 #: ../src/widgets_album.py:1021
 #, python-format
 msgid "Disc %s"
+msgstr ""
+
+#: ../src/widgets_info.py:127
+msgid "No information for this artist"
 msgstr ""
 
 #: ../src/widgets_device.py:57
@@ -962,10 +967,6 @@ msgstr ""
 
 #: ../data/Appmenu.ui.h:8
 msgid "_Quit"
-msgstr ""
-
-#: ../data/InfoContent.ui.h:1
-msgid "No information for this artist..."
 msgstr ""
 
 #: ../data/ArtistInfo.ui.h:2
