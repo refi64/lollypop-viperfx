@@ -543,7 +543,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if not Lp().scanner.is_locked():
             Lp().window.pulse(False)
-        if self._current_track.id >= 0:
+        if self._current_track.id is not None and self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
         if not self.__do_not_update_next:
             self.set_next()
