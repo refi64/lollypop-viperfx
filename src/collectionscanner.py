@@ -207,16 +207,17 @@ class CollectionScanner(GObject.GObject, TagReader):
                 sql.commit()
                 # Add files to db
                 for (uri, mtime) in to_add:
-                    debug("Adding file: %s" % uri)
-                    i += 1
-                    GLib.idle_add(self.__update_progress, i, count)
-                    self.__add2db(uri, mtime)
-            except GLib.GError as e:
-                print("CollectionScanner::__scan:", e)
-                if e.message != gst_message:
-                    gst_message = e.message
-                    if Lp().notify is not None:
-                        Lp().notify.send(gst_message)
+                    try:
+                        debug("Adding file: %s" % uri)
+                        i += 1
+                        GLib.idle_add(self.__update_progress, i, count)
+                        self.__add2db(uri, mtime)
+                    except GLib.GError as e:
+                        print("CollectionScanner::__scan:", e)
+                        if e.message != gst_message:
+                            gst_message = e.message
+                            if Lp().notify is not None:
+                                Lp().notify.send(gst_message)
             except Exception as e:
                 print("CollectionScanner::__scan()", e)
         GLib.idle_add(self.__finish)
