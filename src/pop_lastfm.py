@@ -10,11 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango, Gio
+from gi.repository import Gtk, GLib, Pango
 
 from threading import Thread
 
 from lollypop.define import Lp
+from lollypop.utils import get_network_available
 
 
 class LastfmPopover(Gtk.Popover):
@@ -48,7 +49,7 @@ class LastfmPopover(Gtk.Popover):
             Populate view artist ids
             @param artist ids as int
         """
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available():
             artists = []
             for artist_id in artist_ids:
                 artists.append(Lp().artists.get_name(artist_id))

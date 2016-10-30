@@ -17,6 +17,7 @@ from gettext import gettext as _
 
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, ArtSize
+from lollypop.utils import get_network_available
 
 
 class ArtworkSearch(Gtk.Bin):
@@ -204,7 +205,7 @@ class ArtworkSearch(Gtk.Bin):
             @thread safe
         """
         urls = []
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available():
             if search != "":
                 urls = Lp().art.get_google_arts(search)
             elif self.__album is not None:

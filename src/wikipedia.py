@@ -10,13 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
-
 from gettext import gettext as _
 from locale import getdefaultlocale
 from random import shuffle
 import re
 import wikipedia
+
+from lollypop.utils import get_network_available
 
 
 class Wikipedia:
@@ -49,7 +49,7 @@ class Wikipedia:
             @param page name as str
             @return (url as str, content as str)
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             return (None, None)
         page = wikipedia.page(name)
         if page is None:

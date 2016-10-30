@@ -38,7 +38,7 @@ import re
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
 from lollypop.objects import Track
-from lollypop.utils import debug
+from lollypop.utils import debug, get_network_available
 
 
 class LastFM(LastFMNetwork, LibreFMNetwork):
@@ -87,7 +87,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             t.start()
         # Get username/password from GSettings/Secret
         elif Secret is not None and\
-                Gio.NetworkMonitor.get_default().get_network_available():
+                get_network_available():
             self.__username = Lp().settings.get_value(
                                                    'lastfm-login').get_string()
             if password is None:
@@ -107,7 +107,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             Connect lastfm sync
             @param password as str
         """
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available():
             self.__username = Lp().settings.get_value(
                                                    'lastfm-login').get_string()
             self.__connect(self.__username, password)
@@ -121,7 +121,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param artist as str
             @return (url as str, content as str)
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             return (None, None, None)
         last_artist = self.get_artist(artist)
         try:
@@ -142,7 +142,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param timestamp as int
             @param duration as int
         """
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
+        if get_network_available() and\
            self.__is_auth and Secret is not None:
             t = Thread(target=self.__scrobble,
                        args=(artist,
@@ -160,7 +160,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param album as str
             @param duration as int
         """
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
+        if get_network_available() and\
            self.__is_auth and Secret is not None:
             t = Thread(target=self.__now_playing,
                        args=(artist,
@@ -178,7 +178,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
+        if get_network_available() and\
            self.__is_auth:
             track = self.get_track(artist, title)
             try:
@@ -194,7 +194,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
+        if get_network_available() and\
            self.__is_auth:
             track = self.get_track(artist, title)
             try:
@@ -383,7 +383,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         try:
             password = Secret.password_lookup_finish(result)
             self.__password = password
-            if Gio.NetworkMonitor.get_default().get_network_available():
+            if get_network_available():
                 t = Thread(target=self.__connect,
                            args=(self.__username, password))
                 t.daemon = True

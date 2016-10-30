@@ -22,7 +22,7 @@ from locale import getdefaultlocale
 
 from lollypop.youtube import Youtube
 from lollypop.define import DbPersistent, Lp
-from lollypop.utils import debug
+from lollypop.utils import debug, get_network_available
 from lollypop.search_item import SearchItem
 
 
@@ -185,7 +185,7 @@ class ItunesCharts:
             Update charts for url
             @param url as str
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
                 return
         debug("ItunesCharts::__update_for_url(): %s => %s" % (url,
                                                               self.__count))
@@ -211,7 +211,7 @@ class ItunesCharts:
             @param id as int
             @return SearchItem/None
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
                 return
         language = getdefaultlocale()[0][0:2]
         try:

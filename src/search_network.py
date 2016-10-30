@@ -13,6 +13,7 @@
 from gi.repository import GObject, Gio, GLib
 
 from lollypop.search_spotify import SpotifySearch
+from lollypop.utils import get_network_available
 
 
 class NetworkSearch(SpotifySearch, GObject.GObject):
@@ -57,7 +58,7 @@ class NetworkSearch(SpotifySearch, GObject.GObject):
             @param name as str
             @return tracks as [SearchItem]
         """
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available():
             SpotifySearch.albums(self, name)
             SpotifySearch.tracks(self, name)
         self._finished = True

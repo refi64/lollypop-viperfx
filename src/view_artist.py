@@ -10,12 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Pango, Gio, GLib
+from gi.repository import Gtk, Gdk, Pango, GLib
 
 from gettext import gettext as _
 from math import pi
 
 from lollypop.define import Lp, ArtSize
+from lollypop.utils import get_network_available
 from lollypop.objects import Track, Album
 from lollypop.pop_info import InfoPopover
 from lollypop.cache import InfoCache
@@ -51,7 +52,7 @@ class ArtistView(ArtistAlbumsView):
         self.__play_button = builder.get_object('play-button')
         self.__grid = builder.get_object('header-grid')
         if Lp().lastfm is None or\
-                not Gio.NetworkMonitor.get_default().get_network_available():
+                not get_network_available():
             builder.get_object('lastfm-button').hide()
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)

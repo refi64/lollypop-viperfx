@@ -13,6 +13,7 @@
 from gi.repository import Gio
 
 import xml.etree.ElementTree as xml
+from lollypop.utils import get_network_available
 
 
 class TuneItem:
@@ -38,7 +39,7 @@ class TuneIn:
             @param uri as string
         """
         items = []
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             raise
         f = Gio.File.new_for_uri(url)
         (status, data, tag) = f.load_contents()

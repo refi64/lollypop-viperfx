@@ -23,6 +23,15 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
+def get_network_available():
+    """
+        Return True if network avaialble
+        @return bool
+    """
+    return Gio.NetworkMonitor.get_default().get_network_available() and\
+        Lp().settings.get_value('network-access')
+
+
 def noaccents(string):
         """
             Return string without accents

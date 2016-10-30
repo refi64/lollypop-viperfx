@@ -26,6 +26,7 @@ from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.database_history import History
+from lollypop.utils import get_network_available
 
 
 class Settings(Gio.Settings):
@@ -480,7 +481,7 @@ class SettingsDialog:
             @param button as Gtk.Button
         """
         self._update_lastfm_settings(True)
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             self.__test_img.set_from_icon_name('computer-fail-symbolic',
                                                Gtk.IconSize.MENU)
             return

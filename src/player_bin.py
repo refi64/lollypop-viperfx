@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstAudio, GstPbutils, GLib, Gio
+from gi.repository import Gst, GstAudio, GstPbutils, GLib
 
 from time import time
 from threading import Thread
@@ -22,7 +22,7 @@ from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.codecs import Codecs
 from lollypop.define import Type, DbPersistent
-from lollypop.utils import debug
+from lollypop.utils import debug, get_network_available
 from lollypop.objects import Track
 
 
@@ -272,7 +272,7 @@ class BinPlayer(BasePlayer):
             @param play as bool
             @return True if loading
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             # Force widgets to update (spinners)
             self.emit('current-changed')
             return False

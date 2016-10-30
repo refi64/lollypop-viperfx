@@ -10,12 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
-
 from gettext import gettext as _
 
 from lollypop.objects import Track
 from lollypop.define import Lp
+from lollypop.utils import get_network_available
 
 
 class QueuePlayer:
@@ -38,7 +37,7 @@ class QueuePlayer:
         """
         track = Track(track_id)
         if track.is_youtube and\
-           not Gio.NetworkMonitor.get_default().get_network_available():
+           not get_network_available():
             if Lp().notify is not None:
                 Lp().notify.send(_("No network available,"
                                    " can't play this track"),
@@ -61,7 +60,7 @@ class QueuePlayer:
         """
         track = Track(track_id)
         if track.is_youtube and\
-           not Gio.NetworkMonitor.get_default().get_network_available():
+           not get_network_available():
             if Lp().notify is not None:
                 Lp().notify.send(_("No network available,"
                                    " can't play this track"),

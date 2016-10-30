@@ -20,7 +20,7 @@ from csv import reader
 from lollypop.search_spotify import SpotifySearch
 from lollypop.youtube import Youtube
 from lollypop.define import DbPersistent, Lp
-from lollypop.utils import debug
+from lollypop.utils import debug, get_network_available
 
 
 class SpotifyCharts:
@@ -81,7 +81,7 @@ class SpotifyCharts:
             Update charts for url
             @param url as str
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
                 return
         debug("SpotifyCharts::__update_for_url(): %s => %s" % (url,
                                                                self.__count))

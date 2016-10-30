@@ -17,7 +17,7 @@ import json
 
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, GOOGLE_API_ID
-from lollypop.utils import debug
+from lollypop.utils import debug, get_network_available
 
 
 class Downloader:
@@ -45,7 +45,7 @@ class Downloader:
         """
         if album_id in self.__albums_history:
             return
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available():
             self.__albums_queue.append(album_id)
             if not self.__in_albums_download:
                 t = Thread(target=self.__cache_albums_art)
@@ -72,7 +72,7 @@ class Downloader:
         data = None
         urls = []
 
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             return []
 
         cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
@@ -305,7 +305,7 @@ class Downloader:
         InfoCache.init()
         # Then cache for lastfm/wikipedia/spotify/deezer/...
         for (artist_id, artist) in Lp().artists.get([]):
-            if not Gio.NetworkMonitor.get_default().get_network_available() or\
+            if not get_network_available() or\
                     InfoCache.exists(artist):
                 continue
             artwork_set = False

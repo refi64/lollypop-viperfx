@@ -19,6 +19,7 @@ from lollypop.radios import Radios
 from lollypop.tunein import TuneIn
 from lollypop.define import Lp, ArtSize, WindowSize
 from lollypop.art import Art
+from lollypop.utils import get_network_available
 
 
 class TuneinPopover(Gtk.Popover):
@@ -345,7 +346,7 @@ class TuneinPopover(Gtk.Popover):
                 self.__previous_urls.append(self.__current_url)
             self.populate(item.URL)
         elif item.TYPE == "audio":
-            if Gio.NetworkMonitor.get_default().get_network_available():
+            if get_network_available():
                 # Cache for toolbar
                 t = Thread(target=Lp().art.copy_uri_to_cache,
                            args=(item.LOGO, item.TEXT,
