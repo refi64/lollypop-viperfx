@@ -68,7 +68,7 @@
         </key>
  	<key type="as" name="music-path">
             <default>[]</default>
-            <summary>unused</summary>
+            <summary></summary>
             <description></description>
         </key>
  	<key type="as" name="music-uris">
