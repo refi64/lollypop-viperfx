@@ -76,7 +76,7 @@ class ArtistAlbumsView(LazyLoadingView):
             label = Gtk.Label.new()
             string = GLib.markup_escape_text(_("Network access disabled"))
             label.set_markup(
-                       "<span font_weight='bold'size='xx-large'>" +
+                       "<span font_weight='bold' size='xx-large'>" +
                        string +
                        "</span>")
             label.set_property('halign', Gtk.Align.CENTER)

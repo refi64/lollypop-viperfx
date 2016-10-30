@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio
 
 from threading import Thread
+from gettext import gettext as _
 
 try:
     from lollypop.wikipedia import Wikipedia
@@ -45,6 +46,7 @@ class InfoContent(Gtk.Stack):
         self.__image = builder.get_object('image')
         self._menu_found = builder.get_object('menu-found')
         self._menu_not_found = builder.get_object('menu-not-found')
+        self.__error = builder.get_object('error')
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
@@ -121,6 +123,14 @@ class InfoContent(Gtk.Stack):
         """
             Show not found child
         """
+        if get_network_available():
+            error = _("No information for this artist")
+        else:
+            error = _("Network access disabled")
+        self.__error.set_markup(
+                       "<span font_weight='bold' size='xx-large'>" +
+                       error +
+                       "</span>")
         self.set_visible_child_name('notfound')
 
 #######################
@@ -210,7 +220,7 @@ class WikipediaContent(InfoContent):
         """
             Show not found child
         """
-        self.set_visible_child_name('notfound')
+        InfoContent.__on_not_found(self)
         if get_network_available():
             t = Thread(target=self.__setup_menu,
                        args=(self._artist, self.__album))

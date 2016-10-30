@@ -236,19 +236,31 @@ class InfoPopover(Gtk.Popover):
         if info is not None:
             tags = info.get_tags()
             lyrics = reader.get_lyrics(tags)
-        if lyrics or InfoPopover.WebView is None:
+        if lyrics or InfoPopover.WebView is None\
+                or not get_network_available():
             label = Gtk.Label()
             label.set_vexpand(True)
             label.set_hexpand(True)
             label.set_margin_top(10)
             label.set_margin_end(10)
+            label.get_style_context().add_class('dim-label')
             label.show()
             widget.add(label)
             if lyrics:
                 label.set_label(lyrics)
+            elif not get_network_available():
+                string = GLib.markup_escape_text(_("Network access disabled"))
+                label.set_markup(
+                       "<span font_weight='bold' size='xx-large'>" +
+                       string +
+                       "</span>")
             else:
-                label.set_label(
+                string = GLib.markup_escape_text(
                        _("No lyrics found, please install gir1.2-webkit2-4.0"))
+                label.set_markup(
+                       "<span font_weight='bold' size='xx-large'>" +
+                       string +
+                       "</span>")
         elif get_network_available():
             artists = ", ".join(Lp().player.current_track.artists)
             title = self.__current_track.name
