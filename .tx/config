@@ -5,6 +5,7 @@ host = https://www.transifex.com
 file_filter = po/<lang>.po
 source_file = po/lollypop.pot
 source_lang = en
+trans.fi = po/fi.po
 trans.da = po/da.po
 trans.de = po/de.po
 trans.fr = po/fr.po
