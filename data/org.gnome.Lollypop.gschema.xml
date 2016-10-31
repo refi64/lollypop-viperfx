@@ -36,6 +36,11 @@
             <summary>Mini player position</summary>
             <description>Window position (x and y).</description>
         </key>
+        <key type="b" name="network-access">
+            <default>true</default>
+            <summary>Access network</summary>
+            <description></description>
+        </key>
         <key type="b" name="network-search">
             <default>false</default>
             <summary>Search over network</summary>

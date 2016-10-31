@@ -399,6 +399,15 @@ class Application(Gtk.Application):
             t.start()
             self.window.update_db()
 
+    def __set_network(self, action, param):
+        """
+            Enable/disable network
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        action.set_state(param)
+        self.settings.set_value('network-access', param)
+
     def __fullscreen(self, action=None, param=None):
         """
             Show a fullscreen window with cover and artist informations
@@ -501,6 +510,13 @@ class Application(Gtk.Application):
         updateAction.connect('activate', self.__update_db)
         self.set_accels_for_action('app.update_db', ["<Control>u"])
         self.add_action(updateAction)
+
+        networkAction = Gio.SimpleAction.new_stateful(
+           'network',
+           None,
+           GLib.Variant.new_boolean(self.settings.get_value('network-access')))
+        networkAction.connect('change-state', self.__set_network)
+        self.add_action(networkAction)
 
         fsAction = Gio.SimpleAction.new('fullscreen', None)
         fsAction.connect('activate', self.__fullscreen)
