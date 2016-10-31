@@ -198,6 +198,22 @@ class Container:
         if view:
             view.update_children()
 
+    def add_remove_from(self, value, list_one, add):
+        """
+            Add or remove value to list
+            @param value as (int, str)
+            @param list one as bool
+            @param add as bool
+        """
+        if list_one:
+            l = self.__list_one
+        else:
+            l = self.__list_two
+        if add:
+            l.add_value(value)
+        else:
+            l.remove_value(value[0])
+
     def reload_view(self):
         """
             Reload current view
