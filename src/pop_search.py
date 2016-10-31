@@ -338,7 +338,8 @@ class SearchPopover(Gtk.Popover):
             @param state as bool
         """
         Lp().settings.set_boolean('network-search', state)
-        Lp().window.reload_view()
+        GLib.idle_add(self._on_search_changed, self.__entry)
+        GLib.idle_add(Lp().window.reload_view)
         if state:
             if Lp().charts is None:
                 from lollypop.charts import Charts
