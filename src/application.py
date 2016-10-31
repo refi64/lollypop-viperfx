@@ -35,7 +35,7 @@ except Exception as e:
     print("$ sudo pip3 install pylast")
     LastFM = None
 
-from lollypop.utils import is_gnome, is_unity
+from lollypop.utils import is_gnome, is_unity, get_network_available
 from lollypop.define import Type, DataPath
 from lollypop.window import Window
 from lollypop.database import Database
@@ -207,7 +207,8 @@ class Application(Gtk.Application):
                 if GLib.find_program_in_path("youtube-dl") is not None:
                     from lollypop.charts import Charts
                     self.charts = Charts()
-                    self.charts.update()
+                    if get_network_available():
+                        self.charts.update()
                     cs_api_key = self.settings.get_value(
                                                      'cs-api-key').get_string()
                     default_cs_api_key = self.settings.get_default_value(
