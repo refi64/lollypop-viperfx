@@ -2,6 +2,9 @@ Lollypop is about albums, designed for album playback.
 Playlists are presents for later usage (phone sync, specific party, ...)
 If you really need a player designed around playlists, Lollypop is a bad choice ;)
 
+TRANSLATORS:
+https://www.transifex.com/gnumdk/lollypop
+
 WONTFIX:
 - Showing bitrate
 
