@@ -471,12 +471,16 @@ class EditMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        album_path = Lp().albums.get_path(self._object_id)
-        argv = [self.__tag_editor, album_path, None]
-        GLib.spawn_async_with_pipes(
-                                None, argv, None,
-                                GLib.SpawnFlags.SEARCH_PATH |
-                                GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
+        try:
+            album_uri = Lp().albums.get_uri(self._object_id)
+            argv = [self.__tag_editor,
+                    GLib.filename_from_uri(album_uri)[0], None]
+            GLib.spawn_async_with_pipes(
+                                    None, argv, None,
+                                    GLib.SpawnFlags.SEARCH_PATH |
+                                    GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
+        except:
+            pass
 
 
 class AlbumMenu(Gio.Menu):
