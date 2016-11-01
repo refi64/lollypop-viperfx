@@ -215,6 +215,7 @@ class Application(Gtk.Application):
                                                      'cs-api-key').get_string()
                     if (not cs_api_key or
                         cs_api_key == default_cs_api_key) and\
+                            get_network_available() and\
                             self.notify is not None:
                         self.notify.send(
                          _("Google Web Services need a custom API key"),
