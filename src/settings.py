@@ -22,7 +22,7 @@ from gettext import ngettext as ngettext
 from threading import Thread
 from re import findall, DOTALL
 
-from lollypop.define import Lp, SecretSchema, SecretAttributes
+from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
 from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.database_history import History
@@ -150,6 +150,12 @@ class SettingsDialog:
         else:
             switch_artwork_tags.set_state(
                                       Lp().settings.get_value('save-to-tags'))
+
+        if GLib.find_program_in_path("youtube-dl") is None:
+            builder.get_object('charts_grid').hide()
+        else:
+            switch_charts = builder.get_object('switch_charts')
+            switch_charts.set_state(Lp().settings.get_value('show-charts'))
 
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Lp().settings.get_value('show-genres'))
@@ -301,6 +307,27 @@ class SettingsDialog:
         """
         Lp().window.show_genres(state)
         Lp().settings.set_value('show-genres',
+                                GLib.Variant('b', state))
+
+    def _update_charts_setting(self, widget, state):
+        """
+            Update show charts setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        GLib.idle_add(Lp().window.add_remove_from,
+                      (Type.CHARTS, _("The charts")),
+                      True,
+                      state)
+        if state:
+            if Lp().charts is None:
+                from lollypop.charts import Charts
+                Lp().charts = Charts()
+            if get_network_available():
+                Lp().charts.update()
+        else:
+            Lp().charts.stop()
+        Lp().settings.set_value('show-charts',
                                 GLib.Variant('b', state))
 
     def _update_mix_setting(self, widget, state):

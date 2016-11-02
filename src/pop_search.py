@@ -339,17 +339,6 @@ class SearchPopover(Gtk.Popover):
         """
         Lp().settings.set_boolean('network-search', state)
         GLib.idle_add(self._on_search_changed, self.__entry)
-        GLib.idle_add(Lp().window.add_remove_from,
-                      (Type.CHARTS, _("The charts")),
-                      True,
-                      state)
-        if state:
-            if Lp().charts is None:
-                from lollypop.charts import Charts
-                Lp().charts = Charts()
-            Lp().charts.update()
-        else:
-            Lp().charts.stop()
 
 #######################
 # PRIVATE             #

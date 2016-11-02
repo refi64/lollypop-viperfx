@@ -507,16 +507,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="main_chooser_box">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="margin_start">10</property>
-            <property name="margin_end">10</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
             <property name="orientation">vertical</property>
-            <property name="spacing">5</property>
             <child>
               <object class="GtkGrid" id="stat_grid">
                 <property name="visible">True</property>
@@ -534,7 +528,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -544,7 +538,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -557,7 +551,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
-                    <property name="top_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -570,7 +564,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
-                    <property name="top_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -580,7 +574,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">3</property>
-                    <property name="top_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -591,31 +585,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">5</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkProgressBar" id="progress">
-                    <property name="can_focus">False</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">2</property>
-                    <property name="width">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button">
-                    <property name="label" translatable="yes">Reset database</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="halign">center</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
                     <property name="top_attach">0</property>
-                    <property name="width">6</property>
                   </packing>
                 </child>
               </object>
@@ -627,34 +597,120 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="pack_type">end</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
+              <object class="GtkScrolledWindow">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="margin_top">5</property>
+                <property name="vexpand">True</property>
                 <child>
-                  <object class="GtkViewport" id="viewport1">
+                  <object class="GtkViewport">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkBox" id="chooser_box">
+                      <object class="GtkBox" id="main_chooser_box">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">center</property>
+                        <property name="margin_start">10</property>
+                        <property name="margin_end">10</property>
+                        <property name="margin_top">10</property>
+                        <property name="margin_bottom">10</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">5</property>
                         <child>
-                          <placeholder/>
+                          <object class="GtkProgressBar" id="progress">
+                            <property name="can_focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="button">
+                            <property name="label" translatable="yes">Reset database</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">center</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="charts_grid">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="hexpand">True</property>
+                                <property name="label" translatable="yes">The charts</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="switch_charts">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="halign">end</property>
+                                <signal name="state-set" handler="_update_charts_setting" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="chooser_box">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="valign">start</property>
+                            <property name="vexpand">True</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">5</property>
+                          </packing>
                         </child>
                       </object>
                     </child>
@@ -662,10 +718,9 @@
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="pack_type">end</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -941,6 +996,9 @@ and "YouTube Data API" for your project.</property>
           </packing>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
   <object class="GtkSizeGroup" id="sizegroup1">

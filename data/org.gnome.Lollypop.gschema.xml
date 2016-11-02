@@ -161,6 +161,11 @@
             <summary>Show genres list</summary>
             <description></description>
         </key>
+         <key type="b" name="show-charts">
+            <default>true</default>
+            <summary>Show charts</summary>
+            <description></description>
+        </key>
 	<key type="b" name="artist-artwork">
             <default>false</default>
             <summary>Show artist artwork</summary>

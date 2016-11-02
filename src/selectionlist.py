@@ -308,7 +308,7 @@ class SelectionList(Gtk.Bin):
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
-        if Lp().settings.get_value('network-search') and\
+        if Lp().settings.get_value('show-charts') and\
                 get_network_available():
             items.append((Type.CHARTS, _("The charts")))
         if self.__is_artists:

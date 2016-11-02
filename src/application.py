@@ -203,7 +203,7 @@ class Application(Gtk.Application):
                 from lollypop.inhibitor_legacy import Inhibitor
             self.inhibitor = Inhibitor()
             self.charts = None
-            if self.settings.get_value('network-search'):
+            if self.settings.get_value('show-charts'):
                 if GLib.find_program_in_path("youtube-dl") is not None:
                     from lollypop.charts import Charts
                     self.charts = Charts()
