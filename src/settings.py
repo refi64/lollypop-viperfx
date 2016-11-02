@@ -315,16 +315,20 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        GLib.idle_add(Lp().window.add_remove_from,
-                      (Type.CHARTS, _("The charts")),
-                      True,
-                      state)
+        if Lp().settings.get_value('network-access'):
+            GLib.idle_add(Lp().window.add_remove_from,
+                          (Type.CHARTS, _("The charts")),
+                          True,
+                          state)
         if state:
             if Lp().charts is None:
                 from lollypop.charts import Charts
                 Lp().charts = Charts()
             if get_network_available():
                 Lp().charts.update()
+            elif Lp().notify is not None:
+                Lp().notify.send(_("The charts"),
+                                 _("Network access disabled"))
         else:
             Lp().charts.stop()
             t = Thread(target=self.__clean_charts)
