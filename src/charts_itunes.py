@@ -140,6 +140,7 @@ class ItunesCharts:
             Update charts
         """
         self.__stop = False
+        self.__cancel.reset()
         self.__count = self.__get_album_count()
         t = Thread(target=self.__update)
         t.daemon = True
@@ -195,10 +196,10 @@ class ItunesCharts:
             sleep(10)
             itunes_id = ids.pop(0)
             album = self.__get_album(itunes_id)
-            if album is None or album.exists_in_db():
-                continue
             if self.__stop:
                 return
+            if album is None or album.exists_in_db():
+                continue
             Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self.__count))
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,

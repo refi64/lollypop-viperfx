@@ -118,6 +118,18 @@ class TracksDatabase:
                                   WHERE mtime>1")
             return list(itertools.chain(*result))
 
+    def get_charts(self):
+        """
+            Return all internal track ids
+            @return track ids as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT tracks.rowid\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.rowid=track_genres.track_id\
+                                  AND track_genres.genre_id=?", (Type.CHARTS,))
+            return list(itertools.chain(*result))
+
     def get_ids_for_name(self, name):
         """
             Return tracks ids with name

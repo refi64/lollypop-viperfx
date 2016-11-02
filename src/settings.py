@@ -327,6 +327,9 @@ class SettingsDialog:
                 Lp().charts.update()
         else:
             Lp().charts.stop()
+            t = Thread(target=self.__clean_charts)
+            t.daemon = True
+            t.start()
         Lp().settings.set_value('show-charts',
                                 GLib.Variant('b', state))
 
@@ -526,6 +529,13 @@ class SettingsDialog:
 #######################
 # PRIVATE             #
 #######################
+    def __clean_charts(self):
+        """
+            Clean charts in db
+        """
+        track_ids = Lp().tracks.get_charts()
+        Lp().db.del_tracks(track_ids)
+
     def __get_pa_outputs(self):
         """
             Get PulseAudio outputs

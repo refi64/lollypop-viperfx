@@ -144,6 +144,9 @@ class Database:
             @param track_ids as [int]
         """
         with SqlCursor(self) as sql:
+            all_album_ids = []
+            all_artist_ids = []
+            all_genre_ids = []
             for track_id in track_ids:
                 album_id = Lp().tracks.get_album_id(track_id)
                 art_file = Lp().art.get_album_cache_name(Album(album_id))
@@ -154,12 +157,16 @@ class Database:
                 Lp().playlists.remove(uri)
                 Lp().tracks.remove(track_id)
                 Lp().tracks.clean(track_id)
+                all_album_ids.append(album_id)
+                all_artist_ids += album_artist_ids + artist_ids
+                all_genre_ids += genre_ids
+            for album_id in list(set(all_album_ids)):
                 if Lp().albums.clean(album_id):
                     Lp().art.clean_store(art_file)
-                for artist_id in album_artist_ids + artist_ids:
-                    Lp().artists.clean(artist_id)
-                for genre_id in genre_ids:
-                    Lp().genres.clean(genre_id)
+            for artist_id in list(set(all_artist_ids)):
+                Lp().artists.clean(artist_id)
+            for genre_id in list(set(all_genre_ids)):
+                Lp().genres.clean(genre_id)
             sql.commit()
 
 #######################
