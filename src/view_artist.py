@@ -224,6 +224,18 @@ class ArtistView(ArtistAlbumsView):
         if not image.is_drawable():
             return
 
+        if image.props.surface is None:
+            pixbuf = image.get_pixbuf()
+            if pixbuf is None:
+                return
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                         pixbuf,
+                                                         self.__scale_factor,
+                                                         None)
+            del pixbuf
+        else:
+            surface = image.props.surface
+
         ctx.translate(2, 2)
         size = ArtSize.ARTIST_SMALL * 2 - 4
         ctx.new_sub_path()
@@ -234,7 +246,7 @@ class ArtistView(ArtistAlbumsView):
         ctx.set_line_width(2)
         ctx.set_source_rgba(0, 0, 0, 0.3)
         ctx.stroke_preserve()
-        ctx.set_source_surface(image.props.surface, 0, 0)
+        ctx.set_source_surface(surface, 0, 0)
         ctx.clip()
         ctx.paint()
         return True
