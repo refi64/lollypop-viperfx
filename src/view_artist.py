@@ -37,6 +37,7 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
         self.__art_signal_id = None
+        self.__scale_factor = None
         self.connect('realize', self.__on_realize)
         self.connect('unrealize', self.__on_unrealize)
 
@@ -62,6 +63,7 @@ class ArtistView(ArtistAlbumsView):
         self._albumbox.add(self.__empty)
         self._albumbox.set_row_spacing(20)
 
+        self.__scale_factor = self.__artwork.get_scale_factor()
         self.__set_artwork()
         self.__set_add_icon()
         self.__on_lock_changed(Lp().player)
@@ -220,6 +222,11 @@ class ArtistView(ArtistAlbumsView):
             @param image as Gtk.Image
             @param ctx as cairo.Context
         """
+        # Update image if scale factor changed
+        if self.__scale_factor != image.get_scale_factor():
+            self.__scale_factor = image.get_scale_factor()
+            self.__set_artwork()
+
         if not image.is_drawable():
             return
         pixbuf = image.get_pixbuf()
@@ -228,7 +235,7 @@ class ArtistView(ArtistAlbumsView):
 
         surface = Gdk.cairo_surface_create_from_pixbuf(
                                                      pixbuf,
-                                                     image.get_scale_factor(),
+                                                     self.__scale_factor,
                                                      None)
         ctx.translate(2, 2)
         size = ArtSize.ARTIST_SMALL * 2 - 4

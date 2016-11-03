@@ -76,15 +76,20 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def __init__(self):
         Gtk.CellRendererText.__init__(self)
-        self._is_artists = False
-        self._surfaces = {}
+        self.__is_artists = False
+        self.__surfaces = {}
+        self.__scale_factor = None
 
     def set_is_artists(self, is_artists):
-        self._is_artists = is_artists
+        self.__is_artists = is_artists
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
-        size = ArtSize.ARTIST_SMALL * widget.get_scale_factor()
-        draw_artwork = self._is_artists and\
+        if self.__scale_factor != widget.get_scale_factor():
+            self.__scale_factor = widget.get_scale_factor()
+            self.__surfaces = {}
+
+        size = ArtSize.ARTIST_SMALL * self.__scale_factor
+        draw_artwork = self.__is_artists and\
             self.rowid >= 0 and\
             Lp().settings.get_value('artist-artwork')
         if draw_artwork:
@@ -106,8 +111,8 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def do_own_render(self, ctx, widget, cell_area, size):
         surface = None
-        if self.rowid in self._surfaces.keys():
-            surface = self._surfaces[self.rowid]
+        if self.rowid in self.__surfaces.keys():
+            surface = self.__surfaces[self.rowid]
         if surface is None:
             for suffix in ["lastfm", "deezer", "spotify", "wikipedia"]:
                 uri = InfoCache.get_artwork(self.artist, suffix, size)
@@ -117,9 +122,9 @@ class CellRendererArtist(Gtk.CellRendererText):
                                                                     size)
                     surface = Gdk.cairo_surface_create_from_pixbuf(
                                                      pixbuf,
-                                                     widget.get_scale_factor(),
+                                                     self.__scale_factor,
                                                      None)
-                    self._surfaces[self.rowid] = surface
+                    self.__surfaces[self.rowid] = surface
                     del pixbuf
                     break
         if surface is None:
@@ -144,7 +149,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         ctx.paint()
 
     def do_get_preferred_height_for_width(self, widget, width):
-        draw_artwork = self._is_artists and\
+        draw_artwork = self.__is_artists and\
                        self.rowid >= 0 and\
                        Lp().settings.get_value('artist-artwork')
         if draw_artwork:
@@ -155,5 +160,5 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def on_artist_artwork_changed(self, artist):
         artist_id = Lp().artists.get_id(artist)
-        if artist_id in self._surfaces.keys():
-            self._surfaces.pop(artist_id)
+        if artist_id in self.__surfaces.keys():
+            self.__surfaces.pop(artist_id)
