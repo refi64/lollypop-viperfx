@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Pango, GLib
+from gi.repository import Gtk, Gdk, Pango, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
 from math import pi
@@ -37,7 +37,6 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
         self.__art_signal_id = None
-        self.__scale_factor = None
         self.connect('realize', self.__on_realize)
         self.connect('unrealize', self.__on_unrealize)
 
@@ -51,13 +50,11 @@ class ArtistView(ArtistAlbumsView):
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__add_button = builder.get_object('add-button')
         self.__play_button = builder.get_object('play-button')
-        self.__grid = builder.get_object('header-grid')
+        self.__grid = builder.get_object('header')
         if Lp().lastfm is None or\
                 not get_network_available():
             builder.get_object('lastfm-button').hide()
-        header = builder.get_object('header')
-        header.set_property('valign', Gtk.Align.START)
-        self._overlay.add_overlay(header)
+        self._overlay.add_overlay(self.__grid)
         self.__empty = Gtk.Grid()
         self.__empty.show()
         self._albumbox.add(self.__empty)
@@ -111,14 +108,12 @@ class ArtistView(ArtistAlbumsView):
                 self.__artwork_box.show()
             self.__grid.get_style_context().remove_class('header-borders')
             self.__grid.get_style_context().add_class('header')
-            self.__grid.set_property('valign', Gtk.Align.CENTER)
         else:
             if self.__artwork.get_pixbuf() is not None:
                 self.__artwork.hide()
                 self.__artwork_box.hide()
             self.__grid.get_style_context().add_class('header-borders')
             self.__grid.get_style_context().remove_class('header')
-            self.__grid.set_property('valign', Gtk.Align.START)
 
     def _on_label_realize(self, eventbox):
         """
@@ -226,17 +221,9 @@ class ArtistView(ArtistAlbumsView):
         if self.__scale_factor != image.get_scale_factor():
             self.__scale_factor = image.get_scale_factor()
             self.__set_artwork()
-
         if not image.is_drawable():
             return
-        pixbuf = image.get_pixbuf()
-        if pixbuf is None:
-            return
 
-        surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                     pixbuf,
-                                                     self.__scale_factor,
-                                                     None)
         ctx.translate(2, 2)
         size = ArtSize.ARTIST_SMALL * 2 - 4
         ctx.new_sub_path()
@@ -247,7 +234,7 @@ class ArtistView(ArtistAlbumsView):
         ctx.set_line_width(2)
         ctx.set_source_rgba(0, 0, 0, 0.3)
         ctx.stroke_preserve()
-        ctx.set_source_surface(surface, 0, 0)
+        ctx.set_source_surface(image.props.surface, 0, 0)
         ctx.clip()
         ctx.paint()
         return True
@@ -272,14 +259,25 @@ class ArtistView(ArtistAlbumsView):
             if len(self._artist_ids) == 1 and\
                     Lp().settings.get_value('artist-artwork'):
                 artist = Lp().artists.get_name(self._artist_ids[0])
-
+                size = ArtSize.ARTIST_SMALL * 2 * self.__scale_factor
                 for suffix in ["lastfm", "spotify", "wikipedia"]:
-                    uri = InfoCache.get_artwork(
-                                            artist, suffix,
-                                            ArtSize.ARTIST_SMALL * 2 *
-                                            self.__artwork.get_scale_factor())
+                    uri = InfoCache.get_artwork(artist, suffix, size)
                     if uri is not None:
-                        self.__artwork.set_from_file(uri)
+                        f = Gio.File.new_for_path(uri)
+                        (status, data, tag) = f.load_contents(None)
+                        stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                     None)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                                       stream,
+                                                                       size,
+                                                                       size,
+                                                                       True,
+                                                                       None)
+                        surface = Gdk.cairo_surface_create_from_pixbuf(
+                                            pixbuf, self.__scale_factor, None)
+                        del pixbuf
+                        self.__artwork.set_from_surface(surface)
+                        del surface
                         artwork_height = ArtSize.ARTIST_SMALL * 2
                         self.__artwork.get_style_context().remove_class(
                                                                 'artwork-icon')
