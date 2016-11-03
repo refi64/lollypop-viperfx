@@ -331,9 +331,7 @@ class SettingsDialog:
                                  _("Network access disabled"))
         else:
             Lp().charts.stop()
-            t = Thread(target=self.__clean_charts)
-            t.daemon = True
-            t.start()
+            Lp().scanner.clean_charts()
         Lp().settings.set_value('show-charts',
                                 GLib.Variant('b', state))
 
@@ -533,13 +531,6 @@ class SettingsDialog:
 #######################
 # PRIVATE             #
 #######################
-    def __clean_charts(self):
-        """
-            Clean charts in db
-        """
-        track_ids = Lp().tracks.get_charts()
-        Lp().db.del_tracks(track_ids)
-
     def __get_pa_outputs(self):
         """
             Get PulseAudio outputs

@@ -67,6 +67,14 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__thread.daemon = True
             self.__thread.start()
 
+    def clean_charts(self):
+        """
+            Clean charts in db
+        """
+        self.__thread = Thread(target=self.__clean_charts)
+        self.__thread.daemon = True
+        self.__thread.start()
+
     def is_locked(self):
         """
             Return True if db locked
@@ -82,6 +90,14 @@ class CollectionScanner(GObject.GObject, TagReader):
 #######################
 # PRIVATE             #
 #######################
+    def __clean_charts(self):
+        """
+            Clean charts in db
+        """
+        track_ids = Lp().tracks.get_charts()
+        Lp().db.del_tracks(track_ids)
+        self.stop()
+
     def __get_objects_for_uris(self, uris):
         """
             Return all tracks/dirs for uris
