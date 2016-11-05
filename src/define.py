@@ -43,8 +43,8 @@ class NextContext:
     NONE = 0             # Continue playback
     STOP_TRACK = 1       # Stop after current track
     STOP_ALBUM = 2       # Stop after current album
-    REPEAT_TRACK = 3     # Repeat current track
-    STOP_ALL = 4         # Stop
+    STOP_ALL = 3         # Stop
+    REPEAT_TRACK = 4     # Repeat current track
 
 
 class DbPersistent:

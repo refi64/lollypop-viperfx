@@ -442,8 +442,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Set previous track
         """
         try:
-            # Look at externals
-            self._prev_track = ExternalsPlayer.prev(self)
+            if Lp().settings.get_enum('playback') == NextContext.REPEAT_TRACK:
+                self._prev_track = self.current_track
+            else:
+                # Look at externals
+                self._prev_track = ExternalsPlayer.prev(self)
 
             # Look at radio
             if self._prev_track.id is None:
