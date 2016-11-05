@@ -41,10 +41,10 @@ GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 # Represent what to do on next track
 class NextContext:
     NONE = 0             # Continue playback
-    STOP_TRACK = 1       # Stop after current track
-    STOP_ALBUM = 2       # Stop after current album
-    STOP_ALL = 3         # Stop
-    REPEAT_TRACK = 4     # Repeat current track
+    REPEAT_TRACK = 1     # Repeat current track
+    STOP_TRACK = 2       # Stop after current track
+    STOP_ALBUM = 3       # Stop after current album
+    STOP_ALL = 4         # Stop
 
 
 class DbPersistent:

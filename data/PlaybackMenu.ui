@@ -9,6 +9,11 @@
       <attribute name="target">none</attribute>
     </item>
     <item>
+      <attribute name="label" translatable="yes">Repeat track</attribute>
+      <attribute name="action">app.playback</attribute>
+      <attribute name="target">repeat_track</attribute>
+    </item>
+    <item>
       <attribute name="label" translatable="yes">Stop after this track</attribute>
       <attribute name="action">app.playback</attribute>
       <attribute name="target">stop_track</attribute>
@@ -17,11 +22,6 @@
       <attribute name="label" translatable="yes">Stop after this album</attribute>
       <attribute name="action">app.playback</attribute>
       <attribute name="target">stop_album</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">Repeat track</attribute>
-      <attribute name="action">app.playback</attribute>
-      <attribute name="target">repeat_track</attribute>
     </item>
     <item>
       <attribute name="label" translatable="yes">Do not repeat</attribute>

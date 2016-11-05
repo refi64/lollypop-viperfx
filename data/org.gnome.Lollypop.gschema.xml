@@ -7,10 +7,10 @@
     </enum>
     <enum id="org.gnome.Lollypop.Playback">
        <value nick="none" value="0"/>
-       <value nick="stop_track" value="1"/>
-       <value nick="stop_album" value="2"/>
-       <value nick="stop_all" value="3"/>
-       <value nick="repeat_track" value="4"/>
+       <value nick="repeat_track" value="1"/>
+       <value nick="stop_track" value="2"/>
+       <value nick="stop_album" value="3"/>
+       <value nick="stop_all" value="4"/>
     </enum>
     <enum id="org.gnome.Lollypop.OrderBy">
        <value nick="artist" value="0"/>
