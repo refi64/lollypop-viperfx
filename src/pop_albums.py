@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.pop_album import AlbumPopover
 from lollypop.view import LazyLoadingView
-from lollypop.define import Lp, ArtSize, NextContext
+from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 
 
@@ -239,9 +239,7 @@ class AlbumRow(Gtk.ListBoxRow):
         if Lp().player.current_track.album.id == self.__album.id:
             # If not last album, skip it
             if len(Lp().player.get_albums()) > 1:
-                Lp().player.set_next_context(NextContext.START_NEW_ALBUM)
-                Lp().player.set_next()
-                Lp().player.next()
+                Lp().player.skip_album()
                 Lp().player.remove_album(self.__album)
             # remove it and stop playback by going to next track
             else:

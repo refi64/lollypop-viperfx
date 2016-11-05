@@ -345,18 +345,12 @@ class PopToolbarMenu(Gio.Menu):
             @param object id as int
         """
         Gio.Menu.__init__(self)
-        if not Lp().player.is_party:
+        if not Lp().player.is_party and (
+                Lp().player.get_albums() or
+                Lp().player.get_user_playlist()):
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/PlaybackMenu.ui')
             playback_menu = builder.get_object('playback-menu')
-            playback_action = Gio.SimpleAction.new_stateful(
-                            'playback',
-                            GLib.VariantType.new("s"),
-                            GLib.Variant("s", str(Lp().player.context.next)))
-            playback_action.connect('change-state', self.__on_change_state)
-            Lp().add_action(playback_action)
-            if Lp().player.get_user_playlist_ids():
-                playback_menu.remove(2)
             self.insert_section(0, _("Playback"),
                                 playback_menu)
         self.insert_section(1, _("Playlists"),
@@ -365,14 +359,6 @@ class PopToolbarMenu(Gio.Menu):
 #######################
 # PRIVATE             #
 #######################
-    def __on_change_state(self, action, value):
-        """
-            Update playback value
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        action.set_state(value)
-        Lp().player.set_next_context(int(value.get_string()))
 
 
 class EditMenu(BaseMenu):

@@ -44,7 +44,7 @@ class NextContext:
     STOP_TRACK = 1       # Stop after current track
     STOP_ALBUM = 2       # Stop after current album
     STOP_ALL = 3         # Stop
-    START_NEW_ALBUM = 4  # Start a new album
+    REPEAT_TRACK = 4     # Stop
 
 
 class DbPersistent:
@@ -64,7 +64,7 @@ class OpenLink:
 class PlayContext:
     genre_ids = {}
     artist_ids = {}
-    next = NextContext.NONE
+    wanted = NextContext.NONE
 
 
 class GstPlayFlags:

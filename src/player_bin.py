@@ -461,11 +461,11 @@ class BinPlayer(BasePlayer):
             @return bool
         """
         stop = False
-        if self._context.next != NextContext.NONE:
+        if Lp().settings.get_enum('playback') != NextContext.NONE:
             # Stop if needed
-            if self._context.next == NextContext.STOP_TRACK:
+            if Lp().settings.get_enum('playback') == NextContext.STOP_TRACK:
                 stop = True
-            elif self._context.next == self._finished:
+            elif Lp().settings.get_enum('playback') == self._next_context:
                 stop = True
         return stop and self.is_playing()
 
@@ -570,11 +570,7 @@ class BinPlayer(BasePlayer):
         debug("Player::__on_bus_eos(): %s" % self.current_track.uri)
         if self._playbin.get_bus() == bus:
             self.stop()
-            self._finished = NextContext.NONE
-            if Lp().settings.get_value('repeat'):
-                self._context.next = NextContext.NONE
-            else:
-                self._context.next = NextContext.STOP_ALL
+            self._next_context = NextContext.NONE
             if self._next_track.id is not None:
                 self._load_track(self._next_track)
             self.emit('current-changed')

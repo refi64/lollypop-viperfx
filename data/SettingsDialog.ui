@@ -413,30 +413,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSwitch" id="switch_repeat">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="halign">end</property>
-                <signal name="state-set" handler="_update_repeat_setting" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="repeat">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">Do not repeat by default</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel" id="saveintags">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>

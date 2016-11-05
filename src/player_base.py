@@ -51,7 +51,7 @@ class BasePlayer(GObject.GObject):
             # Should player do crossfading
             self._crossfading = False
             # Keep track of artist/album finished
-            self._finished = NextContext.NONE
+            self._next_context = NextContext.NONE
             # A user playlist used as current playlist
             self._user_playlist_ids = []
             self._user_playlist = []

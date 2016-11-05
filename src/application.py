@@ -158,6 +158,7 @@ class Application(Gtk.Application):
         self.__parser = TotemPlParser.Parser.new()
         self.__parser.connect('entry-parsed', self.__on_entry_parsed)
 
+        self.add_action(self.settings.create_action('playback'))
         self.add_action(self.settings.create_action('shuffle'))
 
         self.db.upgrade()

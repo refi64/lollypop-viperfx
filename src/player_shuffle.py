@@ -107,7 +107,6 @@ class ShufflePlayer(BasePlayer):
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
             if party:
-                self._context.next = NextContext.NONE
                 self._plugins1.rgvolume.props.album_mode = 0
                 self._plugins2.rgvolume.props.album_mode = 0
             else:
@@ -272,7 +271,7 @@ class ShufflePlayer(BasePlayer):
                 if album_id not in self.__already_played_tracks.keys() or\
                    track not in self.__already_played_tracks[album_id]:
                     return track
-            self._finished = NextContext.STOP_ALBUM
+            self._next_context = NextContext.STOP_ALBUM
             # No new tracks for this album, remove it
             # If albums not in shuffle history, it's not present
             # in db anymore (update since shuffle set)
@@ -280,7 +279,7 @@ class ShufflePlayer(BasePlayer):
                 self.__already_played_tracks.pop(album_id)
                 self.__already_played_albums.append(album_id)
             self._albums.remove(album_id)
-        self._finished = NextContext.STOP_ALL
+        self._next_context = NextContext.STOP_ALL
         return None
 
     def __add_to_shuffle_history(self, track):

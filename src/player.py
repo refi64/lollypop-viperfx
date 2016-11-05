@@ -22,8 +22,8 @@ from lollypop.player_radio import RadioPlayer
 from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.radios import Radios
-from lollypop.objects import Track
-from lollypop.define import Lp, Type, NextContext, DataPath
+from lollypop.objects import Track, Album
+from lollypop.define import Lp, Type, NextContext, DataPath, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -45,6 +45,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ExternalsPlayer.__init__(self)
         self.update_crossfading()
         self.__do_not_update_next = False
+        Lp().settings.connect('changed::playback', self.__on_playback_changed)
 
     @property
     def current_track(self):
@@ -251,10 +252,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_ids = []
-        if Lp().settings.get_value('repeat'):
-            self._context.next = NextContext.NONE
-        else:
-            self._context.next = NextContext.STOP_ALL
         self._context.genre_ids = {}
         self._context.artist_ids = {}
         self._context.genre_ids[album.id] = []
@@ -265,8 +262,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         for artist_id in album.artist_ids:
             if artist_id >= 0:
                 self._context.artist_ids[album.id].append(artist_id)
-        self._context.prev_track = Track()
-        self._context.next_track = Track()
         self.load(album.tracks[0])
         self._albums = [album.id]
 
@@ -283,8 +278,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._albums = []
         self._context.genre_ids = {}
         self._context.aritst_ids = {}
-        self._context.prev_track = Track()
-        self._context.next_track = Track()
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
@@ -328,10 +321,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self._albums += Lp().albums.get_compilation_ids(genre_ids)
                 self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
-        if Lp().settings.get_value('repeat'):
-            self._context.next = NextContext.NONE
-        else:
-            self._context.next = NextContext.STOP_ALL
         # We do not store genre_ids for ALL/POPULARS/...
         if genre_ids and genre_ids[0] < 0:
             genre_ids = []
@@ -432,21 +421,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                                             "rb"))
                     self.set_next()
                     self.set_prev()
-                    if Lp().settings.get_value('repeat'):
-                        self._context.next = NextContext.NONE
-                    else:
-                        self._context.next = NextContext.STOP_ALL
                 else:
                     print("Player::restore_state(): track missing")
         except Exception as e:
             print("Player::restore_state()", e)
-
-    def set_next_context(self, value):
-        """
-            Set next context
-            @param context as int
-        """
-        self._context.next = value
 
     def set_party(self, party):
         """
@@ -494,10 +472,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         try:
             # Reset finished context
-            self._finished = NextContext.NONE
+            self._next_context = NextContext.NONE
 
-            # Look at externals
-            next_track = ExternalsPlayer.next(self)
+            if Lp().settings.get_enum('playback') == NextContext.REPEAT_TRACK:
+                next_track = self.current_track
+            else:
+                # Look at externals
+                next_track = ExternalsPlayer.next(self)
 
             # Look at radio
             if next_track.id is None:
@@ -525,6 +506,24 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         except Exception as e:
             print("Player::set_next", e)
 
+    def skip_album(self):
+        """
+            Skip current album
+        """
+        # In party or shuffle, just update next track
+        if Lp().player.is_party or\
+                Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
+            Lp().player.set_next()
+            # We send this signal to update next popover
+            Lp().player.emit('queue-changed')
+        elif self._current_track.id is not None:
+            pos = self._albums.index(self._current_track.album.id)
+            if pos + 1 >= len(self._albums):
+                next_album = self._albums[0]
+            else:
+                next_album = self._albums[pos + 1]
+            self.load(Album(next_album).tracks[0])
+
     def update_crossfading(self):
         """
             Calculate if crossfading is needed
@@ -550,3 +549,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.__do_not_update_next = False
         self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_playback_changed(self, settings, value):
+        """
+            reset next/prev
+            @param settings as Gio.Settings, value as str
+        """
+        self.set_next()
+        self.set_prev()

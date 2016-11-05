@@ -5,6 +5,13 @@
        <value nick="tracks" value="1"/>
        <value nick="albums" value="2"/>
     </enum>
+    <enum id="org.gnome.Lollypop.Playback">
+       <value nick="none" value="0"/>
+       <value nick="stop_track" value="1"/>
+       <value nick="stop_album" value="2"/>
+       <value nick="stop_all" value="3"/>
+       <value nick="repeat_track" value="4"/>
+    </enum>
     <enum id="org.gnome.Lollypop.OrderBy">
        <value nick="artist" value="0"/>
        <value nick="album" value="1"/>
@@ -49,11 +56,6 @@
         <key type="b" name="save-to-tags">
             <default>false</default>
             <summary>Save artwork/popularity in tags</summary>
-            <description></description>
-        </key>
-        <key type="b" name="repeat">
-            <default>true</default>
-            <summary>Repeat by default</summary>
             <description></description>
         </key>
         <key type="b" name="window-maximized">
@@ -254,6 +256,11 @@
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
             <default>'none'</default>
             <summary>Shuffle mode</summary>
+            <description></description>
+        </key>
+        <key enum="org.gnome.Lollypop.Playback" name="playback">
+            <default>'none'</default>
+            <summary>Playback behaviour</summary>
             <description></description>
         </key>
 	    <key enum="org.gnome.Lollypop.OrderBy" name="orderby">

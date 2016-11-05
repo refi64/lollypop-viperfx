@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, Gdk, GLib
 
 from lollypop.container import Container
-from lollypop.define import Lp, NextContext, Shuffle, WindowSize
+from lollypop.define import Lp, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.utils import is_unity, set_loved, is_loved
 
@@ -451,16 +451,7 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "next":
             Lp().player.next()
         elif string == "next_album":
-            # In party or shuffle, just update next track
-            if Lp().player.is_party or\
-                    Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
-                Lp().player.set_next()
-                # We send this signal to update next popover
-                Lp().player.emit('queue-changed')
-            else:
-                Lp().player.set_next_context(NextContext.START_NEW_ALBUM)
-                Lp().player.set_next()
-                Lp().player.next()
+            Lp().player.skip_album()
         elif string == "prev":
             Lp().player.prev()
         elif string == "locked":

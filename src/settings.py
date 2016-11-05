@@ -167,9 +167,6 @@ class SettingsDialog:
         switch_artwork = builder.get_object('switch_artwork')
         switch_artwork.set_state(Lp().settings.get_value('artist-artwork'))
 
-        switch_repeat = builder.get_object('switch_repeat')
-        switch_repeat.set_state(not Lp().settings.get_value('repeat'))
-
         combo_orderby = builder.get_object('combo_orderby')
         combo_orderby.set_active(Lp().settings.get_enum(('orderby')))
 
@@ -406,15 +403,6 @@ class SettingsDialog:
         Lp().window.reload_view()
         if state:
             Lp().art.cache_artists_info()
-
-    def _update_repeat_setting(self, widget, state):
-        """
-            Update repeat setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        Lp().settings.set_value('repeat',
-                                GLib.Variant('b', not state))
 
     def _update_orderby_setting(self, widget):
         """

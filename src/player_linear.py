@@ -13,7 +13,6 @@
 from lollypop.define import NextContext
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
-from lollypop.define import Lp
 
 
 class LinearPlayer(BasePlayer):
@@ -45,19 +44,13 @@ class LinearPlayer(BasePlayer):
                 new_track_position = album.track_ids.index(
                                                 self._current_track.id) + 1
                 # next album
-                if new_track_position >= len(album.tracks) or\
-                   self._context.next == NextContext.START_NEW_ALBUM:
-                    if self._context.next == NextContext.START_NEW_ALBUM:
-                        if Lp().settings.get_value('repeat'):
-                            self._context.next = NextContext.NONE
-                        else:
-                            self._context.next = NextContext.STOP_ALL
+                if new_track_position >= len(album.tracks):
                     try:
-                        self._finished = NextContext.STOP_ALBUM
+                        self._next_context = NextContext.STOP_ALBUM
                         pos = self._albums.index(album.id)
                         # we are on last album, go to first
                         if pos + 1 >= len(self._albums):
-                            self._finished = NextContext.STOP_ALL
+                            self._next_context = NextContext.STOP_ALL
                             pos = 0
                         else:
                             pos += 1

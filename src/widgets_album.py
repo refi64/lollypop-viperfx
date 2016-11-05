@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, NextContext, Type
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.define import WindowSize, Shuffle, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track, Album
@@ -313,9 +313,7 @@ class AlbumWidget:
             if Lp().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(Lp().player.get_albums()) > 1:
-                    Lp().player.set_next_context(NextContext.START_NEW_ALBUM)
-                    Lp().player.set_next()
-                    Lp().player.next()
+                    Lp().player.skip_album()
                     Lp().player.remove_album(self._album)
                 # remove it and stop playback by going to next track
                 else:
@@ -1063,12 +1061,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 Lp().player.del_from_queue(track_id)
             else:
                 Lp().player.append_to_queue(track_id)
-        # Play track with no album, force repeat on track
-        elif self._button_state & Gdk.ModifierType.SHIFT_MASK:
-            Lp().player.clear_albums()
-            self.__show_spinner(widget, track_id)
-            track = Track(track_id)
-            Lp().player.load(track)
         else:
             # Do not modify album list if in party mode
             if not Lp().player.is_party:
@@ -1084,7 +1076,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             track = Track(track_id)
             Lp().player.load(track)
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
-                Lp().player.set_next_context(NextContext.STOP_TRACK)
+                Lp().player.skip_album()
 
     def __on_button_press_event(self, widget, event):
         """
