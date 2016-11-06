@@ -101,6 +101,9 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
             @return path or None
         """
+        # Folders with many albums, get_album_artwork_uri()
+        if Lp().albums.get_uri_count(album.uri) > 1:
+            return None
         f = Gio.File.new_for_uri(album.uri)
         infos = f.enumerate_children('standard::name',
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -111,6 +114,7 @@ class AlbumArt(BaseArt, TagReader):
             all_uris.append(f.get_uri())
         for uri in filter(lambda p: p.lower().endswith(self._MIMES), all_uris):
             return uri
+        return None
 
     def get_album_artworks(self, album):
         """
