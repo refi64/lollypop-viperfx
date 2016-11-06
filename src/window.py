@@ -192,7 +192,7 @@ class Window(Gtk.ApplicationWindow, Container):
             @param event as Gdk.event
         """
         if event.type == Gdk.EventType.FOCUS_CHANGE:
-            self.disable_overlays()
+            self.disable_overlay()
         Gtk.ApplicationWindow.do_event(self, event)
 
 ############

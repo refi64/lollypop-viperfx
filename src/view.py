@@ -26,6 +26,7 @@ class View(Gtk.Grid):
         """
         Gtk.Grid.__init__(self)
         self.connect('destroy', self._on_destroy)
+        self.__overlayed = None
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__current_signal = Lp().player.connect('current-changed',
@@ -54,17 +55,18 @@ class View(Gtk.Grid):
         for child in self._get_children():
             child.stop()
 
+    def disable_overlay(self):
+        """
+            Disable overlay widget
+        """
+        if self.__overlayed is not None:
+            self.__overlayed.show_overlay(False)
+
     def update_children(self):
         """
             Update children
         """
         GLib.idle_add(self.__update_widgets, self._get_children())
-
-    def disable_overlays(self):
-        """
-            Disable children's overlay
-        """
-        GLib.idle_add(self._disable_overlays, self._get_children())
 
     def populate(self):
         pass
@@ -72,21 +74,25 @@ class View(Gtk.Grid):
 #######################
 # PROTECTED           #
 #######################
-    def _disable_overlays(self, widgets):
-        """
-            Disable children's overlay
-            @param widgets as AlbumWidget
-        """
-        if widgets:
-            widget = widgets.pop(0)
-            widget.show_overlay(False)
-            GLib.idle_add(self._disable_overlays, widgets)
 
     def _get_children(self):
         """
             Return view children
         """
         return []
+
+    def _on_overlayed(self, widget, value):
+        """
+            Keep overlayed widget, clean previously overlayed
+            @param widget as AlbumWidget
+            @param value as bool
+        """
+        if value:
+            if self.__overlayed is not None:
+                self.__overlayed.show_overlay(False)
+            self.__overlayed = widget
+        elif self.__overlayed == widget:
+            self.__overlayed = None
 
     def _on_current_changed(self, player):
         """
@@ -152,7 +158,7 @@ class View(Gtk.Grid):
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            self.disable_overlays()
+            self.disable_overlay()
 
     def __on_cover_changed(self, art, album_id):
         """

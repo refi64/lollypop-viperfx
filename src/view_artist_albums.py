@@ -159,6 +159,7 @@ class ArtistAlbumsView(LazyLoadingView):
                                          self._genre_ids,
                                          self._artist_ids,
                                          self.__show_cover)
+            widget.connect('overlayed', self._on_overlayed)
             self._lazy_queue.append(widget)
             widget.show()
             self._albumbox.add(widget)

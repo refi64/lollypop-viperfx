@@ -180,6 +180,7 @@ class AlbumWidget:
            (set is True and Lp().player.locked):
             return
         self._show_overlay = set
+        self.emit('overlayed', set)
         if set:
             if self._play_button is not None:
                 self._play_button.set_opacity(1)
@@ -387,6 +388,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
+    __gsignals__ = {
+        'overlayed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
+    }
 
     def __init__(self, album_id, genre_ids, artist_ids):
         """
@@ -617,7 +621,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Widget with cover and tracks
     """
     __gsignals__ = {
-        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
+        'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'overlayed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
     def __init__(self, album_id, genre_ids, artist_ids, show_cover):

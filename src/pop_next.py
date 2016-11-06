@@ -150,4 +150,4 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        Lp().window.disable_overlays()
+        Lp().window.disable_overlay()

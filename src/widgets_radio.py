@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GObject
 
 from gettext import gettext as _
 
@@ -24,6 +24,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
     """
         Widget with radio cover and title
     """
+    __gsignals__ = {
+        'overlayed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
+    }
 
     def __init__(self, name, radios_manager):
         """

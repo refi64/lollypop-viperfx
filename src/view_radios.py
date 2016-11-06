@@ -220,6 +220,7 @@ class RadiosView(LazyLoadingView):
             radio = radios.pop(0)
             widget = RadioWidget(radio,
                                  self.__radios_manager)
+            widget.connect('overlayed', self._on_overlayed)
             widget.show()
             self._lazy_queue.append(widget)
             if first:

@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gdk
 
-from lollypop.view import View, LazyLoadingView
+from lollypop.view import LazyLoadingView
 from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
@@ -62,13 +62,6 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PROTECTED           #
 #######################
-    def _disable_overlays(self, widgets):
-        """
-            Disable children's overlay
-            @param widgets as AlbumWidget
-        """
-        View._disable_overlays(self, widgets)
-
     def _get_children(self):
         """
             Return view children
@@ -95,6 +88,7 @@ class AlbumsView(LazyLoadingView):
             widget = AlbumSimpleWidget(albums.pop(0),
                                        self.__genre_ids,
                                        self.__artist_ids)
+            widget.connect('overlayed', self._on_overlayed)
             self.__albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)

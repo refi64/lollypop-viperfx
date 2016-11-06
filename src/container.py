@@ -120,7 +120,7 @@ class Container:
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
-        current.disable_overlays()
+        current.disable_overlay()
 
     def show_playlist_editor(self, playlist_id):
         """
@@ -182,13 +182,13 @@ class Container:
                 self.__stack.clean_old_views(child)
                 break
 
-    def disable_overlays(self):
+    def disable_overlay(self):
         """
             Disable overlays
         """
         view = self.__stack.get_visible_child()
         if view:
-            view.disable_overlays()
+            view.disable_overlay()
 
     def update_view(self):
         """
