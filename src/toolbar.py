@@ -25,10 +25,9 @@ class Toolbar(Gtk.HeaderBar):
         Lollypop toolbar
     """
 
-    def __init__(self, app):
+    def __init__(self):
         """
             Init toolbar
-            @param app as Gtk.Application
         """
         Gtk.HeaderBar.__init__(self)
         self.__width = WindowSize.SMALL
@@ -39,7 +38,7 @@ class Toolbar(Gtk.HeaderBar):
         self.__toolbar_info.show()
         self.__toolbar_title = ToolbarTitle()
         self.__toolbar_title.show()
-        self.__toolbar_end = ToolbarEnd(app)
+        self.__toolbar_end = ToolbarEnd()
         self.__toolbar_end.show()
         self.pack_start(self.__toolbar_playback)
         self.pack_start(self.__toolbar_info)

@@ -521,7 +521,7 @@ class SelectionList(Gtk.Bin):
             @param event as Gdk.Event
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shortcuts(False)
 
     def __on_leave_notify(self, widget, event):
         """
@@ -530,7 +530,7 @@ class SelectionList(Gtk.Bin):
             @param event as GdK.Event
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shortcuts(True)
         self.__hide_popover()
         self.__last_motion_event = None
 

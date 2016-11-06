@@ -322,17 +322,17 @@ class TuneinPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shortcuts(False)
         size = Lp().window.get_size()
         self.set_size_request(size[0]*0.5, size[1]*0.7)
 
     def __on_unmap(self, widget):
         """
-            Enable global shorcuts
+            Enable global shortcuts
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shortcuts(True)
 
     def __on_activate_link(self, link, item):
         """

@@ -128,13 +128,12 @@ class AlbumWidget:
         """
         return self._album.id
 
-    def get_title(self):
-
+    @property
+    def album(self):
         """
-            Return album title
-            @return album title as str
+            @return Album
         """
-        return self._album.name
+        return self._album
 
     def lock_overlay(self, lock):
         """
@@ -199,7 +198,7 @@ class AlbumWidget:
                                                            self._squared_class)
                 self._artwork_button.show()
             if self._action_button is not None:
-                self.__show_append(not Lp().player.has_album(self._album))
+                self._show_append(not Lp().player.has_album(self._album))
                 self._action_button.set_opacity(1)
                 self._action_button.get_style_context().add_class(
                                                        self._squared_class)
@@ -272,22 +271,7 @@ class AlbumWidget:
             @param: event as Gdk.Event
         """
         Lp().player.play_album(self._album)
-        self.__show_append(False)
-        return True
-
-    def _on_play_all_press_event(self, widget, event):
-        """
-            Play album with context
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        self.__show_append(False)
-        if Lp().player.is_party:
-            Lp().player.set_party(False)
-        track = Track(self._album.track_ids[0])
-        Lp().player.load(track)
-        Lp().player.set_albums(track.id, self._filter_ids,
-                               self._album.genre_ids)
+        self._show_append(False)
         return True
 
     def _on_artwork_press_event(self, widget, event):
@@ -323,13 +307,13 @@ class AlbumWidget:
                     Lp().player.next()
             else:
                 Lp().player.remove_album(self._album)
-            self.__show_append(True)
+            self._show_append(True)
         else:
             if Lp().player.is_playing() and not Lp().player.get_albums():
                 Lp().player.play_album(self._album)
             else:
                 Lp().player.add_album(self._album)
-            self.__show_append(False)
+            self._show_append(False)
         return True
 
     def _on_pop_cover_closed(self, widget):
@@ -351,10 +335,7 @@ class AlbumWidget:
         if self._album.id == album_id and destroy:
             self.destroy()
 
-#######################
-# PRIVATE             #
-#######################
-    def __show_append(self, append):
+    def _show_append(self, append):
         """
             Show append button if append, else remove button
         """
@@ -367,6 +348,9 @@ class AlbumWidget:
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
 
+#######################
+# PRIVATE             #
+#######################
     def __on_destroy(self, widget):
         """
             Disconnect signal
@@ -405,6 +389,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._filter_ids = artist_ids
+        self.__parent_filter = False
 
     def populate(self):
         """
@@ -488,6 +473,19 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         # Padding: 3px, border: 1px + spacing
         width = ArtSize.BIG + 12
         return (width, width)
+
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__parent_filter = b
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__parent_filter
 
 #######################
 # PROTECTED           #
@@ -591,6 +589,24 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
+    def _on_play_all_press_event(self, widget, event):
+        """
+            Play album with context
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        self._show_append(False)
+        if Lp().player.is_party:
+            Lp().player.set_party(False)
+        Lp().player.clear_albums()
+        track = Track(self._album.track_ids[0])
+        # Here we need to get ids from parent as view may be filtered
+        for child in self.get_parent().get_children():
+            if not child.filtered:
+                Lp().player.add_album(child.album)
+        Lp().player.load(track)
+        return True
+
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
         """
             Show tooltip if needed

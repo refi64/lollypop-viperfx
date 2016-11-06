@@ -191,7 +191,7 @@ class RadioPopover(Gtk.Popover):
         """
         GLib.idle_add(self.__name_entry.grab_focus)
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shortcuts(False)
 
     def __on_unmap(self, widget):
         """
@@ -200,7 +200,7 @@ class RadioPopover(Gtk.Popover):
         """
         self._thread = False
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shortcuts(True)
         GLib.idle_add(self.destroy)
 
     def _on_btn_add_modify_clicked(self, widget):

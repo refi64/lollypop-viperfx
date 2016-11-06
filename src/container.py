@@ -182,6 +182,14 @@ class Container:
                 self.__stack.clean_old_views(child)
                 break
 
+    def set_search_mode(self):
+        """
+            Enable search mode on view
+        """
+        view = self.__stack.get_visible_child()
+        if view:
+            view.set_search_mode()
+
     def disable_overlay(self):
         """
             Disable overlays

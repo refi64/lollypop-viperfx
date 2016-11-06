@@ -582,7 +582,7 @@ class SearchPopover(Gtk.Popover):
         """
         self.__switch.set_sensitive(self.__enable_network_search())
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shortcuts(False)
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
 
@@ -592,7 +592,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shortcuts(True)
         self.__reset_search()
         self.__stack.set_visible_child(self.__new_btn)
         self.__spinner.stop()

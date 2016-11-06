@@ -17,7 +17,7 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
-from lollypop.define import Type
+from lollypop.define import Type, Lp
 
 
 class AlbumsView(LazyLoadingView):
@@ -39,6 +39,7 @@ class AlbumsView(LazyLoadingView):
         self.__press_rect = None
 
         self.__albumbox = Gtk.FlowBox()
+        self.__albumbox.set_filter_func(self.__filter_func)
         self.__albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__albumbox.connect('child-activated', self.__on_album_activated)
         self.__albumbox.connect('button-press-event', self.__on_button_press)
@@ -50,6 +51,15 @@ class AlbumsView(LazyLoadingView):
         self._viewport.set_property('valign', Gtk.Align.START)
         self._viewport.set_property('margin', 5)
         self._scrolled.set_property('expand', True)
+
+        self.__filter = ""
+        entry = Gtk.SearchEntry.new()
+        entry.connect('search-changed', self.__on_search_changed)
+        entry.show()
+        self.__search_bar = Gtk.SearchBar.new()
+        self.__search_bar.add(entry)
+
+        self.add(self.__search_bar)
         self.add(self._scrolled)
 
     def populate(self, albums):
@@ -58,6 +68,15 @@ class AlbumsView(LazyLoadingView):
             @param is compilation as bool
         """
         GLib.idle_add(self.__add_albums, albums)
+
+    def set_search_mode(self):
+        """
+           Set search mode
+        """
+        enable = not self.__search_bar.get_search_mode()
+        Lp().window.enable_global_shortcuts(not enable)
+        self.__search_bar.show() if enable else self.__search_bar.hide()
+        self.__search_bar.set_search_mode(enable)
 
 #######################
 # PROTECTED           #
@@ -75,6 +94,21 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
+    def __filter_func(self, child):
+        if not self.__filter:
+            return True
+        filter = self.__filter.lower()
+        if child.album.title.lower().find(filter) != -1 or\
+                " ".join(child.album.artists).lower().find(filter) != -1:
+            child.set_filtered(False)
+            return True
+        child.set_filtered(True)
+        return False
+
+    def __on_search_changed(self, entry):
+        self.__filter = entry.get_text()
+        self.__albumbox.invalidate_filter()
+
     def __add_albums(self, albums):
         """
             Add albums to the view

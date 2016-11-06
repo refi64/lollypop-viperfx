@@ -23,18 +23,17 @@ class Window(Gtk.ApplicationWindow, Container):
         Main window
     """
 
-    def __init__(self, app):
+    def __init__(self):
         """
             Init window
         """
         Container.__init__(self)
-        self.__app = app
         self.__signal1 = None
         self.__signal2 = None
         self.__timeout = None
         self.__was_maximized = False
         Gtk.ApplicationWindow.__init__(self,
-                                       application=app,
+                                       application=Lp(),
                                        title="Lollypop")
         self.connect('hide', self.__on_hide)
         Lp().player.connect('current-changed', self.__on_current_changed)
@@ -42,11 +41,13 @@ class Window(Gtk.ApplicationWindow, Container):
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
         seek_action.connect('activate', self.__on_seek_action)
-        app.add_action(seek_action)
+        Lp().add_action(seek_action)
         player_action = Gio.SimpleAction.new('player',
                                              GLib.VariantType.new('s'))
         player_action.connect('activate', self.__on_player_action)
-        app.add_action(player_action)
+        Lp().add_action(player_action)
+
+        self.__setup_global_shortcuts()
 
         self.__main_stack = Gtk.Stack()
         self.__main_stack.set_transition_duration(1000)
@@ -57,8 +58,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__setup_content()
         self.setup_window()
         self.__setup_media_keys()
-        self.__enabled_shorcuts = False
-        self.enable_global_shorcuts(True)
+        self.__enabled_shortcuts = False
+        self.enable_global_shortcuts(True)
 
         self.connect('destroy', self.__on_destroyed_window)
         self.connect('realize', self.__on_realize)
@@ -70,69 +71,48 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self.__toolbar.setup_menu(menu)
 
-    def enable_global_shorcuts(self, enable):
+    def enable_global_shortcuts(self, enable):
         """
-            Setup global shortcuts
+            Enable/Disable special global shortcuts
             @param enable as bool
         """
-        if self.__enabled_shorcuts == enable:
+        if self.__enabled_shortcuts == enable:
             return
-        self.__enabled_shorcuts = enable
+        self.__enabled_shortcuts = enable
         if enable:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                self.__app.set_accels_for_action("app.seek(10)",
-                                                 ["Left"])
-                self.__app.set_accels_for_action("app.seek(20)",
-                                                 ["<Control>Left"])
-                self.__app.set_accels_for_action("app.seek(-10)",
-                                                 ["Right"])
-                self.__app.set_accels_for_action("app.seek(-20)",
-                                                 ["<Control>Right"])
+                Lp().set_accels_for_action("app.seek(10)", ["Left"])
+                Lp().set_accels_for_action("app.seek(20)", ["<Control>Left"])
+                Lp().set_accels_for_action("app.seek(-10)", ["Right"])
+                Lp().set_accels_for_action("app.seek(-20)", ["<Control>Right"])
             else:
-                self.__app.set_accels_for_action("app.seek(10)",
-                                                 ["Right"])
-                self.__app.set_accels_for_action("app.seek(20)",
-                                                 ["<Control>Right"])
-                self.__app.set_accels_for_action("app.seek(-10)",
-                                                 ["Left"])
-                self.__app.set_accels_for_action("app.seek(-20)",
-                                                 ["<Control>Left"])
+                Lp().set_accels_for_action("app.seek(10)", ["Right"])
+                Lp().set_accels_for_action("app.seek(20)", ["<Control>Right"])
+                Lp().set_accels_for_action("app.seek(-10)", ["Left"])
+                Lp().set_accels_for_action("app.seek(-20)", ["<Control>Left"])
 
-            self.__app.set_accels_for_action("app.player::play_pause",
-                                             ["space", "c"])
-            self.__app.set_accels_for_action("app.player::play",
-                                             ["x"])
-            self.__app.set_accels_for_action("app.player::stop",
-                                             ["v"])
-            self.__app.set_accels_for_action("app.player::next",
-                                             ["n"])
-            self.__app.set_accels_for_action("app.player::next_album",
-                                             ["<Control>n"])
-            self.__app.set_accels_for_action("app.player::prev",
-                                             ["p"])
-            self.__app.set_accels_for_action("app.player::loved",
-                                             ["l"])
-            self.__app.set_accels_for_action("app.player::locked",
-                                             ["<Control>l"])
-            self.__app.set_accels_for_action("app.player::volume",
-                                             ["<Alt>v"])
-            self.__app.set_accels_for_action("app.player::show-genres",
-                                             ["<Control>g"])
+            Lp().set_accels_for_action("app.player::play_pause",
+                                       ["space", "c"])
+            Lp().set_accels_for_action("app.player::play", ["x"])
+            Lp().set_accels_for_action("app.player::stop", ["v"])
+            Lp().set_accels_for_action("app.player::next", ["n"])
+            Lp().set_accels_for_action("app.player::prev", ["p"])
+            Lp().set_accels_for_action("app.player::loved", ["l"])
         else:
-            self.__app.set_accels_for_action("app.seek(10)", [None])
-            self.__app.set_accels_for_action("app.seek(20)", [None])
-            self.__app.set_accels_for_action("app.seek(-10)", [None])
-            self.__app.set_accels_for_action("app.seek(-20)", [None])
-            self.__app.set_accels_for_action("app.player::play_pause", [None])
-            self.__app.set_accels_for_action("app.player::play", [None])
-            self.__app.set_accels_for_action("app.player::stop", [None])
-            self.__app.set_accels_for_action("app.player::play_pause", [None])
-            self.__app.set_accels_for_action("app.player::play", [None])
-            self.__app.set_accels_for_action("app.player::stop", [None])
-            self.__app.set_accels_for_action("app.player::next", [None])
-            self.__app.set_accels_for_action("app.player::next_album", [None])
-            self.__app.set_accels_for_action("app.player::prev", [None])
-            self.__app.set_accels_for_action("app.player::loved", [None])
+            Lp().set_accels_for_action("app.seek(10)", [None])
+            Lp().set_accels_for_action("app.seek(20)", [None])
+            Lp().set_accels_for_action("app.seek(-10)", [None])
+            Lp().set_accels_for_action("app.seek(-20)", [None])
+            Lp().set_accels_for_action("app.player::play_pause", [None])
+            Lp().set_accels_for_action("app.player::play", [None])
+            Lp().set_accels_for_action("app.player::stop", [None])
+            Lp().set_accels_for_action("app.player::play_pause", [None])
+            Lp().set_accels_for_action("app.player::play", [None])
+            Lp().set_accels_for_action("app.player::stop", [None])
+            Lp().set_accels_for_action("app.player::next", [None])
+            Lp().set_accels_for_action("app.player::next_album", [None])
+            Lp().set_accels_for_action("app.player::prev", [None])
+            Lp().set_accels_for_action("app.player::loved", [None])
 
     def setup_window(self):
         """
@@ -198,6 +178,24 @@ class Window(Gtk.ApplicationWindow, Container):
 ############
 # Private  #
 ############
+    def __setup_global_shortcuts(self):
+        """
+            Setup global shortcuts
+        """
+        Lp().set_accels_for_action("app.player::locked", ["<Control>l"])
+        Lp().set_accels_for_action("app.player::filter", ["<Control>i"])
+        Lp().set_accels_for_action("app.player::volume", ["<Alt>v"])
+        Lp().set_accels_for_action("app.player::show-genres", ["<Control>g"])
+        Lp().set_accels_for_action("app.player::next_album", ["<Control>n"])
+        Lp().set_accels_for_action('app.update_db', ["<Control>u"])
+        Lp().set_accels_for_action('app.settings', ["<Control>s"])
+        Lp().set_accels_for_action('app.fullscreen', ["F11", "F7"])
+        Lp().set_accels_for_action("app.mini", ["<Control>m"])
+        Lp().set_accels_for_action('app.about', ["F3"])
+        Lp().set_accels_for_action('app.shortcuts', ["F2"])
+        Lp().set_accels_for_action('app.help', ["F1"])
+        Lp().set_accels_for_action('app.quit', ["<Control>q"])
+
     def __show_subtoolbar(self, show):
         """
             Show/hide subtoolbar
@@ -330,7 +328,7 @@ class Window(Gtk.ApplicationWindow, Container):
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
         vgrid.show()
-        self.__toolbar = Toolbar(self.get_application())
+        self.__toolbar = Toolbar()
         self.__toolbar.show()
         self.__subtoolbar = Gtk.Grid()
         if Lp().settings.get_value('disable-csd') or is_unity():
@@ -456,6 +454,8 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.prev()
         elif string == "locked":
             Lp().player.lock()
+        elif string == "filter":
+            self.set_search_mode()
         elif string == "volume":
             self.__toolbar.show_hide_volume_control()
         elif string == "show-genres":

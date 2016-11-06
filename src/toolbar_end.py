@@ -106,10 +106,9 @@ class ToolbarEnd(Gtk.Bin):
         Toolbar end
     """
 
-    def __init__(self, app):
+    def __init__(self):
         """
             Init toolbar
-            @param app as Gtk.Application
         """
         Gtk.Bin.__init__(self)
         self.connect('show', self.__on_show)
@@ -130,21 +129,21 @@ class ToolbarEnd(Gtk.Bin):
         self.__shuffle_image = builder.get_object('shuffle-button-image')
         shuffleAction = Gio.SimpleAction.new('shuffle-button', None)
         shuffleAction.connect('activate', self.__activate_shuffle_button)
-        app.add_action(shuffleAction)
-        app.set_accels_for_action("app.shuffle-button", ["<Control>r"])
+        Lp().add_action(shuffleAction)
+        Lp().set_accels_for_action("app.shuffle-button", ["<Control>r"])
         Lp().settings.connect('changed::shuffle', self.__on_shuffle_changed)
 
         self.__party_button = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
         party_action.connect('activate', self.__activate_party_button)
-        app.add_action(party_action)
-        app.set_accels_for_action("app.party", ["<Control>p"])
+        Lp().add_action(party_action)
+        Lp().set_accels_for_action("app.party", ["<Control>p"])
 
         self.__search_button = builder.get_object('search-button')
         search_action = Gio.SimpleAction.new('search', None)
         search_action.connect('activate', self._on_search_button_clicked)
-        app.add_action(search_action)
-        app.set_accels_for_action("app.search", ["<Control>f"])
+        Lp().add_action(search_action)
+        Lp().set_accels_for_action("app.search", ["<Control>f"])
 
         self.__settings_button = builder.get_object('settings-button')
 
@@ -152,10 +151,6 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_button.set_property('has-tooltip', True)
         self.__list_button.connect('query-tooltip',
                                    self.__on_list_button_query_tooltip)
-        list_action = Gio.SimpleAction.new('list', None)
-        list_action.connect('activate', self._on_list_button_clicked)
-        app.add_action(list_action)
-        app.set_accels_for_action("app.list", ["<Control>i"])
         self.__list_popover = None
         Lp().player.connect('party-changed', self.__on_party_changed)
         Lp().player.connect('lock-changed', self.__on_lock_changed)

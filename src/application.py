@@ -184,7 +184,7 @@ class Application(Gtk.Application):
             # If GNOME/Unity, add appmenu
             if is_gnome() or is_unity():
                 self.set_app_menu(menu)
-            self.window = Window(self)
+            self.window = Window()
             # If not GNOME/Unity add menu to toolbar
             if not is_gnome() and not is_unity():
                 self.window.setup_menu(menu)
@@ -512,12 +512,10 @@ class Application(Gtk.Application):
 
         settingsAction = Gio.SimpleAction.new('settings', None)
         settingsAction.connect('activate', self.__settings_dialog)
-        self.set_accels_for_action('app.settings', ["<Control>s"])
         self.add_action(settingsAction)
 
         updateAction = Gio.SimpleAction.new('update_db', None)
         updateAction.connect('activate', self.__update_db)
-        self.set_accels_for_action('app.update_db', ["<Control>u"])
         self.add_action(updateAction)
 
         networkAction = Gio.SimpleAction.new_stateful(
@@ -529,32 +527,26 @@ class Application(Gtk.Application):
 
         fsAction = Gio.SimpleAction.new('fullscreen', None)
         fsAction.connect('activate', self.__fullscreen)
-        self.set_accels_for_action('app.fullscreen', ["F11", "F7"])
         self.add_action(fsAction)
 
         mini_action = Gio.SimpleAction.new('mini', None)
         mini_action.connect('activate', self.set_mini)
         self.add_action(mini_action)
-        self.set_accels_for_action("app.mini", ["<Control>m"])
 
         aboutAction = Gio.SimpleAction.new('about', None)
         aboutAction.connect('activate', self.__about)
-        self.set_accels_for_action('app.about', ["F3"])
         self.add_action(aboutAction)
 
         shortcutsAction = Gio.SimpleAction.new('shortcuts', None)
         shortcutsAction.connect('activate', self.__shortcuts)
-        self.set_accels_for_action('app.shortcuts', ["F2"])
         self.add_action(shortcutsAction)
 
         helpAction = Gio.SimpleAction.new('help', None)
         helpAction.connect('activate', self.__help)
-        self.set_accels_for_action('app.help', ["F1"])
         self.add_action(helpAction)
 
         quitAction = Gio.SimpleAction.new('quit', None)
         quitAction.connect('activate', self.prepare_to_exit)
-        self.set_accels_for_action('app.quit', ["<Control>q"])
         self.add_action(quitAction)
 
         return menu

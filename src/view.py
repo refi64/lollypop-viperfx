@@ -68,6 +68,9 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self.__update_widgets, self._get_children())
 
+    def set_search_mode(self):
+        pass
+
     def populate(self):
         pass
 
