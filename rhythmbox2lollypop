@@ -16,7 +16,7 @@ tree = etree.parse(RB_DB_PATH)
 root = tree.getroot()
 for child in root:
     if child.attrib['type'] == 'song':
-        filepath = GLib.filename_from_uri(child.find('location').text)[0]
+        uri = child.find('location').text
         try:
             last = child.find('last-played').text
         except:
@@ -27,7 +27,7 @@ for child in root:
             count = None
         if count is not None and last is not None:
             print(filepath, last, count)
-            sql.execute("UPDATE tracks set ltime=?, popularity=? WHERE filepath=?", (last, count, filepath))
+            sql.execute("UPDATE tracks set ltime=?, popularity=? WHERE uri=?", (last, count, uri))
 
 sql.commit()
 sql.close()
