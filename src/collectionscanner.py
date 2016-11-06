@@ -112,11 +112,15 @@ class CollectionScanner(GObject.GObject, TagReader):
         while walk_uris:
             uri = walk_uris.pop(0)
             empty = True
-            d = Gio.File.new_for_uri(uri)
-            infos = d.enumerate_children(
-                'standard::name,standard::type',
-                Gio.FileQueryInfoFlags.NONE,
-                None)
+            try:
+                d = Gio.File.new_for_uri(uri)
+                infos = d.enumerate_children(
+                    'standard::name,standard::type',
+                    Gio.FileQueryInfoFlags.NONE,
+                    None)
+            except Exception as e:
+                print("CollectionScanner::__get_objects_for_uris():", e)
+                continue
             for info in infos:
                 f = infos.get_child(info)
                 child_uri = f.get_uri()
