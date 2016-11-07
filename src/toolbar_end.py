@@ -307,7 +307,7 @@ class ToolbarEnd(Gtk.Bin):
         elif self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
-        if event.button == 1:
+        if event is None or event.button == 1:
             self.__next_was_inhibited = self.__next_popover.inhibited
             self.__next_popover.hide()
             self.__next_popover.inhibit(True)
