@@ -63,6 +63,13 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Show/Hide albums filter</property>
+                <property name="accelerator">&lt;Primary&gt;i</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Lock playback</property>
                 <property name="accelerator">&lt;Primary&gt;l</property>
               </object>
