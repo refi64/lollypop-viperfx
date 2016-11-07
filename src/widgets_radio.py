@@ -16,11 +16,11 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track
-from lollypop.widgets_album import AlbumWidget
+from lollypop.widgets_album import BaseWidget
 from lollypop.pop_radio import RadioPopover
 
 
-class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
+class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
     """
         Widget with radio cover and title
     """
@@ -35,12 +35,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param radios_manager as RadiosManager
         """
         Gtk.FlowBoxChild.__init__(self)
+        BaseWidget.__init__(self)
         self.get_style_context().add_class('loading')
-        self._name = name
-        self._cover = None
-        self._lock_overlay = False
-        self._show_overlay = False
-        self._timeout_id = None
+        self.__name = name
         self.__radios_manager = radios_manager
 
     def populate(self):
@@ -48,7 +45,6 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             Init widget content
         """
         self.get_style_context().remove_class('loading')
-        AlbumWidget.__init__(self, None)
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
@@ -58,7 +54,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.__title_label = Gtk.Label()
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label.set_property('halign', Gtk.Align.CENTER)
-        self.__title_label.set_text(self._name)
+        self.__title_label.set_text(self.__name)
         self.__title_label.set_property('has-tooltip', True)
         self.__title_label.connect('query-tooltip', self._on_query_tooltip)
         self._overlay = Gtk.Overlay()
@@ -92,6 +88,13 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         """
         return Type.RADIOS
 
+    @property
+    def title(self):
+        """
+            @return str
+        """
+        return self.__name
+
     def do_get_preferred_width(self):
         """
             Return preferred width
@@ -106,15 +109,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             Set radio name
             @param name as string
         """
-        self._name = name
+        self.__name = name
         self.__title_label.set_label(name)
-
-    def get_name(self):
-        """
-            Return radio name
-            @return name as string
-        """
-        return self._name
 
     def set_cover(self):
         """
@@ -123,7 +119,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         if self._cover is None:
             return
         surface = Lp().art.get_radio_artwork(
-                    self._name,
+                    self.__name,
                     ArtSize.BIG,
                     self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
@@ -205,9 +201,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._overlay.add_overlay(self._play_event)
             self._overlay.add_overlay(self._artwork_event)
             self._overlay.show_all()
-            AlbumWidget._show_overlay_func(self, True)
+            BaseWidget._show_overlay_func(self, True)
         else:
-            AlbumWidget._show_overlay_func(self, False)
+            BaseWidget._show_overlay_func(self, False)
             self._play_event.destroy()
             self._play_event = None
             self._play_button.destroy()

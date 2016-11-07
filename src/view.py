@@ -20,9 +20,10 @@ class View(Gtk.Grid):
         Generic view
     """
 
-    def __init__(self):
+    def __init__(self, filtered=False):
         """
             Init view
+            @param filtered as bool
         """
         Gtk.Grid.__init__(self)
         self.connect('destroy', self._on_destroy)
@@ -39,6 +40,19 @@ class View(Gtk.Grid):
         # Stop populate thread
         self._stop = False
         self.__new_ids = []
+
+        if filtered:
+            self.__filter = ""
+            entry = Gtk.SearchEntry.new()
+            entry.connect('search-changed', self.__on_search_changed)
+            entry.connect('key-press-event', self.__on_key_press)
+            entry.set_size_request(400, -1)
+            entry.show()
+            self.__search_bar = Gtk.SearchBar.new()
+            self.__search_bar.add(entry)
+            self.add(self.__search_bar)
+        else:
+            self.__filter = None
 
         self._scrolled = Gtk.ScrolledWindow()
         self._scrolled.connect('leave-notify-event', self.__on_leave_notify)
@@ -69,7 +83,22 @@ class View(Gtk.Grid):
         GLib.idle_add(self.__update_widgets, self._get_children())
 
     def set_search_mode(self):
-        pass
+        """
+           Set search mode
+        """
+        if self.__filter is not None:
+            enable = not self.__search_bar.get_search_mode()
+            Lp().window.enable_global_shortcuts(not enable)
+            self.__search_bar.show() if enable else self.__search_bar.hide()
+            self.__search_bar.set_search_mode(enable)
+
+    @property
+    def filtered(self):
+        """
+            True if view filtered
+            @return bool
+        """
+        return self.__filter is not None and self.__filter != ""
 
     def populate(self):
         pass
@@ -77,6 +106,20 @@ class View(Gtk.Grid):
 #######################
 # PROTECTED           #
 #######################
+    def _filter_func(self, child):
+        """
+            Filter function for a Gtk.FlowBox/GtkListBox
+            @param child as Gtk.FlowBoxChild/Gtk.ListBoxChild
+        """
+        if not self.filtered:
+            return True
+        filter = self.__filter.lower()
+        if child.title.lower().find(filter) != -1 or\
+                child.artists.lower().find(filter) != -1:
+            child.set_filtered(False)
+            return True
+        child.set_filtered(True)
+        return False
 
     def _get_children(self):
         """
@@ -150,6 +193,26 @@ class View(Gtk.Grid):
             widget.update_duration(track_id)
             GLib.idle_add(self.__update_duration, widgets, track_id)
 
+    def __on_search_changed(self, entry):
+        """
+            Update filter
+            @param entry as Gtk.Entry
+        """
+        self.__filter = entry.get_text()
+        self._box.invalidate_filter()
+
+    def __on_key_press(self, widget, event):
+        """
+            If Esc, hide widget, why GTK doesn't do that?
+            Otherwise, we get an ugly frame
+            @param widget as Gtk.SearchEntry
+            @param event as Gdk.Event
+        """
+        if event.keyval == 65307:
+            self.__search_bar.set_search_mode(False)
+            self.__search_bar.hide()
+            return True
+
     def __on_leave_notify(self, widget, event):
         """
             Update overlays as internal widget may not have received the signal
@@ -179,11 +242,12 @@ class LazyLoadingView(View):
         Lazy loading for view
     """
 
-    def __init__(self):
+    def __init__(self, filtered=False):
         """
             Init lazy loading
+            @param filtered as bool
         """
-        View.__init__(self)
+        View.__init__(self, filtered)
         self._lazy_queue = []  # Widgets not initialized
         self._scroll_value = 0
         self.__prev_scroll_value = 0

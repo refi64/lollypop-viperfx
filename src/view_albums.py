@@ -31,37 +31,27 @@ class AlbumsView(LazyLoadingView):
             @param genre ids as [int]
             @param artist ids as [int]
         """
-        LazyLoadingView.__init__(self)
+        LazyLoadingView.__init__(self, True)
         self.__signal = None
         self.__context_album_id = None
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
         self.__press_rect = None
 
-        self.__albumbox = Gtk.FlowBox()
-        self.__albumbox.set_filter_func(self.__filter_func)
-        self.__albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.__albumbox.connect('child-activated', self.__on_album_activated)
-        self.__albumbox.connect('button-press-event', self.__on_button_press)
+        self._box = Gtk.FlowBox()
+        self._box.set_filter_func(self._filter_func)
+        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._box.connect('child-activated', self.__on_album_activated)
+        self._box.connect('button-press-event', self.__on_button_press)
         # Allow lazy loading to not jump up and down
-        self.__albumbox.set_homogeneous(True)
-        self.__albumbox.set_max_children_per_line(1000)
-        self.__albumbox.show()
+        self._box.set_homogeneous(True)
+        self._box.set_max_children_per_line(1000)
+        self._box.show()
 
         self._viewport.set_property('valign', Gtk.Align.START)
         self._viewport.set_property('margin', 5)
         self._scrolled.set_property('expand', True)
 
-        self.__filter = ""
-        entry = Gtk.SearchEntry.new()
-        entry.connect('search-changed', self.__on_search_changed)
-        entry.connect('key-press-event', self.__on_key_press)
-        entry.set_size_request(400, -1)
-        entry.show()
-        self.__search_bar = Gtk.SearchBar.new()
-        self.__search_bar.add(entry)
-
-        self.add(self.__search_bar)
         self.add(self._scrolled)
 
     def populate(self, albums):
@@ -70,23 +60,6 @@ class AlbumsView(LazyLoadingView):
             @param is compilation as bool
         """
         GLib.idle_add(self.__add_albums, albums)
-
-    def set_search_mode(self):
-        """
-           Set search mode
-        """
-        enable = not self.__search_bar.get_search_mode()
-        Lp().window.enable_global_shortcuts(not enable)
-        self.__search_bar.show() if enable else self.__search_bar.hide()
-        self.__search_bar.set_search_mode(enable)
-
-    @property
-    def filtered(self):
-        """
-            True if view filtered
-            @return bool
-        """
-        return self.__filter != ""
 
 #######################
 # PROTECTED           #
@@ -97,28 +70,13 @@ class AlbumsView(LazyLoadingView):
             @return [AlbumWidget]
         """
         children = []
-        for child in self.__albumbox.get_children():
+        for child in self._box.get_children():
             children.append(child)
         return children
 
 #######################
 # PRIVATE             #
 #######################
-    def __filter_func(self, child):
-        if not self.filtered:
-            return True
-        filter = self.__filter.lower()
-        if child.album.title.lower().find(filter) != -1 or\
-                " ".join(child.album.artists).lower().find(filter) != -1:
-            child.set_filtered(False)
-            return True
-        child.set_filtered(True)
-        return False
-
-    def __on_search_changed(self, entry):
-        self.__filter = entry.get_text()
-        self.__albumbox.invalidate_filter()
-
     def __add_albums(self, albums):
         """
             Add albums to the view
@@ -133,14 +91,14 @@ class AlbumsView(LazyLoadingView):
                                        self.__genre_ids,
                                        self.__artist_ids)
             widget.connect('overlayed', self._on_overlayed)
-            self.__albumbox.insert(widget, -1)
+            self._box.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
             GLib.idle_add(self.__add_albums, albums)
         else:
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
-                self._viewport.add(self.__albumbox)
+                self._viewport.add(self._box)
 
     def __on_album_activated(self, flowbox, album_widget):
         """
@@ -155,7 +113,7 @@ class AlbumsView(LazyLoadingView):
         # FIXME: Report a bug and check always true
         (x, y) = album_widget.translate_coordinates(self._scrolled, 0, 0)
         if y < 0:
-            y = album_widget.translate_coordinates(self.__albumbox, 0, 0)[1]
+            y = album_widget.translate_coordinates(self._box, 0, 0)[1]
             self._scrolled.get_allocation().height + y
             self._scrolled.get_vadjustment().set_value(y)
         if self.__press_rect is not None:
@@ -202,18 +160,6 @@ class AlbumsView(LazyLoadingView):
         """
         album_widget.lock_overlay(False)
         album_widget.get_cover().set_opacity(1)
-
-    def __on_key_press(self, widget, event):
-        """
-            If Esc, hide widget, why GTK doesn't do that?
-            Otherwise, we get an ugly frame
-            @param widget as Gtk.SearchEntry
-            @param event as Gdk.Event
-        """
-        if event.keyval == 65307:
-            self.__search_bar.set_search_mode(False)
-            self.__search_bar.hide()
-            return True
 
     def __on_button_press(self, flowbox, event):
         """

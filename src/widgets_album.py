@@ -23,17 +23,15 @@ from lollypop.pop_menu import AlbumMenuPopover, AlbumMenu
 from lollypop.pop_artwork import CoversPopover
 
 
-class AlbumWidget:
+class BaseWidget:
     """
         Base album widget
     """
 
-    def __init__(self, album_id, genre_ids=[]):
+    def __init__(self):
         """
             Init widget
         """
-        self._album = Album(album_id, genre_ids)
-        self._filter_ids = []
         self._selected = None
         self._loading = Loading.NONE
         self._cover = None
@@ -44,62 +42,10 @@ class AlbumWidget:
         self._show_overlay = False
         self._lock_overlay = False
         self._timeout_id = None
+        self.__parent_filter = False
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
-        self._scan_signal = Lp().scanner.connect('album-updated',
-                                                 self._on_album_updated)
-        self.connect('destroy', self.__on_destroy)
-
-    def set_cover(self):
-        """
-            Set cover for album if state changed
-        """
-        if self._cover is None:
-            return
-        surface = Lp().art.get_album_artwork(
-                            self._album,
-                            ArtSize.BIG,
-                            self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
-        self._cover.set_size_request(100, 100)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
-        else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-        del surface
-
-    def update_cover(self):
-        """
-            Update cover for album id id needed
-        """
-        if self._cover is None:
-            return
-        surface = Lp().art.get_album_artwork(
-                            self._album,
-                            ArtSize.BIG,
-                            self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
-        else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-        del surface
-
-    def update_state(self):
-        """
-            Update widget state
-        """
-        if self._cover is None:
-            return
-        selected = self._album.id == Lp().player.current_track.album.id
-        if selected != self._selected:
-            if selected:
-                self._cover.get_style_context().add_class(
-                                                    'cover-frame-selected')
-            else:
-                self._cover.get_style_context().remove_class(
-                                                    'cover-frame-selected')
 
     def update_playing_indicator(self):
         """
@@ -120,20 +66,26 @@ class AlbumWidget:
         """
         self._loading = Loading.STOP
 
-    @property
-    def id(self):
+    def set_filtered(self, b):
         """
-            Return album id for widget
-            @return album id as int
+            Set widget filtered
         """
-        return self._album.id
+        self.__parent_filter = b
 
     @property
-    def album(self):
+    def title(self):
+        return ""
+
+    @property
+    def artists(self):
+        return ""
+
+    @property
+    def filtered(self):
         """
-            @return Album
+            True if filtered by parent
         """
-        return self._album
+        return self.__parent_filter
 
     def lock_overlay(self, lock):
         """
@@ -324,17 +276,6 @@ class AlbumWidget:
         self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
 
-    def _on_album_updated(self, scanner, album_id, destroy):
-        """
-            On album modified, disable it
-            @param scanner as CollectionScanner
-            @param album id as int
-            @param deleted as bool
-            @param destroy as bool
-        """
-        if self._album.id == album_id and destroy:
-            self.destroy()
-
     def _show_append(self, append):
         """
             Show append button if append, else remove button
@@ -351,14 +292,6 @@ class AlbumWidget:
 #######################
 # PRIVATE             #
 #######################
-    def __on_destroy(self, widget):
-        """
-            Disconnect signal
-            @param widget as Gtk.Widget
-        """
-        if self._scan_signal is not None:
-            Lp().scanner.disconnect(self._scan_signal)
-
     def __on_enter_notify_timeout(self):
         """
             Show overlay buttons
@@ -366,6 +299,125 @@ class AlbumWidget:
         self._timeout_id = None
         if not self._show_overlay:
             self._show_overlay_func(True)
+
+
+class AlbumWidget(BaseWidget):
+    """
+        Album widget
+    """
+
+    def __init__(self, album_id, genre_ids=[], artist_ids=[]):
+        """
+            Init Album widget
+        """
+        BaseWidget.__init__(self)
+        self._album = Album(album_id, genre_ids)
+        self._filter_ids = artist_ids
+        self.connect('destroy', self.__on_destroy)
+        self._scan_signal = Lp().scanner.connect('album-updated',
+                                                 self._on_album_updated)
+
+    @property
+    def album(self):
+        """
+            @return Album
+        """
+        return self._album
+
+    @property
+    def id(self):
+        """
+            Return widget id
+        """
+        return self._album.id
+
+    @property
+    def title(self):
+        """
+            @return str
+        """
+        return self._album.name
+
+    @property
+    def artists(self):
+        """
+            @return str
+        """
+        return ", ".join(self._album.artists)
+
+    def get_cover(self):
+        """
+            Get album cover
+            @return cover as Gtk.Image
+        """
+        return self._cover
+
+    def set_cover(self):
+        """
+            Set cover for album if state changed
+        """
+        if self._cover is None:
+            return
+        surface = Lp().art.get_album_artwork(
+                            self._album,
+                            ArtSize.BIG,
+                            self._cover.get_scale_factor())
+        self._cover.set_from_surface(surface)
+        self._cover.set_size_request(100, 100)
+        if surface.get_height() > surface.get_width():
+            self._overlay_orientation = Gtk.Orientation.VERTICAL
+        else:
+            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
+        del surface
+
+    def update_cover(self):
+        """
+            Update cover for album id id needed
+        """
+        if self._cover is None:
+            return
+        surface = Lp().art.get_album_artwork(
+                            self._album,
+                            ArtSize.BIG,
+                            self._cover.get_scale_factor())
+        self._cover.set_from_surface(surface)
+        if surface.get_height() > surface.get_width():
+            self._overlay_orientation = Gtk.Orientation.VERTICAL
+        else:
+            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
+        del surface
+
+    def update_state(self):
+        """
+            Update widget state
+        """
+        if self._cover is None:
+            return
+        selected = self._album.id == Lp().player.current_track.album.id
+        if selected != self._selected:
+            if selected:
+                self._cover.get_style_context().add_class(
+                                                    'cover-frame-selected')
+            else:
+                self._cover.get_style_context().remove_class(
+                                                    'cover-frame-selected')
+
+#######################
+# PROTECTED           #
+#######################
+    def _on_album_updated(self, scanner, album_id, destroy):
+        pass
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_destroy(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self._scan_signal is not None:
+            Lp().scanner.disconnect(self._scan_signal)
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
@@ -387,9 +439,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         Gtk.FlowBoxChild.__init__(self)
         self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class('loading')
-        AlbumWidget.__init__(self, album_id, genre_ids)
-        self._filter_ids = artist_ids
-        self.__parent_filter = False
+        AlbumWidget.__init__(self, album_id, genre_ids, artist_ids)
 
     def populate(self):
         """
@@ -450,21 +500,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._cover.get_style_context().add_class(
                                                 'cover-frame-youtube')
 
-    @property
-    def id(self):
-        """
-            Return album id
-            @return int
-        """
-        return self._album.id
-
-    def get_cover(self):
-        """
-            Get album cover
-            @return cover as Gtk.Image
-        """
-        return self._cover
-
     def do_get_preferred_width(self):
         """
             Return preferred width
@@ -473,19 +508,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         # Padding: 3px, border: 1px + spacing
         width = ArtSize.BIG + 12
         return (width, width)
-
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-        """
-        self.__parent_filter = b
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-        """
-        return self.__parent_filter
 
 #######################
 # PROTECTED           #
@@ -518,7 +540,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._play_all_event.set_property('halign', Gtk.Align.END)
             self._play_all_event.connect('realize', self._on_eventbox_realize)
             self._play_all_event.connect('button-press-event',
-                                         self._on_play_all_press_event)
+                                         self.__on_play_all_press_event)
             self._play_all_button = Gtk.Image.new()
             self._play_all_button.set_opacity(0)
             # Artwork button
@@ -586,10 +608,21 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._artwork_button.destroy()
             self._artwork_button = None
 
+    def _on_album_updated(self, scanner, album_id, destroy):
+        """
+            On album modified, disable it
+            @param scanner as CollectionScanner
+            @param album id as int
+            @param deleted as bool
+            @param destroy as bool
+        """
+        if self._album.id == album_id and destroy:
+            self.destroy()
+
 #######################
 # PRIVATE             #
 #######################
-    def _on_play_all_press_event(self, widget, event):
+    def __on_play_all_press_event(self, widget, event):
         """
             Play album with context
             @param: widget as Gtk.EventBox
@@ -606,7 +639,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                 if not child.filtered:
                     Lp().player.add_album(child.album)
         else:
-            print("db")
             Lp().player.set_albums(track.id, self._filter_ids,
                                    self._album.genre_ids)
         Lp().player.load(track)
@@ -656,7 +688,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param show cover as bool
         """
         Gtk.Bin.__init__(self)
-        AlbumWidget.__init__(self, album_id, genre_ids)
+        AlbumWidget.__init__(self, album_id, genre_ids, artist_ids)
         self._album.set_artists(artist_ids)
         self.__width = None
         # Cover + rating + spacing
@@ -668,7 +700,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # Discs to load, will be emptied
         self.__discs = self._album.discs
         self.__locked_widget_right = True
-        self._filter_ids = artist_ids
         self.set_property('height-request', self.__height)
         self.connect('size-allocate', self.__on_size_allocate)
         builder = Gtk.Builder()

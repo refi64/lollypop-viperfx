@@ -31,7 +31,7 @@ class RadiosView(LazyLoadingView):
         """
             Init view
         """
-        LazyLoadingView.__init__(self)
+        LazyLoadingView.__init__(self, True)
         self.__signal = Lp().art.connect('radio-artwork-changed',
                                          self.__on_logo_changed)
 
@@ -47,12 +47,13 @@ class RadiosView(LazyLoadingView):
         self.__pop_tunein = TuneinPopover(self.__radios_manager)
         self.__pop_tunein.set_relative_to(builder.get_object('search_btn'))
 
-        self.__radiobox = Gtk.FlowBox()
-        self.__radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._box = Gtk.FlowBox()
+        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         # Allow lazy loading to not jump up and down
-        self.__radiobox.set_homogeneous(True)
-        self.__radiobox.set_max_children_per_line(1000)
-        self.__radiobox.show()
+        self._box.set_homogeneous(True)
+        self._box.set_max_children_per_line(1000)
+        self._box.set_filter_func(self._filter_func)
+        self._box.show()
 
         self.__stack = Gtk.Stack()
         self.__stack.set_transition_duration(500)
@@ -90,7 +91,7 @@ class RadiosView(LazyLoadingView):
             @return [RadioWidget]
         """
         children = []
-        for child in self.__radiobox.get_children():
+        for child in self._box.get_children():
             children.append(child)
         return children
 
@@ -149,11 +150,11 @@ class RadiosView(LazyLoadingView):
             radios_name.append(name)
 
         # Get currents widget less removed
-        for child in self.__radiobox.get_children():
-            if child.get_name() not in radios_name:
+        for child in self._box.get_children():
+            if child.title not in radios_name:
                 old_child = child
             else:
-                currents.append(child.get_name())
+                currents.append(child.title)
 
         # Add the new radio
         for name in radios_name:
@@ -171,13 +172,13 @@ class RadiosView(LazyLoadingView):
         # Delete widget
         elif old_child is not None:
             old_child.destroy()
-            if not self.__radiobox.get_children():
+            if not self._box.get_children():
                 self.__show_stack([])
 
         # Update player state based on current view
         radios = []
-        for child in self.__radiobox.get_children():
-            name = child.get_name()
+        for child in self._box.get_children():
+            name = child.title
             url = manager.get_url(name)
             radios.append((name, url))
         Lp().player.set_radios(radios)
@@ -191,8 +192,8 @@ class RadiosView(LazyLoadingView):
             @param player as Plyaer
             @param name as string
         """
-        for child in self.__radiobox.get_children():
-            if child.get_name() == name:
+        for child in self._box.get_children():
+            if child.title == name:
                 child.update_cover()
 
     def __show_stack(self, radios):
@@ -224,11 +225,11 @@ class RadiosView(LazyLoadingView):
             widget.show()
             self._lazy_queue.append(widget)
             if first:
-                self.__radiobox.insert(widget, 0)
+                self._box.insert(widget, 0)
             else:
-                self.__radiobox.insert(widget, -1)
+                self._box.insert(widget, -1)
             GLib.idle_add(self.__add_radios, radios)
         else:
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
-                self._viewport.add(self.__radiobox)
+                self._viewport.add(self._box)
