@@ -231,7 +231,7 @@ class ToolbarEnd(Gtk.Bin):
         Lp().player.set_party(active)
         self.on_next_changed(Lp().player)
 
-    def _on_button_press_event(self, eventbox, event):
+    def _on_party_press_event(self, eventbox, event):
         """
             Show party popover
             @param eventbox as Gtk.EventBox
@@ -280,7 +280,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_popover.connect('closed', self.__on_list_popover_closed)
         return True
 
-    def _on_title_press_event(self, widget, event):
+    def _on_search_press_event(self, widget, event):
         """
             On long press: Show filter
             @param widget as Gtk.Widget
@@ -293,10 +293,10 @@ class ToolbarEnd(Gtk.Bin):
                                               self.__show_filtering)
         return True
 
-    def _on_title_release_event(self, widget=None, event=None):
+    def _on_search_release_event(self, widget=None, event=None):
         """
-            Show track information popover
-            On long press/right click: show current track menu
+            Show search popover
+            On right click: show filter
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
