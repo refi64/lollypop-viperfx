@@ -307,6 +307,7 @@ class PlaylistRow(Row):
             @param show headers as bool
         """
         Row.__init__(self, rowid, num)
+        self.__parent_filter = False
         self.__show_headers = show_headers
         self._indicator.set_margin_start(5)
         self._row_widget.set_margin_start(5)
@@ -371,6 +372,32 @@ class PlaylistRow(Row):
         self.connect('drag-data-received', self.__on_drag_data_received)
         self.connect('drag-motion', self.__on_drag_motion)
         self.connect('drag-leave', self.__on_drag_leave)
+
+    @property
+    def title(self):
+        return self._track.name
+
+    @property
+    def artists(self):
+        """
+            Return artists + ALBUM NAME
+            Just a quick hack for filtering
+        """
+        return ", ".join(self._track.album.artists) +\
+               " " + self._track.album.name
+
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__parent_filter = b
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__parent_filter
 
     def show_headers(self, show):
         """

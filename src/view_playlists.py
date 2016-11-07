@@ -30,7 +30,7 @@ class PlaylistsView(View):
             @parma playlist ids as [int]
             @param editable as bool
         """
-        View.__init__(self)
+        View.__init__(self, True)
         self.__tracks = []
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = Lp().playlists.connect('playlist-add',
@@ -58,6 +58,7 @@ class PlaylistsView(View):
             self.__edit_button.hide()
 
         self.__playlists_widget = PlaylistsWidget(playlist_ids)
+        self.__playlists_widget.set_filter_func(self._filter_func)
         self.__playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self.__playlists_widget)
@@ -126,6 +127,15 @@ class PlaylistsView(View):
             Return view children
         """
         return [self.__playlists_widget]
+
+    def _on_search_changed(self, entry):
+        """
+            Update filter
+            @param entry as Gtk.Entry
+        """
+        self._filter = entry.get_text()
+        for box in self.__playlists_widget.boxes:
+            box.invalidate_filter()
 
     def _on_destroy(self, widget):
         """

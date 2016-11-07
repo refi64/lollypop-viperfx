@@ -46,10 +46,10 @@ class PlaylistsWidget(Gtk.Grid):
         # Used to block widget2 populate while showing one column
         self.__locked_widget_right = True
 
-        self.__box = Gtk.Grid()
-        self.__box.set_vexpand(True)
-        self.__box.set_column_homogeneous(True)
-        self.__box.show()
+        self.__grid = Gtk.Grid()
+        self.__grid.set_vexpand(True)
+        self.__grid.set_column_homogeneous(True)
+        self.__grid.show()
 
         self.connect('size-allocate', self.__on_size_allocate)
 
@@ -69,7 +69,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.drag_dest_add_text_targets()
         self.connect('drag-data-received', self.__on_drag_data_received)
 
-        self.add(self.__box)
+        self.add(self.__grid)
 
     @property
     def id(self):
@@ -78,6 +78,20 @@ class PlaylistsWidget(Gtk.Grid):
             @return int
         """
         return Type.PLAYLISTS
+
+    @property
+    def boxes(self):
+        """
+            @return [Gtk.ListBox]
+        """
+        return [self.__tracks_widget_left, self.__tracks_widget_right]
+
+    def set_filter_func(self, func):
+        """
+            Set filter function
+        """
+        self.__tracks_widget_left.set_filter_func(func)
+        self.__tracks_widget_right.set_filter_func(func)
 
     def show_overlay(self, bool):
         """
@@ -113,7 +127,7 @@ class PlaylistsWidget(Gtk.Grid):
         for child in self.__tracks_widget_left.get_children() + \
                 self.__tracks_widget_right.get_children():
             if child.id == Lp().player.current_track.id:
-                ordinate = child.translate_coordinates(self.__box, 0, 0)[1]
+                ordinate = child.translate_coordinates(self.__grid, 0, 0)[1]
         return ordinate
 
     def populate_list_left(self, tracks, pos):
@@ -434,20 +448,20 @@ class PlaylistsWidget(Gtk.Grid):
         redraw = False
         if allocation.width < WindowSize.MONSTER or\
                 not Lp().settings.get_value('split-view'):
-            self.__box.set_property('valign', Gtk.Align.START)
+            self.__grid.set_property('valign', Gtk.Align.START)
             orientation = Gtk.Orientation.VERTICAL
         else:
-            self.__box.set_property('valign', Gtk.Align.FILL)
+            self.__grid.set_property('valign', Gtk.Align.FILL)
             orientation = Gtk.Orientation.HORIZONTAL
         if orientation != self.__orientation:
             self.__orientation = orientation
             redraw = True
-        self.__box.set_orientation(orientation)
+        self.__grid.set_orientation(orientation)
         if redraw:
-            for child in self.__box.get_children():
-                self.__box.remove(child)
-            GLib.idle_add(self.__box.add, self.__tracks_widget_left)
-            GLib.idle_add(self.__box.add, self.__tracks_widget_right)
+            for child in self.__grid.get_children():
+                self.__grid.remove(child)
+            GLib.idle_add(self.__grid.add, self.__tracks_widget_left)
+            GLib.idle_add(self.__grid.add, self.__tracks_widget_right)
         self.__update_headers()
 
     def __on_activated(self, widget, track_id):

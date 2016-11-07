@@ -42,9 +42,9 @@ class View(Gtk.Grid):
         self.__new_ids = []
 
         if filtered:
-            self.__filter = ""
+            self._filter = ""
             entry = Gtk.SearchEntry.new()
-            entry.connect('search-changed', self.__on_search_changed)
+            entry.connect('search-changed', self._on_search_changed)
             entry.connect('key-press-event', self.__on_key_press)
             entry.set_size_request(400, -1)
             entry.show()
@@ -52,7 +52,7 @@ class View(Gtk.Grid):
             self.__search_bar.add(entry)
             self.add(self.__search_bar)
         else:
-            self.__filter = None
+            self._filter = None
 
         self._scrolled = Gtk.ScrolledWindow()
         self._scrolled.connect('leave-notify-event', self.__on_leave_notify)
@@ -86,7 +86,7 @@ class View(Gtk.Grid):
         """
            Set search mode
         """
-        if self.__filter is not None:
+        if self._filter is not None:
             enable = not self.__search_bar.get_search_mode()
             Lp().window.enable_global_shortcuts(not enable)
             self.__search_bar.show() if enable else self.__search_bar.hide()
@@ -98,7 +98,7 @@ class View(Gtk.Grid):
             True if view filtered
             @return bool
         """
-        return self.__filter is not None and self.__filter != ""
+        return self._filter is not None and self._filter != ""
 
     def populate(self):
         pass
@@ -113,7 +113,7 @@ class View(Gtk.Grid):
         """
         if not self.filtered:
             return True
-        filter = self.__filter.lower()
+        filter = self._filter.lower()
         if child.title.lower().find(filter) != -1 or\
                 child.artists.lower().find(filter) != -1:
             child.set_filtered(False)
@@ -155,6 +155,14 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self.__update_duration, self._get_children(), track_id)
 
+    def _on_search_changed(self, entry):
+        """
+            Update filter
+            @param entry as Gtk.Entry
+        """
+        self._filter = entry.get_text()
+        self._box.invalidate_filter()
+
     def _on_destroy(self, widget):
         """
             Remove signals on unamp
@@ -192,14 +200,6 @@ class View(Gtk.Grid):
             widget = widgets.pop(0)
             widget.update_duration(track_id)
             GLib.idle_add(self.__update_duration, widgets, track_id)
-
-    def __on_search_changed(self, entry):
-        """
-            Update filter
-            @param entry as Gtk.Entry
-        """
-        self.__filter = entry.get_text()
-        self._box.invalidate_filter()
 
     def __on_key_press(self, widget, event):
         """
