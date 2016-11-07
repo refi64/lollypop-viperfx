@@ -117,6 +117,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover = NextPopover()
         self.__search = None
         self.__next_was_inhibited = False
+        self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
@@ -141,7 +142,7 @@ class ToolbarEnd(Gtk.Bin):
 
         self.__search_button = builder.get_object('search-button')
         search_action = Gio.SimpleAction.new('search', None)
-        search_action.connect('activate', self._on_search_button_clicked)
+        search_action.connect('activate', self._on_title_release_event)
         Lp().add_action(search_action)
         Lp().set_accels_for_action("app.search", ["<Control>f"])
 
@@ -279,32 +280,55 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_popover.connect('closed', self.__on_list_popover_closed)
         return True
 
-    def _on_search_button_clicked(self, obj=None, param=None):
+    def _on_title_press_event(self, widget, event):
         """
-            Show search widget on search button clicked
-            @param obj as Gtk.Button or Gtk.Action
+            On long press: Show filter
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+
         """
-        self.__next_was_inhibited = self.__next_popover.inhibited
-        self.__next_popover.hide()
-        self.__next_popover.inhibit(True)
-        if self.__search is None:
-            from lollypop.pop_search import SearchPopover
-            self.__search = SearchPopover()
-            self.__search.connect('closed', self.__on_popover_closed)
-        self.__search.set_relative_to(self.__search_button)
-        self.__search.show()
+        if Lp().window.view is not None:
+            self.__timeout_id = GLib.timeout_add(
+                                              500,
+                                              self.__show_filtering)
+        return True
+
+    def _on_title_release_event(self, widget=None, event=None):
+        """
+            Show track information popover
+            On long press/right click: show current track menu
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        # Ignore this release event, show_filtering() has been called
+        if self.__timeout_id == Type.NONE:
+            self.__timeout_id = None
+            return True
+        elif self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
+        if event.button == 1:
+            self.__next_was_inhibited = self.__next_popover.inhibited
+            self.__next_popover.hide()
+            self.__next_popover.inhibit(True)
+            if self.__search is None:
+                from lollypop.pop_search import SearchPopover
+                self.__search = SearchPopover()
+                self.__search.connect('closed', self.__on_popover_closed)
+            self.__search.set_relative_to(self.__search_button)
+            self.__search.show()
+        else:
+            self.__show_filtering()
 
 #######################
 # PRIVATE             #
 #######################
-    def __on_lock_changed(self, player):
+    def __show_filtering(self):
         """
-            Lock toolbar
-            @param player as Player
+            Show current track menu
         """
-        self.__party_button.set_sensitive(not player.locked)
-        self.__list_button.set_sensitive(not player.locked)
-        self.__shuffle_button.set_sensitive(not player.locked)
+        self.__timeout_id = Type.NONE
+        Lp().window.view.set_search_mode()
 
     def __set_shuffle_icon(self):
         """
@@ -343,6 +367,15 @@ class ToolbarEnd(Gtk.Bin):
         """
         self.__shuffle_button.set_active(
             not self.__shuffle_button.get_active())
+
+    def __on_lock_changed(self, player):
+        """
+            Lock toolbar
+            @param player as Player
+        """
+        self.__party_button.set_sensitive(not player.locked)
+        self.__list_button.set_sensitive(not player.locked)
+        self.__shuffle_button.set_sensitive(not player.locked)
 
     def __on_shuffle_changed(self, settings, value):
         """
