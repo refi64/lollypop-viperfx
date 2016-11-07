@@ -40,9 +40,12 @@ class NotificationManager:
             Send message to user
             @param message as str
             @param sub as str
+            @param transient as bool
         """
         self.__notification.clear_actions()
         self.__notification.clear_hints()
+        self.__notification.set_hint("transient",
+                                     GLib.Variant.new_boolean(True))
         self.__notification.update(message,
                                    sub,
                                    "lollypop")
@@ -50,6 +53,7 @@ class NotificationManager:
             self.__notification.show()
         except:
             pass
+        self.__notification.clear_hints()
         self.__set_actions()
 
     def inhibit(self):
