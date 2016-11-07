@@ -142,7 +142,7 @@ class ToolbarEnd(Gtk.Bin):
 
         self.__search_button = builder.get_object('search-button')
         search_action = Gio.SimpleAction.new('search', None)
-        search_action.connect('activate', self._on_title_release_event)
+        search_action.connect('activate', self._on_search_release_event)
         Lp().add_action(search_action)
         Lp().set_accels_for_action("app.search", ["<Control>f"])
 
