@@ -42,20 +42,6 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Fullscreen</property>
-                <property name="accelerator">F11</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Love current track</property>
-                <property name="accelerator">l</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show genres</property>
                 <property name="accelerator">&lt;Primary&gt;g</property>
               </object>
@@ -79,6 +65,13 @@
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show/Hide volume control</property>
                 <property name="accelerator">&lt;Alt&gt;v</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Fullscreen</property>
+                <property name="accelerator">F11</property>
               </object>
             </child>
           </object>
@@ -127,6 +120,13 @@
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Skip current album</property>
                 <property name="accelerator">&lt;Primary&gt;n</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Love current track</property>
+                <property name="accelerator">l</property>
               </object>
             </child>
             <child>
