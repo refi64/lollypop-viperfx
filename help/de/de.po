@@ -2,7 +2,7 @@
 # Translators:
 # Manuel Ehrmanntraut <dev@mfxbe.de>, 2016
 # Mathias Rudolf <manifre.rudolf@gmail.com>, 2015
-# HumHumXX <xhummuhx+transifex@gmail.com>, 2015
+# HumHumXX, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"

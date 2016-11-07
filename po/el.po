@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-31 13:26+0100\n"
-"PO-Revision-Date: 2016-10-31 12:27+0000\n"
+"POT-Creation-Date: 2016-11-05 14:26+0100\n"
+"PO-Revision-Date: 2016-11-05 13:27+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Greek (http://www.transifex.com/gnumdk/lollypop/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -55,115 +55,115 @@ msgid "Save artwork/popularity in tags"
 msgstr "Αποθήκευση γραφικού/δημοφιλίας στην ετικέτα"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
-msgid "Repeat by default"
-msgstr "Προεπιλεγμένη επανάληψη"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Window maximized"
 msgstr "Μεγιστοποίηση παραθύρου"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Window maximized state."
 msgstr "Κατάσταση πλήρους παραθύρου"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Enabled genres in party mode"
 msgstr "Ενεργοποίση στιλ σε κατάσταση πάρτη "
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Ids for genres."
 msgstr "Ταυτότητα ανά είδος."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Music uris"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Αν άδειο, χρήση XDG_MISIC_DIR"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Use Librefm instead of Lastfm"
 msgstr "Χρήση Librefm αντί του Lastfm"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
 msgstr "Σύνδεση Last.fm"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Google Custom Search API key"
 msgstr "κλειδί Google Custom Search API"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Favorite tag editor"
 msgstr "Αγαπημένος επεξεργαστής ετικέτας"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "INTERNAL"
 msgstr "ΕΣΩΤΕΡΙΚΟ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Audio output preview on track hover"
 msgstr "Προβολή εξόδου ήχου πάνω από το τραγούδι"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
 msgstr "Μόνο ψευδό-ήχος ΠΧ: alsa_output.pci-0000_00_14.2.analog-stereo. Εντολή για αποτελέσματα: $ pacmd list-sinks|grep 'name:'"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Favorite cover file"
 msgstr "Αγαπημένο αρχείο εξωφύλλου"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Restart needed"
 msgstr "Χρειάζεται επανεκκίνηση "
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Database version"
 msgstr "Έκδοση ΒΔ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Η επαναφορά της τιμής θα επαναφέρει τη ΒΔ, θα επανέλθουν τα δημοφιλέστερα άλμπουμ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Μέγεθος εξωφύλλου άλμπουμ "
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Replay gain value in db"
 msgstr "Επανάκτηση τιμής στη ΒΔ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Between -15 and 15"
 msgstr "Μεταξύ -15 και 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Sync all albums(MTP)"
 msgstr "Συγχρονισμός των άλμπουμ(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Convert to MP3(MTP)"
 msgstr "Μετατροπή σε MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Normalize MP3(MTP)"
 msgstr "Ομαλοποίηση MP3(MTP) "
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Αυτόματη ενημέρωση μουσικής"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Split playlists view"
 msgstr "Προβολή διαιρεμένης λίστας"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show genres list"
 msgstr "Εμφάνιση λίστας στυλ"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+msgid "Show charts"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
@@ -225,11 +225,15 @@ msgstr "Διάρκεια μίξης"
 msgid "Shuffle mode"
 msgstr "Ανακάτεμα"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:52 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:52
+msgid "Playback behaviour"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:53 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Ταξινόμηση άλμπουμ ανά"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:53
+#: ../data/org.gnome.Lollypop.gschema.xml.h:54
 msgid "Charts provider"
 msgstr "Παροχή επιτυχιών"
 
@@ -284,8 +288,8 @@ msgstr "Περιήγηση Είδος/Καλλιτέχνης/Εξώφυλλο"
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:498
-#: ../src/pop_menu.py:519 ../src/toolbar_end.py:413
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:488
+#: ../src/pop_menu.py:509 ../src/toolbar_end.py:413
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Λίστα"
@@ -341,15 +345,15 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Κύλιση ανενεργή\n- Αυτόματο κατέβασμα εξώφυλλων ανενεργό\n- Πληροφορίες καλλιτεχνών ανενεργό"
 
-#: ../src/application.py:219
+#: ../src/application.py:222
 msgid "Google Web Services need a custom API key"
 msgstr "Το Google Web Service θέλει ειδικό API key"
 
-#: ../src/application.py:220
+#: ../src/application.py:223
 msgid "Lollypop needs this to search artwork and music."
 msgstr "Χρειάζεται από το Lollypop για αναζήτηση εξωφύλλου και μουσικής."
 
-#: ../src/application.py:486
+#: ../src/application.py:494
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Χρειάζεται εγκατάσταση του yelp."
 
@@ -497,40 +501,40 @@ msgstr "κόσμος"
 msgid "Your music is updating"
 msgstr "Η μουσική σας ενημερώνεται"
 
-#: ../src/collectionscanner.py:163
+#: ../src/collectionscanner.py:179
 msgid "Lollypop is detecting an empty folder."
 msgstr "Το Lollypop βρήκε άδειο φάκελο."
 
-#: ../src/collectionscanner.py:164
+#: ../src/collectionscanner.py:180
 msgid "Check your music settings."
 msgstr "Ελέγξτε τις μουσικές ρυθμίσεις "
 
-#: ../src/collectionscanner.py:265 ../src/database_albums.py:326
+#: ../src/collectionscanner.py:281 ../src/database_albums.py:326
 #: ../src/database_artists.py:104 ../src/database_genres.py:70
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:389
+#: ../src/database_tracks.py:259 ../src/selectionlist.py:389
 #: ../src/tagreader.py:84 ../src/tagreader.py:99 ../src/tagreader.py:114
 #: ../src/tagreader.py:159 ../src/tagreader.py:174 ../src/tagreader.py:177
 #: ../src/tagreader.py:187 ../src/tagreader.py:194
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../src/container.py:446
+#: ../src/container.py:462
 msgid "Compilations"
 msgstr "Συλλογή"
 
-#: ../src/container.py:470 ../src/playlists.py:233
+#: ../src/container.py:486 ../src/playlists.py:233
 msgid "Popular tracks"
 msgstr "Δημοφιλή τραγούδια"
 
-#: ../src/container.py:471 ../src/playlists.py:235
+#: ../src/container.py:487 ../src/playlists.py:235
 msgid "Recently played"
 msgstr "Έπαιξαν  πρόσφατα"
 
-#: ../src/container.py:472 ../src/playlists.py:237
+#: ../src/container.py:488 ../src/playlists.py:237
 msgid "Never played"
 msgstr "Δεν έπαιξαν ποτέ"
 
-#: ../src/container.py:473 ../src/playlists.py:239
+#: ../src/container.py:489 ../src/playlists.py:239
 msgid "Random tracks"
 msgstr "Τυχαία τραγούδια"
 
@@ -539,7 +543,7 @@ msgid "Pause"
 msgstr "Παύση"
 
 #: ../src/controllers.py:87 ../src/controllers.py:106 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:506 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -586,16 +590,16 @@ msgstr "Αγαπημένα τραγούδια"
 msgid "Compilation"
 msgstr ""
 
-#: ../src/pop_albums.py:293
+#: ../src/pop_albums.py:291
 msgid "Clear albums"
 msgstr "Καθαρισμός άλμπουμ"
 
-#: ../src/pop_albums.py:301 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:299 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr "Πήγαινε στο τρέχων τραγούδι"
 
-#: ../src/pop_albums.py:302 ../src/toolbar_end.py:417
+#: ../src/pop_albums.py:300 ../src/toolbar_end.py:417
 msgid "Playing albums"
 msgstr "Αναπαραγόμενο άλμπουμ"
 
@@ -607,8 +611,8 @@ msgstr "Αναβαθμισμένες πληροφορίες καλλιτεχνώ
 msgid "WebKit support disabled"
 msgstr "Ανενεργή υποστήριξη WebKit"
 
-#: ../src/pop_info.py:252 ../src/view_artist_albums.py:77
-#: ../src/widgets_info.py:129
+#: ../src/pop_info.py:252 ../src/settings.py:328
+#: ../src/view_artist_albums.py:77 ../src/widgets_info.py:129
 msgid "Network access disabled"
 msgstr ""
 
@@ -651,51 +655,51 @@ msgstr "Αφαίρεση από \"%s\""
 msgid "Add to \"%s\""
 msgstr "Προσθήκη στο \"%s\""
 
-#: ../src/pop_menu.py:360
+#: ../src/pop_menu.py:354
 msgid "Playback"
 msgstr "Αναπαραγωγή"
 
-#: ../src/pop_menu.py:362 ../src/pop_menu.py:501 ../src/pop_menu.py:521
+#: ../src/pop_menu.py:356 ../src/pop_menu.py:491 ../src/pop_menu.py:511
 #: ../src/selectionlist.py:309 ../src/widgets_device.py:116
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Λίστες αναπαραγωγής"
 
-#: ../src/pop_menu.py:414
+#: ../src/pop_menu.py:400
 msgid "Remove album"
 msgstr "Αφαίρεση άλμπουμ"
 
-#: ../src/pop_menu.py:416
+#: ../src/pop_menu.py:402
 msgid "Remove track"
 msgstr "Αφαίρεση τραγουδιού"
 
-#: ../src/pop_menu.py:425
+#: ../src/pop_menu.py:411
 msgid "Modify information"
 msgstr "Αλλαγή πληροφορίας"
 
-#: ../src/pop_menu.py:495 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:485 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Καλλιτέχνης "
 
-#: ../src/pop_menu.py:504 ../src/pop_menu.py:524 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:494 ../src/pop_menu.py:514 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: ../src/pop_menu.py:632
+#: ../src/pop_menu.py:622
 msgid "YouTube video address"
 msgstr "Διεύθυνση YouTube (video)"
 
-#: ../src/pop_menu.py:687
+#: ../src/pop_menu.py:677
 msgid "Save genre"
 msgstr "Αποθήκευση είδους"
 
-#: ../src/pop_menu.py:708 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:698 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Αποθήκευση στη συλλογή "
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:223 ../src/view_artist.py:332
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:223 ../src/view_artist.py:349
 msgid "Add"
 msgstr "Προσθήκη"
 
@@ -732,7 +736,8 @@ msgstr "Τυχαία άλμπουμ"
 msgid "Radios"
 msgstr "Σταθμοί"
 
-#: ../src/selectionlist.py:313
+#: ../src/selectionlist.py:313 ../src/settings.py:317 ../src/settings.py:327
+#: ../data/SettingsDialog.ui.h:27
 msgid "The charts"
 msgstr "Τα κορυφαία "
 
@@ -797,7 +802,7 @@ msgid "The the"
 msgstr "Το το"
 
 #. Translators: artist context
-#: ../src/view_artist.py:326 ../src/widgets_album.py:369
+#: ../src/view_artist.py:343 ../src/widgets_album.py:367
 msgid "Remove"
 msgstr "Κατάργηση"
 
@@ -814,34 +819,34 @@ msgstr "Συγχρονισμός %s"
 msgid "Cancel synchronization"
 msgstr "Ακύρωση συγχρονισμού"
 
-#: ../src/widgets_album.py:365
+#: ../src/widgets_album.py:363
 msgid "Append"
 msgstr "Προσθήκη"
 
-#: ../src/widgets_album.py:517
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "Αναπαραγωγή άλμπουμ"
 
-#: ../src/widgets_album.py:527 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Αλλαγή γραφικού"
 
-#: ../src/widgets_album.py:866
+#: ../src/widgets_album.py:864
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ω %s λ"
 
-#: ../src/widgets_album.py:868
+#: ../src/widgets_album.py:866
 #, python-format
 msgid "%s h"
 msgstr "%s ω"
 
-#: ../src/widgets_album.py:870
+#: ../src/widgets_album.py:868
 #, python-format
 msgid "%s m"
 msgstr "%s λ"
 
-#: ../src/widgets_album.py:1021
+#: ../src/widgets_album.py:1019
 #, python-format
 msgid "Disc %s"
 msgstr "Δίσκος %s"
@@ -909,6 +914,10 @@ msgid "Stop after this album"
 msgstr "Διακοπή μετά το άλμπουμ"
 
 #: ../data/PlaybackMenu.ui.h:4
+msgid "Repeat track"
+msgstr "Επανάληψη τραγουδιού"
+
+#: ../data/PlaybackMenu.ui.h:5
 msgid "Do not repeat"
 msgstr "Όχι επανάληψη "
 
@@ -1134,30 +1143,26 @@ msgid "Long press to show options"
 msgstr "Συνεχόμενο πάτημα για προβολή επιλογών"
 
 #: ../data/SettingsDialog.ui.h:21
-msgid "Do not repeat by default"
-msgstr "Όχι προεπιλεγμένη επανάληψη"
-
-#: ../data/SettingsDialog.ui.h:22
 msgid "Save changes to files"
 msgstr "Αποθήκευση αλλαγών σε αρχείο"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:22
 msgid "Preview tracks on"
 msgstr "Προβολή τραγουδιού στο"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:23
 msgid "No audio device"
 msgstr "Χωρίς συσκευή ήχου"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:24
 msgid "Configure lollypop behaviour"
 msgstr "ορισμός συμπεριφοράς lollypop"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:25
 msgid "Behaviour"
 msgstr "Συμπεριφορά"
 
-#: ../data/SettingsDialog.ui.h:27
+#: ../data/SettingsDialog.ui.h:26
 msgid "Reset database"
 msgstr "Επαναφορά ΒΔ"
 

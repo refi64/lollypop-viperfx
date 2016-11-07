@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-31 13:26+0100\n"
-"PO-Revision-Date: 2016-10-31 13:46+0000\n"
+"POT-Creation-Date: 2016-11-05 14:26+0100\n"
+"PO-Revision-Date: 2016-11-07 12:35+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -55,115 +55,115 @@ msgid "Save artwork/popularity in tags"
 msgstr "Tallenna kuvitus/suosio tunnisteisiin"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
-msgid "Repeat by default"
-msgstr "Kertaa oletuksena"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Window maximized"
 msgstr "Suurennettu ikkuna"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Window maximized state."
 msgstr "Suurennetun ikkunan tila."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Enabled genres in party mode"
 msgstr "Käytettävät tyylilajit biletilassa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Ids for genres."
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Music uris"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Jos tyhjä, käytä arvoa XDG_MUSIC_DIR"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Use Librefm instead of Lastfm"
 msgstr "Käytä Libre.fm:ää Last.fm:n sijaan"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
 msgstr "Last.fm-kirjautuminen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Google Custom Search API key"
 msgstr "Googlen Custom Searchin API-avain"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Favorite tag editor"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "INTERNAL"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Audio output preview on track hover"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Favorite cover file"
 msgstr "Suosikkikansikuvan tiedosto"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Restart needed"
 msgstr "Uudelleenkäynnistys vaaditaan"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Database version"
 msgstr "Tietokannan versio"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Albumien kuvituksen koko"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Replay gain value in db"
 msgstr "Replay gain -arvo desibeleissä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Between -15 and 15"
 msgstr "Välillä -15 ja 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Sync all albums(MTP)"
 msgstr "Synkronoi kaikki albumit (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Convert to MP3(MTP)"
 msgstr "Muunna MP3-muotoon (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Normalize MP3(MTP)"
 msgstr "Normalisoi MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Päivitä musiikkikirjasto automaattisesti"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Split playlists view"
 msgstr "Jaa soittolistojen näkymä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show genres list"
 msgstr "Näytä tyylilajien luettelo"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+msgid "Show charts"
+msgstr "Näytä tilastot"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
@@ -225,11 +225,15 @@ msgstr ""
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:52 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:52
+msgid "Playback behaviour"
+msgstr "Toiston toiminta"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:53 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albumien järjestys"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:53
+#: ../data/org.gnome.Lollypop.gschema.xml.h:54
 msgid "Charts provider"
 msgstr "Listojen tuottaja"
 
@@ -284,8 +288,8 @@ msgstr "Tyylilajin/esittäjän/kannen perusteella selaaminen"
 msgid "Search"
 msgstr "Etsi"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:498
-#: ../src/pop_menu.py:519 ../src/toolbar_end.py:413
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:488
+#: ../src/pop_menu.py:509 ../src/toolbar_end.py:413
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Jono"
@@ -341,15 +345,15 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:219
+#: ../src/application.py:222
 msgid "Google Web Services need a custom API key"
 msgstr "Google Web Services vaatii oman API-avaimen"
 
-#: ../src/application.py:220
+#: ../src/application.py:223
 msgid "Lollypop needs this to search artwork and music."
 msgstr "Lollypop vaatii tämän etsiäkseen kuvitusta ja musiikkia."
 
-#: ../src/application.py:486
+#: ../src/application.py:494
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
@@ -497,40 +501,40 @@ msgstr ""
 msgid "Your music is updating"
 msgstr "Musiikkisi päivittyy"
 
-#: ../src/collectionscanner.py:163
+#: ../src/collectionscanner.py:179
 msgid "Lollypop is detecting an empty folder."
 msgstr "Lollypop havaitsee tyhjän kansion."
 
-#: ../src/collectionscanner.py:164
+#: ../src/collectionscanner.py:180
 msgid "Check your music settings."
 msgstr "Tarkista musiikkiasetuksesi."
 
-#: ../src/collectionscanner.py:265 ../src/database_albums.py:326
+#: ../src/collectionscanner.py:281 ../src/database_albums.py:326
 #: ../src/database_artists.py:104 ../src/database_genres.py:70
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:389
+#: ../src/database_tracks.py:259 ../src/selectionlist.py:389
 #: ../src/tagreader.py:84 ../src/tagreader.py:99 ../src/tagreader.py:114
 #: ../src/tagreader.py:159 ../src/tagreader.py:174 ../src/tagreader.py:177
 #: ../src/tagreader.py:187 ../src/tagreader.py:194
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/container.py:446
+#: ../src/container.py:462
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/container.py:470 ../src/playlists.py:233
+#: ../src/container.py:486 ../src/playlists.py:233
 msgid "Popular tracks"
 msgstr "Suositut kappaleet"
 
-#: ../src/container.py:471 ../src/playlists.py:235
+#: ../src/container.py:487 ../src/playlists.py:235
 msgid "Recently played"
 msgstr "Viimeksi toistettu"
 
-#: ../src/container.py:472 ../src/playlists.py:237
+#: ../src/container.py:488 ../src/playlists.py:237
 msgid "Never played"
 msgstr "Ei koskaan toistettu"
 
-#: ../src/container.py:473 ../src/playlists.py:239
+#: ../src/container.py:489 ../src/playlists.py:239
 msgid "Random tracks"
 msgstr "Satunnaiset kappaleet"
 
@@ -539,7 +543,7 @@ msgid "Pause"
 msgstr "Keskeytä"
 
 #: ../src/controllers.py:87 ../src/controllers.py:106 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:506 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -586,16 +590,16 @@ msgstr "Tykätyt kappaleet"
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/pop_albums.py:293
+#: ../src/pop_albums.py:291
 msgid "Clear albums"
 msgstr "Tyhjennä albumit"
 
-#: ../src/pop_albums.py:301 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:299 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr "Siirry parhaillaan soivaan kappaleeseen"
 
-#: ../src/pop_albums.py:302 ../src/toolbar_end.py:417
+#: ../src/pop_albums.py:300 ../src/toolbar_end.py:417
 msgid "Playing albums"
 msgstr "Toistetaan albumit"
 
@@ -607,8 +611,8 @@ msgstr "Esittäjien lisätiedot pois käytöstä"
 msgid "WebKit support disabled"
 msgstr "WebKit-tuki poistettu käytöstä"
 
-#: ../src/pop_info.py:252 ../src/view_artist_albums.py:77
-#: ../src/widgets_info.py:129
+#: ../src/pop_info.py:252 ../src/settings.py:328
+#: ../src/view_artist_albums.py:77 ../src/widgets_info.py:129
 msgid "Network access disabled"
 msgstr "Verkon käyttö estetty"
 
@@ -651,51 +655,51 @@ msgstr "Poista kohteesta \"%s\""
 msgid "Add to \"%s\""
 msgstr "Lisää kohteeseen \"%s\""
 
-#: ../src/pop_menu.py:360
+#: ../src/pop_menu.py:354
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/pop_menu.py:362 ../src/pop_menu.py:501 ../src/pop_menu.py:521
+#: ../src/pop_menu.py:356 ../src/pop_menu.py:491 ../src/pop_menu.py:511
 #: ../src/selectionlist.py:309 ../src/widgets_device.py:116
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/pop_menu.py:414
+#: ../src/pop_menu.py:400
 msgid "Remove album"
 msgstr "Poista albumi"
 
-#: ../src/pop_menu.py:416
+#: ../src/pop_menu.py:402
 msgid "Remove track"
 msgstr "Poista kappale"
 
-#: ../src/pop_menu.py:425
+#: ../src/pop_menu.py:411
 msgid "Modify information"
 msgstr "Muokkaa tietoja"
 
-#: ../src/pop_menu.py:495 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:485 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Esittäjä"
 
-#: ../src/pop_menu.py:504 ../src/pop_menu.py:524 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:494 ../src/pop_menu.py:514 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: ../src/pop_menu.py:632
+#: ../src/pop_menu.py:622
 msgid "YouTube video address"
 msgstr "YouTube-videon osoite"
 
-#: ../src/pop_menu.py:687
+#: ../src/pop_menu.py:677
 msgid "Save genre"
 msgstr "Tallenna tyylilaji"
 
-#: ../src/pop_menu.py:708 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:698 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Tallenna kokoelmaan"
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:223 ../src/view_artist.py:332
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:223 ../src/view_artist.py:349
 msgid "Add"
 msgstr "Lisää"
 
@@ -732,7 +736,8 @@ msgstr "Satunnaiset albumit"
 msgid "Radios"
 msgstr "Radiot"
 
-#: ../src/selectionlist.py:313
+#: ../src/selectionlist.py:313 ../src/settings.py:317 ../src/settings.py:327
+#: ../data/SettingsDialog.ui.h:27
 msgid "The charts"
 msgstr "Listat"
 
@@ -797,7 +802,7 @@ msgid "The the"
 msgstr ""
 
 #. Translators: artist context
-#: ../src/view_artist.py:326 ../src/widgets_album.py:369
+#: ../src/view_artist.py:343 ../src/widgets_album.py:367
 msgid "Remove"
 msgstr "Poista"
 
@@ -814,34 +819,34 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:365
+#: ../src/widgets_album.py:363
 msgid "Append"
 msgstr "Lisää"
 
-#: ../src/widgets_album.py:517
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "Toista albumit"
 
-#: ../src/widgets_album.py:527 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Vaihda kuvitusta"
 
-#: ../src/widgets_album.py:866
+#: ../src/widgets_album.py:864
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s t  %s min"
 
-#: ../src/widgets_album.py:868
+#: ../src/widgets_album.py:866
 #, python-format
 msgid "%s h"
 msgstr "%s t"
 
-#: ../src/widgets_album.py:870
+#: ../src/widgets_album.py:868
 #, python-format
 msgid "%s m"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:1021
+#: ../src/widgets_album.py:1019
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -909,6 +914,10 @@ msgid "Stop after this album"
 msgstr "Lopeta tämän albumin jälkeen"
 
 #: ../data/PlaybackMenu.ui.h:4
+msgid "Repeat track"
+msgstr "Kertaa kappale"
+
+#: ../data/PlaybackMenu.ui.h:5
 msgid "Do not repeat"
 msgstr "Älä kertaa"
 
@@ -1134,30 +1143,26 @@ msgid "Long press to show options"
 msgstr "Pitkä painallus nähdäksesi valinnat"
 
 #: ../data/SettingsDialog.ui.h:21
-msgid "Do not repeat by default"
-msgstr "Älä kertaa oletuksena"
-
-#: ../data/SettingsDialog.ui.h:22
 msgid "Save changes to files"
 msgstr "Tallenna muutokset tiedostoihin"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:22
 msgid "Preview tracks on"
 msgstr "Esikatsele kappaleet"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:23
 msgid "No audio device"
 msgstr "Ei äänilaitetta"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:24
 msgid "Configure lollypop behaviour"
 msgstr "Muokkaa Lollypopin toimintoja"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:25
 msgid "Behaviour"
 msgstr "Toiminta"
 
-#: ../data/SettingsDialog.ui.h:27
+#: ../data/SettingsDialog.ui.h:26
 msgid "Reset database"
 msgstr "Nollaa tietokanta"
 

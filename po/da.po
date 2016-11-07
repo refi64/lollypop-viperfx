@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-11 14:10+0200\n"
-"PO-Revision-Date: 2016-10-11 12:11+0000\n"
+"POT-Creation-Date: 2016-11-05 14:26+0100\n"
+"PO-Revision-Date: 2016-11-05 13:26+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Danish (http://www.transifex.com/gnumdk/lollypop/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -43,16 +43,16 @@ msgid "Mini player position"
 msgstr "Miniafspillerposition"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
-msgid "Search over network"
+msgid "Access network"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork/popularity in tags"
+msgid "Search over network"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
-msgid "Repeat by default"
-msgstr "Gentag som standard"
+msgid "Save artwork/popularity in tags"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "Window maximized"
@@ -71,8 +71,8 @@ msgid "Ids for genres."
 msgstr "Id'er til genrer"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
-msgid "Music paths"
-msgstr "Musikstier"
+msgid "Music uris"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "When empty, use XDG_MUSIC_DIR"
@@ -161,71 +161,79 @@ msgstr ""
 msgid "Show genres list"
 msgstr "Vis genreliste"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+msgid "Show charts"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Use dark gtk theme"
 msgstr "Benyt mørkt GTK-tema"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Disable the use of client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Vis samlinger i albumvisning"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Fortsæt afspilining når lukket"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Smart sort for artist"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Restore previous state"
 msgstr "Gendan tidligere tilstand"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Disable MPRIS"
 msgstr "Slå MPRIS fra"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Disable notifications"
 msgstr "Slå notifikationer fra"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Show track number from tags"
 msgstr "Vis spornummer fra tags"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
 msgid "Mix songs"
 msgstr "Bland sange"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Mix songs only in party mode"
 msgstr "Bland kun sange i festtilstand"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:49
+#: ../data/org.gnome.Lollypop.gschema.xml.h:50
 msgid "Mix duration"
 msgstr "Bland varighed"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:50
+#: ../data/org.gnome.Lollypop.gschema.xml.h:51
 msgid "Shuffle mode"
 msgstr "Blandingstilstand"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:51 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:52
+msgid "Playback behaviour"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:53 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:52
+#: ../data/org.gnome.Lollypop.gschema.xml.h:54
 msgid "Charts provider"
 msgstr ""
 
@@ -275,13 +283,13 @@ msgstr "Genre-/omslagsgennemsyn"
 msgid "Genre/Artist/Cover browsing"
 msgstr "Genre-/kunstner-/omslagsgennemsyn"
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:231
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:241
 #: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:8
 msgid "Search"
 msgstr "Søg"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:495
-#: ../src/pop_menu.py:516 ../src/toolbar_end.py:407
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:488
+#: ../src/pop_menu.py:509 ../src/toolbar_end.py:413
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Kø"
@@ -330,30 +338,30 @@ msgstr "Understøttelse af HiDPI"
 msgid "Tunein support"
 msgstr "Understøttelse af TuneIn"
 
-#: ../src/application.py:33
+#: ../src/application.py:32
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobbler slået fra\n- Automatisk hentning af omslag slået fra\n- Kunstnerinformation slået fra"
 
-#: ../src/application.py:221
+#: ../src/application.py:222
 msgid "Google Web Services need a custom API key"
 msgstr ""
 
-#: ../src/application.py:222
+#: ../src/application.py:223
 msgid "Lollypop needs this to search artwork and music."
 msgstr ""
 
-#: ../src/application.py:477
+#: ../src/application.py:494
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Du skal installere Yelp."
 
-#: ../src/art_widgets.py:61
+#: ../src/art_widgets.py:62
 msgid "Select artwork"
 msgstr ""
 
-#: ../src/art_widgets.py:332
+#: ../src/art_widgets.py:335
 msgid "Reset artwork?"
 msgstr ""
 
@@ -489,59 +497,59 @@ msgstr ""
 msgid "world"
 msgstr ""
 
-#: ../src/collectionscanner.py:66
+#: ../src/collectionscanner.py:65
 msgid "Your music is updating"
 msgstr "Din musik opdateres"
 
-#: ../src/collectionscanner.py:158
+#: ../src/collectionscanner.py:179
 msgid "Lollypop is detecting an empty folder."
 msgstr ""
 
-#: ../src/collectionscanner.py:159
+#: ../src/collectionscanner.py:180
 msgid "Check your music settings."
 msgstr ""
 
-#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
-#: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:388
-#: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
-#: ../src/tagreader.py:161 ../src/tagreader.py:176 ../src/tagreader.py:179
-#: ../src/tagreader.py:189 ../src/tagreader.py:196
+#: ../src/collectionscanner.py:281 ../src/database_albums.py:326
+#: ../src/database_artists.py:104 ../src/database_genres.py:70
+#: ../src/database_tracks.py:259 ../src/selectionlist.py:389
+#: ../src/tagreader.py:84 ../src/tagreader.py:99 ../src/tagreader.py:114
+#: ../src/tagreader.py:159 ../src/tagreader.py:174 ../src/tagreader.py:177
+#: ../src/tagreader.py:187 ../src/tagreader.py:194
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: ../src/container.py:446
+#: ../src/container.py:462
 msgid "Compilations"
 msgstr "Samlinger"
 
-#: ../src/container.py:470 ../src/playlists.py:223
+#: ../src/container.py:486 ../src/playlists.py:233
 msgid "Popular tracks"
 msgstr "Populære numre"
 
-#: ../src/container.py:471 ../src/playlists.py:225
+#: ../src/container.py:487 ../src/playlists.py:235
 msgid "Recently played"
 msgstr "Nyligt afspillede"
 
-#: ../src/container.py:472 ../src/playlists.py:227
+#: ../src/container.py:488 ../src/playlists.py:237
 msgid "Never played"
 msgstr "Aldrig afspillede"
 
-#: ../src/container.py:473 ../src/playlists.py:229
+#: ../src/container.py:489 ../src/playlists.py:239
 msgid "Random tracks"
 msgstr "Tilfældige numre"
 
-#: ../src/controllers.py:84 ../src/controllers.py:108
+#: ../src/controllers.py:85 ../src/controllers.py:109
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
+#: ../src/controllers.py:87 ../src/controllers.py:106 ../src/pop_tunein.py:216
 #: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Afspil"
 
-#: ../src/controllers.py:193
+#: ../src/controllers.py:196
 msgid "Volume"
 msgstr ""
 
@@ -570,128 +578,137 @@ msgstr "af %s"
 msgid "by %s, from %s"
 msgstr "af %s, fra %s"
 
-#: ../src/player.py:121 ../src/player_queue.py:43 ../src/player_queue.py:66
+#: ../src/player_queue.py:42 ../src/player_queue.py:65
 msgid "No network available, can't play this track"
 msgstr ""
 
-#: ../src/playlists.py:54
+#: ../src/playlists.py:53
 msgid "Loved tracks"
 msgstr "Ælskede numre"
 
-#: ../src/pop_albums.py:292
+#: ../src/pop_albums.py:81
+msgid "Compilation"
+msgstr "Samling"
+
+#: ../src/pop_albums.py:291
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:299 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr ""
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:411
+#: ../src/pop_albums.py:300 ../src/toolbar_end.py:417
 msgid "Playing albums"
 msgstr ""
 
-#: ../src/pop_info.py:35
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Avanceret kunstnerinformation slået fra"
 
-#: ../src/pop_info.py:43
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "WebKit-understøttelse slået fra"
 
-#: ../src/pop_info.py:250
+#: ../src/pop_info.py:252 ../src/settings.py:328
+#: ../src/view_artist_albums.py:77 ../src/widgets_info.py:129
+msgid "Network access disabled"
+msgstr ""
+
+#: ../src/pop_info.py:259
 msgid "No lyrics found, please install gir1.2-webkit2-4.0"
 msgstr ""
 
-#: ../src/pop_menu.py:73
+#: ../src/pop_menu.py:72
 msgid "Show albums from artist"
 msgstr ""
 
-#: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
+#: ../src/pop_menu.py:140 ../src/widgets_indicator.py:111
 #: ../data/InternalSearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Tilføj til kø"
 
-#: ../src/pop_menu.py:146
+#: ../src/pop_menu.py:145
 msgid "Next tracks"
 msgstr "Næste numre"
 
-#: ../src/pop_menu.py:148 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:147 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Næste nummer"
 
-#: ../src/pop_menu.py:152 ../src/widgets_indicator.py:107
+#: ../src/pop_menu.py:151 ../src/widgets_indicator.py:107
 msgid "Remove from queue"
 msgstr "Fjern fra kø"
 
-#: ../src/pop_menu.py:228
+#: ../src/pop_menu.py:227
 msgid "Add to others"
 msgstr "Tilføj til andre"
 
-#: ../src/pop_menu.py:246
+#: ../src/pop_menu.py:245
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Fjern fra \"%s\""
 
-#: ../src/pop_menu.py:252
+#: ../src/pop_menu.py:251
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Tilføj til \"%s\""
 
-#: ../src/pop_menu.py:361
+#: ../src/pop_menu.py:354
 msgid "Playback"
 msgstr "Afspilning"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:498 ../src/pop_menu.py:518
-#: ../src/selectionlist.py:309 ../src/widgets_device.py:117
+#: ../src/pop_menu.py:356 ../src/pop_menu.py:491 ../src/pop_menu.py:511
+#: ../src/selectionlist.py:309 ../src/widgets_device.py:116
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Afspilningslister"
 
-#: ../src/pop_menu.py:415
+#: ../src/pop_menu.py:400
 msgid "Remove album"
 msgstr ""
 
-#: ../src/pop_menu.py:417
+#: ../src/pop_menu.py:402
 msgid "Remove track"
 msgstr ""
 
-#: ../src/pop_menu.py:426
+#: ../src/pop_menu.py:411
 msgid "Modify information"
 msgstr "Rediger informationer"
 
-#: ../src/pop_menu.py:492 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:485 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr ""
 
-#: ../src/pop_menu.py:501 ../src/pop_menu.py:521 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:494 ../src/pop_menu.py:514 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Rediger"
 
-#: ../src/pop_menu.py:629
+#: ../src/pop_menu.py:622
 msgid "YouTube video address"
 msgstr ""
 
-#: ../src/pop_menu.py:684
+#: ../src/pop_menu.py:677
 msgid "Save genre"
 msgstr ""
 
-#: ../src/pop_menu.py:705 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:698 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr ""
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:330
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:223 ../src/view_artist.py:349
 msgid "Add"
 msgstr "Tilføj"
 
 #. Translators: radio context
-#: ../src/pop_radio.py:87 ../src/wikipedia.py:58
+#: ../src/pop_radio.py:86 ../src/wikipedia.py:58
 msgid "Modify"
 msgstr "Rediger"
 
-#: ../src/pop_search.py:290
+#: ../src/pop_search.py:287
 msgid "You need to install youtube-dl"
 msgstr ""
 
@@ -719,44 +736,45 @@ msgstr "Tilfældige albummer"
 msgid "Radios"
 msgstr "Radioer"
 
-#: ../src/selectionlist.py:312
+#: ../src/selectionlist.py:313 ../src/settings.py:317 ../src/settings.py:327
+#: ../data/SettingsDialog.ui.h:27
 msgid "The charts"
 msgstr ""
 
-#: ../src/selectionlist.py:314
+#: ../src/selectionlist.py:315
 msgid "All albums"
 msgstr "Alle albummer"
 
-#: ../src/selectionlist.py:316
+#: ../src/selectionlist.py:317
 msgid "All artists"
 msgstr "Alle kunstnere"
 
-#: ../src/settings.py:94
+#: ../src/settings.py:95
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d kunstner"
 msgstr[1] "%d kunstnere"
 
-#: ../src/settings.py:96
+#: ../src/settings.py:97
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albummer"
 
-#: ../src/settings.py:98
+#: ../src/settings.py:99
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d nummer"
 msgstr[1] "%d numre"
 
-#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Indstillinger"
 
-#: ../src/settings.py:144
+#: ../src/settings.py:145
 msgid "You need to install kid3-cli"
 msgstr ""
 
@@ -768,23 +786,23 @@ msgstr "Populære"
 msgid "Recently added"
 msgstr "Nyligt tilføjede"
 
-#: ../src/toolbar_end.py:405
+#: ../src/toolbar_end.py:411
 msgid "Externals tracks playing"
 msgstr ""
 
-#: ../src/toolbar_end.py:409
+#: ../src/toolbar_end.py:415
 msgid "Playing playlists"
 msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:126
+#: ../src/utils.py:134
 msgid "The the"
 msgstr "The the den de"
 
 #. Translators: artist context
-#: ../src/view_artist.py:324 ../src/widgets_album.py:370
+#: ../src/view_artist.py:343 ../src/widgets_album.py:367
 msgid "Remove"
 msgstr "Fjern"
 
@@ -792,16 +810,16 @@ msgstr "Fjern"
 msgid "Please unlock your device"
 msgstr "Lås venligst din enhed op"
 
-#: ../src/view_device.py:94 ../src/view_device.py:191
+#: ../src/view_device.py:95 ../src/view_device.py:192
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synkronisér %s"
 
-#: ../src/view_device.py:145
+#: ../src/view_device.py:146
 msgid "Cancel synchronization"
 msgstr "Annulér synkronisering"
 
-#: ../src/widgets_album.py:366
+#: ../src/widgets_album.py:363
 msgid "Append"
 msgstr "Tilføj"
 
@@ -813,40 +831,44 @@ msgstr "Spil albummer"
 msgid "Change artwork"
 msgstr "Udskift kunst"
 
-#: ../src/widgets_album.py:863
+#: ../src/widgets_album.py:864
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s t %s m"
 
-#: ../src/widgets_album.py:865
+#: ../src/widgets_album.py:866
 #, python-format
 msgid "%s h"
 msgstr "%s t"
 
-#: ../src/widgets_album.py:867
+#: ../src/widgets_album.py:868
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:1018
+#: ../src/widgets_album.py:1019
 #, python-format
 msgid "Disc %s"
 msgstr "Skive %s"
 
-#: ../src/widgets_device.py:58
+#: ../src/widgets_info.py:127
+msgid "No information for this artist"
+msgstr ""
+
+#: ../src/widgets_device.py:57
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr "Du skal installere gstreamer-plugins-ugly"
 
-#: ../src/widgets_device.py:111 ../data/ArtistInfo.ui.h:1
+#: ../src/widgets_device.py:110 ../data/ArtistInfo.ui.h:1
 #: ../data/DeviceManagerWidget.ui.h:1
 msgid "Albums"
 msgstr "Albummer"
 
-#: ../src/widgets_device.py:225
+#: ../src/widgets_device.py:224
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Ukendt fejl ved synkronisering; forsøg at genstarte din enhed"
 
-#: ../src/widgets_device.py:233
+#: ../src/widgets_device.py:232
 msgid "No free space available on device"
 msgstr "Ingen fri plads på enheden"
 
@@ -892,6 +914,10 @@ msgid "Stop after this album"
 msgstr "Stop efter dette album"
 
 #: ../data/PlaybackMenu.ui.h:4
+msgid "Repeat track"
+msgstr ""
+
+#: ../data/PlaybackMenu.ui.h:5
 msgid "Do not repeat"
 msgstr "Gentag ikke"
 
@@ -930,28 +956,28 @@ msgid "_Fullscreen"
 msgstr "_Fuld skærm"
 
 #: ../data/Appmenu.ui.h:3
+msgid "_Network access"
+msgstr ""
+
+#: ../data/Appmenu.ui.h:4
 msgid "_Preferences"
 msgstr "_Indstillinger"
 
-#: ../data/Appmenu.ui.h:4
+#: ../data/Appmenu.ui.h:5
 msgid "_Keyboard Shortcuts"
 msgstr ""
 
-#: ../data/Appmenu.ui.h:5
+#: ../data/Appmenu.ui.h:6
 msgid "_Help"
 msgstr "_Hjælp"
 
-#: ../data/Appmenu.ui.h:6
+#: ../data/Appmenu.ui.h:7
 msgid "_About"
 msgstr "Om"
 
-#: ../data/Appmenu.ui.h:7
+#: ../data/Appmenu.ui.h:8
 msgid "_Quit"
 msgstr "_Afslut"
-
-#: ../data/InfoContent.ui.h:1
-msgid "No information for this artist..."
-msgstr "Ingen information om denne kunstner ..."
 
 #: ../data/ArtistInfo.ui.h:2
 msgid "Last.fm"
@@ -1117,30 +1143,26 @@ msgid "Long press to show options"
 msgstr "Langt tryk for at vise muligheder"
 
 #: ../data/SettingsDialog.ui.h:21
-msgid "Do not repeat by default"
-msgstr "Gentag ikke som standard"
-
-#: ../data/SettingsDialog.ui.h:22
 msgid "Save changes to files"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:22
 msgid "Preview tracks on"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:23
 msgid "No audio device"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:24
 msgid "Configure lollypop behaviour"
 msgstr "Konfigurer Lollypops opførsel"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:25
 msgid "Behaviour"
 msgstr "Opførsel"
 
-#: ../data/SettingsDialog.ui.h:27
+#: ../data/SettingsDialog.ui.h:26
 msgid "Reset database"
 msgstr ""
 
