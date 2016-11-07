@@ -49,7 +49,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Show/Hide albums filter</property>
+                <property name="title" translatable="yes" context="shortcut window">Show/Hide filter</property>
                 <property name="accelerator">&lt;Primary&gt;i</property>
               </object>
             </child>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-07 15:19+0100\n"
+"POT-Creation-Date: 2016-11-07 15:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -517,23 +517,23 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: ../src/container.py:470
+#: ../src/container.py:446
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:494 ../src/playlists.py:233
+#: ../src/container.py:470 ../src/playlists.py:233
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:495 ../src/playlists.py:235
+#: ../src/container.py:471 ../src/playlists.py:235
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:496 ../src/playlists.py:237
+#: ../src/container.py:472 ../src/playlists.py:237
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:497 ../src/playlists.py:239
+#: ../src/container.py:473 ../src/playlists.py:239
 msgid "Random tracks"
 msgstr ""
 
@@ -830,22 +830,22 @@ msgstr ""
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:885
+#: ../src/widgets_album.py:890
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:887
+#: ../src/widgets_album.py:892
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:889
+#: ../src/widgets_album.py:894
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:1040
+#: ../src/widgets_album.py:1045
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -1281,67 +1281,67 @@ msgstr ""
 
 #: ../data/Shortcuts.ui.h:6
 msgctxt "shortcut window"
-msgid "Fullscreen"
+msgid "Show genres"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:7
 msgctxt "shortcut window"
-msgid "Love current track"
+msgid "Show/Hide filter"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
-msgid "Show genres"
+msgid "Lock playback"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"
-msgid "Show/Hide albums filter"
+msgid "Show/Hide volume control"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
-msgid "Lock playback"
+msgid "Fullscreen"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
-msgid "Show/Hide volume control"
+msgid "Playback"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
-msgid "Playback"
+msgid "Play"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
-msgid "Play"
+msgid "Pause"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
-msgid "Pause"
+msgid "Stop"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
-msgid "Stop"
+msgid "Next track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
-msgid "Next track"
+msgid "Previous track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
-msgid "Previous track"
+msgid "Skip current album"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
-msgid "Skip current album"
+msgid "Love current track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:19
