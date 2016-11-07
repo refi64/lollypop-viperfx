@@ -43,13 +43,23 @@ class View(Gtk.Grid):
 
         if filtered:
             self._filter = ""
+            grid = Gtk.Grid()
+            grid.set_column_spacing(2)
             entry = Gtk.SearchEntry.new()
             entry.connect('search-changed', self._on_search_changed)
             entry.connect('key-press-event', self.__on_key_press)
             entry.set_size_request(400, -1)
             entry.show()
+            button = Gtk.Button.new_from_icon_name('window-close-symbolic',
+                                                   Gtk.IconSize.MENU)
+            button.set_relief(Gtk.ReliefStyle.NONE)
+            button.connect('clicked', self.__on_button_clicked)
+            button.show()
+            grid.add(entry)
+            grid.add(button)
+            grid.show()
             self.__search_bar = Gtk.SearchBar.new()
-            self.__search_bar.add(entry)
+            self.__search_bar.add(grid)
             self.add(self.__search_bar)
         else:
             self._filter = None
@@ -200,6 +210,15 @@ class View(Gtk.Grid):
             widget = widgets.pop(0)
             widget.update_duration(track_id)
             GLib.idle_add(self.__update_duration, widgets, track_id)
+
+    def __on_button_clicked(self, widget):
+        """
+            Hide widget, why GTK doesn't do that?
+            Otherwise, we get an ugly frame
+            @param widget as Gtk.Button
+        """
+        self.__search_bar.set_search_mode(False)
+        self.__search_bar.hide()
 
     def __on_key_press(self, widget, event):
         """
