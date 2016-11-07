@@ -55,6 +55,7 @@ class AlbumsView(LazyLoadingView):
         self.__filter = ""
         entry = Gtk.SearchEntry.new()
         entry.connect('search-changed', self.__on_search_changed)
+        entry.connect('key-press-event', self.__on_key_press)
         entry.set_size_request(400, -1)
         entry.show()
         self.__search_bar = Gtk.SearchBar.new()
@@ -201,6 +202,18 @@ class AlbumsView(LazyLoadingView):
         """
         album_widget.lock_overlay(False)
         album_widget.get_cover().set_opacity(1)
+
+    def __on_key_press(self, widget, event):
+        """
+            If Esc, hide widget, why GTK doesn't do that?
+            Otherwise, we get an ugly frame
+            @param widget as Gtk.SearchEntry
+            @param event as Gdk.Event
+        """
+        if event.keyval == 65307:
+            self.__search_bar.set_search_mode(False)
+            self.__search_bar.hide()
+            return True
 
     def __on_button_press(self, flowbox, event):
         """
