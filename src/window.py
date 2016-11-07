@@ -171,8 +171,8 @@ class Window(Gtk.ApplicationWindow, Container):
             @param widget as Gtk.Widget
             @param event as Gdk.event
         """
-        if event.type == Gdk.EventType.FOCUS_CHANGE:
-            self.disable_overlay()
+        if event.type == Gdk.EventType.FOCUS_CHANGE and self.view is not None:
+            self.view.disable_overlay()
         Gtk.ApplicationWindow.do_event(self, event)
 
 ############
@@ -340,7 +340,7 @@ class Window(Gtk.ApplicationWindow, Container):
         vgrid.add(self.__main_stack)
         vgrid.add(self.__subtoolbar)
         self.add(vgrid)
-        self.__main_stack.add_named(self.main_widget(), 'main')
+        self.__main_stack.add_named(self._paned_main_list, 'main')
         self.__main_stack.set_visible_child_name('main')
 
     def __on_hide(self, window):
@@ -455,7 +455,8 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "locked":
             Lp().player.lock()
         elif string == "filter":
-            self.set_search_mode()
+            if self.view is not None:
+                self.view.set_search_mode()
         elif string == "volume":
             self.__toolbar.show_hide_volume_control()
         elif string == "show-genres":

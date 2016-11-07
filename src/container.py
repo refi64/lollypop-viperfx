@@ -137,13 +137,6 @@ class Container:
         self.__stack.clean_old_views(view)
         view.populate()
 
-    def main_widget(self):
-        """
-            Get main widget
-            @return Gtk.HPaned
-        """
-        return self._paned_main_list
-
     def get_view_width(self):
         """
             Return view width
@@ -182,29 +175,20 @@ class Container:
                 self.__stack.clean_old_views(child)
                 break
 
-    def set_search_mode(self):
-        """
-            Enable search mode on view
-        """
-        view = self.__stack.get_visible_child()
-        if view:
-            view.set_search_mode()
-
-    def disable_overlay(self):
+    @property
+    def view(self):
         """
             Disable overlays
         """
-        view = self.__stack.get_visible_child()
-        if view:
-            view.disable_overlay()
+        return self.__stack.get_visible_child()
 
-    def update_view(self):
+    @property
+    def progress(self):
         """
-            Update current view
+            Progress bar
+            @return ProgressBar
         """
-        view = self.__stack.get_visible_child()
-        if view:
-            view.update_children()
+        return self.__progress
 
     def add_remove_from(self, value, list_one, add):
         """
@@ -286,14 +270,6 @@ class Container:
         self.__update_view_artists([], artist_ids)
         GLib.idle_add(self.__list_two.hide)
         GLib.idle_add(self.__list_one.select_ids, [])
-
-    @property
-    def progress(self):
-        """
-            Progress bar
-            @return ProgressBar
-        """
-        return self.__progress
 
 ############
 # Private  #

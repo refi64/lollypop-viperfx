@@ -78,6 +78,14 @@ class AlbumsView(LazyLoadingView):
         self.__search_bar.show() if enable else self.__search_bar.hide()
         self.__search_bar.set_search_mode(enable)
 
+    @property
+    def filtered(self):
+        """
+            True if view filtered
+            @return bool
+        """
+        return self.__filter != ""
+
 #######################
 # PROTECTED           #
 #######################
@@ -95,7 +103,7 @@ class AlbumsView(LazyLoadingView):
 # PRIVATE             #
 #######################
     def __filter_func(self, child):
-        if not self.__filter:
+        if not self.filtered:
             return True
         filter = self.__filter.lower()
         if child.album.title.lower().find(filter) != -1 or\

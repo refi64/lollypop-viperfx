@@ -618,7 +618,8 @@ class SettingsDialog:
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
             Lp().window.update_db()
-        Lp().window.update_view()
+        if Lp().window.view is not None:
+            Lp().window.view.update_children()
 
     def __show_mix_popover(self, widget):
         """

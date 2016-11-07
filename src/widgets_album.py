@@ -600,10 +600,15 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Lp().player.set_party(False)
         Lp().player.clear_albums()
         track = Track(self._album.track_ids[0])
-        # Here we need to get ids from parent as view may be filtered
-        for child in self.get_parent().get_children():
-            if not child.filtered:
-                Lp().player.add_album(child.album)
+        if Lp().window.view.filtered:
+            # Here we need to get ids from parent as view may be filtered
+            for child in self.get_parent().get_children():
+                if not child.filtered:
+                    Lp().player.add_album(child.album)
+        else:
+            print("db")
+            Lp().player.set_albums(track.id, self._filter_ids,
+                                   self._album.genre_ids)
         Lp().player.load(track)
         return True
 
