@@ -55,6 +55,7 @@ class AlbumsView(LazyLoadingView):
         self.__filter = ""
         entry = Gtk.SearchEntry.new()
         entry.connect('search-changed', self.__on_search_changed)
+        entry.set_size_request(400, -1)
         entry.show()
         self.__search_bar = Gtk.SearchBar.new()
         self.__search_bar.add(entry)
