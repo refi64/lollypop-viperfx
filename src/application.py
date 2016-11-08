@@ -65,7 +65,7 @@ class Application(Gtk.Application):
         """
         Gtk.Application.__init__(
                             self,
-                            application_id=None,
+                            application_id='org.gnome.Lollypop',
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         GLib.setenv('PULSE_PROP_media.role', 'music', True)
         GLib.setenv('PULSE_PROP_application.icon_name', 'lollypop', True)
