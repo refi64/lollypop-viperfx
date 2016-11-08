@@ -45,17 +45,19 @@ class View(Gtk.Grid):
             self._filter = ""
             grid = Gtk.Grid()
             grid.set_column_spacing(2)
-            entry = Gtk.SearchEntry.new()
-            entry.connect('search-changed', self._on_search_changed)
-            entry.connect('key-press-event', self.__on_key_press)
-            entry.set_size_request(400, -1)
-            entry.show()
+            self.__search_entry = Gtk.SearchEntry.new()
+            self.__search_entry.connect('search-changed',
+                                        self._on_search_changed)
+            self.__search_entry.connect('key-press-event',
+                                        self.__on_key_press)
+            self.__search_entry.set_size_request(400, -1)
+            self.__search_entry.show()
             button = Gtk.Button.new_from_icon_name('window-close-symbolic',
                                                    Gtk.IconSize.MENU)
             button.set_relief(Gtk.ReliefStyle.NONE)
             button.connect('clicked', self.__on_button_clicked)
             button.show()
-            grid.add(entry)
+            grid.add(self.__search_entry)
             grid.add(button)
             grid.show()
             self.__search_bar = Gtk.SearchBar.new()
@@ -101,6 +103,8 @@ class View(Gtk.Grid):
             Lp().window.enable_global_shortcuts(not enable)
             self.__search_bar.show() if enable else self.__search_bar.hide()
             self.__search_bar.set_search_mode(enable)
+            if enable:
+                self.__search_entry.grab_focus()
 
     @property
     def filtered(self):
@@ -124,8 +128,7 @@ class View(Gtk.Grid):
         if not self.filtered:
             return True
         filter = self._filter.lower()
-        if child.title.lower().find(filter) != -1 or\
-                child.artists.lower().find(filter) != -1:
+        if child.filter.lower().find(filter) != -1:
             child.set_filtered(False)
             return True
         child.set_filtered(True)
@@ -170,7 +173,7 @@ class View(Gtk.Grid):
             Update filter
             @param entry as Gtk.Entry
         """
-        self._filter = entry.get_text()
+        self._filter = self.__search_entry.get_text()
         self._box.invalidate_filter()
 
     def _on_destroy(self, widget):
@@ -217,6 +220,7 @@ class View(Gtk.Grid):
             Otherwise, we get an ugly frame
             @param widget as Gtk.Button
         """
+        self.__search_entry.set_text("")
         self.__search_bar.set_search_mode(False)
         self.__search_bar.hide()
 
@@ -228,6 +232,7 @@ class View(Gtk.Grid):
             @param event as Gdk.Event
         """
         if event.keyval == 65307:
+            self.__search_entry.set_text("")
             self.__search_bar.set_search_mode(False)
             self.__search_bar.hide()
             return True

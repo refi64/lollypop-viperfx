@@ -73,11 +73,7 @@ class BaseWidget:
         self.__parent_filter = b
 
     @property
-    def title(self):
-        return ""
-
-    @property
-    def artists(self):
+    def filter(self):
         return ""
 
     @property
@@ -332,18 +328,11 @@ class AlbumWidget(BaseWidget):
         return self._album.id
 
     @property
-    def title(self):
+    def filter(self):
         """
             @return str
         """
-        return self._album.name
-
-    @property
-    def artists(self):
-        """
-            @return str
-        """
-        return ", ".join(self._album.artists)
+        return " ".join([self._album.name]+self._album.artists)
 
     def get_cover(self):
         """

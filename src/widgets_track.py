@@ -374,17 +374,13 @@ class PlaylistRow(Row):
         self.connect('drag-leave', self.__on_drag_leave)
 
     @property
-    def title(self):
-        return self._track.name
-
-    @property
-    def artists(self):
+    def filter(self):
         """
-            Return artists + ALBUM NAME
-            Just a quick hack for filtering
+            @return str
         """
-        return ", ".join(self._track.album.artists) +\
-               " " + self._track.album.name
+        return " ".join(self._track.album.artists +
+                        [self._track.name] +
+                        [self._track.album.name])
 
     def set_filtered(self, b):
         """
