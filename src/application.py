@@ -76,7 +76,7 @@ class Application(Gtk.Application):
         self.debug = False
         self.__externals_count = 0
         self.__init_proxy()
-        GLib.set_application_name('lollypop')
+        GLib.set_application_name('Lollypop')
         GLib.set_prgname('lollypop')
         # TODO: Remove this test later
         if Gtk.get_minor_version() > 12:
