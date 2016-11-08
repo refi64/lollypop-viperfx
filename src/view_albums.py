@@ -17,7 +17,7 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
-from lollypop.define import Type, Lp
+from lollypop.define import Type
 
 
 class AlbumsView(LazyLoadingView):
