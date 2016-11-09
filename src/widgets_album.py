@@ -854,6 +854,27 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                         return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
+    def set_filter_func(self, func):
+        """
+            Set filter function
+        """
+        for widget in self._tracks_left.values():
+            widget.set_filter_func(func)
+        for widget in self._tracks_right.values():
+            widget.set_filter_func(func)
+
+    @property
+    def boxes(self):
+        """
+            @return [Gtk.ListBox]
+        """
+        boxes = []
+        for widget in self._tracks_left.values():
+            boxes.append(widget)
+        for widget in self._tracks_right.values():
+            boxes.append(widget)
+        return boxes
+
     @property
     def requested_height(self):
         """
