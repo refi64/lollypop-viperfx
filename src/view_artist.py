@@ -103,13 +103,15 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower():
-            if self.__artwork.get_pixbuf() is not None:
+            if self.__artwork.props.surface is not None or\
+                    self.__artwork.get_pixbuf() is not None:
                 self.__artwork.show()
                 self.__artwork_box.show()
             self.__grid.get_style_context().remove_class('header-borders')
             self.__grid.get_style_context().add_class('header')
         else:
-            if self.__artwork.get_pixbuf() is not None:
+            if self.__artwork.props.surface is not None or\
+                    self.__artwork.get_pixbuf() is not None:
                 self.__artwork.hide()
                 self.__artwork_box.hide()
             self.__grid.get_style_context().add_class('header-borders')
