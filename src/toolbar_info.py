@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk, GLib
 
 from lollypop.controllers import InfosController
+from lollypop.touch_helper import TouchHelper
 from lollypop.define import Lp, Type, ArtSize
 
 
@@ -37,6 +38,10 @@ class ToolbarInfo(Gtk.Bin, InfosController):
 
         self._infobox = builder.get_object('info')
         self.add(self._infobox)
+
+        helper = TouchHelper(self._infobox, None, None)
+        helper.set_long_func(self.__on_info_long)
+        helper.set_short_func(self.__on_info_short)
 
         self._spinner = builder.get_object('spinner')
 
@@ -84,51 +89,6 @@ class ToolbarInfo(Gtk.Bin, InfosController):
 #######################
 # PROTECTED           #
 #######################
-    def _on_title_press_event(self, widget, event):
-        """
-            On long press: show current track menu
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-
-        """
-        self.__timeout_id = GLib.timeout_add(500, self.__show_track_menu)
-        return True
-
-    def _on_title_release_event(self, widget, event):
-        """
-            Show track information popover
-            On long press/right click: show current track menu
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        if self.__timeout_id is not None:
-            GLib.source_remove(self.__timeout_id)
-            self.__timeout_id = None
-            if Lp().player.current_track.id == Type.EXTERNALS:
-                from lollypop.pop_externals import ExternalsPopover
-                expopover = ExternalsPopover()
-                expopover.set_relative_to(widget)
-                expopover.populate()
-                expopover.show()
-            elif Lp().player.current_track.id is not None:
-                if event.button == 1:
-                    if Lp().player.current_track.id == Type.RADIOS:
-                        if self.__pop_tunein is None:
-                            from lollypop.pop_tunein import TuneinPopover
-                            self.__pop_tunein = TuneinPopover()
-                            self.__pop_tunein.populate()
-                            self.__pop_tunein.set_relative_to(widget)
-                        self.__pop_tunein.show()
-                    else:
-                        if self.__pop_info is None:
-                            from lollypop.pop_info import InfoPopover
-                            self.__pop_info = InfoPopover()
-                            self.__pop_info.set_relative_to(widget)
-                        self.__pop_info.show()
-                else:
-                    self.__show_track_menu()
-        return True
-
     def _on_eventbox_realize(self, eventbox):
         """
             Show hand cursor over
@@ -163,11 +123,11 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
-    def __show_track_menu(self):
+    def __on_info_long(self, args):
         """
             Show current track menu
+            @param args as []
         """
-        self.__timeout_id = None
         if Lp().player.current_track.id >= 0:
             from lollypop.pop_menu import PopToolbarMenu
             from lollypop.pop_menu import TrackMenuPopover
@@ -176,6 +136,32 @@ class ToolbarInfo(Gtk.Bin, InfosController):
                         PopToolbarMenu(Lp().player.current_track.id))
             popover.set_relative_to(self._infobox)
             popover.show()
+
+    def __on_info_short(self, args):
+        """
+            Show track information popover
+            @param args as []
+        """
+        if Lp().player.current_track.id == Type.EXTERNALS:
+            from lollypop.pop_externals import ExternalsPopover
+            expopover = ExternalsPopover()
+            expopover.set_relative_to(self._infobox)
+            expopover.populate()
+            expopover.show()
+        elif Lp().player.current_track.id is not None:
+            if Lp().player.current_track.id == Type.RADIOS:
+                if self.__pop_tunein is None:
+                    from lollypop.pop_tunein import TuneinPopover
+                    self.__pop_tunein = TuneinPopover()
+                    self.__pop_tunein.populate()
+                    self.__pop_tunein.set_relative_to(self._infobox)
+                self.__pop_tunein.show()
+            else:
+                if self.__pop_info is None:
+                    from lollypop.pop_info import InfoPopover
+                    self.__pop_info = InfoPopover()
+                    self.__pop_info.set_relative_to(self._infobox)
+                self.__pop_info.show()
 
     def __on_loading_changed(self, player, show):
         """

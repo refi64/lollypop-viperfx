@@ -77,6 +77,7 @@ app_PYTHON = \
     toolbar_playback.py\
     toolbar.py\
     toolbar_title.py\
+    touch_helper.py\
     objects.py\
     tunein.py\
     utils.py\

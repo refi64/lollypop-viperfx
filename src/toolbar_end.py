@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
+from lollypop.touch_helper import TouchHelper
 from lollypop.define import Lp, Shuffle, Type
 
 
@@ -141,10 +142,9 @@ class ToolbarEnd(Gtk.Bin):
         Lp().set_accels_for_action("app.party", ["<Control>p"])
 
         self.__search_button = builder.get_object('search-button')
-        search_action = Gio.SimpleAction.new('search', None)
-        search_action.connect('activate', self._on_search_release_event)
-        Lp().add_action(search_action)
-        Lp().set_accels_for_action("app.search", ["<Control>f"])
+        helper = TouchHelper(self.__search_button, "search", "<Control>f")
+        helper.set_long_func(self.__on_search_long)
+        helper.set_short_func(self.__on_search_short)
 
         self.__settings_button = builder.get_object('settings-button')
 
@@ -280,55 +280,31 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_popover.connect('closed', self.__on_list_popover_closed)
         return True
 
-    def _on_search_press_event(self, widget, event):
-        """
-            On long press: Show filter
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-
-        """
-        if Lp().window.view is not None:
-            self.__timeout_id = GLib.timeout_add(
-                                              500,
-                                              self.__show_filtering)
-        return True
-
-    def _on_search_release_event(self, widget=None, event=None):
-        """
-            Show search popover
-            On right click: show filter
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        # Ignore this release event, show_filtering() has been called
-        if self.__timeout_id == Type.NONE:
-            self.__timeout_id = None
-            return True
-        elif self.__timeout_id is not None:
-            GLib.source_remove(self.__timeout_id)
-            self.__timeout_id = None
-        if event is None or event.button == 1:
-            self.__next_was_inhibited = self.__next_popover.inhibited
-            self.__next_popover.hide()
-            self.__next_popover.inhibit(True)
-            if self.__search is None:
-                from lollypop.pop_search import SearchPopover
-                self.__search = SearchPopover()
-                self.__search.connect('closed', self.__on_popover_closed)
-            self.__search.set_relative_to(self.__search_button)
-            self.__search.show()
-        else:
-            self.__show_filtering()
-
 #######################
 # PRIVATE             #
 #######################
-    def __show_filtering(self):
+    def __on_search_long(self, args):
         """
             Show current track menu
+            @param args as []
         """
-        self.__timeout_id = Type.NONE
-        Lp().window.view.set_search_mode()
+        if Lp().window.view is not None:
+            Lp().window.view.set_search_mode()
+
+    def __on_search_short(self, args):
+        """
+            Show search popover
+            @param args as []
+        """
+        self.__next_was_inhibited = self.__next_popover.inhibited
+        self.__next_popover.hide()
+        self.__next_popover.inhibit(True)
+        if self.__search is None:
+            from lollypop.pop_search import SearchPopover
+            self.__search = SearchPopover()
+            self.__search.connect('closed', self.__on_popover_closed)
+        self.__search.set_relative_to(self.__search_button)
+        self.__search.show()
 
     def __set_shuffle_icon(self):
         """
