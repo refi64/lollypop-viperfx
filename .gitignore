@@ -1,4 +1,5 @@
 *~
+/po
 /help/Makefile.in
 /help/*/*.page
 /help/*/*.xml
