@@ -348,7 +348,7 @@ class SearchPopover(Gtk.Popover):
             True if shoud enable network search
             @return bool
         """
-        return GLib.find_program_in_path("youtube-dl") and\
+        return GLib.find_program_in_path("youtube-dl") is not None and\
             get_network_available()
 
     def __calculate_score(self, row):

@@ -36,7 +36,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @param genre ids as [int]
             @param show cover as bool
         """
-        LazyLoadingView.__init__(self)
+        LazyLoadingView.__init__(self, True)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self.__show_cover = show_cover
@@ -112,6 +112,16 @@ class ArtistAlbumsView(LazyLoadingView):
 #######################
 # PROTECTED           #
 #######################
+    def _on_search_changed(self, entry):
+        """
+            Update filter
+            @param entry as Gtk.Entry
+        """
+        self._filter = entry.get_text()
+        for child in self._get_children():
+            for box in child.boxes:
+                box.invalidate_filter()
+
     def _get_children(self):
         """
             Return view children
@@ -159,6 +169,7 @@ class ArtistAlbumsView(LazyLoadingView):
                                          self._genre_ids,
                                          self._artist_ids,
                                          self.__show_cover)
+            widget.set_filter_func(self._filter_func)
             widget.connect('overlayed', self._on_overlayed)
             self._lazy_queue.append(widget)
             widget.show()

@@ -466,6 +466,7 @@ class BinPlayer(BasePlayer):
             # Stop if needed
             if Lp().settings.get_enum('playback') == NextContext.STOP_TRACK:
                 stop = True
+                Lp().settings.set_enum('playback', NextContext.NONE)
             elif self._next_context == NextContext.STOP_ALL:
                 stop = True
             elif Lp().settings.get_enum('playback') == self._next_context:

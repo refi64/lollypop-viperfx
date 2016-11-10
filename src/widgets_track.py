@@ -525,10 +525,30 @@ class TrackRow(Row):
             @param num as int
         """
         Row.__init__(self, rowid, num)
+        self.__parent_filter = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
 
+    @property
+    def filter(self):
+        """
+            @return str
+        """
+        return self._track.name
+
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__parent_filter = b
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__parent_filter
 #######################
 # PRIVATE             #
 #######################
