@@ -132,7 +132,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         if self._cover is None:
             return
         surface = Lp().art.get_radio_artwork(
-                    self._name,
+                    self.__name,
                     ArtSize.BIG,
                     self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
@@ -145,7 +145,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         if self._cover is None:
             return
         selected = Lp().player.current_track.id == Type.RADIOS and\
-            self._name == Lp().player.current_track.album_artists[0]
+            self.__name == Lp().player.current_track.album_artists[0]
         if selected:
             self._overlay.get_style_context().add_class(
                                                     'cover-frame-selected')
@@ -237,10 +237,10 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        url = self.__radios_manager.get_url(self._name)
+        url = self.__radios_manager.get_url(self.__name)
         if url:
             track = Track()
-            track.set_radio(self._name, url)
+            track.set_radio(self.__name, url)
             Lp().player.load(track)
 
     def _on_edit_press_event(self, widget, event):
@@ -249,7 +249,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        popover = RadioPopover(self._name, self.__radios_manager)
+        popover = RadioPopover(self.__name, self.__radios_manager)
         popover.set_relative_to(widget)
         popover.connect('closed', self._on_pop_cover_closed)
         self._lock_overlay = True
