@@ -403,8 +403,6 @@
                 <property name="events">GDK_ENTER_NOTIFY_MASK | GDK_STRUCTURE_MASK</property>
                 <property name="tooltip_text" translatable="yes">Long press to show options</property>
                 <property name="halign">end</property>
-                <signal name="button-press-event" handler="_on_mix_button_press" swapped="no"/>
-                <signal name="button-release-event" handler="_on_mix_button_release" swapped="no"/>
                 <signal name="state-set" handler="_update_mix_setting" swapped="no"/>
               </object>
               <packing>

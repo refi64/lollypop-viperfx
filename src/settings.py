@@ -25,6 +25,7 @@ from re import findall, DOTALL
 from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
 from lollypop.cache import InfoCache
 from lollypop.database import Database
+from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
 from lollypop.utils import get_network_available
 
@@ -127,6 +128,9 @@ class SettingsDialog:
 
         switch_mix = builder.get_object('switch_mix')
         switch_mix.set_state(Lp().settings.get_value('mix'))
+        helper = TouchHelper(switch_mix, None, None)
+        helper.set_long_func(self.__mix_long_func, switch_mix)
+        helper.set_short_func(self.__mix_short_func, switch_mix)
 
         switch_mix_party = builder.get_object('switch_mix_party')
         switch_mix_party.set_state(Lp().settings.get_value('party-mix'))
@@ -466,26 +470,6 @@ class SettingsDialog:
         """
         combo.set_tooltip_text(combo.get_active_text())
 
-    def _on_mix_button_press(self, widget, event):
-        """
-            Show mix popover on long press
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        self.__mix_tid = GLib.timeout_add(500, self.__show_mix_popover, widget)
-
-    def _on_mix_button_release(self, widget, event):
-        """
-            If no popover shown, pass event
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        if self.__mix_tid is None:
-            return True
-        else:
-            GLib.source_remove(self.__mix_tid)
-            self.__mix_tid = None
-
     def _on_key_release_event(self, widget, event):
         """
             Destroy window if Esc
@@ -519,6 +503,26 @@ class SettingsDialog:
 #######################
 # PRIVATE             #
 #######################
+    def __mix_long_func(self, args):
+        """
+            Show popover
+            @param args as []
+        """
+        if Lp().settings.get_value('mix'):
+            if self.__popover is None:
+                self.__popover = Gtk.Popover.new(args[0])
+                self.__popover.set_modal(False)
+                self.__popover.add(self.__popover_content)
+            self.__popover.show_all()
+
+    def __mix_short_func(self, args):
+        """
+            Activate switch
+            @param args as []
+        """
+        args[0].set_active(not args[0].get_active())
+        return True
+
     def __get_pa_outputs(self):
         """
             Get PulseAudio outputs
@@ -620,19 +624,6 @@ class SettingsDialog:
             Lp().window.update_db()
         if Lp().window.view is not None:
             Lp().window.view.update_children()
-
-    def __show_mix_popover(self, widget):
-        """
-            Show mix popover
-            @param widget as Gtk.Widget
-        """
-        self.__mix_tid = None
-        if Lp().settings.get_value('mix'):
-            if self.__popover is None:
-                self.__popover = Gtk.Popover.new(widget)
-                self.__popover.set_modal(False)
-                self.__popover.add(self.__popover_content)
-            self.__popover.show_all()
 
     def __test_lastfm_connection(self):
         """
