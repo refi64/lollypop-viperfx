@@ -3,6 +3,8 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
+[[ ! -d "$srcdir"/po ]] && git clone https://github.com/gnumdk/lollypop-pot.git "$srcdir"/po
+
 (test -f $srcdir/configure.ac) || {
         echo "**Error**: Directory "\`$srcdir\'" does not look like the top-level project directory"
         exit 1
