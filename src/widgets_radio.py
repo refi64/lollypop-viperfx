@@ -91,7 +91,14 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
     @property
     def filter(self):
         """
-            @return str
+            @Return filter as str
+        """
+        return self.__name
+
+    @property
+    def title(self):
+        """
+            @Return title as str
         """
         return self.__name
 
