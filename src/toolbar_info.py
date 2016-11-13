@@ -202,8 +202,6 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        # Can't add a \n in markup
-        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         layout_title = self._title_label.get_layout()
         layout_artist = self._artist_label.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
