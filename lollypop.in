@@ -9,9 +9,6 @@ import gettext
 if 'LOLLYPOP_TRACE' in os.environ:
     from pycallgraph import PyCallGraph
     from pycallgraph.output import GraphvizOutput
-# Force X11 as GTK Wayland broken:
-# https://bugzilla.gnome.org/show_bug.cgi?id=774148
-os.environ['GDK_BACKEND'] = 'x11'
 # Make sure we'll find the pygobject module, even in JHBuild
 sys.path.insert(1, '@pyexecdir@')
 # Make sure we'll find the lollypop modules, even in JHBuild
