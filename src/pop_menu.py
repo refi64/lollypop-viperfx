@@ -118,7 +118,6 @@ class QueueMenu(BaseMenu):
             else:
                 delete = False
         else:
-
             tracks = Lp().albums.get_track_ids(self._object_id,
                                                self._genre_ids,
                                                self._artist_ids)

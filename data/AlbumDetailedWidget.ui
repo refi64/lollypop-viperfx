@@ -6,7 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="opacity">0.20000000000000001</property>
-    <property name="icon_name">open-menu-symbolic</property>
+    <property name="icon_name">go-next-symbolic</property>
   </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
@@ -58,14 +58,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="menu">
+              <object class="GtkButton" id="context">
                 <property name="height_request">26</property>
                 <property name="can_focus">True</property>
                 <property name="focus_on_click">False</property>
                 <property name="receives_default">True</property>
+                <property name="visible">True</property>
                 <property name="image">image</property>
                 <property name="relief">none</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="_on_context_clicked" swapped="no"/>
                 <style>
                   <class name="menu-button"/>
                   <class name="album-menu-button"/>

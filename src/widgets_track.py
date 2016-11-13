@@ -146,7 +146,7 @@ class Row(Gtk.ListBoxRow):
         """
             Update position label for row
         """
-        if Lp().player.is_in_queue(self._track.id):
+        if Lp().player.track_in_queue(self._track):
             self._num_label.get_style_context().add_class('queued')
             pos = Lp().player.get_track_position(self._track.id)
             self._num_label.set_text(str(pos))
@@ -254,6 +254,7 @@ class Row(Gtk.ListBoxRow):
             image.set_from_icon_name('go-next-symbolic',
                                      Gtk.IconSize.MENU)
             self.__context = ContextWidget(self._track, button)
+            self.__context.set_property('halign', Gtk.Align.END)
             self.__context.show()
             self._duration_label.hide()
             self._grid.insert_next_to(button, Gtk.PositionType.LEFT)

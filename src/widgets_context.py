@@ -105,25 +105,38 @@ class ContextWidget(Gtk.Grid):
         playlist.set_tooltip_text(_("Playlists"))
         playlist.show()
 
-        rating = RatingWidget(object)
-        rating.set_margin_top(5)
-        rating.set_margin_bottom(5)
-        rating.set_property('halign', Gtk.Align.END)
-        rating.set_property('hexpand', True)
-        rating.show()
+        if isinstance(self.__object, Album):
+            if Lp().player.album_in_queue(self.__object):
+                queue = HoverWidget('list-remove-symbolic',
+                                    self.__add_to_queue)
+                queue.set_tooltip_text(_("Remove from queue"))
+            else:
+                queue = HoverWidget('list-add-symbolic', self.__add_to_queue)
+                queue.set_tooltip_text(_("Add to queue"))
+            queue.set_margin_start(10)
+            queue.show()
+        else:
+            rating = RatingWidget(object)
+            rating.set_margin_top(5)
+            rating.set_margin_bottom(5)
+            rating.set_property('halign', Gtk.Align.END)
+            rating.set_property('hexpand', True)
+            rating.show()
 
-        loved = LovedWidget(object.id)
-        loved.set_margin_end(5)
-        loved.set_margin_top(5)
-        loved.set_margin_bottom(5)
-        loved.show()
+            loved = LovedWidget(object.id)
+            loved.set_margin_end(5)
+            loved.set_margin_top(5)
+            loved.set_margin_bottom(5)
+            loved.show()
 
-        self.set_property('halign', Gtk.Align.END)
         if self.__tag_editor is not None:
             self.add(edit)
         self.add(playlist)
-        self.add(rating)
-        self.add(loved)
+        if isinstance(self.__object, Album):
+            self.add(queue)
+        else:
+            self.add(rating)
+            self.add(loved)
 
 #######################
 # PRIVATE             #
@@ -142,6 +155,20 @@ class ContextWidget(Gtk.Grid):
                                     GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
         except:
             pass
+        self.__button.emit('clicked')
+
+    def __add_to_queue(self, args):
+        """
+            Add album to queue
+            @param args as []
+        """
+        album_in_queue = Lp().player.album_in_queue(self.__object)
+        for track_id in self.__object.track_ids:
+            if album_in_queue:
+                Lp().player.del_from_queue(track_id, False)
+            else:
+                Lp().player.append_to_queue(track_id, False)
+        Lp().player.emit('queue-changed')
         self.__button.emit('clicked')
 
     def __show_playlist_manager(self, args):

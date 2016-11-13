@@ -62,16 +62,6 @@ class AlbumsView(LazyLoadingView):
         """
         GLib.idle_add(self.__add_albums, albums)
 
-    def show_popover(self, popover):
-        """
-            Show popover on current child
-            @param popover as Gtk.popover
-        """
-        if self.__current is not None:
-            popover.set_relative_to(self.__current.get_cover())
-            popover.connect('closed', self.__on_popover_closed)
-            popover.show()
-
 #######################
 # PROTECTED           #
 #######################
@@ -173,13 +163,6 @@ class AlbumsView(LazyLoadingView):
         """
         album_widget.lock_overlay(False)
         album_widget.get_cover().set_opacity(1)
-
-    def __on_popover_closed(self, popover):
-        """
-            Show previous popover again
-            @param popover as Gtk.Popover
-        """
-        self.__on_album_activated(self._box, self.__current)
 
     def __on_button_press(self, flowbox, event):
         """

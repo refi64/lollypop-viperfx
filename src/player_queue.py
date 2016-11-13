@@ -109,14 +109,26 @@ class QueuePlayer:
         else:
             return []
 
-    def is_in_queue(self, track_id):
+    def track_in_queue(self, track):
         """
-            True if track_id exist in queue
-            @param track id as int
+            True if track exists in queue
+            @param track as Track
             @return bool
         """
         if self._queue:
-            return track_id in self._queue
+            return track.id in self._queue
+        else:
+            return False
+
+    def album_in_queue(self, album):
+        """
+            True if album id exists in queue
+            @param album as Album
+            @return bool
+        """
+        if self._queue:
+            union = set(self._queue) & set(album.track_ids)
+            return len(union) == len(album.track_ids)
         else:
             return False
 

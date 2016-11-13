@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.define import WindowSize, Shuffle, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
+from lollypop.widgets_context import ContextWidget
 from lollypop.objects import Track, Album
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenuPopover, AlbumMenu
@@ -680,6 +681,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         AlbumWidget.__init__(self, album_id, genre_ids, artist_ids)
         self._album.set_artists(artist_ids)
         self.__width = None
+        self.__context = None
         # Cover + rating + spacing
         self.__height = ArtSize.BIG + 26
         self.__orientation = None
@@ -694,6 +696,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         self._widget = builder.get_object('widget')
+        self.__header = builder.get_object('header')
         self.__overlay = builder.get_object('overlay')
         self._play_button = builder.get_object('play-button')
         self._artwork_button = builder.get_object('artwork-button')
@@ -720,7 +723,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 artist_label.set_text(", ".join(self._album.artists))
                 artist_label.show()
         else:
-            builder.get_object('header').attach(rating, 4, 0, 1, 1)
+            self.__header.attach(rating, 4, 0, 1, 1)
             rating.set_hexpand(True)
             rating.set_property('halign', Gtk.Align.END)
             rating.set_property('valign', Gtk.Align.CENTER)
@@ -758,13 +761,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # This prevent artifacts
         self.set_opacity(0)
 
-        self._menu = builder.get_object('menu')
-        self._menu.connect('clicked', self.__pop_menu)
-        # TODO Remove this later
-        if Gtk.get_minor_version() > 16:
-            self._menu.show()
-        else:
-            self.connect('map', self.__on_map)
+        self.__context_button = builder.get_object('context')
+
         if self._album.is_youtube and show_cover:
             self._cover.get_style_context().add_class(
                                                 'cover-frame-youtube')
@@ -888,6 +886,28 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 #######################
 # PROTECTED           #
 #######################
+    def _on_context_clicked(self, button):
+        """
+            Show context widget
+            @param button as Gtk.Button
+        """
+        image = button.get_image()
+        if self.__context is None:
+            image.set_from_icon_name('go-previous-symbolic',
+                                     Gtk.IconSize.MENU)
+            self.__context = ContextWidget(self._album, button)
+            self.__context.set_property('halign', Gtk.Align.START)
+            self.__context.set_property('valign', Gtk.Align.CENTER)
+            self.__context.show()
+            self.__header.insert_next_to(button, Gtk.PositionType.RIGHT)
+            self.__header.attach_next_to(self.__context, button,
+                                         Gtk.PositionType.RIGHT, 1, 1)
+        else:
+            image.set_from_icon_name('go-next-symbolic',
+                                     Gtk.IconSize.MENU)
+            self.__context.destroy()
+            self.__context = None
+
     def _on_album_updated(self, scanner, album_id, destroy):
         """
             On album modified, disable it
@@ -1041,19 +1061,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         track = Track(track_id)
         if track.is_youtube:
             widget.show_spinner(track_id)
-
-    def __on_map(self, widget):
-        """
-            Fix for Gtk < 3.18,
-            if we are in a popover, do not show menu button
-        """
-        widget = self.get_parent()
-        while widget is not None:
-            if isinstance(widget, Gtk.Popover):
-                break
-            widget = widget.get_parent()
-        if widget is None:
-            self._menu.show()
 
     def __on_size_allocate(self, widget, allocation):
         """
