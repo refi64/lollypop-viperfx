@@ -122,7 +122,7 @@ class Row(Gtk.ListBoxRow):
         else:
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
-            if loved:
+            if loved and self.__context is None:
                 self._indicator.loved()
             else:
                 self._indicator.empty()
@@ -260,12 +260,16 @@ class Row(Gtk.ListBoxRow):
             self._grid.insert_next_to(button, Gtk.PositionType.LEFT)
             self._grid.attach_next_to(self.__context, button,
                                       Gtk.PositionType.LEFT, 1, 1)
+            self.set_indicator(Lp().player.current_track.id == self._track.id,
+                               False)
         else:
             image.set_from_icon_name('go-previous-symbolic',
                                      Gtk.IconSize.MENU)
             self.__context.destroy()
             self._duration_label.show()
             self.__context = None
+            self.set_indicator(Lp().player.current_track.id == self._track.id,
+                               utils.is_loved(self._track.id))
 
     def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """
@@ -274,21 +278,17 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        ancestor = self.get_ancestor(Gtk.Popover)
         popover = TrackMenuPopover(self._track, TrackMenu(self._track))
-        if ancestor is not None:
-            Lp().window.view.show_popover(popover)
-        else:
-            if xcoordinate is not None and ycoordinate is not None:
-                rect = widget.get_allocation()
-                rect.x = xcoordinate
-                rect.y = ycoordinate
-                rect.width = rect.height = 1
-            popover.set_relative_to(widget)
-            popover.set_pointing_to(rect)
-            popover.connect('closed', self.__on_closed)
-            self.get_style_context().add_class('track-menu-selected')
-            popover.show()
+        if xcoordinate is not None and ycoordinate is not None:
+            rect = widget.get_allocation()
+            rect.x = xcoordinate
+            rect.y = ycoordinate
+            rect.width = rect.height = 1
+        popover.set_relative_to(widget)
+        popover.set_pointing_to(rect)
+        popover.connect('closed', self.__on_closed)
+        self.get_style_context().add_class('track-menu-selected')
+        popover.show()
 
     def __on_closed(self, widget):
         """
