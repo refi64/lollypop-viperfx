@@ -378,7 +378,7 @@ class EditMenu(BaseMenu):
 
         if is_youtube:
             self.__set_remove_action()
-        elif is_album:
+        else:
             favorite = Lp().settings.get_value('tag-editor').get_string()
             for editor in [favorite] + self.__TAG_EDITORS:
                 if GLib.find_program_in_path(editor) is not None:
@@ -458,9 +458,12 @@ class EditMenu(BaseMenu):
             @param GVariant
         """
         try:
-            album_uri = Lp().albums.get_uri(self._object_id)
+            if self._is_album:
+                uri = Lp().albums.get_uri(self._object_id)
+            else:
+                uri = Lp().tracks.get_uri(self._object_id)
             argv = [self.__tag_editor,
-                    GLib.filename_from_uri(album_uri)[0], None]
+                    GLib.filename_from_uri(uri)[0], None]
             GLib.spawn_async_with_pipes(
                                     None, argv, None,
                                     GLib.SpawnFlags.SEARCH_PATH |
@@ -510,9 +513,8 @@ class TrackMenu(Gio.Menu):
                             QueueMenu(track.id, [], [], False))
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(track.id, [], [], False))
-        if track.album.is_youtube:
-            self.insert_section(3, _("Edit"),
-                                EditMenu(track.id, False, True))
+        self.insert_section(3, _("Edit"),
+                            EditMenu(track.id, False, track.album.is_youtube))
 
 
 class TrackMenuPopover(Gtk.Popover):
