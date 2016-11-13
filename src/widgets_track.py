@@ -230,7 +230,8 @@ class Row(Gtk.ListBoxRow):
             @param event as Gdk.Event
         """
         if event.button == 3:
-            if GLib.getenv("WAYLAND_DISPLAY") != "":
+            if GLib.getenv("WAYLAND_DISPLAY") != "" and\
+                    self.get_ancestor(Gtk.Popover) != None:
                 print("https://bugzilla.gnome.org/show_bug.cgi?id=774148")
             window = widget.get_window()
             if window == event.window:
