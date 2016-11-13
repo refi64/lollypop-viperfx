@@ -154,8 +154,9 @@ class ContextWidget(Gtk.Grid):
         if isinstance(self.__object, Album):
             self.add(queue)
         else:
-            self.add(youtube)
-            self.add(search)
+            if self.__object.album.is_youtube:
+                self.add(youtube)
+                self.add(search)
             self.add(rating)
             self.add(loved)
 
