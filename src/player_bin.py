@@ -142,7 +142,10 @@ class BinPlayer(BasePlayer):
         """
             Change player state to PAUSED
         """
-        self._playbin.set_state(Gst.State.PAUSED)
+        if self.current_track.id == Type.RADIOS:
+            self._playbin.set_state(Gst.State.NULL)
+        else:
+            self._playbin.set_state(Gst.State.PAUSED)
         self.emit("status-changed")
 
     def stop(self):
