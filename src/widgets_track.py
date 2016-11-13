@@ -229,8 +229,9 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.get_ancestor(Gtk.Popover) is None and\
-                event.button == 3 and Gtk.get_minor_version() > 16:
+        if event.button == 3:
+            if GLib.getenv("WAYLAND_DISPLAY") != "":
+                print("https://bugzilla.gnome.org/show_bug.cgi?id=774148")
             window = widget.get_window()
             if window == event.window:
                 self.__popup_menu(widget, event.x, event.y)
