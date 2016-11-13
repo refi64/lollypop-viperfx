@@ -984,11 +984,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             popover.set_relative_to(widget)
             popover.set_position(Gtk.PositionType.BOTTOM)
         elif self._album.is_youtube:
-            popover = AlbumMenuPopover(self._album, AlbumMenu(self._album))
+            popover = AlbumMenuPopover(self._album,
+                                       AlbumMenu(self._album,
+                                                 ancestor is not None))
             popover.set_relative_to(widget)
         else:
-            popover = Gtk.Popover.new_from_model(widget,
-                                                 AlbumMenu(self._album))
+            popover = Gtk.Popover.new_from_model(
+                                            widget,
+                                            AlbumMenu(self._album,
+                                                      ancestor is not None))
         if ancestor is not None:
             Lp().window.view.show_popover(popover)
         else:
