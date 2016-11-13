@@ -33,6 +33,7 @@ class AlbumsView(LazyLoadingView):
         """
         LazyLoadingView.__init__(self, True)
         self.__signal = None
+        self.__current = None
         self.__context_album_id = None
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
@@ -60,6 +61,16 @@ class AlbumsView(LazyLoadingView):
             @param is compilation as bool
         """
         GLib.idle_add(self.__add_albums, albums)
+
+    def show_popover(self, popover):
+        """
+            Show popover on current child
+            @param popover as Gtk.popover
+        """
+        if self.__current is not None:
+            popover.set_relative_to(self.__current.get_cover())
+            popover.connect('closed', self.__on_popover_closed)
+            popover.show()
 
 #######################
 # PROTECTED           #
@@ -149,17 +160,26 @@ class AlbumsView(LazyLoadingView):
             popover.set_position(Gtk.PositionType.BOTTOM)
         album_widget.show_overlay(False)
         album_widget.lock_overlay(True)
-        popover.connect('closed', self.__on_popover_closed, album_widget)
+        popover.connect('closed', self.__on_album_popover_closed, album_widget)
         popover.show()
+        self.__current = album_widget
         cover.set_opacity(0.9)
 
-    def __on_popover_closed(self, popover, album_widget):
+    def __on_album_popover_closed(self, popover, album_widget):
         """
+            Remove overlay and restore opacity
             @param popover as Gtk.Popover
             @param album_widget as AlbumWidget
         """
         album_widget.lock_overlay(False)
         album_widget.get_cover().set_opacity(1)
+
+    def __on_popover_closed(self, popover):
+        """
+            Show previous popover again
+            @param popover as Gtk.Popover
+        """
+        self.__on_album_activated(self._box, self.__current)
 
     def __on_button_press(self, flowbox, event):
         """

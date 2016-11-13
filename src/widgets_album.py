@@ -976,6 +976,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
+        ancestor = self.get_ancestor(Gtk.Popover)
         # Get album real genre ids (not contextual)
         genre_ids = Lp().albums.get_genre_ids(self._album.id)
         if genre_ids and genre_ids[0] == Type.CHARTS:
@@ -988,9 +989,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             popover = Gtk.Popover.new_from_model(widget,
                                                  AlbumMenu(self._album))
-        popover.connect('closed', self.__on_pop_menu_closed)
-        self.get_style_context().add_class('album-menu-selected')
-        popover.show()
+        if ancestor is not None:
+            Lp().window.view.show_popover(popover)
+        else:
+            popover.connect('closed', self.__on_pop_menu_closed)
+            self.get_style_context().add_class('album-menu-selected')
+            popover.show()
 
     def __add_tracks(self, tracks, widget, disc_number, i):
         """

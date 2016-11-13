@@ -255,17 +255,21 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
+        ancestor = self.get_ancestor(Gtk.Popover)
         popover = TrackMenuPopover(self._track, TrackMenu(self._track))
-        popover.set_relative_to(widget)
-        if xcoordinate is not None and ycoordinate is not None:
-            rect = widget.get_allocation()
-            rect.x = xcoordinate
-            rect.y = ycoordinate
-            rect.width = rect.height = 1
+        if ancestor is not None:
+            Lp().window.view.show_popover(popover)
+        else:
+            if xcoordinate is not None and ycoordinate is not None:
+                rect = widget.get_allocation()
+                rect.x = xcoordinate
+                rect.y = ycoordinate
+                rect.width = rect.height = 1
+            popover.set_relative_to(widget)
             popover.set_pointing_to(rect)
-        popover.connect('closed', self.__on_closed)
-        self.get_style_context().add_class('track-menu-selected')
-        popover.show()
+            popover.connect('closed', self.__on_closed)
+            self.get_style_context().add_class('track-menu-selected')
+            popover.show()
 
     def __on_closed(self, widget):
         """
