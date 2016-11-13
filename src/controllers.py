@@ -43,8 +43,6 @@ class PlaybackController:
             Update prev button
             @param player as Player
         """
-        # Can add a \n in markup
-        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         if player.prev_track.id == Type.RADIOS:
             self._prev_btn.set_tooltip_text(
                                     ", ".join(player.prev_track.album_artists))
