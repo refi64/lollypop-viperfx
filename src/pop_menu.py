@@ -17,7 +17,7 @@ from threading import Thread
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, TAG_EDITORS
 from lollypop.sqlcursor import SqlCursor
 from lollypop.objects import Track, Album
 from lollypop import utils
@@ -366,7 +366,6 @@ class EditMenu(BaseMenu):
     """
         Edition menu for album
     """
-    __TAG_EDITORS = ['kid3-qt', 'exfalso', 'easytag', 'picard', 'puddletag']
 
     def __init__(self, object_id, is_album, is_youtube):
         """
@@ -381,7 +380,7 @@ class EditMenu(BaseMenu):
             self.__set_remove_action()
         else:
             favorite = Lp().settings.get_value('tag-editor').get_string()
-            for editor in [favorite] + self.__TAG_EDITORS:
+            for editor in [favorite] + TAG_EDITORS:
                 if GLib.find_program_in_path(editor) is not None:
                     self.__tag_editor = editor
                     self.__set_edit_actions()

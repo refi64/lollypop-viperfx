@@ -10,14 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
-from lollypop.define import Lp
+from lollypop.define import Lp, TAG_EDITORS
 
 
 class HoverWidget(Gtk.EventBox):
@@ -69,6 +69,7 @@ class HoverWidget(Gtk.EventBox):
             @param event as Gdk.Event
         """
         self.__func(self.__args)
+        return True
 
 
 class ContextWidget(Gtk.Grid):
@@ -84,6 +85,19 @@ class ContextWidget(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self._object = object
 
+        # Search for tag editor
+        self.__tag_editor = None
+        favorite = Lp().settings.get_value('tag-editor').get_string()
+        for editor in [favorite] + TAG_EDITORS:
+            if GLib.find_program_in_path(editor) is not None:
+                self.__tag_editor = editor
+        if self.__tag_editor is not None:
+            edit = HoverWidget('document-properties-symbolic',
+                               self.__edit_tags)
+            edit.set_tooltip_text(_("Modify information"))
+            edit.set_margin_end(10)
+            edit.show()
+
         playlist = HoverWidget('view-list-symbolic',
                                self.__show_playlist_manager)
         playlist.set_tooltip_text(_("Playlists"))
@@ -92,7 +106,7 @@ class ContextWidget(Gtk.Grid):
         rating = RatingWidget(object)
         rating.set_margin_top(5)
         rating.set_margin_bottom(5)
-        rating.set_property('halign', Gtk.Align.START)
+        rating.set_property('halign', Gtk.Align.END)
         rating.set_property('hexpand', True)
         rating.show()
 
@@ -103,6 +117,8 @@ class ContextWidget(Gtk.Grid):
         loved.show()
 
         self.set_property('halign', Gtk.Align.END)
+        if self.__tag_editor is not None:
+            self.add(edit)
         self.add(playlist)
         self.add(rating)
         self.add(loved)
@@ -110,6 +126,21 @@ class ContextWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __edit_tags(self, args):
+        """
+            Edit tags
+            @param args as []
+        """
+        try:
+            argv = [self.__tag_editor,
+                    GLib.filename_from_uri(self._object.uri)[0], None]
+            GLib.spawn_async_with_pipes(
+                                    None, argv, None,
+                                    GLib.SpawnFlags.SEARCH_PATH |
+                                    GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
+        except:
+            pass
+
     def __show_playlist_manager(self, args):
         """
             Show playlist manager

@@ -38,7 +38,7 @@ class Row(Gtk.ListBoxRow):
         self._track = Track(rowid)
         self.__number = num
         self.__timeout_id = None
-        self.__revealer = None
+        self.__context = None
         self._indicator = IndicatorWidget(self._track.id)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
@@ -250,21 +250,19 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Button
         """
         image = self.__menu_button.get_image()
-        if self.__revealer is None:
+        if self.__context is None:
             image.set_from_icon_name('go-next-symbolic',
                                      Gtk.IconSize.MENU)
-            self.__revealer = Gtk.Revealer()
-            self.__revealer.show()
-            context = ContextWidget(self._track)
-            context.show()
-            self.__revealer.add(context)
-            self._grid.add(self.__revealer)
-            self.__revealer.set_reveal_child(context)
+            self.__context = ContextWidget(self._track)
+            self.__context.show()
+            self._grid.insert_next_to(widget, Gtk.PositionType.LEFT)
+            self._grid.attach_next_to(self.__context, widget,
+                                      Gtk.PositionType.LEFT, 1, 1)
         else:
             image.set_from_icon_name('go-previous-symbolic',
                                      Gtk.IconSize.MENU)
-            self.__revealer.destroy()
-            self.__revealer = None
+            self.__context.destroy()
+            self.__context = None
 
     def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """
