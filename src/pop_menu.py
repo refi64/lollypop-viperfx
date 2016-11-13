@@ -77,7 +77,8 @@ class ArtistMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().window.show_artists_albums(self._artist_ids)
+        album = Album(self._object_id)
+        Lp().window.show_artists_albums(album.artist_ids)
 
 
 class QueueMenu(BaseMenu):
