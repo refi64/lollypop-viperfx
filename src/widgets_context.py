@@ -77,13 +77,15 @@ class ContextWidget(Gtk.Grid):
         Context widget
     """
 
-    def __init__(self, object):
+    def __init__(self, object, button):
         """
             Init widget
             @param object as Track/Album
+            @param button as Gtk.Button
         """
         Gtk.Grid.__init__(self)
-        self._object = object
+        self.__object = object
+        self.__button = button
 
         # Search for tag editor
         self.__tag_editor = None
@@ -133,20 +135,22 @@ class ContextWidget(Gtk.Grid):
         """
         try:
             argv = [self.__tag_editor,
-                    GLib.filename_from_uri(self._object.uri)[0], None]
+                    GLib.filename_from_uri(self.__object.uri)[0], None]
             GLib.spawn_async_with_pipes(
                                     None, argv, None,
                                     GLib.SpawnFlags.SEARCH_PATH |
                                     GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
         except:
             pass
+        self.__button.emit('clicked')
 
     def __show_playlist_manager(self, args):
         """
             Show playlist manager
             @param args as []
         """
-        Lp().window.show_playlist_manager(self._object.id,
-                                          self._object.genre_ids,
-                                          self._object.artist_ids,
-                                          isinstance(self._object, Album))
+        Lp().window.show_playlist_manager(self.__object.id,
+                                          self.__object.genre_ids,
+                                          self.__object.artist_ids,
+                                          isinstance(self.__object, Album))
+        self.__button.emit('clicked')

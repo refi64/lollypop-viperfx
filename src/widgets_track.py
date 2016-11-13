@@ -244,24 +244,26 @@ class Row(Gtk.ListBoxRow):
             else:
                 Lp().player.append_to_queue(self._track.id)
 
-    def __on_button_clicked(self, widget):
+    def __on_button_clicked(self, button):
         """
             Popup menu for track relative to button
-            @param widget as Gtk.Button
+            @param button as Gtk.Button
         """
         image = self.__menu_button.get_image()
         if self.__context is None:
             image.set_from_icon_name('go-next-symbolic',
                                      Gtk.IconSize.MENU)
-            self.__context = ContextWidget(self._track)
+            self.__context = ContextWidget(self._track, button)
             self.__context.show()
-            self._grid.insert_next_to(widget, Gtk.PositionType.LEFT)
-            self._grid.attach_next_to(self.__context, widget,
+            self._duration_label.hide()
+            self._grid.insert_next_to(button, Gtk.PositionType.LEFT)
+            self._grid.attach_next_to(self.__context, button,
                                       Gtk.PositionType.LEFT, 1, 1)
         else:
             image.set_from_icon_name('go-previous-symbolic',
                                      Gtk.IconSize.MENU)
             self.__context.destroy()
+            self._duration_label.show()
             self.__context = None
 
     def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
