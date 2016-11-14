@@ -212,6 +212,11 @@ popover.background separator {
     padding: 0px;
 }
 
+.no-border {
+    border: none;
+    background-image: none;
+}
+
 .queued {
     border-radius: 5px;
     color: @theme_selected_fg_color;

@@ -15,6 +15,7 @@ from gi.repository import GObject, Gtk, Gdk, Pango, GLib, Gst
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
+from lollypop.widgets_context import ContextWidget
 from lollypop.utils import seconds_to_string
 from lollypop.objects import Track
 from lollypop import utils
@@ -37,6 +38,7 @@ class Row(Gtk.ListBoxRow):
         self._track = Track(rowid)
         self.__number = num
         self.__timeout_id = None
+        self.__revealer = None
         self._indicator = IndicatorWidget(self._track.id)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
@@ -200,7 +202,7 @@ class Row(Gtk.ListBoxRow):
             widget.connect('leave-notify-event', self.__on_leave_notify)
             self.__timeout_id = GLib.timeout_add(500, self.__play_preview)
         if self.__menu_button.get_image() is None:
-            image = Gtk.Image.new_from_icon_name('open-menu-symbolic',
+            image = Gtk.Image.new_from_icon_name('go-previous-symbolic',
                                                  Gtk.IconSize.MENU)
             image.set_opacity(0.2)
             self.__menu_button.set_image(image)
@@ -227,13 +229,14 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if event.button == 3 and Gtk.get_minor_version() > 16:
+        if self.get_ancestor(Gtk.Popover) is None and\
+                event.button == 3 and Gtk.get_minor_version() > 16:
             window = widget.get_window()
             if window == event.window:
                 self.__popup_menu(widget, event.x, event.y)
             # Happens when pressing button over menu btn
             else:
-                self.__popup_menu(self.__menu_button)
+                self.__on_button_clicked(self.__menu_button)
             return True
         elif event.button == 2:
             if self._track.id in Lp().player.get_queue():
@@ -246,7 +249,22 @@ class Row(Gtk.ListBoxRow):
             Popup menu for track relative to button
             @param widget as Gtk.Button
         """
-        self.__popup_menu(widget)
+        image = self.__menu_button.get_image()
+        if self.__revealer is None:
+            image.set_from_icon_name('go-next-symbolic',
+                                     Gtk.IconSize.MENU)
+            self.__revealer = Gtk.Revealer()
+            self.__revealer.show()
+            context = ContextWidget(self._track)
+            context.show()
+            self.__revealer.add(context)
+            self._grid.add(self.__revealer)
+            self.__revealer.set_reveal_child(context)
+        else:
+            image.set_from_icon_name('go-previous-symbolic',
+                                     Gtk.IconSize.MENU)
+            self.__revealer.destroy()
+            self.__revealer = None
 
     def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """

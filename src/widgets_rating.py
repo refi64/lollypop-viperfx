@@ -131,3 +131,4 @@ class RatingWidget(Gtk.Bin):
                     "set pop: %s" % value, path, None]
             GLib.spawn_sync(None, argv, None,
                             GLib.SpawnFlags.SEARCH_PATH, None)
+        return True

@@ -83,13 +83,14 @@ app_PYTHON = \
     utils.py\
     view_albums.py\
     view_artist.py\
+    view_artist_albums.py\
     view_container.py\
     view_device.py\
     view_playlists.py\
     view.py\
     view_radios.py\
     widgets_album.py\
-    view_artist_albums.py\
+    widgets_context.py\
     widgets_device.py\
     widgets_indicator.py\
     widgets_info.py\
