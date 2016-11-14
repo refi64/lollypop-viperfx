@@ -80,6 +80,17 @@ class SettingsDialog:
         self.__mix_tid = None
         self.__popover = None
 
+        cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
+        default_cs_api_key = Lp().settings.get_default_value(
+                                                     'cs-api-key').get_string()
+        if (not cs_api_key or
+            cs_api_key == default_cs_api_key) and\
+                get_network_available() and\
+                Lp().notify is not None:
+            Lp().notify.send(
+                         _("Google Web Services need a custom API key"),
+                         _("Lollypop needs this to search artwork and music."))
+
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
         if Lp().lastfm is None or Lp().lastfm.is_goa:
