@@ -38,7 +38,7 @@ class HoverWidget(Gtk.EventBox):
         image = Gtk.Image.new_from_icon_name(name, Gtk.IconSize.MENU)
         image.show()
         self.add(image)
-        self.set_opacity(0.1)
+        self.set_opacity(0.2)
         self.connect('enter-notify-event', self.__on_enter_notify)
         self.connect('leave-notify-event', self.__on_leave_notify)
         self.connect('button-press-event', self.__on_button_press)
@@ -60,7 +60,7 @@ class HoverWidget(Gtk.EventBox):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        self.set_opacity(0.1)
+        self.set_opacity(0.2)
 
     def __on_button_press(self, widget, event):
         """
