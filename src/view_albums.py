@@ -122,7 +122,7 @@ class AlbumsView(LazyLoadingView):
             if self.__genre_ids and self.__genre_ids[0] == Type.CHARTS:
                 popover = AlbumMenuPopover(album, None)
                 popover.set_relative_to(cover)
-            elif album.is_youtube:
+            elif album.is_web:
                 popover = AlbumMenuPopover(album, AlbumMenu(album, True))
                 popover.set_relative_to(cover)
             else:

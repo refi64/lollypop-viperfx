@@ -215,9 +215,9 @@ class Album(Base):
         return self._tracks
 
     @property
-    def is_youtube(self):
+    def is_web(self):
         """
-            True if a youtube stream
+            True if a web stream
             @return bool
         """
         return self.synced == Type.NONE
@@ -259,6 +259,22 @@ class Track(Base):
         self.id = track_id
         self._uri = None
         self._non_album_artists = []
+
+    @property
+    def is_web(self):
+        """
+            True if a web stream
+            @return bool
+        """
+        return self.is_jgm or self.is_youtube
+
+    @property
+    def is_jgm(self):
+        """
+            True if a jgm stream
+            @return bool
+        """
+        return self.uri.startswith("http://app.jgm90.com")
 
     @property
     def is_youtube(self):

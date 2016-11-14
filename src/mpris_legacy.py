@@ -181,7 +181,7 @@ class MPRIS(dbus.service.Object):
             self._metadata['mpris:length'] = dbus.Int64(
                 Lp().player.current_track.duration * 1000000)
             self._metadata['xesam:genre'] = Lp().player.current_track.genres\
-                or "YouTube"
+                or "Web"
             self._metadata['xesam:url'] = Lp().player.current_track.uri
             self._metadata["xesam:userRating"] = \
                 Lp().player.current_track.get_popularity() / 5

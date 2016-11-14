@@ -312,7 +312,7 @@ class PlaylistsWidget(Gtk.Grid):
             @param track id as int
         """
         track = Track(track_id)
-        if track.is_youtube:
+        if track.is_web:
             widget.show_spinner(track_id)
 
     def __move_track(self, dst, src, up):

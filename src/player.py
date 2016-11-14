@@ -114,7 +114,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             RadioPlayer.load(self, track)
         else:
             if play:
-                if track.is_youtube and\
+                if track.is_web and\
                         not Gio.NetworkMonitor.get_default(
                                                      ).get_network_available():
                     self._current_track = track
@@ -502,8 +502,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # Get a linear track then
             if next_track.id is None:
                 next_track = LinearPlayer.next(self)
-            if next_track.is_youtube:
-                self._load_youtube(next_track, False)
+            if next_track.is_web:
+                self._load_web(next_track, False)
             self._next_track = next_track
             self.emit('next-changed')
         except Exception as e:

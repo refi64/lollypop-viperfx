@@ -125,13 +125,13 @@ class SearchRow(Gtk.ListBoxRow):
         """
             Play row
         """
-        from lollypop.youtube import Youtube
+        from lollypop.web import Web
         Lp().player.emit('loading-changed', True)
-        yt = Youtube()
+        web = Web()
         if self.__item.is_track:
-            yt.save_track(self.__item, DbPersistent.NONE)
+            web.save_track(self.__item, DbPersistent.NONE)
         else:
-            yt.save_album(self.__item, DbPersistent.NONE)
+            web.save_album(self.__item, DbPersistent.NONE)
 
     def set_score(self, score):
         """
@@ -160,12 +160,12 @@ class SearchRow(Gtk.ListBoxRow):
             Save into collection
             @param button as Gtk.Button
         """
-        from lollypop.youtube import Youtube
-        yt = Youtube()
+        from lollypop.web import Web
+        web = Web()
         if self.__item.is_track:
-            yt.save_track(self.__item, DbPersistent.EXTERNAL)
+            web.save_track(self.__item, DbPersistent.EXTERNAL)
         else:
-            yt.save_album(self.__item, DbPersistent.EXTERNAL)
+            web.save_album(self.__item, DbPersistent.EXTERNAL)
         self.destroy()
 
     def _on_playlist_clicked(self, button):

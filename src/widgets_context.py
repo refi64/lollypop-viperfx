@@ -129,15 +129,15 @@ class ContextWidget(Gtk.Grid):
             loved.set_margin_bottom(5)
             loved.show()
 
-            if self.__object.album.is_youtube:
-                youtube = Gtk.LinkButton(self.__object.uri)
+            if self.__object.album.is_web:
+                web = Gtk.LinkButton(self.__object.uri)
                 icon = Gtk.Image.new_from_icon_name('web-browser-symbolic',
                                                     Gtk.IconSize.MENU)
-                youtube.set_image(icon)
-                youtube.get_style_context().add_class('no-padding')
-                youtube.set_margin_start(5)
-                youtube.set_tooltip_text(self.__object.uri)
-                youtube.show_all()
+                web.set_image(icon)
+                web.get_style_context().add_class('no-padding')
+                web.set_margin_start(5)
+                web.set_tooltip_text(self.__object.uri)
+                web.show_all()
                 uri = "https://www.youtube.com/results?search_query=%s" %\
                     (self.__object.artists[0] + " " + self.__object.name,)
                 search = Gtk.LinkButton(uri)
@@ -154,8 +154,8 @@ class ContextWidget(Gtk.Grid):
         if isinstance(self.__object, Album):
             self.add(queue)
         else:
-            if self.__object.album.is_youtube:
-                self.add(youtube)
+            if self.__object.album.is_web:
+                self.add(web)
                 self.add(search)
             self.add(rating)
             self.add(loved)

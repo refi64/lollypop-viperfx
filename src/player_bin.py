@@ -14,7 +14,6 @@ from gi.repository import Gst, GstAudio, GstPbutils, GLib
 
 from time import time
 from threading import Thread
-from re import sub
 
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import TagReader
@@ -252,14 +251,14 @@ class BinPlayer(BasePlayer):
             else:
                 self._current_track = track
                 self._queue_track = None
-            if track.is_youtube:
-                loaded = self._load_youtube(track)
+            if track.is_web:
+                loaded = self._load_web(track)
                 # If track not loaded, go next
                 if not loaded:
                     self.set_next()
                     GLib.timeout_add(500, self.__load,
                                      self.next_track, init_volume)
-                return False  # Return not loaded as handled by load_youtube()
+                return False  # Return not loaded as handled by load_web()
             else:
                 self._playbin.set_property('uri', track.uri)
         except Exception as e:  # Gstreamer error
@@ -268,7 +267,7 @@ class BinPlayer(BasePlayer):
             return False
         return True
 
-    def _load_youtube(self, track, play=True):
+    def _load_web(self, track, play=True):
         """
             Load track url and play it
             @param track as Track
@@ -280,9 +279,11 @@ class BinPlayer(BasePlayer):
             self.emit('current-changed')
             return False
         try:
+            from lollypop.web import Web
             if play:
                 self.emit('loading-changed', True)
-            t = Thread(target=self.__youtube_dl_lookup, args=(track, play))
+            t = Thread(target=Web.play_track,
+                       args=(track, play, self.__set_gv_uri))
             t.daemon = True
             t.start()
             return True
@@ -603,29 +604,6 @@ class BinPlayer(BasePlayer):
         if not Lp().scanner.is_locked():
             Lp().tracks.set_more_popular(finished.id)
             Lp().albums.set_more_popular(finished.album_id)
-
-    def __youtube_dl_lookup(self, track, play):
-        """
-            Launch youtube-dl to get video url
-            @param track as Track
-            @param play as bool
-        """
-        # Remove playlist args
-        uri = sub("list=.*", "", track.uri)
-        argv = ["youtube-dl", "-g", "-f", "bestaudio", uri, None]
-        (s, o, e, s) = GLib.spawn_sync(None,
-                                       argv,
-                                       None,
-                                       GLib.SpawnFlags.SEARCH_PATH,
-                                       None)
-        if o:
-            GLib.idle_add(self.__set_gv_uri, o.decode("utf-8"), track, play)
-        else:
-            if Lp().notify:
-                Lp().notify.send(e.decode("utf-8"))
-            print("BinPlayer::__youtube_dl_lookup:", e.decode("utf-8"))
-            if play:
-                GLib.idle_add(self.emit, 'loading-changed', False)
 
     def __set_gv_uri(self, uri, track, play):
         """

@@ -366,16 +366,16 @@ class EditMenu(BaseMenu):
         Edition menu for album
     """
 
-    def __init__(self, object_id, is_album, is_youtube):
+    def __init__(self, object_id, is_album, is_web):
         """
             Init edit menu
             @param object id as int
             @param is album as int
-            @param is youtube as bool
+            @param is web as bool
         """
         BaseMenu.__init__(self, object_id, [], [], is_album)
 
-        if is_youtube:
+        if is_web:
             self.__set_remove_action()
         else:
             favorite = Lp().settings.get_value('tag-editor').get_string()
@@ -494,7 +494,7 @@ class AlbumMenu(Gio.Menu):
                             PlaylistsMenu(album.id, album.genre_ids,
                                           album.artist_ids, True))
         self.insert_section(3, _("Edit"),
-                            EditMenu(album.id, True, album.is_youtube))
+                            EditMenu(album.id, True, album.is_web))
 
 
 class TrackMenu(Gio.Menu):
@@ -513,7 +513,7 @@ class TrackMenu(Gio.Menu):
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(track.id, [], [], False))
         self.insert_section(3, _("Edit"),
-                            EditMenu(track.id, False, track.album.is_youtube))
+                            EditMenu(track.id, False, track.album.is_web))
 
 
 class TrackMenuPopover(Gtk.Popover):
@@ -565,16 +565,16 @@ class TrackMenuPopover(Gtk.Popover):
             year.set_property('hexpand', True)
             year.show()
 
-        if track.album.is_youtube:
+        if track.album.is_web:
             uri = Lp().tracks.get_uri(track.id)
-            youtube = Gtk.LinkButton(uri)
+            web = Gtk.LinkButton(uri)
             icon = Gtk.Image.new_from_icon_name('web-browser-symbolic',
                                                 Gtk.IconSize.MENU)
-            youtube.set_image(icon)
-            youtube.get_style_context().add_class('no-padding')
-            youtube.set_margin_end(5)
-            youtube.set_tooltip_text(uri)
-            youtube.show_all()
+            web.set_image(icon)
+            web.get_style_context().add_class('no-padding')
+            web.set_margin_end(5)
+            web.set_tooltip_text(uri)
+            web.show_all()
             uri = "https://www.youtube.com/results?search_query=%s" %\
                 (track.artists[0] + " " + track.name,)
             search = Gtk.LinkButton(uri)
@@ -599,7 +599,7 @@ class TrackMenuPopover(Gtk.Popover):
         if menu_widget is not None:
             menu_widget.reparent(grid)
 
-        if not track.album.is_youtube:
+        if not track.album.is_web:
             separator = Gtk.Separator()
             separator.show()
             grid.add(separator)
@@ -607,20 +607,20 @@ class TrackMenuPopover(Gtk.Popover):
         hgrid = Gtk.Grid()
         hgrid.add(rating)
         hgrid.add(loved)
-        if track.album.is_youtube:
-            hgrid.add(youtube)
+        if track.album.is_web:
+            hgrid.add(web)
             hgrid.add(search)
         if track_year != "":
             hgrid.add(year)
         hgrid.show()
-        if track.album.is_youtube:
+        if track.album.is_web:
             grid.set_row_spacing(2)
             uri = Lp().tracks.get_uri(track.id)
             edit = Gtk.Entry()
             edit.set_margin_start(5)
             edit.set_margin_end(5)
             edit.set_margin_bottom(5)
-            edit.set_tooltip_text(_("YouTube video address"))
+            edit.set_tooltip_text(_("web video address"))
             edit.set_property('hexpand', True)
             edit.set_text(uri)
             edit.connect('changed', self.__on_edit_changed, track.id)
@@ -664,7 +664,7 @@ class AlbumMenuPopover(Gtk.Popover):
         edit.set_property('halign', Gtk.Align.CENTER)
         genres = ", ".join(Lp().albums.get_genres(album.id))
         if not genres:
-            genres = "YouTube"
+            genres = "web"
         edit.set_text(genres)
         edit.show()
 

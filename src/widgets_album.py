@@ -486,9 +486,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.show_all()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
-        if self._album.is_youtube:
+        if self._album.is_web:
             self._cover.get_style_context().add_class(
-                                                'cover-frame-youtube')
+                                                'cover-frame-web')
 
     def do_get_preferred_width(self):
         """
@@ -763,9 +763,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self.__context_button = builder.get_object('context')
 
-        if self._album.is_youtube and show_cover:
+        if self._album.is_web and show_cover:
             self._cover.get_style_context().add_class(
-                                                'cover-frame-youtube')
+                                                'cover-frame-web')
 
     def update_playing_indicator(self):
         """
@@ -1003,7 +1003,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             popover = AlbumMenuPopover(self._album, None)
             popover.set_relative_to(widget)
             popover.set_position(Gtk.PositionType.BOTTOM)
-        elif self._album.is_youtube:
+        elif self._album.is_web:
             popover = AlbumMenuPopover(self._album,
                                        AlbumMenu(self._album,
                                                  ancestor is not None))
@@ -1059,7 +1059,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param track id as int
         """
         track = Track(track_id)
-        if track.is_youtube:
+        if track.is_web:
             widget.show_spinner(track_id)
 
     def __on_size_allocate(self, widget, allocation):

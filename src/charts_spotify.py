@@ -18,7 +18,7 @@ from locale import getdefaultlocale
 from csv import reader
 
 from lollypop.search_spotify import SpotifySearch
-from lollypop.youtube import Youtube
+from lollypop.web import Web
 from lollypop.define import DbPersistent, Lp
 from lollypop.utils import debug, get_network_available
 
@@ -86,7 +86,7 @@ class SpotifyCharts:
         debug("SpotifyCharts::__update_for_url(): %s => %s" % (url,
                                                                self.__count))
         ids = self.__get_ids(url)
-        yt = Youtube()
+        web = Web()
         search = SpotifySearch()
         while ids:
             sleep(10)
@@ -102,7 +102,7 @@ class SpotifyCharts:
                                                                 album.name,
                                                                 album.artists,
                                                                 album_id))
-            yt.save_album(album, DbPersistent.CHARTS)
+            web.save_album(album, DbPersistent.CHARTS)
 
     def __get_ids(self, url):
         """

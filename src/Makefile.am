@@ -89,6 +89,9 @@ app_PYTHON = \
     view_playlists.py\
     view.py\
     view_radios.py\
+    web.py\
+    web_youtube.py\
+    web_jgm90.py\
     widgets_album.py\
     widgets_context.py\
     widgets_device.py\
@@ -101,6 +104,4 @@ app_PYTHON = \
     widgets_track.py\
     widgets_web.py\
     wikipedia.py\
-    window.py\
-    youtube.py
-
+    window.py

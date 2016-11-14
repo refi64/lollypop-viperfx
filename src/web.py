@@ -13,28 +13,41 @@
 from gi.repository import GLib, Gio
 
 from threading import Thread
-import json
 from time import time
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.objects import Track, Album
-from lollypop.utils import escape
-from lollypop.define import Lp, DbPersistent, GOOGLE_API_ID, Type
+from lollypop.web_youtube import WebYouTube
+from lollypop.web_jgm90 import WebJmg90
+from lollypop.define import Lp, DbPersistent, Type
 
 
-class Youtube:
+class Web:
     """
-        Youtube helper
+        Web helper
     """
 
-    __BAD_SCORE = 1000000
+    def play_track(track, play, callback):
+        """
+            Play track
+            @param track as Track
+            @param play as bool
+            @param callback as func(uri: str, track: Track, play: bool)
+        """
+        if track.is_jgm:
+            uri = WebJmg90.get_uri_content(track.uri)
+        elif track.is_youtube:
+            uri = WebYouTube.get_uri_content(track.uri)
+        else:
+            return
+        GLib.idle_add(callback, uri, track, play)
 
     def __init__(self):
         """
             Init helper
         """
-        self.__fallback = False
+        self.__helpers = [WebJmg90(), WebYouTube()]
 
     def save_track(self, item, persistent):
         """
@@ -122,10 +135,14 @@ class Youtube:
             @param album artist as str
             @return (album id as int, track id as int)
         """
-        yid = self.__get_youtube_id(item)
-        if yid is None:
+        # Get uri from helpers
+        for helper in self.__helpers:
+            uri = helper.get_uri(item)
+            if uri:
+                break
+        # Don't found anything
+        if not uri:
             return (None, None)
-        uri = "https://www.youtube.com/watch?v=%s" % yid
         track_id = Lp().tracks.get_id_by_uri(uri)
         # Check if track needs to be updated
         if track_id is not None:
@@ -153,10 +170,9 @@ class Youtube:
                 new_artist_ids = []
             else:
                 new_artist_ids = list(set(artist_ids) | set(album_artist_ids))
-                genre_ids = t.add_genres("YouTube", album_id)
+                genre_ids = t.add_genres("Web", album_id)
 
             # Add track to db
-            uri = "https://www.youtube.com/watch?v=%s" % yid
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
                                        item.year, 0, 0, 0, persistent)
@@ -169,155 +185,6 @@ class Youtube:
         for artist_id in new_artist_ids:
             GLib.idle_add(Lp().scanner.emit, 'artist-updated', artist_id, True)
         return (album_id, track_id)
-
-    def __get_youtube_score(self, page_title, title, artist, album):
-        """
-            Calculate youtube score
-            if page_title looks like (title, artist, album), score is lower
-            @return int
-        """
-        page_title = escape(page_title.lower(), [])
-        artist = escape(artist.lower(), [])
-        album = escape(album.lower(), [])
-        title = escape(title.lower(), [])
-        # YouTube page title should be at least as long as wanted title
-        if len(page_title) < len(title):
-            return self.__BAD_SCORE
-        # Remove common word for a valid track
-        page_title = page_title.replace('official', '')
-        page_title = page_title.replace('video', '')
-        page_title = page_title.replace('audio', '')
-        # Remove artist name
-        page_title = page_title.replace(artist, '')
-        # Remove album name
-        page_title = page_title.replace(album, '')
-        # Remove title
-        page_title = page_title.replace(title, '')
-        return len(page_title)
-
-    def __get_youtube_id(self, item):
-        """
-            Get youtube id
-            @param item as SearchItem
-            @return youtube id as str
-        """
-        if self.__fallback:
-            return self.__get_youtube_id_fallback(item)
-        # Try to handle compilations (itunes one)
-        if item.artists[0].lower() == "various artists":
-            if len(item.artists) > 1:
-                artist = item.artists[1]
-            else:
-                artist = ""
-        else:
-            artist = item.artists[0]
-        unescaped = "%s %s" % (artist,
-                               item.name)
-        search = GLib.uri_escape_string(
-                            unescaped.replace(' ', '+'),
-                            None,
-                            True)
-        key = Lp().settings.get_value('cs-api-key').get_string()
-        try:
-            f = Gio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
-                                     "search?part=snippet&q=%s&"
-                                     "type=video&key=%s&cx=%s" % (
-                                                              search,
-                                                              key,
-                                                              GOOGLE_API_ID))
-            (status, data, tag) = f.load_contents(None)
-            if status:
-                decode = json.loads(data.decode('utf-8'))
-                dic = {}
-                best = self.__BAD_SCORE
-                for i in decode['items']:
-                    score = self.__get_youtube_score(i['snippet']['title'],
-                                                     item.name,
-                                                     artist,
-                                                     item.album)
-                    if score < best:
-                        best = score
-                    elif score == best:
-                        continue  # Keep first result
-                    dic[score] = i['id']['videoId']
-                # Return url from first dic item
-                if best == self.__BAD_SCORE:
-                    return None
-                else:
-                    return dic[best]
-        except IndexError:
-            pass
-        except Exception as e:
-            print("Youtube::__get_youtube_id():", e)
-            self.__fallback = True
-            return self.__get_youtube_id_fallback(item)
-        return None
-
-    def __get_youtube_id_fallback(self, item):
-        """
-            Get youtube id (fallback)
-            @param item as SearchItem
-            @return youtube id as str
-        """
-        try:
-            from bs4 import BeautifulSoup
-        except:
-            print("$ sudo pip3 install beautifulsoup4")
-            return None
-        try:
-            # Try to handle compilations (itunes one)
-            if item.artists[0].lower() == "various artists":
-                if len(item.artists) > 1:
-                    artist = item.artists[1]
-                else:
-                    artist = ""
-            else:
-                artist = item.artists[0]
-
-            unescaped = "%s %s" % (artist,
-                                   item.name)
-            search = GLib.uri_escape_string(
-                            unescaped.replace(' ', '+'),
-                            None,
-                            True)
-            f = Gio.File.new_for_uri("https://www.youtube.com/"
-                                     "results?search_query=%s" % search)
-            (status, data, tag) = f.load_contents(None)
-            if not status:
-                return None
-
-            html = data.decode('utf-8')
-            soup = BeautifulSoup(html, 'html.parser')
-            ytems = []
-            for link in soup.findAll('a'):
-                href = link.get('href')
-                title = link.get('title')
-                if href is None or title is None:
-                    continue
-                if href.startswith("/watch?v="):
-                    href = href.replace("/watch?v=", "")
-                    ytems.append((href, title))
-            dic = {}
-            best = self.__BAD_SCORE
-            for (yid, title) in ytems:
-                score = self.__get_youtube_score(title,
-                                                 item.name,
-                                                 artist,
-                                                 item.album)
-                if score < best:
-                    best = score
-                elif score == best:
-                    continue  # Keep first result
-                dic[score] = yid
-            # Return url from first dic item
-            if best == self.__BAD_SCORE:
-                return None
-            else:
-                return dic[best]
-        except Exception as e:
-            print("Youtube::__get_youtube_id_fallback():", e)
-            self.__fallback = True
-        return None
 
     def __save_cover(self, item, album_id):
         """

@@ -122,7 +122,7 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
             @return [paths]
         """
-        if album.is_youtube:
+        if album.is_web:
             return []
 
         f = Gio.File.new_for_uri(album.uri)
@@ -391,7 +391,7 @@ class AlbumArt(BaseArt, TagReader):
             @param data as bytes
             @param album as Album
         """
-        if album.is_youtube:
+        if album.is_web:
             return
         stream = Gio.MemoryInputStream.new_from_data(data, None)
         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,

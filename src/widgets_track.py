@@ -365,8 +365,8 @@ class PlaylistRow(Row):
         self.__cover = Gtk.Image()
         self.__cover.set_property('halign', Gtk.Align.CENTER)
         self.__cover.set_property('valign', Gtk.Align.CENTER)
-        if self._track.is_youtube:
-            self.__cover.get_style_context().add_class('small-cover-youtube')
+        if self._track.is_web:
+            self.__cover.get_style_context().add_class('small-cover-web')
         else:
             self.__cover.get_style_context().add_class('small-cover-frame')
         self.__cover.set_no_show_all(True)

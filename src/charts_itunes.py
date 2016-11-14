@@ -20,7 +20,7 @@ from time import sleep
 from locale import getdefaultlocale
 
 
-from lollypop.youtube import Youtube
+from lollypop.web import Web
 from lollypop.define import DbPersistent, Lp
 from lollypop.utils import debug, get_network_available
 from lollypop.search_item import SearchItem
@@ -190,7 +190,7 @@ class ItunesCharts:
                 return
         debug("ItunesCharts::__update_for_url(): %s => %s" % (url,
                                                               self.__count))
-        yt = Youtube()
+        web = Web()
         ids = self.__get_ids(url)
         while ids:
             sleep(10)
@@ -204,7 +204,7 @@ class ItunesCharts:
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
-            yt.save_album(album, DbPersistent.CHARTS)
+            web.save_album(album, DbPersistent.CHARTS)
 
     def __get_album(self, itunes_id):
         """

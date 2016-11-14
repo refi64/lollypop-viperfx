@@ -36,7 +36,7 @@ class QueuePlayer:
             @param notify as bool
         """
         track = Track(track_id)
-        if track.is_youtube and\
+        if track.is_web and\
            not get_network_available():
             if Lp().notify is not None:
                 Lp().notify.send(_("No network available,"
@@ -59,7 +59,7 @@ class QueuePlayer:
             @param notify as bool
         """
         track = Track(track_id)
-        if track.is_youtube and\
+        if track.is_web and\
            not get_network_available():
             if Lp().notify is not None:
                 Lp().notify.send(_("No network available,"
