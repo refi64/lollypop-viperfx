@@ -95,6 +95,8 @@ class WebJmg90:
                         pass
         except IndexError:
             pass
+        except KeyError:
+            pass
         except Exception as e:
             print("WebJmg90::__get_jmg_id():", e)
         return None
