@@ -17,7 +17,8 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
-from lollypop.define import Lp, TAG_EDITORS
+from lollypop.sqlcursor import SqlCursor
+from lollypop.define import Lp, Type, TAG_EDITORS
 
 
 class HoverWidget(Gtk.EventBox):
@@ -89,14 +90,22 @@ class ContextWidget(Gtk.Grid):
         self.__tag_editor = None
 
         if self.__object.is_web:
-            trash = HoverWidget('user-trash-symbolic',
-                                self.__remove_object)
-            if isinstance(self.__object, Album):
-                trash.set_tooltip_text(_("Remove album"))
+            if self.__object.genre_ids == [Type.CHARTS]:
+                if isinstance(self.__object, Album):
+                    save = HoverWidget('document-save-symbolic',
+                                       self.__save_object)
+                    save.set_tooltip_text(_("Save into collection"))
+                    save.set_margin_end(10)
+                    save.show()
             else:
-                trash.set_tooltip_text(_("Remove track"))
-            trash.set_margin_end(10)
-            trash.show()
+                trash = HoverWidget('user-trash-symbolic',
+                                    self.__remove_object)
+                if isinstance(self.__object, Album):
+                    trash.set_tooltip_text(_("Remove album"))
+                else:
+                    trash.set_tooltip_text(_("Remove track"))
+                trash.set_margin_end(10)
+                trash.show()
         else:
             # Search for tag editor
             favorite = Lp().settings.get_value('tag-editor').get_string()
@@ -159,7 +168,11 @@ class ContextWidget(Gtk.Grid):
                 search.show_all()
 
         if self.__object.is_web:
-            self.add(trash)
+            if self.__object.genre_ids == [Type.CHARTS]:
+                if isinstance(self.__object, Album):
+                    self.add(save)
+            else:
+                self.add(trash)
         elif self.__tag_editor is not None:
             self.add(edit)
         self.add(playlist)
@@ -175,6 +188,24 @@ class ContextWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __save_object(self, args):
+        """
+            Save object
+            @param args as []
+        """
+        genre_id = Lp().genres.get_id("Web")
+        if genre_id is None:
+            genre_id = Lp().genres.add("Web")
+            Lp().scanner.emit('genre-updated', genre_id, True)
+        Lp().albums.del_genres(self.__object.id)
+        Lp().albums.add_genre(self.__object.id, genre_id)
+        for track_id in self.__object.track_ids:
+            Lp().tracks.del_genres(track_id)
+            Lp().tracks.add_genre(track_id, genre_id)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
+        Lp().scanner.emit('album-updated', self.__object.id, True)
+
     def __remove_object(self, args):
         """
             Remove object
