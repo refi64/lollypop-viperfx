@@ -1,13 +1,11 @@
-Lollypop is about albums, designed for album playback.
-Playlists are presents for later usage (phone sync, specific party, ...)
-If you really need a player designed around playlists, Lollypop is a bad choice ;)
-
 TRANSLATORS:
 https://www.transifex.com/gnumdk/lollypop
-
+KNOWN BUGS:
+- Slow scrolling: https://bugzilla.gnome.org/show_bug.cgi?id=767713
 WONTFIX:
 - Showing bitrate
 
+BUG MAY BE REJECTED IF MISSING:
 -Lollypop version:
 -Gtk Version:
 -Linux distribution:
