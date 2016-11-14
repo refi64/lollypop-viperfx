@@ -87,9 +87,9 @@ class BaseWidget:
     @property
     def is_overlay(self):
         """
-            True if overlayed
+            True if overlayed or going to be
         """
-        return self._show_overlay
+        return self._show_overlay or self._timeout_id is not None
 
     def lock_overlay(self, lock):
         """
