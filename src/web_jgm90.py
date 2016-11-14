@@ -14,6 +14,8 @@ from gi.repository import GLib, Gio
 
 import json
 
+from lollypop.utils import escape
+
 
 class WebJmg90:
     """
@@ -83,9 +85,12 @@ class WebJmg90:
             (status, data, tag) = f.load_contents(None)
             if status:
                 decode = json.loads(data.decode('utf-8'))
-                for item in decode['result']['songs']:
+                for song in decode['result']['songs']:
                     try:
-                        return item['id']
+                        song_artist = escape(
+                                            song['artists'][0]['name'].lower())
+                        if song_artist == escape(artist.lower()):
+                            return song['id']
                     except:
                         pass
         except IndexError:
