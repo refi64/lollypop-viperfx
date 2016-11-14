@@ -37,7 +37,8 @@ class Row(Gtk.ListBoxRow):
         self._artists_label = None
         self._track = Track(rowid)
         self.__number = num
-        self.__timeout_id = None
+        self.__preview_timeout_id = None
+        self.__context_timeout_id = None
         self.__context = None
         self._indicator = IndicatorWidget(self._track.id)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
@@ -45,6 +46,7 @@ class Row(Gtk.ListBoxRow):
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect('button-press-event', self.__on_button_press)
         self._row_widget.connect('enter-notify-event', self.__on_enter_notify)
+        self._row_widget.connect('leave-notify-event', self.__on_leave_notify)
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
@@ -176,7 +178,7 @@ class Row(Gtk.ListBoxRow):
         Lp().player.preview.set_property('uri', self._track.uri)
         Lp().player.preview.set_state(Gst.State.PLAYING)
         self.set_indicator(True, False)
-        self.__timeout_id = None
+        self.__preview_timeout_id = None
 
     def __on_map(self, widget):
         """
@@ -198,9 +200,12 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        if self.__context_timeout_id is not None:
+            GLib.source_remove(self.__context_timeout_id)
+            self.__context_timeout_id = None
         if Lp().settings.get_value('preview-output').get_string() != '':
-            widget.connect('leave-notify-event', self.__on_leave_notify)
-            self.__timeout_id = GLib.timeout_add(500, self.__play_preview)
+            self.__preview_timeout_id = GLib.timeout_add(500,
+                                                         self.__play_preview)
         if self.__menu_button.get_image() is None:
             image = Gtk.Image.new_from_icon_name('go-previous-symbolic',
                                                  Gtk.IconSize.MENU)
@@ -215,13 +220,25 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__timeout_id is not None:
-            GLib.source_remove(self.__timeout_id)
-            self.__timeout_id = None
-        self.set_indicator(Lp().player.current_track.id == self._track.id,
-                           utils.is_loved(self._track.id))
-        Lp().player.preview.set_state(Gst.State.NULL)
-        widget.disconnect_by_func(self.__on_leave_notify)
+        allocation = widget.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
+            if self.__context is not None and\
+                    self.__context_timeout_id is None:
+                self.__context_timeout_id = GLib.timeout_add(
+                                                      1000,
+                                                      self.__on_button_clicked,
+                                                      self.__menu_button)
+            if Lp().settings.get_value('preview-output').get_string() != '':
+                if self.__preview_timeout_id is not None:
+                    GLib.source_remove(self.__preview_timeout_id)
+                    self.__preview_timeout_id = None
+                self.set_indicator(
+                                Lp().player.current_track.id == self._track.id,
+                                utils.is_loved(self._track.id))
+                Lp().player.preview.set_state(Gst.State.NULL)
 
     def __on_button_press(self, widget, event):
         """
@@ -253,6 +270,7 @@ class Row(Gtk.ListBoxRow):
             Popup menu for track relative to button
             @param button as Gtk.Button
         """
+        self.__context_timeout_id = None
         image = self.__menu_button.get_image()
         if self.__context is None:
             image.set_from_icon_name('go-next-symbolic',
