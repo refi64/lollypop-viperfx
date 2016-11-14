@@ -361,8 +361,21 @@ class Application(Gtk.Application):
                 self.__parser.parse_async(f, True,
                                           None, None)
         if self.window is not None and not self.window.is_visible():
-            self.window.setup_window()
-            self.window.present()
+            # self.window.setup_window()
+            # self.window.present()
+            # Horrible HACK: https://bugzilla.gnome.org/show_bug.cgi?id=774130
+            self.window.save_view_state()
+            self.window.destroy()
+            self.window = Window()
+            # If not GNOME/Unity add menu to toolbar
+            if not is_gnome() and not is_unity():
+                menu = self.__setup_app_menu()
+                self.window.setup_menu(menu)
+            self.window.connect('delete-event', self.__hide_on_delete)
+            self.window.init_list_one()
+            self.window.show()
+            self.player.emit('status-changed')
+            self.player.emit('current-changed')
         return 0
 
     def __on_entry_parsed(self, parser, uri, metadata):
