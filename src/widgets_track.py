@@ -229,6 +229,8 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        if self.__context is not None:
+            self.__on_button_clicked(self.__menu_button)
         if event.button == 3:
             if GLib.getenv("WAYLAND_DISPLAY") != "" and\
                     self.get_ancestor(Gtk.Popover) != None:
