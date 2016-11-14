@@ -15,6 +15,7 @@ from gi.repository import GLib
 
 from lollypop.radios import Radios
 from lollypop.define import Lp, Type
+from lollypop.sqlcursor import SqlCursor
 
 
 class Base:
@@ -240,6 +241,37 @@ class Album(Base):
             self._discs = self.db.get_discs(self.id, self.genre_ids)
         return [Disc(self, number) for number in self._discs]
 
+    def remove(self):
+        """
+            Remove album
+        """
+        artist_ids = []
+        # We want all tracks
+        album = Album(self.id)
+        for track_id in self.track_ids:
+            artist_ids += Lp().tracks.get_artist_ids(track_id)
+            uri = Lp().tracks.get_uri(track_id)
+            Lp().playlists.remove(uri)
+            Lp().tracks.remove(track_id)
+            Lp().tracks.clean(track_id)
+            art_file = Lp().art.get_album_cache_name(self)
+            Lp().art.clean_store(art_file)
+        artist_ids += album.artist_ids
+        genre_ids = Lp().albums.get_genre_ids(album.id)
+        deleted = Lp().albums.clean(self.id)
+        for artist_id in list(set(artist_ids)):
+            Lp().artists.clean(artist_id)
+            # Do not check clean return
+            GLib.idle_add(Lp().scanner.emit, 'artist-updated',
+                          artist_id, False)
+        for genre_id in genre_ids:
+            Lp().genres.clean(genre_id)
+            GLib.idle_add(Lp().scanner.emit, 'genre-updated',
+                          genre_id, False)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
+        GLib.idle_add(Lp().scanner.emit, 'album-updated', self.id, deleted)
+
 
 class Track(Base):
     """
@@ -378,3 +410,29 @@ class Track(Base):
         self.id = Type.RADIOS
         self._album_artists = [name]
         self._uri = uri
+
+    def remove(self):
+        """
+            Remove track
+        """
+        artist_ids = []
+        album = self.album
+        artist_ids = Lp().tracks.get_artist_ids(self.id)
+        Lp().playlists.remove(self.uri)
+        Lp().tracks.remove(self.id)
+        Lp().tracks.clean(self.id)
+        artist_ids += album.artist_ids
+        genre_ids = Lp().tracks.get_genre_ids(self.id)
+        deleted = Lp().albums.clean(album.id)
+        for artist_id in list(set(artist_ids)):
+            Lp().artists.clean(artist_id)
+            # Do not check clean return
+            GLib.idle_add(Lp().scanner.emit, 'artist-updated',
+                          artist_id, False)
+        for genre_id in genre_ids:
+            Lp().genres.clean(genre_id)
+            GLib.idle_add(Lp().scanner.emit, 'genre-updated',
+                          genre_id, False)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
+        GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id, deleted)

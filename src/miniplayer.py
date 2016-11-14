@@ -66,7 +66,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
             if event.button != 1 and Lp().player.current_track.id >= 0:
                 popover = TrackMenuPopover(
                             Lp().player.current_track,
-                            PopToolbarMenu(Lp().player.current_track.id))
+                            PopToolbarMenu(Lp().player.current_track))
                 popover.set_relative_to(self)
                 press_rect = Gdk.Rectangle()
                 press_rect.x = event.x

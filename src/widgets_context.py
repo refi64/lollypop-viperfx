@@ -86,19 +86,29 @@ class ContextWidget(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self.__object = object
         self.__button = button
-
-        # Search for tag editor
         self.__tag_editor = None
-        favorite = Lp().settings.get_value('tag-editor').get_string()
-        for editor in [favorite] + TAG_EDITORS:
-            if GLib.find_program_in_path(editor) is not None:
-                self.__tag_editor = editor
-        if self.__tag_editor is not None:
-            edit = HoverWidget('document-properties-symbolic',
-                               self.__edit_tags)
-            edit.set_tooltip_text(_("Modify information"))
-            edit.set_margin_end(10)
-            edit.show()
+
+        if self.__object.is_web:
+            trash = HoverWidget('user-trash-symbolic',
+                                self.__remove_object)
+            if isinstance(self.__object, Album):
+                trash.set_tooltip_text(_("Remove album"))
+            else:
+                trash.set_tooltip_text(_("Remove track"))
+            trash.set_margin_end(10)
+            trash.show()
+        else:
+            # Search for tag editor
+            favorite = Lp().settings.get_value('tag-editor').get_string()
+            for editor in [favorite] + TAG_EDITORS:
+                if GLib.find_program_in_path(editor) is not None:
+                    self.__tag_editor = editor
+            if self.__tag_editor is not None:
+                edit = HoverWidget('document-properties-symbolic',
+                                   self.__edit_tags)
+                edit.set_tooltip_text(_("Modify information"))
+                edit.set_margin_end(10)
+                edit.show()
 
         playlist = HoverWidget('view-list-symbolic',
                                self.__show_playlist_manager)
@@ -129,7 +139,7 @@ class ContextWidget(Gtk.Grid):
             loved.set_margin_bottom(5)
             loved.show()
 
-            if self.__object.album.is_web:
+            if self.__object.is_web:
                 web = Gtk.LinkButton(self.__object.uri)
                 icon = Gtk.Image.new_from_icon_name('web-browser-symbolic',
                                                     Gtk.IconSize.MENU)
@@ -148,7 +158,9 @@ class ContextWidget(Gtk.Grid):
                 search.set_tooltip_text(uri)
                 search.show_all()
 
-        if self.__tag_editor is not None:
+        if self.__object.is_web:
+            self.add(trash)
+        elif self.__tag_editor is not None:
             self.add(edit)
         self.add(playlist)
         if isinstance(self.__object, Album):
@@ -163,6 +175,13 @@ class ContextWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __remove_object(self, args):
+        """
+            Remove object
+            @param args as []
+        """
+        self.__object.remove()
+
     def __edit_tags(self, args):
         """
             Edit tags
