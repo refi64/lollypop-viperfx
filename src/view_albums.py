@@ -17,7 +17,7 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
-from lollypop.define import Type, Lp
+from lollypop.define import Type
 
 
 class AlbumsView(LazyLoadingView):
@@ -117,9 +117,6 @@ class AlbumsView(LazyLoadingView):
             @param flowbox as Gtk.Flowbox
             @param album_widget as AlbumSimpleWidget
         """
-        # We do not want to do anything if current view changed
-        if Lp().window.view != self:
-            return
         cover = album_widget.get_cover()
         if cover is None:
             return
@@ -182,9 +179,7 @@ class AlbumsView(LazyLoadingView):
             Show previous popover again
             @param popover as Gtk.Popover
         """
-        # We delay loading to be sure view is always the current
-        # Sadly, popover menu hide and then do action
-        GLib.idle_add(self.__on_album_activated, self._box, self.__current)
+        self.__on_album_activated(self._box, self.__current)
 
     def __on_button_press(self, flowbox, event):
         """
