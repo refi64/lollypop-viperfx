@@ -128,8 +128,7 @@ class MtpSync:
                 name = info.get_name()
                 if name.endswith(".m3u") and name[:-4] not in plnames:
                     f = infos.get_child(info)
-                    d = Gio.File.new_for_uri(f.get_uri())
-                    self.__retry(d.delete, (None,))
+                    self.__retry(f.delete, (None,))
 
             d = Gio.File.new_for_uri(self._uri+"/unsync")
             if not d.query_exists():

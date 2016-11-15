@@ -518,6 +518,11 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
         self.__view = builder.get_object('view')
         self.__view.set_model(self.__model)
+        self.__view.drag_dest_set(
+                           Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
+        self.__view.drag_dest_add_text_targets()
+        self.__view.connect('drag-data-received', self.__on_drag_data_received)
 
         builder.connect_signals(self)
 
@@ -685,6 +690,25 @@ class PlaylistsManagerWidget(Gtk.Bin):
         # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
         self.__infobar.queue_resize()
 
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        try:
+            path = self.__view.get_path_at_pos(x, y)[0]
+            iterator = self.__model.get_iter(path)
+            if iterator is not None:
+                playlist_id = self.__model.get_value(iterator, 3)
+                Lp().playlists.import_uri(playlist_id, data.get_text())
+        except:
+            pass
+
     def __on_playlist_toggled(self, view, path):
         """
             When playlist is activated, add object to playlist
@@ -693,7 +717,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self.__model.get_iter(path)
         toggle = not self.__model.get_value(iterator, 0)
-        playlist_id = self.__model.get_value(iterator, 3)
+        playlist_id = self.__model.get_value(iterator, 4)
         self.__model.set_value(iterator, 0, toggle)
         self.__set_current_object(playlist_id, toggle)
 

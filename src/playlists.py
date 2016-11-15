@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject, GLib, Gio
 
 from gettext import gettext as _
 import itertools
@@ -19,6 +19,7 @@ from datetime import datetime
 
 from lollypop.database import Database
 from lollypop.define import Lp, Type
+from lollypop.objects import Track
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
 
@@ -295,6 +296,47 @@ class Playlists(GObject.GObject):
                     GLib.idle_add(self.emit, 'playlist-del',
                                   playlist_id, track.id)
             sql.commit()
+
+    def import_uri(self, playlist_id, uri):
+        """
+            Import uri in playlist
+            @param playlist id as int
+            @param uri as str
+        """
+        try:
+            uri = uri.strip('\n\r')
+            f = Gio.File.new_for_uri(uri)
+            if f.query_exists():
+                if f.query_file_type(Gio.FileQueryInfoFlags.NONE,
+                                     None) == Gio.FileType.DIRECTORY:
+                    walk_uris = [uri]
+                    tracks = []
+                    while walk_uris:
+                        uri = walk_uris.pop(0)
+                        try:
+                            d = Gio.File.new_for_uri(uri)
+                            infos = d.enumerate_children(
+                                'standard::name,standard::type',
+                                Gio.FileQueryInfoFlags.NONE,
+                                None)
+                        except Exception as e:
+                            print("Playlists::import_uri():", e)
+                            continue
+                        for info in infos:
+                            f = infos.get_child(info)
+                            if info.get_file_type() == Gio.FileType.DIRECTORY:
+                                walk_uris.append(f.get_uri())
+                            else:
+                                track_id = Lp().tracks.get_id_by_uri(
+                                                                   f.get_uri())
+                                if track_id is not None:
+                                    tracks.append(Track(track_id))
+                else:
+                    track_id = Lp().tracks.get_id_by_uri(uri)
+                    tracks = [Track(track_id)]
+                self.add_tracks(playlist_id, tracks)
+        except Exception as e:
+            print(e)
 
     def get_position(self, playlist_id, track_id):
         """
