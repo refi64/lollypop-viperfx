@@ -84,6 +84,13 @@ class BaseWidget:
         """
         return self.__parent_filter
 
+    @property
+    def is_overlay(self):
+        """
+            True if overlayed
+        """
+        return self._show_overlay
+
     def lock_overlay(self, lock):
         """
             Lock overlay

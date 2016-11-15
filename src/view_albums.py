@@ -107,6 +107,14 @@ class AlbumsView(LazyLoadingView):
             @param flowbox as Gtk.Flowbox
             @param album_widget as AlbumSimpleWidget
         """
+        # Here some code for touch screens
+        # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
+        # as enter notify event enabled it
+        # Else, we are in touch screen, first time show overlay, next time
+        # show popover
+        if not album_widget.is_overlay:
+            album_widget.show_overlay(True)
+            return
         cover = album_widget.get_cover()
         if cover is None:
             return
