@@ -612,7 +612,7 @@ class AlbumMenuPopover(Gtk.Popover):
         edit.set_property('halign', Gtk.Align.CENTER)
         genres = ", ".join(Lp().albums.get_genres(album.id))
         if not genres:
-            genres = "web"
+            genres = "Web"
         edit.set_text(genres)
         edit.show()
 
