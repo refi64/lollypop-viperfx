@@ -99,3 +99,4 @@ class TouchHelper(GObject.GObject):
             self.__short_func(self.__short_args)
         else:
             self.__long_func(self.__long_args)
+        return True
