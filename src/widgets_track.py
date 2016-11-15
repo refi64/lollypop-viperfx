@@ -250,7 +250,7 @@ class Row(Gtk.ListBoxRow):
             self.__on_button_clicked(self.__menu_button)
         if event.button == 3:
             if GLib.getenv("WAYLAND_DISPLAY") != "" and\
-                    self.get_ancestor(Gtk.Popover) != None:
+                    self.get_ancestor(Gtk.Popover) is not None:
                 print("https://bugzilla.gnome.org/show_bug.cgi?id=774148")
             window = widget.get_window()
             if window == event.window:
