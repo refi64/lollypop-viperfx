@@ -281,6 +281,9 @@ class CurrentArtistAlbumsView(ViewContainer):
             albums = [self.__track.album.id]
         else:
             albums = Lp().artists.get_albums(self.__track.album.artist_ids)
+            # Charts album playing
+            if Lp().player.current_track.album.id not in albums:
+                albums.append(Lp().player.current_track.album.id)
         return albums
 
     def __on_populated(self, view, spinner):
