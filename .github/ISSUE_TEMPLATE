@@ -2,6 +2,7 @@ TRANSLATORS:
 https://www.transifex.com/gnumdk/lollypop
 KNOWN BUGS:
 - Slow scrolling: https://bugzilla.gnome.org/show_bug.cgi?id=767713
+- Popover placement: https://bugzilla.gnome.org/show_bug.cgi?id=774148
 WONTFIX:
 - Showing bitrate
 
