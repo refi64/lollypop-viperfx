@@ -297,11 +297,13 @@ class Playlists(GObject.GObject):
                                   playlist_id, track.id)
             sql.commit()
 
-    def import_uri(self, playlist_id, uri):
+    def import_uri(self, playlist_id, uri, start=None, up=False):
         """
             Import uri in playlist
             @param playlist id as int
             @param uri as str
+            @param start track id as int
+            @param up as bool
         """
         try:
             uri = uri.strip('\n\r')
@@ -310,7 +312,7 @@ class Playlists(GObject.GObject):
                 if f.query_file_type(Gio.FileQueryInfoFlags.NONE,
                                      None) == Gio.FileType.DIRECTORY:
                     walk_uris = [uri]
-                    tracks = []
+                    track_ids = []
                     while walk_uris:
                         uri = walk_uris.pop(0)
                         try:
@@ -330,11 +332,30 @@ class Playlists(GObject.GObject):
                                 track_id = Lp().tracks.get_id_by_uri(
                                                                    f.get_uri())
                                 if track_id is not None:
-                                    tracks.append(Track(track_id))
+                                    track_ids.append(track_id)
                 else:
                     track_id = Lp().tracks.get_id_by_uri(uri)
-                    tracks = [Track(track_id)]
-                self.add_tracks(playlist_id, tracks)
+                    track_ids = [track_id]
+                tracks = []
+                if start is None:
+                    for track_id in track_ids:
+                        tracks.append(Track(track_id))
+                    self.add_tracks(playlist_id, tracks)
+                else:
+                    # Insert at wanted position
+                    playlist_track_ids = self.get_track_ids(playlist_id)
+                    start_idx = playlist_track_ids.index(start)
+                    if not up:
+                        start_idx += 1
+                    for track_id in track_ids:
+                        playlist_track_ids.insert(start_idx, track_id)
+                        start_idx += 1
+                    self.clear(playlist_id, False)
+                    tracks = []
+                    for track_id in playlist_track_ids:
+                        tracks.append(Track(track_id))
+                    self.add_tracks(playlist_id, tracks, False)
+                    GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
         except Exception as e:
             print(e)
 

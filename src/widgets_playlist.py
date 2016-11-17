@@ -392,14 +392,16 @@ class PlaylistsWidget(Gtk.Grid):
             @param time as int
         """
         try:
+            value = int(data.get_text())
             try:
                 child = self.__tracks_widget_right.get_children()[-1]
             except:
                 child = self.__tracks_widget_left.get_children()[-1]
-            self.__on_track_moved(widget, child.id,
-                                  int(data.get_text()), False)
+            self.__on_track_moved(widget, child.id, value, False)
         except:
-            pass
+            if len(self.__playlist_ids) == 1:
+                Lp().playlists.import_uri(self.__playlist_ids[0],
+                                          data.get_text())
 
     def __on_track_moved(self, widget, dst, src, up):
         """
