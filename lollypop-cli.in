@@ -11,6 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+# Make sure we'll find the pygobject module, even in JHBuild
+sys.path.insert(1, '@pyexecdir@')
+# Make sure we'll find the lollypop modules, even in JHBuild
+sys.path.insert(1, '@pythondir@')
 import gi
 gi.require_version('Secret', '1')
 gi.require_version('TotemPlParser', '1.0')

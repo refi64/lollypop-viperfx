@@ -1,4 +1,5 @@
 *~
+/lollypop-cli
 /po
 /help
 /*.bak
@@ -60,6 +61,9 @@
 *.desktop
 *.gresource
 *.compiled
+search-provider/lollypop-sp
+search-provider/Makefile
+search-provider/Makefile.in
 data/Makefile
 data/Makefile.in
 *.patch

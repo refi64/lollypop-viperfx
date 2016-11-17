@@ -822,20 +822,26 @@ class AlbumsDatabase:
                                  (album_id,))
             return list(itertools.chain(*result))
 
-    def search(self, string):
+    def search(self, string, limit=25):
         """
             Search for albums looking like string
             @param search as str
+            @param limit as int/None
             @return album ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT albums.rowid\
-                                  FROM albums, album_genres\
-                                  WHERE noaccents(name) LIKE ?\
-                                  AND album_genres.genre_id!=?\
-                                  AND album_genres.album_id=albums.rowid\
-                                  LIMIT 25", ('%' + noaccents(string) + '%',
-                                              Type.CHARTS))
+            if limit is None:
+                filters = ('%' + noaccents(string) + '%', Type.CHARTS)
+            else:
+                filters = ('%' + noaccents(string) + '%', Type.CHARTS, limit)
+            request = ("SELECT albums.rowid\
+                       FROM albums, album_genres\
+                       WHERE noaccents(name) LIKE ?\
+                       AND album_genres.genre_id!=?\
+                       AND album_genres.album_id=albums.rowid")
+            if limit is not None:
+                request += " LIMIT ?"
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def calculate_artist_ids(self, album_id):

@@ -1,78 +1,55 @@
-ACLOCAL_AMFLAGS = -I m4
-NULL =
+lollypop-sp: lollypop-sp.in Makefile
+	$(AM_V_GEN)sed						\
+		-e s!\@srcdir\@!$(abs_top_srcdir)!	\
+		-e s!\@prefix\@!$(prefix)!		\
+		-e s!\@datadir\@!$(datadir)!		\
+		-e s!\@pkgdatadir\@!$(pkgdatadir)!	\
+		-e s!\@libexecdir\@!$(libexecdir)!	\
+		-e s!\@libdir\@!$(libdir)!		\
+		-e s!\@pkglibdir\@!$(pkglibdir)!	\
+		-e s!\@localedir\@!$(localedir)!	\
+		-e s!\@pythondir\@!$(pythondir)!	\
+		-e s!\@pyexecdir\@!$(pyexecdir)!	\
+		-e s!\@PACKAGE\@!$(PACKAGE)!		\
+		-e s!\@VERSION\@!$(VERSION)!		\
+		< $< > $@
+	chmod a+x $@
 
-bin_SCRIPTS = lollypop
+org.gnome.Lollypop.SearchProvider.service: org.gnome.Lollypop.SearchProvider.service.in Makefile
+	$(AM_V_GEN)sed						\
+		-e s!\@srcdir\@!$(abs_top_srcdir)!	\
+		-e s!\@prefix\@!$(prefix)!		\
+		-e s!\@datadir\@!$(datadir)!		\
+		-e s!\@pkgdatadir\@!$(pkgdatadir)!	\
+		-e s!\@libexecdir\@!$(libexecdir)!	\
+		-e s!\@libdir\@!$(libdir)!		\
+		-e s!\@pkglibdir\@!$(pkglibdir)!	\
+		-e s!\@localedir\@!$(localedir)!	\
+		-e s!\@pythondir\@!$(pythondir)!	\
+		-e s!\@pyexecdir\@!$(pyexecdir)!	\
+		-e s!\@PACKAGE\@!$(PACKAGE)!		\
+		-e s!\@VERSION\@!$(VERSION)!		\
+		< $< > $@
 
-dist_bin_SCRIPTS = lollypop-cli\
-                   rhythmbox2lollypop
+searchproviderdir = $(datadir)/gnome-shell/search-providers
+searchprovider_DATA = lollypop-search-provider.ini
 
-SUBDIRS = src data po help search-provider
+servicedir = $(datadir)/dbus-1/services
+service_DATA = $(service_in_files:.service.in=.service)
+service_in_files = org.gnome.Lollypop.SearchProvider.service.in
+
+
+appdatadir = $(pkgdatadir)
+appdata_DATA = lollypop-sp
 
 EXTRA_DIST = \
-	lollypop.in\
-	lollypop-cli.in
-	$(NULL)
+	$(searchprovider_DATA) \
+	$(service_DATA)
 
 CLEANFILES = \
-	$(bin_SCRIPTS)
-	$(NULL)
+	$(service_DATA)
 
-MAINTAINERCLEANFILES = \
-	$(srcdir)/AUTHORS \
-	$(srcdir)/INSTALL \
-	$(srcdir)/aclocal.m4 \
-	$(srcdir)/autoscan.log \
-	$(srcdir)/compile \
-	$(srcdir)/config.guess \
-	$(srcdir)/config.h.in \
-	$(srcdir)/config.sub \
-	$(srcdir)/configure.scan \
-	$(srcdir)/depcomp \
-	$(srcdir)/install-sh \
-	$(srcdir)/ltmain.sh \
-	$(srcdir)/missing \
-	$(srcdir)/mkinstalldirs \
-	$(NULL)
-
-GITIGNOREFILES = \
-	m4 \
-	$(NULL)
-
-lollypop: lollypop.in Makefile
-	$(AM_V_GEN)sed						\
-		-e s!\@srcdir\@!$(abs_top_srcdir)!	\
-		-e s!\@prefix\@!$(prefix)!		\
-		-e s!\@datadir\@!$(datadir)!		\
-		-e s!\@pkgdatadir\@!$(pkgdatadir)!	\
-		-e s!\@libexecdir\@!$(libexecdir)!	\
-		-e s!\@libdir\@!$(libdir)!		\
-		-e s!\@pkglibdir\@!$(pkglibdir)!	\
-		-e s!\@localedir\@!$(localedir)!	\
-		-e s!\@pythondir\@!$(pythondir)!	\
-		-e s!\@pyexecdir\@!$(pyexecdir)!	\
-		-e s!\@PACKAGE\@!$(PACKAGE)!		\
-		-e s!\@VERSION\@!$(VERSION)!		\
-		< $< > $@
-	chmod a+x $@
-
-lollypop-cli: lollypop-cli.in Makefile
-	$(AM_V_GEN)sed						\
-		-e s!\@srcdir\@!$(abs_top_srcdir)!	\
-		-e s!\@prefix\@!$(prefix)!		\
-		-e s!\@datadir\@!$(datadir)!		\
-		-e s!\@pkgdatadir\@!$(pkgdatadir)!	\
-		-e s!\@libexecdir\@!$(libexecdir)!	\
-		-e s!\@libdir\@!$(libdir)!		\
-		-e s!\@pkglibdir\@!$(pkglibdir)!	\
-		-e s!\@localedir\@!$(localedir)!	\
-		-e s!\@pythondir\@!$(pythondir)!	\
-		-e s!\@pyexecdir\@!$(pyexecdir)!	\
-		-e s!\@PACKAGE\@!$(PACKAGE)!		\
-		-e s!\@VERSION\@!$(VERSION)!		\
-		< $< > $@
-	chmod a+x $@
-
-all-local: lollypop lollypop-cli
+install-data-hook:
+	chmod +x $(pkgdatadir)/lollypop-sp
 
 -include $(top_srcdir)/git.mk
-
