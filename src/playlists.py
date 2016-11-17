@@ -356,8 +356,8 @@ class Playlists(GObject.GObject):
                         tracks.append(Track(track_id))
                     self.add_tracks(playlist_id, tracks, False)
                     GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
-        except Exception as e:
-            print(e)
+        except:
+            pass
 
     def get_position(self, playlist_id, track_id):
         """
