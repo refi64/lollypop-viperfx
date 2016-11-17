@@ -190,7 +190,8 @@ class SearchLollypopService(Server, Gio.Application):
         return self.__search(new_terms)
 
     def LaunchSearch(self, terms, utime):
-        argv = ["lollypop", None]
+        results = self.__search(terms)
+        argv = ["lollypop", "--album", ";".join(results), None]
         GLib.spawn_async_with_pipes(
                                     None, argv, None,
                                     GLib.SpawnFlags.SEARCH_PATH |

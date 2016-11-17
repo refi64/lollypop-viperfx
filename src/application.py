@@ -80,7 +80,7 @@ class Application(Gtk.Application):
         GLib.set_application_name('Lollypop')
         GLib.set_prgname('lollypop')
         self.add_main_option("album", b'a', GLib.OptionFlags.NONE,
-                             GLib.OptionArg.INT, "Play album", None)
+                             GLib.OptionArg.STRING, "Play album", None)
         self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Debug lollypop", None)
         self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
@@ -332,8 +332,15 @@ class Application(Gtk.Application):
         if options.contains('play-pause'):
             self.player.play_pause()
         elif options.contains('album'):
-            value = options.lookup_value('album').get_int32()
-            self.player.play_album(Album(value))
+            try:
+                value = options.lookup_value('album').get_string()
+                album_ids = value.split(';')
+                album = Album(int(album_ids.pop(0)))
+                self.player.play_album(album)
+                for album_id in album_ids:
+                    self.player.add_album(Album(int(album_id)))
+            except:
+                pass
         elif options.contains('next'):
             self.player.next()
         elif options.contains('prev'):
