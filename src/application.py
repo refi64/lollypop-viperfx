@@ -48,6 +48,7 @@ from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import Playlists
+from lollypop.objects import Album
 from lollypop.collectionscanner import CollectionScanner
 
 
@@ -154,9 +155,6 @@ class Application(Gtk.Application):
         settings = Gtk.Settings.get_default()
         dark = self.settings.get_value('dark-ui')
         settings.set_property('gtk-application-prefer-dark-theme', dark)
-
-        self.__parser = TotemPlParser.Parser.new()
-        self.__parser.connect('entry-parsed', self.__on_entry_parsed)
 
         self.add_action(self.settings.create_action('playback'))
         self.add_action(self.settings.create_action('shuffle'))
@@ -342,13 +340,21 @@ class Application(Gtk.Application):
         args = app_cmd_line.get_arguments()
         if len(args) > 1:
             self.player.clear_externals()
-            for f in args[1:]:
+            for uri in args[1:]:
                 try:
-                    f = GLib.filename_to_uri(f)
+                    uri = GLib.filename_to_uri(uri)
                 except:
                     pass
-                self.__parser.parse_async(f, True,
-                                          None, None)
+                f = Gio.File.new_for_uri(uri)
+                # Play directory from db (lollypop-sp)
+                if f.query_file_type(Gio.FileQueryInfoFlags.NONE, None) ==\
+                        Gio.FileType.DIRECTORY:
+                    album_id = self.albums.get_id_by_uri(uri)
+                    self.player.play_album(Album(album_id))
+                    break
+                parser = TotemPlParser.Parser.new()
+                parser.connect('entry-parsed', self.__on_entry_parsed)
+                parser.parse_async(f, True, None, None)
         if self.window is not None and not self.window.is_visible():
             # self.window.setup_window()
             # self.window.present()

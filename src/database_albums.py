@@ -638,6 +638,22 @@ class AlbumsDatabase:
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
+    def get_id_by_uri(self, uri):
+        """
+            Get album id for uri
+            @param uri as str
+            @return id as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM albums\
+                                  WHERE uri=?",
+                                 (uri,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_ids(self, artist_ids=[], genre_ids=[]):
         """
             Get albums ids
