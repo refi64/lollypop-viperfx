@@ -335,7 +335,8 @@ class LazyLoadingView(View):
             return False
         if widgets:
             widget = widgets.pop(0)
-            self._lazy_queue.remove(widget)
+            if widget in self._lazy_queue:
+                self._lazy_queue.remove(widget)
         elif self._lazy_queue:
             widget = self._lazy_queue.pop(0)
         if widget is not None:
