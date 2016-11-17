@@ -129,11 +129,11 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             @param args as []
         """
         if Lp().player.current_track.id >= 0:
-            from lollypop.pop_menu import PopToolbarMenu
+            from lollypop.pop_menu import PlaylistsMenu
             from lollypop.pop_menu import TrackMenuPopover
             popover = TrackMenuPopover(
                         Lp().player.current_track,
-                        PopToolbarMenu(Lp().player.current_track))
+                        PlaylistsMenu(Lp().player.current_track))
             popover.set_relative_to(self._infobox)
             popover.show()
 

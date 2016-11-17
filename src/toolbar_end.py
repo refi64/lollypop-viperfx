@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
 from lollypop.touch_helper import TouchHelper
-from lollypop.define import Lp, Shuffle, Type
+from lollypop.define import Lp, Shuffle, Type, NextContext
 
 
 class PartyPopover(Gtk.Popover):
@@ -133,7 +133,8 @@ class ToolbarEnd(Gtk.Bin):
         shuffleAction.connect('activate', self.__activate_shuffle_button)
         Lp().add_action(shuffleAction)
         Lp().set_accels_for_action("app.shuffle-button", ["<Control>r"])
-        Lp().settings.connect('changed::shuffle', self.__on_shuffle_changed)
+        Lp().settings.connect('changed::shuffle', self.__on_playback_changed)
+        Lp().settings.connect('changed::playback', self.__on_playback_changed)
 
         self.__party_button = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
@@ -306,12 +307,18 @@ class ToolbarEnd(Gtk.Bin):
         self.__search.set_relative_to(self.__search_button)
         self.__search.show()
 
-    def __set_shuffle_icon(self):
+    def __set_icon(self):
         """
             Set shuffle icon
         """
         shuffle = Lp().settings.get_enum('shuffle')
-        if shuffle == Shuffle.NONE:
+        repeat = Lp().settings.get_enum('playback')
+        if repeat == NextContext.REPEAT_TRACK:
+            self.__shuffle_image.get_style_context().remove_class('selected')
+            self.__shuffle_image.set_from_icon_name(
+                "media-playlist-repeat-song-symbolic",
+                Gtk.IconSize.SMALL_TOOLBAR)
+        elif shuffle == Shuffle.NONE:
             self.__shuffle_image.get_style_context().remove_class('selected')
             self.__shuffle_image.set_from_icon_name(
                 "media-playlist-consecutive-symbolic",
@@ -353,12 +360,12 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_button.set_sensitive(not player.locked)
         self.__shuffle_button.set_sensitive(not player.locked)
 
-    def __on_shuffle_changed(self, settings, value):
+    def __on_playback_changed(self, settings, value):
         """
-            Mark shuffle button as active when shuffle active
+            Update shuffle icon
             @param settings as Gio.Settings, value as str
         """
-        self.__set_shuffle_icon()
+        self.__set_icon()
         self.__next_popover.hide()
 
     def __on_party_changed(self, player, is_party):
@@ -393,7 +400,7 @@ class ToolbarEnd(Gtk.Bin):
             Show popover if needed
             @param widget as Gtk.Widget
         """
-        self.__set_shuffle_icon()
+        self.__set_icon()
 
     def __on_hide(self, widget):
         """

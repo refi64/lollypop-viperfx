@@ -319,33 +319,6 @@ class PlaylistsMenu(BaseMenu):
         utils.set_loved(self._object.id, False)
 
 
-class PopToolbarMenu(Gio.Menu):
-    """
-        Contextual menu for toolbar
-    """
-
-    def __init__(self, track):
-        """
-            Init menu model
-            @param track as Track
-        """
-        Gio.Menu.__init__(self)
-        if not Lp().player.is_party and (
-                Lp().player.get_albums() or
-                Lp().player.get_user_playlist()):
-            builder = Gtk.Builder()
-            builder.add_from_resource('/org/gnome/Lollypop/PlaybackMenu.ui')
-            playback_menu = builder.get_object('playback-menu')
-            self.insert_section(0, _("Playback"),
-                                playback_menu)
-        self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(track))
-
-#######################
-# PRIVATE             #
-#######################
-
-
 class EditMenu(BaseMenu):
     """
         Edition menu for album
