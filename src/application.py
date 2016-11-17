@@ -79,26 +79,26 @@ class Application(Gtk.Application):
         self.__init_proxy()
         GLib.set_application_name('Lollypop')
         GLib.set_prgname('lollypop')
-        # TODO: Remove this test later
-        if Gtk.get_minor_version() > 12:
-            self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
-                                 GLib.OptionArg.NONE, "Debug lollypop", None)
-            self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
-                                 GLib.OptionArg.INT, "Rate the current track",
-                                 None)
-            self.add_main_option("play-pause", b't', GLib.OptionFlags.NONE,
-                                 GLib.OptionArg.NONE, "Toggle playback",
-                                 None)
-            self.add_main_option("next", b'n', GLib.OptionFlags.NONE,
-                                 GLib.OptionArg.NONE, "Go to next track",
-                                 None)
-            self.add_main_option("prev", b'p', GLib.OptionFlags.NONE,
-                                 GLib.OptionArg.NONE, "Go to prev track",
-                                 None)
-            self.add_main_option("emulate-phone", b'e', GLib.OptionFlags.NONE,
-                                 GLib.OptionArg.NONE,
-                                 "Emulate an Android Phone",
-                                 None)
+        self.add_main_option("album", b'a', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.INT, "Play album", None)
+        self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, "Debug lollypop", None)
+        self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.INT, "Rate the current track",
+                             None)
+        self.add_main_option("play-pause", b't', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, "Toggle playback",
+                             None)
+        self.add_main_option("next", b'n', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, "Go to next track",
+                             None)
+        self.add_main_option("prev", b'p', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, "Go to prev track",
+                             None)
+        self.add_main_option("emulate-phone", b'e', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE,
+                             "Emulate an Android Phone",
+                             None)
         self.connect('command-line', self.__on_command_line)
         self.connect('activate', self.__on_activate)
         self.register(None)
@@ -331,6 +331,9 @@ class Application(Gtk.Application):
                 self.player.current_track.set_popularity(value)
         if options.contains('play-pause'):
             self.player.play_pause()
+        elif options.contains('album'):
+            value = options.lookup_value('album').get_int32()
+            self.player.play_album(Album(value))
         elif options.contains('next'):
             self.player.next()
         elif options.contains('prev'):
@@ -345,16 +348,9 @@ class Application(Gtk.Application):
                     uri = GLib.filename_to_uri(uri)
                 except:
                     pass
-                f = Gio.File.new_for_uri(uri)
-                # Play directory from db (lollypop-sp)
-                if f.query_file_type(Gio.FileQueryInfoFlags.NONE, None) ==\
-                        Gio.FileType.DIRECTORY:
-                    album_id = self.albums.get_id_by_uri(uri)
-                    self.player.play_album(Album(album_id))
-                    break
                 parser = TotemPlParser.Parser.new()
                 parser.connect('entry-parsed', self.__on_entry_parsed)
-                parser.parse_async(f, True, None, None)
+                parser.parse_async(uri, True, None, None)
         if self.window is not None and not self.window.is_visible():
             # self.window.setup_window()
             # self.window.present()

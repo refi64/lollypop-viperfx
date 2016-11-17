@@ -155,7 +155,7 @@ class SearchLollypopService(Server, Gio.Application):
     def ActivateResult(self, search_id, array, utime):
         try:
             album = Album(int(search_id))
-            argv = ["lollypop", album.uri, None]
+            argv = ["lollypop", "--album", str(album.id), None]
             GLib.spawn_async_with_pipes(
                                     None, argv, None,
                                     GLib.SpawnFlags.SEARCH_PATH |
