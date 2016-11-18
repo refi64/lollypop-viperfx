@@ -16,7 +16,7 @@ from threading import Thread
 from gettext import gettext as _
 
 from lollypop.cache import InfoCache
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import get_network_available
 
 
@@ -36,8 +36,12 @@ class ArtworkSearch(Gtk.Bin):
         self.__timeout_id = None
         self.__loading = False
         self.__album = album
-        self.__artist_id = artist_id
-        self.__artist = Lp().artists.get_name(artist_id)
+        is_compilation = album.artist_ids and\
+            album.artist_ids[0] == Type.COMPILATIONS
+        if is_compilation:
+            self.__artist = ""
+        else:
+            self.__artist = Lp().artists.get_name(artist_id)
         self.__datas = {}
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtworkSearch.ui')

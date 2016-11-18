@@ -16,7 +16,7 @@ from threading import Thread
 import json
 
 from lollypop.cache import InfoCache
-from lollypop.define import Lp, GOOGLE_API_ID
+from lollypop.define import Lp, GOOGLE_API_ID, Type
 from lollypop.utils import debug, get_network_available
 
 
@@ -344,7 +344,13 @@ class Downloader:
             while self.__albums_queue:
                 album_id = self.__albums_queue.pop()
                 album = Lp().albums.get_name(album_id)
-                artist = ", ".join(Lp().albums.get_artists(album_id))
+                artist_ids = Lp().albums.get_artist_ids(album_id)
+                is_compilation = artist_ids and\
+                    artist_ids[0] == Type.COMPILATIONS
+                if is_compilation:
+                    artist = ""
+                else:
+                    artist = ", ".join(Lp().albums.get_artists(album_id))
                 for (api, unused, helper) in InfoCache.WEBSERVICES:
                     if helper is None:
                         continue
