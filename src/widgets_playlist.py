@@ -186,14 +186,20 @@ class PlaylistsWidget(Gtk.Grid):
         """
         self.__loading = Loading.STOP
 
-    def append(self, track_id):
+    def insert(self, track_id, pos=-1):
         """
             Add track to widget
             @param track id as int
+            @param pos as int
         """
-        self.__add_tracks([track_id],
-                          self.__tracks_widget_right,
-                          -1)
+        children_len = len(self.__tracks_widget_left.get_children() +
+                           self.__tracks_widget_right.get_children())
+        if pos > children_len / 2:
+            widget = self.__tracks_widget_right
+            pos -= len(self.__tracks_widget_left.get_children())
+        else:
+            widget = self.__tracks_widget_left
+        self.__add_tracks([track_id], widget, pos)
         self.__update_tracks()
         self.__update_position()
         self.__update_headers()

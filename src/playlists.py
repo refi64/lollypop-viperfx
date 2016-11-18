@@ -34,7 +34,7 @@ class Playlists(GObject.GObject):
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         # Objects added/removed to/from playlist
-        'playlist-add': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
+        'playlist-add': (GObject.SignalFlags.RUN_FIRST, None, (int, int, int)),
         'playlist-del': (GObject.SignalFlags.RUN_FIRST, None, (int, int))
     }
     __create_playlists = '''CREATE TABLE playlists (
@@ -274,7 +274,7 @@ class Playlists(GObject.GObject):
                                 (playlist_id, track.uri))
                 if notify:
                     GLib.idle_add(self.emit, 'playlist-add',
-                                  playlist_id, track.id)
+                                  playlist_id, track.id, -1)
             if changed:
                 sql.execute("UPDATE playlists SET mtime=?\
                              WHERE rowid=?", (datetime.now().strftime('%s'),
@@ -349,13 +349,14 @@ class Playlists(GObject.GObject):
                         start_idx += 1
                     for track_id in track_ids:
                         playlist_track_ids.insert(start_idx, track_id)
+                        GLib.idle_add(self.emit, 'playlist-add',
+                                      playlist_id, track_id, start_idx)
                         start_idx += 1
                     self.clear(playlist_id, False)
                     tracks = []
                     for track_id in playlist_track_ids:
                         tracks.append(Track(track_id))
                     self.add_tracks(playlist_id, tracks, False)
-                    GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
         except:
             pass
 

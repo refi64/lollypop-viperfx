@@ -200,7 +200,7 @@ class PlaylistsView(View):
             self.__jump_button.set_sensitive(False)
             self.__jump_button.set_tooltip_text('')
 
-    def __on_playlist_add(self, manager, playlist_id, track_id):
+    def __on_playlist_add(self, manager, playlist_id, track_id, pos):
         """
             Update tracks widgets
             @param manager as PlaylistsManager
@@ -208,7 +208,7 @@ class PlaylistsView(View):
             @param track id as int
         """
         if playlist_id in self.__playlist_ids:
-            self.__playlists_widget.append(track_id)
+            self.__playlists_widget.insert(track_id, pos)
 
     def __on_playlist_del(self, manager, playlist_id, track_id):
         """
