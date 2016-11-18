@@ -17,7 +17,6 @@ from locale import strcoll
 
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.define import Type, Lp, ArtSize
-from lollypop.utils import get_network_available
 
 
 class SelectionPopover(Gtk.Popover):
@@ -309,7 +308,7 @@ class SelectionList(Gtk.Bin):
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
         if Lp().settings.get_value('show-charts') and\
-                get_network_available():
+                Lp().settings.get_value('network-access'):
             items.append((Type.CHARTS, _("The charts")))
         if self.__is_artists:
             items.append((Type.ALL, _("All albums")))
