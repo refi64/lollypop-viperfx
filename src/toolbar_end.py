@@ -200,7 +200,7 @@ class ToolbarEnd(Gtk.Bin):
             Search item
             @param search as str
         """
-        self._on_search_button_clicked()
+        self.__on_search_short([])
         self.__search.set_text(search)
 
 #######################
