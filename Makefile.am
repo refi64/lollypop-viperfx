@@ -14,7 +14,8 @@ EXTRA_DIST = \
 	$(NULL)
 
 CLEANFILES = \
-	$(bin_SCRIPTS)
+	$(bin_SCRIPTS)\
+        lollypop-cli\
 	$(NULL)
 
 MAINTAINERCLEANFILES = \

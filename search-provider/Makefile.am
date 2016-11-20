@@ -43,13 +43,17 @@ appdatadir = $(pkgdatadir)
 appdata_DATA = lollypop-sp
 
 EXTRA_DIST = \
+        org.gnome.Lollypop.SearchProvider.service.in\
+        lollypop-sp.in\
+	$(appdata_DATA)\
 	$(searchprovider_DATA) \
 	$(service_DATA)
 
 CLEANFILES = \
+        $(appdata_DATA)\
 	$(service_DATA)
 
 install-data-hook:
-	chmod +x $(pkgdatadir)/lollypop-sp
+	chmod +x $(appdata_DATA)
 
 -include $(top_srcdir)/git.mk
