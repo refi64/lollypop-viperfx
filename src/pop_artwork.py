@@ -50,7 +50,8 @@ class CommonPopover(Gtk.Popover):
         """
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
-        self._widget.stop()
+        if self._widget is not None:
+            self._widget.stop()
 
 
 class CoversPopover(CommonPopover):
@@ -63,9 +64,10 @@ class CoversPopover(CommonPopover):
             Init Popover
             @param album as album
         """
-        if not album.artist_ids:
-            return
         CommonPopover.__init__(self)
+        if not album.artist_ids:
+            self._widget = None
+            return
         # FIXME We only search with first artist
         self._widget = ArtworkSearch(album.artist_ids[0],
                                      album)

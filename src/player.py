@@ -150,8 +150,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self._context.artist_ids[album.id].append(artist_id)
         else:
             self._albums.append(album.id)
-            self._context.genre_ids[album.id] = album.genre_ids
-            self._context.artist_ids[album.id] = album.artist_ids
+            self._context.genre_ids[album.id] = list(album.genre_ids)
+            self._context.artist_ids[album.id] = list(album.artist_ids)
         self.shuffle_albums(True)
         if self._current_track.id is not None and self._current_track.id > 0:
             self.set_next()
