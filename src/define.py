@@ -64,7 +64,6 @@ class OpenLink:
 class PlayContext:
     genre_ids = {}
     artist_ids = {}
-    wanted = NextContext.NONE
 
 
 class GstPlayFlags:
