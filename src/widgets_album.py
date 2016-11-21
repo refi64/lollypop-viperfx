@@ -988,12 +988,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._tracks_right[disc_number] = TracksWidget()
         self._tracks_left[disc_number].connect('activated',
                                                self.__on_activated)
-        self._tracks_left[disc_number].connect('button-press-event',
-                                               self.__on_button_press_event)
         self._tracks_right[disc_number].connect('activated',
                                                 self.__on_activated)
-        self._tracks_right[disc_number].connect('button-press-event',
-                                                self.__on_button_press_event)
         self._tracks_left[disc_number].show()
         self._tracks_right[disc_number].show()
 
@@ -1164,13 +1160,3 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self.__show_spinner(widget, track_id)
             track = Track(track_id)
             Lp().player.load(track)
-            if self._button_state & Gdk.ModifierType.CONTROL_MASK:
-                Lp().player.skip_album()
-
-    def __on_button_press_event(self, widget, event):
-        """
-            Keep track of mask
-            @param widget as TrackWidget
-            @param event as Gdk.Event
-        """
-        self._button_state = event.get_state()
