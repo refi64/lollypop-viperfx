@@ -466,14 +466,10 @@ class BinPlayer(BasePlayer):
         """
         stop = False
         playback = Lp().settings.get_enum('playback')
-        if playback not in [NextContext.NONE, NextContext.REPEAT_TRACK]:
-            # Stop if needed
-            if Lp().settings.get_enum('playback') == NextContext.STOP_TRACK:
-                stop = True
-            elif self._next_context == NextContext.STOP_ALL:
-                stop = True
-            elif Lp().settings.get_enum('playback') == self._next_context:
-                stop = True
+        if not self._albums and playback == NextContext.STOP:
+            stop = True
+        elif playback == self._next_context:
+            stop = True
         return stop and self.is_playing()
 
     def __on_volume_changed(self, playbin, sink):

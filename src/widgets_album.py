@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type, NextContext
 from lollypop.define import WindowSize, Shuffle, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.widgets_context import ContextWidget
@@ -1147,8 +1147,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             else:
                 Lp().player.append_to_queue(track_id)
         else:
-            # Do not modify album list if in party mode
-            if not Lp().player.is_party:
+            # Do not modify album list if in party mode or in stop mode
+            if not Lp().player.is_party and not\
+                    Lp().settings.get_enum('playback') == NextContext.STOP:
                 # If in artist view, reset album list
                 if self._filter_ids:
                     Lp().player.set_albums(track_id,

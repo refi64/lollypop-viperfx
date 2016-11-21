@@ -44,9 +44,7 @@ TAG_EDITORS = ['kid3-qt', 'exfalso', 'easytag', 'picard', 'puddletag']
 class NextContext:
     NONE = 0             # Continue playback
     REPEAT_TRACK = 1     # Repeat current track
-    STOP_TRACK = 2       # Stop after current track
-    STOP_ALBUM = 3       # Stop after current album
-    STOP_ALL = 4         # Stop
+    STOP = 2             # Stop after track/album/artist
 
 
 class DbPersistent:

@@ -88,7 +88,7 @@ class UserPlaylistPlayer(BasePlayer):
            current_track.id in self._user_playlist:
             idx = self._user_playlist.index(current_track.id)
             if idx + 1 >= len(self._user_playlist):
-                self._next_context = NextContext.STOP_ALL
+                self._next_context = NextContext.STOP
                 idx = 0
             else:
                 idx += 1
