@@ -54,6 +54,6 @@ CLEANFILES = \
 	$(service_DATA)
 
 install-data-hook:
-	test -f $(pkgdatadir)/$(appdata_DATA) && chmod +x $(pkgdatadir)/$(appdata_DATA)
+	test -f $(pkgdatadir)/$(appdata_DATA) && chmod +x $(pkgdatadir)/$(appdata_DATA); exit 0
 
 -include $(top_srcdir)/git.mk
