@@ -736,6 +736,9 @@ class Container:
             @param genre id as int
             @param add as bool
         """
+        # Ignore static genres, can happend with Charts
+        if genre_id < 0:
+            return
         if self.__show_genres:
             if add:
                 genre_name = Lp().genres.get_name(genre_id)
