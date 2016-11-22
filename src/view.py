@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp
 
 
 class View(Gtk.Grid):
@@ -285,19 +285,19 @@ class LazyLoadingView(View):
         self._lazy_queue = []
         View.stop(self)
 
-    def append(self, row):
+    def append(self, widget):
         """
             Append row to lazy queue
-            @param row as Row
+            @param row as Gtk.Widget
         """
-        self._lazy_queue.append(row)
+        self._lazy_queue.append(widget)
 
     def lazy_loading(self, widgets=[], scroll_value=0):
         """
             Load the view in a lazy way:
                 - widgets first
                 - _waiting_init then
-            @param widgets as [AlbumSimpleWidgets]
+            @param widgets as [Gtk.Widget]
             @param scroll_value as float
         """
         GLib.idle_add(self.__lazy_loading, widgets, scroll_value)
@@ -313,11 +313,8 @@ class LazyLoadingView(View):
         if not self._lazy_queue:
             return False
         scroll_value = adj.get_value()
-        diff = self.__prev_scroll_value - scroll_value
-        if diff > ArtSize.BIG or diff < -ArtSize.BIG:
-            self.__prev_scroll_value = scroll_value
-            GLib.idle_add(self.__lazy_or_not,
-                          scroll_value)
+        self.__prev_scroll_value = scroll_value
+        GLib.idle_add(self.__lazy_or_not, scroll_value)
 
 #######################
 # PRIVATE             #
@@ -327,7 +324,7 @@ class LazyLoadingView(View):
             Load the view in a lazy way:
                 - widgets first
                 - _waiting_init then
-            @param widgets as [AlbumSimpleWidgets]
+            @param widgets as [Gtk.Widget]
             @param scroll_value as float
         """
         widget = None
@@ -368,6 +365,10 @@ class LazyLoadingView(View):
         self._scroll_value = scroll_value
         widgets = []
         for child in self._lazy_queue:
+            if self._stop or self._scroll_value != scroll_value:
+                return
             if self.__is_visible(child):
                 widgets.append(child)
+        if self._stop or self._scroll_value != scroll_value:
+            return
         GLib.idle_add(self.lazy_loading, widgets, self._scroll_value)
