@@ -235,7 +235,7 @@ class Album(Base):
     def discs(self):
         """
             Get albums discs
-            @return list of int
+            @return [Disc]
         """
         if not self._discs:
             self._discs = self.db.get_discs(self.id, self.genre_ids)

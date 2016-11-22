@@ -1109,7 +1109,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     label.set_property('halign', Gtk.Align.START)
                     label.get_style_context().add_class('dim-label')
                     label.show()
-                    self.__box.attach(label, 0, idx, width, 1)
+                    eventbox = Gtk.EventBox()
+                    eventbox.add(label)
+                    eventbox.connect('realize',
+                                     self.__on_disc_label_realize)
+                    eventbox.connect('button-press-event',
+                                     self.__on_disc_press_event, disc.number)
+                    eventbox.show()
+                    self.__box.attach(eventbox, 0, idx, width, 1)
                     idx += 1
                 GLib.idle_add(self.__box.attach,
                               self._tracks_left[disc.number],
@@ -1126,6 +1133,34 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 self.__coverbox.hide()
             else:
                 self.__coverbox.show()
+
+    def __on_disc_label_realize(self, eventbox):
+        """
+            Set mouse cursor
+            @param eventbox as Gtk.EventBox
+        """
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+
+    def __on_disc_press_event(self, eventbox, event, idx):
+        """
+            Add/Remove disc to/from queue
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+            @param idx as int
+        """
+        disc = None
+        for d in self._album.discs:
+            if d.number == idx:
+                disc = d
+                break
+        if disc is None:
+            return
+        for track in disc.tracks:
+            if Lp().player.track_in_queue(track):
+                Lp().player.del_from_queue(track.id, False)
+            else:
+                Lp().player.append_to_queue(track.id, False)
+        Lp().player.emit('queue-changed')
 
     def __on_pop_menu_closed(self, widget):
         """
