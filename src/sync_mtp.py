@@ -15,7 +15,7 @@ from gi.repository import GLib, Gio, Gst
 from time import sleep
 from re import match
 
-from lollypop.utils import escape
+from lollypop.utils import escape, debug
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
@@ -270,6 +270,7 @@ class MtpSync:
                 track = Track(track_id)
                 if track.uri.startswith('https:'):
                     continue
+                debug("MtpSync::__copy_to_device(): %s" % track.uri)
                 album_name = escape(track.album_name.lower())
                 is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
                 if is_compilation:
@@ -288,6 +289,7 @@ class MtpSync:
                     self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
                 art = Lp().art.get_album_artwork_uri(track.album)
+                debug("MtpSync::__copy_to_device(): %s" % art)
                 if art is not None:
                     src_art = Gio.File.new_for_uri(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
@@ -435,8 +437,9 @@ class MtpSync:
                 self._fraction = 1.0
                 self.__in_thread = False
                 return
-
+            debug("MtpSync::__remove_from_device(): %s" % uri)
             if uri not in track_uris and uri not in self.__copied_art_uris:
+                debug("MtpSync::__remove_from_device(): deleting %s" % uri)
                 to_delete = Gio.File.new_for_uri(uri)
                 self.__retry(to_delete.delete, (None,))
             self.__done += 1
