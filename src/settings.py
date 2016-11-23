@@ -610,9 +610,13 @@ class SettingsDialog:
         uris = []
         default = GLib.get_user_special_dir(
                                             GLib.UserDirectory.DIRECTORY_MUSIC)
+        if default is not None:
+            default_uri = GLib.filename_to_uri(default)
+        else:
+            default_uri = None
         main_uri = self.__main_chooser.get_dir()
         choosers = self.__chooser_box.get_children()
-        if main_uri != GLib.filename_to_uri(default) or choosers:
+        if main_uri != default_uri or choosers:
             uris.append(main_uri)
             for chooser in choosers:
                 uri = chooser.get_dir()
