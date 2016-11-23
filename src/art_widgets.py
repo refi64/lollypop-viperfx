@@ -36,7 +36,9 @@ class ArtworkSearch(Gtk.Bin):
         self.__timeout_id = None
         self.__loading = False
         self.__album = album
-        is_compilation = album.artist_ids and\
+        self.__artist_id = artist_id
+        is_compilation = album is not None and\
+            album.artist_ids and\
             album.artist_ids[0] == Type.COMPILATIONS
         if is_compilation:
             self.__artist = ""
