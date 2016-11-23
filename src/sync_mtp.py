@@ -187,8 +187,20 @@ class MtpSync:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
                             f = infos.get_child(info)
-                            dir_uris.append(f.get_uri())
-                            to_delete.append(f.get_uri())
+                            # We need to check for dir to be empty
+                            # On some device, Gio.File.delete() remove
+                            # non empty directories #828
+                            subinfos = f.enumerate_children(
+                                    'standard::name,standard::type',
+                                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                                    None)
+                            subfiles = False
+                            for info in subinfos:
+                                subfiles = True
+                                dir_uris.append(f.get_uri())
+                                break
+                            if not subfiles:
+                                to_delete.append(f.get_uri())
             # Then delete
             for d in to_delete:
                 d = Gio.File.new_for_uri(d)
