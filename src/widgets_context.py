@@ -112,6 +112,7 @@ class ContextWidget(Gtk.Grid):
             for editor in [favorite] + TAG_EDITORS:
                 if GLib.find_program_in_path(editor) is not None:
                     self.__tag_editor = editor
+                    break
             if self.__tag_editor is not None:
                 edit = HoverWidget('document-properties-symbolic',
                                    self.__edit_tags)
