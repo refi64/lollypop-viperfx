@@ -348,7 +348,7 @@ class AlbumArt(BaseArt, TagReader):
             @param size as int
         """
         pixbuf = None
-        if uri.startswith('https:'):
+        if uri.startswith('http:') or uri.startswith('https:'):
             return
         try:
             info = self.get_info(uri)
