@@ -51,9 +51,12 @@ class ArtistView(ArtistAlbumsView):
         self.__add_button = builder.get_object('add-button')
         self.__play_button = builder.get_object('play-button')
         self.__grid = builder.get_object('header')
-        if Lp().lastfm is None or\
-                not get_network_available():
+        if Lp().lastfm is None:
             builder.get_object('lastfm-button').hide()
+        elif not get_network_available():
+            builder.get_object('lastfm-button').set_sensitive(False)
+            builder.get_object('lastfm-button').set_tooltip_text(
+                                                  _("Network access disabled"))
         self._overlay.add_overlay(self.__grid)
         self.__empty = Gtk.Grid()
         self.__empty.show()
