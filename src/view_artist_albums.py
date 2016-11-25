@@ -216,7 +216,7 @@ class CurrentArtistAlbumsView(ViewContainer):
             @param track as Track
             @thread safe
         """
-        if track.album.artist_ids != self.__track.album.artist_ids:
+        if track.artist_ids != self.__track.artist_ids:
             self.__track = track
             albums = self.__get_albums()
             GLib.idle_add(self.__populate, albums)
@@ -267,7 +267,7 @@ class CurrentArtistAlbumsView(ViewContainer):
         self.clean_old_views(view)
 
         # Populate artist albums view
-        view = ArtistAlbumsView(self.__track.album.artist_ids, [])
+        view = ArtistAlbumsView(self.__track.artist_ids, [])
         view.connect('populated', self.__on_populated, spinner)
         view.show()
         view.populate(albums)
@@ -277,13 +277,13 @@ class CurrentArtistAlbumsView(ViewContainer):
             Get albums
             @return album ids as [int]
         """
+        albums = []
         if self.__track.album.artist_ids[0] == Type.COMPILATIONS:
-            albums = [self.__track.album.id]
-        else:
-            albums = Lp().artists.get_albums(self.__track.album.artist_ids)
-            # Charts album playing
-            if Lp().player.current_track.album.id not in albums:
-                albums.append(Lp().player.current_track.album.id)
+            albums += [self.__track.album.id]
+        albums += Lp().artists.get_albums(self.__track.artist_ids)
+        # Charts album playing
+        if Lp().player.current_track.album.id not in albums:
+            albums.append(Lp().player.current_track.album.id)
         return albums
 
     def __on_populated(self, view, spinner):
