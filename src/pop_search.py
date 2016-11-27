@@ -565,8 +565,8 @@ class SearchPopover(Gtk.Popover):
             history = "♫" + item.name + item.artists[0]
         else:
             history = item.name + item.artists[0]
-        if history not in self.__history:
-            self.__history.append(history)
+        if history.lower() not in self.__history:
+            self.__history.append(history.lower())
             search_row = SearchRow(item, False)
             search_row.show()
             self.__view.add(search_row)
