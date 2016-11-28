@@ -1,6 +1,6 @@
 AC_PREREQ(2.63)
 AC_INIT([lollypop],
-        [0.9.220],
+        [0.9.221],
         [https://github.com/gnumdk/lollypop],
         [lollypop],
         [https://github.com/gnumdk/lollypop])
