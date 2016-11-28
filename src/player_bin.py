@@ -434,6 +434,10 @@ class BinPlayer(BasePlayer):
         if self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000 >\
                 self.current_track.duration - 10:
             self._scrobble(self.current_track, self._start_time)
+        # Increment popularity
+        if not Lp().scanner.is_locked() and track is None:
+            Lp().tracks.set_more_popular(self.current_track.id)
+            Lp().albums.set_more_popular(self.current_track.album_id)
         GLib.idle_add(self.__volume_down, self._playbin,
                       self._plugins, duration)
         if self._playbin == self.__playbin2:
@@ -583,21 +587,18 @@ class BinPlayer(BasePlayer):
             @param playbin as Gst bin
         """
         debug("Player::__on_stream_about_to_finish(): %s" % playbin)
-        # Don't do anything if crossfade on
+        # Don't do anything if crossfade on, track already changed
         if self._crossfading:
             return
         if self.current_track.id == Type.RADIOS:
             return
-        # For Last.fm scrobble
-        finished = self.current_track
-        finished_start_time = self._start_time
-        if self._next_track.id is not None:
-            self._load_track(self._next_track)
-        self._scrobble(finished, finished_start_time)
+        self._scrobble(self.current_track, self._start_time)
         # Increment popularity
         if not Lp().scanner.is_locked():
-            Lp().tracks.set_more_popular(finished.id)
-            Lp().albums.set_more_popular(finished.album_id)
+            Lp().tracks.set_more_popular(self.current_track.id)
+            Lp().albums.set_more_popular(self.current_track.album_id)
+        if self._next_track.id is not None:
+            self._load_track(self._next_track)
 
     def __set_gv_uri(self, uri, track, play):
         """
