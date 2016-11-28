@@ -15,9 +15,6 @@ from gi.repository import Gio, GLib
 from gettext import gettext as _
 from threading import Thread
 import unicodedata
-import socket
-import fcntl
-import struct
 
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
@@ -60,17 +57,6 @@ def debug(str):
     """
     if Lp().debug is True:
         print(str)
-
-
-def get_ip(interface):
-    """
-        Get ip address for interface
-    """
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,  # SIOCGIFADDR
-        struct.pack('256s', interface[:15].encode('utf-8')))[20:24])
 
 
 def is_unity():
