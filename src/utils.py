@@ -82,6 +82,7 @@ def is_audio(f):
         info = f.query_info('standard::content-type',
                             Gio.FileQueryInfoFlags.NONE)
         if info is not None:
+            # Issue with GLib mime detection, should detect mp4 audio as audio
             if info.get_content_type()[0:6] == "audio/" or\
                info.get_content_type() == "video/mp4":
                 return True
