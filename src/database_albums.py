@@ -211,13 +211,13 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def set_more_popular(self, album_id):
+    def set_more_popular(self, album_id, pop_to_add):
         """
             Increment popularity field for album id
-            @param int
+            @param album id as int
+            @param pop as int
             @raise sqlite3.OperationalError on db update
         """
-        pop_to_add = int(self.__max_count/self.get_tracks_count(album_id))
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT popularity from albums WHERE rowid=?",
                                  (album_id,))

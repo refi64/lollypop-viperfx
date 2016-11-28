@@ -437,7 +437,16 @@ class BinPlayer(BasePlayer):
             # Increment popularity
             if not Lp().scanner.is_locked():
                 Lp().tracks.set_more_popular(self.current_track.id)
-                Lp().albums.set_more_popular(self.current_track.album_id)
+                # In party mode, linear popularity
+                if self.is_party:
+                    pop_to_add = 1
+                # In normal mode, based on tracks count
+                else:
+                    pop_to_add = int(self.__max_count /
+                                     self.get_tracks_count(
+                                                  self.current_track.album_id))
+                Lp().albums.set_more_popular(self.current_track.album_id,
+                                             pop_to_add)
 
         GLib.idle_add(self.__volume_down, self._playbin,
                       self._plugins, duration)
@@ -597,7 +606,16 @@ class BinPlayer(BasePlayer):
         # Increment popularity
         if not Lp().scanner.is_locked():
             Lp().tracks.set_more_popular(self.current_track.id)
-            Lp().albums.set_more_popular(self.current_track.album_id)
+            # In party mode, linear popularity
+            if self.is_party:
+                pop_to_add = 1
+            # In normal mode, based on tracks count
+            else:
+                pop_to_add = int(self.__max_count /
+                                 self.get_tracks_count(
+                                                  self.current_track.album_id))
+            Lp().albums.set_more_popular(self.current_track.album_id,
+                                         pop_to_add)
         if self._next_track.id is not None:
             self._load_track(self._next_track)
 
