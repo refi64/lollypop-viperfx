@@ -939,6 +939,13 @@ class AlbumsDatabase:
                 sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
             return ret
 
+    @property
+    def max_count(self):
+        """
+            Get MAX(COUNT(tracks)) for albums
+        """
+        return self.__max_count
+
     def update_max_count(self):
         """
             Update MAX(COUNT(tracks)) for albums

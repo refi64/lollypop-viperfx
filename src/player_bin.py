@@ -442,7 +442,7 @@ class BinPlayer(BasePlayer):
                     pop_to_add = 1
                 # In normal mode, based on tracks count
                 else:
-                    pop_to_add = int(self.__max_count /
+                    pop_to_add = int(Lp().albums.max_count /
                                      self.get_tracks_count(
                                                   self.current_track.album_id))
                 Lp().albums.set_more_popular(self.current_track.album_id,
@@ -611,7 +611,7 @@ class BinPlayer(BasePlayer):
                 pop_to_add = 1
             # In normal mode, based on tracks count
             else:
-                pop_to_add = int(self.__max_count /
+                pop_to_add = int(Lp().albums.max_count /
                                  self.get_tracks_count(
                                                   self.current_track.album_id))
             Lp().albums.set_more_popular(self.current_track.album_id,
