@@ -12,7 +12,7 @@
 
 import random
 
-from lollypop.define import Shuffle, Lp, NextContext
+from lollypop.define import Shuffle, NextContext
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
@@ -42,8 +42,8 @@ class UserPlaylistPlayer(BasePlayer):
             @param array of track ids as [int]
             @param playlist ids as [int]
         """
-        if Lp().player.is_party:
-            Lp().player.set_party(False)
+        if self.is_party:
+            self.set_party(False)
         self._user_playlist = []
         for track_id in track_ids:
             self._user_playlist.append(track_id)

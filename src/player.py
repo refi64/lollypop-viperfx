@@ -514,11 +514,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Skip current album
         """
         # In party or shuffle, just update next track
-        if Lp().player.is_party or\
+        if self.is_party or\
                 Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
-            Lp().player.set_next()
+            self.set_next()
             # We send this signal to update next popover
-            Lp().player.emit('queue-changed')
+            self.emit('queue-changed')
         elif self._current_track.id is not None:
             pos = self._albums.index(self._current_track.album.id)
             if pos + 1 >= len(self._albums):
