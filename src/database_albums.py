@@ -28,6 +28,7 @@ class AlbumsDatabase:
         """
             Init albums database object
         """
+        self.__max_count = 1
         self._cached_randoms = []
 
     def add(self, name, artist_ids, uri, popularity, mtime):
@@ -216,6 +217,7 @@ class AlbumsDatabase:
             @param int
             @raise sqlite3.OperationalError on db update
         """
+        pop_to_add = int(self.__max_count/self.get_tracks_count(album_id))
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT popularity from albums WHERE rowid=?",
                                  (album_id,))
@@ -224,7 +226,7 @@ class AlbumsDatabase:
                 current = pop[0]
             else:
                 current = 0
-            current += 1
+            current += pop_to_add
             sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                         (current, album_id))
             sql.commit()
@@ -384,10 +386,27 @@ class AlbumsDatabase:
     def get_uri_count(self, uri):
         """
             Count album having uri as album uri
+            @param uri as str
+            @return count as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT count(uri) FROM albums WHERE uri=?",
+            result = sql.execute("SELECT COUNT(uri) FROM albums WHERE uri=?",
                                  (uri,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 1
+
+    def get_tracks_count(self, album_id):
+        """
+            Return tracks count
+            @param album id as int
+            @return count as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT COUNT(tracks.rowid)\
+                                  FROM tracks WHERE album_id=?",
+                                 (album_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -919,6 +938,21 @@ class AlbumsDatabase:
                             (album_id,))
                 sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
             return ret
+
+    def update_max_count(self):
+        """
+            Update MAX(COUNT(tracks)) for albums
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT MAX(num_tracks)\
+                                  FROM (SELECT COUNT(t.rowid)\
+                                  AS num_tracks FROM albums\
+                                  INNER JOIN tracks t\
+                                  ON albums.rowid=t.album_id\
+                                  GROUP BY albums.rowid)")
+            v = result.fetchone()
+            if v:
+                self.__max_count = v[0]
 
 #######################
 # PRIVATE             #

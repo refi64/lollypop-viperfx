@@ -48,6 +48,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__inotify = Inotify()
         else:
             self.__inotify = None
+        Lp().albums.update_max_count()
 
     def update(self):
         """
@@ -160,6 +161,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         Lp().window.progress.set_fraction(1.0, self)
         self.stop()
         self.emit("scan-finished")
+        # Update max count value
+        Lp().albums.update_max_count()
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
 
