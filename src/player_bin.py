@@ -431,13 +431,14 @@ class BinPlayer(BasePlayer):
         # No cossfading if we need to stop
         if self.__need_to_stop() and next:
             return
-        if self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000 >\
-                self.current_track.duration - 10:
+
+        if track is None:
             self._scrobble(self.current_track, self._start_time)
-        # Increment popularity
-        if not Lp().scanner.is_locked() and track is None:
-            Lp().tracks.set_more_popular(self.current_track.id)
-            Lp().albums.set_more_popular(self.current_track.album_id)
+            # Increment popularity
+            if not Lp().scanner.is_locked():
+                Lp().tracks.set_more_popular(self.current_track.id)
+                Lp().albums.set_more_popular(self.current_track.album_id)
+
         GLib.idle_add(self.__volume_down, self._playbin,
                       self._plugins, duration)
         if self._playbin == self.__playbin2:
