@@ -243,6 +243,7 @@ class InfoPopover(Gtk.Popover):
             label.set_hexpand(True)
             label.set_margin_top(10)
             label.set_margin_end(10)
+            label.get_style_context().add_class('dim-label')
             label.show()
             widget.add(label)
             if lyrics:
