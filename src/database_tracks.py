@@ -474,9 +474,13 @@ class TracksDatabase:
             @return tracks as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
+            result = sql.execute("SELECT tracks.rowid\
+                                  FROM tracks, track_genres\
                                   WHERE ltime=0\
-                                  ORDER BY random() LIMIT 100")
+                                  AND track_genres.genre_id!=?\
+                                  AND track_genres.track_id=tracks.rowid\
+                                  ORDER BY random() LIMIT 100",
+                                 (Type.CHARTS,))
             return list(itertools.chain(*result))
 
     def get_recently_listened_to(self):
@@ -485,9 +489,13 @@ class TracksDatabase:
             @return tracks as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
+            result = sql.execute("SELECT tracks.rowid\
+                                  FROM tracks, track_genres\
                                   WHERE ltime!=0\
-                                  ORDER BY ltime DESC LIMIT 100")
+                                  AND track_genres.genre_id!=?\
+                                  AND track_genres.track_id=tracks.rowid\
+                                  ORDER BY ltime DESC LIMIT 100",
+                                 (Type.CHARTS,))
             return list(itertools.chain(*result))
 
     def get_persistent(self, track_id):
