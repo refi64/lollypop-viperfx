@@ -264,6 +264,16 @@ class ArtistView(ArtistAlbumsView):
         ArtistAlbumsView._on_current_changed(self, player)
         self.__update_jump_button()
 
+    def _on_populated(self, widget, widgets, scroll_value):
+        """
+            Set jump button state
+            @param widget as AlbumDetailedWidget
+            @param widgets as pending AlbumDetailedWidgets
+            @param scroll value as float
+        """
+        self.__update_jump_button()
+        ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)
+
 #######################
 # PRIVATE             #
 #######################
@@ -420,13 +430,3 @@ class ArtistView(ArtistAlbumsView):
         if prefix == artist:
             self.__artwork.clear()
             self.__set_artwork()
-
-    def __on_populated(self, widget, widgets, scroll_value):
-        """
-            Set jump button state
-            @param widget as AlbumDetailedWidget
-            @param widgets as pending AlbumDetailedWidgets
-            @param scroll value as float
-        """
-        self.__update_jump_button()
-        ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)

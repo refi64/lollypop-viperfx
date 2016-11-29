@@ -122,6 +122,20 @@ class ArtistAlbumsView(LazyLoadingView):
             for box in child.boxes:
                 box.invalidate_filter()
 
+    def _on_populated(self, widget, widgets, scroll_value):
+        """
+            Add another album/disc
+            @param widget as AlbumDetailedWidget
+            @param widgets as pending AlbumDetailedWidgets
+            @param scroll value as float
+        """
+        if not widget.is_populated():
+            widget.populate()
+        elif not self._stop:
+            GLib.idle_add(self.lazy_loading, widgets, scroll_value)
+        else:
+            self._stop = False
+
     def _get_children(self):
         """
             Return view children
@@ -153,7 +167,7 @@ class ArtistAlbumsView(LazyLoadingView):
         elif self._lazy_queue:
             widget = self._lazy_queue.pop(0)
         if widget is not None:
-            widget.connect('populated', self.__on_populated,
+            widget.connect('populated', self._on_populated,
                            widgets, scroll_value)
             widget.populate()
 
@@ -180,20 +194,6 @@ class ArtistAlbumsView(LazyLoadingView):
             self.__spinner.hide()
             self.emit('populated')
             GLib.idle_add(self.lazy_loading)
-
-    def __on_populated(self, widget, widgets, scroll_value):
-        """
-            Add another album/disc
-            @param widget as AlbumDetailedWidget
-            @param widgets as pending AlbumDetailedWidgets
-            @param scroll value as float
-        """
-        if not widget.is_populated():
-            widget.populate()
-        elif not self._stop:
-            GLib.idle_add(self.lazy_loading, widgets, scroll_value)
-        else:
-            self._stop = False
 
 
 class CurrentArtistAlbumsView(ViewContainer):
