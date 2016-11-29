@@ -243,13 +243,13 @@ class InfoPopover(Gtk.Popover):
             label.set_hexpand(True)
             label.set_margin_top(10)
             label.set_margin_end(10)
-            label.get_style_context().add_class('dim-label')
             label.show()
             widget.add(label)
             if lyrics:
                 label.set_label(lyrics)
             elif not get_network_available():
                 string = GLib.markup_escape_text(_("Network access disabled"))
+                label.get_style_context().add_class('dim-label')
                 label.set_markup(
                        "<span font_weight='bold' size='xx-large'>" +
                        string +
@@ -257,6 +257,7 @@ class InfoPopover(Gtk.Popover):
             else:
                 string = GLib.markup_escape_text(
                        _("No lyrics found, please install gir1.2-webkit2-4.0"))
+                label.get_style_context().add_class('dim-label')
                 label.set_markup(
                        "<span font_weight='bold' size='xx-large'>" +
                        string +
