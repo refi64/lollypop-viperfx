@@ -725,7 +725,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self.__model.get_iter(path)
         toggle = not self.__model.get_value(iterator, 0)
-        playlist_id = self.__model.get_value(iterator, 4)
+        playlist_id = self.__model.get_value(iterator, 3)
         self.__model.set_value(iterator, 0, toggle)
         self.__set_current_object(playlist_id, toggle)
 
