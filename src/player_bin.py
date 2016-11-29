@@ -293,7 +293,7 @@ class BinPlayer(BasePlayer):
             self.emit('current-changed')
             if Lp().notify is not None:
                 Lp().notify.send(str(e), track.uri)
-            print("PlayerBin::__get_youtube_uri()", e)
+            print("PlayerBin::_load_web()", e)
 
     def _scrobble(self, finished, finished_start_time):
         """
