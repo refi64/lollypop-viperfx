@@ -75,3 +75,8 @@ lollypop
 /src/Makefile.in
 /data/AboutDialog.ui
 /data/lollypop.appdata.xml
+/flatpak/app
+/flatpak/repo
+/flatpak/*.bundle
+/flatpak/*.flatpak
+/flatpak/.flatpak-builder

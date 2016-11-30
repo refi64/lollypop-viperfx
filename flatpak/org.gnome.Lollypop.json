@@ -1,0 +1,78 @@
+{
+    "app-id": "org.gnome.Lollypop",
+    "branch": "0.9.222",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.22",
+    "sdk": "org.gnome.Sdk",
+    "command": "lollypop",
+    "copy-icon": true,
+    "rename-icon": "lollypop",
+    "rename-desktop-file": "lollypop.desktop",
+    "desktop-file-name-prefix": "",
+    "finish-args": [
+      "--share=ipc",
+      "--share=network",
+      "--socket=x11",
+      "--socket=wayland",
+      "--socket=pulseaudio",
+      "--filesystem=home",
+      "--talk-name=org.freedesktop.Notifications",
+      "--talk-name=org.freedesktop.DBus",
+      "--socket=session-bus",
+      "--socket=system-bus",
+      "--own-name=org.gnumdk.Lollypop"
+    ],
+    "modules": [{
+      "name" :"pylast",
+      "no-autogen": true,
+      "sources": [{
+        "type": "archive",
+        "url": "https://pypi.python.org/packages/42/71/85c28b2d373eee3592d6f079e556df4a28d5c133c2ba484d7311dc9a746c/pylast-1.6.0.tar.gz",
+       "sha256": "6bf325ee0fdeb35780554843cf64df99304abb98c5ce2e451c0df7e95e08b42e"
+      },{
+        "type": "file",
+        "path": "pip-Makefile",
+        "dest-filename": "Makefile"
+      }],
+      "modules": [{
+        "name": "six",
+        "no-autogen": true,
+        "sources": [{
+          "type": "archive",
+          "url": "https://pypi.python.org/packages/b3/b2/238e2590826bfdd113244a40d9d3eb26918bd798fc187e2360a8367068db/six-1.10.0.tar.gz#md5=34eed507548117b2ab523ab14b2f8b55",
+          "sha256": "105f8d68616f8248e24bf0e9372ef04d3cc10104f1980f54d57b2ce73a5ad56a"
+        },{ 
+          "type": "file",
+          "path": "pip-Makefile",
+          "dest-filename": "Makefile"
+        }]
+      }]
+    },{
+      "name": "gmime",
+      "sources": [{
+        "type": "git",
+        "branch": "GMIME_2_6_20",
+        "url": "https://github.com/GNOME/gmime"
+      },{
+        "type": "patch",
+        "path": "gmime-autogen.patch"
+
+      }]
+    },{
+      "name": "totem-pl-parser",
+      "sources": [{
+        "type": "git",
+        "branch": "V_3_10_6",
+        "url": "https://github.com/GNOME/totem-pl-parser"
+      }]
+    },{
+      "name": "lollypop",
+      "make-install-args": ["prefix=/app"],
+      "no-autogen": true,
+      "sources": [{
+          "type": "archive",
+          "url": "https://github.com/gnumdk/lollypop/releases/download/0.9.222/lollypop-0.9.222.tar.xz",
+          "sha256": "a2b5016d7f137806b8a16a1a7bec65d88ad3902cba6cdba5acd7396650222c86"
+        }]
+    }]
+}
