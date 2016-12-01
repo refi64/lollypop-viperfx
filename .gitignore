@@ -67,9 +67,7 @@ search-provider/Makefile
 search-provider/Makefile.in
 data/Makefile
 data/Makefile.in
-*.patch
 *.pyc
-Makefile
 lollypop
 *.valid
 /src/Makefile.in
