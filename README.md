@@ -74,3 +74,14 @@ Instead of `make install` you might want to use `checkinstall`
 # checkinstall
 ```
 This will allow you to uninstall Lollypop as a package, for example with `apt-get uninstall lollypop`.
+
+### On Fedora
+```
+$ git clone https://github.com/gnumdk/lollypop.git
+$ cd lollypop
+# sudo dnf install autoconf glib2-devel intltool yelp-tools gtk3-devel gobject-introspection-devel python3 itstool
+$ ./autogen.sh
+$ make
+# make install
+```
+
