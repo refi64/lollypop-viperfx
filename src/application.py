@@ -211,6 +211,9 @@ class Application(Gtk.Application):
                 else:
                     self.settings.set_value('network-search',
                                             GLib.Variant('b', False))
+            t = Thread(target=self.__preload_portal)
+            t.daemon = True
+            t.start()
 
     def prepare_to_exit(self, action=None, param=None):
         """
@@ -300,6 +303,20 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
+    def __preload_portal(self):
+        """
+            Preload lollypop portal
+        """
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                   'org.gnome.Lollypop.Portal',
+                                   '/org/gnome/LollypopPortal',
+                                   'org.gnome.Lollypop.Portal', None)
+        except:
+            print("You are missing lollypop-portal: "
+                  "https://github.com/gnumdk/lollypop-portal")
+
     def __init_proxy(self):
         """
             Init proxy setting env
