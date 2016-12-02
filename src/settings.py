@@ -561,9 +561,10 @@ class SettingsDialog:
             ret = proxy.call_sync('PaListSinks', None,
                                   Gio.DBusCallFlags.NO_AUTO_START,
                                   500, None)
+            return ret[0]
         except Exception as e:
             print("SettingsDialog::__get_pa_outputs():", e)
-        return ret[0]
+        return ret
 
     def __set_outputs(self, combo):
         """
