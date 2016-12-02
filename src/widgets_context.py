@@ -119,8 +119,9 @@ class ContextWidget(Gtk.Grid):
                 can_launch = proxy.call_sync('CanLaunchTagEditor', None,
                                              Gio.DBusCallFlags.NO_AUTO_START,
                                              500, None)[0]
-            except Exception as e:
-                print("ContextWidget::__init__():", e)
+            except:
+                print("You are missing lollypop-portal: "
+                      "https://github.com/gnumdk/lollypop-portal")
             if can_launch:
                 edit = HoverWidget('document-properties-symbolic',
                                    self.__edit_tags)
@@ -239,8 +240,9 @@ class ContextWidget(Gtk.Grid):
                        GLib.Variant('(s)', (path,)),
                        Gio.DBusCallFlags.NO_AUTO_START,
                        500, None)
-        except Exception as e:
-            print("ContextWidget::__edit_tag():", e)
+        except:
+            print("You are missing lollypop-portal: "
+                  "https://github.com/gnumdk/lollypop-portal")
         self.__button.emit('clicked')
 
     def __add_to_queue(self, args):

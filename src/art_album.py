@@ -254,8 +254,9 @@ class AlbumArt(BaseArt, TagReader):
                                                'CanSetCover', None,
                                                Gio.DBusCallFlags.NO_AUTO_START,
                                                500, None)[0]
-            except Exception as e:
-                print("SettingsDialog::__init__():", e)
+            except:
+                print("You are missing lollypop-portal: "
+                      "https://github.com/gnumdk/lollypop-portal")
             save_to_tags = Lp().settings.get_value('save-to-tags') and\
                 can_set_cover
             album = Album(album_id)
@@ -332,8 +333,9 @@ class AlbumArt(BaseArt, TagReader):
                                                'CanSetCover', None,
                                                Gio.DBusCallFlags.NO_AUTO_START,
                                                500, None)[0]
-            except Exception as e:
-                print("SettingsDialog::remove_album_artwork1():", e)
+            except:
+                print("You are missing lollypop-portal: "
+                      "https://github.com/gnumdk/lollypop-portal")
             if Lp().settings.get_value('save-to-tags') and can_set_cover:
                 for uri in Lp().albums.get_track_uris(album.id, [], []):
                     try:
@@ -446,8 +448,9 @@ class AlbumArt(BaseArt, TagReader):
                                               "/tmp/lollypop_cover_tags.jpg")),
                                     Gio.DBusCallFlags.NO_AUTO_START,
                                     500, None)
-                except Exception as e:
-                    print("AlbumArt::__save_artwork_tags():", e)
+                except:
+                    print("You are missing lollypop-portal: "
+                          "https://github.com/gnumdk/lollypop-portal")
             f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
             f.delete()
             self.clean_album_cache(album)
