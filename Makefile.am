@@ -6,7 +6,7 @@ bin_SCRIPTS = lollypop
 dist_bin_SCRIPTS = lollypop-cli\
                    rhythmbox2lollypop
 
-SUBDIRS = src data po help search-provider portal
+SUBDIRS = src data po help search-provider
 
 EXTRA_DIST = \
 	lollypop.in\
