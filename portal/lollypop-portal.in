@@ -109,6 +109,10 @@ class PortalLollypopService(Server, Gio.Application):
       <arg type="s" name="audio" direction="in" />
       <arg type="s" name="cover" direction="in" />
     </method>
+    <method name="SetPopularity">
+      <arg type="i" name="pop" direction="in" />
+      <arg type="s" name="f" direction="in" />
+    </method>
     </interface>
     </node>
     '''
@@ -150,11 +154,16 @@ class PortalLollypopService(Server, Gio.Application):
 
     def SetCover(self, audio, cover):
         argv = ["kid3-cli", "-c", "select all", "-c",
-                    "set picture:'%s' ''" % cover]
-        argv.append(audio)
-        argv.append(None)
+                    "set picture:'%s' ''" % cover, audio, None]
         GLib.spawn_sync(None, argv, None,
                         GLib.SpawnFlags.SEARCH_PATH, None)
+
+    def SetPopularity(self, pop, f):
+        argv = ["kid3-cli", "-c", "set pop: %s" % pop, f, None]
+        print(argv)
+        GLib.spawn_sync(None, argv, None,
+                        GLib.SpawnFlags.SEARCH_PATH, None)
+
 
 def main():
     Gst.init(None)

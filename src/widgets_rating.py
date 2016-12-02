@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio
 
 from lollypop.objects import Track
 from lollypop.define import Lp
@@ -127,8 +127,19 @@ class RatingWidget(Gtk.Bin):
             else:
                 value = 255
             path = GLib.filename_from_uri(self._object.uri)[0]
-            argv = ["kid3-cli", "-c", "select all", "-c",
-                    "set pop: %s" % value, path, None]
-            GLib.spawn_sync(None, argv, None,
-                            GLib.SpawnFlags.SEARCH_PATH, None)
+            try:
+                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                proxy = Gio.DBusProxy.new_sync(
+                                        bus, Gio.DBusProxyFlags.NONE, None,
+                                        'org.gnome.Lollypop.Portal',
+                                        '/org/gnome/LollypopPortal',
+                                        'org.gnome.Lollypop.Portal', None)
+                proxy.call_sync('SetPopularity',
+                                GLib.Variant(
+                                 '(is)', (value,
+                                          path)),
+                                Gio.DBusCallFlags.NO_AUTO_START,
+                                500, None)
+            except Exception as e:
+                print("RatingWidget::_on_button_press():", e)
         return True
