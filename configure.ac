@@ -37,6 +37,7 @@ AC_CONFIG_FILES([
   src/Makefile
   help/Makefile
   search-provider/Makefile
+  portal/Makefile
   po/Makefile.in
 ])
 AC_OUTPUT

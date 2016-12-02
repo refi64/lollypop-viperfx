@@ -20,7 +20,6 @@ except:
 from gettext import gettext as _
 from gettext import ngettext as ngettext
 from threading import Thread
-from re import findall, DOTALL
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
 from lollypop.cache import InfoCache
@@ -540,19 +539,18 @@ class SettingsDialog:
             @return name/device as [(str, str)]
         """
         ret = []
-        argv = ["pacmd", "list-sinks", None]
         try:
-            (s, out, err, e) = GLib.spawn_sync(None, argv, None,
-                                               GLib.SpawnFlags.SEARCH_PATH,
-                                               None)
-            string = out.decode('utf-8')
-            devices = findall('name: <([^>]*)>', string, DOTALL)
-            names = findall('device.description = "([^"]*)"', string, DOTALL)
-            for name in names:
-                ret.append((name, devices.pop(0)))
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                           'org.gnome.Lollypop.Portal',
+                                           '/org/gnome/LollypopPortal',
+                                           'org.gnome.Lollypop.Portal', None)
+            ret = proxy.call_sync('PaListSinks', None,
+                                  Gio.DBusCallFlags.NO_AUTO_START,
+                                  500, None)
         except Exception as e:
-            print("SettingsDialog::_get_pa_outputse()", e)
-        return ret
+            print("SettingsDialog::__get_pa_outputs():", e)
+        return ret[0]
 
     def __set_outputs(self, combo):
         """
