@@ -428,10 +428,11 @@ class AlbumArt(BaseArt, TagReader):
                                                            ArtSize.MONSTER,
                                                            True,
                                                            None)
-        pixbuf.savev("/tmp/lollypop_cover_tags.jpg",
+        pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], ["90"])
         del pixbuf
-        f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
+        f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
+                                  self._CACHE_PATH)
         if f.query_exists():
             for uri in Lp().albums.get_track_uris(album.id, [], []):
                 try:
@@ -445,13 +446,15 @@ class AlbumArt(BaseArt, TagReader):
                     proxy.call_sync('SetCover',
                                     GLib.Variant(
                                      '(ss)', (path,
-                                              "/tmp/lollypop_cover_tags.jpg")),
+                                              "%s/lollypop_cover_tags.jpg" %
+                                              self._CACHE_PATH)),
                                     Gio.DBusCallFlags.NO_AUTO_START,
                                     500, None)
                 except:
                     print("You are missing lollypop-portal: "
                           "https://github.com/gnumdk/lollypop-portal")
-            f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
+            f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
+                                      self._CACHE_PATH)
             f.delete()
             self.clean_album_cache(album)
             GLib.idle_add(self.album_artwork_update, album.id)
