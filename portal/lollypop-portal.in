@@ -102,9 +102,12 @@ class PortalLollypopService(Server, Gio.Application):
     <method name="PaListSinks">
       <arg type="aas" name="results" direction="out" />
     </method>
-
+    <method name="CanSetCover">
+      <arg type="b" name="can" direction="out" />
+    </method>
     <method name="SetCover">
       <arg type="s" name="audio" direction="in" />
+      <arg type="s" name="cover" direction="in" />
     </method>
     </interface>
     </node>
@@ -126,6 +129,9 @@ class PortalLollypopService(Server, Gio.Application):
                                        None)
         Server.__init__(self, self.__bus, self.__PATH_BUS)
 
+    def CanSetCover(self):
+        return GLib.find_program_in_path("kid3-cli") is not None
+
     def PaListSinks(self):
         ret = []
         argv = ["pacmd", "list-sinks", None]
@@ -140,13 +146,11 @@ class PortalLollypopService(Server, Gio.Application):
                 ret.append([name, devices.pop(0)])
         except Exception as e:
             print("PortalLollypopService::PaListSinks()", e)
-            return [""]
-        print(ret)
         return ret
 
-    def SetCover(self, audio):
+    def SetCover(self, audio, cover):
         argv = ["kid3-cli", "-c", "select all", "-c",
-                    "set picture:'/tmp/lollypop_cover_tags.jpg' ''"]
+                    "set picture:'%s' ''" % cover]
         argv.append(audio)
         argv.append(None)
         GLib.spawn_sync(None, argv, None,

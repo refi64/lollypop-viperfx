@@ -241,8 +241,23 @@ class AlbumArt(BaseArt, TagReader):
         """
         try:
             arturi = None
+            # Check portal for kid3-cli
+            can_set_cover = False
+            try:
+                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                proxy = Gio.DBusProxy.new_sync(
+                                            bus, Gio.DBusProxyFlags.NONE, None,
+                                            'org.gnome.Lollypop.Portal',
+                                            '/org/gnome/LollypopPortal',
+                                            'org.gnome.Lollypop.Portal', None)
+                can_set_cover = proxy.call_sync(
+                                               'CanSetCover', None,
+                                               Gio.DBusCallFlags.NO_AUTO_START,
+                                               500, None)[0]
+            except Exception as e:
+                print("SettingsDialog::__init__():", e)
             save_to_tags = Lp().settings.get_value('save-to-tags') and\
-                GLib.find_program_in_path("kid3-cli") is not None
+                can_set_cover
             album = Album(album_id)
 
             uri_count = Lp().albums.get_uri_count(album.uri)
@@ -304,21 +319,33 @@ class AlbumArt(BaseArt, TagReader):
                     f.trash()
                 except:
                     f.delete(None)
-            if Lp().settings.get_value('save-to-tags') and\
-                    GLib.find_program_in_path("kid3-cli") is not None:
-                argv = ["kid3-cli", "-c", "select all", "-c",
-                        "set picture:'' ''"]
+            # Check portal for kid3-cli
+            can_set_cover = False
+            try:
+                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                proxy = Gio.DBusProxy.new_sync(
+                                            bus, Gio.DBusProxyFlags.NONE, None,
+                                            'org.gnome.Lollypop.Portal',
+                                            '/org/gnome/LollypopPortal',
+                                            'org.gnome.Lollypop.Portal', None)
+                can_set_cover = proxy.call_sync(
+                                               'CanSetCover', None,
+                                               Gio.DBusCallFlags.NO_AUTO_START,
+                                               500, None)[0]
+            except Exception as e:
+                print("SettingsDialog::remove_album_artwork1():", e)
+            if Lp().settings.get_value('save-to-tags') and can_set_cover:
                 for uri in Lp().albums.get_track_uris(album.id, [], []):
                     try:
                         path = GLib.filename_from_uri(uri)[0]
-                        argv.append(path)
-                    except:  # Gvfs can't find path for uri
-                        pass
-                argv.append(None)
-                GLib.spawn_sync(None, argv, None,
-                                GLib.SpawnFlags.SEARCH_PATH, None)
+                        proxy.call_sync('SetCover',
+                                        GLib.Variant('(ss)', (path, "")),
+                                        Gio.DBusCallFlags.NO_AUTO_START,
+                                        500, None)
+                    except Exception as e:
+                        print("AlbumArt::remove_album_artwork2():", e)
         except Exception as e:
-            print("AlbumArt::remove_album_artwork():", e)
+            print("AlbumArt::remove_album_artwork3():", e)
 
     def clean_album_cache(self, album):
         """
@@ -404,17 +431,23 @@ class AlbumArt(BaseArt, TagReader):
         del pixbuf
         f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
         if f.query_exists():
-            argv = ["kid3-cli", "-c", "select all", "-c",
-                    "set picture:'/tmp/lollypop_cover_tags.jpg' ''"]
             for uri in Lp().albums.get_track_uris(album.id, [], []):
                 try:
                     path = GLib.filename_from_uri(uri)[0]
-                    argv.append(path)
-                except:  # Gvfs can't find a path for uri
-                    pass
-            argv.append(None)
-            GLib.spawn_sync(None, argv, None,
-                            GLib.SpawnFlags.SEARCH_PATH, None)
+                    bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                    proxy = Gio.DBusProxy.new_sync(
+                                            bus, Gio.DBusProxyFlags.NONE, None,
+                                            'org.gnome.Lollypop.Portal',
+                                            '/org/gnome/LollypopPortal',
+                                            'org.gnome.Lollypop.Portal', None)
+                    proxy.call_sync('SetCover',
+                                    GLib.Variant(
+                                     '(ss)', (path,
+                                              "/tmp/lollypop_cover_tags.jpg")),
+                                    Gio.DBusCallFlags.NO_AUTO_START,
+                                    500, None)
+                except Exception as e:
+                    print("AlbumArt::__save_artwork_tags():", e)
             f = Gio.File.new_for_path("/tmp/lollypop_cover_tags.jpg")
             f.delete()
             self.clean_album_cache(album)

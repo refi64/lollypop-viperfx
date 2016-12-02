@@ -149,7 +149,20 @@ class SettingsDialog:
         switch_librefm.set_state(Lp().settings.get_value('use-librefm'))
 
         switch_artwork_tags = builder.get_object('switch_artwork_tags')
-        if GLib.find_program_in_path("kid3-cli") is None:
+        # Check portal for kid3-cli
+        can_set_cover = False
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                           'org.gnome.Lollypop.Portal',
+                                           '/org/gnome/LollypopPortal',
+                                           'org.gnome.Lollypop.Portal', None)
+            can_set_cover = proxy.call_sync('CanSetCover', None,
+                                            Gio.DBusCallFlags.NO_AUTO_START,
+                                            500, None)[0]
+        except Exception as e:
+            print("SettingsDialog::__init__():", e)
+        if not can_set_cover:
             grid = builder.get_object('grid_behaviour')
             h = grid.child_get_property(switch_artwork_tags, 'height')
             w = grid.child_get_property(switch_artwork_tags, 'width')
