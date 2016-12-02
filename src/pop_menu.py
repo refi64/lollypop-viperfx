@@ -17,7 +17,7 @@ from threading import Thread
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import Lp, Type, TAG_EDITORS
+from lollypop.define import Lp, Type
 from lollypop.sqlcursor import SqlCursor
 from lollypop.objects import Track, Album
 from lollypop import utils
@@ -339,12 +339,22 @@ class EditMenu(BaseMenu):
         if self._object.is_web:
             self.__set_remove_action()
         else:
-            favorite = Lp().settings.get_value('tag-editor').get_string()
-            for editor in [favorite] + TAG_EDITORS:
-                if GLib.find_program_in_path(editor) is not None:
-                    self.__tag_editor = editor
-                    self.__set_edit_actions()
-                    break
+            # Check portal for tag editor
+            can_launch = False
+            try:
+                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                proxy = Gio.DBusProxy.new_sync(
+                                            bus, Gio.DBusProxyFlags.NONE, None,
+                                            'org.gnome.Lollypop.Portal',
+                                            '/org/gnome/LollypopPortal',
+                                            'org.gnome.Lollypop.Portal', None)
+                can_launch = proxy.call_sync('CanLaunchTagEditor', None,
+                                             Gio.DBusCallFlags.NO_AUTO_START,
+                                             500, None)[0]
+            except Exception as e:
+                print("EditMenu::__init__():", e)
+            if can_launch:
+                self.__set_edit_actions()
 
 #######################
 # PRIVATE             #
@@ -385,14 +395,19 @@ class EditMenu(BaseMenu):
             @param GVariant
         """
         try:
-            argv = [self.__tag_editor,
-                    GLib.filename_from_uri(self._object.uri)[0], None]
-            GLib.spawn_async_with_pipes(
-                                    None, argv, None,
-                                    GLib.SpawnFlags.SEARCH_PATH |
-                                    GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
-        except:
-            pass
+            path = GLib.filename_from_uri(self._object.uri)[0]
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            proxy = Gio.DBusProxy.new_sync(
+                                    bus, Gio.DBusProxyFlags.NONE, None,
+                                    'org.gnome.Lollypop.Portal',
+                                    '/org/gnome/LollypopPortal',
+                                    'org.gnome.Lollypop.Portal', None)
+            proxy.call('LaunchTagEditor',
+                       GLib.Variant('(s)', (path,)),
+                       Gio.DBusCallFlags.NO_AUTO_START,
+                       500, None)
+        except Exception as e:
+            print("EditMenu::__edit_tag():", e)
 
 
 class AlbumMenu(Gio.Menu):

@@ -28,14 +28,7 @@ from gi.repository import Gio, Gst, GLib
 
 from re import findall, DOTALL
 
-from lollypop.art import Art
-from lollypop.settings import Settings
-from lollypop.database import Database
-from lollypop.sqlcursor import SqlCursor
-from lollypop.objects import Album 
-from lollypop.database_albums import AlbumsDatabase
-from lollypop.database_artists import ArtistsDatabase
-from lollypop.define import ArtSize
+TAG_EDITORS = ['kid3-qt', 'exfalso', 'easytag', 'picard', 'puddletag']
 
 
 class Server:
@@ -109,6 +102,12 @@ class PortalLollypopService(Server, Gio.Application):
       <arg type="s" name="audio" direction="in" />
       <arg type="s" name="cover" direction="in" />
     </method>
+    <method name="CanLaunchTagEditor">
+      <arg type="b" name="can" direction="out" />
+    </method>
+    <method name="LaunchTagEditor">
+      <arg type="s" name="f" direction="in" />
+    </method>
     <method name="SetPopularity">
       <arg type="i" name="pop" direction="in" />
       <arg type="s" name="f" direction="in" />
@@ -125,6 +124,7 @@ class PortalLollypopService(Server, Gio.Application):
                             self,
                             application_id='org.gnome.Lollypop.Portal',
                             flags=Gio.ApplicationFlags.IS_SERVICE)
+        self.settings = Gio.Settings.new('org.gnome.Lollypop')
         self.__bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         Gio.bus_own_name_on_connection(self.__bus,
                                        self.__SEARCH_BUS,
@@ -158,9 +158,26 @@ class PortalLollypopService(Server, Gio.Application):
         GLib.spawn_sync(None, argv, None,
                         GLib.SpawnFlags.SEARCH_PATH, None)
 
+    def CanLaunchTagEditor(self):
+        favorite = self.settings.get_value('tag-editor').get_string()
+        for tag_editor in [favorite] + TAG_EDITORS:
+            if GLib.find_program_in_path(tag_editor) is not None:
+                return True
+        return False
+
+    def LaunchTagEditor(self, f):
+        favorite = self.settings.get_value('tag-editor').get_string()
+        editor = None
+        for tag_editor in [favorite] + TAG_EDITORS:
+            if GLib.find_program_in_path(tag_editor) is not None:
+                editor = tag_editor
+        if editor is not None:
+            argv = [editor, f, None]
+            GLib.spawn_sync(None, argv, None,
+                            GLib.SpawnFlags.SEARCH_PATH, None)
+
     def SetPopularity(self, pop, f):
         argv = ["kid3-cli", "-c", "set pop: %s" % pop, f, None]
-        print(argv)
         GLib.spawn_sync(None, argv, None,
                         GLib.SpawnFlags.SEARCH_PATH, None)
 

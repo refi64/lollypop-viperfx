@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 
@@ -18,7 +18,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type, TAG_EDITORS
+from lollypop.define import Lp, Type
 
 
 class HoverWidget(Gtk.EventBox):
@@ -87,7 +87,8 @@ class ContextWidget(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self.__object = object
         self.__button = button
-        self.__tag_editor = None
+
+        can_launch = False
 
         if self.__object.is_web:
             if self.__object.genre_ids == [Type.CHARTS]:
@@ -107,13 +108,20 @@ class ContextWidget(Gtk.Grid):
                 trash.set_margin_end(10)
                 trash.show()
         else:
-            # Search for tag editor
-            favorite = Lp().settings.get_value('tag-editor').get_string()
-            for editor in [favorite] + TAG_EDITORS:
-                if GLib.find_program_in_path(editor) is not None:
-                    self.__tag_editor = editor
-                    break
-            if self.__tag_editor is not None:
+            # Check portal for tag editor
+            try:
+                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                proxy = Gio.DBusProxy.new_sync(
+                                            bus, Gio.DBusProxyFlags.NONE, None,
+                                            'org.gnome.Lollypop.Portal',
+                                            '/org/gnome/LollypopPortal',
+                                            'org.gnome.Lollypop.Portal', None)
+                can_launch = proxy.call_sync('CanLaunchTagEditor', None,
+                                             Gio.DBusCallFlags.NO_AUTO_START,
+                                             500, None)[0]
+            except Exception as e:
+                print("ContextWidget::__init__():", e)
+            if can_launch:
                 edit = HoverWidget('document-properties-symbolic',
                                    self.__edit_tags)
                 edit.set_tooltip_text(_("Modify information"))
@@ -174,7 +182,7 @@ class ContextWidget(Gtk.Grid):
                     self.add(save)
             else:
                 self.add(trash)
-        elif self.__tag_editor is not None:
+        elif can_launch:
             self.add(edit)
         self.add(playlist)
         if isinstance(self.__object, Album):
@@ -220,14 +228,19 @@ class ContextWidget(Gtk.Grid):
             @param args as []
         """
         try:
-            argv = [self.__tag_editor,
-                    GLib.filename_from_uri(self.__object.uri)[0], None]
-            GLib.spawn_async_with_pipes(
-                                    None, argv, None,
-                                    GLib.SpawnFlags.SEARCH_PATH |
-                                    GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
-        except:
-            pass
+            path = GLib.filename_from_uri(self.__object.uri)[0]
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            proxy = Gio.DBusProxy.new_sync(
+                                    bus, Gio.DBusProxyFlags.NONE, None,
+                                    'org.gnome.Lollypop.Portal',
+                                    '/org/gnome/LollypopPortal',
+                                    'org.gnome.Lollypop.Portal', None)
+            proxy.call('LaunchTagEditor',
+                       GLib.Variant('(s)', (path,)),
+                       Gio.DBusCallFlags.NO_AUTO_START,
+                       500, None)
+        except Exception as e:
+            print("ContextWidget::__edit_tag():", e)
         self.__button.emit('clicked')
 
     def __add_to_queue(self, args):
