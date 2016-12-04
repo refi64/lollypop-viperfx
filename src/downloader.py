@@ -88,20 +88,14 @@ class Downloader:
                                                              False)))
 
             (status, data, tag) = f.load_contents()
-            if not status:
-                return []
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                if decode is None:
+                    return urls
+                for item in decode['items']:
+                    urls.append(item['link'])
         except Exception as e:
             print(e)
-            return []
-        try:
-            decode = json.loads(data.decode('utf-8'))
-            if decode is None:
-                return urls
-            for item in decode['items']:
-                urls.append(item['link'])
-        except:
-            pass
-
         return urls
 
 #######################
