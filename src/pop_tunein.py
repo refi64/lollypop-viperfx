@@ -389,5 +389,5 @@ class TuneinPopover(Gtk.Popover):
         """
         self.__timeout_id = None
         url = "http://opml.radiotime.com/Search.ashx?query=%s" %\
-            GLib.uri_escape_string(string, "/", False)
+            Lio.uri_escape_string(string, "/", False)
         self.populate(url)

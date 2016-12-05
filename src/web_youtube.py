@@ -88,7 +88,7 @@ class WebYouTube:
             artist = item.artists[0]
         unescaped = "%s %s" % (artist,
                                item.name)
-        search = GLib.uri_escape_string(
+        search = Lio.uri_escape_string(
                             unescaped.replace(' ', '+'),
                             None,
                             True)
@@ -176,7 +176,7 @@ class WebYouTube:
 
             unescaped = "%s %s" % (artist,
                                    item.name)
-            search = GLib.uri_escape_string(
+            search = Lio.uri_escape_string(
                             unescaped.replace(' ', '+'),
                             None,
                             True)
