@@ -20,6 +20,7 @@ from lollypop.tunein import TuneIn
 from lollypop.define import Lp, ArtSize, WindowSize
 from lollypop.art import Art
 from lollypop.utils import get_network_available
+from lollypop.lio import Lio
 
 
 class TuneinPopover(Gtk.Popover):
@@ -253,7 +254,7 @@ class TuneinPopover(Gtk.Popover):
         while self.__covers_to_download and url == self.__current_url:
             (item, image) = self.__covers_to_download.pop(0)
             try:
-                f = Gio.File.new_for_uri(item.LOGO)
+                f = Lio.File.new_for_uri(item.LOGO)
                 (status, data, tag) = f.load_contents()
                 if status:
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
@@ -299,8 +300,8 @@ class TuneinPopover(Gtk.Popover):
         # Get cover art
         try:
             cache = Art._RADIOS_PATH
-            s = Gio.File.new_for_uri(item.LOGO)
-            d = Gio.File.new_for_path(cache+"/%s.png" %
+            s = Lio.File.new_for_uri(item.LOGO)
+            d = Lio.File.new_for_path(cache+"/%s.png" %
                                       item.TEXT.replace('/', '-'))
             s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
@@ -308,7 +309,7 @@ class TuneinPopover(Gtk.Popover):
         url = item.URL
         # Tune in embbed uri in ashx files, so get content if possible
         try:
-            f = Gio.File.new_for_uri(url)
+            f = Lio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents()
             if status:
                 url = data.decode('utf-8').split('\n')[0]

@@ -19,6 +19,7 @@ from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
 from lollypop.progressbar import ProgressBar
+from lollypop.lio import Lio
 
 
 # This is a multimedia device
@@ -255,10 +256,10 @@ class Container:
         dev.id = self.__devices_index
         dev.name = "Android phone"
         dev.uri = "file:///tmp/android/"
-        d = Gio.File.new_for_uri(dev.uri+"Internal Memory")
+        d = Lio.File.new_for_uri(dev.uri+"Internal Memory")
         if not d.query_exists():
             d.make_directory_with_parents()
-        d = Gio.File.new_for_uri(dev.uri+"SD Card")
+        d = Lio.File.new_for_uri(dev.uri+"SD Card")
         if not d.query_exists():
             d.make_directory_with_parents()
         self.__devices[self.__devices_index] = dev

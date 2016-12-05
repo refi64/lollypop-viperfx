@@ -16,6 +16,7 @@ from os import mkdir, path, rename
 
 from lollypop.utils import escape
 from lollypop.define import ArtSize
+from lollypop.lio import Lio
 
 
 class InfoCache:
@@ -158,13 +159,13 @@ class InfoCache:
         content = None
         data = None
         if path.exists(filepath+".txt"):
-            f = Gio.File.new_for_path(filepath+".txt")
+            f = Lio.File.new_for_path(filepath+".txt")
             (status, content, tag) = f.load_contents()
             if not status:
                 content = None
             image_path = filepath+".jpg"
             if path.exists(image_path):
-                f = Gio.File.new_for_path(image_path)
+                f = Lio.File.new_for_path(image_path)
                 (status, data, tag) = f.load_contents()
                 if not status:
                     data = None
@@ -182,14 +183,14 @@ class InfoCache:
                                  escape(prefix),
                                  suffix)
         if content is not None:
-            f = Gio.File.new_for_path(filepath+".txt")
+            f = Lio.File.new_for_path(filepath+".txt")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             if fstream is not None:
                 fstream.write(content, None)
                 fstream.close()
         if data is None:
-            f = Gio.File.new_for_path(filepath+".jpg")
+            f = Lio.File.new_for_path(filepath+".jpg")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
@@ -213,7 +214,7 @@ class InfoCache:
         filepath = "%s/%s_%s.txt" % (InfoCache._INFO_PATH,
                                      escape(prefix),
                                      suffix)
-        f = Gio.File.new_for_path(filepath)
+        f = Lio.File.new_for_path(filepath)
         try:
             f.delete(None)
         except:
@@ -221,7 +222,7 @@ class InfoCache:
         filepath = "%s/%s_%s.jpg" % (InfoCache._INFO_PATH,
                                      escape(prefix),
                                      suffix)
-        f = Gio.File.new_for_path(filepath)
+        f = Lio.File.new_for_path(filepath)
         try:
             f.delete(None)
         except:
@@ -239,7 +240,7 @@ class InfoCache:
                                             escape(prefix),
                                             suffix,
                                             ArtSize.ARTIST_SMALL*scale*i)
-            f = Gio.File.new_for_path(filepath)
+            f = Lio.File.new_for_path(filepath)
             try:
                 f.delete(None)
             except:

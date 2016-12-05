@@ -20,6 +20,7 @@ from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
 from lollypop.utils import noaccents, get_network_available
+from lollypop.lio import Lio
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -434,7 +435,7 @@ class SearchPopover(Gtk.Popover):
             @param row as SearchRow
         """
         try:
-            f = Gio.File.new_for_uri(uri)
+            f = Lio.File.new_for_uri(uri)
             (status, data, tag) = f.load_contents(None)
             if status:
                 stream = Gio.MemoryInputStream.new_from_data(data,

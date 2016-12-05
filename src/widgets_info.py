@@ -22,6 +22,7 @@ except:
 from lollypop.define import Lp
 from lollypop.utils import get_network_available
 from lollypop.cache import InfoCache
+from lollypop.lio import Lio
 
 
 class InfoContent(Gtk.Stack):
@@ -88,7 +89,7 @@ class InfoContent(Gtk.Stack):
             stream = None
             if content is not None:
                 if image_url is not None:
-                    f = Gio.File.new_for_uri(image_url)
+                    f = Lio.File.new_for_uri(image_url)
                     (status, data, tag) = f.load_contents(self.__cancel)
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,

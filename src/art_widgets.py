@@ -18,6 +18,7 @@ from gettext import gettext as _
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import get_network_available
+from lollypop.lio import Lio
 
 
 class ArtworkSearch(Gtk.Bin):
@@ -95,7 +96,7 @@ class ArtworkSearch(Gtk.Bin):
             uris = Lp().art.get_album_artworks(self.__album)
             for uri in uris:
                 try:
-                    f = Gio.File.new_for_uri(uri)
+                    f = Lio.File.new_for_uri(uri)
                     (status, data, tag) = f.load_contents()
                     self.__add_pixbuf(data)
                 except Exception as e:
@@ -139,7 +140,7 @@ class ArtworkSearch(Gtk.Bin):
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
-                f = Gio.File.new_for_path(dialog.get_filename())
+                f = Lio.File.new_for_path(dialog.get_filename())
                 (status, data, tag) = f.load_contents()
                 if not status:
                     raise
@@ -245,7 +246,7 @@ class ArtworkSearch(Gtk.Bin):
         if urls and self.__loading:
             url = urls.pop(0)
             try:
-                f = Gio.File.new_for_uri(url)
+                f = Lio.File.new_for_uri(url)
                 (status, data, tag) = f.load_contents()
                 if status:
                     GLib.idle_add(self.__add_pixbuf, data)

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib
 
 from threading import Thread
 from time import time
@@ -21,6 +21,7 @@ from lollypop.objects import Track, Album
 from lollypop.web_youtube import WebYouTube
 from lollypop.web_jgm90 import WebJmg90
 from lollypop.define import Lp, DbPersistent, Type
+from lollypop.lio import Lio
 
 
 class Web:
@@ -192,7 +193,7 @@ class Web:
             @param item as SearchItem
             @param album id as int
         """
-        f = Gio.File.new_for_uri(item.cover)
+        f = Lio.File.new_for_uri(item.cover)
         (status, data, tag) = f.load_contents(None)
         if status:
             Lp().art.save_album_artwork(data, album_id)

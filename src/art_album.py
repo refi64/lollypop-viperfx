@@ -20,6 +20,7 @@ from lollypop.tagreader import TagReader
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import escape, is_readonly
+from lollypop.lio import Lio
 
 
 class AlbumArt(BaseArt, TagReader):
@@ -51,7 +52,7 @@ class AlbumArt(BaseArt, TagReader):
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            f = Gio.File.new_for_path(cache_path_jpg)
+            f = Lio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 return cache_path_jpg
             else:
@@ -88,7 +89,7 @@ class AlbumArt(BaseArt, TagReader):
                 album.uri + "/" + filename
             ]
             for uri in uris:
-                f = Gio.File.new_for_uri(uri)
+                f = Lio.File.new_for_uri(uri)
                 if f.query_exists():
                     return uri
         except:
@@ -104,7 +105,7 @@ class AlbumArt(BaseArt, TagReader):
         # Folders with many albums, get_album_artwork_uri()
         if Lp().albums.get_uri_count(album.uri) > 1:
             return None
-        f = Gio.File.new_for_uri(album.uri)
+        f = Lio.File.new_for_uri(album.uri)
         infos = f.enumerate_children('standard::name',
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                      None)
@@ -125,7 +126,7 @@ class AlbumArt(BaseArt, TagReader):
         if album.is_web:
             return []
 
-        f = Gio.File.new_for_uri(album.uri)
+        f = Lio.File.new_for_uri(album.uri)
         infos = f.enumerate_children('standard::name',
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                      None)
@@ -153,7 +154,7 @@ class AlbumArt(BaseArt, TagReader):
 
         try:
             # Look in cache
-            f = Gio.File.new_for_path(cache_path_jpg)
+            f = Lio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
                                                                 size,
@@ -164,7 +165,7 @@ class AlbumArt(BaseArt, TagReader):
                     uri = self.get_album_artwork_uri(album)
                     data = None
                     if uri is not None:
-                        f = Gio.File.new_for_uri(uri)
+                        f = Lio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
                         ratio = self._respect_ratio(uri)
                         stream = Gio.MemoryInputStream.new_from_data(data,
@@ -188,7 +189,7 @@ class AlbumArt(BaseArt, TagReader):
                     uri = self.get_first_album_artwork(album)
                     # Look in album folder
                     if uri is not None:
-                        f = Gio.File.new_for_uri(uri)
+                        f = Lio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
                         ratio = self._respect_ratio(uri)
                         stream = Gio.MemoryInputStream.new_from_data(data,
@@ -276,12 +277,12 @@ class AlbumArt(BaseArt, TagReader):
             elif uri_count > 1:
                 arturi = album.uri + "/" + filename
                 favorite_uri = album.uri + "/" + self.__favorite
-                favorite = Gio.File.new_for_uri(favorite_uri)
+                favorite = Lio.File.new_for_uri(favorite_uri)
                 if favorite.query_exists():
                     favorite.trash()
             else:
                 arturi = album.uri + "/" + self.__favorite
-            f = Gio.File.new_for_uri(arturi)
+            f = Lio.File.new_for_uri(arturi)
             # Update cover file if exists even if we have written to tags
             if not save_to_tags or f.query_exists():
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
@@ -292,8 +293,8 @@ class AlbumArt(BaseArt, TagReader):
                                                                True,
                                                                None)
                 pixbuf.savev(store_path, "jpeg", ["quality"], ["90"])
-                dst = Gio.File.new_for_uri(arturi)
-                src = Gio.File.new_for_path(store_path)
+                dst = Lio.File.new_for_uri(arturi)
+                src = Lio.File.new_for_path(store_path)
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
                 del pixbuf
                 self.clean_album_cache(album)
@@ -315,7 +316,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         try:
             for uri in self.get_album_artworks(album):
-                f = Gio.File.new_for_uri(uri)
+                f = Lio.File.new_for_uri(uri)
                 try:
                     f.trash()
                 except:
@@ -356,7 +357,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         cache_name = self.get_album_cache_name(album)
         try:
-            d = Gio.File.new_for_path(self._CACHE_PATH)
+            d = Lio.File.new_for_path(self._CACHE_PATH)
             infos = d.enumerate_children(
                 'standard::name',
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -431,7 +432,7 @@ class AlbumArt(BaseArt, TagReader):
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], ["90"])
         del pixbuf
-        f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
+        f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)
         if f.query_exists():
             for uri in Lp().albums.get_track_uris(album.id, [], []):
@@ -453,7 +454,7 @@ class AlbumArt(BaseArt, TagReader):
                 except:
                     print("You are missing lollypop-portal: "
                           "https://github.com/gnumdk/lollypop-portal")
-            f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
+            f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                       self._CACHE_PATH)
             f.delete()
             self.clean_album_cache(album)

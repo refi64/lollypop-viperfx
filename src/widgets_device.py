@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GObject, Pango
+from gi.repository import Gtk, GLib, GObject, Pango
 
 from gettext import gettext as _
 from threading import Thread
@@ -20,6 +20,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.define import Lp, Type
 from lollypop.objects import Album
+from lollypop.lio import Lio
 
 
 # FIXME This class should not inherit MtpSync
@@ -121,7 +122,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param uri as str
         """
         self._uri = uri
-        d = Gio.File.new_for_uri(uri)
+        d = Lio.File.new_for_uri(uri)
         try:
             if not d.query_exists():
                 d.make_directory_with_parents()
@@ -224,7 +225,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         error_text = _("Unknown error while syncing,"
                        " try to reboot your device")
         try:
-            d = Gio.File.new_for_uri(self._uri)
+            d = Lio.File.new_for_uri(self._uri)
             info = d.query_filesystem_info('filesystem::free')
             free = info.get_attribute_as_string('filesystem::free')
 
@@ -297,7 +298,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if playlists and not self.__stop:
             playlist = playlists.pop(0)
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
-            playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
+            playlist_obj = Lio.File.new_for_uri(self._uri + "/" +
                                                 playlist_name + '.m3u')
             selected = playlist_obj.query_exists()
             self.__model.append([selected, playlist[1], playlist[0]])

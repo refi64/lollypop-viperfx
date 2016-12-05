@@ -21,6 +21,7 @@ from lollypop.search_spotify import SpotifySearch
 from lollypop.web import Web
 from lollypop.define import DbPersistent, Lp
 from lollypop.utils import debug, get_network_available
+from lollypop.lio import Lio
 
 
 class SpotifyCharts:
@@ -111,7 +112,7 @@ class SpotifyCharts:
         """
         ids = []
         try:
-            f = Gio.File.new_for_uri(url)
+            f = Lio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self._stop:
                 return []

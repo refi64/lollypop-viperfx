@@ -14,6 +14,7 @@ from gi.repository import Gio, GLib
 
 from lollypop.define import Lp
 from lollypop.utils import is_audio
+from lollypop.lio import Lio
 
 
 class Inotify:
@@ -39,7 +40,7 @@ class Inotify:
         if uri in self.__monitors:
             return
         try:
-            f = Gio.File.new_for_uri(uri)
+            f = Lio.File.new_for_uri(uri)
             monitor = f.monitor_directory(Gio.FileMonitorFlags.NONE,
                                           None)
             if monitor is not None:
@@ -68,7 +69,7 @@ class Inotify:
         # Run update delayed
         else:
             uri = changed_file.get_uri()
-            d = Gio.File.new_for_uri(uri)
+            d = Lio.File.new_for_uri(uri)
             if d.query_exists():
                 # If a directory, monitor it
                 if changed_file.query_file_type(

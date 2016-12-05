@@ -15,6 +15,7 @@ from gi.repository import GObject, GLib, Gio, TotemPlParser
 import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
+from lollypop.lio import Lio
 
 
 class Radios(GObject.GObject):
@@ -39,7 +40,7 @@ class Radios(GObject.GObject):
             Init playlists manager
         """
         GObject.GObject.__init__(self)
-        f = Gio.File.new_for_path(self.DB_PATH)
+        f = Lio.File.new_for_path(self.DB_PATH)
         try_import = not f.query_exists()
         # Create db schema
         try:
@@ -51,7 +52,7 @@ class Radios(GObject.GObject):
 
         # We import radios from lollypop < 0.9.60
         if try_import:
-            d = Gio.File.new_for_path(self.LOCAL_PATH + "/radios")
+            d = Lio.File.new_for_path(self.LOCAL_PATH + "/radios")
             infos = d.enumerate_children(
                 'standard::name',
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,

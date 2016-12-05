@@ -10,13 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib
 
 import json
 from re import sub
 
 from lollypop.define import Lp, GOOGLE_API_ID
 from lollypop.utils import escape
+from lollypop.lio import Lio
 
 
 class WebYouTube:
@@ -93,7 +94,7 @@ class WebYouTube:
                             True)
         key = Lp().settings.get_value('cs-api-key').get_string()
         try:
-            f = Gio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
+            f = Lio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
                                      "search?part=snippet&q=%s&"
                                      "type=video&key=%s&cx=%s" % (
                                                               search,
@@ -179,7 +180,7 @@ class WebYouTube:
                             unescaped.replace(' ', '+'),
                             None,
                             True)
-            f = Gio.File.new_for_uri("https://www.youtube.com/"
+            f = Lio.File.new_for_uri("https://www.youtube.com/"
                                      "results?search_query=%s" % search)
             (status, data, tag) = f.load_contents(None)
             if not status:

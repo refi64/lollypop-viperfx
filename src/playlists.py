@@ -22,6 +22,7 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
+from lollypop.lio import Lio
 
 
 class Playlists(GObject.GObject):
@@ -307,7 +308,7 @@ class Playlists(GObject.GObject):
         """
         try:
             uri = uri.strip('\n\r')
-            f = Gio.File.new_for_uri(uri)
+            f = Lio.File.new_for_uri(uri)
             if f.query_exists():
                 if f.query_file_type(Gio.FileQueryInfoFlags.NONE,
                                      None) == Gio.FileType.DIRECTORY:
@@ -316,7 +317,7 @@ class Playlists(GObject.GObject):
                     while walk_uris:
                         uri = walk_uris.pop(0)
                         try:
-                            d = Gio.File.new_for_uri(uri)
+                            d = Lio.File.new_for_uri(uri)
                             infos = d.enumerate_children(
                                 'standard::name,standard::type',
                                 Gio.FileQueryInfoFlags.NONE,

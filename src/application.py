@@ -50,6 +50,7 @@ from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import Playlists
 from lollypop.objects import Album
 from lollypop.collectionscanner import CollectionScanner
+from lollypop.lio import Lio
 
 
 class Application(Gtk.Application):
@@ -111,10 +112,10 @@ class Application(Gtk.Application):
         """
         self.__is_fs = False
         if Gtk.get_minor_version() > 18:
-            cssProviderFile = Gio.File.new_for_uri(
+            cssProviderFile = Lio.File.new_for_uri(
                 'resource:///org/gnome/Lollypop/application.css')
         else:
-            cssProviderFile = Gio.File.new_for_uri(
+            cssProviderFile = Lio.File.new_for_uri(
                 'resource:///org/gnome/Lollypop/application-legacy.css')
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
@@ -322,14 +323,21 @@ class Application(Gtk.Application):
             Init proxy setting env
         """
         try:
-            settings = Gio.Settings.new('org.gnome.system.proxy.http')
-            h = settings.get_value('host').get_string()
-            p = settings.get_value('port').get_int32()
-            if h != '' and p != 0:
-                GLib.setenv('http_proxy', "%s:%s" % (h, p), True)
-                GLib.setenv('https_proxy', "%s:%s" % (h, p), True)
-        except:
-            pass
+            proxy = Gio.Settings.new('org.gnome.system.proxy')
+            https = Gio.Settings.new('org.gnome.system.proxy.https')
+            mode = proxy.get_value('mode').get_string()
+            if mode != 'none':
+                h = https.get_value('host').get_string()
+                p = https.get_value('port').get_int32()
+                GLib.setenv('http_proxy', "http://%s:%s" % (h, p), True)
+                GLib.setenv('https_proxy', "http://%s:%s" % (h, p), True)
+                from urllib import request
+                handler = request.ProxyHandler(
+                                             {'http': "http://%s:%s" % (h, p)})
+                opener = request.build_opener(handler)
+                request.install_opener(opener)
+        except Exception as e:
+            print("Application::__init_proxy()", e)
 
     def __on_command_line(self, app, app_cmd_line):
         """

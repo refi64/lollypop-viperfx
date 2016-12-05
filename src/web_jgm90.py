@@ -10,11 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib
 
 import json
 
 from lollypop.utils import escape
+from lollypop.lio import Lio
 
 
 class WebJmg90:
@@ -29,7 +30,7 @@ class WebJmg90:
             @return content uri as str/None
         """
         try:
-            f = Gio.File.new_for_uri(uri)
+            f = Lio.File.new_for_uri(uri)
             (status, data, tag) = f.load_contents(None)
             if status:
                 return data.decode('utf-8')
@@ -80,7 +81,7 @@ class WebJmg90:
                                         None,
                                         True)
         try:
-            f = Gio.File.new_for_uri("http://app.jgm90.com/cmapi/search/"
+            f = Lio.File.new_for_uri("http://app.jgm90.com/cmapi/search/"
                                      "%s/1/10" % search)
             (status, data, tag) = f.load_contents(None)
             if status:

@@ -12,9 +12,10 @@
 
 from gi.repository import GLib, Gio
 
-from lollypop.search_item import SearchItem
-
 import json
+
+from lollypop.search_item import SearchItem
+from lollypop.lio import Lio
 
 
 class SpotifySearch:
@@ -36,7 +37,7 @@ class SpotifySearch:
         try:
             formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=track" % formated)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
@@ -78,7 +79,7 @@ class SpotifySearch:
             @return album id as str
         """
         try:
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "tracks/%s" % track_id)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
@@ -94,7 +95,7 @@ class SpotifySearch:
             @return SearchItem
         """
         try:
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "albums/%s" % album_id)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
@@ -142,7 +143,7 @@ class SpotifySearch:
             # Read album list
             formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % formated)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
@@ -155,7 +156,7 @@ class SpotifySearch:
                     if item['name'].lower() in artists:
                         continue
                     artists.append(item['name'].lower())
-                    s = Gio.File.new_for_uri("https://api.spotify.com/"
+                    s = Lio.File.new_for_uri("https://api.spotify.com/"
                                              "v1/artists/%s/albums" %
                                              artist_id)
                     (status, data, tag) = s.load_contents(self._cancel)
@@ -175,7 +176,7 @@ class SpotifySearch:
                             album_item.ex_id = item['id']
 
                     for album_item in album_items:
-                        s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
+                        s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                                  "albums/%s" %
                                                  album_item.ex_id)
                         (status, data, tag) = s.load_contents(self._cancel)
@@ -216,7 +217,7 @@ class SpotifySearch:
             # Read album list
             formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=album" % formated)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
@@ -228,7 +229,7 @@ class SpotifySearch:
                     album_item.is_track = False
                     album_item.cover = item['images'][0]['url']
                     album_item.smallcover = item['images'][2]['url']
-                    s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
+                    s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                              "albums/%s" % item['id'])
                     (status, data, tag) = s.load_contents(self._cancel)
                     if status:

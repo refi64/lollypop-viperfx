@@ -24,6 +24,7 @@ from lollypop.web import Web
 from lollypop.define import DbPersistent, Lp
 from lollypop.utils import debug, get_network_available
 from lollypop.search_item import SearchItem
+from lollypop.lio import Lio
 
 
 class ItunesCharts:
@@ -218,7 +219,7 @@ class ItunesCharts:
         try:
             debug("ItunesCharts::__get_album(): %s" % itunes_id)
             url = self.__INFO % (itunes_id, language)
-            f = Gio.File.new_for_uri(url)
+            f = Lio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return
@@ -260,7 +261,7 @@ class ItunesCharts:
         """
         items = []
         try:
-            f = Gio.File.new_for_uri(url)
+            f = Lio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return []

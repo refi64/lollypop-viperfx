@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib
 
 from threading import Thread
 import json
@@ -18,6 +18,7 @@ import json
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, GOOGLE_API_ID, Type
 from lollypop.utils import debug, get_network_available
+from lollypop.lio import Lio
 
 
 class Downloader:
@@ -78,7 +79,7 @@ class Downloader:
         cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
 
         try:
-            f = Gio.File.new_for_uri("https://www.googleapis.com/"
+            f = Lio.File.new_for_uri("https://www.googleapis.com/"
                                      "customsearch/v1?key=%s&cx=%s"
                                      "&q=%s&searchType=image" %
                                      (cs_api_key,
@@ -133,7 +134,7 @@ class Downloader:
         try:
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://api.deezer.com/search/artist/?"
+            s = Lio.File.new_for_uri("https://api.deezer.com/search/artist/?"
                                      "q=%s&output=json&index=0&limit=1&" %
                                      artist_formated)
             (status, data, tag) = s.load_contents()
@@ -154,7 +155,7 @@ class Downloader:
         try:
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
             (status, data, tag) = s.load_contents()
             if status:
@@ -178,7 +179,7 @@ class Downloader:
         image = None
         try:
             album_formated = GLib.uri_escape_string(album, None, True)
-            s = Gio.File.new_for_uri("https://api.deezer.com/search/album/?"
+            s = Lio.File.new_for_uri("https://api.deezer.com/search/album/?"
                                      "q=%s&output=json" %
                                      album_formated)
             (status, data, tag) = s.load_contents()
@@ -190,7 +191,7 @@ class Downloader:
                         url = item['cover_xl']
                         break
                 if url is not None:
-                    s = Gio.File.new_for_uri(url)
+                    s = Lio.File.new_for_uri(url)
                     (status, image, tag) = s.load_contents()
         except Exception as e:
             print("Downloader::__get_deezer_album_artwork: %s" % e)
@@ -209,7 +210,7 @@ class Downloader:
         try:
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
             (status, data, tag) = s.load_contents()
             if status:
@@ -218,7 +219,7 @@ class Downloader:
                     artists_spotify_ids.append(item['id'])
 
             for artist_spotify_id in artists_spotify_ids:
-                s = Gio.File.new_for_uri("https://api.spotify.com/v1/artists/"
+                s = Lio.File.new_for_uri("https://api.spotify.com/v1/artists/"
                                          "%s/albums" % artist_spotify_id)
                 (status, data, tag) = s.load_contents()
                 if status:
@@ -230,7 +231,7 @@ class Downloader:
                             break
 
                     if url is not None:
-                        s = Gio.File.new_for_uri(url)
+                        s = Lio.File.new_for_uri(url)
                         (status, image, tag) = s.load_contents()
                     break
         except Exception as e:
@@ -250,7 +251,7 @@ class Downloader:
         try:
             album_formated = GLib.uri_escape_string(
                                 album, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://itunes.apple.com/search"
+            s = Lio.File.new_for_uri("https://itunes.apple.com/search"
                                      "?entity=album&term=%s" % album_formated)
             (status, data, tag) = s.load_contents()
             if status:
@@ -259,7 +260,7 @@ class Downloader:
                     if item['artistName'].lower() == artist.lower():
                         url = item['artworkUrl60'].replace('60x60',
                                                            '512x512')
-                        s = Gio.File.new_for_uri(url)
+                        s = Lio.File.new_for_uri(url)
                         (status, image, tag) = s.load_contents()
                         break
         except Exception as e:
@@ -281,7 +282,7 @@ class Downloader:
                 last_album = Lp().lastfm.get_album(artist, album)
                 url = last_album.get_cover_image(4)
                 if url is not None:
-                    s = Gio.File.new_for_uri(url)
+                    s = Lio.File.new_for_uri(url)
                     (status, image, tag) = s.load_contents()
             except Exception as e:
                 print("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
@@ -312,7 +313,7 @@ class Downloader:
                     method = getattr(self, helper)
                     (url, content) = method(artist)
                     if url is not None:
-                        s = Gio.File.new_for_uri(url)
+                        s = Lio.File.new_for_uri(url)
                         (status, data, tag) = s.load_contents()
                         if status:
                             artwork_set = True

@@ -22,6 +22,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.database_history import History
 from lollypop.utils import is_audio, is_pls, debug
+from lollypop.lio import Lio
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -114,7 +115,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             uri = walk_uris.pop(0)
             empty = True
             try:
-                d = Gio.File.new_for_uri(uri)
+                d = Lio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
                     'standard::name,standard::type',
                     Gio.FileQueryInfoFlags.NONE,
@@ -131,7 +132,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     walk_uris.append(child_uri)
                 else:
                     try:
-                        f = Gio.File.new_for_uri(child_uri)
+                        f = Lio.File.new_for_uri(child_uri)
                         if is_pls(f):
                             pass
                         elif is_audio(f):
@@ -200,7 +201,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     if self.__thread is None:
                         return
                     GLib.idle_add(self.__update_progress, i, count)
-                    f = Gio.File.new_for_uri(uri)
+                    f = Lio.File.new_for_uri(uri)
                     info = f.query_info('time::modified',
                                         Gio.FileQueryInfoFlags.NONE,
                                         None)
@@ -254,7 +255,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param mtime as int
             @return track id as int
         """
-        f = Gio.File.new_for_uri(uri)
+        f = Lio.File.new_for_uri(uri)
         debug("CollectionScanner::add2db(): Read tags")
         info = self.get_info(uri)
         tags = info.get_tags()
@@ -335,7 +336,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             Delete track from db
             @param uri as str
         """
-        f = Gio.File.new_for_uri(uri)
+        f = Lio.File.new_for_uri(uri)
         name = f.get_basename()
         track_id = Lp().tracks.get_id_by_uri(uri)
         album_id = Lp().tracks.get_album_id(track_id)

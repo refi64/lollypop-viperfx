@@ -19,6 +19,7 @@
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, GLib
 
 from lollypop.define import ArtSize, Lp
+from lollypop.lio import Lio
 
 
 class BaseArt(GObject.GObject):
@@ -59,7 +60,7 @@ class BaseArt(GObject.GObject):
         """
         try:
             filepath = self._STORE_PATH + "/" + filename + ".jpg"
-            f = Gio.File.new_for_path(filepath)
+            f = Lio.File.new_for_path(filepath)
             if f.query_exists():
                 f.delete()
         except Exception as e:
@@ -77,7 +78,7 @@ class BaseArt(GObject.GObject):
         try:
             # First look in cache
             cache_path_jpg = self._get_default_icon_path(size, icon_name)
-            f = Gio.File.new_for_path(cache_path_jpg)
+            f = Lio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                                                                 cache_path_jpg,
@@ -130,7 +131,7 @@ class BaseArt(GObject.GObject):
             @param uri as str
             @return respect aspect ratio as bool
         """
-        f = Gio.File.new_for_uri(uri)
+        f = Lio.File.new_for_uri(uri)
         (status, data, tag) = f.load_contents(None)
         stream = Gio.MemoryInputStream.new_from_data(data,
                                                      None)
@@ -151,7 +152,7 @@ class BaseArt(GObject.GObject):
         """
             Create store dir
         """
-        d = Gio.File.new_for_path(self._STORE_PATH)
+        d = Lio.File.new_for_path(self._STORE_PATH)
         if not d.query_exists():
             try:
                 d.make_directory_with_parents()
@@ -162,7 +163,7 @@ class BaseArt(GObject.GObject):
         """
             Create cache dir
         """
-        d = Gio.File.new_for_path(self._CACHE_PATH)
+        d = Lio.File.new_for_path(self._CACHE_PATH)
         if not d.query_exists():
             try:
                 d.make_directory_with_parents()

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib
 
 import sqlite3
 
@@ -20,6 +20,7 @@ from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
 from lollypop.utils import noaccents
+from lollypop.lio import Lio
 
 
 class Database:
@@ -86,12 +87,12 @@ class Database:
         """
             Create database tables or manage update if needed
         """
-        f = Gio.File.new_for_path(self.DB_PATH)
+        f = Lio.File.new_for_path(self.DB_PATH)
         if not f.query_exists():
             db_version = Lp().settings.get_value('db-version').get_int32()
             upgrade = DatabaseUpgrade(db_version, self)
             try:
-                d = Gio.File.new_for_path(self._LOCAL_PATH)
+                d = Lio.File.new_for_path(self._LOCAL_PATH)
                 if not d.query_exists():
                     d.make_directory_with_parents()
                 # Create db schema
@@ -120,7 +121,7 @@ class Database:
         """
         db_version = Lp().settings.get_value('db-version').get_int32()
         upgrade = DatabaseUpgrade(db_version, self)
-        f = Gio.File.new_for_path(self.DB_PATH)
+        f = Lio.File.new_for_path(self.DB_PATH)
         if f.query_exists():
             upgrade.do_db_upgrade()
             Lp().settings.set_value('db-version',

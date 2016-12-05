@@ -22,6 +22,7 @@ from lollypop.pop_info import InfoPopover
 from lollypop.cache import InfoCache
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
+from lollypop.lio import Lio
 
 
 class ArtistView(ArtistAlbumsView):
@@ -290,7 +291,7 @@ class ArtistView(ArtistAlbumsView):
                 for suffix in ["lastfm", "spotify", "wikipedia"]:
                     uri = InfoCache.get_artwork(artist, suffix, size)
                     if uri is not None:
-                        f = Gio.File.new_for_path(uri)
+                        f = Lio.File.new_for_path(uri)
                         (status, data, tag) = f.load_contents(None)
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)

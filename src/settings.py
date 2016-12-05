@@ -27,6 +27,7 @@ from lollypop.database import Database
 from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
 from lollypop.utils import get_network_available
+from lollypop.lio import Lio
 
 
 class Settings(Gio.Settings):
@@ -694,7 +695,7 @@ class SettingsDialog:
         if track_ids:
             track_id = track_ids.pop(0)
             uri = Lp().tracks.get_uri(track_id)
-            f = Gio.File.new_for_uri(uri)
+            f = Lio.File.new_for_uri(uri)
             name = f.get_basename()
             album_id = Lp().tracks.get_album_id(track_id)
             popularity = Lp().tracks.get_popularity(track_id)

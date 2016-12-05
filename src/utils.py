@@ -18,6 +18,7 @@ import unicodedata
 
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
+from lollypop.lio import Lio
 
 
 def get_network_available():
@@ -152,7 +153,7 @@ def is_readonly(uri):
     """
         Check if uri is readonly
     """
-    f = Gio.File.new_for_uri(uri)
+    f = Lio.File.new_for_uri(uri)
     info = f.query_info('access::can-write',
                         Gio.FileQueryInfoFlags.NONE,
                         None)

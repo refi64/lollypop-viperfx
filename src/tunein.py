@@ -10,10 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
-
 import xml.etree.ElementTree as xml
+
 from lollypop.utils import get_network_available
+from lollypop.lio import Lio
 
 
 class TuneItem:
@@ -41,7 +41,7 @@ class TuneIn:
         items = []
         if not get_network_available():
             raise
-        f = Gio.File.new_for_uri(url)
+        f = Lio.File.new_for_uri(url)
         (status, data, tag) = f.load_contents()
         if not status:
             raise

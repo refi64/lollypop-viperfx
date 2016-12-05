@@ -30,6 +30,7 @@ app_PYTHON = \
     inhibitor_legacy.py\
     inotify.py\
     lastfm.py\
+    lio.py\
     list.py\
     loader.py\
     localized.py\
