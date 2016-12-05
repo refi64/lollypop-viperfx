@@ -15,6 +15,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
+            <style>
+              <class name="black"/>
+            </style>
           </object>
           <packing>
             <property name="index">-1</property>
