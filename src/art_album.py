@@ -241,6 +241,7 @@ class AlbumArt(BaseArt, TagReader):
             @param album id as int
         """
         try:
+            album = Album(album_id)
             arturi = None
             # Check portal for kid3-cli
             can_set_cover = False
@@ -259,8 +260,7 @@ class AlbumArt(BaseArt, TagReader):
                 print("You are missing lollypop-portal: "
                       "https://github.com/gnumdk/lollypop-portal")
             save_to_tags = Lp().settings.get_value('save-to-tags') and\
-                can_set_cover
-            album = Album(album_id)
+                can_set_cover and not album.is_web
 
             uri_count = Lp().albums.get_uri_count(album.uri)
             filename = self.get_album_cache_name(album) + ".jpg"
