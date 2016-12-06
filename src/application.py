@@ -331,11 +331,6 @@ class Application(Gtk.Application):
                 p = https.get_value('port').get_int32()
                 GLib.setenv('http_proxy', "http://%s:%s" % (h, p), True)
                 GLib.setenv('https_proxy', "http://%s:%s" % (h, p), True)
-                from urllib import request
-                handler = request.ProxyHandler(
-                                             {'http': "http://%s:%s" % (h, p)})
-                opener = request.build_opener(handler)
-                request.install_opener(opener)
         except Exception as e:
             print("Application::__init_proxy()", e)
 
