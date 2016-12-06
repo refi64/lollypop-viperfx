@@ -131,19 +131,22 @@ class BaseWidget:
             @param set as bool
         """
         if self._lock_overlay or\
-           self._show_overlay == set or\
-           (set is True and Lp().player.locked):
+           self._show_overlay == set:
             return
         self._show_overlay = set
         self.emit('overlayed', set)
         if set:
+            if Lp().player.locked:
+                opacity = 0.2
+            else:
+                opacity = 1
             if self._play_button is not None:
-                self._play_button.set_opacity(1)
+                self._play_button.set_opacity(opacity)
                 self._play_button.get_style_context().add_class(
                                                            self._rounded_class)
                 self._play_button.show()
             if self._play_all_button is not None:
-                self._play_all_button.set_opacity(1)
+                self._play_all_button.set_opacity(opacity)
                 self._play_all_button.get_style_context().add_class(
                                                            self._squared_class)
                 self._set_play_all_image()
@@ -155,7 +158,7 @@ class BaseWidget:
                 self._artwork_button.show()
             if self._action_button is not None:
                 self._show_append(not Lp().player.has_album(self._album))
-                self._action_button.set_opacity(1)
+                self._action_button.set_opacity(opacity)
                 self._action_button.get_style_context().add_class(
                                                        self._squared_class)
                 self._action_button.show()
@@ -226,6 +229,8 @@ class BaseWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        if Lp().player.locked:
+            return True
         Lp().player.play_album(self._album)
         self._show_append(False)
         return True
@@ -250,6 +255,8 @@ class BaseWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        if Lp().player.locked:
+            return True
         if Lp().player.has_album(self._album):
             if Lp().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
@@ -515,8 +522,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param set as bool
         """
         if self._lock_overlay or\
-           self._show_overlay == set or\
-           (set is True and Lp().player.locked):
+           self._show_overlay == set:
             return
         if set:
             # Play button
@@ -625,6 +631,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        if Lp().player.locked:
+            return True
         self._show_append(False)
         if Lp().player.is_party:
             Lp().player.set_party(False)

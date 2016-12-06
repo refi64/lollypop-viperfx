@@ -173,8 +173,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             @param set as bool
         """
         if self._lock_overlay or\
-           self._show_overlay == set or\
-           (set is True and Lp().player.locked):
+           self._show_overlay == set:
             return
         if set:
             # Play button
@@ -262,6 +261,8 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        if Lp().player.locked:
+            return True
         url = self.__radios_manager.get_url(self.__name)
         if url:
             track = Track()
