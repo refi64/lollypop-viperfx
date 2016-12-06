@@ -632,10 +632,6 @@ class SearchPopover(Gtk.Popover):
                     row.destroy()
                 else:
                     Lp().player.load(Track(row.id))
-            elif Gtk.get_minor_version() > 16:
-                popover = AlbumPopover(row.id, [], [])
-                popover.set_relative_to(row)
-                popover.show()
             else:
                 t = Thread(target=self.__play_search, args=(row.id,
                                                             row.is_track))
