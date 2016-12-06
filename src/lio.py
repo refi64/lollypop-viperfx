@@ -44,5 +44,5 @@ class Lio:
                 else:
                     return Gio.File.load_contents(self, cancellable)
             except Exception as e:
-                print(e)
-                return (False, None, "")
+                print(e, uri)
+                raise e
