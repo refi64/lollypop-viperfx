@@ -161,9 +161,9 @@ class SettingsDialog:
             can_set_cover = proxy.call_sync('CanSetCover', None,
                                             Gio.DBusCallFlags.NO_AUTO_START,
                                             500, None)[0]
-        except:
+        except Exception as e:
             print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal")
+                  "https://github.com/gnumdk/lollypop-portal", e)
         if not can_set_cover:
             grid = builder.get_object('grid_behaviour')
             h = grid.child_get_property(switch_artwork_tags, 'height')
@@ -564,9 +564,9 @@ class SettingsDialog:
                                   Gio.DBusCallFlags.NO_AUTO_START,
                                   500, None)
             return ret[0]
-        except:
+        except Exception as e:
             print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal")
+                  "https://github.com/gnumdk/lollypop-portal", e)
         return ret
 
     def __set_outputs(self, combo):

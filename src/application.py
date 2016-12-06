@@ -314,9 +314,9 @@ class Application(Gtk.Application):
                                    'org.gnome.Lollypop.Portal',
                                    '/org/gnome/LollypopPortal',
                                    'org.gnome.Lollypop.Portal', None)
-        except:
+        except Exception as e:
             print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal")
+                  "https://github.com/gnumdk/lollypop-portal", e)
 
     def __init_proxy(self):
         """

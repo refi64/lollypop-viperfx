@@ -240,9 +240,9 @@ class ContextWidget(Gtk.Grid):
                        GLib.Variant('(s)', (path,)),
                        Gio.DBusCallFlags.NO_AUTO_START,
                        500, None)
-        except:
+        except Exception as e:
             print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal")
+                  "https://github.com/gnumdk/lollypop-portal", e)
         self.__button.emit('clicked')
 
     def __add_to_queue(self, args):
