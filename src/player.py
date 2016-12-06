@@ -465,7 +465,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self._prev_track = LinearPlayer.prev(self)
             self.emit('prev-changed')
         except Exception as e:
-            print("Player::set_prev", e)
+            print("Player::set_prev():", e)
 
     def set_next(self, force=False):
         """
@@ -507,7 +507,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._next_track = next_track
             self.emit('next-changed')
         except Exception as e:
-            print("Player::set_next", e)
+            print("Player::set_next():", e)
 
     def skip_album(self):
         """
