@@ -393,6 +393,7 @@ class ToolbarEnd(Gtk.Bin):
         if not self.__next_was_inhibited:
             self.__next_popover.inhibit(False)
         if self.__next_popover.should_be_shown():
+            self.__next_popover.set_relative_to(self.__grid_next)
             self.__next_popover.show()
 
     def __on_show(self, widget):
