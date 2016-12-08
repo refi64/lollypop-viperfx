@@ -30,9 +30,10 @@ from lollypop.art import Art
 from lollypop.settings import Settings
 from lollypop.database import Database
 from lollypop.sqlcursor import SqlCursor
-from lollypop.objects import Album 
+from lollypop.objects import Album, Track
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
+from lollypop.database_tracks import TracksDatabase
 from lollypop.define import ArtSize
 
 
@@ -142,6 +143,7 @@ class SearchLollypopService(Server, Gio.Application):
         self.db = Database()
         self.albums = AlbumsDatabase()
         self.artists = ArtistsDatabase()
+        self.tracks = TracksDatabase()
         self.art = Art()
         SqlCursor.add(self.db)
         self.__bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
@@ -154,8 +156,7 @@ class SearchLollypopService(Server, Gio.Application):
 
     def ActivateResult(self, search_id, array, utime):
         try:
-            album = Album(int(search_id))
-            argv = ["lollypop", "--album", str(album.id), None]
+            argv = ["lollypop", "--play-ids", search_id, None]
             GLib.spawn_async_with_pipes(
                                     None, argv, None,
                                     GLib.SpawnFlags.SEARCH_PATH |
@@ -170,16 +171,21 @@ class SearchLollypopService(Server, Gio.Application):
         results = []
         try:
             for search_id in ids:
+                if search_id[0:2] == "a:":
+                    album = Album(int(search_id[2:]))
+                    name = " ".join(album.artists)
+                    description = album.name
+                    gicon = self.art.get_album_cache_path(album, ArtSize.BIG)
+                else:
+                    track = Track(int(search_id[2:]))
+                    name = track.name
+                    description = " ".join(track.artists)
+                    gicon = self.art.get_album_cache_path(track.album,
+                                                          ArtSize.BIG)
                 d = { 'id': GLib.Variant('s', search_id),
-                      'description': GLib.Variant('s',
-                                            self.albums.get_name(
-                                                              int(search_id))),
-                      'name': GLib.Variant('s',
-                                            " ".join(self.albums.get_artists(
-                                                             int(search_id)))),
-                      'gicon': GLib.Variant('s', self.art.get_album_cache_path(
-                                                         Album(int(search_id)),
-                                                         ArtSize.BIG)) }
+                      'description': GLib.Variant('s', description),
+                      'name': GLib.Variant('s', name),
+                      'gicon': GLib.Variant('s', gicon) }
                 results.append(d)
         except Exception as e:
             print(e)
@@ -191,7 +197,7 @@ class SearchLollypopService(Server, Gio.Application):
 
     def LaunchSearch(self, terms, utime):
         results = self.__search(terms)
-        argv = ["lollypop", "--album", ";".join(results), None]
+        argv = ["lollypop", "--play-ids", ";".join(results), None]
         GLib.spawn_async_with_pipes(
                                     None, argv, None,
                                     GLib.SpawnFlags.SEARCH_PATH |
@@ -200,12 +206,17 @@ class SearchLollypopService(Server, Gio.Application):
         ids = []
         search = " ".join(terms)
         try:
+            # Search for albums
             for id in self.albums.search(search, None):
-                ids.append(str(id))
+                ids.append("a:"+str(id))
+            # Search for artists
             for artist_id in self.artists.search(search):
                 for album_id in self.albums.get_ids([artist_id], []):
                     if str(album_id) not in ids:
-                        ids.append(str(album_id))
+                        ids.append("a:"+str(album_id))
+            # Search for tracks
+            for (track_id, name) in self.tracks.search(search):
+                ids.append("t:"+str(track_id))
         except Exception as e:
             print(e)
         return ids
@@ -218,4 +229,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

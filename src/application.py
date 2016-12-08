@@ -48,7 +48,7 @@ from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import Playlists
-from lollypop.objects import Album
+from lollypop.objects import Album, Track
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.lio import Lio
 
@@ -80,8 +80,8 @@ class Application(Gtk.Application):
         self.__init_proxy()
         GLib.set_application_name('Lollypop')
         GLib.set_prgname('lollypop')
-        self.add_main_option("album", b'a', GLib.OptionFlags.NONE,
-                             GLib.OptionArg.STRING, "Play album", None)
+        self.add_main_option("play-ids", b'a', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.STRING, "Play ids", None)
         self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Debug lollypop", None)
         self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
@@ -351,15 +351,23 @@ class Application(Gtk.Application):
                 self.player.current_track.set_popularity(value)
         if options.contains('play-pause'):
             self.player.play_pause()
-        elif options.contains('album'):
+        elif options.contains('play-ids'):
             try:
-                value = options.lookup_value('album').get_string()
-                album_ids = value.split(';')
-                album = Album(int(album_ids.pop(0)))
-                self.player.play_album(album)
-                for album_id in album_ids:
-                    self.player.add_album(Album(int(album_id)))
-            except:
+                value = options.lookup_value('play-ids').get_string()
+                ids = value.split(';')
+                track_ids = []
+                for id in ids:
+                    if id[0:2] == "a:":
+                        album = Album(int(id[2:]))
+                        track_ids += album.track_ids
+                    else:
+                        track_ids.append(int(id[2:]))
+                track = Track(track_ids[0])
+                self.player.load(track)
+                self.player.populate_user_playlist_by_tracks(track_ids,
+                                                             [Type.SEARCH])
+            except Exception as e:
+                print(e)
                 pass
         elif options.contains('next'):
             self.player.next()
