@@ -12,7 +12,7 @@ apps_DATA = org.gnome.Lollypop.desktop
 
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-appdata_in_files = lollypop.appdata.xml.in
+appdata_in_files = org.gnome.Lollypop.appdata.xml.in
 
 @INTLTOOL_XML_RULE@
 
@@ -36,7 +36,7 @@ hicolor_icon_files = \
 	$(hicolor_icon48_DATA) \
 	$(hicolor_icon256_DATA) \
 	$(hicolor_iconscalable_DATA)\
-	icons/hicolor/lollypop.svg
+	icons/hicolor/org.gnome.Lollypop.svg
 
 gtk_update_hicolor_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 gtk_update_hicontrast_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/HighContrast
@@ -67,7 +67,7 @@ gschemas.compiled: $(gsettings_SCHEMAS) Makefile
 EXTRA_DIST = \
 	$(hicolor_icon_files) \
 	$(resource_files) \
-	lollypop.appdata.xml.in \
+	org.gnome.Lollypop.appdata.xml.in \
 	org.gnome.Lollypop.desktop.in \
 	lollypop.gresource.xml \
 	org.gnome.Lollypop.gschema.xml \
@@ -75,7 +75,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	lollypop.gresource \
-	lollypop.appdata.xml \
+	org.gnome.Lollypop.appdata.xml \
 	$(apps_DATA) \
 	*.valid \
 	gschemas.compiled \

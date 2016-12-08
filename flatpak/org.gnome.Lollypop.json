@@ -8,8 +8,6 @@
     "copy-icon": true,
     "separate-locales": false,
     "no-debuginfo": true,
-    "rename-icon": "lollypop",
-    "rename-desktop-file": "lollypop.desktop",
     "desktop-file-name-prefix": "",
     "finish-args": [
       "--share=ipc",
@@ -140,8 +138,8 @@
       "no-autogen": true,
       "sources": [{
           "type": "archive",
-          "url": "https://github.com/gnumdk/lollypop/releases/download/0.9.223/lollypop-0.9.223.tar.xz",
-          "sha256": "d39fc8f290be8be47be78f251081ec52a07538dfda126a6ae065e1afe531be4c"
+          "url": "file:///tmp/lollypop-0.9.223.tar.xz",
+          "sha256": "d1cab2e73fd223387f518573b1ccd7d5fca7bd5f48bbdc7b1afe43d141fa0649"
         }]
     }]
 }
