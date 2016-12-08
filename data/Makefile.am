@@ -6,7 +6,7 @@ resourcedir = $(pkgdatadir)
 resource_DATA = lollypop.gresource
 
 appsdir = $(datadir)/applications
-apps_DATA = lollypop.desktop
+apps_DATA = org.gnome.Lollypop.desktop
 
 @INTLTOOL_DESKTOP_RULE@
 
@@ -18,17 +18,17 @@ appdata_in_files = lollypop.appdata.xml.in
 
 # hicolor icons
 hicolor_icon16dir = $(datadir)/icons/hicolor/16x16/apps
-hicolor_icon16_DATA = icons/hicolor/16x16/apps/lollypop.png
+hicolor_icon16_DATA = icons/hicolor/16x16/apps/org.gnome.Lollypop.png
 hicolor_icon22dir = $(datadir)/icons/hicolor/22x22/apps
-hicolor_icon22_DATA = icons/hicolor/22x22/apps/lollypop.png
+hicolor_icon22_DATA = icons/hicolor/22x22/apps/org.gnome.Lollypop.png
 hicolor_icon32dir = $(datadir)/icons/hicolor/32x32/apps
-hicolor_icon32_DATA = icons/hicolor/32x32/apps/lollypop.png
+hicolor_icon32_DATA = icons/hicolor/32x32/apps/org.gnome.Lollypop.png
 hicolor_icon48dir = $(datadir)/icons/hicolor/48x48/apps
-hicolor_icon48_DATA = icons/hicolor/48x48/apps/lollypop.png
+hicolor_icon48_DATA = icons/hicolor/48x48/apps/org.gnome.Lollypop.png
 hicolor_icon256dir = $(datadir)/icons/hicolor/256x256/apps
-hicolor_icon256_DATA = icons/hicolor/256x256/apps/lollypop.png
+hicolor_icon256_DATA = icons/hicolor/256x256/apps/org.gnome.Lollypop.png
 hicolor_iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
-hicolor_iconscalable_DATA = icons/hicolor/scalable/apps/lollypop-symbolic.svg
+hicolor_iconscalable_DATA = icons/hicolor/scalable/apps/org.gnome.Lollypop-symbolic.svg
 hicolor_icon_files = \
 	$(hicolor_icon16_DATA) \
 	$(hicolor_icon22_DATA) \
@@ -68,7 +68,7 @@ EXTRA_DIST = \
 	$(hicolor_icon_files) \
 	$(resource_files) \
 	lollypop.appdata.xml.in \
-	lollypop.desktop.in \
+	org.gnome.Lollypop.desktop.in \
 	lollypop.gresource.xml \
 	org.gnome.Lollypop.gschema.xml \
 	$(NULL)

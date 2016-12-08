@@ -2,7 +2,7 @@
 _Name=Lollypop
 _GenericName=Music Player
 _Comment=Play and organize your music collection
-Icon=lollypop
+Icon=org.gnome.Lollypop
 Exec=lollypop %U
 Terminal=false
 Type=Application

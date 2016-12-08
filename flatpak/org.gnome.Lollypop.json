@@ -140,8 +140,8 @@
       "no-autogen": true,
       "sources": [{
           "type": "archive",
-          "url": "",
-          "sha256": ""
+          "url": "https://github.com/gnumdk/lollypop/releases/download/0.9.223/lollypop-0.9.223.tar.xz",
+          "sha256": "d39fc8f290be8be47be78f251081ec52a07538dfda126a6ae065e1afe531be4c"
         }]
     }]
 }
