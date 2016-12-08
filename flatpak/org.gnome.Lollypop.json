@@ -139,7 +139,7 @@
       "sources": [{
           "type": "archive",
           "url": "file:///tmp/lollypop-0.9.223.tar.xz",
-          "sha256": "d1cab2e73fd223387f518573b1ccd7d5fca7bd5f48bbdc7b1afe43d141fa0649"
+          "sha256": "13f527ad4043aa3be14604b21d0f8af3c96a685ef47b5157713bcc041de5e67d"
         }]
     }]
 }

@@ -76,7 +76,7 @@ lollypop
 *.valid
 /src/Makefile.in
 /data/AboutDialog.ui
-/data/lollypop.appdata.xml
+/data/org.gnome.Lollypop.appdata.xml
 /flatpak/app
 /flatpak/repo
 /flatpak/*.bundle

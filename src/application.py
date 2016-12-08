@@ -71,6 +71,18 @@ class Application(Gtk.Application):
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         GLib.setenv('PULSE_PROP_media.role', 'music', True)
         GLib.setenv('PULSE_PROP_application.icon_name', 'lollypop', True)
+
+        # Ideally, we will be able to delete this once Flatpak has a solution
+        # for SSL certificate management inside of applications.
+        if GLib.file_test("/app", GLib.FileTest.EXISTS):
+            paths = ["/etc/ssl/certs/ca-certificates.crt",
+                     "/etc/pki/tls/cert.pem",
+                     "/etc/ssl/cert.pem"]
+            for path in paths:
+                if GLib.file_test(path, GLib.FileTest.EXISTS):
+                    GLib.setenv('SSL_CERT_FILE', path, True)
+                    break
+
         self.cursors = {}
         self.window = None
         self.notify = None
