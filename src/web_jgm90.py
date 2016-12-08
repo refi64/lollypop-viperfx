@@ -76,11 +76,12 @@ class WebJmg90:
         unescaped = "%s %s" % (artist,
                                item.name)
         search = Lio.uri_escape_string(unescaped,
-                                       None,
+                                       '/',
                                        True)
         try:
+            # Strip / as API doesn't like it
             f = Lio.File.new_for_uri("http://app.jgm90.com/cmapi/search/"
-                                     "%s/1/10" % search)
+                                     "%s/1/10" % search.strip('/'))
             (status, data, tag) = f.load_contents(None)
             if status:
                 decode = json.loads(data.decode('utf-8'))
