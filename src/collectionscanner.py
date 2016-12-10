@@ -117,7 +117,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             try:
                 d = Lio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
-                    'standard::name,standard::type',
+                    'standard::name,standard::type,standard::is-hidden',
                     Gio.FileQueryInfoFlags.NONE,
                     None)
             except Exception as e:
