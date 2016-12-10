@@ -127,7 +127,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                 f = infos.get_child(info)
                 child_uri = f.get_uri()
                 empty = False
-                if info.get_file_type() == Gio.FileType.DIRECTORY:
+                if info.get_is_hidden():
+                    continue
+                elif info.get_file_type() == Gio.FileType.DIRECTORY:
                     track_dirs.append(child_uri)
                     walk_uris.append(child_uri)
                 else:
