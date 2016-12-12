@@ -14,10 +14,10 @@ from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
 from gettext import gettext as _
 
-from lollypop.pop_album import AlbumPopover
 from lollypop.view import LazyLoadingView
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
+from lollypop.view_artist_albums import ArtistAlbumsView
 
 
 class AlbumRow(Gtk.ListBoxRow):
@@ -273,6 +273,9 @@ class AlbumsView(LazyLoadingView):
     """
         View showing albums
     """
+    __gsignals__ = {
+        'album-activated': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+    }
 
     def __init__(self):
         """
@@ -434,19 +437,7 @@ class AlbumsView(LazyLoadingView):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        genre_ids = Lp().player.get_genre_ids(row.id)
-        artist_ids = Lp().player.get_artist_ids(row.id)
-        # TODO Remove this later
-        if Gtk.get_minor_version() > 16:
-            popover = AlbumPopover(
-                                     row.id,
-                                     genre_ids,
-                                     [])
-            popover.set_relative_to(row)
-            popover.show()
-        else:
-            album = Album(row.id, genre_ids, artist_ids)
-            Lp().player.load(album.tracks[0])
+        self.emit('album-activated', row.id)
 
     def __on_jump_clicked(self, widget):
         """
@@ -518,6 +509,45 @@ class AlbumsView(LazyLoadingView):
             pass
 
 
+class AlbumView(Gtk.Grid):
+    """
+        Show an album view with a back button (destroying AlbumView)
+    """
+
+    def __init__(self, album_id, genre_ids, artist_ids):
+        """
+            Init view
+            @param album id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
+        """
+        Gtk.Grid.__init__(self)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic",
+                                                    Gtk.IconSize.MENU)
+        back_button.set_tooltip_text(_("Go back"))
+        back_button.connect('clicked', self.__on_back_button_clicked)
+        back_button.set_property('halign', Gtk.Align.START)
+        back_button.set_relief(Gtk.ReliefStyle.NONE)
+        back_button.show()
+        self.add(back_button)
+        view = ArtistAlbumsView(artist_ids, genre_ids, ArtSize.HEADER)
+        view.populate([album_id])
+        view.show()
+        self.add(view)
+        self.show()
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_back_button_clicked(self, button):
+        """
+            Destroy self
+            @param button as Gtk.Button
+        """
+        GLib.idle_add(self.destroy)
+
+
 class AlbumsPopover(Gtk.Popover):
     """
         Popover showing Albums View
@@ -528,15 +558,34 @@ class AlbumsPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self.__stack = Gtk.Stack()
+        self.__stack.set_transition_duration(250)
+        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.__stack.show()
         view = AlbumsView()
+        view.connect('album-activated', self.__on_album_activated)
         view.show()
+        self.__stack.add(view)
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self.__on_map)
-        self.add(view)
+        self.add(self.__stack)
 
 #######################
 # PRIVATE             #
 #######################
+    def __on_album_activated(self, view, album_id):
+        """
+            Show album tracks
+            @param view as AlbumsView
+            @param album id as int
+        """
+        genre_ids = Lp().player.get_genre_ids(album_id)
+        artist_ids = Lp().player.get_artist_ids(album_id)
+        album_view = AlbumView(album_id, genre_ids, artist_ids)
+        album_view.show()
+        self.__stack.add(album_view)
+        self.__stack.set_visible_child(album_view)
+
     def __on_map(self, widget):
         """
             Resize

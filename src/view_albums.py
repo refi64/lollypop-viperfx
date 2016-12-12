@@ -17,7 +17,7 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
-from lollypop.define import Type
+from lollypop.define import Type, ArtSize
 
 
 class AlbumsView(LazyLoadingView):
@@ -153,7 +153,7 @@ class AlbumsView(LazyLoadingView):
                                    self.__artist_ids,
                                    allocation.width,
                                    height,
-                                   False)
+                                   ArtSize.NONE)
             popover.set_relative_to(cover)
             popover.set_position(Gtk.PositionType.BOTTOM)
         album_widget.show_overlay(False)

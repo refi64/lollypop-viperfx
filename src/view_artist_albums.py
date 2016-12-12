@@ -29,18 +29,17 @@ class ArtistAlbumsView(LazyLoadingView):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, artist_ids, genre_ids, show_cover=True):
+    def __init__(self, artist_ids, genre_ids, art_size=ArtSize.BIG):
         """
             Init ArtistAlbumsView
             @param artist ids as [int]
             @param genre ids as [int]
-            @param show cover as bool
+            @param art size as ArtSize
         """
         LazyLoadingView.__init__(self, True)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
-        self.__show_cover = show_cover
-
+        self.__art_size = art_size
         self.__spinner = Gtk.Spinner()
         self.__spinner.set_hexpand(True)
         self.__spinner.set_vexpand(True)
@@ -99,15 +98,12 @@ class ArtistAlbumsView(LazyLoadingView):
             self._scrolled.get_vadjustment().set_value(y)
 
     @property
-    def requested_height(self):
+    def children(self):
         """
-            Requested height for children
-            @return height as int
+            View children
+            @return [AlbumDetailedWidget]
         """
-        height = 0
-        for child in self._get_children():
-            height += child.requested_height
-        return height
+        return self._get_children()
 
 #######################
 # PROTECTED           #
@@ -182,7 +178,7 @@ class ArtistAlbumsView(LazyLoadingView):
             widget = AlbumDetailedWidget(album_id,
                                          self._genre_ids,
                                          self._artist_ids,
-                                         self.__show_cover)
+                                         self.__art_size)
             widget.set_filter_func(self._filter_func)
             widget.connect('overlayed', self._on_overlayed)
             self._lazy_queue.append(widget)

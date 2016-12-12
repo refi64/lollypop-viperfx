@@ -19,6 +19,7 @@ from lollypop.define import Lp
 class AlbumPopover(Gtk.Popover):
     """
         An ArtistAlbumsView in a popover
+        Not an AlbumDetailedWidget because we want a lazy loading view
     """
 
     def __init__(self, album_id, genre_ids,
@@ -33,6 +34,10 @@ class AlbumPopover(Gtk.Popover):
             @param show cover as bool
         """
         Gtk.Popover.__init__(self)
+        self.get_style_context().add_class('box-shadow')
+        view = ArtistAlbumsView(artist_ids, genre_ids, show_cover)
+        view.populate([album_id])
+
         # Get width/height from main window if None
         if height is None:
             height = Lp().window.get_size()[1] * 0.8
@@ -40,11 +45,9 @@ class AlbumPopover(Gtk.Popover):
             self.__width = Lp().window.get_size()[0] * 0.8
         else:
             self.__width = width
-
-        self.get_style_context().add_class('box-shadow')
-        view = ArtistAlbumsView(artist_ids, genre_ids, show_cover)
-        view.populate([album_id])
-        wanted_height = min(400, min(height, view.requested_height))
+        # Get height requested by child
+        requested_height = view.children[0].requested_height
+        wanted_height = min(400, min(height, requested_height))
         view.set_property('height-request', wanted_height)
         view.show()
         self.add(view)

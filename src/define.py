@@ -81,9 +81,11 @@ class Loading:
 
 
 class ArtSize:
+    NONE = 0
     SMALL = 33
     MEDIUM = 48  # If changed, adapt width request in AlbumRow
     ARTIST_SMALL = 60
+    HEADER = 100
     BIG = 200
     FULLSCREEN = 500
     ARTIST = 800

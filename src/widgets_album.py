@@ -317,13 +317,15 @@ class AlbumWidget(BaseWidget):
         Album widget
     """
 
-    def __init__(self, album_id, genre_ids=[], artist_ids=[]):
+    def __init__(self, album_id, genre_ids=[],
+                 artist_ids=[], art_size=ArtSize.BIG):
         """
             Init Album widget
         """
         BaseWidget.__init__(self)
         self._album = Album(album_id, genre_ids)
         self._filter_ids = artist_ids
+        self._art_size = art_size
         self.connect('destroy', self.__on_destroy)
         self._scan_signal = Lp().scanner.connect('album-updated',
                                                  self._on_album_updated)
@@ -364,10 +366,9 @@ class AlbumWidget(BaseWidget):
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
-                            ArtSize.BIG,
+                            self._art_size,
                             self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
-        self._cover.set_size_request(100, 100)
         if surface.get_height() > surface.get_width():
             self._overlay_orientation = Gtk.Orientation.VERTICAL
         else:
@@ -382,7 +383,7 @@ class AlbumWidget(BaseWidget):
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
-                            ArtSize.BIG,
+                            self._art_size,
                             self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         if surface.get_height() > surface.get_width():
@@ -395,7 +396,7 @@ class AlbumWidget(BaseWidget):
         """
             Update widget state
         """
-        if self._cover is None:
+        if self._cover is None or self._art_size != ArtSize.BIG:
             return
         selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
@@ -683,17 +684,17 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'overlayed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids, show_cover):
+    def __init__(self, album_id, genre_ids, artist_ids, art_size):
         """
             Init detailed album widget
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
             @param lazy as LazyLoadingView
-            @param show cover as bool
+            @param art size as ArtSize
         """
         Gtk.Bin.__init__(self)
-        AlbumWidget.__init__(self, album_id, genre_ids, artist_ids)
+        AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
         self._album.set_artists(artist_ids)
         self.__width = None
         self.__context = None
@@ -710,50 +711,66 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.connect('size-allocate', self.__on_size_allocate)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+        builder.connect_signals(self)
         self._widget = builder.get_object('widget')
+        album_info = builder.get_object('albuminfo')
+        title_label = builder.get_object('title')
+        year_label = builder.get_object('year')
         self.__header = builder.get_object('header')
         self.__overlay = builder.get_object('overlay')
+        self.__duration_label = builder.get_object('duration')
         self._play_button = builder.get_object('play-button')
         self._artwork_button = builder.get_object('artwork-button')
         self._action_button = builder.get_object('action-button')
         self._action_event = builder.get_object('action-event')
-
-        builder.connect_signals(self)
-        rating = RatingWidget(self._album)
-        rating.show()
+        self.__context_button = builder.get_object('context')
 
         artist_label = builder.get_object('artist')
-        if show_cover:
-            self._cover = builder.get_object('cover')
-            builder.get_object('duration').set_hexpand(True)
-            self._cover.get_style_context().add_class('cover-frame')
-            self.__coverbox = builder.get_object('coverbox')
-            self.__coverbox.show()
-            # 6 for 2*3px (application.css)
-            self.__coverbox.set_property('width-request', ArtSize.BIG + 6)
-            self.__coverbox.add(rating)
-            if Lp().window.get_view_width() < WindowSize.MEDIUM:
-                self.__coverbox.hide()
-            if len(artist_ids) > 1:
-                artist_label.set_text(", ".join(self._album.artists))
-                artist_label.show()
-        else:
-            self.__header.attach(rating, 4, 0, 1, 1)
-            rating.set_hexpand(True)
-            rating.set_property('halign', Gtk.Align.END)
-            rating.set_property('valign', Gtk.Align.CENTER)
+        if art_size == ArtSize.NONE:
+            self._cover = None
+            self.__rating = RatingWidget(self._album)
+            self.__rating.set_hexpand(True)
+            self.__rating.set_property('halign', Gtk.Align.END)
+            self.__rating.set_property('valign', Gtk.Align.CENTER)
+            self.__header.attach(self.__rating, 4, 0, 1, 1)
+            self.__rating.show()
             artist_label.set_text(", ".join(self._album.artists))
             artist_label.show()
-            self._cover = None
+        else:
+            self.__duration_label.set_hexpand(True)
+            if art_size == ArtSize.BIG:
+                builder = Gtk.Builder()
+                builder.add_from_resource('/org/gnome/Lollypop/CoverBox.ui')
+                self._cover = builder.get_object('cover')
+                self._cover.get_style_context().add_class('cover-frame')
+                self.__coverbox = builder.get_object('coverbox')
+                # 6 for 2*3px (application.css)
+                self.__coverbox.set_property('width-request', art_size + 6)
+                self.__rating = RatingWidget(self._album)
+                self.__coverbox.add(self.__rating)
+                self.__rating.show()
+                self._widget.attach(self.__coverbox, 0, 0, 1, 1)
+                if Lp().window.get_view_width() < WindowSize.MEDIUM:
+                    self.__coverbox.hide()
+                if len(artist_ids) > 1:
+                    artist_label.set_text(", ".join(self._album.artists))
+                    artist_label.show()
+            elif art_size == ArtSize.HEADER:
+                self._cover = Gtk.Image()
+                self._cover.set_halign(Gtk.Align.CENTER)
+                self._cover.set_margin_bottom(5)
+                self._cover.get_style_context().add_class('small-cover-frame')
+                self._cover.show()
+                builder.get_object('albuminfo').attach(self._cover,
+                                                       0, 0, 1, 1)
 
-        self.__duration_label = builder.get_object('duration')
         self.__set_duration()
 
         self.__box = Gtk.Grid()
         self.__box.set_column_homogeneous(True)
         self.__box.set_property('valign', Gtk.Align.START)
         self.__box.show()
-        builder.get_object('albuminfo').add(self.__box)
+        album_info.add(self.__box)
 
         self._tracks_left = {}
         self._tracks_right = {}
@@ -761,11 +778,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.set_cover()
         self.update_state()
 
-        builder.get_object('title').set_label(self._album.name)
+        title_label.set_label(self._album.name)
         if self._album.year:
-            year = builder.get_object('year')
-            year.set_label(self._album.year)
-            year.show()
+            year_label.set_label(self._album.year)
+            year_label.show()
 
         for disc in self.__discs:
             self.__add_disc_container(disc.number)
@@ -776,9 +792,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # This prevent artifacts
         self.set_opacity(0)
 
-        self.__context_button = builder.get_object('context')
-
-        if self._album.is_web and show_cover:
+        if self._album.is_web and self._cover is not None:
             self._cover.get_style_context().add_class(
                                                 'cover-frame-web')
 
@@ -1083,9 +1097,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             return
         self.__width = allocation.width
         redraw = False
+        # We want vertical orientation
+        # when not enought place for cover or tracks
         if allocation.width < WindowSize.MEDIUM or (
                 allocation.width < WindowSize.MONSTER and
-                self._cover is not None):
+                self._art_size == ArtSize.BIG):
             orientation = Gtk.Orientation.VERTICAL
         else:
             orientation = Gtk.Orientation.HORIZONTAL
@@ -1136,7 +1152,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                               pos, idx, 1, 1)
                 idx += 1
                 GLib.idle_add(self.set_opacity, 1)
-        if self._cover is not None:
+        if self._art_size == ArtSize.BIG:
             if allocation.width < WindowSize.MEDIUM:
                 self.__coverbox.hide()
             else:
