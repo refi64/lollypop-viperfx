@@ -64,6 +64,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._widget = builder.get_object('widget')
         album_info = builder.get_object('albuminfo')
         title_label = builder.get_object('title')
+        title_label.set_property('has-tooltip', True)
+        artist_label = builder.get_object('artist')
+        artist_label.set_property('has-tooltip', True)
         year_label = builder.get_object('year')
         self.__header = builder.get_object('header')
         self.__overlay = builder.get_object('overlay')
@@ -74,7 +77,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._action_event = builder.get_object('action-event')
         self.__context_button = builder.get_object('context')
 
-        artist_label = builder.get_object('artist')
         if art_size == ArtSize.NONE:
             self._cover = None
             self.__rating = RatingWidget(self._album)
@@ -269,6 +271,22 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 #######################
 # PROTECTED           #
 #######################
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
+        layout = widget.get_layout()
+        if layout.is_ellipsized():
+            tooltip.set_text(widget.get_label())
+        else:
+            return False
+        return True
+
     def _on_context_clicked(self, button):
         """
             Show context widget

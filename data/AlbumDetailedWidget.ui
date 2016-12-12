@@ -35,6 +35,7 @@
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
+                <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
                 <style>
                   <class name="dim-label"/>
                 </style>
@@ -111,6 +112,7 @@
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
+                <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
