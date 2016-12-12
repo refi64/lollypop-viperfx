@@ -332,6 +332,7 @@ class AlbumsView(LazyLoadingView):
         """
             Populate widget with album rows
         """
+        self._stop = False
         albums = list(Lp().player.get_albums())
         self.__jump_button.set_sensitive(False)
         if albums:
@@ -341,16 +342,6 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
-    def __clear(self, clear_albums=False):
-        """
-            Clear the view
-        """
-        for child in self.__view.get_children():
-            child.destroy()
-        if clear_albums:
-            Lp().player.clear_albums()
-        self.__clear_button.set_sensitive(False)
-
     def __add_items(self, items, prev_album_id=None):
         """
             Add items to the view
@@ -396,8 +387,6 @@ class AlbumsView(LazyLoadingView):
             Connect signals
             @param widget as Gtk.Widget
         """
-        self._stop = False
-        self.populate()
         self._signal_id1 = Lp().player.connect('current-changed',
                                                self.__on_current_changed)
 
@@ -406,9 +395,6 @@ class AlbumsView(LazyLoadingView):
             Disconnect signals
             @param widget as Gtk.Widget
         """
-        self._stop = True
-        self._lazy_queue = []
-        GLib.idle_add(self.__clear)
         if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
             self._signal_id1 = None
@@ -564,6 +550,7 @@ class AlbumsPopover(Gtk.Popover):
         self.__stack.show()
         view = AlbumsView()
         view.connect('album-activated', self.__on_album_activated)
+        view.populate()
         view.show()
         self.__stack.add(view)
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -583,7 +570,7 @@ class AlbumsPopover(Gtk.Popover):
         artist_ids = Lp().player.get_artist_ids(album_id)
         album_view = AlbumView(album_id, genre_ids, artist_ids)
         album_view.show()
-        self.__stack.add(album_view)
+        self.__stack.add_named(album_view, "album_view")
         self.__stack.set_visible_child(album_view)
 
     def __on_map(self, widget):
