@@ -320,9 +320,14 @@ class ToolbarEnd(Gtk.Bin):
                 Gtk.IconSize.SMALL_TOOLBAR)
         elif shuffle == Shuffle.NONE:
             self.__shuffle_image.get_style_context().remove_class('selected')
-            self.__shuffle_image.set_from_icon_name(
-                "media-playlist-consecutive-symbolic",
-                Gtk.IconSize.SMALL_TOOLBAR)
+            if repeat == NextContext.NONE:
+                self.__shuffle_image.set_from_icon_name(
+                    "media-playlist-repeat-symbolic",
+                    Gtk.IconSize.SMALL_TOOLBAR)
+            else:
+                self.__shuffle_image.set_from_icon_name(
+                    "media-playlist-consecutive-symbolic",
+                    Gtk.IconSize.SMALL_TOOLBAR)
         else:
             self.__shuffle_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
