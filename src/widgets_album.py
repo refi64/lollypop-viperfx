@@ -736,9 +736,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self.__rating.show()
             artist_label.set_text(", ".join(self._album.artists))
             artist_label.show()
+            if self._album.year:
+                year_label.set_label(self._album.year)
+                year_label.show()
         else:
             self.__duration_label.set_hexpand(True)
             if art_size == ArtSize.BIG:
+                if self._album.year:
+                    year_label.set_label(self._album.year)
+                    year_label.show()
                 builder = Gtk.Builder()
                 builder.add_from_resource('/org/gnome/Lollypop/CoverBox.ui')
                 self._cover = builder.get_object('cover')
@@ -781,9 +787,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.update_state()
 
         title_label.set_label(self._album.name)
-        if self._album.year:
-            year_label.set_label(self._album.year)
-            year_label.show()
 
         for disc in self.__discs:
             self.__add_disc_container(disc.number)
