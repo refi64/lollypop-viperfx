@@ -18,7 +18,7 @@ from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type, ArtSize
 from lollypop.objects import Track
-from lollypop.widgets_album import AlbumDetailedWidget
+from lollypop.widgets_album_detailed import AlbumDetailedWidget
 
 
 class ArtistAlbumsView(LazyLoadingView):

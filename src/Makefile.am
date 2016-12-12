@@ -94,6 +94,8 @@ app_PYTHON = \
     web_youtube.py\
     web_jgm90.py\
     widgets_album.py\
+    widgets_album_detailed.py\
+    widgets_album_simple.py\
     widgets_context.py\
     widgets_device.py\
     widgets_indicator.py\

@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib, Gdk
 
 from lollypop.view import LazyLoadingView
-from lollypop.widgets_album import AlbumSimpleWidget
+from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
