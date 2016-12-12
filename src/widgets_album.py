@@ -763,6 +763,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 self._cover.show()
                 builder.get_object('albuminfo').attach(self._cover,
                                                        0, 0, 1, 1)
+                artist_label.set_text(", ".join(self._album.artists))
+                artist_label.show()
 
         self.__set_duration()
 
