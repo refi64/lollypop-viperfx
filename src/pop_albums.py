@@ -339,6 +339,15 @@ class AlbumsView(LazyLoadingView):
             self.__clear_button.set_sensitive(True)
         self.__add_items(albums)
 
+    def on_current_changed(self, player):
+        """
+            Show tracks in a popover
+            @param player object
+        """
+        for child in self.__view.get_children():
+            child.show_play_indicator(child.id ==
+                                      Lp().player.current_track.album.id)
+
 #######################
 # PRIVATE             #
 #######################
@@ -388,7 +397,7 @@ class AlbumsView(LazyLoadingView):
             @param widget as Gtk.Widget
         """
         self._signal_id1 = Lp().player.connect('current-changed',
-                                               self.__on_current_changed)
+                                               self.on_current_changed)
 
     def __on_unmap(self, widget):
         """
@@ -398,15 +407,6 @@ class AlbumsView(LazyLoadingView):
         if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
             self._signal_id1 = None
-
-    def __on_current_changed(self, player):
-        """
-            Show tracks in a popover
-            @param player object
-        """
-        for child in self.__view.get_children():
-            child.show_play_indicator(child.id ==
-                                      Lp().player.current_track.album.id)
 
     def __on_child_destroyed(self, row):
         """
@@ -499,6 +499,9 @@ class AlbumView(Gtk.Grid):
     """
         Show an album view with a back button (destroying AlbumView)
     """
+    __gsignals__ = {
+        'back-clicked': (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
 
     def __init__(self, album_id, genre_ids, artist_ids):
         """
@@ -531,7 +534,7 @@ class AlbumView(Gtk.Grid):
             Destroy self
             @param button as Gtk.Button
         """
-        GLib.idle_add(self.destroy)
+        self.emit('back-clicked')
 
 
 class AlbumsPopover(Gtk.Popover):
@@ -552,7 +555,7 @@ class AlbumsPopover(Gtk.Popover):
         view.connect('album-activated', self.__on_album_activated)
         view.populate()
         view.show()
-        self.__stack.add(view)
+        self.__stack.add_named(view, "albums_view")
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self.__on_map)
         self.add(self.__stack)
@@ -569,9 +572,19 @@ class AlbumsPopover(Gtk.Popover):
         genre_ids = Lp().player.get_genre_ids(album_id)
         artist_ids = Lp().player.get_artist_ids(album_id)
         album_view = AlbumView(album_id, genre_ids, artist_ids)
+        album_view.connect('back-clicked', self.__on_back_clicked)
         album_view.show()
-        self.__stack.add_named(album_view, "album_view")
+        self.__stack.add(album_view)
         self.__stack.set_visible_child(album_view)
+
+    def __on_back_clicked(self, view):
+        """
+            Update album view for current track
+        """
+        albums_view = self.__stack.get_child_by_name("albums_view")
+        albums_view.on_current_changed(Lp().player)
+        self.__stack.set_visible_child(albums_view)
+        GLib.timeout_add(5000, view.destroy)
 
     def __on_map(self, widget):
         """
