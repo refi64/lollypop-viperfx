@@ -18,7 +18,7 @@
     <property name="translator_credits" translatable="yes" context="Translation credits here, put your name here!" comments="Replace me with your names">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;</property>
     <property name="artists"> Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts
     </property>
-    <property name="logo_icon_name">lollypop</property>
+    <property name="logo_icon_name">org.gnome.Lollypop</property>
     <property name="license_type">gpl-3-0</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="aboutdialog-vbox1">
