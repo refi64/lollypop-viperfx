@@ -20,7 +20,6 @@ gi.require_version('TotemPlParser', '1.0')
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
 from pickle import dump
-from locale import getlocale
 from gettext import gettext as _
 from threading import Thread
 
@@ -181,15 +180,7 @@ class Application(Gtk.Application):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
 
-        # Check locale, we want unicode!
-        (code, encoding) = getlocale()
-        if encoding is None or encoding != "UTF-8":
-            builder = Gtk.Builder()
-            builder.add_from_resource('/org/gnome/Lollypop/Unicode.ui')
-            self.window = builder.get_object('unicode')
-            self.window.set_application(self)
-            self.window.show()
-        elif not self.window:
+        if not self.window:
             self.init()
             menu = self.__setup_app_menu()
             # If GNOME/Unity, add appmenu
