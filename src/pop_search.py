@@ -485,32 +485,6 @@ class SearchPopover(Gtk.Popover):
         Lp().player.load(Track(track_id))
         Lp().player.populate_user_playlist_by_tracks(track_ids, [Type.SEARCH])
 
-    def __play_search(self, object_id=None, is_track=True):
-        """
-            Play tracks based on search
-            @param started object id as int
-            @param is track as bool
-        """
-        track_ids = []
-        track_id = None
-        for child in self.__view.get_children():
-            if child.is_track:
-                track_ids.append(child.id)
-            else:
-                album_tracks = Lp().albums.get_track_ids(child.id)
-                if not is_track and child.id == object_id and\
-                        album_tracks:
-                    track_id = album_tracks[0]
-                for tid in album_tracks:
-                    track_ids.append(tid)
-        if track_ids:
-            if object_id is not None and is_track:
-                track_id = object_id
-            elif track_id is None:
-                track_id = track_ids[0]
-            GLib.idle_add(self.__populate_user_playlist_by_tracks,
-                          track_ids, track_id)
-
     def __new_playlist(self):
         """
             Create a new playlist based on search
