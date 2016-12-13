@@ -45,9 +45,9 @@ class Lio:
             try:
                 uri = self.get_uri()
                 if uri.startswith("http"):
-                    (path, msg) = urlretrieve(self.get_uri(),
-                                              reporthook=self.__check_cancel)
-                    f = Gio.File.new_for_path(path)
+                    tmp_path = "/tmp/" + quote(uri, "")
+                    urlretrieve(uri, tmp_path, reporthook=self.__check_cancel)
+                    f = Gio.File.new_for_path(tmp_path)
                     (s, data, t) = f.load_contents(cancellable)
                     f.delete()
                     return (s, data, t)
@@ -55,6 +55,11 @@ class Lio:
                     return Gio.File.load_contents(self, cancellable)
             except CancelException:
                 print("Lio::File::load_contents(): cancelled", uri)
+                try:
+                    f = Gio.File.new_for_path(tmp_path)
+                    f.delete()
+                except:
+                    pass
                 return (False, None, "")
             except Exception as e:
                 print(e, uri)
