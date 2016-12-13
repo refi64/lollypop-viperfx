@@ -35,7 +35,7 @@
               </packing>
             </child>
             <child type="overlay">
-              <object class="GtkEventBox" id="eventbox1">
+              <object class="GtkEventBox" id="play-event">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
@@ -54,12 +54,11 @@
               </object>
             </child>
             <child type="overlay">
-              <object class="GtkGrid" id="grid2">
+              <object class="GtkGrid" id="overlay-grid">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="valign">end</property>
-                <property name="margin_right">5</property>
                 <property name="margin_end">5</property>
                 <property name="margin_bottom">6</property>
                 <property name="column_spacing">5</property>

@@ -88,22 +88,22 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 year_label.show()
         else:
             self.__duration_label.set_hexpand(True)
+            builder = Gtk.Builder()
+            builder.add_from_resource('/org/gnome/Lollypop/CoverBox.ui')
+            builder.connect_signals(self)
+            self._play_button = builder.get_object('play-button')
+            self._action_button = builder.get_object('action-button')
+            self._action_event = builder.get_object('action-event')
+            self._cover = builder.get_object('cover')
+            self.__coverbox = builder.get_object('coverbox')
+            # 6 for 2*3px (application.css)
+            self.__coverbox.set_property('width-request', art_size + 6)
             if art_size == ArtSize.BIG:
+                self._cover.get_style_context().add_class('cover-frame')
+                self._artwork_button = builder.get_object('artwork-button')
                 if self._album.year:
                     year_label.set_label(self._album.year)
                     year_label.show()
-                builder = Gtk.Builder()
-                builder.add_from_resource('/org/gnome/Lollypop/CoverBox.ui')
-                builder.connect_signals(self)
-                self._play_button = builder.get_object('play-button')
-                self._artwork_button = builder.get_object('artwork-button')
-                self._action_button = builder.get_object('action-button')
-                self._action_event = builder.get_object('action-event')
-                self._cover = builder.get_object('cover')
-                self._cover.get_style_context().add_class('cover-frame')
-                self.__coverbox = builder.get_object('coverbox')
-                # 6 for 2*3px (application.css)
-                self.__coverbox.set_property('width-request', art_size + 6)
                 self.__rating = RatingWidget(self._album)
                 self.__coverbox.add(self.__rating)
                 self.__rating.show()
@@ -114,13 +114,27 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     artist_label.set_text(", ".join(self._album.artists))
                     artist_label.show()
             elif art_size == ArtSize.HEADER:
-                self._cover = Gtk.Image()
+                # Here we are working around default CoverBox ui
+                # Do we really need to have another ui file?
+                # So just hack values on the fly
                 self._cover.set_halign(Gtk.Align.CENTER)
-                self._cover.set_margin_bottom(5)
                 self._cover.get_style_context().add_class('small-cover-frame')
-                self._cover.show()
-                builder.get_object('albuminfo').attach(self._cover,
-                                                       0, 0, 1, 1)
+                self.__coverbox.set_margin_bottom(5)
+                # We want a smaller button, so reload image
+                self._rounded_class = "rounded-icon-small"
+                self._play_button.set_from_icon_name(
+                                               "media-playback-start-symbolic",
+                                               Gtk.IconSize.MENU)
+                overlay_grid = builder.get_object('overlay-grid')
+                overlay_grid.set_margin_bottom(2)
+                overlay_grid.set_margin_end(2)
+                overlay_grid.set_column_spacing(0)
+                self._play_button.set_margin_start(2)
+                self._play_button.set_margin_bottom(2)
+                play_event = builder.get_object('play-event')
+                play_event.set_property('halign', Gtk.Align.START)
+                play_event.set_property('valign', Gtk.Align.END)
+                album_info.attach(self.__coverbox, 0, 0, 1, 1)
                 artist_label.set_text(", ".join(self._album.artists))
                 artist_label.show()
 
