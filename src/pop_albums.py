@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.view import LazyLoadingView
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
-from lollypop.view_artist_albums import ArtistAlbumsView
+from lollypop.view_albums import AlbumBackView
 
 
 class AlbumRow(Gtk.ListBoxRow):
@@ -495,48 +495,6 @@ class AlbumsView(LazyLoadingView):
             pass
 
 
-class AlbumView(Gtk.Grid):
-    """
-        Show an album view with a back button (destroying AlbumView)
-    """
-    __gsignals__ = {
-        'back-clicked': (GObject.SignalFlags.RUN_FIRST, None, ()),
-    }
-
-    def __init__(self, album_id, genre_ids, artist_ids):
-        """
-            Init view
-            @param album id as int
-            @param genre ids as [int]
-            @param artist ids as [int]
-        """
-        Gtk.Grid.__init__(self)
-        self.set_orientation(Gtk.Orientation.VERTICAL)
-        back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic",
-                                                    Gtk.IconSize.MENU)
-        back_button.set_tooltip_text(_("Go back"))
-        back_button.connect('clicked', self.__on_back_button_clicked)
-        back_button.set_property('halign', Gtk.Align.START)
-        back_button.set_relief(Gtk.ReliefStyle.NONE)
-        back_button.show()
-        self.add(back_button)
-        view = ArtistAlbumsView(artist_ids, genre_ids, ArtSize.HEADER)
-        view.populate([album_id])
-        view.show()
-        self.add(view)
-        self.show()
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_back_button_clicked(self, button):
-        """
-            Destroy self
-            @param button as Gtk.Button
-        """
-        self.emit('back-clicked')
-
-
 class AlbumsPopover(Gtk.Popover):
     """
         Popover showing Albums View
@@ -571,7 +529,7 @@ class AlbumsPopover(Gtk.Popover):
         """
         genre_ids = Lp().player.get_genre_ids(album_id)
         artist_ids = Lp().player.get_artist_ids(album_id)
-        album_view = AlbumView(album_id, genre_ids, artist_ids)
+        album_view = AlbumBackView(album_id, genre_ids, artist_ids)
         album_view.connect('back-clicked', self.__on_back_clicked)
         album_view.show()
         self.__stack.add(album_view)

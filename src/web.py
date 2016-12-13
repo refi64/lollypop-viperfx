@@ -10,24 +10,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GObject, GLib
 
 from threading import Thread
 from time import time
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
-from lollypop.objects import Track, Album
 from lollypop.web_youtube import WebYouTube
 from lollypop.web_jgm90 import WebJmg90
 from lollypop.define import Lp, DbPersistent, Type
 from lollypop.lio import Lio
 
 
-class Web:
+class Web(GObject.Object):
     """
         Web helper
     """
+
+    __gsignals__ = {
+        'saved': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+    }
 
     def play_track(track, play, callback):
         """
@@ -48,6 +51,7 @@ class Web:
         """
             Init helper
         """
+        GObject.Object.__init__(self)
         self.__helpers = [WebJmg90(), WebYouTube()]
 
     def save_track(self, item, persistent):
@@ -102,14 +106,9 @@ class Web:
             GLib.idle_add(Lp().window.progress.set_fraction,
                           start / nb_items, self)
         GLib.idle_add(Lp().window.progress.set_fraction, 1.0, self)
-        # Play if needed
-        if album_id is not None and persistent == DbPersistent.NONE:
-            Lp().player.clear_albums()
-            album = Album(album_id)
-            GLib.idle_add(Lp().player.load, album.tracks[0])
-            GLib.idle_add(Lp().player.add_album, album)
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
+        GLib.idle_add(self.emit, "saved", album_id)
 
     def __save_track_thread(self, item, persistent):
         """
@@ -125,8 +124,7 @@ class Web:
         self.__save_cover(item, album_id)
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
-        if persistent == DbPersistent.NONE:
-            GLib.idle_add(Lp().player.load, Track(track_id))
+        GLib.idle_add(self.emit, "saved", track_id)
 
     def __save_track(self, item, persistent, album_artist):
         """

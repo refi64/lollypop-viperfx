@@ -70,19 +70,43 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="save">
+      <object class="GtkStack" id="stack">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Save into collection</property>
-        <property name="valign">center</property>
-        <property name="image">image1</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_save_clicked" swapped="no"/>
-        <style>
-          <class name="track-menu-button"/>
-          <class name="menu-button"/>
-        </style>
+        <property name="can_focus">False</property>
+        <property name="transition_type">crossfade</property>
+        <child>
+          <object class="GtkButton" id="save">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Save into collection</property>
+            <property name="valign">center</property>
+            <property name="image">image1</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_save_clicked" swapped="no"/>
+            <style>
+              <class name="track-menu-button"/>
+              <class name="menu-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="name">save</property>
+            <property name="title" translatable="yes">save</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="spinner">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="name">spinner</property>
+            <property name="title" translatable="yes">spinner</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="left_attach">2</property>

@@ -19,6 +19,7 @@ from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
+from lollypop.view_albums import AlbumBackView
 from lollypop.utils import noaccents, get_network_available
 from lollypop.lio import Lio
 
@@ -45,6 +46,7 @@ class SearchRow(Gtk.ListBoxRow):
         else:
             builder.add_from_resource(
                                     '/org/gnome/Lollypop/ExternalSearchRow.ui')
+            self.__stack = builder.get_object('stack')
         builder.connect_signals(self)
         self.set_property('has-tooltip', True)
         self.connect('query-tooltip', self.__on_query_tooltip)
@@ -122,18 +124,6 @@ class SearchRow(Gtk.ListBoxRow):
                     break
         return found
 
-    def play(self):
-        """
-            Play row
-        """
-        from lollypop.web import Web
-        Lp().player.emit('loading-changed', True)
-        web = Web()
-        if self.__item.is_track:
-            web.save_track(self.__item, DbPersistent.NONE)
-        else:
-            web.save_album(self.__item, DbPersistent.NONE)
-
     def set_score(self, score):
         """
             Set score
@@ -153,6 +143,23 @@ class SearchRow(Gtk.ListBoxRow):
         self.__cover.set_from_surface(surface)
         del surface
 
+    def on_activated(self, persistent):
+        """
+            Download item
+            @param persistent as DbPersistent
+        """
+        from lollypop.web import Web
+        web = Web()
+        web.connect("saved", self.__on_saved, persistent)
+        if self.__item.is_track:
+            web.save_track(self.__item, persistent)
+        else:
+            web.save_album(self.__item, persistent)
+        self.set_sensitive(False)
+        if persistent == DbPersistent.NONE:
+            self.__stack.set_visible_child_name("spinner")
+            self.__stack.get_visible_child().start()
+
 #######################
 # PROTECTED           #
 #######################
@@ -161,13 +168,7 @@ class SearchRow(Gtk.ListBoxRow):
             Save into collection
             @param button as Gtk.Button
         """
-        from lollypop.web import Web
-        web = Web()
-        if self.__item.is_track:
-            web.save_track(self.__item, DbPersistent.EXTERNAL)
-        else:
-            web.save_album(self.__item, DbPersistent.EXTERNAL)
-        self.destroy()
+        self.on_activated(DbPersistent.EXTERNAL)
 
     def _on_playlist_clicked(self, button):
         """
@@ -228,6 +229,24 @@ class SearchRow(Gtk.ListBoxRow):
         del surface
         self.__artist.set_text(", ".join(artists))
 
+    def __on_saved(self, web, item_id, persistent):
+        """
+            Play track
+            @param web as Web
+            @param item id as int
+            @parma activated as DbPersistent
+        """
+        self.__item.id = item_id
+        if persistent == DbPersistent.NONE:
+            if self.__item.is_track:
+                Lp().player.emit('loading-changed', True)
+            self.emit("activate")
+        self.set_sensitive(True)
+        if persistent == DbPersistent.NONE:
+            self.__stack.get_visible_child().stop()
+            self.__stack.set_visible_child_name("save")
+            self.__stack.get_visible_child().set_sensitive(False)
+
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -276,12 +295,12 @@ class SearchPopover(Gtk.Popover):
         self.__view.set_sort_func(self.__sort_func)
         self.__view.connect("button-press-event", self.__on_button_press)
         self.__view.connect("row-activated", self.__on_row_activated)
-        self.__view.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
         self.__view.show()
 
         self.__spinner = builder.get_object('spinner')
-        self.__stack = builder.get_object('stack')
+        self.__header_stack = builder.get_object('stack')
 
         self.__switch = builder.get_object('search-switch')
         if GLib.find_program_in_path("youtube-dl") is None:
@@ -289,10 +308,16 @@ class SearchPopover(Gtk.Popover):
         else:
             self.__switch.set_state(Lp().settings.get_value('network-search'))
         builder.get_object('scrolled').add(self.__view)
-        self.add(builder.get_object('widget'))
         # Connect here because we don't want previous switch.set_state()
         # to emit a signal on init
         builder.connect_signals(self)
+
+        self.__stack = Gtk.Stack()
+        self.__stack.set_transition_duration(250)
+        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.__stack.show()
+        self.__stack.add_named(builder.get_object('widget'), "search")
+        self.add(self.__stack)
 
     def set_text(self, text):
         """
@@ -409,7 +434,7 @@ class SearchPopover(Gtk.Popover):
             Populate searching items
             in db based on text entry current text
         """
-        self.__stack.set_visible_child(self.__spinner)
+        self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
         # Network Search
@@ -510,7 +535,7 @@ class SearchPopover(Gtk.Popover):
         """
             Reset search object
         """
-        self.__stack.set_visible_child(self.__new_btn)
+        self.__header_stack.set_visible_child(self.__new_btn)
         self.__spinner.stop()
         if self.__nsearch is not None:
             self.__nsearch.disconnect_by_func(self.__on_network_item_found)
@@ -539,7 +564,7 @@ class SearchPopover(Gtk.Popover):
         if not search.items:
             if self.__lsearch.finished and\
                     (self.__nsearch is None or self.__nsearch.finished):
-                self.__stack.set_visible_child(self.__new_btn)
+                self.__header_stack.set_visible_child(self.__new_btn)
                 self.__spinner.stop()
             return
         item = search.items.pop(0)
@@ -556,7 +581,7 @@ class SearchPopover(Gtk.Popover):
             return
         if not search.items:
             if self.__nsearch.finished and self.__lsearch.finished:
-                self.__stack.set_visible_child(self.__new_btn)
+                self.__header_stack.set_visible_child(self.__new_btn)
                 self.__spinner.stop()
             return
         item = search.items.pop(0)
@@ -595,7 +620,7 @@ class SearchPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
         self.__reset_search()
-        self.__stack.set_visible_child(self.__new_btn)
+        self.__header_stack.set_visible_child(self.__new_btn)
         self.__spinner.stop()
 
     def __on_search_changed_thread(self):
@@ -619,32 +644,28 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        if Lp().player.is_party or Lp().player.locked:
-            # External track/album
-            if row.id is None:
-                pass
-            elif row.is_track:
-                if Lp().player.locked:
-                    if row.id in Lp().player.get_queue():
-                        Lp().player.del_from_queue(row.id)
-                    else:
-                        Lp().player.append_to_queue(row.id)
-                    row.destroy()
-                else:
-                    Lp().player.load(Track(row.id))
-            else:
-                t = Thread(target=self.__play_search, args=(row.id,
-                                                            row.is_track))
-                t.daemon = True
-                t.start()
+        if row.id is None:
+            row.on_activated(DbPersistent.NONE)
+        elif row.is_track:
+            # Add to queue, and play (so remove from queue)
+            # Allow us to not change user current playlist
+            if not Lp().player.is_party:
+                Lp().player.insert_in_queue(row.id, 0, False)
+            Lp().player.load(Track(row.id))
         else:
-            if row.id is None:
-                row.play()
-            else:
-                t = Thread(target=self.__play_search, args=(row.id,
-                                                            row.is_track))
-                t.daemon = True
-                t.start()
+            album_view = AlbumBackView(row.id, [], [])
+            album_view.connect('back-clicked', self.__on_back_clicked)
+            album_view.show()
+            self.__stack.add(album_view)
+            self.__stack.set_visible_child(album_view)
+
+    def __on_back_clicked(self, view):
+        """
+            Show search
+        """
+        search = self.__stack.get_child_by_name("search")
+        self.__stack.set_visible_child(search)
+        GLib.timeout_add(5000, view.destroy)
 
     def __on_button_press(self, widget, event):
         """
