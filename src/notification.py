@@ -30,7 +30,7 @@ class NotificationManager:
         self.__notification = Notify.Notification()
         self.__notification.set_category('x-gnome.music')
         self.__notification.set_hint('desktop-entry',
-                                     GLib.Variant('s', 'lollypop'))
+                                     GLib.Variant('s', 'org.gnome.Lollypop'))
         self.__set_actions()
         Lp().player.connect('current-changed',
                             self.__on_current_changed)
@@ -48,7 +48,7 @@ class NotificationManager:
                                      GLib.Variant.new_boolean(True))
         self.__notification.update(message,
                                    sub,
-                                   "lollypop")
+                                   "org.gnome.Lollypop")
         try:
             self.__notification.show()
         except:
