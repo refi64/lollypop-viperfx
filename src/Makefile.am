@@ -65,6 +65,7 @@ app_PYTHON = \
     progressbar.py\
     radios.py\
     search_item.py\
+    search_itunes.py\
     search_local.py\
     search_network.py\
     search_spotify.py\

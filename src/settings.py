@@ -196,6 +196,12 @@ class SettingsDialog:
         switch_artwork = builder.get_object('switch_artwork')
         switch_artwork.set_state(Lp().settings.get_value('artist-artwork'))
 
+        switch_spotify = builder.get_object('switch_spotify')
+        switch_spotify.set_state(Lp().settings.get_value('search-spotify'))
+
+        switch_itunes = builder.get_object('switch_itunes')
+        switch_itunes.set_state(Lp().settings.get_value('search-itunes'))
+
         combo_orderby = builder.get_object('combo_orderby')
         combo_orderby.set_active(Lp().settings.get_enum(('orderby')))
 
@@ -439,6 +445,22 @@ class SettingsDialog:
             @param widget as Gtk.ComboBoxText
         """
         Lp().settings.set_enum('orderby', widget.get_active())
+
+    def _update_spotify_setting(self, widget, state):
+        """
+            Update search on spotify setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value('search-spotify', GLib.Variant('b', state))
+
+    def _update_itunes_setting(self, widget, state):
+        """
+            Update search on spotify setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value('search-itunes', GLib.Variant('b', state))
 
     def _update_lastfm_settings(self, sync=False):
         """

@@ -13,10 +13,12 @@
 from gi.repository import GObject, Gio, GLib
 
 from lollypop.search_spotify import SpotifySearch
+from lollypop.search_itunes import ItunesSearch
 from lollypop.utils import get_network_available
+from lollypop.define import Lp
 
 
-class NetworkSearch(SpotifySearch, GObject.GObject):
+class NetworkSearch(SpotifySearch, ItunesSearch, GObject.GObject):
     """
         Search provider over network
     """
@@ -30,6 +32,7 @@ class NetworkSearch(SpotifySearch, GObject.GObject):
         """
         GObject.GObject.__init__(self)
         SpotifySearch.__init__(self)
+        ItunesSearch.__init__(self)
         self._cancel = Gio.Cancellable.new()
         self._items = []
         self._finished = False
@@ -54,12 +57,16 @@ class NetworkSearch(SpotifySearch, GObject.GObject):
 
     def do(self, name):
         """
-            Return tracks containing name
+            Return tracks and albums containing name
             @param name as str
-            @return tracks as [SearchItem]
+            @return tracks/albums as [SearchItem]
         """
         if get_network_available():
-            SpotifySearch.albums(self, name)
-            SpotifySearch.tracks(self, name)
+            if Lp().settings.get_value('search-itunes'):
+                ItunesSearch.albums(self, name)
+                ItunesSearch.tracks(self, name)
+            if Lp().settings.get_value('search-spotify'):
+                SpotifySearch.albums(self, name)
+                SpotifySearch.tracks(self, name)
         self._finished = True
         GLib.idle_add(self.emit, 'item-found')

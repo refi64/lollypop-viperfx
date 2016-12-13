@@ -91,7 +91,6 @@
           </object>
           <packing>
             <property name="name">save</property>
-            <property name="title" translatable="yes">save</property>
           </packing>
         </child>
         <child>
@@ -103,7 +102,6 @@
           </object>
           <packing>
             <property name="name">spinner</property>
-            <property name="title" translatable="yes">spinner</property>
             <property name="position">1</property>
           </packing>
         </child>
