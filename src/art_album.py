@@ -207,7 +207,9 @@ class AlbumArt(BaseArt, TagReader):
                                                  size,
                                                  scale)
                 else:
-                    pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
+                    pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
+                                 [str(Lp().settings.get_value(
+                                                'cover-quality').get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             del pixbuf
             return surface
@@ -292,7 +294,9 @@ class AlbumArt(BaseArt, TagReader):
                                                                ArtSize.MONSTER,
                                                                True,
                                                                None)
-                pixbuf.savev(store_path, "jpeg", ["quality"], ["90"])
+                pixbuf.savev(store_path, "jpeg", ["quality"],
+                             [str(Lp().settings.get_value(
+                                                'cover-quality').get_int32())])
                 dst = Lio.File.new_for_uri(arturi)
                 src = Lio.File.new_for_path(store_path)
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
@@ -430,7 +434,8 @@ class AlbumArt(BaseArt, TagReader):
                                                            True,
                                                            None)
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
-                     "jpeg", ["quality"], ["90"])
+                     "jpeg", ["quality"], [str(Lp().settings.get_value(
+                                           'cover-quality').get_int32())])
         del pixbuf
         f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)

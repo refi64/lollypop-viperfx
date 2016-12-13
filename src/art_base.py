@@ -110,10 +110,12 @@ class BaseArt(GObject.GObject):
                 # > 3.15 is missing savev method
                 try:
                     pixbuf.save(cache_path_jpg, "jpeg",
-                                ["quality"], ["90"])
+                                ["quality"], [str(Lp().settings.get_value(
+                                              'cover-quality').get_int32())])
                 except:
                     pixbuf.savev(cache_path_jpg, "jpeg",
-                                 ["quality"], ["90"])
+                                 ["quality"], [str(Lp().settings.get_value(
+                                              'cover-quality').get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             del pixbuf
             return surface
