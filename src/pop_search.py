@@ -156,9 +156,8 @@ class SearchRow(Gtk.ListBoxRow):
         else:
             web.save_album(self.__item, persistent)
         self.set_sensitive(False)
-        if persistent == DbPersistent.NONE:
-            self.__stack.set_visible_child_name("spinner")
-            self.__stack.get_visible_child().start()
+        self.__stack.set_visible_child_name("spinner")
+        self.__stack.get_visible_child().start()
 
 #######################
 # PROTECTED           #
@@ -242,10 +241,9 @@ class SearchRow(Gtk.ListBoxRow):
                 Lp().player.emit('loading-changed', True)
             self.emit("activate")
         self.set_sensitive(True)
-        if persistent == DbPersistent.NONE:
-            self.__stack.get_visible_child().stop()
-            self.__stack.set_visible_child_name("save")
-            self.__stack.get_visible_child().set_sensitive(False)
+        self.__stack.get_visible_child().stop()
+        self.__stack.set_visible_child_name("save")
+        self.__stack.get_visible_child().set_sensitive(False)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
