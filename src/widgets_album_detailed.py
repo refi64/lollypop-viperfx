@@ -71,10 +71,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.__header = builder.get_object('header')
         self.__overlay = builder.get_object('overlay')
         self.__duration_label = builder.get_object('duration')
-        self._play_button = builder.get_object('play-button')
-        self._artwork_button = builder.get_object('artwork-button')
-        self._action_button = builder.get_object('action-button')
-        self._action_event = builder.get_object('action-event')
         self.__context_button = builder.get_object('context')
 
         if art_size == ArtSize.NONE:
@@ -98,6 +94,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     year_label.show()
                 builder = Gtk.Builder()
                 builder.add_from_resource('/org/gnome/Lollypop/CoverBox.ui')
+                builder.connect_signals(self)
+                self._play_button = builder.get_object('play-button')
+                self._artwork_button = builder.get_object('artwork-button')
+                self._action_button = builder.get_object('action-button')
+                self._action_event = builder.get_object('action-event')
                 self._cover = builder.get_object('cover')
                 self._cover.get_style_context().add_class('cover-frame')
                 self.__coverbox = builder.get_object('coverbox')
