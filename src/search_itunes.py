@@ -115,7 +115,7 @@ class ItunesSearch:
                         track_item.year = decode['releaseDate'][:4]
                     except:
                         pass  # May be missing
-                    track_item.name = item['collectionName']
+                    track_item.name = item['trackName']
                     track_item.album = album_item.name
                     track_item.tracknumber = int(item['trackNumber'])
                     track_item.discnumber = int(item['discNumber'])
