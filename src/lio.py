@@ -12,8 +12,12 @@
 
 from gi.repository import Gio, GObject
 
-from urllib.request import urlopen
+from urllib.request import urlretrieve
 from urllib.parse import quote
+
+
+class CancelException(Exception):
+    pass
 
 
 class Lio:
@@ -29,6 +33,7 @@ class Lio:
 
         def __init__(self):
             GObject.Object.__init__(self)
+            self.__cancel = None
 
         def new_for_uri(uri):
             f = Gio.File.new_for_uri(uri)
@@ -36,13 +41,31 @@ class Lio:
             return f
 
         def load_contents(self, cancellable=None):
+            self.__cancel = cancellable
             try:
                 uri = self.get_uri()
                 if uri.startswith("http"):
-                    data = urlopen(self.get_uri()).read()
-                    return (True, data, "")
+                    (path, msg) = urlretrieve(self.get_uri(),
+                                              reporthook=self.__check_cancel)
+                    f = Gio.File.new_for_path(path)
+                    (s, data, t) = f.load_contents(cancellable)
+                    f.delete()
+                    return (s, data, t)
                 else:
                     return Gio.File.load_contents(self, cancellable)
+            except CancelException:
+                print("Lio::File::load_contents(): cancelled", uri)
+                return (False, None, "")
             except Exception as e:
                 print(e, uri)
                 raise e
+
+    #######################
+    # PRIVATE             #
+    #######################
+        def __check_cancel(self, count, block, total):
+            """
+                Just check for cancel and raise if needed
+            """
+            if self.__cancel is not None and self.__cancel.is_cancelled():
+                raise CancelException
