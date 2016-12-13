@@ -202,7 +202,7 @@ class SettingsDialog:
         switch_itunes = builder.get_object('switch_itunes')
         switch_itunes.set_state(Lp().settings.get_value('search-itunes'))
 
-        if GLib.find_program_in_path("youtubed-dl") is None:
+        if GLib.find_program_in_path("youtube-dl") is None:
             builder.get_object('yt-dl').show()
 
         combo_orderby = builder.get_object('combo_orderby')
