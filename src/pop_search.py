@@ -639,7 +639,9 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        if row.id is None and not row.is_loading:
+        if row.is_loading:
+            return
+        if row.id is None:
             row.on_activated(DbPersistent.NONE)
         elif row.is_track:
             # Add to queue, and play (so remove from queue)
