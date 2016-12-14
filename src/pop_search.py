@@ -43,9 +43,11 @@ class SearchRow(Gtk.ListBoxRow):
         if internal:
             builder.add_from_resource(
                                     '/org/gnome/Lollypop/InternalSearchRow.ui')
+            self.__progress = None
         else:
             builder.add_from_resource(
                                     '/org/gnome/Lollypop/ExternalSearchRow.ui')
+            self.__progress = builder.get_object('progress')
             self.__stack = builder.get_object('stack')
         builder.connect_signals(self)
         self.set_property('has-tooltip', True)
@@ -143,6 +145,14 @@ class SearchRow(Gtk.ListBoxRow):
         self.__cover.set_from_surface(surface)
         del surface
 
+    @property
+    def is_loading(self):
+        """
+            True if is loading a track/album
+            @return bool
+        """
+        return self.__progress is not None and self.__progress.is_visible()
+
     def on_activated(self, persistent):
         """
             Download item
@@ -155,7 +165,9 @@ class SearchRow(Gtk.ListBoxRow):
             web.save_track(self.__item, persistent)
         else:
             web.save_album(self.__item, persistent)
-        self.set_sensitive(False)
+            if self.__progress is not None:
+                self.__progress.show()
+            web.connect("progress", self.__on_progress)
         self.__stack.set_visible_child_name("spinner")
         self.__stack.get_visible_child().start()
 
@@ -240,10 +252,20 @@ class SearchRow(Gtk.ListBoxRow):
             if self.__item.is_track:
                 Lp().player.emit('loading-changed', True)
             self.emit("activate")
-        self.set_sensitive(True)
         self.__stack.get_visible_child().stop()
         self.__stack.set_visible_child_name("save")
         self.__stack.get_visible_child().set_sensitive(False)
+        if self.__progress is not None:
+            self.__progress.hide()
+
+    def __on_progress(self, web, progress):
+        """
+            Update progress bar
+            @param web as Web
+            @param progress as float
+        """
+        if self.__progress is not None:
+            self.__progress.set_fraction(progress)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
@@ -617,7 +639,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        if row.id is None:
+        if row.id is None and not row.is_loading:
             row.on_activated(DbPersistent.NONE)
         elif row.is_track:
             # Add to queue, and play (so remove from queue)

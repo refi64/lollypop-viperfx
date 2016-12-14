@@ -29,7 +29,8 @@ class Web(GObject.Object):
     """
 
     __gsignals__ = {
-        'saved': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+        'saved': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'progress': (GObject.SignalFlags.RUN_FIRST, None, (float,))
     }
 
     def play_track(track, play, callback):
@@ -70,9 +71,8 @@ class Web(GObject.Object):
             @param item as SearchItem
             @param persistent as DbPersistent
         """
-        if persistent != DbPersistent.CHARTS:
-            Lp().window.progress.add(self)
-        t = Thread(target=self.__save_album_thread, args=(item, persistent))
+        t = Thread(target=self.__save_album_thread,
+                   args=(item, persistent))
         t.daemon = True
         t.start()
 
@@ -103,9 +103,8 @@ class Web(GObject.Object):
                 t.daemon = True
                 t.start()
             start += 1
-            GLib.idle_add(Lp().window.progress.set_fraction,
-                          start / nb_items, self)
-        GLib.idle_add(Lp().window.progress.set_fraction, 1.0, self)
+            GLib.idle_add(self.emit, "progress", start / nb_items)
+        GLib.idle_add(self.emit, "progress", 1)
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
         if album_id is not None:
