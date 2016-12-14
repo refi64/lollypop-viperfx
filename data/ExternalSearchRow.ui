@@ -114,7 +114,9 @@
     </child>
     <child>
       <object class="GtkProgressBar" id="progress">
+        <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="opacity">0</property>
         <property name="valign">end</property>
       </object>
       <packing>

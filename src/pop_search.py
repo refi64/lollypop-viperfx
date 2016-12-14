@@ -151,7 +151,8 @@ class SearchRow(Gtk.ListBoxRow):
             True if is loading a track/album
             @return bool
         """
-        return self.__progress is not None and self.__progress.is_visible()
+        return self.__progress is not None and\
+            self.__progress.get_opacity() == 1
 
     def on_activated(self, persistent):
         """
@@ -166,7 +167,7 @@ class SearchRow(Gtk.ListBoxRow):
         else:
             web.save_album(self.__item, persistent)
             if self.__progress is not None:
-                self.__progress.show()
+                self.__progress.set_opacity(1)
             web.connect("progress", self.__on_progress)
         self.__stack.set_visible_child_name("spinner")
         self.__stack.get_visible_child().start()
@@ -247,6 +248,8 @@ class SearchRow(Gtk.ListBoxRow):
             @param item id as int
             @parma activated as DbPersistent
         """
+        if self.__progress is not None:
+            self.__progress.set_opacity(0)
         self.__item.id = item_id
         if persistent == DbPersistent.NONE:
             if self.__item.is_track:
@@ -255,8 +258,6 @@ class SearchRow(Gtk.ListBoxRow):
         self.__stack.get_visible_child().stop()
         self.__stack.set_visible_child_name("save")
         self.__stack.get_visible_child().set_sensitive(False)
-        if self.__progress is not None:
-            self.__progress.hide()
 
     def __on_progress(self, web, progress):
         """
