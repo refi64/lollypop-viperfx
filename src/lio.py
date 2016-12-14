@@ -14,6 +14,7 @@ from gi.repository import Gio, GObject
 
 from urllib.request import urlretrieve
 from urllib.parse import quote
+from uuid import uuid4
 
 
 class CancelException(Exception):
@@ -45,7 +46,7 @@ class Lio:
             try:
                 uri = self.get_uri()
                 if uri.startswith("http"):
-                    tmp_path = "/tmp/" + quote(uri, "")
+                    tmp_path = "/tmp/lollypop_" + str(uuid4())
                     urlretrieve(uri, tmp_path, reporthook=self.__check_cancel)
                     f = Gio.File.new_for_path(tmp_path)
                     (s, data, t) = f.load_contents(cancellable)
