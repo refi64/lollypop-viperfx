@@ -43,6 +43,7 @@ class Lio:
 
         def load_contents(self, cancellable=None):
             self.__cancel = cancellable
+            tmp_path = None
             try:
                 uri = self.get_uri()
                 if uri.startswith("http"):
@@ -57,8 +58,9 @@ class Lio:
             except CancelException:
                 print("Lio::File::load_contents(): cancelled", uri)
                 try:
-                    f = Gio.File.new_for_path(tmp_path)
-                    f.delete()
+                    if tmp_path is not None:
+                        f = Gio.File.new_for_path(tmp_path)
+                        f.delete()
                 except:
                     pass
                 return (False, None, "")
