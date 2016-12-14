@@ -301,6 +301,7 @@ class ArtistView(ArtistAlbumsView):
                                                                        size,
                                                                        True,
                                                                        None)
+                        stream.close()
                         surface = Gdk.cairo_surface_create_from_pixbuf(
                                             pixbuf, self.__scale_factor, None)
                         del pixbuf

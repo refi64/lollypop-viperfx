@@ -176,6 +176,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                        size,
                                                                        ratio,
                                                                        None)
+                        stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
                     try:
@@ -200,6 +201,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                        size,
                                                                        ratio,
                                                                        None)
+                        stream.close()
                 # Use default artwork
                 if pixbuf is None:
                     self.cache_album_art(album.id)
@@ -294,6 +296,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                ArtSize.MONSTER,
                                                                True,
                                                                None)
+                stream.close()
                 pixbuf.savev(store_path, "jpeg", ["quality"],
                              [str(Lp().settings.get_value(
                                                 'cover-quality').get_int32())])
@@ -403,6 +406,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                    size,
                                                                    False,
                                                                    None)
+                stream.close()
         except Exception as e:
             print("AlbumArt::pixbuf_from_tags():", e)
         return pixbuf
@@ -433,6 +437,7 @@ class AlbumArt(BaseArt, TagReader):
                                                            ArtSize.MONSTER,
                                                            True,
                                                            None)
+        stream.close()
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], [str(Lp().settings.get_value(
                                            'cover-quality').get_int32())])

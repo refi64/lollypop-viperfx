@@ -277,6 +277,7 @@ class TuneinPopover(Gtk.Popover):
                                                            ArtSize.MEDIUM,
                                                            True,
                                                            None)
+        stream.close()
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                        0,
                                                        None)

@@ -202,6 +202,7 @@ class InfoCache:
                                                                -1,
                                                                True,
                                                                None)
+            stream.close()
             pixbuf.savev(filepath+".jpg",
                          "jpeg", ["quality"], [str(Lp().settings.get_value(
                                                'cover-quality').get_int32())])

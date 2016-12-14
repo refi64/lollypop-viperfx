@@ -469,6 +469,7 @@ class SearchPopover(Gtk.Popover):
                                                    -1,
                                                    True,
                                                    None)
+                stream.close()
                 GLib.idle_add(row.set_cover, pixbuf)
         except:
             pass

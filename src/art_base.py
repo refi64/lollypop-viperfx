@@ -138,6 +138,7 @@ class BaseArt(GObject.GObject):
         stream = Gio.MemoryInputStream.new_from_data(data,
                                                      None)
         cover = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+        stream.close()
         cover_width = cover.get_width()
         cover_height = cover.get_height()
         del cover

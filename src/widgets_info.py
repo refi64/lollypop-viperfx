@@ -157,6 +157,7 @@ class InfoContent(Gtk.Stack):
                                -1,
                                True,
                                None)
+                    stream.close()
                     surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                                    scale,
                                                                    None)

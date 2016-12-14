@@ -280,6 +280,7 @@ class ArtworkSearch(Gtk.Bin):
                     ArtSize.MONSTER,
                     True,
                     None)
+                stream.close()
             stream = Gio.MemoryInputStream.new_from_data(data, None)
             if stream is not None:
                 big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
@@ -287,6 +288,7 @@ class ArtworkSearch(Gtk.Bin):
                     ArtSize.BIG,
                     True,
                     None)
+                stream.close()
             image = Gtk.Image()
             image.get_style_context().add_class('cover-frame')
             image.set_property('halign', Gtk.Align.CENTER)

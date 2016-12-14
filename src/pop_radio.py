@@ -151,6 +151,7 @@ class RadioPopover(Gtk.Popover):
                 ArtSize.MONSTER,
                 True,
                 None)
+            stream.close()
             image = Gtk.Image()
             image.get_style_context().add_class('cover-frame')
             image.set_property('halign', Gtk.Align.CENTER)
