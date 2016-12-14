@@ -182,7 +182,7 @@ class AlbumArt(BaseArt, TagReader):
                         pixbuf = self.pixbuf_from_tags(
                                     album.tracks[0].uri, size)
                     except Exception as e:
-                        pass
+                        print("AlbumArt::get_album_artwork()", e)
 
                 # Use folder artwork
                 if pixbuf is None and album.uri != "":
