@@ -91,8 +91,8 @@ class WebJmg90:
                                             song['artists'][0]['name'].lower())
                         if song_artist == escape(artist.lower()):
                             return song['id']
-                    except:
-                        pass
+                    except Exception as e:
+                        print("WebJmg90::__get_jmg_id():", e)
         except IndexError:
             pass
         except KeyError:
