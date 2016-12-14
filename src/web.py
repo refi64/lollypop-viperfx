@@ -108,7 +108,8 @@ class Web(GObject.Object):
         GLib.idle_add(Lp().window.progress.set_fraction, 1.0, self)
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
-        GLib.idle_add(self.emit, "saved", album_id)
+        if album_id is not None:
+            GLib.idle_add(self.emit, "saved", album_id)
 
     def __save_track_thread(self, item, persistent):
         """
