@@ -351,6 +351,16 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
+    def __clear(self, clear_albums=False):
+        """
+            Clear the view
+        """
+        for child in self.__view.get_children():
+            child.destroy()
+        if clear_albums:
+            Lp().player.clear_albums()
+        self.__clear_button.set_sensitive(False)
+
     def __add_items(self, items, prev_album_id=None):
         """
             Add items to the view
