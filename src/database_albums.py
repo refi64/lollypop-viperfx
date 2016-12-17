@@ -422,6 +422,7 @@ class AlbumsDatabase:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums, album_genres\
                        WHERE album_genres.genre_id!=?\
+                       AND popularity!=0\
                        AND album_genres.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
