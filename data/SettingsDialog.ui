@@ -145,6 +145,7 @@
               <object class="GtkSwitch" id="switch_dark">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Use dark theme variant</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
                 <signal name="state-set" handler="_update_ui_setting" swapped="no"/>
@@ -171,6 +172,7 @@
               <object class="GtkSwitch" id="switch_genres">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Show genres</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
                 <signal name="state-set" handler="_update_genres_setting" swapped="no"/>
@@ -196,6 +198,7 @@
               <object class="GtkSwitch" id="switch_compilations">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Show compilations in albums view</property>
                 <property name="halign">end</property>
                 <signal name="state-set" handler="_update_compilations_setting" swapped="no"/>
               </object>
@@ -247,6 +250,7 @@
               <object class="GtkSwitch" id="switch_artwork">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Show artist artwork</property>
                 <property name="halign">end</property>
                 <signal name="state-set" handler="_update_artwork_setting" swapped="no"/>
               </object>
@@ -313,6 +317,7 @@
               <object class="GtkLabel" id="update">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Auto update music</property>
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">Auto update music</property>
               </object>
@@ -325,6 +330,7 @@
               <object class="GtkSwitch" id="switch_scan">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Auto update music</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
                 <signal name="state-set" handler="_update_scan_setting" swapped="no"/>
@@ -338,6 +344,7 @@
               <object class="GtkSwitch" id="switch_background">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Continue playback when closed</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
                 <signal name="state-set" handler="_update_background_setting" swapped="no"/>
@@ -375,6 +382,7 @@
               <object class="GtkSwitch" id="switch_state">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Restore state on startup</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
                 <signal name="state-set" handler="_update_state_setting" swapped="no"/>
@@ -426,6 +434,7 @@
               <object class="GtkSwitch" id="switch_artwork_tags">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Save changes to files</property>
                 <property name="halign">end</property>
                 <signal name="state-set" handler="_update_artwork_tags_setting" swapped="no"/>
               </object>
@@ -479,6 +488,7 @@
               <object class="GtkSwitch" id="switch_rating">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Disable automatic rating</property>
                 <property name="halign">end</property>
                 <signal name="state-set" handler="_update_autorate_setting" swapped="no"/>
               </object>
