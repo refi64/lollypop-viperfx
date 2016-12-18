@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GdkPixbuf
+from gi.repository import Gio, GLib, GdkPixbuf
 
 from os import mkdir, path, rename
 
@@ -23,8 +23,15 @@ class InfoCache:
     """
         Generic class to cache text and images
     """
-    _INFO_PATH = path.expanduser("~") + "/.local/share/lollypop/info"
-    _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
+    if GLib.getenv("XDG_DATA_HOME") is None:
+        _INFO_PATH = GLib.get_home_dir() + "/.local/share/lollypop/info"
+    else:
+        _INFO_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop/info"
+    if GLib.getenv("XDG_CACHE_HOME") is None:
+        _CACHE_PATH = GLib.get_home_dir() + "/.cache/lollypop_info"
+    else:
+        _CACHE_PATH = GLib.getenv("XDG_CACHE_HOME") + "/lollypop_info"
+
     WEBSERVICES = [("lastfm", "_get_lastfm_artist_info",
                     "_get_lastfm_album_artwork"),
                    ("spotify", "_get_spotify_artist_info",

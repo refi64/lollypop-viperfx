@@ -21,7 +21,10 @@ class History:
     """
         Playlists manager
     """
-    __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
+    if GLib.getenv("XDG_DATA_HOME") is None:
+        __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
+    else:
+        __LOCAL_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop"
     __DB_PATH = "%s/history.db" % __LOCAL_PATH
     __LIMIT = 1000000  # Delete when limit is reached
     __DELETE = 100     # How many elements to delete

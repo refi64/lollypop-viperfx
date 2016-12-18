@@ -26,9 +26,15 @@ class BaseArt(GObject.GObject):
     """
         Base art manager
     """
-    _CACHE_PATH = GLib.get_home_dir() + "/.cache/lollypop"
+    if GLib.getenv("XDG_CACHE_HOME") is None:
+        _CACHE_PATH = GLib.get_home_dir() + "/.cache/lollypop"
+    else:
+        _CACHE_PATH = GLib.getenv("XDG_CACHE_HOME") + "/lollypop"
     # Fallback when album dir is readonly
-    _STORE_PATH = GLib.get_home_dir() + "/.local/share/lollypop/store"
+    if GLib.getenv("XDG_DATA_HOME") is None:
+        _STORE_PATH = GLib.get_home_dir() + "/.local/share/lollypop/store"
+    else:
+        _STORE_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop/store"
     __gsignals__ = {
         'album-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'artist-artwork-changed': (GObject.SignalFlags.RUN_FIRST,

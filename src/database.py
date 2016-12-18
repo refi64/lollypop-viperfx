@@ -27,8 +27,11 @@ class Database:
     """
         Base database object
     """
-    _LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
-    DB_PATH = "%s/lollypop.db" % _LOCAL_PATH
+    if GLib.getenv("XDG_DATA_HOME") is None:
+        __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
+    else:
+        __LOCAL_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop"
+    DB_PATH = "%s/lollypop.db" % __LOCAL_PATH
 
     # SQLite documentation:
     # In SQLite, a column with type INTEGER PRIMARY KEY
@@ -92,7 +95,7 @@ class Database:
             db_version = Lp().settings.get_value('db-version').get_int32()
             upgrade = DatabaseUpgrade(db_version, self)
             try:
-                d = Lio.File.new_for_path(self._LOCAL_PATH)
+                d = Lio.File.new_for_path(self.__LOCAL_PATH)
                 if not d.query_exists():
                     d.make_directory_with_parents()
                 # Create db schema

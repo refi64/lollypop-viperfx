@@ -29,8 +29,11 @@ class Playlists(GObject.GObject):
     """
         Playlists manager
     """
-    _LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
-    _DB_PATH = "%s/playlists.db" % _LOCAL_PATH
+    if GLib.getenv("XDG_DATA_HOME") is None:
+        __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
+    else:
+        __LOCAL_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop"
+    _DB_PATH = "%s/playlists.db" % __LOCAL_PATH
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
