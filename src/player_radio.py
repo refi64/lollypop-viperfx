@@ -14,7 +14,7 @@ from gi.repository import TotemPlParser, Gst
 
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
-from lollypop.define import Type
+from lollypop.define import Type, Lp
 from lollypop.objects import Track
 from lollypop.utils import get_network_available
 
@@ -123,7 +123,8 @@ class RadioPlayer(BasePlayer):
         self._plugins.volume.props.volume = 1.0
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
-        Radios().set_more_popular(track.album_artists[0])
+        if not Lp().settings.get_value('disable-autorate'):
+            Radios().set_more_popular(track.album_artists[0])
         self._current_track = track
         self.__current = None
         self._playbin.set_state(Gst.State.PLAYING)
