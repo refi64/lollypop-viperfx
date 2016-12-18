@@ -272,8 +272,24 @@ class Container:
         GLib.idle_add(self.__list_two.hide)
         GLib.idle_add(self.__list_one.select_ids, [])
 
+##############
+# PROTECTED  #
+##############
+    def _hide_pane(self):
+        """
+            Hide navigation pane
+            Internally hide list one and list two
+        """
+        if self.__list_one.is_visible():
+            self.__list_two.hide()
+            self.__list_one.hide()
+        else:
+            self.__list_one.show()
+            if self.__list_two.was_visible:
+                self.__list_two.show()
+
 ############
-# Private  #
+# PRIVATE  #
 ############
     def __pulse(self):
         """

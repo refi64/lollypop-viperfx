@@ -76,6 +76,7 @@ class SelectionList(Gtk.Bin):
             @param fast scroll as bool
         """
         Gtk.Bin.__init__(self)
+        self.__was_visible = False
         self.__last_motion_event = None
         self.__previous_motion_y = 0.0
         self.__timeout = None
@@ -140,6 +141,20 @@ class SelectionList(Gtk.Bin):
 
         Lp().art.connect('artist-artwork-changed',
                          self.__on_artist_artwork_changed)
+
+    def hide(self):
+        """
+            Hide widget, remember state
+        """
+        self.__was_visible = self.is_visible()
+        Gtk.Bin.hide(self)
+
+    @property
+    def was_visible(self):
+        """
+            True if widget was visible on previous hide
+        """
+        return self.__was_visible
 
     def mark_as_artists(self, is_artists):
         """

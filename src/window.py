@@ -42,7 +42,7 @@ class Window(Gtk.ApplicationWindow, Container):
                                            GLib.VariantType.new('i'))
         seek_action.connect('activate', self.__on_seek_action)
         Lp().add_action(seek_action)
-        player_action = Gio.SimpleAction.new('player',
+        player_action = Gio.SimpleAction.new('shortcut',
                                              GLib.VariantType.new('s'))
         player_action.connect('activate', self.__on_player_action)
         Lp().add_action(player_action)
@@ -91,28 +91,28 @@ class Window(Gtk.ApplicationWindow, Container):
                 Lp().set_accels_for_action("app.seek(-10)", ["Left"])
                 Lp().set_accels_for_action("app.seek(-20)", ["<Control>Left"])
 
-            Lp().set_accels_for_action("app.player::play_pause",
+            Lp().set_accels_for_action("app.shortcut::play_pause",
                                        ["space", "c"])
-            Lp().set_accels_for_action("app.player::play", ["x"])
-            Lp().set_accels_for_action("app.player::stop", ["v"])
-            Lp().set_accels_for_action("app.player::next", ["n"])
-            Lp().set_accels_for_action("app.player::prev", ["p"])
-            Lp().set_accels_for_action("app.player::loved", ["l"])
+            Lp().set_accels_for_action("app.shortcut::play", ["x"])
+            Lp().set_accels_for_action("app.shortcut::stop", ["v"])
+            Lp().set_accels_for_action("app.shortcut::next", ["n"])
+            Lp().set_accels_for_action("app.shortcut::prev", ["p"])
+            Lp().set_accels_for_action("app.shortcut::loved", ["l"])
         else:
             Lp().set_accels_for_action("app.seek(10)", [None])
             Lp().set_accels_for_action("app.seek(20)", [None])
             Lp().set_accels_for_action("app.seek(-10)", [None])
             Lp().set_accels_for_action("app.seek(-20)", [None])
-            Lp().set_accels_for_action("app.player::play_pause", [None])
-            Lp().set_accels_for_action("app.player::play", [None])
-            Lp().set_accels_for_action("app.player::stop", [None])
-            Lp().set_accels_for_action("app.player::play_pause", [None])
-            Lp().set_accels_for_action("app.player::play", [None])
-            Lp().set_accels_for_action("app.player::stop", [None])
-            Lp().set_accels_for_action("app.player::next", [None])
-            Lp().set_accels_for_action("app.player::next_album", [None])
-            Lp().set_accels_for_action("app.player::prev", [None])
-            Lp().set_accels_for_action("app.player::loved", [None])
+            Lp().set_accels_for_action("app.shortcut::play_pause", [None])
+            Lp().set_accels_for_action("app.shortcut::play", [None])
+            Lp().set_accels_for_action("app.shortcut::stop", [None])
+            Lp().set_accels_for_action("app.shortcut::play_pause", [None])
+            Lp().set_accels_for_action("app.shortcut::play", [None])
+            Lp().set_accels_for_action("app.shortcut::stop", [None])
+            Lp().set_accels_for_action("app.shortcut::next", [None])
+            Lp().set_accels_for_action("app.shortcut::next_album", [None])
+            Lp().set_accels_for_action("app.shortcut::prev", [None])
+            Lp().set_accels_for_action("app.shortcut::loved", [None])
 
     def setup_window(self):
         """
@@ -183,11 +183,12 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup global shortcuts
         """
-        Lp().set_accels_for_action("app.player::locked", ["<Control>l"])
-        Lp().set_accels_for_action("app.player::filter", ["<Control>i"])
-        Lp().set_accels_for_action("app.player::volume", ["<Alt>v"])
-        Lp().set_accels_for_action("app.player::show-genres", ["<Control>g"])
-        Lp().set_accels_for_action("app.player::next_album", ["<Control>n"])
+        Lp().set_accels_for_action("app.shortcut::locked", ["<Control>l"])
+        Lp().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
+        Lp().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
+        Lp().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
+        Lp().set_accels_for_action("app.shortcut::show_genres", ["<Control>g"])
+        Lp().set_accels_for_action('app.shortcut::hide_pane', ["<Control>h"])
         Lp().set_accels_for_action('app.update_db', ["<Control>u"])
         Lp().set_accels_for_action('app.settings', ["<Control>s"])
         Lp().set_accels_for_action('app.fullscreen', ["F11", "F7"])
@@ -455,12 +456,14 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.prev()
         elif string == "locked":
             Lp().player.lock()
+        elif string == "hide_pane":
+            self._hide_pane()
         elif string == "filter":
             if self.view is not None:
                 self.view.set_search_mode()
         elif string == "volume":
             self.__toolbar.show_hide_volume_control()
-        elif string == "show-genres":
+        elif string == "show_genres":
             state = not Lp().settings.get_value('show-genres')
             Lp().settings.set_value('show-genres',
                                     GLib.Variant('b', state))
