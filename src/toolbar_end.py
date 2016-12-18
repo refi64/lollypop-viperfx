@@ -143,9 +143,10 @@ class ToolbarEnd(Gtk.Bin):
         Lp().set_accels_for_action("app.party", ["<Control>p"])
 
         self.__search_button = builder.get_object('search-button')
-        helper = TouchHelper(self.__search_button, "search", "<Control>f")
-        helper.set_long_func(self.__on_search_long)
-        helper.set_short_func(self.__on_search_short)
+        self.__helper = TouchHelper(self.__search_button,
+                                    "search", "<Control>f")
+        self.__helper.set_long_func(self.__on_search_long)
+        self.__helper.set_short_func(self.__on_search_short)
 
         self.__settings_button = builder.get_object('settings-button')
 

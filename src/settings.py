@@ -139,9 +139,9 @@ class SettingsDialog:
 
         switch_mix = builder.get_object('switch_mix')
         switch_mix.set_state(Lp().settings.get_value('mix'))
-        helper = TouchHelper(switch_mix, None, None)
-        helper.set_long_func(self.__mix_long_func, switch_mix)
-        helper.set_short_func(self.__mix_short_func, switch_mix)
+        self.__helper = TouchHelper(switch_mix, None, None)
+        self.__helper.set_long_func(self.__mix_long_func, switch_mix)
+        self.__helper.set_short_func(self.__mix_short_func, switch_mix)
 
         switch_mix_party = builder.get_object('switch_mix_party')
         switch_mix_party.set_state(Lp().settings.get_value('party-mix'))

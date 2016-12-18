@@ -47,9 +47,9 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
         self.get_style_context().remove_class('loading')
         self._widget = Gtk.EventBox()
-        helper = TouchHelper(self._widget, None, None)
-        helper.set_long_func(self.__on_click_long)
-        helper.set_short_func(self.__on_click_short)
+        self.__helper = TouchHelper(self._widget, None, None)
+        self.__helper.set_long_func(self.__on_click_long)
+        self.__helper.set_short_func(self.__on_click_short)
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
         self._cover = Gtk.Image()

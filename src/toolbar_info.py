@@ -39,9 +39,9 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         self._infobox = builder.get_object('info')
         self.add(self._infobox)
 
-        helper = TouchHelper(self._infobox, None, None)
-        helper.set_long_func(self.__on_info_long)
-        helper.set_short_func(self.__on_info_short)
+        self.__helper = TouchHelper(self._infobox, None, None)
+        self.__helper.set_long_func(self.__on_info_long)
+        self.__helper.set_short_func(self.__on_info_short)
 
         self._spinner = builder.get_object('spinner')
 
