@@ -263,6 +263,54 @@ class TagReader(Discoverer):
             year = None
         return year
 
+    def get_original_year(self, tags):
+        """
+            Return original release year
+            @param tags as Gst.TagList
+            @return year as int or None
+        """
+        def get_id3():
+            try:
+                size = tags.get_tag_size('private-id3v2-frame')
+                for i in range(0, size):
+                    (exists, sample) = tags.get_sample_index(
+                                                         'private-id3v2-frame',
+                                                         i)
+                    if not exists:
+                        continue
+                    (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
+                    if not exists:
+                        continue
+                    string = m.data.decode('utf-8')
+                    if string.startswith('TDOR'):
+                        split = string.split('\x00')
+                        return int(split[-1][:4])
+            except:
+                pass
+            return None
+
+        def get_ogg():
+            try:
+                size = tags.get_tag_size('extended-comment')
+                for i in range(0, size):
+                    (exists, sample) = tags.get_string_index(
+                                                         'extended-comment',
+                                                         i)
+                    if not exists or not sample.startswith("ORIGINALDATE="):
+                        continue
+                    # ORIGINALDATE=1999-03-10 => Only year
+                    return int(sample[13:][:4])
+            except:
+                pass
+            return None
+
+        if tags is None:
+            return None
+        year = get_id3()
+        if year is None:
+            year = get_ogg()
+        return year
+
     def get_lyrics(self, tags):
         """
             Return lyrics for tags

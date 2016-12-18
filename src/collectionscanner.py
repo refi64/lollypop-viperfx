@@ -274,7 +274,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
         tracknumber = self.get_tracknumber(tags, name)
-        year = self.get_year(tags)
+        year = self.get_original_year(tags)
+        if year is None:
+            year = self.get_year(tags)
         duration = int(info.get_duration()/1000000000)
 
         # If no artists tag, use album artist
