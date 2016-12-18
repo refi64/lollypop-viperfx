@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, Gdk, GLib
+from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
 from lollypop.container import Container
 from lollypop.define import Lp, WindowSize
@@ -173,6 +173,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         if event.type == Gdk.EventType.FOCUS_CHANGE and self.view is not None:
             self.view.disable_overlay()
+            Lp().player.preview.set_state(Gst.State.NULL)
         Gtk.ApplicationWindow.do_event(self, event)
 
 ############
