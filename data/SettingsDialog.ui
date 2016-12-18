@@ -1079,7 +1079,7 @@ and "YouTube Data API" for your project.</property>
           <object class="GtkLabel" id="Web">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="tooltip_text" translatable="yes">Configure Last.fm credentials</property>
+            <property name="tooltip_text" translatable="yes">Web</property>
             <property name="label">Web</property>
           </object>
           <packing>
