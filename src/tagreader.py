@@ -269,25 +269,57 @@ class TagReader(Discoverer):
             @parma tags as Gst.TagList
             @return lyrics as str
         """
+        def get_mp4():
+            try:
+                (exists, sample) = tags.get_string_index('lyrics', 0)
+                if exists:
+                    return sample
+            except:
+                pass
+            return ""
+
+        def get_id3():
+            try:
+                size = tags.get_tag_size('private-id3v2-frame')
+                for i in range(0, size):
+                    (exists, sample) = tags.get_sample_index(
+                                                         'private-id3v2-frame',
+                                                         i)
+                    if not exists:
+                        continue
+                    (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
+                    if not exists:
+                        continue
+                    string = m.data.decode('utf-8')
+                    if string.startswith('USLT'):
+                        split = string.split('\x00')
+                        return split[-1:][0]
+            except:
+                pass
+            return ""
+
+        def get_ogg():
+            try:
+                size = tags.get_tag_size('extended-comment')
+                for i in range(0, size):
+                    (exists, sample) = tags.get_string_index(
+                                                         'extended-comment',
+                                                         i)
+                    if not exists or not sample.startswith("LYRICS="):
+                        continue
+                    return sample[7:]
+            except:
+                pass
+            return ""
+
         if tags is None:
             return ""
-        try:
-            size = tags.get_tag_size('private-id3v2-frame')
-            for i in range(0, size):
-                (exists, sample) = tags.get_sample_index('private-id3v2-frame',
-                                                         i)
-                if not exists:
-                    continue
-                (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
-                if not exists:
-                    continue
-                string = m.data.decode('utf-8')
-                if string.startswith('USLT'):
-                    split = string.split('\x00')
-                    return split[-1:][0]
-        except:
-            pass
-        return ""
+        lyrics = get_mp4()
+        if not lyrics:
+            lyrics = get_id3()
+        if not lyrics:
+            lyrics = get_ogg()
+        return lyrics
 
     def add_artists(self, artists, album_artists, sortnames):
         """
