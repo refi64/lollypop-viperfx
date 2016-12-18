@@ -161,6 +161,11 @@
             <summary>Show genres list</summary>
             <description></description>
         </key>
+         <key type="b" name="show-navigation-list">
+            <default>true</default>
+            <summary>Show navigation list</summary>
+            <description></description>
+        </key>
          <key type="b" name="show-charts">
             <default>true</default>
             <summary>Show charts</summary>

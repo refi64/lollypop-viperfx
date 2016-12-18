@@ -287,6 +287,9 @@ class Container:
             self.__list_one.show()
             if self.__list_two.was_visible:
                 self.__list_two.show()
+        Lp().settings.set_value('show-navigation-list',
+                                GLib.Variant('b',
+                                             self.__list_one.is_visible()))
 
 ############
 # PRIVATE  #
@@ -316,7 +319,8 @@ class Container:
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__list_one = SelectionList(True)
-        self.__list_one.show()
+        if Lp().settings.get_value('show-navigation-list'):
+            self.__list_one.show()
         self.__list_two = SelectionList(False)
         self.__list_one.connect('item-selected', self.__on_list_one_selected)
         self.__list_one.connect('populated', self.__on_list_populated)
@@ -691,7 +695,8 @@ class Container:
             return
         self.__list_two.clear()
         if selected_ids[0] == Type.PLAYLISTS:
-            self.__list_two.show()
+            if Lp().settings.get_value('show-navigation-list'):
+                self.__list_two.show()
             if not self.__list_two.will_be_selected():
                 self.__update_view_playlists()
             self.__setup_list_playlists(False)
@@ -718,7 +723,8 @@ class Container:
                 self.__update_view_artists([], selected_ids)
         else:
             self.__setup_list_artists(self.__list_two, selected_ids, False)
-            self.__list_two.show()
+            if Lp().settings.get_value('show-navigation-list'):
+                self.__list_two.show()
             if not self.__list_two.will_be_selected():
                 self.__update_view_albums(selected_ids, [])
 
