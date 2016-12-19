@@ -533,7 +533,8 @@ class TrackMenuPopover(Gtk.Popover):
 
         menu_widget = self.get_child()
         if menu_widget is not None:
-            menu_widget.reparent(grid)
+            self.remove(menu_widget)
+            grid.add(menu_widget)
 
         if not track.album.is_web:
             separator = Gtk.Separator()
@@ -626,8 +627,8 @@ class AlbumMenuPopover(Gtk.Popover):
 
         menu_widget = self.get_child()
         if menu_widget is not None:
-            menu_widget.reparent(grid)
-
+            self.remove(menu_widget)
+            grid.add(menu_widget)
         # separator = Gtk.Separator()
         # separator.show()
 
