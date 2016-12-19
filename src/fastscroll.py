@@ -31,11 +31,8 @@ class FastScroll(Gtk.Grid):
             @param scrolled as Gtk.ScrolledWindow
         """
         Gtk.Grid.__init__(self)
-        self.__show_id = None
         self.__hide_id = None
         self.__in_widget = False
-        self.__mouse_scroll = False
-        self.__scroll_power = 0  # Used to calculate if we scroll enough
         self.get_style_context().add_class('fastscroll')
         self.set_property('valign', Gtk.Align.CENTER)
         self.set_property('halign', Gtk.Align.END)
@@ -46,10 +43,6 @@ class FastScroll(Gtk.Grid):
         self.__grid = Gtk.Grid()
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__grid.show()
-        scrolled.get_vscrollbar().connect('button-press-event',
-                                          self.__on_scrollbar_press)
-        scrolled.get_vscrollbar().connect('button-release-event',
-                                          self.__on_scrollbar_release)
         eventbox = Gtk.EventBox()
         eventbox.add(self.__grid)
         eventbox.connect('button-press-event', self.__on_button_press)
@@ -90,12 +83,12 @@ class FastScroll(Gtk.Grid):
         """
             Show widget
         """
-        self.__show_id = None
-        if self.__scroll_power >= 5:
-            self.__check_value_to_mark()
-            Gtk.Grid.show(self)
-            self.__hide_id = GLib.timeout_add(2000, self.hide)
-        self.__scroll_power = 0
+        self.__check_value_to_mark()
+        Gtk.Grid.show(self)
+        if self.__hide_id is not None:
+            GLib.source_remove(self.__hide_id)
+            self.__hide_id = None
+        self.__hide_id = GLib.timeout_add(5000, self.hide)
 
     def hide(self):
         """
@@ -104,9 +97,6 @@ class FastScroll(Gtk.Grid):
         if self.__in_widget:
             return
         self.__hide_id = None
-        if self.__show_id is not None:
-            GLib.source_remove(self.__show_id)
-            self.__show_id = None
         Gtk.Grid.hide(self)
 
 #######################
@@ -161,22 +151,6 @@ class FastScroll(Gtk.Grid):
             else:
                 child.get_style_context().add_class('dim-label')
 
-    def __on_scrollbar_press(self, widget, event):
-        """
-            Store event
-            @param widget as Gtk.Widget
-            @param event as Gtk.Event
-        """
-        self.__mouse_scroll = True
-
-    def __on_scrollbar_release(self, widget, event):
-        """
-            Store event
-            @param widget as Gtk.Widget
-            @param event as Gtk.Event
-        """
-        self.__mouse_scroll = False
-
     def __on_button_press(self, eventbox, event):
         """
             Scroll to activated child char
@@ -224,13 +198,6 @@ class FastScroll(Gtk.Grid):
             Show a popover with current letter
             @param adj as Gtk.Adjustement
         """
-        if self.__mouse_scroll:
-            return
         # Calculate start/end value
         self.__check_value_to_mark()
-        self.__scroll_power += 1
-        if self.__hide_id is not None:
-            GLib.source_remove(self.__hide_id)
-            self.__hide_id = None
-        if self.__show_id is None:
-            self.__show_id = GLib.timeout_add(500, self.show)
+        self.show()
