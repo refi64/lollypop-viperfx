@@ -166,7 +166,7 @@ popover.background separator {
 }
 
 .fastscroll {
-    padding: 2px;
+    padding: 6px;
     background-color: @theme_bg_color;
     border: 1px solid shade(@theme_bg_color, 0.7);
     border-right: none;

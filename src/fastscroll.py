@@ -76,7 +76,7 @@ class FastScroll(Gtk.Grid):
         """
         for c in sorted(self.__chars, key=strxfrm):
             label = Gtk.Label()
-            label.set_markup("<b>%s</b>" % c)
+            label.set_markup("<span font='Monospace'><b>%s</b></span>" % c)
             label.show()
             self.__grid.add(label)
 
