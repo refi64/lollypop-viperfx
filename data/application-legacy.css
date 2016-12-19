@@ -184,21 +184,18 @@ Gtk.ListBoxRow .menu-button:hover {
     border-radius: 5px;
 }
 
-.fast-scroll-button {
-    background-color: @theme_bg_color;
-    background-image: none;
-    border-radius: 0px;
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
 .no-padding {
     padding: 0px;
+}
+
+.fastscroll {
+    padding: 2px;
+    background-color: @theme_bg_color;
+    border: 1px solid shade(@theme_bg_color, 0.7);
+    border-right: none;
+    border-radius: 2px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
 .queued {

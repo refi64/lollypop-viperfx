@@ -299,7 +299,7 @@ class Downloader:
         # We create cache if needed
         InfoCache.init()
         # Then cache for lastfm/wikipedia/spotify/deezer/...
-        for (artist_id, artist) in Lp().artists.get([]):
+        for (artist_id, artist, sort) in Lp().artists.get([]):
             if not get_network_available() or\
                     InfoCache.exists(artist):
                 continue

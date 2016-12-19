@@ -25,6 +25,7 @@ app_PYTHON = \
     database_upgrade.py\
     define.py\
     downloader.py\
+    fastscroll.py\
     fullscreen.py\
     inhibitor.py\
     inhibitor_legacy.py\

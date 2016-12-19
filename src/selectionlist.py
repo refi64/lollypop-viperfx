@@ -16,52 +16,11 @@ from gettext import gettext as _
 from locale import strcoll
 
 from lollypop.cellrenderer import CellRendererArtist
+from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, Lp, ArtSize
 
 
-class SelectionPopover(Gtk.Popover):
-    """
-        Show a popover with text
-    """
-
-    def __init__(self):
-        """
-            Init popover
-        """
-        Gtk.Popover.__init__(self)
-        self.set_modal(False)
-        self.__label = Gtk.Label()
-        self.__label.set_property('halign', Gtk.Align.CENTER)
-        self.__label.set_property('valign', Gtk.Align.CENTER)
-        self.__label.show()
-        self.get_style_context().add_class('osd-popover')
-        self.set_property('width-request', 100)
-        self.set_property('height-request', 50)
-        self.add(self.__label)
-
-    def set_text(self, text):
-        """
-            Set popover text
-            @param text as string
-        """
-        self.__label.set_markup('<span size="large"><b>%s</b></span>' % text)
-
-    def do_grab_focus(self):
-        """
-            Ignore
-        """
-        pass
-
-
-class MotionEvent:
-    """
-        Keep track of last motion event coordonates
-    """
-    x = 0.0
-    y = 0.0
-
-
-class SelectionList(Gtk.Bin):
+class SelectionList(Gtk.Overlay):
     """
         A list for artists/genres
     """
@@ -70,23 +29,18 @@ class SelectionList(Gtk.Bin):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, fast_scroll):
+    def __init__(self):
         """
             Init Selection list ui
-            @param fast scroll as bool
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Overlay.__init__(self)
         self.__was_visible = False
-        self.__last_motion_event = None
-        self.__previous_motion_y = 0.0
         self.__timeout = None
         self.__to_select_ids = []
         self.__modifier = False
         self.__populating = False
         self.__updating = False       # Sort disabled if False
         self.__is_artists = False
-        self.__fast_scroll = fast_scroll  # Show button to scroll to top
-        self.__popover = SelectionPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
         builder.connect_signals(self)
@@ -118,24 +72,11 @@ class SelectionList(Gtk.Bin):
                                    Gtk.PolicyType.AUTOMATIC)
         self.__scrolled.add(self.__view)
         self.__scrolled.show()
-        if self.__fast_scroll:
-            self.__scrolled.set_vexpand(True)
-            self.__scrolled.set_hexpand(True)
-            grid = Gtk.Grid()
-            grid.set_orientation(Gtk.Orientation.VERTICAL)
-            grid.show()
-            self.__button = Gtk.Button.new_from_icon_name('go-up-symbolic',
-                                                          Gtk.IconSize.MENU)
-            self.__button.get_style_context().add_class('fast-scroll-button')
-            self.__button.connect('clicked', self.__on_button_clicked)
-            grid.add(self.__scrolled)
-            grid.add(self.__button)
-            self.add(grid)
-        else:
-            self.add(self.__scrolled)
-        self.connect('motion_notify_event', self.__on_motion_notify)
-        self.__scrolled.get_vadjustment().connect('value_changed',
-                                                  self.__on_scroll)
+        self.__fast_scroll = FastScroll(self.__view,
+                                        self.__model,
+                                        self.__scrolled)
+        self.add(self.__scrolled)
+        self.add_overlay(self.__fast_scroll)
         self.__scrolled.connect('enter-notify-event', self.__on_enter_notify)
         self.__scrolled.connect('leave-notify-event', self.__on_leave_notify)
 
@@ -173,7 +114,7 @@ class SelectionList(Gtk.Bin):
     def populate(self, values):
         """
             Populate view with values
-            @param [(int, str)], will be deleted
+            @param [(int, str, optional str)], will be deleted
             @thread safe
         """
         if self.__populating:
@@ -199,7 +140,7 @@ class SelectionList(Gtk.Bin):
     def add_value(self, value):
         """
             Add item to list
-            @param value as (int, str)
+            @param value as (int, str, optional str)
         """
         # Do not add value if already exists
         for item in self.__model:
@@ -229,10 +170,11 @@ class SelectionList(Gtk.Bin):
     def update_values(self, values):
         """
             Update view with values
-            @param [(int, str)]
+            @param [(int, str, optional str)]
             @thread safe
         """
         self.__updating = True
+        self.__fast_scroll.clear()
         # Remove not found items but not devices
         value_ids = set([v[0] for v in values])
         for item in self.__model:
@@ -243,6 +185,7 @@ class SelectionList(Gtk.Bin):
         for value in values:
             if not value[0] in item_ids:
                 self.__add_value(value)
+        self.__fast_scroll.populate()
         self.__updating = False
 
     def get_value(self, object_id):
@@ -309,6 +252,7 @@ class SelectionList(Gtk.Bin):
         """
         self.__updating = True
         self.__model.clear()
+        self.__fast_scroll.clear()
         self.__updating = False
 
     def get_headers(self):
@@ -396,16 +340,25 @@ class SelectionList(Gtk.Bin):
     def __add_value(self, value):
         """
             Add value to the model
-            @param value as [int, str]
+            @param value as [int, str, optional str]
             @thread safe
         """
         if value[1] == "":
             string = _("Unknown")
+            sort = string
         else:
             string = value[1]
+            if len(value) == 3:
+                sort = value[2]
+            else:
+                sort = value[1]
+
+        if sort:
+            self.__fast_scroll.add_char(sort[0])
         i = self.__model.append([value[0],
                                 string,
-                                self.__get_icon_name(value[0])])
+                                self.__get_icon_name(value[0]),
+                                sort])
         if value[0] in self.__to_select_ids:
             self.__to_select_ids.remove(value[0])
             self.__selection.select_iter(i)
@@ -418,6 +371,7 @@ class SelectionList(Gtk.Bin):
         """
         for value in values:
             self.__add_value(value)
+        self.__fast_scroll.populate()
         self.__to_select_ids = []
 
     def __get_icon_name(self, object_id):
@@ -521,13 +475,6 @@ class SelectionList(Gtk.Bin):
         else:
             return True
 
-    def __hide_popover(self):
-        """
-            Hide popover
-        """
-        self.__popover.hide()
-        self.__timeout = None
-
     def __on_enter_notify(self, widget, event):
         """
             Disable shortcuts
@@ -545,89 +492,6 @@ class SelectionList(Gtk.Bin):
         """
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
-        self.__hide_popover()
-        self.__last_motion_event = None
-
-    def __on_motion_notify(self, widget, event):
-        """
-            Set motion event
-            @param widget as Gtk.widget
-            @param event as Gdk.Event
-        """
-        if self.__timeout is None:
-            self.__timeout = GLib.timeout_add(500,
-                                              self.__hide_popover)
-        if event.x < 0.0 or event.y < 0.0:
-            self.__last_motion_event = None
-            return
-        if self.__last_motion_event is None:
-            self.__last_motion_event = MotionEvent()
-        self.__last_motion_event.x = event.x
-        self.__last_motion_event.y = event.y
-
-    def __on_scroll(self, adj):
-        """
-            Show a popover with current letter
-            @param adj as Gtk.Adjustement
-        """
-        if self.__fast_scroll:
-            top_path = self.__view.get_dest_row_at_pos(0, 0)
-            if top_path is not None:
-                row = top_path[0]
-                if row is not None:
-                    row_iter = self.__model.get_iter(row)
-                    rowid = self.__model.get_value(row_iter, 0)
-                    if rowid < 0:
-                        self.__button.hide()
-                    else:
-                        self.__button.show()
-        # Only show if self.__scrolled window is huge
-        if adj.get_upper() < adj.get_page_size() * 3:
-            return
-        if self.__last_motion_event is None:
-            return
-
-        if self.__timeout is not None:
-            GLib.source_remove(self.__timeout)
-            self.__timeout = None
-
-        path = self.__view.get_dest_row_at_pos(self.__last_motion_event.x,
-                                               self.__last_motion_event.y)
-        if path is None:
-            return
-
-        row = path[0]
-
-        if row is None:
-            return
-
-        row_iter = self.__model.get_iter(row)
-        if row_iter is None or self.__model.get_value(row_iter, 0) < 0:
-            return
-
-        # We need to get artist sortname
-        if self.__is_artists:
-            rowid = self.__model.get_value(row_iter, 0)
-            text = Lp().artists.get_sortname(rowid)
-        else:
-            text = self.__model.get_value(row_iter, 1)
-        if text:
-            self.__popover.set_text("  %s  " % text[0].upper())
-            self.__popover.set_relative_to(self)
-            r = Gdk.Rectangle()
-            r.x = self.get_allocated_width()
-            r.y = self.__last_motion_event.y
-            r.width = 1
-            r.height = 1
-            self.__popover.set_pointing_to(r)
-            self.__popover.set_position(Gtk.PositionType.RIGHT)
-            self.__popover.show()
-
-    def __on_button_clicked(self, button):
-        """
-            Move scrollbar at top
-        """
-        self.__scrolled.get_vadjustment().set_value(0)
 
     def __on_artist_artwork_changed(self, art, artist):
         """

@@ -355,7 +355,7 @@ class SettingsDialog:
         """
         if Lp().settings.get_value('network-access'):
             GLib.idle_add(Lp().window.add_remove_from,
-                          (Type.CHARTS, _("The charts")),
+                          (Type.CHARTS, _("The charts"), ""),
                           True,
                           state)
         if state:

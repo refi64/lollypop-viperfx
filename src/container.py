@@ -318,10 +318,10 @@ class Container:
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self.__list_one = SelectionList(True)
+        self.__list_one = SelectionList()
         if Lp().settings.get_value('show-navigation-list'):
             self.__list_one.show()
-        self.__list_two = SelectionList(False)
+        self.__list_two = SelectionList()
         self.__list_one.connect('item-selected', self.__on_list_one_selected)
         self.__list_one.connect('populated', self.__on_list_populated)
         self.__list_two.connect('item-selected', self.__on_list_two_selected)
@@ -779,6 +779,7 @@ class Container:
             @param add as bool
         """
         artist_name = Lp().artists.get_name(artist_id)
+        sortname = Lp().artists.get_sortname(artist_id)
         if self.__show_genres:
             l = self.__list_two
             artist_ids = Lp().artists.get_ids(self.__list_one.selected_ids)
@@ -787,7 +788,7 @@ class Container:
             artist_ids = Lp().artists.get_ids()
         if add:
             if artist_id in artist_ids:
-                l.add_value((artist_id, artist_name))
+                l.add_value((artist_id, artist_name, sortname))
         else:
             if artist_id not in artist_ids:
                 l.remove_value(artist_id)
