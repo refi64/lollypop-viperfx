@@ -59,6 +59,7 @@ class FastScroll(Gtk.Grid):
         for child in self.__grid.get_children():
             child.destroy()
         self.__chars = []
+        self.hide()
 
     def add_char(self, c):
         """
@@ -198,6 +199,10 @@ class FastScroll(Gtk.Grid):
             Show a popover with current letter
             @param adj as Gtk.Adjustement
         """
-        # Calculate start/end value
-        self.__check_value_to_mark()
+        # Only show if needed
+        if not self.__chars:
+            return
+        # Do not show if populate not finished
+        if len(self.__chars) != len(self.__grid.get_children()):
+            return
         self.show()

@@ -353,7 +353,7 @@ class SelectionList(Gtk.Overlay):
             else:
                 sort = value[1]
 
-        if sort:
+        if sort and self.__is_artists:
             self.__fast_scroll.add_char(sort[0])
         i = self.__model.append([value[0],
                                 string,
