@@ -147,6 +147,7 @@ class ContextWidget(Gtk.Grid):
         else:
             rating = RatingWidget(object)
             rating.set_margin_top(5)
+            rating.set_margin_end(10)
             rating.set_margin_bottom(5)
             rating.set_property('halign', Gtk.Align.END)
             rating.set_property('hexpand', True)
