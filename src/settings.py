@@ -202,9 +202,6 @@ class SettingsDialog:
         switch_itunes = builder.get_object('switch_itunes')
         switch_itunes.set_state(Lp().settings.get_value('search-itunes'))
 
-        switch_rating = builder.get_object('switch_rating')
-        switch_rating.set_state(Lp().settings.get_value('disable-autorate'))
-
         if GLib.find_program_in_path("youtube-dl") is None:
             builder.get_object('yt-dl').show()
 
@@ -423,14 +420,6 @@ class SettingsDialog:
             @param state as bool
         """
         Lp().settings.set_value('save-to-tags', GLib.Variant('b', state))
-
-    def _update_autorate_setting(self, widget, state):
-        """
-            Update autorate setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        Lp().settings.set_value('disable-autorate', GLib.Variant('b', state))
 
     def _update_compilations_setting(self, widget, state):
         """

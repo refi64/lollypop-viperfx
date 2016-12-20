@@ -435,8 +435,7 @@ class BinPlayer(BasePlayer):
         if track is None:
             self._scrobble(self.current_track, self._start_time)
             # Increment popularity
-            if not Lp().settings.get_value('disable-autorate') and\
-                    Lp().scanner.is_locked():
+            if not Lp().scanner.is_locked():
                 Lp().tracks.set_more_popular(self.current_track.id)
                 # In party mode, linear popularity
                 if self.is_party:
@@ -605,8 +604,7 @@ class BinPlayer(BasePlayer):
             return
         self._scrobble(self.current_track, self._start_time)
         # Increment popularity
-        if not Lp().settings.get_value('disable-autorate') and\
-                Lp().scanner.is_locked():
+        if not Lp().scanner.is_locked():
             Lp().tracks.set_more_popular(self.current_track.id)
             # In party mode, linear popularity
             if self.is_party:
