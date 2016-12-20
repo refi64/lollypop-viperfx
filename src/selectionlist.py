@@ -257,11 +257,12 @@ class SelectionList(Gtk.Overlay):
 
     def get_headers(self):
         """
-            Return list one headers
+            Return headers
             @return items as [(int, str)]
         """
         items = []
         items.append((Type.POPULARS, _("Popular albums")))
+        items.append((Type.LOVED, _("Loved albums")))
         items.append((Type.RECENTS, _("Recently added albums")))
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
@@ -273,6 +274,19 @@ class SelectionList(Gtk.Overlay):
             items.append((Type.ALL, _("All albums")))
         else:
             items.append((Type.ALL, _("All artists")))
+        return items
+
+    def get_pl_headers(self):
+        """
+            Return playlist headers
+            @return items as [(int, str)]
+        """
+        items = [(Type.LOVED, Lp().playlists.LOVED)]
+        items.append((Type.POPULARS, _("Popular tracks")))
+        items.append((Type.RECENTS, _("Recently played")))
+        items.append((Type.NEVER, _("Never played")))
+        items.append((Type.RANDOMS, _("Random tracks")))
+        items.append((Type.SEPARATOR, ''))
         return items
 
 #######################

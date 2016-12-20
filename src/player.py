@@ -300,6 +300,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are in populars view, add popular albums
         elif genre_ids and genre_ids[0] == Type.POPULARS:
             self._albums = Lp().albums.get_populars()
+        # We are in loved view, add loved albums
+        elif genre_ids and genre_ids[0] == Type.LOVED:
+            self._albums = Lp().albums.get_loves()
         # We are in recents view, add recent albums
         elif genre_ids and genre_ids[0] == Type.RECENTS:
             self._albums = Lp().albums.get_recents()

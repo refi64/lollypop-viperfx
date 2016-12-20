@@ -487,18 +487,13 @@ class Container:
             @param update as bool
             @thread safe
         """
-        playlists = [(Type.LOVED, Lp().playlists.LOVED)]
-        playlists.append((Type.POPULARS, _("Popular tracks")))
-        playlists.append((Type.RECENTS, _("Recently played")))
-        playlists.append((Type.NEVER, _("Never played")))
-        playlists.append((Type.RANDOMS, _("Random tracks")))
-        playlists.append((Type.SEPARATOR, ''))
-        playlists += Lp().playlists.get()
+        items = self.__list_two.get_pl_headers()
+        items += Lp().playlists.get()
         if update:
-            self.__list_two.update_values(playlists)
+            self.__list_two.update_values(items)
         else:
             self.__list_two.mark_as_artists(False)
-            self.__list_two.populate(playlists)
+            self.__list_two.populate(items)
 
     def __stop_current_view(self):
         """
@@ -575,6 +570,8 @@ class Container:
                     albums += Lp().albums.get_ids()
             elif genre_ids and genre_ids[0] == Type.POPULARS:
                 albums = Lp().albums.get_populars()
+            elif genre_ids and genre_ids[0] == Type.LOVED:
+                albums = Lp().albums.get_loves()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
                 albums = Lp().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
@@ -705,6 +702,7 @@ class Container:
             if not self.__list_two.will_be_selected():
                 self.__update_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
+                                 Type.LOVED,
                                  Type.RECENTS,
                                  Type.RANDOMS,
                                  Type.CHARTS]:
