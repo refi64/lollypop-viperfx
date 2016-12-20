@@ -111,9 +111,17 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 if self._album.year:
                     year_label.set_label(self._album.year)
                     year_label.show()
+                grid = Gtk.Grid()
+                grid.set_column_spacing(10)
+                grid.set_property('halign', Gtk.Align.CENTER)
+                grid.show()
                 rating = RatingWidget(self._album)
-                self.__coverbox.add(rating)
+                loved = LovedWidget(self._album)
                 rating.show()
+                loved.show()
+                grid.add(rating)
+                grid.add(loved)
+                self.__coverbox.add(grid)
                 self._widget.attach(self.__coverbox, 0, 0, 1, 1)
                 if Lp().window.get_view_width() < WindowSize.MEDIUM:
                     self.__coverbox.hide()
