@@ -13,6 +13,7 @@
 from gi.repository import Gio, GLib
 
 from pickle import load
+from random import choice
 
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
@@ -262,7 +263,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         for artist_id in album.artist_ids:
             if artist_id >= 0:
                 self._context.artist_ids[album.id].append(artist_id)
-        self.load(album.tracks[0])
+        if Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
+            track = choice(album.tracks)
+        else:
+            track = album.tracks[0]
+        self.load(track)
         self._albums = [album.id]
 
     def set_albums(self, track_id, artist_ids, genre_ids):

@@ -17,7 +17,6 @@ from random import choice
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.define import Lp, ArtSize, Shuffle
-from lollypop.objects import Track
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
@@ -234,9 +233,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Lp().player.set_party(False)
         Lp().player.clear_albums()
         if Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
-            track = Track(choice(self._album.track_ids))
+            track = choice(self._album.tracks)
         else:
-            track = Track(self._album.track_ids[0])
+            track = self._album.tracks[0]
         if Lp().window.view.filtered:
             # Here we need to get ids from parent as view may be filtered
             for child in self.get_parent().get_children():

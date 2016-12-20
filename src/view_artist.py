@@ -18,7 +18,7 @@ from random import choice
 
 from lollypop.define import Lp, ArtSize, Shuffle
 from lollypop.utils import get_network_available
-from lollypop.objects import Track, Album
+from lollypop.objects import Album
 from lollypop.pop_info import InfoPopover
 from lollypop.cache import InfoCache
 from lollypop.pop_artwork import ArtworkPopover
@@ -169,9 +169,9 @@ class ArtistView(ArtistAlbumsView):
             album_id = Lp().albums.get_ids(self._artist_ids,
                                            self._genre_ids)[0]
             if Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
-                track = Track(choice(Album(album_id).track_ids))
+                track = choice(Album(album_id).tracks)
             else:
-                track = Track(Album(album_id).track_ids[0])
+                track = Album(album_id).tracks[0]
             Lp().player.load(track)
             Lp().player.set_albums(track.id, self._artist_ids,
                                    self._genre_ids)
