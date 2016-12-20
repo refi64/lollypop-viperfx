@@ -17,7 +17,7 @@ from locale import strxfrm
 from lollypop.utils import noaccents
 
 
-class FastScroll(Gtk.Grid):
+class FastScroll(Gtk.ScrolledWindow):
     """
         Widget showing letter and allowing fast scroll on click
         Do not call show on widget, not needed
@@ -30,11 +30,14 @@ class FastScroll(Gtk.Grid):
             @param model as Gtk.ListStore
             @param scrolled as Gtk.ScrolledWindow
         """
-        Gtk.Grid.__init__(self)
+        Gtk.ScrolledWindow.__init__(self)
         self.__hide_id = None
         self.__in_widget = False
+        self.set_vexpand(True)
+        self.set_margin_end(10)
         self.get_style_context().add_class('fastscroll')
-        self.set_property('valign', Gtk.Align.CENTER)
+        self.set_policy(Gtk.PolicyType.NEVER,
+                        Gtk.PolicyType.AUTOMATIC)
         self.set_property('halign', Gtk.Align.END)
         self.__chars = []
         self.__view = view
@@ -42,6 +45,7 @@ class FastScroll(Gtk.Grid):
         self.__scrolled = scrolled
         self.__grid = Gtk.Grid()
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
+        self.__grid.set_property('valign', Gtk.Align.END)
         self.__grid.show()
         eventbox = Gtk.EventBox()
         eventbox.add(self.__grid)
@@ -49,8 +53,6 @@ class FastScroll(Gtk.Grid):
         eventbox.show()
         self.add(eventbox)
         scrolled.get_vadjustment().connect('value_changed', self.__on_scroll)
-        eventbox.connect('enter-notify-event', self.__on_enter_notify)
-        eventbox.connect('leave-notify-event', self.__on_leave_notify)
 
     def clear(self):
         """
@@ -79,26 +81,7 @@ class FastScroll(Gtk.Grid):
             label.set_markup("<span font='Monospace'><b>%s</b></span>" % c)
             label.show()
             self.__grid.add(label)
-
-    def show(self):
-        """
-            Show widget
-        """
-        self.__check_value_to_mark()
-        Gtk.Grid.show(self)
-        if self.__hide_id is not None:
-            GLib.source_remove(self.__hide_id)
-            self.__hide_id = None
-        self.__hide_id = GLib.timeout_add(5000, self.hide)
-
-    def hide(self):
-        """
-            Hide widget
-        """
-        if self.__in_widget:
-            return
-        self.__hide_id = None
-        Gtk.Grid.hide(self)
+        GLib.idle_add(self.__check_value_to_mark)
 
 #######################
 # PRIVATE             #
@@ -174,35 +157,9 @@ class FastScroll(Gtk.Grid):
                                                None, True, 0, 0)
                     break
 
-    def __on_enter_notify(self, widget, event):
-        """
-            Disable shortcuts
-            @param widget as Gtk.widget
-            @param event as Gdk.Event
-        """
-        self.__in_widget = True
-        if self.__hide_id is not None:
-            GLib.source_remove(self.__hide_id)
-            self.__hide_id = None
-
-    def __on_leave_notify(self, widget, event):
-        """
-            Hide popover
-            @param widget as Gtk.widget
-            @param event as GdK.Event
-        """
-        self.__in_widget = False
-        self.__hide_id = GLib.timeout_add(2000, self.hide)
-
     def __on_scroll(self, adj):
         """
             Show a popover with current letter
             @param adj as Gtk.Adjustement
         """
-        # Only show if needed
-        if not self.__chars:
-            return
-        # Do not show if populate not finished
-        if len(self.__chars) != len(self.__grid.get_children()):
-            return
-        self.show()
+        self.__check_value_to_mark()

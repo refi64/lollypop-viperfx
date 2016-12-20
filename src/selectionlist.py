@@ -102,6 +102,10 @@ class SelectionList(Gtk.Overlay):
             Mark list as artists list
             @param is_artists as bool
         """
+        if is_artists:
+            self.__fast_scroll.show()
+        else:
+            self.__fast_scroll.hide()
         self.__is_artists = is_artists
         self.__renderer0.set_is_artists(is_artists)
 
