@@ -132,6 +132,7 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             sql.execute("UPDATE albums SET loved=? WHERE rowid=?",
                         (loved, album_id))
+            sql.commit()
 
     def set_year(self, album_id, year):
         """
