@@ -452,13 +452,14 @@ class TagReader(Discoverer):
         return genre_ids
 
     def add_album(self, album_name, artist_ids,
-                  uri, popularity, mtime, remote):
+                  uri, loved, popularity, mtime, remote):
         """
             Add album to db
             @param album name as string
             @param album artist ids as [int]
             @param uri to an album track as string
             @param year as int
+            @param loved as bool
             @param popularity as int
             @param mtime as int
             @param remote as bool
@@ -476,7 +477,7 @@ class TagReader(Discoverer):
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids,
-                                       parent_uri, popularity, mtime)
+                                       parent_uri, loved, popularity, mtime)
         # Now we have our album id, check if path doesn't change
         if Lp().albums.get_uri(album_id) != parent_uri:
             Lp().albums.set_uri(album_id, parent_uri)

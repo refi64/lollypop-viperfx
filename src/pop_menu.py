@@ -479,7 +479,7 @@ class TrackMenuPopover(Gtk.Popover):
         rating.set_property('hexpand', True)
         rating.show()
 
-        loved = LovedWidget(track.id)
+        loved = LovedWidget(track)
         loved.set_margin_end(5)
         loved.set_margin_top(5)
         loved.set_margin_bottom(5)

@@ -44,6 +44,7 @@ class Database:
                                               year INT,
                                               uri TEXT NOT NULL,
                                               popularity INT NOT NULL,
+                                              loved INT NOT NULL DEFAULT 0,
                                               synced INT NOT NULL,
                                               mtime INT NOT NULL)'''
     __create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,

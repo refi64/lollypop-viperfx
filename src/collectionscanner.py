@@ -294,8 +294,8 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
-        (track_pop, track_ltime, amtime, album_pop) = self.__history.get(
-                                                            name, duration)
+        (track_pop, track_ltime,
+         amtime, loved, album_pop) = self.__history.get(name, duration)
         # If nothing in stats, set mtime
         if amtime == 0:
             amtime = mtime
@@ -312,7 +312,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
-                                               uri, album_pop, amtime, False)
+                                               uri, loved, album_pop, amtime,
+                                               False)
 
         genre_ids = self.add_genres(genres, album_id)
 
@@ -352,9 +353,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         mtime = Lp().albums.get_mtime(album_id)
         duration = Lp().tracks.get_duration(track_id)
         album_popularity = Lp().albums.get_popularity(album_id)
+        loved = Lp().albums.get_loved(album_id)
         uri = Lp().tracks.get_uri(track_id)
         self.__history.add(name, duration, popularity,
-                           ltime, mtime, album_popularity)
+                           ltime, mtime, loved, album_popularity)
         Lp().playlists.remove(uri)
         Lp().tracks.remove(track_id)
         Lp().tracks.clean(track_id)

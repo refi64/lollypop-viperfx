@@ -31,23 +31,25 @@ class AlbumsDatabase:
         self.__max_count = 1
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, uri, popularity, mtime):
+    def add(self, name, artist_ids, uri, loved, popularity, mtime):
         """
             Add a new album to database
             @param Album name as string
             @param artist ids as int
             @param uri as string
             @param mtime as int
+            @param loved as bool
+            @param popularity as int
             @return inserted rowid as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, no_album_artist,\
-                                  uri, popularity, mtime, synced)\
-                                  VALUES (?, ?, ?, ?, ?, ?)",
+                                  uri, loved, popularity, mtime, synced)\
+                                  VALUES (?, ?, ?, ?, ?, ?, ?)",
                                  (name, artist_ids == [],
-                                  uri, popularity, mtime, 0))
+                                  uri, loved, popularity, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -120,6 +122,17 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET synced=? WHERE rowid=?",
                         (synced, album_id))
 
+    def set_loved(self, album_id, loved):
+        """
+            Set album loved
+            @param album id as int
+            @param loved as int
+            @warning: commit needed
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE albums SET loved=? WHERE rowid=?",
+                        (loved, album_id))
+
     def set_year(self, album_id, year):
         """
             Set year
@@ -174,6 +187,21 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT synced FROM albums WHERE\
+                                 rowid=?", (album_id,))
+
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
+    def get_loved(self, album_id):
+        """
+            Get album loved
+            @param album id as int
+            @return loved as bool
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT loved FROM albums WHERE\
                                  rowid=?", (album_id,))
 
             v = result.fetchone()
@@ -427,6 +455,24 @@ class AlbumsDatabase:
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += " ORDER BY popularity DESC LIMIT 100"
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result))
+
+    def get_loves(self):
+        """
+            Get albums ids with popularity
+            @return array of album ids as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            filters = (Type.CHARTS, )
+            request = "SELECT DISTINCT albums.rowid\
+                       FROM albums, album_genres\
+                       WHERE album_genres.genre_id!=?\
+                       AND loved=1\
+                       AND album_genres.album_id=albums.rowid"
+            if not get_network_available():
+                request += " AND albums.synced!=%s" % Type.NONE
+            request += " ORDER BY popularity"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 

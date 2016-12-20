@@ -144,8 +144,8 @@ class Album(Base):
         Represent an album
     """
     FIELDS = ['name', 'artists', 'artist_ids',
-              'year', 'uri', 'duration', 'mtime', 'synced']
-    DEFAULTS = ['', '', [], '', '', 0, 0, False]
+              'year', 'uri', 'duration', 'mtime', 'synced', 'loved']
+    DEFAULTS = ['', '', [], '', '', 0, 0, False, False]
 
     def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
         """
@@ -240,6 +240,14 @@ class Album(Base):
         if not self._discs:
             self._discs = self.db.get_discs(self.id, self.genre_ids)
         return [Disc(self, number) for number in self._discs]
+
+    def set_loved(self, loved):
+        """
+            Mark album as loved
+            @param loved as bool
+        """
+        if self.id >= 0:
+            Lp().albums.set_loved(self.id, loved)
 
     def remove(self):
         """

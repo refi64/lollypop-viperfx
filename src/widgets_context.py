@@ -152,7 +152,7 @@ class ContextWidget(Gtk.Grid):
             rating.set_property('hexpand', True)
             rating.show()
 
-            loved = LovedWidget(object.id)
+            loved = LovedWidget(object)
             loved.set_margin_end(5)
             loved.set_margin_top(5)
             loved.set_margin_bottom(5)

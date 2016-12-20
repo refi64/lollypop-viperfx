@@ -13,6 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.utils import is_loved, set_loved
+from lollypop.objects import Album
 
 
 class LovedWidget(Gtk.Bin):
@@ -20,19 +21,22 @@ class LovedWidget(Gtk.Bin):
         Loved widget
     """
 
-    def __init__(self, track_id):
+    def __init__(self, object):
         """
             Init widget
-            @param track_id as int
+            @param object as Album/Track
         """
         Gtk.Bin.__init__(self)
-        self.__track_id = track_id
+        self.__object = object
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/LovedWidget.ui')
         builder.connect_signals(self)
 
         self.add(builder.get_object('widget'))
-        self.set_opacity(0.8 if is_loved(track_id) else 0.2)
+        if isinstance(object, Album):
+            self.set_opacity(0.8 if object.loved else 0.2)
+        else:
+            self.set_opacity(0.8 if is_loved(object.id) else 0.2)
 
 #######################
 # PROTECTED           #
@@ -43,7 +47,10 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        self.set_opacity(0.2 if is_loved(self.__track_id) else 0.8)
+        if isinstance(self.__object, Album):
+            self.set_opacity(0.2 if self.__object.loved else 0.8)
+        else:
+            self.set_opacity(0.2 if is_loved(self.__object.id) else 0.8)
 
     def _on_leave_notify(self, widget, event):
         """
@@ -51,7 +58,10 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        self.set_opacity(0.8 if is_loved(self.__track_id) else 0.2)
+        if isinstance(self.__object, Album):
+            self.set_opacity(0.8 if self.__object.loved else 0.2)
+        else:
+            self.set_opacity(0.8 if is_loved(self.__object.id) else 0.2)
 
     def _on_button_press(self, widget, event):
         """
@@ -59,7 +69,12 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        loved = not is_loved(self.__track_id)
-        set_loved(self.__track_id, loved)
+        if isinstance(self.__object, Album):
+            loved = not self.__object.loved
+            self.__object.set_loved(loved)
+            self.__object.loved = loved
+        else:
+            loved = not is_loved(self.__object.id)
+            set_loved(self.__object.id, loved)
         self.set_opacity(0.8 if loved else 0.2)
         return True

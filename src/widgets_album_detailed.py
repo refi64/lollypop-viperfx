@@ -15,6 +15,7 @@ from gi.repository import GLib, Gtk, Gdk, GObject
 from gettext import gettext as _
 
 from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenuPopover, AlbumMenu
 from lollypop.widgets_context import ContextWidget
@@ -75,12 +76,18 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         if art_size == ArtSize.NONE:
             self._cover = None
-            self.__rating = RatingWidget(self._album)
-            self.__rating.set_hexpand(True)
-            self.__rating.set_property('halign', Gtk.Align.END)
-            self.__rating.set_property('valign', Gtk.Align.CENTER)
-            self.__header.attach(self.__rating, 4, 0, 1, 1)
-            self.__rating.show()
+            rating = RatingWidget(self._album)
+            rating.set_hexpand(True)
+            rating.set_property('halign', Gtk.Align.END)
+            rating.set_property('valign', Gtk.Align.CENTER)
+            rating.show()
+            self.__header.attach(rating, 4, 0, 1, 1)
+            loved = LovedWidget(self._album)
+            loved.set_property('halign', Gtk.Align.END)
+            loved.set_property('valign', Gtk.Align.CENTER)
+            loved.show()
+            self.__header.attach(loved, 5, 0, 1, 1)
+
             artist_label.set_text(", ".join(self._album.artists))
             artist_label.show()
             if self._album.year:
@@ -104,9 +111,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 if self._album.year:
                     year_label.set_label(self._album.year)
                     year_label.show()
-                self.__rating = RatingWidget(self._album)
-                self.__coverbox.add(self.__rating)
-                self.__rating.show()
+                rating = RatingWidget(self._album)
+                self.__coverbox.add(rating)
+                rating.show()
                 self._widget.attach(self.__coverbox, 0, 0, 1, 1)
                 if Lp().window.get_view_width() < WindowSize.MEDIUM:
                     self.__coverbox.hide()

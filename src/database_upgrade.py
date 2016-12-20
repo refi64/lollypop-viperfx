@@ -16,6 +16,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
+from lollypop.database_history import History
 from lollypop.define import Lp
 
 
@@ -50,7 +51,9 @@ class DatabaseUpgrade:
             13: self.__upgrade_13,
             14: "UPDATE albums SET synced=-1 where mtime=0",
             15: self.__upgrade_15,
-            16: self.__upgrade_16
+            16: self.__upgrade_16,
+            17: "ALTER TABLE albums ADD loved INT NOT NULL DEFAULT 0",
+            18: self.__upgrade_18,
                          }
 
     """
@@ -255,4 +258,13 @@ class DatabaseUpgrade:
                     uri = GLib.filename_to_uri(uri)
                     sql.execute("UPDATE albums set uri=? WHERE rowid=?",
                                 (uri, rowid))
+            sql.commit()
+
+    def __upgrade_18(self):
+        """
+            Upgrade history
+        """
+        with SqlCursor(History()) as sql:
+            sql.execute("ALTER TABLE history ADD loved_album\
+                        INT NOT NULL DEFAULT 0")
             sql.commit()
