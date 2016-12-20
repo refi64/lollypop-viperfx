@@ -58,12 +58,9 @@ class BasePlayer(GObject.GObject):
             # Used by shuffle tracks to restore user playlist before shuffle
             self._user_playlist_backup = None
             self._current_track = Track()
-            self._queue_track = None
             self._next_track = Track()
             self._prev_track = Track()
             self._context = PlayContext()
-            # Queue
-            self._queue = []
             # Albums in current playlist
             self._albums = []
             # Current shuffle mode

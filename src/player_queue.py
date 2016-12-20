@@ -26,7 +26,8 @@ class QueuePlayer:
         """
             Init queue
         """
-        pass
+        self.__queue = []
+        self.__backup_next = None
 
     def append_to_queue(self, track_id, notify=True):
         """
@@ -43,9 +44,11 @@ class QueuePlayer:
                                    " can't play this track"),
                                  track.uri)
             return
-        if track_id in self._queue:
-            self._queue.remove(track_id)
-        self._queue.append(track_id)
+        if track_id in self.__queue:
+            self.__queue.remove(track_id)
+        self.__queue.append(track_id)
+        if self.__backup_next is None:
+            self.__backup_next = self._next_track
         self.set_next()
         self.set_prev()
         if notify:
@@ -66,9 +69,11 @@ class QueuePlayer:
                                    " can't play this track"),
                                  track.uri)
             return
-        if track_id in self._queue:
-            self._queue.remove(track_id)
-        self._queue.insert(pos, track_id)
+        if track_id in self.__queue:
+            self.__queue.remove(track_id)
+        self.__queue.insert(pos, track_id)
+        if self.__backup_next is None:
+            self.__backup_next = self._next_track
         self.set_next()
         self.set_prev()
         if notify:
@@ -80,9 +85,13 @@ class QueuePlayer:
             @param track id as int
             @param notify as bool
         """
-        if track_id in self._queue:
-            self._queue.remove(track_id)
-            self.set_next()
+        if track_id in self.__queue:
+            self.__queue.remove(track_id)
+            if not self.__queue and self.__backup_next is not None:
+                self._next_track = self.__backup_next
+                self.__backup_next = None
+            else:
+                self.set_next()
             self.set_prev()
         if notify:
             self.emit('queue-changed')
@@ -93,8 +102,12 @@ class QueuePlayer:
             @param [ids as int]
             @param notify as bool
         """
-        self._queue = []
-        self.set_next()
+        self.__queue = []
+        if self.__backup_next is None:
+            self.set_next()
+        else:
+            self._next_track = self.__backup_next
+            self.__backup_next = None
         self.set_prev()
         if notify:
             self.emit('queue-changed')
@@ -104,8 +117,8 @@ class QueuePlayer:
             Return queue
             @return [ids as int]
         """
-        if self._queue:
-            return self._queue
+        if self.__queue:
+            return self.__queue
         else:
             return []
 
@@ -115,8 +128,8 @@ class QueuePlayer:
             @param track as Track
             @return bool
         """
-        if self._queue:
-            return track.id in self._queue
+        if self.__queue:
+            return track.id in self.__queue
         else:
             return False
 
@@ -126,8 +139,8 @@ class QueuePlayer:
             @param album as Album
             @return bool
         """
-        if self._queue:
-            union = set(self._queue) & set(album.track_ids)
+        if self.__queue:
+            union = set(self.__queue) & set(album.track_ids)
             return len(union) == len(album.track_ids)
         else:
             return False
@@ -138,7 +151,7 @@ class QueuePlayer:
             @param track id as int
             @return position as int
         """
-        return self._queue.index(track_id) + 1
+        return self.__queue.index(track_id) + 1
 
     def next(self):
         """
@@ -146,8 +159,8 @@ class QueuePlayer:
             @return Track
         """
         track_id = None
-        if self._queue:
-            track_id = self._queue[0]
+        if self.__queue:
+            track_id = self.__queue[0]
         return Track(track_id)
 
 #######################

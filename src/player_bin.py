@@ -117,9 +117,9 @@ class BinPlayer(BasePlayer):
             @param track as Track
         """
         if self._crossfading and\
-           self.current_track.id is not None and\
+           self._current_track.id is not None and\
            self.is_playing() and\
-           self.current_track.id != Type.RADIOS:
+           self._current_track.id != Type.RADIOS:
             duration = Lp().settings.get_value('mix-duration').get_int32()
             self.__do_crossfade(duration, track, False)
         else:
@@ -130,7 +130,7 @@ class BinPlayer(BasePlayer):
             Change player state to PLAYING
         """
         # No current playback, song in queue
-        if self.current_track.id is None:
+        if self._current_track.id is None:
             if self._next_track.id is not None:
                 self.load(self._next_track)
         else:
@@ -141,7 +141,7 @@ class BinPlayer(BasePlayer):
         """
             Change player state to PAUSED
         """
-        if self.current_track.id == Type.RADIOS:
+        if self._current_track.id == Type.RADIOS:
             self._playbin.set_state(Gst.State.NULL)
         else:
             self._playbin.set_state(Gst.State.PAUSED)
@@ -177,11 +177,11 @@ class BinPlayer(BasePlayer):
             Seek current track to position
             @param position as seconds
         """
-        if self.locked or self.current_track.id is None:
+        if self.locked or self._current_track.id is None:
             return
         # Seems gstreamer doesn't like seeking to end, sometimes
         # doesn't go to next track
-        if position >= self.current_track.duration:
+        if position >= self._current_track.duration:
             self.next()
         else:
             self._playbin.seek_simple(Gst.Format.TIME,
@@ -199,11 +199,18 @@ class BinPlayer(BasePlayer):
             @return position as int
         """
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
-        if self._crossfading and self.current_track.duration > 0:
-            duration = self.current_track.duration - position / 1000000
+        if self._crossfading and self._current_track.duration > 0:
+            duration = self._current_track.duration - position / 1000000
             if duration < Lp().settings.get_value('mix-duration').get_int32():
                 self.__do_crossfade(duration)
         return position * 60
+
+    @property
+    def current_track(self):
+        """
+            Current track
+        """
+        return self._current_track
 
     @property
     def volume(self):
@@ -244,13 +251,7 @@ class BinPlayer(BasePlayer):
             self._plugins.volume.props.volume = 1.0
         debug("BinPlayer::_load_track(): %s" % track.uri)
         try:
-            if track.id in self._queue:
-                self._queue_track = track
-                self._queue.remove(track.id)
-                self.emit('queue-changed')
-            else:
-                self._current_track = track
-                self._queue_track = None
+            self._current_track = track
             if track.is_web:
                 loaded = self._load_web(track)
                 # If track not loaded, go next
@@ -263,7 +264,6 @@ class BinPlayer(BasePlayer):
                 self._playbin.set_property('uri', track.uri)
         except Exception as e:  # Gstreamer error
             print("BinPlayer::_load_track(): ", e)
-            self._queue_track = None
             return False
         return True
 
@@ -324,17 +324,17 @@ class BinPlayer(BasePlayer):
             @param message as Gst.Message
         """
         self._start_time = time()
-        debug("Player::_on_stream_start(): %s" % self.current_track.uri)
+        debug("Player::_on_stream_start(): %s" % self._current_track.uri)
         self.emit('current-changed')
         # Update now playing on lastfm
-        if Lp().lastfm is not None and self.current_track.id >= 0:
-            artists = ", ".join(self.current_track.artists)
+        if Lp().lastfm is not None and self._current_track.id >= 0:
+            artists = ", ".join(self._current_track.artists)
             Lp().lastfm.now_playing(artists,
-                                    self.current_track.album_name,
-                                    self.current_track.title,
-                                    int(self.current_track.duration))
+                                    self._current_track.album_name,
+                                    self._current_track.title,
+                                    int(self._current_track.duration))
         if not Lp().scanner.is_locked():
-            Lp().tracks.set_listened_at(self.current_track.id, int(time()))
+            Lp().tracks.set_listened_at(self._current_track.id, int(time()))
 
 #######################
 # PRIVATE             #
@@ -351,7 +351,7 @@ class BinPlayer(BasePlayer):
                 Lp().tracks.set_duration(track.id, duration)
                 # We modify mtime to be sure not looking for tags again
                 Lp().tracks.set_mtime(track.id, 1)
-                self.current_track.set_duration(duration)
+                self._current_track.set_duration(duration)
                 GLib.idle_add(self.emit, 'duration-changed', track.id)
         except:
             pass
@@ -433,10 +433,10 @@ class BinPlayer(BasePlayer):
             return
 
         if track is None:
-            self._scrobble(self.current_track, self._start_time)
+            self._scrobble(self._current_track, self._start_time)
             # Increment popularity
             if not Lp().scanner.is_locked():
-                Lp().tracks.set_more_popular(self.current_track.id)
+                Lp().tracks.set_more_popular(self._current_track.id)
                 # In party mode, linear popularity
                 if self.is_party:
                     pop_to_add = 1
@@ -444,8 +444,8 @@ class BinPlayer(BasePlayer):
                 else:
                     pop_to_add = int(Lp().albums.max_count /
                                      Lp().albums.get_tracks_count(
-                                                  self.current_track.album_id))
-                Lp().albums.set_more_popular(self.current_track.album_id,
+                                                 self._current_track.album_id))
+                Lp().albums.set_more_popular(self._current_track.album_id,
                                              pop_to_add)
 
         GLib.idle_add(self.__volume_down, self._playbin,
@@ -507,48 +507,48 @@ class BinPlayer(BasePlayer):
         """
         # Some radio streams send message tag every seconds!
         changed = False
-        if (self.current_track.persistent == DbPersistent.INTERNAL or
-            self.current_track.mtime != 0) and\
-            (self.current_track.id >= 0 or
-             self.current_track.duration > 0.0):
+        if (self._current_track.persistent == DbPersistent.INTERNAL or
+            self._current_track.mtime != 0) and\
+            (self._current_track.id >= 0 or
+             self._current_track.duration > 0.0):
             return
-        debug("Player::__on_bus_message_tag(): %s" % self.current_track.uri)
+        debug("Player::__on_bus_message_tag(): %s" % self._current_track.uri)
         reader = TagReader()
 
         # Update duration of non internals
-        if self.current_track.persistent != DbPersistent.INTERNAL:
+        if self._current_track.persistent != DbPersistent.INTERNAL:
             t = Thread(target=self.__update_current_duration,
-                       args=(reader, self.current_track))
+                       args=(reader, self._current_track))
             t.daemon = True
             t.start()
             return
 
         tags = message.parse_tag()
         title = reader.get_title(tags, '')
-        if title != '' and self.current_track.name != title:
-            self.current_track.name = title
+        if title != '' and self._current_track.name != title:
+            self._current_track.name = title
             changed = True
-        if self.current_track.name == '':
-            self.current_track.name = self.current_track.uri
+        if self._current_track.name == '':
+            self._current_track.name = self._current_track.uri
             changed = True
         artists = reader.get_artists(tags)
-        if artists != '' and self.current_track.artists != artists:
-            self.current_track.artists = artists.split(',')
+        if artists != '' and self._current_track.artists != artists:
+            self._current_track.artists = artists.split(',')
             changed = True
-        if not self.current_track.artists:
-            self.current_track.artists = self.current_track.album_artists
+        if not self._current_track.artists:
+            self._current_track.artists = self._current_track.album_artists
             changed = True
 
-        if self.current_track.id == Type.EXTERNALS:
+        if self._current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
             if b:
-                self.current_track.duration = duration/1000000000
+                self._current_track.duration = duration/1000000000
             # We do not use tagreader as we need to check if value is None
-            self.current_track.album_name = tags.get_string_index('album',
-                                                                  0)[1]
-            if self.current_track.album_name is None:
-                self.current_track.album_name = ''
-            self.current_track.genres = reader.get_genres(tags).split(',')
+            self._current_track.album_name = tags.get_string_index('album',
+                                                                   0)[1]
+            if self._current_track.album_name is None:
+                self._current_track.album_name = ''
+            self._current_track.genres = reader.get_genres(tags).split(',')
             changed = True
         if changed:
             self.emit('current-changed')
@@ -568,7 +568,7 @@ class BinPlayer(BasePlayer):
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
-        debug("Error playing: %s" % self.current_track.uri)
+        debug("Error playing: %s" % self._current_track.uri)
         Lp().window.pulse(False)
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
@@ -583,7 +583,7 @@ class BinPlayer(BasePlayer):
             On end of stream, stop playback
             go next otherwise
         """
-        debug("Player::__on_bus_eos(): %s" % self.current_track.uri)
+        debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
             self.stop()
             self._next_context = NextContext.NONE
@@ -600,12 +600,12 @@ class BinPlayer(BasePlayer):
         # Don't do anything if crossfade on, track already changed
         if self._crossfading:
             return
-        if self.current_track.id == Type.RADIOS:
+        if self._current_track.id == Type.RADIOS:
             return
-        self._scrobble(self.current_track, self._start_time)
+        self._scrobble(self._current_track, self._start_time)
         # Increment popularity
         if not Lp().scanner.is_locked():
-            Lp().tracks.set_more_popular(self.current_track.id)
+            Lp().tracks.set_more_popular(self._current_track.id)
             # In party mode, linear popularity
             if self.is_party:
                 pop_to_add = 1
@@ -613,8 +613,8 @@ class BinPlayer(BasePlayer):
             else:
                 pop_to_add = int(Lp().albums.max_count /
                                  Lp().albums.get_tracks_count(
-                                                  self.current_track.album_id))
-            Lp().albums.set_more_popular(self.current_track.album_id,
+                                                 self._current_track.album_id))
+            Lp().albums.set_more_popular(self._current_track.album_id,
                                          pop_to_add)
         if self._next_track.id is not None:
             self._load_track(self._next_track)

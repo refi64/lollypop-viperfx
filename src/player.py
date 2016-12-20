@@ -49,16 +49,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Lp().settings.connect('changed::playback', self.__on_playback_changed)
 
     @property
-    def current_track(self):
-        """
-            Current track
-        """
-        if self._queue_track is not None:
-            return self._queue_track
-        else:
-            return self._current_track
-
-    @property
     def next_track(self):
         """
             Current track
@@ -97,7 +87,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self._locked:
             return
         if self._next_track.id is not None:
-            self._scrobble(self.current_track, self._start_time)
+            self._scrobble(self._current_track, self._start_time)
             self.load(self._next_track)
         else:
             self.stop()
@@ -451,7 +441,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         try:
             if Lp().settings.get_enum('playback') == NextContext.REPEAT_TRACK:
-                self._prev_track = self.current_track
+                self._prev_track = self._current_track
             else:
                 # Look at externals
                 self._prev_track = ExternalsPlayer.prev(self)
@@ -486,7 +476,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._next_context = NextContext.NONE
 
             if Lp().settings.get_enum('playback') == NextContext.REPEAT_TRACK:
-                next_track = self.current_track
+                next_track = self._current_track
             else:
                 # Look at externals
                 next_track = ExternalsPlayer.next(self)
@@ -555,10 +545,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Lp().window.pulse(False)
         if self._current_track.id is not None and self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
-        if not self.__do_not_update_next:
-            self.set_next()
-        self.__do_not_update_next = False
-        self.set_prev()
+        if self.track_in_queue(self._current_track):
+            self.del_from_queue(self._current_track.id)
+        else:
+            if not self.__do_not_update_next:
+                self.set_next()
+            self.__do_not_update_next = False
+            self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)
 
 #######################
