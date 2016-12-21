@@ -35,17 +35,19 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__in_widget = False
         self.set_vexpand(True)
         self.set_margin_end(10)
+        self.set_opacity(0.3)
         self.get_style_context().add_class('fastscroll')
         self.set_policy(Gtk.PolicyType.NEVER,
-                        Gtk.PolicyType.AUTOMATIC)
+                        Gtk.PolicyType.EXTERNAL)
         self.set_property('halign', Gtk.Align.END)
+        self.get_vscrollbar().hide()
         self.__chars = []
         self.__view = view
         self.__model = model
         self.__scrolled = scrolled
         self.__grid = Gtk.Grid()
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self.__grid.set_property('valign', Gtk.Align.END)
+        self.__grid.set_property('valign', Gtk.Align.START)
         self.__grid.show()
         eventbox = Gtk.EventBox()
         eventbox.add(self.__grid)
@@ -82,10 +84,23 @@ class FastScroll(Gtk.ScrolledWindow):
             label.show()
             self.__grid.add(label)
         GLib.idle_add(self.__check_value_to_mark)
+        GLib.idle_add(self.__set_margin)
 
 #######################
 # PRIVATE             #
 #######################
+    def __set_margin(self):
+        """
+            Get top non static entry and set margin based on it position
+        """
+        for row in self.__model:
+            if row[0] >= 0:
+                margin = self.__view.get_background_area(row.path).y + 5
+                if margin < 5:
+                    margin = 5
+                self.set_margin_top(margin)
+                break
+
     def __check_value_to_mark(self):
         """
             Look at visible treeview range, and mark char as needed
@@ -162,4 +177,5 @@ class FastScroll(Gtk.ScrolledWindow):
             Show a popover with current letter
             @param adj as Gtk.Adjustement
         """
-        self.__check_value_to_mark()
+        GLib.idle_add(self.__check_value_to_mark)
+        GLib.idle_add(self.__set_margin)
