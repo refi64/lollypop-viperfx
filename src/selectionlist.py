@@ -512,8 +512,13 @@ class SelectionList(Gtk.Overlay):
             @param widget as Gtk.widget
             @param event as GdK.Event
         """
-        if self.__is_artists:
-            self.__fast_scroll.hide()
+        allocation = widget.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
+            if self.__is_artists:
+                self.__fast_scroll.hide()
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
 
