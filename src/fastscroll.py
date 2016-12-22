@@ -31,8 +31,7 @@ class FastScroll(Gtk.ScrolledWindow):
             @param scrolled as Gtk.ScrolledWindow
         """
         Gtk.ScrolledWindow.__init__(self)
-        self.__hide_id = None
-        self.__in_widget = False
+        self.__leave_timeout_id = None
         self.set_vexpand(True)
         self.set_margin_end(10)
         self.get_style_context().add_class('fastscroll')
@@ -54,6 +53,7 @@ class FastScroll(Gtk.ScrolledWindow):
         eventbox.show()
         self.add(eventbox)
         scrolled.get_vadjustment().connect('value_changed', self.__on_scroll)
+        self.connect('leave-notify-event', self.__on_leave_event)
 
     def clear(self):
         """
@@ -88,6 +88,15 @@ class FastScroll(Gtk.ScrolledWindow):
             self.__grid.add(label)
         GLib.idle_add(self.__check_value_to_mark)
         GLib.idle_add(self.__set_margin)
+
+    def show(self):
+        """
+            Show widget, remove hide timeout if running
+        """
+        if self.__leave_timeout_id is not None:
+            GLib.source_remove(self.__leave_timeout_id)
+            self.__leave_timeout_id = None
+        Gtk.ScrolledWindow.show(self)
 
 #######################
 # PRIVATE             #
@@ -187,6 +196,15 @@ class FastScroll(Gtk.ScrolledWindow):
                     self.__view.scroll_to_cell(self.__model.get_path(row.iter),
                                                None, True, 0, 0)
                     break
+
+    def __on_leave_event(self, widget, event):
+        """
+            Force hide after a timeout that can be killed by show
+        """
+        if self.__leave_timeout_id is not None:
+            GLib.source_remove(self.__leave_timeout_id)
+            self.__leave_timeout_id = None
+        self.__leave_timeout_id = GLib.timeout_add(1000, self.hide)
 
     def __on_scroll(self, adj):
         """
