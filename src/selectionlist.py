@@ -72,11 +72,14 @@ class SelectionList(Gtk.Overlay):
                                    Gtk.PolicyType.AUTOMATIC)
         self.__scrolled.add(self.__view)
         self.__scrolled.show()
-        self.__fast_scroll = FastScroll(self.__view,
-                                        self.__model,
-                                        self.__scrolled)
         self.add(self.__scrolled)
-        self.add_overlay(self.__fast_scroll)
+        if Gtk.get_minor_version() > 14:
+            self.__fast_scroll = FastScroll(self.__view,
+                                            self.__model,
+                                            self.__scrolled)
+            self.add_overlay(self.__fast_scroll)
+        else:
+            self.__fast_scroll = None
         self.__scrolled.connect('enter-notify-event', self.__on_enter_notify)
         self.__scrolled.connect('leave-notify-event', self.__on_leave_notify)
 
@@ -174,7 +177,7 @@ class SelectionList(Gtk.Overlay):
             @thread safe
         """
         self.__updating = True
-        if self.__is_artists:
+        if self.__is_artists and self.__fast_scroll is not None:
             self.__fast_scroll.clear()
         # Remove not found items but not devices
         value_ids = set([v[0] for v in values])
@@ -186,7 +189,7 @@ class SelectionList(Gtk.Overlay):
         for value in values:
             if not value[0] in item_ids:
                 self.__add_value(value)
-        if self.__is_artists:
+        if self.__is_artists and self.__fast_scroll is not None:
             self.__fast_scroll.populate()
         self.__updating = False
 
@@ -254,7 +257,7 @@ class SelectionList(Gtk.Overlay):
         """
         self.__updating = True
         self.__model.clear()
-        if self.__is_artists:
+        if self.__is_artists and self.__fast_scroll is not None:
             self.__fast_scroll.clear()
             self.__fast_scroll.clear_chars()
         self.__updating = False
@@ -371,7 +374,7 @@ class SelectionList(Gtk.Overlay):
             else:
                 sort = value[1]
 
-        if sort and self.__is_artists:
+        if sort and self.__is_artists and self.__fast_scroll is not None:
             self.__fast_scroll.add_char(sort[0])
         i = self.__model.append([value[0],
                                 string,
@@ -389,7 +392,7 @@ class SelectionList(Gtk.Overlay):
         """
         for value in values:
             self.__add_value(value)
-        if self.__is_artists:
+        if self.__is_artists and self.__fast_scroll is not None:
             self.__fast_scroll.populate()
         self.__to_select_ids = []
 
@@ -501,7 +504,8 @@ class SelectionList(Gtk.Overlay):
             @param event as Gdk.Event
         """
         if widget.get_vadjustment().get_upper() >\
-                widget.get_allocated_height() and self.__is_artists:
+                widget.get_allocated_height() and self.__is_artists and\
+                self.__fast_scroll is not None:
             self.__fast_scroll.show()
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(False)
@@ -517,7 +521,7 @@ class SelectionList(Gtk.Overlay):
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            if self.__is_artists:
+            if self.__is_artists and self.__fast_scroll is not None:
                 self.__fast_scroll.hide()
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
