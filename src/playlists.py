@@ -206,7 +206,7 @@ class Playlists(GObject.GObject):
                                   music.tracks.rowid\
                                   AND music.tracks.uri=\
                                   main.tracks.uri\
-                                  GROUP BY\
+                                  ORDER BY\
                                   music.track_artists.artist_id, album_id",
                                  (playlist_id,))
             return list(itertools.chain(*result))
