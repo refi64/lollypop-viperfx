@@ -102,10 +102,6 @@ class SelectionList(Gtk.Overlay):
             Mark list as artists list
             @param is_artists as bool
         """
-        if is_artists:
-            self.__fast_scroll.show()
-        else:
-            self.__fast_scroll.hide()
         self.__is_artists = is_artists
         self.__renderer0.set_is_artists(is_artists)
 
@@ -178,7 +174,8 @@ class SelectionList(Gtk.Overlay):
             @thread safe
         """
         self.__updating = True
-        self.__fast_scroll.clear()
+        if self.__is_artists:
+            self.__fast_scroll.clear()
         # Remove not found items but not devices
         value_ids = set([v[0] for v in values])
         for item in self.__model:
@@ -189,7 +186,8 @@ class SelectionList(Gtk.Overlay):
         for value in values:
             if not value[0] in item_ids:
                 self.__add_value(value)
-        self.__fast_scroll.populate()
+        if self.__is_artists:
+            self.__fast_scroll.populate()
         self.__updating = False
 
     def get_value(self, object_id):
@@ -256,7 +254,9 @@ class SelectionList(Gtk.Overlay):
         """
         self.__updating = True
         self.__model.clear()
-        self.__fast_scroll.clear()
+        if self.__is_artists:
+            self.__fast_scroll.clear()
+            self.__fast_scroll.clear_chars()
         self.__updating = False
 
     def get_headers(self):
@@ -389,7 +389,8 @@ class SelectionList(Gtk.Overlay):
         """
         for value in values:
             self.__add_value(value)
-        self.__fast_scroll.populate()
+        if self.__is_artists:
+            self.__fast_scroll.populate()
         self.__to_select_ids = []
 
     def __get_icon_name(self, object_id):
@@ -499,6 +500,9 @@ class SelectionList(Gtk.Overlay):
             @param widget as Gtk.widget
             @param event as Gdk.Event
         """
+        if widget.get_vadjustment().get_upper() >\
+                widget.get_allocated_height() and self.__is_artists:
+            self.__fast_scroll.show()
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(False)
 
@@ -508,6 +512,8 @@ class SelectionList(Gtk.Overlay):
             @param widget as Gtk.widget
             @param event as GdK.Event
         """
+        if self.__is_artists:
+            self.__fast_scroll.hide()
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
 

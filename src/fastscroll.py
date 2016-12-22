@@ -62,8 +62,12 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         for child in self.__grid.get_children():
             child.destroy()
+
+    def clear_chars(self):
+        """
+            Clear chars
+        """
         self.__chars = []
-        self.hide()
 
     def add_char(self, c):
         """
