@@ -200,14 +200,16 @@ class Playlists(GObject.GObject):
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT music.tracks.rowid\
                                   FROM tracks, music.tracks,\
-                                  music.track_artists\
+                                  music.track_artists, music.artists\
                                   WHERE tracks.playlist_id=?\
                                   AND music.track_artists.track_id=\
                                   music.tracks.rowid\
+                                  AND music.artists.id=\
+                                  music.track_artists.artist_id\
                                   AND music.tracks.uri=\
                                   main.tracks.uri\
                                   ORDER BY\
-                                  music.track_artists.artist_id, album_id",
+                                  music.artists.sortname, album_id",
                                  (playlist_id,))
             return list(itertools.chain(*result))
 
