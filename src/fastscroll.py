@@ -53,7 +53,7 @@ class FastScroll(Gtk.ScrolledWindow):
         eventbox.show()
         self.add(eventbox)
         scrolled.get_vadjustment().connect('value_changed', self.__on_scroll)
-        self.connect('leave-notify-event', self.__on_leave_event)
+        self.connect('leave-notify-event', self.__on_leave_notify)
 
     def clear(self):
         """
@@ -162,11 +162,16 @@ class FastScroll(Gtk.ScrolledWindow):
         start_idx = chars.index(start)
         end_idx = chars.index(end)
         selected = chars[start_idx:end_idx+1]
+        first = True
         for child in self.__grid.get_children():
             label = child.get_text()
             mark = True if label in selected else False
             if mark:
                 child.set_opacity(0.8)
+                if first:
+                    y = child.translate_coordinates(self.__grid, 0, 0)[1]
+                    self.get_vadjustment().set_value(y)
+                    first = False
             else:
                 child.set_opacity(0.2)
 
@@ -204,7 +209,7 @@ class FastScroll(Gtk.ScrolledWindow):
                                                None, True, 0, 0)
                     break
 
-    def __on_leave_event(self, widget, event):
+    def __on_leave_notify(self, widget, event):
         """
             Force hide after a timeout that can be killed by show
         """
