@@ -260,6 +260,7 @@ class SelectionList(Gtk.Overlay):
         if self.__is_artists and self.__fast_scroll is not None:
             self.__fast_scroll.clear()
             self.__fast_scroll.clear_chars()
+            self.__fast_scroll.hide()
         self.__updating = False
 
     def get_headers(self):
