@@ -117,20 +117,21 @@ class FastScroll(Gtk.ScrolledWindow):
                 area = self.__view.get_cell_area(start)
                 if area.y + area.height / 2 < 0:
                     start.next()
+                # Check if start is non static:
+                value = self.__get_value_for_path(start, 0)
+                while value is not None and value < 0:
+                    start.next()
+                    value = self.__get_value_for_path(start, 0)
                 # Check if end is really visible
                 area = self.__view.get_cell_area(end)
                 scrolled_allocation = self.__scrolled.get_allocation()
                 if area.y + area.height / 2 > scrolled_allocation.height:
                     end.prev()
-                start_row = start[0]
-                end_row = end[0]
-                if start_row is not None and end_row is not None:
-                    start_iter = self.__model.get_iter(start_row)
-                    end_iter = self.__model.get_iter(end_row)
-                    start_value = noaccents(
-                            self.__model.get_value(start_iter, 3))[0].upper()
-                    end_value = noaccents(
-                            self.__model.get_value(end_iter, 3))[0].upper()
+                start_value = self.__get_value_for_path(start, 3)
+                end_value = self.__get_value_for_path(end, 3)
+                if start_value is not None and end_value is not None:
+                    start_value = noaccents(start_value[0]).upper()
+                    end_value = noaccents(end_value[0]).upper()
                     self.__mark_values(start_value, end_value)
         except Exception as e:
             print("FastScroll::__check_value_to_mark()", e)
@@ -152,6 +153,18 @@ class FastScroll(Gtk.ScrolledWindow):
                 child.set_opacity(0.8)
             else:
                 child.set_opacity(0.2)
+
+    def __get_value_for_path(self, path, pos):
+        """
+            Return value for path
+            @param path as Gtk.TreePath
+        """
+        row = path[0]
+        if row is not None:
+            iter = self.__model.get_iter(row)
+            value = self.__model.get_value(iter, pos)
+            return value
+        return None
 
     def __on_button_press(self, eventbox, event):
         """
