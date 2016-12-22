@@ -98,6 +98,13 @@ class FastScroll(Gtk.ScrolledWindow):
             self.__leave_timeout_id = None
         Gtk.ScrolledWindow.show(self)
 
+    def hide(self):
+        """
+            Hide widget, clean timeout
+        """
+        self.__leave_timeout_id = None
+        Gtk.ScrolledWindow.hide(self)
+
 #######################
 # PRIVATE             #
 #######################
@@ -204,7 +211,7 @@ class FastScroll(Gtk.ScrolledWindow):
         if self.__leave_timeout_id is not None:
             GLib.source_remove(self.__leave_timeout_id)
             self.__leave_timeout_id = None
-        self.__leave_timeout_id = GLib.timeout_add(1000, self.hide)
+        self.__leave_timeout_id = GLib.timeout_add(250, self.hide)
 
     def __on_scroll(self, adj):
         """
