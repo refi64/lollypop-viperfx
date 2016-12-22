@@ -604,7 +604,7 @@ class BinPlayer(BasePlayer):
             return
         self._scrobble(self._current_track, self._start_time)
         # Increment popularity
-        if not Lp().scanner.is_locked():
+        if not Lp().scanner.is_locked() and self._current_track.id >= 0:
             Lp().tracks.set_more_popular(self._current_track.id)
             # In party mode, linear popularity
             if self.is_party:
