@@ -35,7 +35,6 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__in_widget = False
         self.set_vexpand(True)
         self.set_margin_end(10)
-        self.set_opacity(0.3)
         self.get_style_context().add_class('fastscroll')
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.EXTERNAL)
@@ -150,9 +149,9 @@ class FastScroll(Gtk.ScrolledWindow):
             label = child.get_text()
             mark = True if label in selected else False
             if mark:
-                child.get_style_context().remove_class('dim-label')
+                child.set_opacity(0.8)
             else:
-                child.get_style_context().add_class('dim-label')
+                child.set_opacity(0.2)
 
     def __on_button_press(self, eventbox, event):
         """
