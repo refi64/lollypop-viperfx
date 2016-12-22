@@ -473,7 +473,7 @@ class AlbumsDatabase:
                        AND album_genres.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY popularity"
+            request += " ORDER BY popularity DESC"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
