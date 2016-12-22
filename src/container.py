@@ -610,6 +610,8 @@ class Container:
                     tracks = Lp().tracks.get_never_listened_to()
                 elif playlist_id == Type.RANDOMS:
                     tracks = Lp().tracks.get_randoms()
+                elif playlist_id == Type.LOVED:
+                    tracks = Lp().playlists.get_track_ids_sorted(playlist_id)
                 else:
                     tracks = Lp().playlists.get_track_ids(playlist_id)
                 for track_id in tracks:

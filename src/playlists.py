@@ -190,6 +190,27 @@ class Playlists(GObject.GObject):
                                  (playlist_id,))
             return list(itertools.chain(*result))
 
+    def get_track_ids_sorted(self, playlist_id):
+        """
+            Return availables track ids for playlist sorted by artist/album
+            If playlist name == Type.ALL, then return all tracks from db
+            @param playlist id as int
+            @return array of track id as int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT music.tracks.rowid\
+                                  FROM tracks, music.tracks,\
+                                  music.track_artists\
+                                  WHERE tracks.playlist_id=?\
+                                  AND music.track_artists.track_id=\
+                                  music.tracks.rowid\
+                                  AND music.tracks.uri=\
+                                  main.tracks.uri\
+                                  GROUP BY\
+                                  music.track_artists.artist_id, album_id",
+                                 (playlist_id,))
+            return list(itertools.chain(*result))
+
     def get_id(self, playlist_name):
         """
             Get playlist id
