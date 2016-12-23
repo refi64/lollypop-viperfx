@@ -162,16 +162,14 @@ class FastScroll(Gtk.ScrolledWindow):
         start_idx = chars.index(start)
         end_idx = chars.index(end)
         selected = chars[start_idx:end_idx+1]
-        first = True
         for child in self.__grid.get_children():
             label = child.get_text()
             mark = True if label in selected else False
             if mark:
                 child.set_opacity(0.8)
-                if first:
+                if label == chars[start_idx]:
                     y = child.translate_coordinates(self.__grid, 0, 0)[1]
                     self.get_vadjustment().set_value(y)
-                    first = False
             else:
                 child.set_opacity(0.2)
 
