@@ -149,8 +149,8 @@ class FastScroll(Gtk.ScrolledWindow):
                     start_value = noaccents(start_value[0]).upper()
                     end_value = noaccents(end_value[0]).upper()
                     self.__mark_values(start_value, end_value)
-        except Exception as e:
-            print("FastScroll::__check_value_to_mark()", e)
+        except:
+            pass  # get_visible_range() == None
 
     def __mark_values(self, start, end):
         """
