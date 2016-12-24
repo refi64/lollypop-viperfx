@@ -724,12 +724,15 @@ class SettingsDialog:
             name = f.get_basename()
             album_id = Lp().tracks.get_album_id(track_id)
             popularity = Lp().tracks.get_popularity(track_id)
+            rate = Lp().tracks.get_rate(track_id)
             ltime = Lp().tracks.get_ltime(track_id)
             mtime = Lp().albums.get_mtime(album_id)
             duration = Lp().tracks.get_duration(track_id)
+            loved = Lp().albums.get_loved(album_id)
             album_popularity = Lp().albums.get_popularity(album_id)
-            history.add(name, duration, popularity,
-                        ltime, mtime, album_popularity)
+            album_rate = Lp().albums.get_rate(album_id)
+            history.add(name, duration, popularity, rate,
+                        ltime, mtime, loved, album_popularity, album_rate)
             progress.set_fraction((count - len(track_ids))/count)
             GLib.idle_add(self.___reset_database, track_ids,
                           count, history, progress)

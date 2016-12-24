@@ -90,7 +90,7 @@ class History:
                 sql.execute("INSERT INTO history\
                              (name, duration, popularity, rate, ltime, mtime,\
                              loved_album, album_popularity, album_rate)\
-                             VALUES (?, ?, ?, ?, ?, ?, ?)",
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             (name, duration, popularity, rate, loved_album,
                              ltime, mtime, album_popularity, album_rate))
             sql.commit()
