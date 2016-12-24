@@ -84,47 +84,47 @@ class RatingWidget(Gtk.Bin):
                 self._stars[i].get_style_context().remove_class('selected')
         else:
             if stars >= 1:
-                self._stars[0].set_opacity(0.8)
                 if user_rating:
                     self._stars[0].get_style_context().add_class('selected')
                 else:
                     self._stars[0].get_style_context().remove_class('selected')
+                self._stars[0].set_opacity(0.8)
             else:
                 self._stars[0].set_opacity(0.2)
                 self._stars[0].get_style_context().remove_class('selected')
             if stars >= 2:
-                self._stars[1].set_opacity(0.8)
                 if user_rating:
                     self._stars[1].get_style_context().add_class('selected')
                 else:
                     self._stars[1].get_style_context().remove_class('selected')
+                self._stars[1].set_opacity(0.8)
             else:
                 self._stars[1].set_opacity(0.2)
                 self._stars[1].get_style_context().remove_class('selected')
             if stars >= 3:
-                self._stars[2].set_opacity(0.8)
                 if user_rating:
                     self._stars[2].get_style_context().add_class('selected')
                 else:
                     self._stars[2].get_style_context().remove_class('selected')
+                self._stars[2].set_opacity(0.8)
             else:
                 self._stars[2].set_opacity(0.2)
                 self._stars[2].get_style_context().remove_class('selected')
             if stars >= 4:
-                self._stars[3].set_opacity(0.8)
                 if user_rating:
                     self._stars[3].get_style_context().add_class('selected')
                 else:
                     self._stars[3].get_style_context().remove_class('selected')
+                self._stars[3].set_opacity(0.8)
             else:
                 self._stars[3].set_opacity(0.2)
                 self._stars[3].get_style_context().remove_class('selected')
             if stars >= 4.75:
-                self._stars[4].set_opacity(0.8)
                 if user_rating:
                     self._stars[4].get_style_context().add_class('selected')
                 else:
                     self._stars[4].get_style_context().remove_class('selected')
+                self._stars[4].set_opacity(0.8)
             else:
                 self._stars[4].set_opacity(0.2)
                 self._stars[4].get_style_context().remove_class('selected')
