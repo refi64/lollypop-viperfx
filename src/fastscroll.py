@@ -34,7 +34,7 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__leave_timeout_id = None
         self.set_vexpand(True)
         self.set_margin_end(10)
-        self.get_style_context().add_class('fastscroll')
+        self.get_style_context().add_class('no-border')
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.EXTERNAL)
         self.set_property('halign', Gtk.Align.END)
