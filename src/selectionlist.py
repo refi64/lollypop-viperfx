@@ -289,8 +289,9 @@ class SelectionList(Gtk.Overlay):
             Return playlist headers
             @return items as [(int, str)]
         """
-        items = [(Type.LOVED, Lp().playlists.LOVED)]
+        items = []
         items.append((Type.POPULARS, _("Popular tracks")))
+        items.append((Type.LOVED, Lp().playlists.LOVED))
         items.append((Type.RECENTS, _("Recently played")))
         items.append((Type.NEVER, _("Never played")))
         items.append((Type.RANDOMS, _("Random tracks")))
