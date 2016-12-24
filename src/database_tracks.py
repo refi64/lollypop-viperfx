@@ -56,8 +56,9 @@ class TracksDatabase:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
-                year, popularity, ltime, mtime, persistent) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                year, popularity, rate, ltime, mtime, persistent) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                                                        name,
                                                         uri,
                                                         duration,
                                                         tracknumber,

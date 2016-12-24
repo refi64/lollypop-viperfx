@@ -114,7 +114,7 @@ class History:
             v = result.fetchone()
             if v is not None:
                 return v
-            return (0, 0, 0, 0, 0)
+            return (0, 0, 0, 0, 0, 0, 0)
 
     def exists(self, name, duration):
         """

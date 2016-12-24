@@ -737,8 +737,9 @@ class SettingsDialog:
             GLib.idle_add(self.___reset_database, track_ids,
                           count, history, progress)
         else:
-            Lp().db.del_tracks(Lp().tracks.get_ids())
             progress.hide()
+            Lp().player.stop()
+            Lp().db.drop_db()
             Lp().db = Database()
             Lp().window.show_genres(Lp().settings.get_value('show-genres'))
             Lp().window.update_db()

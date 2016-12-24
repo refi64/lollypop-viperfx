@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Gio
 
 import sqlite3
 
@@ -144,6 +144,16 @@ class Database:
             return c
         except:
             exit(-1)
+
+    def drop_db(self):
+        """
+            Drop database
+        """
+        try:
+            f = Gio.File.new_for_path(self.DB_PATH)
+            f.trash()
+        except Exception as e:
+            print("Database::drop_db():", e)
 
     def del_tracks(self, track_ids):
         """
