@@ -44,7 +44,8 @@ class Database:
                                               year INT,
                                               uri TEXT NOT NULL,
                                               popularity INT NOT NULL,
-                                              loved INT NOT NULL DEFAULT 0,
+                                              rate INT NOT NULL,
+                                              loved INT NOT NULL,
                                               synced INT NOT NULL,
                                               mtime INT NOT NULL)'''
     __create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
@@ -68,6 +69,7 @@ class Database:
                                               album_id INT NOT NULL,
                                               year INT,
                                               popularity INT NOT NULL,
+                                              rate INT NOT NULL,
                                               ltime INT NOT NULL,
                                               mtime INT NOT NULL,
                                               persistent INT NOT NULL
@@ -94,7 +96,7 @@ class Database:
         f = Lio.File.new_for_path(self.DB_PATH)
         if not f.query_exists():
             db_version = Lp().settings.get_value('db-version').get_int32()
-            upgrade = DatabaseUpgrade(db_version, self)
+            upgrade = DatabaseUpgrade(db_version)
             try:
                 d = Lio.File.new_for_path(self.__LOCAL_PATH)
                 if not d.query_exists():
@@ -124,7 +126,7 @@ class Database:
             Upgrade database
         """
         db_version = Lp().settings.get_value('db-version').get_int32()
-        upgrade = DatabaseUpgrade(db_version, self)
+        upgrade = DatabaseUpgrade(db_version)
         f = Lio.File.new_for_path(self.DB_PATH)
         if f.query_exists():
             upgrade.do_db_upgrade()

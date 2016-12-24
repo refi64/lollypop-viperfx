@@ -32,7 +32,7 @@ class TracksDatabase:
         pass
 
     def add(self, name, uri, duration, tracknumber, discnumber, discname,
-            album_id, year, popularity, ltime, mtime, persistent=1):
+            album_id, year, popularity, rate, ltime, mtime, persistent=1):
         """
             Add a new track to database
             @param name as string
@@ -45,6 +45,7 @@ class TracksDatabase:
             @param genre_id as int
             @param year as int
             @param popularity as int
+            @param rate as int
             @param ltime as int
             @param mtime as int
             @param persistent as int
@@ -65,6 +66,7 @@ class TracksDatabase:
                                                         album_id,
                                                         year,
                                                         popularity,
+                                                        rate,
                                                         ltime,
                                                         mtime,
                                                         persistent))
@@ -202,6 +204,20 @@ class TracksDatabase:
                 return str(v[0])
             return ""
 
+    def get_rate(self, track_id):
+        """
+            Get track rate
+            @param track id as int
+            @return rate as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rate FROM tracks WHERE rowid=?",
+                                 (track_id,))
+            v = result.fetchone()
+            if v and v[0]:
+                return v[0]
+            return Type.NONE
+
     def get_uri(self, track_id):
         """
             Get track uri for track id
@@ -228,6 +244,18 @@ class TracksDatabase:
                         (uri, track_id))
             sql.commit()
             Lp().tracks.set_mtime(track_id, 0)
+
+    def set_rate(self, track_id, rate):
+        """
+            Set track rate
+            @param Track id as int
+            @param rate as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE tracks SET rate=?\
+                         WHERE rowid=?",
+                        (rate, track_id))
+            sql.commit()
 
     def get_album_id(self, track_id):
         """

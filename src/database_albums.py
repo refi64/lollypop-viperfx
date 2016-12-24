@@ -31,7 +31,7 @@ class AlbumsDatabase:
         self.__max_count = 1
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, uri, loved, popularity, mtime):
+    def add(self, name, artist_ids, uri, loved, popularity, rate, mtime):
         """
             Add a new album to database
             @param Album name as string
@@ -40,16 +40,17 @@ class AlbumsDatabase:
             @param mtime as int
             @param loved as bool
             @param popularity as int
+            @param rate as int
             @return inserted rowid as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, no_album_artist,\
-                                  uri, loved, popularity, mtime, synced)\
-                                  VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                  uri, loved, popularity, rate, mtime, synced)\
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                  (name, artist_ids == [],
-                                  uri, loved, popularity, mtime, 0))
+                                  uri, loved, popularity, rate, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -134,6 +135,16 @@ class AlbumsDatabase:
                         (loved, album_id))
             sql.commit()
 
+    def set_rate(self, album_id, rate):
+        """
+            Set album rate
+            @param rate as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE albums SET rate=? WHERE rowid=?",
+                        (rate, album_id))
+            sql.commit()
+
     def set_year(self, album_id, year):
         """
             Set year
@@ -209,6 +220,21 @@ class AlbumsDatabase:
             if v is not None:
                 return v[0]
             return 0
+
+    def get_rate(self, album_id):
+        """
+            Get album rate
+            @param album id as int
+            @return rate as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rate FROM albums WHERE\
+                                 rowid=?", (album_id,))
+
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return Type.NONE
 
     def get_mtime(self, album_id):
         """

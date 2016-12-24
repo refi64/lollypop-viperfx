@@ -49,6 +49,13 @@ class Base:
             else:
                 return attr_value
 
+    def get_rate(self):
+        """
+            Get rate
+            @return int between -1 and 5
+        """
+        return self.db.get_rate(self.id)
+
     def get_popularity(self):
         """
             Get popularity
@@ -68,6 +75,13 @@ class Base:
             if avg_popularity > 0:
                 popularity = radios.get_popularity(self._album_artists[0])
         return popularity * 5 / avg_popularity + 0.5
+
+    def set_rate(self, rate):
+        """
+            Set rate
+            @param rate as int between -1 and 5
+        """
+        self.db.set_rate(self.id, rate)
 
     def set_popularity(self, popularity):
         """

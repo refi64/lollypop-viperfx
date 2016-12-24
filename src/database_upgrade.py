@@ -25,14 +25,12 @@ class DatabaseUpgrade:
         Manage database schema upgrades
     """
 
-    def __init__(self, version, db):
+    def __init__(self, version):
         """
             Init object
             @param version as int
-            @param db as Database
         """
         self._version = version
-        self._db = db
         # Here are schema upgrade, key is database version,
         # value is sql request
         self._UPGRADES = {
@@ -54,6 +52,7 @@ class DatabaseUpgrade:
             16: self.__upgrade_16,
             17: "ALTER TABLE albums ADD loved INT NOT NULL DEFAULT 0",
             18: self.__upgrade_18,
+            19: self.__upgrade_19,
                          }
 
     """
@@ -68,7 +67,7 @@ class DatabaseUpgrade:
         @return new db version as int
     """
     def do_db_upgrade(self):
-        with SqlCursor(self._db) as sql:
+        with SqlCursor(Lp().db) as sql:
             for i in range(self._version+1, len(self._UPGRADES)+1):
                 try:
                     if isinstance(self._UPGRADES[i], str):
@@ -87,7 +86,7 @@ class DatabaseUpgrade:
         """
             Add a sorted field to artists
         """
-        with SqlCursor(self._db) as sql:
+        with SqlCursor(Lp().db) as sql:
             sql.execute("ALTER TABLE artists ADD sortname TEXT")
             result = sql.execute("SELECT DISTINCT artists.rowid,\
                                   artists.name\
@@ -104,7 +103,7 @@ class DatabaseUpgrade:
         """
             Add album artists table
         """
-        with SqlCursor(self._db) as sql:
+        with SqlCursor(Lp().db) as sql:
             sql.execute("CREATE TABLE album_artists (\
                                                 album_id INT NOT NULL,\
                                                 artist_id INT NOT NULL)")
@@ -159,7 +158,7 @@ class DatabaseUpgrade:
         """
             Convert tracks filepath column to uri
         """
-        with SqlCursor(self._db) as sql:
+        with SqlCursor(Lp().db) as sql:
             sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
             sql.execute('''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
@@ -234,7 +233,7 @@ class DatabaseUpgrade:
         for path in paths:
             uris.append(GLib.filename_to_uri(path))
         Lp().settings.set_value('music-uris', GLib.Variant('as', uris))
-        with SqlCursor(self._db) as sql:
+        with SqlCursor(Lp().db) as sql:
             sql.execute("ALTER TABLE albums RENAME TO tmp_albums")
             sql.execute('''CREATE TABLE albums (
                                               id INTEGER PRIMARY KEY,
@@ -267,4 +266,24 @@ class DatabaseUpgrade:
         with SqlCursor(History()) as sql:
             sql.execute("ALTER TABLE history ADD loved_album\
                         INT NOT NULL DEFAULT 0")
+            sql.commit()
+
+    def __upgrade_19(self):
+        """
+            Upgrade history
+        """
+        with SqlCursor(History()) as sql:
+            try:
+                sql.execute("ALTER TABLE history ADD album_rate\
+                            INT NOT NULL DEFAULT -1")
+                sql.execute("ALTER TABLE history ADD rate\
+                            INT NOT NULL DEFAULT -1")
+                sql.commit()
+            except:
+                pass  # May fails if History was non existent
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("ALTER TABLE tracks ADD rate\
+                        INT NOT NULL DEFAULT -1")
+            sql.execute("ALTER TABLE albums ADD rate\
+                        INT NOT NULL DEFAULT -1")
             sql.commit()

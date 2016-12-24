@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib, Gio
 
 from lollypop.objects import Track
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 class RatingWidget(Gtk.Bin):
@@ -28,7 +28,7 @@ class RatingWidget(Gtk.Bin):
             @param is album as bool
         """
         Gtk.Bin.__init__(self)
-        self._object = object
+        self.__object = object
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RatingWidget.ui')
         builder.connect_signals(self)
@@ -58,7 +58,12 @@ class RatingWidget(Gtk.Bin):
         else:
             found = False
         for star in self._stars:
-            star.set_opacity(0.2 if found else 0.8)
+            if found:
+                star.set_opacity(0.2)
+                star.get_style_context().remove_class('selected')
+            else:
+                star.set_opacity(0.8)
+                star.get_style_context().add_class('selected')
             if star == event_star:
                 found = True
 
@@ -68,31 +73,61 @@ class RatingWidget(Gtk.Bin):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        stars = self._object.get_popularity()
+        user_rating = True
+        stars = self.__object.get_rate()
+        if stars == Type.NONE:
+            stars = self.__object.get_popularity()
+            user_rating = False
         if stars < 1:
             for i in range(5):
                 self._stars[i].set_opacity(0.2)
+                self._stars[i].get_style_context().remove_class('selected')
         else:
             if stars >= 1:
                 self._stars[0].set_opacity(0.8)
+                if user_rating:
+                    self._stars[0].get_style_context().add_class('selected')
+                else:
+                    self._stars[0].get_style_context().remove_class('selected')
             else:
                 self._stars[0].set_opacity(0.2)
+                self._stars[0].get_style_context().remove_class('selected')
             if stars >= 2:
                 self._stars[1].set_opacity(0.8)
+                if user_rating:
+                    self._stars[1].get_style_context().add_class('selected')
+                else:
+                    self._stars[1].get_style_context().remove_class('selected')
             else:
                 self._stars[1].set_opacity(0.2)
+                self._stars[1].get_style_context().remove_class('selected')
             if stars >= 3:
                 self._stars[2].set_opacity(0.8)
+                if user_rating:
+                    self._stars[2].get_style_context().add_class('selected')
+                else:
+                    self._stars[2].get_style_context().remove_class('selected')
             else:
                 self._stars[2].set_opacity(0.2)
+                self._stars[2].get_style_context().remove_class('selected')
             if stars >= 4:
                 self._stars[3].set_opacity(0.8)
+                if user_rating:
+                    self._stars[3].get_style_context().add_class('selected')
+                else:
+                    self._stars[3].get_style_context().remove_class('selected')
             else:
                 self._stars[3].set_opacity(0.2)
+                self._stars[3].get_style_context().remove_class('selected')
             if stars >= 4.75:
                 self._stars[4].set_opacity(0.8)
+                if user_rating:
+                    self._stars[4].get_style_context().add_class('selected')
+                else:
+                    self._stars[4].get_style_context().remove_class('selected')
             else:
                 self._stars[4].set_opacity(0.2)
+                self._stars[4].get_style_context().remove_class('selected')
 
     def _on_button_press(self, widget, event):
         """
@@ -102,18 +137,27 @@ class RatingWidget(Gtk.Bin):
         """
         if Lp().scanner.is_locked():
             return
+        user_rating = self.__object.get_rate() != Type.NONE
         event_star = widget.get_children()[0]
         if event_star in self._stars:
             position = self._stars.index(event_star)
         else:
             position = -1
         pop = position + 1
-        self._object.set_popularity(pop)
+        if pop == 0:
+            if user_rating:
+                self.__object.set_rate(Type.NONE)
+            else:
+                self.__object.set_popularity(0)
+        elif event.button == 1:
+            self.__object.set_rate(pop)
+        else:
+            self.__object.set_popularity(pop)
         # Save to tags if needed
         if Lp().settings.get_value('save-to-tags') and\
                 GLib.find_program_in_path("kid3-cli") is not None and\
-                isinstance(self._object, Track) and\
-                not self._object.is_web:
+                isinstance(self.__object, Track) and\
+                not self.__object.is_web:
             if pop == 0:
                 value = 0
             elif pop == 1:
@@ -126,7 +170,7 @@ class RatingWidget(Gtk.Bin):
                 value = 196
             else:
                 value = 255
-            path = GLib.filename_from_uri(self._object.uri)[0]
+            path = GLib.filename_from_uri(self.__object.uri)[0]
             try:
                 bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
                 proxy = Gio.DBusProxy.new_sync(

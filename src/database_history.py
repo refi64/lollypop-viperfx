@@ -34,7 +34,9 @@ class History:
                             duration INT NOT NULL,
                             ltime INT NOT NULL,
                             popularity INT NOT NULL,
+                            rate INT NOT NULL,
                             mtime INT NOT NULL,
+                            album_rate INT NOT NULL,
                             loved_album INT NOT NULL,
                             album_popularity INT NOT NULL)'''
 
@@ -54,41 +56,43 @@ class History:
                                   FROM history")
             v = result.fetchone()
             if v is not None and v[0] > self.__LIMIT:
-                sql.execute("__DELETE FROM history\
+                sql.execute("DELETE FROM history\
                              WHERE rowid IN (SELECT rowid\
                                              FROM history\
-                                             __LIMIT %s)" % self.__DELETE)
+                                             LIMIT %s)" % self.__DELETE)
                 sql.commit()
                 sql.execute('VACUUM')
 
-    def add(self, name, duration, popularity,
-            ltime, mtime, loved_album, album_popularity):
+    def add(self, name, duration, popularity, rate,
+            ltime, mtime, loved_album, album_popularity, album_rate):
         """
             Add a radio, update url if radio already exists in db
             @param name as str
             @param duration as int
             @param popularity as int
+            @param rate as int
             @param ltime as int
             @param mtime as int
             @param loved album as bool
             @param album_popularity as int
+            @param album_rate as int
             @thread safe
         """
         with SqlCursor(self) as sql:
             if self.exists(name, duration):
                 sql.execute("UPDATE history\
-                             SET popularity=?,ltime=?,\
-                             mtime=?,loved_album=?,album_popularity=?\
+                             SET popularity=?,rate=?,ltime=?,mtime=?,\
+                             loved_album=?,album_popularity=?,album_rate=?\
                              WHERE name=? AND duration=?",
-                            (popularity, ltime, mtime, loved_album,
-                             album_popularity, name, duration))
+                            (popularity, rate, ltime, mtime, loved_album,
+                             album_popularity, album_rate, name, duration))
             else:
                 sql.execute("INSERT INTO history\
-                             (name, duration, popularity, ltime,\
-                              mtime, loved_album, album_popularity)\
+                             (name, duration, popularity, rate, ltime, mtime,\
+                             loved_album, album_popularity, album_rate)\
                              VALUES (?, ?, ?, ?, ?, ?, ?)",
-                            (name, duration, popularity, loved_album,
-                             ltime, mtime, album_popularity))
+                            (name, duration, popularity, rate, loved_album,
+                             ltime, mtime, album_popularity, album_rate))
             sql.commit()
 
     def get(self, name, duration):
@@ -101,8 +105,8 @@ class History:
              as (int, int, int, int, int, int)
         """
         with SqlCursor(self) as sql:
-            result = sql.execute("SELECT popularity, ltime,\
-                                  mtime, loved_album, album_popularity\
+            result = sql.execute("SELECT popularity, rate, ltime, mtime,\
+                                  loved_album, album_popularity, album_rate\
                                   FROM history\
                                   WHERE name=?\
                                   AND duration=?",
