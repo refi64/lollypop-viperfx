@@ -569,7 +569,11 @@ class Container:
                 if not is_compilation:
                     albums += Lp().albums.get_ids()
             elif genre_ids and genre_ids[0] == Type.POPULARS:
-                albums = Lp().albums.get_populars()
+                albums = Lp().albums.get_rated()
+                count = 100 - len(albums)
+                for album in Lp().albums.get_populars(count):
+                    if album not in albums:
+                        albums.append(album)
             elif genre_ids and genre_ids[0] == Type.LOVED:
                 albums = Lp().albums.get_loves()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
@@ -603,7 +607,9 @@ class Container:
             track_ids = []
             for playlist_id in playlist_ids:
                 if playlist_id == Type.POPULARS:
-                    tracks = Lp().tracks.get_populars()
+                    tracks = Lp().tracks.get_rated()
+                    for track in Lp().tracks.get_populars():
+                        tracks.append(track)
                 elif playlist_id == Type.RECENTS:
                     tracks = Lp().tracks.get_recently_listened_to()
                 elif playlist_id == Type.NEVER:

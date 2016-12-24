@@ -467,9 +467,29 @@ class AlbumsDatabase:
                 return v[0]
             return 1
 
-    def get_populars(self):
+    def get_rated(self, limit=100):
+        """
+            Get albums with user rating >= 4
+            @param limit as int
+            @return array of album ids as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            filters = (Type.CHARTS, )
+            request = "SELECT DISTINCT albums.rowid\
+                       FROM albums, album_genres\
+                       WHERE album_genres.genre_id!=?\
+                       AND rate>=4\
+                       AND album_genres.album_id=albums.rowid"
+            if not get_network_available():
+                request += " AND albums.synced!=%s" % Type.NONE
+            request += " ORDER BY popularity DESC LIMIT %s" % limit
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result))
+
+    def get_populars(self, limit=100):
         """
             Get albums ids with popularity
+            @param limit as int
             @return array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
@@ -481,7 +501,7 @@ class AlbumsDatabase:
                        AND album_genres.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY popularity DESC LIMIT 100"
+            request += " ORDER BY popularity DESC LIMIT %s" % limit
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 

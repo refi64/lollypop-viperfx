@@ -440,15 +440,30 @@ class TracksDatabase:
                                  (artist_id, Type.CHARTS))
             return list(result)
 
-    def get_populars(self):
+    def get_rated(self, limit=100):
         """
-            Return most listened to tracks
+            Return tracks with rate >= 4
+            @param limit as int
+            @return tracks as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE rate >= 4\
+                                  ORDER BY popularity DESC LIMIT ?",
+                                 (limit,))
+            return list(itertools.chain(*result))
+
+    def get_populars(self, limit=100):
+        """
+            Return populars tracks
+            @param limit as int
             @return tracks as [int]
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE popularity!=0\
-                                  ORDER BY popularity DESC LIMIT 100")
+                                  ORDER BY popularity DESC LIMIT ?",
+                                 (limit,))
             return list(itertools.chain(*result))
 
     def get_avg_popularity(self):
