@@ -75,7 +75,7 @@ class WebJmg90:
             artist = item.artists[0]
         unescaped = "%s %s" % (artist,
                                item.name)
-        search = Lio.uri_escape_string(unescaped.strip('/'),
+        search = Lio.uri_escape_string(unescaped.replace('/', ' '),
                                        '?',
                                        True)
         try:
