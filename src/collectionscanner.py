@@ -349,14 +349,16 @@ class CollectionScanner(GObject.GObject, TagReader):
         album_artist_ids = Lp().albums.get_artist_ids(album_id)
         artist_ids = Lp().tracks.get_artist_ids(track_id)
         popularity = Lp().tracks.get_popularity(track_id)
+        rate = Lp().tracks.get_rate(track_id)
         ltime = Lp().tracks.get_ltime(track_id)
         mtime = Lp().albums.get_mtime(album_id)
         duration = Lp().tracks.get_duration(track_id)
         album_popularity = Lp().albums.get_popularity(album_id)
+        album_rate = Lp().albums.get_rate(album_id)
         loved = Lp().albums.get_loved(album_id)
         uri = Lp().tracks.get_uri(track_id)
-        self.__history.add(name, duration, popularity,
-                           ltime, mtime, loved, album_popularity)
+        self.__history.add(name, duration, popularity, rate,
+                           ltime, mtime, loved, album_popularity, album_rate)
         Lp().playlists.remove(uri)
         Lp().tracks.remove(track_id)
         Lp().tracks.clean(track_id)
