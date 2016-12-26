@@ -86,6 +86,14 @@ class SearchRow(Gtk.ListBoxRow):
         return self.__name.get_text()
 
     @property
+    def year(self):
+        """
+            Get year
+            @return int
+        """
+        return self.__item.year
+
+    @property
     def artist_ids(self):
         """
             Return row artist ids
@@ -416,6 +424,12 @@ class SearchPopover(Gtk.Popover):
                 artists.append(Lp().artists.get_name(artist_id))
 
         for item in self.__current_search.split():
+            try:
+                year = int(item)
+                if year == int(row.year):
+                    score += 2
+            except:
+                pass
             for artist in artists:
                 if noaccents(artist.lower()).find(
                                                 noaccents(item).lower()) != -1:

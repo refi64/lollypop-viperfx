@@ -88,6 +88,7 @@ class LocalSearch(GObject.GObject):
                 added_album_ids.append(album_id)
                 search_item.is_track = False
                 search_item.artist_ids = [artist_id]
+                search_item.year = Lp().albums.get_year(album_id)
                 self._items.append(search_item)
                 GLib.idle_add(self.emit, 'item-found')
 
@@ -107,6 +108,7 @@ class LocalSearch(GObject.GObject):
                 added_album_ids.append(album_id)
                 search_item.is_track = False
                 search_item.artist_ids = Lp().albums.get_artist_ids(album_id)
+                search_item.year = Lp().albums.get_year(album_id)
                 self._items.append(search_item)
                 GLib.idle_add(self.emit, 'item-found')
 
