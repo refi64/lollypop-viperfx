@@ -91,7 +91,12 @@ class LocalSearch(GObject.GObject):
                 self._items.append(search_item)
                 GLib.idle_add(self.emit, 'item-found')
 
-            albums = Lp().albums.search(item)
+            try:
+                year = int(item)
+                albums = Lp().albums.get_by_year(year)
+            except:
+                albums = []
+            albums += Lp().albums.search(item)
             for album_id in albums:
                 if self.__stop:
                     return

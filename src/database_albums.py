@@ -221,6 +221,23 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
+    def get_by_year(self, year):
+        """
+            Get albums with year
+            @param year as str
+        """
+        with SqlCursor(Lp().db) as sql:
+            filters = (Type.CHARTS, year)
+            request = "SELECT DISTINCT albums.rowid\
+                       FROM albums, album_genres\
+                       WHERE album_genres.genre_id!=?\
+                       AND year=?\
+                       AND album_genres.album_id=albums.rowid"
+            if not get_network_available():
+                request += " AND albums.synced!=%s" % Type.NONE
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result))
+
     def get_rate(self, album_id):
         """
             Get album rate
