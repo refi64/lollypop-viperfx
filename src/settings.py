@@ -93,13 +93,13 @@ class SettingsDialog:
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
+        self.__progress = builder.get_object('progress')
+        self.__infobar = builder.get_object('infobar')
+        self.__reset_button = builder.get_object('reset_button')
         if Lp().lastfm is None or Lp().lastfm.is_goa:
             builder.get_object('lastfm_grid').hide()
         if Lp().scanner.is_locked():
             builder.get_object('button').set_sensitive(False)
-        builder.get_object('button').connect('clicked',
-                                             self.__on_reset_clicked,
-                                             builder.get_object('progress'))
         artists = Lp().artists.count()
         albums = Lp().albums.count()
         tracks = Lp().tracks.count()
@@ -550,6 +550,46 @@ class SettingsDialog:
         """
         self.__popover.hide()
 
+    def _on_response(self, infobar, response_id):
+        """
+            Hide infobar
+            @param widget as Gtk.Infobar
+            @param reponse id as int
+        """
+        if response_id == Gtk.ResponseType.CLOSE:
+            infobar.hide()
+
+    def _on_confirm_button_clicked(self, button):
+        """
+            Reset database
+            @param button as Gtk.Button
+        """
+        try:
+            Lp().player.stop()
+            Lp().player.reset_pcn()
+            Lp().player.emit('current-changed')
+            Lp().player.emit('prev-changed')
+            Lp().player.emit('next-changed')
+            Lp().cursors = {}
+            track_ids = Lp().tracks.get_ids()
+            self.__progress.show()
+            history = History()
+            self.__reset_button.get_toplevel().set_deletable(False)
+            self.__reset_button.set_sensitive(False)
+            self.__infobar.hide()
+            self.__reset_database(track_ids, len(track_ids), history)
+        except Exception as e:
+            print("Application::_on_confirm_button_clicked():", e)
+
+    def _on_reset_button_clicked(self, widget):
+        """
+            Show infobar
+            @param widget as Gtk.Widget
+        """
+        self.__infobar.show()
+        # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+        self.__infobar.queue_resize()
+
 #######################
 # PRIVATE             #
 #######################
@@ -709,13 +749,12 @@ class SettingsDialog:
         except:
             pass
 
-    def ___reset_database(self, track_ids, count, history, progress):
+    def __reset_database(self, track_ids, count, history):
         """
             Backup database and reset
             @param track ids as [int]
             @param count as int
             @param history as History
-            @param progress as Gtk.ProgressBar
         """
         if track_ids:
             track_id = track_ids.pop(0)
@@ -733,40 +772,17 @@ class SettingsDialog:
             album_rate = Lp().albums.get_rate(album_id)
             history.add(name, duration, popularity, rate,
                         ltime, mtime, loved, album_popularity, album_rate)
-            progress.set_fraction((count - len(track_ids))/count)
-            GLib.idle_add(self.___reset_database, track_ids,
-                          count, history, progress)
+            self.__progress.set_fraction((count - len(track_ids))/count)
+            GLib.idle_add(self.__reset_database, track_ids,
+                          count, history)
         else:
-            progress.hide()
+            self.__progress.hide()
             Lp().player.stop()
             Lp().db.drop_db()
             Lp().db = Database()
             Lp().window.show_genres(Lp().settings.get_value('show-genres'))
             Lp().window.update_db()
-            progress.get_toplevel().set_deletable(True)
-
-    def __on_reset_clicked(self, widget, progress):
-        """
-            Reset database
-            @param widget as Gtk.Widget
-            @param progress as Gtk.ProgressBar
-        """
-        try:
-            Lp().player.stop()
-            Lp().player.reset_pcn()
-            Lp().player.emit('current-changed')
-            Lp().player.emit('prev-changed')
-            Lp().player.emit('next-changed')
-            Lp().cursors = {}
-            track_ids = Lp().tracks.get_ids()
-            progress.show()
-            history = History()
-            widget.get_toplevel().set_deletable(False)
-            widget.set_sensitive(False)
-            self.___reset_database(track_ids, len(track_ids),
-                                   history, progress)
-        except Exception as e:
-            print("Application::_on_reset_clicked():", e)
+            self.__progress.get_toplevel().set_deletable(True)
 
 
 class ChooserWidget(Gtk.Grid):
