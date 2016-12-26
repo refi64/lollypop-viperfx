@@ -159,7 +159,7 @@ class Web(GObject.Object):
             album_artist_ids = t.add_album_artists(album_artist, "")
             (album_id, new_album) = t.add_album(item.album,
                                                 album_artist_ids, "",
-                                                False, 0, int(time()), True)
+                                                False, 0, 0, int(time()), True)
             # FIXME: Check this, could move this in add_album()
             if new_album:
                 Lp().albums.set_synced(album_id, Type.NONE)
