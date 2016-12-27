@@ -62,8 +62,8 @@ class RatingWidget(Gtk.Bin):
                 star.set_opacity(0.2)
                 star.get_style_context().remove_class('selected')
             else:
-                star.set_opacity(0.8)
                 star.get_style_context().add_class('selected')
+                star.set_opacity(0.8)
             if star == event_star:
                 found = True
 
