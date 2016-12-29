@@ -50,6 +50,22 @@ class ShufflePlayer(BasePlayer):
         self._user_playlist = []
         self._user_playlist_ids = []
 
+    @property
+    def shuffle_has_next(self):
+        """
+            True if history provide a next track
+            @return bool
+        """
+        return self.__history and self.__history.has_next()
+
+    @property
+    def shuffle_has_prev(self):
+        """
+            True if history provide a prev track
+            @return bool
+        """
+        return self.__history and self.__history.has_prev()
+
     def next(self):
         """
             Next shuffle track
@@ -57,7 +73,7 @@ class ShufflePlayer(BasePlayer):
         """
         track_id = None
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
-            if self.__history and self.__history.has_next():
+            if self.shuffle_has_next:
                 track_id = self.__history.get_next().get_value()
             elif self._albums:
                 track_id = self.__shuffle_next()
@@ -72,7 +88,7 @@ class ShufflePlayer(BasePlayer):
         """
         track_id = None
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
-            if self.__history and self.__history.has_prev():
+            if self.shuffle_has_prev:
                 track_id = self.__history.get_prev().get_value()
             else:
                 track_id = self._current_track.id

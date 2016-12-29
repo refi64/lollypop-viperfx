@@ -548,7 +548,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.track_in_queue(self._current_track):
             self.del_from_queue(self._current_track.id)
         else:
-            if not self.__do_not_update_next:
+            if self.shuffle_has_next or not self.__do_not_update_next:
                 self.set_next()
             self.__do_not_update_next = False
             self.set_prev()
