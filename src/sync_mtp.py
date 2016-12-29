@@ -77,6 +77,7 @@ class MtpSync:
         try:
             self.__in_thread = True
             self.__convert = convert
+            self.__quality = Lp().settings.get_value('mp3-quality') 
             self.__normalize = normalize
             self.__errors = False
             self.__errors_count = 0
@@ -475,15 +476,15 @@ class MtpSync:
                                         ! audioconvert\
                                         ! rgvolume pre-amp=6.0 headroom=10.0\
                                         ! rglimiter ! audioconvert\
-                                        ! lamemp3enc ! id3v2mux\
+                                        ! lamemp3enc target=quality quality=%s ! id3v2mux\
                                         ! filesink location="%s"'
-                                        % (src_path, dst_path))
+                                        % (src_path, self.__quality, dst_path))
             else:
                 pipeline = Gst.parse_launch(
                                         'filesrc location="%s" ! decodebin\
-                                        ! audioconvert ! lamemp3enc ! id3v2mux\
+                                        ! audioconvert ! lamemp3enc target=quality quality=%s ! id3v2mux\
                                         ! filesink location="%s"'
-                                        % (src_path, dst_path))
+                                        % (src_path, self.__quality, dst_path))
             pipeline.set_state(Gst.State.PLAYING)
             return pipeline
         except Exception as e:
