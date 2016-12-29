@@ -228,10 +228,10 @@ class ArtworkSearch(Gtk.Bin):
             searches.append(self.__artist)
         return searches
 
-    def __populate(self, search=""):
+    def __populate(self, current_search=""):
         """
             Same as populate
-            @param search as str
+            @param current search as str
             @thread safe
         """
         urls = []
@@ -239,20 +239,19 @@ class ArtworkSearch(Gtk.Bin):
             for search in self.__get_current_searches():
                 urls += Lp().art.get_google_arts(search)
             if urls:
-                self.__add_pixbufs(urls, search)
+                self.__add_pixbufs(urls, current_search)
             else:
-                self.__fallback()
+                self.__fallback(current_search)
         else:
             GLib.idle_add(self._spinner.stop)
 
-    def __add_pixbufs(self, urls, search):
+    def __add_pixbufs(self, urls, current_search):
         """
             Add urls to the view
             @param urls as [string]
-            @param search as str
-            @param duck api start as int
+            @param current search as str
         """
-        if search != self._entry.get_text():
+        if current_search != self._entry.get_text():
             return
         if urls and self.__loading:
             url = urls.pop(0)
@@ -264,13 +263,14 @@ class ArtworkSearch(Gtk.Bin):
             except Exception as e:
                 print("ArtworkSearch::__add_pixbufs: %s" % e)
             if self.__loading:
-                self.__add_pixbufs(urls, search)
+                self.__add_pixbufs(urls, current_search)
         else:
             self._spinner.stop()
 
-    def __fallback(self):
+    def __fallback(self, current_search):
         """
             Fallback google image search, low quality
+            @param current search as str
         """
         try:
             from bs4 import BeautifulSoup
@@ -296,7 +296,7 @@ class ArtworkSearch(Gtk.Bin):
                             pass
         except Exception as e:
             print("ArtworkSearch::__fallback: %s" % e)
-        self.__add_pixbufs(urls, self._entry.get_text())
+        self.__add_pixbufs(urls, current_search)
 
     def __add_pixbuf(self, data):
         """
