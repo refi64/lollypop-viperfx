@@ -238,7 +238,7 @@ class ArtworkSearch(Gtk.Bin):
         if get_network_available():
             for search in self.__get_current_searches():
                 urls += Lp().art.get_google_arts(search)
-            if not urls:
+            if urls:
                 self.__add_pixbufs(urls, search)
             else:
                 self.__fallback()
