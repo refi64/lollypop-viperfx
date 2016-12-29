@@ -12,9 +12,14 @@
 
 from gi.repository import Gio, GObject
 
-from urllib.request import urlretrieve
+import urllib.request
 from urllib.parse import quote
 from uuid import uuid4
+
+
+class AppURLopener(urllib.request.URLopener):
+    version = "Mozilla/5.0 (X11; Linux x86_64;rv:10.0)"\
+              " Gecko/20100101 Firefox/10.0"
 
 
 class CancelException(Exception):
@@ -31,11 +36,6 @@ class Lio:
         """
             Workaround https://bugzilla.gnome.org/show_bug.cgi?id=775600
         """
-
-        def __init__(self):
-            GObject.Object.__init__(self)
-            self.__cancel = None
-
         def new_for_uri(uri):
             f = Gio.File.new_for_uri(uri)
             f.__class__ = Lio.File
@@ -48,7 +48,9 @@ class Lio:
                 uri = self.get_uri()
                 if uri.startswith("http"):
                     tmp_path = "/tmp/lollypop_" + str(uuid4())
-                    urlretrieve(uri, tmp_path, reporthook=self.__check_cancel)
+                    opener = AppURLopener()
+                    opener.retrieve(uri, tmp_path,
+                                    reporthook=self.__check_cancel)
                     f = Gio.File.new_for_path(tmp_path)
                     (s, data, t) = f.load_contents(cancellable)
                     f.delete()

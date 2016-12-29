@@ -26,6 +26,8 @@ class ArtworkSearch(Gtk.Bin):
         Search for artwork
     """
 
+    # FIXME: Missing Gio.Cancellable()
+
     def __init__(self, artist_id, album):
         """
             Init search
@@ -74,6 +76,8 @@ class ArtworkSearch(Gtk.Bin):
         self._stack.add_named(builder.get_object('scrolled'), 'main')
         self._stack.set_visible_child_name('main')
         self.add(widget)
+        self._api_entry.set_text(
+                            Lp().settings.get_value('cs-api-key').get_string())
         self.set_size_request(700, 400)
 
     def populate(self):
@@ -102,7 +106,7 @@ class ArtworkSearch(Gtk.Bin):
                     self.__add_pixbuf(data)
                 except Exception as e:
                     print("ArtworkSearch::populate()", e)
-        # Then duckduckgo
+        # Then google
         self.__loading = True
         t = Thread(target=self.__populate)
         t.daemon = True
@@ -206,6 +210,24 @@ class ArtworkSearch(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def __get_current_searches(self):
+        """
+            Return current searches
+            @return [str]
+        """
+        searches = []
+        if self._entry.get_text() != "":
+            searches = [self._entry.get_text()]
+        elif self.__album is not None:
+            searches = ["%s+%s" % (self.__artist, self.__album.name)]
+        elif self.__artist_id is not None:
+            for album_id in Lp().artists.get_albums([self.__artist_id]):
+                for genre_id in Lp().albums.get_genre_ids(album_id):
+                    genre = Lp().genres.get_name(genre_id)
+                    searches.append("%s+%s" % (self.__artist, genre))
+            searches.append(self.__artist)
+        return searches
+
     def __populate(self, search=""):
         """
             Same as populate
@@ -214,24 +236,12 @@ class ArtworkSearch(Gtk.Bin):
         """
         urls = []
         if get_network_available():
-            if search != "":
-                urls = Lp().art.get_google_arts(search)
-            elif self.__album is not None:
-                urls = Lp().art.get_google_arts("%s+%s" % (
-                                               self.__artist,
-                                               self.__album.name))
-            elif self.__artist_id is not None:
-                for album_id in Lp().artists.get_albums([self.__artist_id]):
-                    for genre_id in Lp().albums.get_genre_ids(album_id):
-                        genre = Lp().genres.get_name(genre_id)
-                        urls += Lp().art.get_google_arts("%s+%s" % (
-                                                                 self.__artist,
-                                                                 genre))
-                urls += Lp().art.get_google_arts(self.__artist)
-            if urls:
+            for search in self.__get_current_searches():
+                urls += Lp().art.get_google_arts(search)
+            if not urls:
                 self.__add_pixbufs(urls, search)
             else:
-                GLib.idle_add(self.__show_not_found)
+                self.__fallback()
         else:
             GLib.idle_add(self._spinner.stop)
 
@@ -258,14 +268,35 @@ class ArtworkSearch(Gtk.Bin):
         else:
             self._spinner.stop()
 
-    def __show_not_found(self):
+    def __fallback(self):
         """
-            Show not found message
+            Fallback google image search, low quality
         """
-        self._popover.show()
-        self._api_entry.set_text(
-                            Lp().settings.get_value('cs-api-key').get_string())
-        self._spinner.stop()
+        try:
+            from bs4 import BeautifulSoup
+        except:
+            print("$ sudo pip3 install beautifulsoup4")
+            return
+        urls = []
+        GLib.idle_add(self._label.set_text,
+                      _("Low quality, missing API key..."))
+        try:
+            for search in self.__get_current_searches():
+                url = "https://www.google.fr/search?q=%s&tbm=isch" %\
+                    Lio.uri_escape_string(search, None, True)
+                f = Lio.File.new_for_uri(url)
+                (status, data, tag) = f.load_contents()
+                if status:
+                    html = data.decode('utf-8')
+                    soup = BeautifulSoup(html, 'html.parser')
+                    for link in soup.findAll('img'):
+                        try:
+                            urls.append(link.attrs['data-src'])
+                        except:
+                            pass
+        except Exception as e:
+            print("ArtworkSearch::__fallback: %s" % e)
+        self.__add_pixbufs(urls, self._entry.get_text())
 
     def __add_pixbuf(self, data):
         """
