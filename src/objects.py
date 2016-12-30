@@ -349,10 +349,11 @@ class Track(Base):
             if self.album.artist_ids and\
                     self.album.artist_ids[0] == Type.COMPILATIONS:
                 self._non_album_artists = self.artists
-            # Show only non album artist for albums (and only if one)
-            elif len(self.artists) > 1:
+            else:
+                lower_album_artists = map(lambda x: x.lower(),
+                                          self.album_artists)
                 for artist in self.artists:
-                    if artist not in self.album_artists:
+                    if artist.lower() not in lower_album_artists:
                         self._non_album_artists.append(artist)
         return self._non_album_artists
 
