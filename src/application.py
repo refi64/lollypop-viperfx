@@ -350,7 +350,7 @@ class Application(Gtk.Application):
             value = options.lookup_value('set-rating').get_int32()
             if value > 0 and value < 6 and\
                     self.player.current_track.id is not None:
-                self.player.current_track.set_popularity(value)
+                self.player.current_track.set_rate(value)
         if options.contains('play-pause'):
             self.player.play_pause()
         elif options.contains('play-ids'):
