@@ -105,7 +105,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @return (int, int)
         """
         # Padding: 3px, border: 1px + spacing
-        width = ArtSize.BIG + 12
+        width = ArtSize.BIG + 14
         return (width, width)
 
 #######################
