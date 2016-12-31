@@ -99,7 +99,7 @@ class SettingsDialog:
         if Lp().lastfm is None or Lp().lastfm.is_goa:
             builder.get_object('lastfm_grid').hide()
         if Lp().scanner.is_locked():
-            builder.get_object('button').set_sensitive(False)
+            builder.get_object('reset_button').set_sensitive(False)
         artists = Lp().artists.count()
         albums = Lp().albums.count()
         tracks = Lp().tracks.count()
