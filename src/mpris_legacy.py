@@ -183,8 +183,10 @@ class MPRIS(dbus.service.Object):
             self._metadata['xesam:genre'] = Lp().player.current_track.genres\
                 or "Web"
             self._metadata['xesam:url'] = Lp().player.current_track.uri
-            self._metadata["xesam:userRating"] = \
-                Lp().player.current_track.get_popularity() / 5
+            rate = Lp().player.current_track.get_rate()
+            if rate == Type.NONE:
+                rate = Lp().player.current_track.get_popularity()
+            self._metadata["xesam:userRating"] = GLib.Variant('d', rate / 5)
             if Lp().player.current_track.id == Type.RADIOS:
                 cover_path = Lp().art.get_radio_cache_path(
                      ", ".join(Lp().player.current_track.artists),

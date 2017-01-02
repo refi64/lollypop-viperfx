@@ -351,9 +351,10 @@ class MPRIS(Server):
             self.__metadata['xesam:url'] = GLib.Variant(
                                                  's',
                                                  Lp().player.current_track.uri)
-            self.__metadata["xesam:userRating"] = GLib.Variant(
-                                'd',
-                                Lp().player.current_track.get_popularity() / 5)
+            rate = Lp().player.current_track.get_rate()
+            if rate == Type.NONE:
+                rate = Lp().player.current_track.get_popularity()
+            self.__metadata["xesam:userRating"] = GLib.Variant('d', rate / 5)
             if Lp().player.current_track.id == Type.RADIOS:
                 cover_path = Lp().art.get_radio_cache_path(
                      ", ".join(Lp().player.current_track.artists),
