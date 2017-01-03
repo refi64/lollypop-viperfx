@@ -153,6 +153,8 @@ class RatingWidget(Gtk.Bin):
             self.__object.set_rate(pop)
         else:
             self.__object.set_popularity(pop)
+        if isinstance(self.__object, Track):
+            Lp().player.emit('rate-changed')
         # Save to tags if needed
         if Lp().settings.get_value('save-to-tags') and\
                 GLib.find_program_in_path("kid3-cli") is not None and\

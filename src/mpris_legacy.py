@@ -35,6 +35,7 @@ class MPRIS(dbus.service.Object):
         self._app = app
         self._metadata = {}
         Lp().player.connect('current-changed', self._on_current_changed)
+        Lp().player.connect('rate-changed', self._on_current_changed)
         Lp().player.connect('seeked', self._on_seeked)
         Lp().player.connect('status-changed', self._on_status_changed)
         Lp().player.connect('volume-changed', self._on_volume_changed)

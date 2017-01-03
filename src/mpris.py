@@ -170,6 +170,7 @@ class MPRIS(Server):
                                        None)
         Server.__init__(self, self.__bus, self.__MPRIS_PATH)
         Lp().player.connect('current-changed', self.__on_current_changed)
+        Lp().player.connect('rate-changed', self.__on_current_changed)
         Lp().player.connect('seeked', self.__on_seeked)
         Lp().player.connect('status-changed', self.__on_status_changed)
         Lp().player.connect('volume-changed', self.__on_volume_changed)

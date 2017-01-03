@@ -33,6 +33,7 @@ class BasePlayer(GObject.GObject):
         'loading-changed': (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'duration-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'rate-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'party-changed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
