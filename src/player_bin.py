@@ -611,9 +611,15 @@ class BinPlayer(BasePlayer):
                 pop_to_add = 1
             # In normal mode, based on tracks count
             else:
-                pop_to_add = int(Lp().albums.max_count /
-                                 Lp().albums.get_tracks_count(
-                                                 self._current_track.album_id))
+                # Some users report an issue where get_tracks_count() return 0
+                # See issue #886
+                # Don't understand how this can happen!
+                count = Lp().albums.get_tracks_count(
+                                                 self._current_track.album_id)
+                if count:
+                    pop_to_add = int(Lp().albums.max_count / count)
+                else:
+                    pop_to_add = 1
             Lp().albums.set_more_popular(self._current_track.album_id,
                                          pop_to_add)
         if self._next_track.id is not None:
