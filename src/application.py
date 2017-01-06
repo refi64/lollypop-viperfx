@@ -266,6 +266,7 @@ class Application(Gtk.Application):
         self.player.stop_all()
         if self.window:
             self.window.stop_all()
+        self.charts.stop()
         self.quit()
 
     def quit(self):
