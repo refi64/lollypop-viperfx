@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Pango
+from gi.repository import Gtk, GLib, Gio, GObject, Pango
 
 from gettext import gettext as _
 from threading import Thread
@@ -280,19 +280,29 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 #######################
 # PRIVATE             #
 #######################
-    def __append_playlists(self, playlists):
+    def __append_playlists(self, playlists, files_list=[]):
         """
             Append a playlist
             @param playlists as [(int, str)]
+            @internal files_list
         """
         if playlists and not self.__stop:
+            # Cache directory playlists
+            if not files_list:
+                d = Lio.File.new_for_uri(self._uri)
+                infos = d.enumerate_children('standard::name,standard::type',
+                                             Gio.FileQueryInfoFlags.NONE,
+                                             None)
+                for info in infos:
+                    if info.get_file_type() != Gio.FileType.DIRECTORY:
+                        f = infos.get_child(info)
+                        if f.get_uri().endswith(".m3u"):
+                            files_list.append(
+                                          GLib.path_get_basename(f.get_path()))
             playlist = playlists.pop(0)
-            playlist_name = GLib.uri_escape_string(playlist[1], "", False)
-            playlist_obj = Lio.File.new_for_uri(self._uri + "/" +
-                                                playlist_name + '.m3u')
-            selected = playlist_obj.query_exists()
+            selected = playlist[1] + ".m3u" in files_list
             self.__model.append([selected, playlist[1], playlist[0]])
-            GLib.idle_add(self.__append_playlists, playlists)
+            GLib.idle_add(self.__append_playlists, playlists, files_list)
 
     def __append_albums(self, albums):
         """
