@@ -63,8 +63,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self.__menu = builder.get_object('menu')
 
         self.__model = Gtk.ListStore(bool, str, int)
-        self.__model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        self.__model.set_sort_func(1, self.__sort_items)
 
         self.__view = builder.get_object('view')
         self.__view.set_model(self.__model)
@@ -282,14 +280,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 #######################
 # PRIVATE             #
 #######################
-    def __sort_items(self, model, itera, iterb, data):
-        """
-            Sort model
-        """
-        a = model.get_value(itera, 1)
-        b = model.get_value(iterb, 1)
-        return a.lower() > b.lower()
-
     def __append_playlists(self, playlists):
         """
             Append a playlist
