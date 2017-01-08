@@ -1,6 +1,6 @@
 {
     "app-id": "org.gnome.Lollypop",
-    "branch": "0.9.222",
+    "branch": "0.9.224",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.22",
     "sdk": "org.gnome.Sdk",
@@ -138,8 +138,8 @@
       "no-autogen": true,
       "sources": [{
           "type": "archive",
-          "url": "file:///tmp/lollypop-0.9.223.tar.xz",
-          "sha256": "b5f61398148771f9fbf0074c82972c0dc9bb884e09e97b8cd81d7b0b9f509664"
+          "url": "file:///home/gnumdk/Dev/rpmbuild/SOURCES/lollypop-0.9.224.tar.xz",
+          "sha256": "11b598453c4b508a5bd52aecc9f4c416bd0c2f2b7dc796a02da086eb462bac74"
         }]
     }]
 }
