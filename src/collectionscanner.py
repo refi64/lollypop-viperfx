@@ -359,7 +359,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         uri = Lp().tracks.get_uri(track_id)
         self.__history.add(name, duration, popularity, rate,
                            ltime, mtime, loved, album_popularity, album_rate)
-        Lp().playlists.remove(uri)
         Lp().tracks.remove(track_id)
         Lp().tracks.clean(track_id)
         deleted = Lp().albums.clean(album_id)
