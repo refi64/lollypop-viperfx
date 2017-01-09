@@ -187,8 +187,17 @@ class AlbumsDatabase:
             Get synced album ids
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM albums\
-                                  WHERE synced=1")
+            request = "SELECT albums.rowid\
+                       FROM albums, artists, album_artists\
+                       WHERE album_artists.album_id = albums.rowid\
+                       AND album_artists.artist_id = artists.rowid\
+                       AND synced=1"
+            order = " ORDER BY artists.sortname\
+                     COLLATE NOCASE COLLATE LOCALIZED,\
+                     albums.year,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+            result = sql.execute(request + order)
             return list(itertools.chain(*result))
 
     def get_synced(self, album_id):
