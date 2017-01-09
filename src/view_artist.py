@@ -191,7 +191,7 @@ class ArtistView(ArtistAlbumsView):
                     album = Album(album_id)
                     # If playing and no albums, play it
                     if not Lp().player.has_album(album):
-                        if Lp().player.is_playing() and\
+                        if Lp().player.is_playing and\
                                 not Lp().player.get_albums():
                             Lp().player.play_album(album)
                         else:

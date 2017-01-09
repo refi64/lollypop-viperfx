@@ -249,6 +249,8 @@ class Application(Gtk.Application):
                 except Exception as e:
                     print("Application::prepare_to_exit()", e)
             dump(track_id, open(DataPath + "/track_id.bin", "wb"))
+            dump([self.player.is_playing, self.player.is_party],
+                 open(DataPath + "/player.bin", "wb"))
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]

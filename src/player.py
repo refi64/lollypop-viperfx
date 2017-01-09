@@ -369,6 +369,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 track_id = load(open(DataPath + "/track_id.bin", "rb"))
                 playlist_ids = load(open(DataPath + "/playlist_ids.bin",
                                     "rb"))
+                (is_playing, was_party) = load(open(DataPath + "/player.bin",
+                                                    "rb"))
                 if playlist_ids and playlist_ids[0] == Type.RADIOS:
                     radios = Radios()
                     track = Track()
@@ -407,18 +409,25 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                             self.populate_user_playlist_by_tracks(track_ids,
                                                                   pids)
                     else:
-                        self._albums = load(open(
-                                            DataPath + "/albums.bin",
-                                            "rb"))
-                        self.shuffle_albums(True)
-                        self._context.genre_ids = load(open(
-                                            DataPath + "/genre_ids.bin",
-                                            "rb"))
-                        self._context.artist_ids = load(open(
-                                            DataPath + "/artist_ids.bin",
-                                            "rb"))
+                        if was_party:
+                            self.emit('party-changed', True)
+                        else:
+                            self._albums = load(open(
+                                                DataPath + "/albums.bin",
+                                                "rb"))
+                            self.shuffle_albums(True)
+                            self._context.genre_ids = load(open(
+                                                DataPath + "/genre_ids.bin",
+                                                "rb"))
+                            self._context.artist_ids = load(open(
+                                                DataPath + "/artist_ids.bin",
+                                                "rb"))
                     self.set_next()
                     self.set_prev()
+                    if is_playing:
+                        self.play()
+                    else:
+                        self.pause()
                 else:
                     print("Player::restore_state(): track missing")
         except Exception as e:

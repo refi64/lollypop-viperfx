@@ -86,19 +86,6 @@ class BinPlayer(BasePlayer):
                 pulse.set_property('device', output)
                 self.__preview.set_property('audio-sink', pulse)
 
-    def is_playing(self):
-        """
-            True if player is playing
-            @return bool
-        """
-        ok, state, pending = self._playbin.get_state(Gst.CLOCK_TIME_NONE)
-        if ok == Gst.StateChangeReturn.ASYNC:
-            return pending == Gst.State.PLAYING
-        elif ok == Gst.StateChangeReturn.SUCCESS:
-            return state == Gst.State.PLAYING
-        else:
-            return False
-
     def get_status(self):
         """
             Playback status
@@ -118,7 +105,7 @@ class BinPlayer(BasePlayer):
         """
         if self._crossfading and\
            self._current_track.id is not None and\
-           self.is_playing() and\
+           self.is_playing and\
            self._current_track.id != Type.RADIOS:
             duration = Lp().settings.get_value('mix-duration').get_int32()
             self.__do_crossfade(duration, track, False)
@@ -167,7 +154,7 @@ class BinPlayer(BasePlayer):
             Set playing if paused
             Set paused if playing
         """
-        if self.is_playing():
+        if self.is_playing:
             self.pause()
         else:
             self.play()
@@ -189,6 +176,20 @@ class BinPlayer(BasePlayer):
                                       Gst.SeekFlags.KEY_UNIT,
                                       position * Gst.SECOND)
             self.emit("seeked", position)
+
+    @property
+    def is_playing(self):
+        """
+            True if player is playing
+            @return bool
+        """
+        ok, state, pending = self._playbin.get_state(Gst.CLOCK_TIME_NONE)
+        if ok == Gst.StateChangeReturn.ASYNC:
+            return pending == Gst.State.PLAYING
+        elif ok == Gst.StateChangeReturn.SUCCESS:
+            return state == Gst.State.PLAYING
+        else:
+            return False
 
     @property
     def position(self):
@@ -363,7 +364,7 @@ class BinPlayer(BasePlayer):
             @param track as Track
             @param init volume as bool
         """
-        was_playing = self.is_playing()
+        was_playing = self.is_playing
         self._playbin.set_state(Gst.State.NULL)
         if self._load_track(track, init_volume):
             if was_playing:
@@ -483,7 +484,7 @@ class BinPlayer(BasePlayer):
         if playback == NextContext.STOP:
             if not self._albums or playback == self._next_context:
                 stop = True
-        return stop and self.is_playing()
+        return stop and self.is_playing
 
     def __on_volume_changed(self, playbin, sink):
         """

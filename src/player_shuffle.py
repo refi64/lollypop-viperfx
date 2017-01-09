@@ -139,7 +139,7 @@ class ShufflePlayer(BasePlayer):
                     and self._albums:
                 track_id = self.__get_random()
                 self.load(Track(track_id))
-            elif not self.is_playing():
+            elif not self.is_playing:
                 self.play()
         else:
             self._albums = albums_backup

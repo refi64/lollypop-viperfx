@@ -91,7 +91,7 @@ class Inhibitor:
             Disallow suspend on playback
             @param player as Player
         """
-        if player.is_playing():
+        if player.is_playing:
             self.inhibit(Inhibitor.SUSPENDING)
         else:
             self.uninhibit(Inhibitor.SUSPENDING)

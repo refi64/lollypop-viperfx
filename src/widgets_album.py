@@ -268,7 +268,7 @@ class BaseWidget:
                 Lp().player.remove_album(self._album)
             self._show_append(True)
         else:
-            if Lp().player.is_playing() and not Lp().player.get_albums():
+            if Lp().player.is_playing and not Lp().player.get_albums():
                 Lp().player.play_album(self._album)
             else:
                 Lp().player.add_album(self._album)

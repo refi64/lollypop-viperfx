@@ -79,7 +79,7 @@ class PlaybackController:
             Update buttons and progress bar
             @param player as Player
         """
-        if player.is_playing():
+        if player.is_playing:
             self.__change_play_btn_status(self._pause_image, _("Pause"))
         else:
             self.__change_play_btn_status(self._play_image, _("Play"))
@@ -99,7 +99,7 @@ class PlaybackController:
             Play/Pause on play button clicked
             @param button as Gtk.Button
         """
-        if Lp().player.is_playing():
+        if Lp().player.is_playing:
             Lp().player.pause()
             self.__change_play_btn_status(self._play_image, _("Play"))
         else:
@@ -173,7 +173,7 @@ class ProgressController:
             Update buttons and progress bar
             @param player as Player
         """
-        if player.is_playing():
+        if player.is_playing:
             if self.__timeout_id is None:
                 self.__timeout_id = GLib.timeout_add(1000,
                                                      self._update_position)
@@ -276,7 +276,7 @@ class ProgressController:
                     volume = 1.0
                 Lp().player.set_volume(volume)
                 self._update_position(volume)
-            elif Lp().player.is_playing():
+            elif Lp().player.is_playing:
                 position = Lp().player.position
                 if y > 0:
                     seek = position/1000000/60-5

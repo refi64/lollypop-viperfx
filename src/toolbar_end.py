@@ -171,7 +171,7 @@ class ToolbarEnd(Gtk.Bin):
             Update buttons on status changed
             @param player as Player
         """
-        if player.is_playing():
+        if player.is_playing:
             # Party mode can be activated
             # via Fullscreen class, so check button state
             self.__party_button.set_active(player.is_party)
