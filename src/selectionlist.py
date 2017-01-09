@@ -29,9 +29,10 @@ class SelectionList(Gtk.Overlay):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self):
+    def __init__(self, sidebar=True):
         """
             Init Selection list ui
+            @param sidebar as bool
         """
         Gtk.Overlay.__init__(self)
         self.__was_visible = False
@@ -50,6 +51,8 @@ class SelectionList(Gtk.Overlay):
         self.__model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.__model.set_sort_func(0, self.__sort_items)
         self.__view = builder.get_object('view')
+        if sidebar:
+            self.__view.get_style_context().add_class('sidebar')
         self.__view.set_row_separator_func(self.__row_separator_func)
         self.__renderer0 = CellRendererArtist()
         self.__renderer0.set_property('ellipsize-set', True)

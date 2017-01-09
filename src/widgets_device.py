@@ -18,8 +18,10 @@ from threading import Thread
 from lollypop.sync_mtp import MtpSync
 from lollypop.sqlcursor import SqlCursor
 from lollypop.cellrenderer import CellRendererAlbum
+from lollypop.selectionlist import SelectionList
 from lollypop.define import Lp, Type
 from lollypop.objects import Album
+from lollypop.loader import Loader
 from lollypop.lio import Lio
 
 
@@ -47,6 +49,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerWidget.ui')
+        widget = builder.get_object('widget')
         self.__error_label = builder.get_object('error-label')
         self.__switch_albums = builder.get_object('switch_albums')
         self.__switch_albums.set_state(Lp().settings.get_value('sync-albums'))
@@ -64,12 +67,18 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         self.__model = Gtk.ListStore(bool, str, int)
 
+        self.__selection_list = SelectionList(False)
+        self.__selection_list.connect('item-selected',
+                                      self.__on_item_selected)
+        widget.attach(self.__selection_list, 1, 1, 1, 1)
+        self.__selection_list.set_hexpand(True)
+
         self.__view = builder.get_object('view')
         self.__view.set_model(self.__model)
 
         builder.connect_signals(self)
 
-        self.add(builder.get_object('widget'))
+        self.add(widget)
 
         self.__infobar = builder.get_object('infobar')
         self.__infobar_label = builder.get_object('infobarlabel')
@@ -102,17 +111,20 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self.__model.clear()
         self.__stop = False
         if Lp().settings.get_value('sync-albums'):
-            albums = Lp().albums.get_ids()
-            albums += Lp().albums.get_compilation_ids()
-            self.__append_albums(albums)
+            self.__selection_list.clear()
+            self.__setup_list_artists(self.__selection_list)
             self.__column1.set_visible(True)
             self.__column2.set_title(_("Albums"))
+            self.__selection_list.show()
+            albums = Lp().albums.get_synced_ids()
+            self.__append_albums(albums)
         else:
             playlists = [(Type.LOVED, Lp().playlists.LOVED)]
             playlists += Lp().playlists.get()
             self.__append_playlists(playlists)
             self.__column1.set_visible(False)
             self.__column2.set_title(_("Playlists"))
+            self.__selection_list.hide()
 
     def set_uri(self, uri):
         """
@@ -280,6 +292,30 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 #######################
 # PRIVATE             #
 #######################
+    def __setup_list_artists(self, selection_list):
+        """
+            Setup list for artists
+            @param list as SelectionList
+            @thread safe
+        """
+        def load():
+            artists = Lp().artists.get()
+            compilations = Lp().albums.get_compilation_ids()
+            return (artists, compilations)
+
+        def setup(artists, compilations):
+            items = []
+            items.append((Type.ALL, _("Synced albums")))
+            if compilations:
+                items.append((Type.COMPILATIONS, _("Compilations")))
+                items.append((Type.SEPARATOR, ''))
+            items += artists
+            selection_list.mark_as_artists(True)
+            selection_list.populate(items)
+        loader = Loader(target=load, view=selection_list,
+                        on_finished=lambda r: setup(*r))
+        loader.start()
+
     def __append_playlists(self, playlists, files_list=[]):
         """
             Append a playlist
@@ -333,6 +369,20 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         if Lp().settings.get_value('sync-albums'):
             Lp().albums.set_synced(album_id, toggle)
+
+    def __on_item_selected(self, selection_list):
+        """
+            Show album from artist
+            @param selection list as SelectionList
+        """
+        if selection_list.selected_ids[0] == Type.COMPILATIONS:
+            albums = Lp().albums.get_compilation_ids()
+        elif selection_list.selected_ids[0] == Type.ALL:
+            albums = Lp().albums.get_synced_ids()
+        else:
+            albums = Lp().albums.get_ids(selection_list.selected_ids)
+        self.__model.clear()
+        self.__append_albums(albums)
 
     def __on_column0_clicked(self, column):
         """
