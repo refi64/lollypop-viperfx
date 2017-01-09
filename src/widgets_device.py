@@ -116,8 +116,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             self.__column1.set_visible(True)
             self.__column2.set_title(_("Albums"))
             self.__selection_list.show()
-            albums = Lp().albums.get_synced_ids()
-            self.__append_albums(albums)
+            self.__selection_list.select_ids([Type.ALL])
         else:
             playlists = [(Type.LOVED, Lp().playlists.LOVED)]
             playlists += Lp().playlists.get()
