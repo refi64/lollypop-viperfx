@@ -85,7 +85,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         renderer0 = Gtk.CellRendererToggle()
         renderer0.set_property('activatable', True)
-        renderer0.connect('toggled', self.__on_playlist_toggled)
+        renderer0.connect('toggled', self.__on_item_toggled)
         column0 = Gtk.TreeViewColumn(" ✓", renderer0, active=0)
         column0.set_clickable(True)
         column0.connect('clicked', self.__on_column0_clicked)
@@ -398,7 +398,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         with SqlCursor(Lp().db) as sql:
             sql.commit()
 
-    def __on_playlist_toggled(self, view, path):
+    def __on_item_toggled(self, view, path):
         """
             When item is toggled, set model
             @param widget as cell renderer
