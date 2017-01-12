@@ -63,8 +63,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             Lp().window.progress.add(self)
             Lp().window.progress.set_fraction(0.0, self)
 
-            if Lp().notify is not None:
-                Lp().notify.send(_("Your music is updating"))
             self.__thread = Thread(target=self.__scan, args=(uris,))
             self.__thread.daemon = True
             self.__thread.start()
