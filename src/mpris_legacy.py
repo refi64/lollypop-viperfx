@@ -51,10 +51,14 @@ class MPRIS(dbus.service.Object):
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
     def Next(self):
+        if Lp().notify is not None:
+            Lp().notify.inhibit()
         Lp().player.next()
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
     def Previous(self):
+        if Lp().notify is not None:
+            Lp().notify.inhibit()
         Lp().player.prev()
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
