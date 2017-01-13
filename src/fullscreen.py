@@ -54,11 +54,10 @@ class FullScreen(Gtk.Window, InfosController,
         monitor = screen.get_primary_monitor()
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
-        scale = self.get_scale_factor()
         if geometry.width > geometry.height:
-            artsize = int(ArtSize.FULLSCREEN*geometry.width/1920*scale)
+            artsize = int(ArtSize.FULLSCREEN*geometry.width/1920)
         else:
-            artsize = int(ArtSize.FULLSCREEN*geometry.height/1920*scale)
+            artsize = int(ArtSize.FULLSCREEN*geometry.height/1920)
         InfosController.__init__(self, artsize)
 
         self._play_btn = builder.get_object('play_btn')
