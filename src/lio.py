@@ -42,7 +42,6 @@ class Lio:
             return f
 
         def load_contents(self, cancellable=None):
-            return Gio.File.load_contents(self, cancellable)
             self.__cancel = cancellable
             tmp_path = None
             try:
