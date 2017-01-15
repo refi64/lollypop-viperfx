@@ -374,6 +374,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Show album from artist
             @param selection list as SelectionList
         """
+        if not selection_list.selected_ids:
+            return
         if selection_list.selected_ids[0] == Type.COMPILATIONS:
             albums = Lp().albums.get_compilation_ids()
         elif selection_list.selected_ids[0] == Type.ALL:
