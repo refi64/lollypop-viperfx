@@ -172,13 +172,13 @@ class ItunesCharts:
         sleep(5)
         if self.__stop:
             return
-        language = getdefaultlocale()[0][0:2]
+        country = getdefaultlocale()[0][3:]
         itunes_ids = self.__get_genre_ids()
-        self.__update_for_url(self.__ALL % (language, self.__LIMIT))
+        self.__update_for_url(self.__ALL % (country, self.__LIMIT))
         for itunes_id in itunes_ids:
             if self.__stop:
                 return
-            self.__update_for_url(self.__GENRE % (language,
+            self.__update_for_url(self.__GENRE % (country,
                                                   self.__LIMIT,
                                                   itunes_id))
 
@@ -215,10 +215,10 @@ class ItunesCharts:
         """
         if not get_network_available():
                 return
-        language = getdefaultlocale()[0][0:2]
+        country = getdefaultlocale()[0][3:]
         try:
             debug("ItunesCharts::__get_album(): %s" % itunes_id)
-            url = self.__INFO % (itunes_id, language)
+            url = self.__INFO % (itunes_id, country)
             f = Lio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
