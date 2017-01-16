@@ -10,13 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk, Pango, GObject
+from gi.repository import GLib, Gdk, Gtk, Pango, GObject
 
 from gettext import gettext as _
 from random import choice
 
 from lollypop.widgets_album import AlbumWidget
-from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
+from lollypop.define import Lp, ArtSize, Shuffle, Type
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
@@ -95,6 +96,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.show_all()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
+        self._widget.connect('button-press-event', self.__on_button_press)
         if self._album.is_web:
             self._cover.get_style_context().add_class(
                                                 'cover-frame-web')
@@ -270,3 +272,40 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                                                  self.__title_label.get_text())
                 eventbox.set_tooltip_markup(text)
                 break
+
+    def __on_button_press(self, eventbox, event):
+        """
+            Store pressed button
+            @param flowbox as Gtk.EventBox
+            @param event as Gdk.EventButton
+        """
+        if event.button != 1:
+            if self._album.genre_ids and\
+                    self._album.genre_ids[0] == Type.CHARTS:
+                popover = AlbumMenuPopover(self._album, None)
+                popover.set_relative_to(self._cover)
+            elif self._album.is_web:
+                popover = AlbumMenuPopover(self._album, AlbumMenu(self._album,
+                                                                  True))
+                popover.set_relative_to(self._cover)
+            else:
+                popover = Gtk.Popover.new_from_model(self._cover,
+                                                     AlbumMenu(self._album,
+                                                               True))
+            popover.set_position(Gtk.PositionType.BOTTOM)
+            rect = Gdk.Rectangle()
+            rect.x = event.x
+            rect.y = event.y
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+            popover.connect('closed', self.__on_album_popover_closed)
+            popover.show()
+
+    def __on_album_popover_closed(self, popover):
+        """
+            Remove overlay and restore opacity
+            @param popover as Gtk.Popover
+            @param album_widget as AlbumWidget
+        """
+        self.lock_overlay(False)
+        self.get_cover().set_opacity(1)
