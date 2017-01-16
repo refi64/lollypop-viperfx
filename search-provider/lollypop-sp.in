@@ -138,6 +138,7 @@ class SearchLollypopService(Server, Gio.Application):
                             application_id='org.gnome.Lollypop.SearchProvider',
                             flags=Gio.ApplicationFlags.IS_SERVICE)
         self.cursors = {}
+        self.fixed_775600 = True
         self.lastfm = None
         self.settings = Settings.new()
         self.db = Database()
@@ -175,13 +176,18 @@ class SearchLollypopService(Server, Gio.Application):
                     album = Album(int(search_id[2:]))
                     name = " ".join(album.artists)
                     description = album.name
+                    surface = self.art.get_album_artwork(album, ArtSize.BIG, 1)
                     gicon = self.art.get_album_cache_path(album, ArtSize.BIG)
                 else:
                     track = Track(int(search_id[2:]))
                     name = track.name
                     description = " ".join(track.artists)
+                    surface = self.art.get_album_artwork(track.album,
+                                                         ArtSize.BIG, 1)
                     gicon = self.art.get_album_cache_path(track.album,
                                                           ArtSize.BIG)
+                if surface is not None:
+                    del surface
                 d = { 'id': GLib.Variant('s', search_id),
                       'description': GLib.Variant('s', description),
                       'name': GLib.Variant('s', name),
