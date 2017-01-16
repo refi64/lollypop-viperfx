@@ -121,6 +121,7 @@ class Application(Gtk.Application):
         """
             Init main application
         """
+        self.fixed_775600 = Lio.check_fix_775600()
         self.__is_fs = False
         if Gtk.get_minor_version() > 18:
             cssProviderFile = Lio.File.new_for_uri(

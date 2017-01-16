@@ -10,11 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GObject
+from gi.repository import Gio, GObject, GLib
 
 import urllib.request
 from urllib.parse import quote
 from uuid import uuid4
+
+from lollypop.define import Lp
 
 
 class AppURLopener(urllib.request.URLopener):
@@ -27,10 +29,29 @@ class CancelException(Exception):
 
 
 class Lio:
+    def check_fix_775600():
+        fixed = False
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                           'org.gtk.vfs.Daemon',
+                                           '/org/gtk/vfs/mounttracker',
+                                           'org.gtk.vfs.MountTracker', None)
+            proxy.call('ListMounts', GLib.Variant('(b)', (False,)),
+                       Gio.DBusCallFlags.NO_AUTO_START,
+                       500, None, None, None)
+            fixed = True
+        except Exception as e:
+            print(e)
+        return fixed
+
     def uri_escape_string(value, exclude, ignored):
-        if exclude is None:
-            exclude = ''
-        return quote(value, exclude)
+        if Lp().fixed_775600:
+            return GLib.uri_escape_string(value, exclude, ignored)
+        else:
+            if exclude is None:
+                exclude = ''
+            return quote(value, exclude)
 
     class File(GObject.Object, Gio.File):
         """
@@ -42,33 +63,36 @@ class Lio:
             return f
 
         def load_contents(self, cancellable=None):
-            self.__cancel = cancellable
-            tmp_path = None
-            try:
-                uri = self.get_uri()
-                if uri.startswith("http"):
-                    tmp_path = "/tmp/lollypop_" + str(uuid4())
-                    opener = AppURLopener()
-                    opener.retrieve(uri, tmp_path,
-                                    reporthook=self.__check_cancel)
-                    f = Gio.File.new_for_path(tmp_path)
-                    (s, data, t) = f.load_contents(cancellable)
-                    f.delete()
-                    return (s, data, t)
-                else:
-                    return Gio.File.load_contents(self, cancellable)
-            except CancelException:
-                print("Lio::File::load_contents(): cancelled", uri)
+            if Lp().fixed_775600:
+                return Gio.File.load_contents(self, cancellable)
+            else:
+                self.__cancel = cancellable
+                tmp_path = None
                 try:
-                    if tmp_path is not None:
+                    uri = self.get_uri()
+                    if uri.startswith("http"):
+                        tmp_path = "/tmp/lollypop_" + str(uuid4())
+                        opener = AppURLopener()
+                        opener.retrieve(uri, tmp_path,
+                                        reporthook=self.__check_cancel)
                         f = Gio.File.new_for_path(tmp_path)
+                        (s, data, t) = f.load_contents(cancellable)
                         f.delete()
-                except:
-                    pass
-                return (False, None, "")
-            except Exception as e:
-                print(e, uri)
-                raise e
+                        return (s, data, t)
+                    else:
+                        return Gio.File.load_contents(self, cancellable)
+                except CancelException:
+                    print("Lio::File::load_contents(): cancelled", uri)
+                    try:
+                        if tmp_path is not None:
+                            f = Gio.File.new_for_path(tmp_path)
+                            f.delete()
+                    except:
+                        pass
+                    return (False, None, "")
+                except Exception as e:
+                    print(e, uri)
+                    raise e
 
     #######################
     # PRIVATE             #
