@@ -37,12 +37,12 @@ class Lio:
                                            'org.gtk.vfs.Daemon',
                                            '/org/gtk/vfs/mounttracker',
                                            'org.gtk.vfs.MountTracker', None)
-            proxy.call('ListMounts', GLib.Variant('(b)', (False,)),
-                       Gio.DBusCallFlags.NO_AUTO_START,
-                       500, None, None, None)
+            proxy.call_sync('ListMounts', GLib.Variant('(b)', (False,)),
+                            Gio.DBusCallFlags.NO_AUTO_START, 500, None)
             fixed = True
         except Exception as e:
-            print(e)
+            print("Disabling GVFS http module: "
+                  "https://bugzilla.gnome.org/show_bug.cgi?id=775600")
         return fixed
 
     def uri_escape_string(value, exclude, ignored):
