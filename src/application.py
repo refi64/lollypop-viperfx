@@ -393,7 +393,9 @@ class Application(Gtk.Application):
                 parser = TotemPlParser.Parser.new()
                 parser.connect('entry-parsed', self.__on_entry_parsed)
                 parser.parse_async(uri, True, None, None)
-        if self.window is not None and not self.window.is_visible():
+        elif self.window is not None and self.window.is_visible():
+            self.window.present()
+        elif self.window is not None:
             # self.window.setup_window()
             # self.window.present()
             # Horrible HACK: https://bugzilla.gnome.org/show_bug.cgi?id=774130
