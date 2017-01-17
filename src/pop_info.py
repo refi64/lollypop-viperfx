@@ -265,7 +265,8 @@ class InfoPopover(Gtk.Popover):
         elif get_network_available():
             artists = ", ".join(Lp().player.current_track.artists)
             title = self.__current_track.name
-            url = "http://genius.com/search?q=%s" % artists + " " + title
+            search = GLib.uri_escape_string(artists + " " + title, None, True)
+            url = "http://genius.com/search?q=%s" % search
             # Delayed load due to WebKit memory loading and Gtk animation
             web = self.WebView(True, True)
             web.add_word('search')
