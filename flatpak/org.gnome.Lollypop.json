@@ -1,6 +1,6 @@
 {
     "app-id": "org.gnome.Lollypop",
-    "branch": "0.9.227",
+    "branch": "0.9.228",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.22",
     "sdk": "org.gnome.Sdk",
@@ -32,8 +32,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://pypi.python.org/packages/42/71/85c28b2d373eee3592d6f079e556df4a28d5c133c2ba484d7311dc9a746c/pylast-1.6.0.tar.gz",
-       "sha256": "6bf325ee0fdeb35780554843cf64df99304abb98c5ce2e451c0df7e95e08b42e"
+        "url": "https://github.com/pylast/pylast/archive/1.7.0.tar.gz",
+       "sha256": "0b3c72dd734136532e1d78533718b6ae5e81681a1c62d5077f5f6a9fb8dc5a0e"
       },{
         "type": "file",
         "path": "pip-Makefile",
@@ -57,8 +57,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://pypi.python.org/packages/d9/03/155b3e67fe35fe5b6f4227a8d9e96a14fda828b18199800d161bcefc1359/requests-2.12.3.tar.gz#md5=0cafdecd95a46b081dd5fcfa4978db7a",
-       "sha256": "de5d266953875e9647e37ef7bfe6ef1a46ff8ddfe61b5b3652edf7ea717ee2b2"
+        "url": "https://pypi.python.org/packages/2e/ad/e627446492cc374c284e82381215dcd9a0a87c4f6e90e9789afefe6da0ad/requests-2.11.1.tar.gz",
+       "sha256": "5acf980358283faba0b897c73959cecf8b841205bb4b2ad3ef545f46eae1a133"
       },{
         "type": "file",
         "path": "pip-Makefile",
@@ -69,8 +69,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://pypi.python.org/packages/86/ea/8e9fbce5c8405b9614f1fd304f7109d9169a3516a493ce4f7f77c39435b7/beautifulsoup4-4.5.1.tar.gz#md5=994abd90e691beaf7d42c00ffb2f3a67",
-       "sha256": "3c9474036afda9136aac6463def733f81017bf9ef3510d25634f335b0c87f5e1"
+        "url": "https://www.crummy.com/software/BeautifulSoup/bs4/download/4.5/beautifulsoup4-4.5.3.tar.gz",
+       "sha256": "b21ca09366fa596043578fd4188b052b46634d22059e68dd0077d9ee77e08a3e"
       },{
         "type": "file",
         "path": "pip-Makefile.bs4",
@@ -92,18 +92,14 @@
       "name": "gmime",
       "sources": [{
         "type": "git",
-        "branch": "GMIME_2_6_20",
+        "branch": "GMIME_2_6_21",
         "url": "https://github.com/GNOME/gmime"
-      },{
-        "type": "patch",
-        "path": "gmime-autogen.patch"
-
       }]
     },{
       "name": "totem-pl-parser",
       "sources": [{
         "type": "git",
-        "branch": "V_3_10_6",
+        "branch": "V_3_10_7",
         "url": "https://github.com/GNOME/totem-pl-parser"
       }]
     },{
@@ -111,8 +107,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://github.com/rg3/youtube-dl/releases/download/2016.12.01/youtube-dl-2016.12.01.tar.gz",
-        "sha256": "ddff281a251c7a40bf8c28afa1df63e9a64ff61b6b8097535fbbe587e8ccaef7"
+        "url": "https://github.com/rg3/youtube-dl/releases/download/2017.01.14/youtube-dl-2017.01.14.tar.gz",
+        "sha256": "76c8bd77db6c820bfa72f1e2a873101ca736fd1d9954ccebf349fa7caef99cca"
       },{
         "type": "file",
         "path": "pip-Makefile",
@@ -138,8 +134,8 @@
       "no-autogen": true,
       "sources": [{
           "type": "archive",
-          "url": "file:///home/gnumdk/Dev/rpmbuild/SOURCES/lollypop-0.9.227.tar.xz",
-          "sha256": "6f5eb3d5b235cd4240ced5f1181836ffe42853901b528a54aeed154a390439a1"
+          "url": "file:///home/gnumdk/Dev/rpmbuild/SOURCES/lollypop-0.9.228.tar.xz",
+          "sha256": "1c0a8dbaf14bceeb4db921f455bf63e8ad54cd039ca4c008385afc7cc4155a46"
         }]
     }]
 }

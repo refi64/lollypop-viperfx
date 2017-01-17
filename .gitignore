@@ -71,6 +71,7 @@ portal/Makefile
 portal/Makefile.in
 data/Makefile
 data/Makefile.in
+flatpak/metadata
 *.pyc
 lollypop
 *.valid
