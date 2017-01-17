@@ -109,7 +109,7 @@ class MPRIS(dbus.service.Object):
                 'CanRaise': True,
                 'HasTrackList': False,
                 'Identity': 'Lollypop',
-                'DesktopEntry': 'lollypop'
+                'DesktopEntry': 'org.gnome.Lollypop'
             }
         elif interface == self.MPRIS_PLAYER_IFACE:
             return {

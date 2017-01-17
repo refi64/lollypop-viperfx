@@ -231,7 +231,7 @@ class MPRIS(Server):
         elif property_name == "Identity":
             return GLib.Variant('s', 'Lollypop')
         elif property_name == "DesktopEntry":
-            return GLib.Variant('s', 'lollypop')
+            return GLib.Variant('s', 'org.gnome.Lollypop')
         elif property_name == "SupportedUriSchemes":
             return GLib.Variant('as', ['file', 'http'])
         elif property_name == "SupportedMimeTypes":
