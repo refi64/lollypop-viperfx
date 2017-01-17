@@ -348,6 +348,7 @@ class Application(Gtk.Application):
             @param options as Gio.ApplicationCommandLine
         """
         self.__externals_count = 0
+        args = app_cmd_line.get_arguments()
         options = app_cmd_line.get_options_dict()
         if options.contains('debug'):
             self.debug = True
@@ -382,8 +383,7 @@ class Application(Gtk.Application):
             self.player.prev()
         elif options.contains('emulate-phone'):
             self.window.add_fake_phone()
-        args = app_cmd_line.get_arguments()
-        if len(args) > 1:
+        elif len(args) > 1:
             self.player.clear_externals()
             for uri in args[1:]:
                 try:
