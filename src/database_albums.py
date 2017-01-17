@@ -733,7 +733,7 @@ class AlbumsDatabase:
                 for artist_id in artist_ids:
                     request += "track_artists.artist_id=? OR "
                 request += "1=0)"
-            request += " ORDER BY discnumber, tracknumber"
+            request += " ORDER BY discnumber, tracknumber, tracks.name"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
@@ -775,7 +775,7 @@ class AlbumsDatabase:
                 for artist_id in artist_ids:
                     request += "track_artists.artist_id=? OR "
                 request += "1=0)"
-            request += " ORDER BY discnumber, tracknumber"
+            request += " ORDER BY discnumber, tracknumber, tracks.name"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
