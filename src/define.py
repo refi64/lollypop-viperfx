@@ -125,7 +125,8 @@ class Type:
     SEARCH = -8
     CHARTS = -9
     SPOTIFY = -10
-    ALL = -11
+    ITUNES = -11
+    ALL = -12
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

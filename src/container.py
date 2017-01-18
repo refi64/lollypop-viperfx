@@ -491,6 +491,7 @@ class Container:
             return genres
 
         def setup(genres):
+            genres.insert(-1, (Type.ITUNES, 'Itunes'))
             genres.insert(-1, (Type.SEPARATOR, ''))
             genres.insert(-1, (Type.SPOTIFY, "Spotify"))
             self.__list_two.populate(genres)
