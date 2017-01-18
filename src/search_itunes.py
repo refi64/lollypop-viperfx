@@ -46,11 +46,13 @@ class ItunesSearch:
                 for item in decode['results']:
                     if item['trackName'].lower() in tracks:
                         continue
+                    album_item = SearchItem()
+                    album_item.name = item['collectionName']
                     search_item = SearchItem()
                     search_item.is_track = True
                     search_item.name = item['trackName']
                     tracks.append(search_item.name.lower())
-                    search_item.album = item['collectionName']
+                    search_item.album = album_item
                     search_item.tracknumber = int(item['trackNumber'])
                     search_item.discnumber = int(item['discNumber'])
                     search_item.duration = int(item['trackTimeMillis']) / 1000
