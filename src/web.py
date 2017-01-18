@@ -150,21 +150,18 @@ class Web(GObject.Object):
         if not uri:
             return (None, None)
 
-        track_id = Lp().tracks.get_id_by_uri(uri)
-
+        (exists, track_id) = item.exists_in_db()
         # Check if track needs to be updated
-        if track_id is not None:
+        if exists:
             if Lp().tracks.get_persistent(track_id) == DbPersistent.NONE\
                     and persistent == DbPersistent.EXTERNAL:
                 Lp().tracks.set_persistent(track_id, DbPersistent.EXTERNAL)
                 return (None, None)
+            if uri.startswith("http") and item.popularity:
+                Lp().tracks.set_popularity(track_id, item.popularity, True)
             album_id = Lp().tracks.get_album_id(track_id)
-            if item.popularity:
-                Lp().tracks.set_popularity(track_id, item.popularity)
             t.update_track(track_id, [], genre_ids)
             t.update_album(album_id, [], genre_ids, None)
-            return (None, None)
-        elif item.exists_in_db():
             return (None, None)
 
         with SqlCursor(Lp().db) as sql:
