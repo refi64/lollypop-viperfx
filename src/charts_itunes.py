@@ -12,7 +12,6 @@
 
 from gi.repository import Gio
 
-import xml.etree.ElementTree as xml
 from gettext import gettext as _
 import json
 from threading import Thread
@@ -124,8 +123,9 @@ class ItunesCharts:
                 }
     __LIMIT = 40
     __MIN = 100
-    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=%s/xml"
-    __GENRE = "https://itunes.apple.com/%s/rss/topalbums/limit=%s/genre=%s/xml"
+    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=%s/json"
+    __GENRE = \
+        "https://itunes.apple.com/%s/rss/topalbums/limit=%s/genre=%s/json"
     __INFO = "https://itunes.apple.com/lookup?id=%s&entity=song&country=%s"
 
     def __init__(self):
@@ -195,7 +195,7 @@ class ItunesCharts:
         ids = self.__get_ids(url)
         while ids:
             sleep(10)
-            itunes_id = ids.pop(0)
+            (itunes_id, itunes_genre) = ids.pop(0)
             album = self.__get_album(itunes_id)
             if self.__stop:
                 return
@@ -205,7 +205,7 @@ class ItunesCharts:
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
-            web.save_album(album, DbPersistent.CHARTS)
+            web.save_album(album, DbPersistent.CHARTS, itunes_genre)
 
     def __get_album(self, itunes_id):
         """
@@ -265,14 +265,11 @@ class ItunesCharts:
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return []
-            root = xml.fromstring(data)
-            for child in root:
-                for element in child:
-                    if len(element.keys()) > 1:
-                        continue
-                    for values in element.items():
-                        if values[0] == '{http://itunes.apple.com/rss}id':
-                            items.append(values[1])
+            decode = json.loads(data.decode('utf-8'))
+            for entry in decode['feed']['entry']:
+                itunes_id = entry['id']['attributes']['im:id']
+                itunes_genre = entry['category']['attributes']['term']
+                items.append((itunes_id, itunes_genre))
         except Exception as e:
             print("ItunesCharts::__get_ids:", e)
         return items
