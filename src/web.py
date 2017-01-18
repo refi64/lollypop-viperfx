@@ -157,8 +157,10 @@ class Web(GObject.Object):
                     and persistent == DbPersistent.EXTERNAL:
                 Lp().tracks.set_persistent(track_id, DbPersistent.EXTERNAL)
                 return (None, None)
+            # Store popularity in mtime for web item
+            # Hack but mtime is unused for web items
             if uri.startswith("http") and item.popularity:
-                Lp().tracks.set_popularity(track_id, item.popularity, True)
+                Lp().tracks.set_mtime(track_id, item.popularity)
             album_id = Lp().tracks.get_album_id(track_id)
             t.update_track(track_id, [], genre_ids)
             t.update_album(album_id, [], genre_ids, None)
@@ -188,8 +190,8 @@ class Web(GObject.Object):
             # Add track to db
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
-                                       item.year, item.popularity,
-                                       0, 0, persistent)
+                                       item.year, 0, 0,
+                                       0, item.popularity, persistent)
             t.update_track(track_id, artist_ids, genre_ids)
             t.update_album(album_id, album_artist_ids, genre_ids, None)
             sql.commit()

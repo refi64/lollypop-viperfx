@@ -31,8 +31,9 @@ class TracksDatabase:
         """
         pass
 
-    def add(self, name, uri, duration, tracknumber, discnumber, discname,
-            album_id, year, popularity, rate, ltime, mtime, persistent=1):
+    def add(self, name, uri, duration, tracknumber, discnumber,
+            discname, album_id, year, popularity, rate, ltime,
+            mtime, persistent=DbPersistent.INTERNAL):
         """
             Add a new track to database
             @param name as string
@@ -118,7 +119,7 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE mtime>1")
+                                  WHERE persistent=?", (DbPersistent.INTERNAL))
             return list(itertools.chain(*result))
 
     def get_charts_ids(self, genre_ids=[]):
@@ -128,7 +129,7 @@ class TracksDatabase:
             @return albums ids as [int]
         """
         result = []
-        order = " ORDER BY popularity DESC,\
+        order = " ORDER BY mtime DESC,\
                  artists.sortname\
                  COLLATE NOCASE COLLATE LOCALIZED,\
                  tracks.year,\
