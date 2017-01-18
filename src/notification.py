@@ -10,8 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk, GLib, Notify
+from gi.repository import Gdk, GLib
 from gettext import gettext as _
+
+from .GioNotify import GioNotify
 
 from lollypop.define import Lp, ArtSize, Type
 
@@ -25,36 +27,31 @@ class NotificationManager:
         """
             Init notification object with lollypop infos
         """
-        self.__caps = Notify.get_server_caps()
         self.__inhibitor = False
-        self.__notification = Notify.Notification()
-        self.__notification.set_category('x-gnome.music')
-        self.__notification.set_hint('desktop-entry',
-                                     GLib.Variant('s', 'org.gnome.Lollypop'))
-        self.__set_actions()
-        Lp().player.connect('current-changed',
-                            self.__on_current_changed)
+        self.__fully_initted = False
+        self.__supports_actions = False
+        self.__notification = GioNotify.async_init('Lollypop', self.__on_init_finish)
 
     def send(self, message, sub=""):
         """
             Send message to user
             @param message as str
             @param sub as str
-            @param transient as bool
         """
-        self.__notification.clear_actions()
-        self.__notification.clear_hints()
-        self.__notification.set_hint("transient",
-                                     GLib.Variant.new_boolean(True))
-        self.__notification.update(message,
-                                   sub,
-                                   "org.gnome.Lollypop")
-        try:
-            self.__notification.show()
-        except:
-            pass
-        self.__notification.clear_hints()
-        self.__set_actions()
+        if not self.__fully_initted:
+            return
+        
+        if self.__supports_actions:
+            self.__notification.clear_actions()
+
+        self.__notification.show_new(
+            message,
+            sub,
+            'org.gnome.Lollypop',
+        )
+
+        if self.__supports_actions:
+            self.__set_actions()
 
     def inhibit(self):
         """
@@ -65,28 +62,61 @@ class NotificationManager:
 #######################
 # PRIVATE             #
 #######################
+
+    def __on_init_finish(self, info, caps):
+        self.__notification.set_hint(
+            'category',
+            GLib.Variant('s', 'x-gnome.music'),
+        )
+
+        self.__notification.set_hint(
+            'desktop-entry',
+            GLib.Variant('s', 'org.gnome.Lollypop'),
+        )
+
+        if 'action-icons' in caps:
+            self.__notification.set_hint(
+                'action-icons',
+                GLib.Variant('b', True),
+            )
+
+        if 'persistence' in caps:
+            self.__notification.set_hint(
+                'transient',
+                GLib.Variant('b', True),
+            )
+
+        if 'actions' in caps:
+            self.__supports_actions = True
+            self.__set_actions()
+
+        Lp().player.connect(
+            'current-changed',
+            self.__on_current_changed,
+        )
+
+        self.__fully_initted = True
+
     def __set_actions(self):
         """
             Set notification actions
         """
-        self.__notification.set_hint("transient",
-                                     GLib.Variant.new_boolean(True))
-        if "action-icons" in self.__caps:
-            self.__notification.set_hint('action-icons',
-                                         GLib.Variant('b', True))
-        if "actions" in self.__caps:
-            self.__notification.add_action('media-skip-backward',
-                                           _("Previous"),
-                                           self.__go_previous,
-                                           None)
-            self.__notification.add_action('media-skip-forward',
-                                           _("Next"),
-                                           self.__go_next,
-                                           None)
+
+        self.__notification.add_action(
+            'media-skip-backward',
+            _("Previous"),
+            Lp().player.prev,
+        )
+
+        self.__notification.add_action(
+            'media-skip-forward',
+            _("Next"),
+            Lp().player.next,
+        )
 
     def __on_current_changed(self, player):
         """
-            Update notification with track_id infos
+            Send notification with track_id infos
             @param player Player
         """
         if player.current_track.title == '' or self.__inhibitor:
@@ -106,18 +136,15 @@ class NotificationManager:
                 player.current_track.album, ArtSize.BIG)
         if cover_path is None:
             cover_path = 'org.gnome.Lollypop'
-        else:
-            self.__notification.set_hint('image-path',
-                                         GLib.Variant('s', cover_path))
         if player.current_track.album.name == '':
-            self.__notification.update(
+            self.__notification.show_new(
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
                 _("by %s") %
                 '<b>' + ", ".join(player.current_track.artists) + '</b>',
                 cover_path)
         else:
-            self.__notification.update(
+            self.__notification.show_new(
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
                 # from to the album
@@ -125,19 +152,3 @@ class NotificationManager:
                 ('<b>' + ", ".join(player.current_track.artists) + '</b>',
                  '<i>' + player.current_track.album.name + '</i>'),
                 cover_path)
-        try:
-            self.__notification.show()
-        except:
-            pass
-
-    def __go_previous(self, notification, action, data):
-        """
-            Callback for notification prev button
-        """
-        Lp().player.prev()
-
-    def __go_next(self, notification, action, data):
-        """
-            Callback for notification next button
-        """
-        Lp().player.next()
