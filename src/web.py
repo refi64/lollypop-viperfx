@@ -164,6 +164,8 @@ class Web(GObject.Object):
             t.update_track(track_id, [], genre_ids)
             t.update_album(album_id, [], genre_ids, None)
             return (None, None)
+        elif item.exists_in_db():
+            return (None, None)
 
         with SqlCursor(Lp().db) as sql:
             # Happen often with Itunes/Spotify
