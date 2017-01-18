@@ -149,7 +149,7 @@ class FullScreen(Gtk.Window, InfosController,
         ProgressController.on_current_changed(self, player)
         if player.current_track.id is not None:
             album_name = player.current_track.album.name
-            if player.current_track.year is not None:
+            if player.current_track.year:
                 album_name += " (%s)" % player.current_track.year
             self._album_label.set_text(album_name)
         # Do not show next popover non internal tracks as
