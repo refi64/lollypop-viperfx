@@ -16,7 +16,8 @@
     <property name="authors">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;
 </property>
     <property name="translator_credits" translatable="yes" context="Translation credits here, put your name here!" comments="Replace me with your names">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;</property>
-    <property name="artists"> Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts
+    <property name="artists"> Reda Lazri (Lollypop icon)
+https://www.elegantthemes.com/ (Spotify icon)
     </property>
     <property name="logo_icon_name">org.gnome.Lollypop</property>
     <property name="license_type">gpl-3-0</property>

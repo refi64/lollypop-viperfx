@@ -433,6 +433,8 @@ class SelectionList(Gtk.Overlay):
             icon = 'document-new-symbolic'
         elif object_id == Type.CHARTS:
             icon = 'application-rss+xml-symbolic'
+        elif object_id == Type.SPOTIFY:
+            icon = 'lollypop-spotify'
         return icon
 
     def __sort_items(self, model, itera, iterb, data):
