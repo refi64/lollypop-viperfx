@@ -113,11 +113,6 @@ class OrderBy:
     POPULARITY = 3
 
 
-class ChartsProvider:
-    ITUNES = 0
-    SPOTIFY = 1
-
-
 # Order is important
 class Type:
     NONE = -1
@@ -129,7 +124,8 @@ class Type:
     EXTERNALS = -7
     SEARCH = -8
     CHARTS = -9
-    ALL = -10
+    SPOTIFY = -10
+    ALL = -11
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

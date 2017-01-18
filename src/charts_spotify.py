@@ -12,14 +12,13 @@
 
 from gi.repository import Gio
 
-from threading import Thread
 from time import sleep
 from locale import getdefaultlocale
 from csv import reader
 
 from lollypop.search_spotify import SpotifySearch
 from lollypop.web import Web
-from lollypop.define import DbPersistent, Lp
+from lollypop.define import DbPersistent, Lp, Type
 from lollypop.utils import debug, get_network_available
 from lollypop.lio import Lio
 
@@ -37,17 +36,16 @@ class SpotifyCharts:
         """
         self.__cancel = Gio.Cancellable.new()
         self.__stop = False
-        self.__count = 0
 
     def update(self):
         """
             Update charts
         """
+        if not Lp().settings.get_value('show-charts'):
+            return
+        self.__cancel.reset()
         self._stop = False
-        self.__count = self.__get_album_count()
-        t = Thread(target=self.__update)
-        t.daemon = True
-        t.start()
+        self.__update()
 
     def stop(self):
         """
@@ -59,13 +57,6 @@ class SpotifyCharts:
 #######################
 # PRIVATE             #
 #######################
-    def __get_album_count(self):
-        """
-            Calculate album count
-            @return count as int
-        """
-        return 200
-
     def __update(self):
         """
             Update charts
@@ -73,7 +64,6 @@ class SpotifyCharts:
         sleep(5)
         if self._stop:
             return
-
         language = getdefaultlocale()[0][0:2]
         self.__update_for_url(self.__ALL % language)
 
@@ -84,30 +74,30 @@ class SpotifyCharts:
         """
         if not get_network_available():
                 return
-        debug("SpotifyCharts::__update_for_url(): %s => %s" % (url,
-                                                               self.__count))
+        debug("SpotifyCharts::__update_for_url(): %s" % (url))
         ids = self.__get_ids(url)
         web = Web()
         search = SpotifySearch()
+        popularity = len(ids)
         while ids:
             sleep(10)
             track_id = ids.pop(0)
-            album_id = search.get_album_id(track_id)
-            album = search.get_album(album_id)
+            album = search.get_track(track_id)
+            album.popularity = popularity
             if album is None or album.exists_in_db():
                 continue
             if self._stop:
                 return
-            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self.__count))
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (
                                                                 album.name,
                                                                 album.artists,
-                                                                album_id))
-            web.save_album(album, DbPersistent.CHARTS)
+                                                                track_id))
+            web.save_album_thread(album, DbPersistent.CHARTS, [Type.SPOTIFY])
+            popularity -= 1
 
     def __get_ids(self, url):
         """
-            Get album spotify ids
+            Get track spotify ids
             @param url as str
         """
         ids = []

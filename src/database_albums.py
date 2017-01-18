@@ -795,18 +795,50 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
+    def get_charts_ids(self, genre_ids=[]):
+        """
+            Get charts album ids
+            @param genre ids as [int]
+            @return albums ids as [int]
+        """
+        result = []
+        order = " ORDER BY popularity DESC,\
+                 artists.sortname\
+                 COLLATE NOCASE COLLATE LOCALIZED,\
+                 albums.year,\
+                 albums.name\
+                 COLLATE NOCASE COLLATE LOCALIZED"
+        with SqlCursor(Lp().db) as sql:
+            filters = tuple([Type.CHARTS] + genre_ids)
+            request = "SELECT DISTINCT albums.rowid FROM albums,\
+                       album_genres, artists, album_artists\
+                       WHERE EXISTS (\
+                            SELECT album_genres.album_id\
+                            FROM album_genres\
+                            WHERE albums.rowid = album_genres.album_id\
+                            AND album_genres.genre_id=?)\
+                       AND artists.rowid=album_artists.artist_id\
+                       AND albums.rowid=album_artists.album_id\
+                       AND album_genres.album_id=albums.rowid AND ("
+            for genre_id in genre_ids:
+                request += "album_genres.genre_id=? OR "
+            request += "1=0)"
+            if not get_network_available():
+                request += " AND albums.synced!=%s" % Type.NONE
+            request += order
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result))
+
     def get_ids(self, artist_ids=[], genre_ids=[]):
         """
             Get albums ids
             @param artist ids as [int]
             @param genre ids as [int]
-            @return Array of album ids as int
+            @return albums ids as [int]
         """
         genre_ids = remove_static_genres(genre_ids)
         orderby = Lp().settings.get_enum('orderby')
-        if genre_ids and genre_ids[0] == Type.CHARTS:
-            order = " ORDER BY albums.id DESC"
-        elif orderby == OrderBy.ARTIST:
+        if orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
                      albums.year,\

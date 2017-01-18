@@ -432,7 +432,7 @@ class TagReader(Discoverer):
                 artist_ids.append(artist_id)
         return artist_ids
 
-    def add_genres(self, genres, album_id):
+    def add_genres(self, genres):
         """
             Add genres to db
             @param genres as [string]

@@ -66,7 +66,8 @@ class WebJmg90:
             @return jpg id as str
         """
         # Try to handle compilations (itunes one)
-        if item.artists[0].lower() == "various artists":
+        unwanted = ["variout artists", "multi-interprètes"]
+        if item.artists[0].lower() in unwanted:
             if len(item.artists) > 1:
                 artist = item.artists[1]
             else:

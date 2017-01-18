@@ -10,9 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from threading import Thread
+
 from lollypop.charts_itunes import ItunesCharts
 from lollypop.charts_spotify import SpotifyCharts
-from lollypop.define import ChartsProvider, Lp
 
 
 class Charts:
@@ -24,23 +25,30 @@ class Charts:
         """
             Init charts
         """
-        if Lp().settings.get_enum('charts') == ChartsProvider.ITUNES:
-            self.__provider = ItunesCharts()
-        else:
-            self.__provider = SpotifyCharts()
+        self.__providers = [SpotifyCharts(), ItunesCharts()]
 
     def update(self):
         """
             Update charts
         """
-        self.__provider.update()
+        t = Thread(target=self.__update)
+        t.daemon = True
+        t.start()
 
     def stop(self):
         """
             Stop downloads
         """
-        self.__provider.stop()
+        for provider in self.__providers:
+            provider.stop()
 
 #######################
 # PRIVATE             #
 #######################
+    def __update(self):
+        """
+            Update charts
+            @thread safe
+        """
+        for provider in self.__providers:
+            provider.update()

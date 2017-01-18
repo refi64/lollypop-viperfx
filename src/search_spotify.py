@@ -50,7 +50,6 @@ class SpotifySearch:
                     search_item.is_track = True
                     search_item.name = item['name']
                     tracks.append(search_item.name.lower())
-                    search_item.album = item['album']['name']
                     search_item.tracknumber = int(item['track_number'])
                     search_item.discnumber = int(item['disc_number'])
                     search_item.duration = int(item['duration_ms']) / 1000
@@ -131,6 +130,43 @@ class SpotifySearch:
             print("SpotifySearch::get_album:", e)
         return None
 
+    def get_track(self, track_id):
+        """
+            Return spotify track as SearchItem
+            @param track id as str
+            @return SearchItem
+        """
+        try:
+            s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
+                                     "tracks/%s" % track_id)
+            (status, data, tag) = s.load_contents(self._cancel)
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                album_item = SearchItem()
+                album_item.name = decode['album']['name']
+                album_item.album_name = album_item.name
+                album_item.cover = decode['album']['images'][0]['url']
+                album_item.smallcover = decode['album']['images'][2]['url']
+
+                track_item = SearchItem()
+                track_item.is_track = True
+                track_item.name = decode['name']
+                track_item.album = album_item
+                track_item.tracknumber = int(
+                                          decode['track_number'])
+                track_item.discnumber = int(
+                                           decode['disc_number'])
+                track_item.duration = int(
+                                    decode['duration_ms']) / 1000
+                for artist in decode['artists']:
+                    track_item.artists.append(artist['name'])
+                album_item.artists = track_item.artists
+                album_item.subitems.append(track_item)
+                return album_item
+        except Exception as e:
+            print("SpotifySearch::get_track", e)
+        return None
+
 #######################
 # PRIVATE             #
 #######################
@@ -186,7 +222,7 @@ class SpotifySearch:
                                 track_item = SearchItem()
                                 track_item.is_track = True
                                 track_item.name = item['name']
-                                track_item.album = album_item.name
+                                track_item.album = album_item
                                 try:
                                     track_item.year = decode[
                                                             'release_date'][:4]
@@ -243,7 +279,7 @@ class SpotifySearch:
                             except:
                                 pass  # May be missing
                             track_item.name = item['name']
-                            track_item.album = album_item.name
+                            track_item.album = album_item
                             track_item.tracknumber = int(item['track_number'])
                             track_item.discnumber = int(item['disc_number'])
                             track_item.duration = int(item['duration_ms'])\

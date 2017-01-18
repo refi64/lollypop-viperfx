@@ -403,9 +403,9 @@ class Container:
         """
         update = updater is not None
         if self.__show_genres:
-            self.__setup_list_genres(self.__list_one, update)
+            self.__update_list_genres(self.__list_one, update)
         else:
-            self.__setup_list_artists(self.__list_one, [Type.ALL], update)
+            self.__update_list_artists(self.__list_one, [Type.ALL], update)
 
     def __update_list_two(self, updater):
         """
@@ -415,11 +415,11 @@ class Container:
         update = updater is not None
         ids = self.__list_one.selected_ids
         if ids and ids[0] == Type.PLAYLISTS:
-            self.__setup_list_playlists(update)
+            self.__update_list_playlists(update)
         elif self.__show_genres and ids:
-            self.__setup_list_artists(self.__list_two, ids, update)
+            self.__update_list_artists(self.__list_two, ids, update)
 
-    def __setup_list_genres(self, selection_list, update):
+    def __update_list_genres(self, selection_list, update):
         """
             Setup list for genres
             @param list as SelectionList
@@ -443,7 +443,7 @@ class Container:
         loader = Loader(target=load, view=selection_list, on_finished=setup)
         loader.start()
 
-    def __setup_list_artists(self, selection_list, genre_ids, update):
+    def __update_list_artists(self, selection_list, genre_ids, update):
         """
             Setup list for artists
             @param list as SelectionList
@@ -481,7 +481,24 @@ class Container:
                         on_finished=lambda r: setup(*r))
         loader.start()
 
-    def __setup_list_playlists(self, update):
+    def __update_list_charts(self):
+        """
+            Setup list for charts
+            @thread safe
+        """
+        def load():
+            genres = Lp().genres.get_charts()
+            return genres
+
+        def setup(genres):
+            genres.insert(-1, (Type.SEPARATOR, ''))
+            genres.insert(-1, (Type.SPOTIFY, "Spotify"))
+            self.__list_two.populate(genres)
+            self.__list_two.mark_as_artists(False)
+        loader = Loader(target=load, view=self.__list_two, on_finished=setup)
+        loader.start()
+
+    def __update_list_playlists(self, update):
         """
             Setup list for playlists
             @param update as bool
@@ -560,39 +577,51 @@ class Container:
             @param is compilation as bool
         """
         def load():
-            albums = []
+            items = []
             is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
             if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation or\
                         Lp().settings.get_value('show-compilations'):
-                    albums = Lp().albums.get_compilation_ids()
+                    items = Lp().albums.get_compilation_ids()
                 if not is_compilation:
-                    albums += Lp().albums.get_ids()
+                    items += Lp().albums.get_ids()
             elif genre_ids and genre_ids[0] == Type.POPULARS:
-                albums = Lp().albums.get_rated()
-                count = 100 - len(albums)
+                items = Lp().albums.get_rated()
+                count = 100 - len(items)
                 for album in Lp().albums.get_populars(count):
-                    if album not in albums:
-                        albums.append(album)
+                    if album not in items:
+                        items.append(album)
             elif genre_ids and genre_ids[0] == Type.LOVED:
-                albums = Lp().albums.get_loves()
+                items = Lp().albums.get_loves()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
-                albums = Lp().albums.get_recents()
+                items = Lp().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
-                albums = Lp().albums.get_randoms()
+                items = Lp().albums.get_randoms()
+            elif genre_ids and genre_ids[0] == Type.SPOTIFY:
+                for album_id in Lp().albums.get_charts_ids(genre_ids):
+                    items.append(Lp().albums.get_track_ids(album_id)[0])
+            elif artist_ids and artist_ids[0] == Type.CHARTS:
+                items = Lp().albums.get_charts_ids(genre_ids)
             else:
                 if is_compilation or\
                         Lp().settings.get_value('show-compilations'):
-                    albums = Lp().albums.get_compilation_ids(genre_ids)
+                    items = Lp().albums.get_compilation_ids(genre_ids)
                 if not is_compilation:
-                    albums += Lp().albums.get_ids([], genre_ids)
-            return albums
+                    items += Lp().albums.get_ids([], genre_ids)
+            return items
 
-        from lollypop.view_albums import AlbumsView
-        self.__stop_current_view()
-        view = AlbumsView(genre_ids, artist_ids)
-        loader = Loader(target=load, view=view)
-        loader.start()
+        # Spotify albums contains only one tracks, show playlist view
+        if genre_ids and genre_ids[0] == Type.SPOTIFY:
+            from lollypop.view_playlists import PlaylistsView
+            view = PlaylistsView([Type.SPOTIFY])
+            loader = Loader(target=load, view=view)
+            loader.start()
+        else:
+            from lollypop.view_albums import AlbumsView
+            self.__stop_current_view()
+            view = AlbumsView(genre_ids, artist_ids)
+            loader = Loader(target=load, view=view)
+            loader.start()
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
@@ -704,16 +733,19 @@ class Container:
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
                 self.__update_view_playlists()
-            self.__setup_list_playlists(False)
+            self.__update_list_playlists(False)
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self.__list_two.hide()
             if not self.__list_two.will_be_selected():
                 self.__update_view_device(selected_ids[0])
+        elif selected_ids[0] == Type.CHARTS:
+            self.__list_two.show()
+            self.__update_list_charts()
+            self.__update_view_albums(selected_ids, [])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
-                                 Type.RANDOMS,
-                                 Type.CHARTS]:
+                                 Type.RANDOMS]:
             self.__list_two.hide()
             self.__update_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
@@ -728,7 +760,7 @@ class Container:
             else:
                 self.__update_view_artists([], selected_ids)
         else:
-            self.__setup_list_artists(self.__list_two, selected_ids, False)
+            self.__update_list_artists(self.__list_two, selected_ids, False)
             if Lp().settings.get_value('show-navigation-list'):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
@@ -753,6 +785,8 @@ class Container:
             return
         if genre_ids[0] == Type.PLAYLISTS:
             self.__update_view_playlists(selected_ids)
+        elif genre_ids[0] == Type.CHARTS:
+            self.__update_view_albums(selected_ids, [Type.CHARTS])
         elif selected_ids[0] == Type.COMPILATIONS:
             self.__update_view_albums(genre_ids, selected_ids)
         else:

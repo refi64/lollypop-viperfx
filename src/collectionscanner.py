@@ -313,7 +313,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                                                uri, loved, album_pop,
                                                album_rate, amtime, False)
 
-        genre_ids = self.add_genres(genres, album_id)
+        genre_ids = self.add_genres(genres)
 
         # Add track to db
         debug("CollectionScanner::add2db(): Add track")

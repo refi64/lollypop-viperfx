@@ -133,6 +133,24 @@ class GenresDatabase:
                                  (Type.CHARTS,))
             return list(itertools.chain(*result))
 
+    def get_charts(self):
+        """
+            Get genre for charts
+            @return [(id as int, name as string)]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT DISTINCT genres.rowid, genres.name\
+                                  FROM genres,album_genres AS AG\
+                                  WHERE AG.genre_id=genres.rowid\
+                                  AND ? IN (\
+                                    SELECT album_genres.genre_id\
+                                    FROM album_genres\
+                                    WHERE AG.album_id=album_genres.album_id)\
+                                  ORDER BY genres.name\
+                                  COLLATE NOCASE COLLATE LOCALIZED",
+                                 (Type.CHARTS,))
+            return list(result)
+
     def clean(self, genre_id):
         """
             Clean database for genre id

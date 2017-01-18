@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 
 
 class SearchItem:
@@ -25,13 +25,14 @@ class SearchItem:
         self.artist_ids = []
         # External
         self.artists = []
-        self.album_name = ""
         self.name = ""
         self.track_number = 0
         self.cover = ""
         self.smallcover = ""
         self.year = None
         self.subitems = []
+        self.album = None
+        self.popularity = 0
 
     def exists_in_db(self):
         """
@@ -50,7 +51,6 @@ class SearchItem:
                     return True
         else:
             album_ids = Lp().albums.get_ids(artist_ids, [])
-            album_ids += Lp().albums.get_ids(artist_ids, [Type.CHARTS])
             for album_id in album_ids:
                 album_name = Lp().albums.get_name(album_id)
                 if album_name.lower() == self.album_name.lower():

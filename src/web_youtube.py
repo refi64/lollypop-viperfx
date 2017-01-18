@@ -79,7 +79,8 @@ class WebYouTube:
         if self.__fallback:
             return self.__get_youtube_id_fallback(item)
         # Try to handle compilations (itunes one)
-        if item.artists[0].lower() == "various artists":
+        unwanted = ["variout artists", "multi-interprètes"]
+        if item.artists[0].lower() in unwanted:
             if len(item.artists) > 1:
                 artist = item.artists[1]
             else:
@@ -166,7 +167,8 @@ class WebYouTube:
             return None
         try:
             # Try to handle compilations (itunes one)
-            if item.artists[0].lower() == "various artists":
+            unwanted = ["variout artists", "multi-interprètes"]
+            if item.artists[0].lower() in unwanted:
                 if len(item.artists) > 1:
                     artist = item.artists[1]
                 else:
@@ -203,7 +205,7 @@ class WebYouTube:
                 score = self.__get_youtube_score(title,
                                                  item.name,
                                                  artist,
-                                                 item.album)
+                                                 item.album.name)
                 if score < best:
                     best = score
                 elif score == best:
