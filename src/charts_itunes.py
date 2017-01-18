@@ -140,7 +140,7 @@ class ItunesCharts:
             album = self.__get_album(itunes_id)
             if self.__stop:
                 return
-            if album is None or album.exists_in_db()[0]:
+            if album is None:
                 continue
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,

@@ -598,8 +598,7 @@ class Container:
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 items = Lp().albums.get_randoms()
             elif genre_ids and genre_ids[0] == Type.SPOTIFY:
-                for album_id in Lp().albums.get_charts_ids(genre_ids):
-                    items.append(Lp().albums.get_track_ids(album_id)[0])
+                items = Lp().tracks.get_charts_ids(genre_ids)
             elif artist_ids and artist_ids[0] == Type.CHARTS:
                 items = Lp().albums.get_charts_ids(genre_ids)
             else:

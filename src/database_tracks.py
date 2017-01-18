@@ -15,8 +15,8 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type
-from lollypop.utils import noaccents
+from lollypop.define import Lp, Type, DbPersistent
+from lollypop.utils import noaccents, get_network_available
 
 
 class TracksDatabase:
@@ -119,6 +119,40 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE mtime>1")
+            return list(itertools.chain(*result))
+
+    def get_charts_ids(self, genre_ids=[]):
+        """
+            Get charts track ids
+            @param genre ids as [int]
+            @return albums ids as [int]
+        """
+        result = []
+        order = " ORDER BY popularity DESC,\
+                 artists.sortname\
+                 COLLATE NOCASE COLLATE LOCALIZED,\
+                 tracks.year,\
+                 tracks.name\
+                 COLLATE NOCASE COLLATE LOCALIZED"
+        with SqlCursor(Lp().db) as sql:
+            filters = tuple([Type.CHARTS] + genre_ids)
+            request = "SELECT DISTINCT tracks.rowid FROM tracks,\
+                       track_genres, artists, track_artists\
+                       WHERE EXISTS (\
+                            SELECT track_genres.track_id\
+                            FROM track_genres\
+                            WHERE tracks.rowid = track_genres.track_id\
+                            AND track_genres.genre_id=?)\
+                       AND artists.rowid=track_artists.artist_id\
+                       AND tracks.rowid=track_artists.track_id\
+                       AND track_genres.track_id=tracks.rowid AND ("
+            for genre_id in genre_ids:
+                request += "track_genres.genre_id=? OR "
+            request += "1=0)"
+            if not get_network_available():
+                request += " AND tracks.persistent=%s" % DbPersistent.NONE
+            request += order
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get_charts(self):

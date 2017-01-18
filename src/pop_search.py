@@ -595,7 +595,7 @@ class SearchPopover(Gtk.Popover):
                 self.__spinner.stop()
             return
         item = search.items.pop(0)
-        if item.exists_in_db()[0]:
+        if item.exists_in_db():
             return
         if item.is_track:
             history = "♫" + item.name + item.artists[0]
