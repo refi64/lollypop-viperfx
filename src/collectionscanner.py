@@ -236,11 +236,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                         GLib.idle_add(self.__update_progress, i, count)
                         self.__add2db(uri, mtime)
                     except GLib.GError as e:
-                        print("CollectionScanner::__scan:", e)
+                        print("CollectionScanner::__scan:", e, uri)
                         if e.message != gst_message:
                             gst_message = e.message
                             if Lp().notify is not None:
-                                Lp().notify.send(gst_message)
+                                Lp().notify.send(gst_message, uri)
                 sql.commit()
             except Exception as e:
                 print("CollectionScanner::__scan()", e)
