@@ -83,11 +83,20 @@ class SpotifyCharts:
             sleep(10)
             track_id = ids.pop(0)
             album = search.get_track(track_id)
-            album.popularity = popularity
-            if album is None or album.exists_in_db():
-                continue
-            if self._stop:
+            if self.__stop:
                 return
+            if album is None:
+                popularity -= 1
+                continue
+            # Update popularity if album exists
+            (exists, album_id) = album.exists_in_db()
+            print(exists, album_id, album.name)
+            if exists:
+                Lp().albums.set_popularity(album_id, popularity)
+                popularity -= 1
+                continue
+            else:
+                album.popularity = popularity
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (
                                                                 album.name,
                                                                 album.artists,

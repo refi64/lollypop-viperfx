@@ -504,10 +504,13 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres\
-                       WHERE album_genres.genre_id!=?\
+                       FROM albums, album_genres as AG\
+                       WHERE ? NOT IN (\
+                            SELECT album_genres.genre_id\
+                            FROM album_genres\
+                            WHERE AG.album_id=album_genres.album_id)\
                        AND rate>=4\
-                       AND album_genres.album_id=albums.rowid"
+                       AND AG.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += " ORDER BY popularity DESC LIMIT %s" % limit
@@ -523,10 +526,13 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres\
-                       WHERE album_genres.genre_id!=?\
+                       FROM albums, album_genres as AG\
+                       WHERE ? NOT IN (\
+                            SELECT album_genres.genre_id\
+                            FROM album_genres\
+                            WHERE AG.album_id=album_genres.album_id)\
                        AND popularity!=0\
-                       AND album_genres.album_id=albums.rowid"
+                       AND AG.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += " ORDER BY popularity DESC LIMIT %s" % limit
@@ -541,10 +547,13 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres\
-                       WHERE album_genres.genre_id!=?\
+                       FROM albums, album_genres as AG\
+                       WHERE ? NOT IN (\
+                            SELECT album_genres.genre_id\
+                            FROM album_genres\
+                            WHERE AG.album_id=album_genres.album_id)\
                        AND loved=1\
-                       AND album_genres.album_id=albums.rowid"
+                       AND AG.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += " ORDER BY popularity DESC"
@@ -559,9 +568,12 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres\
-                       WHERE album_genres.genre_id!=?\
-                       AND album_genres.album_id=albums.rowid"
+                       FROM albums, album_genres as AG\
+                       WHERE ? NOT IN (\
+                            SELECT album_genres.genre_id\
+                            FROM album_genres\
+                            WHERE AG.album_id=album_genres.album_id)\
+                       AND AG.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += " ORDER BY mtime DESC LIMIT 100"
@@ -577,9 +589,12 @@ class AlbumsDatabase:
             albums = []
             filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres\
-                       WHERE album_genres.genre_id!=?\
-                       AND album_genres.album_id=albums.rowid"
+                       FROM albums, album_genres as AG\
+                       WHERE ? NOT IN (\
+                            SELECT album_genres.genre_id\
+                            FROM album_genres\
+                            WHERE AG.album_id=album_genres.album_id)\
+                       AND AG.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += " ORDER BY random() LIMIT 100"
@@ -862,10 +877,14 @@ class AlbumsDatabase:
             if not artist_ids and not genre_ids:
                 filters = (Type.CHARTS,)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, artists, album_artists, album_genres\
+                           FROM albums, artists,\
+                           album_artists, album_genres as AG\
                            WHERE artists.rowid=album_artists.artist_id\
-                           AND album_genres.genre_id!=?\
-                           AND album_genres.album_id=albums.rowid\
+                           AND ? NOT IN (\
+                                SELECT album_genres.genre_id\
+                                FROM album_genres\
+                                WHERE AG.album_id=album_genres.album_id)\
+                           AND AG.album_id=albums.rowid\
                            AND albums.rowid=album_artists.album_id"
                 if not get_network_available():
                     request += " AND albums.synced!=%s" % Type.NONE
@@ -891,10 +910,14 @@ class AlbumsDatabase:
                 filters = (Type.CHARTS,)
                 filters += tuple(artist_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, artists, album_artists, album_genres\
+                           FROM albums, artists,\
+                           album_artists, album_genres as AG\
                            WHERE artists.rowid=album_artists.artist_id\
-                           AND album_genres.genre_id!=?\
-                           AND album_genres.album_id=albums.rowid\
+                           AND ? NOT IN (\
+                                SELECT album_genres.genre_id\
+                                FROM album_genres\
+                                WHERE AG.album_id=album_genres.album_id)\
+                           AND AG.album_id=albums.rowid\
                            AND album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "

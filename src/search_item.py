@@ -37,7 +37,7 @@ class SearchItem:
     def exists_in_db(self):
         """
             Search if item exists in db
-            @return bool
+            @return (exists, item id) as (bool, int)
         """
         artist_ids = []
         for artist in self.artists:
@@ -48,11 +48,11 @@ class SearchItem:
                 db_artist_ids = Lp().tracks.get_artist_ids(track_id)
                 union = list(set(artist_ids) & set(db_artist_ids))
                 if union == db_artist_ids:
-                    return True
+                    return (True, track_id)
         else:
             album_ids = Lp().albums.get_ids(artist_ids, [])
             for album_id in album_ids:
                 album_name = Lp().albums.get_name(album_id)
                 if album_name.lower() == self.album_name.lower():
-                    return True
-        return False
+                    return (True, album_id)
+        return (False, None)
