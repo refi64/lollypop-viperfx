@@ -94,8 +94,7 @@ class ItunesSearch:
             # For each album, get cover and tracks
             for item in decode['results']:
                 album_item = SearchItem()
-                album_item.name = album_item.album_name =\
-                    item['collectionName']
+                album_item.name = item['collectionName']
                 album_item.is_track = False
                 album_item.artists = [item['artistName']]
                 album_item.cover = item['artworkUrl60'].replace('60x60',
@@ -118,7 +117,7 @@ class ItunesSearch:
                     except:
                         pass  # May be missing
                     track_item.name = item['trackName']
-                    track_item.album = album_item.name
+                    track_item.album = album_item
                     track_item.tracknumber = int(item['trackNumber'])
                     track_item.discnumber = int(item['discNumber'])
                     track_item.duration = int(item['trackTimeMillis'])\

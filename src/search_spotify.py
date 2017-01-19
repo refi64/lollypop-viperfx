@@ -100,7 +100,7 @@ class SpotifySearch:
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 album_item = SearchItem()
-                album_item.name = album_item.album_name = decode['name']
+                album_item.name = decode['name']
                 album_item.cover = decode['images'][0]['url']
                 album_item.smallcover = decode['images'][2]['url']
                 album_item.ex_id = album_id
@@ -144,7 +144,6 @@ class SpotifySearch:
                 decode = json.loads(data.decode('utf-8'))
                 album_item = SearchItem()
                 album_item.name = decode['album']['name']
-                album_item.album_name = album_item.name
                 album_item.cover = decode['album']['images'][0]['url']
                 album_item.smallcover = decode['album']['images'][2]['url']
 
@@ -203,8 +202,7 @@ class SpotifySearch:
                             if item['name'].lower() in albums:
                                 continue
                             album_item = SearchItem()
-                            album_item.name = album_item.album_name = item[
-                                                                        'name']
+                            album_item.name = item['name']
                             albums.append(album_item.name.lower())
                             album_item.cover = item['images'][0]['url']
                             album_item.smallcover = item['images'][2]['url']
@@ -261,7 +259,7 @@ class SpotifySearch:
                 # For each album, get cover and tracks
                 for item in decode['albums']['items']:
                     album_item = SearchItem()
-                    album_item.name = album_item.album_name = item['name']
+                    album_item.name = item['name']
                     album_item.is_track = False
                     album_item.cover = item['images'][0]['url']
                     album_item.smallcover = item['images'][2]['url']

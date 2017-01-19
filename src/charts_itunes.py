@@ -18,7 +18,7 @@ from locale import getdefaultlocale
 
 
 from lollypop.web import Web
-from lollypop.define import DbPersistent, Lp
+from lollypop.define import DbPersistent, Lp, Type
 from lollypop.utils import debug, get_network_available
 from lollypop.search_item import SearchItem
 from lollypop.tagreader import TagReader
@@ -147,6 +147,7 @@ class ItunesCharts:
                                                                 album.artists))
             t = TagReader()
             genre_ids = t.add_genres(itunes_genre)
+            genre_ids.append(Type.ITUNES)
             web.save_album_thread(album, DbPersistent.CHARTS, genre_ids)
 
     def __get_album(self, itunes_id):
@@ -169,7 +170,6 @@ class ItunesCharts:
             item = decode['results'][0]
             album_item = SearchItem()
             album_item.name = item['collectionName']
-            album_item.album_name = album_item.name
             album_item.artists.append(item['artistName'])
             album_item.cover = item['artworkUrl60'].replace(
                                                '60x60',
@@ -179,7 +179,7 @@ class ItunesCharts:
                 track_item = SearchItem()
                 track_item.is_track = True
                 track_item.name = item['trackName']
-                track_item.album = album_item.name
+                track_item.album = album_item
                 track_item.year = item['releaseDate'][:4]
                 track_item.tracknumber = int(
                                           item['trackNumber'])

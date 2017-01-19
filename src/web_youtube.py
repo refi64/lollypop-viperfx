@@ -110,7 +110,7 @@ class WebYouTube:
                     score = self.__get_youtube_score(i['snippet']['title'],
                                                      item.name,
                                                      artist,
-                                                     item.album)
+                                                     item.album.name)
                     if score < best:
                         best = score
                     elif score == best:

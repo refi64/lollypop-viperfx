@@ -600,6 +600,8 @@ class Container:
                 items = Lp().albums.get_randoms()
             elif genre_ids and genre_ids[0] == Type.SPOTIFY:
                 items = Lp().tracks.get_charts_ids(genre_ids)
+            elif genre_ids and genre_ids[0] == Type.ITUNES:
+                items = Lp().albums.get_charts_ids(genre_ids)
             elif artist_ids and artist_ids[0] == Type.CHARTS:
                 items = Lp().albums.get_charts_ids(genre_ids)
             else:
