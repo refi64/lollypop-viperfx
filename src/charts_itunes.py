@@ -116,7 +116,7 @@ class ItunesCharts:
         if self.__stop:
             return
         country = getdefaultlocale()[0][3:]
-        itunes_ids = self.__get_genre_ids()
+        itunes_ids = list(self.__GENRES.values())
         self.__update_for_url(self.__ALL % (country, self.__LIMIT))
         for itunes_id in itunes_ids:
             if self.__stop:
@@ -219,18 +219,3 @@ class ItunesCharts:
         except Exception as e:
             print("ItunesCharts::__get_ids:", e)
         return items
-
-    def __get_genre_ids(self):
-        """
-            Get genre ids
-            @return ids as [int]
-        """
-        # Calculate genres available in db and in itunes
-        itunes_ids = []
-        for genre in Lp().genres.get_names():
-            for itunes_genre in self.__GENRES.keys():
-                if genre.lower().find(itunes_genre) != -1:
-                    itunes_id = self.__GENRES[itunes_genre]
-                    if itunes_id not in itunes_ids:
-                        itunes_ids.append(itunes_id)
-        return itunes_ids
