@@ -90,6 +90,12 @@ class NotificationManager:
             self.__supports_actions = True
             self.__set_actions()
 
+        if 'persistence' in caps:
+                    self.__notification.set_hint(
+                        'transient',
+                        GLib.Variant('b', True),
+                    )
+
         Lp().player.connect(
             'current-changed',
             self.__on_current_changed,
