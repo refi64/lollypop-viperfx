@@ -68,6 +68,7 @@ class Application(Gtk.Application):
                             self,
                             application_id='org.gnome.Lollypop',
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        self.set_property('register-session', True)
         GLib.setenv('PULSE_PROP_media.role', 'music', True)
         GLib.setenv('PULSE_PROP_application.icon_name', 'lollypop', True)
 
@@ -116,6 +117,7 @@ class Application(Gtk.Application):
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
+        self.__listen_to_gnome_sm()
 
     def init(self):
         """
@@ -184,12 +186,11 @@ class Application(Gtk.Application):
         if not self.window:
             self.init()
             menu = self.__setup_app_menu()
-            # If GNOME/Unity, add appmenu
-            if is_gnome() or is_unity():
+            if self.prefers_app_menu():
                 self.set_app_menu(menu)
-            self.window = Window()
-            # If not GNOME/Unity add menu to toolbar
-            if not is_gnome() and not is_unity():
+                self.window = Window()
+            else:
+                self.window = Window()
                 self.window.setup_menu(menu)
             self.window.connect('delete-event', self.__hide_on_delete)
             self.window.init_list_one()
@@ -198,14 +199,6 @@ class Application(Gtk.Application):
             # We add to mainloop as we want to run
             # after player::restore_state() signals
             GLib.idle_add(self.window.toolbar.set_mark)
-            # Will not start sooner
-            # Ubuntu > 16.04
-            if Gtk.get_minor_version() > 18:
-                from lollypop.inhibitor import Inhibitor
-            # Ubuntu <= 16.04, Debian Jessie, ElementaryOS
-            else:
-                from lollypop.inhibitor_legacy import Inhibitor
-            self.inhibitor = Inhibitor()
             self.charts = None
             if self.settings.get_value('show-charts'):
                 if GLib.find_program_in_path("youtube-dl") is not None:
@@ -220,7 +213,7 @@ class Application(Gtk.Application):
             t.daemon = True
             t.start()
 
-    def prepare_to_exit(self, action=None, param=None):
+    def prepare_to_exit(self, action=None, param=None, exit=True):
         """
             Save window position and view
         """
@@ -267,11 +260,11 @@ class Application(Gtk.Application):
             position = 0
         dump(position, open(DataPath + "/position.bin", "wb"))
         self.player.stop_all()
-        if self.window:
-            self.window.stop_all()
+        self.window.stop_all()
         if self.charts is not None:
             self.charts.stop()
-        self.quit()
+        if exit:
+            self.quit()
 
     def quit(self):
         """
@@ -494,6 +487,102 @@ class Application(Gtk.Application):
             @param application as Gio.Application
         """
         self.window.present()
+
+    def __on_sm_listener_ok(self, proxy, task):
+        """
+            Connect signals
+            @param proxy as Gio.DBusProxy
+            @param task as Gio.Task
+        """
+        try:
+            proxy.call('GetClients', None,
+                       Gio.DBusCallFlags.NO_AUTO_START,
+                       500, None, self.__on_get_clients)
+        except:
+            pass
+
+    def __on_sm_client_listener_ok(self, proxy, task, client):
+        """
+            Get app id
+            @param proxy as Gio.DBusProxy
+            @param task as Gio.Task
+            @param client as str
+        """
+        try:
+            proxy.call('GetAppId', None,
+                       Gio.DBusCallFlags.NO_AUTO_START,
+                       500, None, self.__on_get_app_id, client)
+        except:
+            pass
+
+    def __on_sm_client_private_listener_ok(self, proxy, task):
+        """
+            Connect signals
+            @param proxy as Gio.DBusProxy
+            @param task as Gio.Task
+        """
+        # Needed or object will be destroyed
+        self.__proxy = proxy
+        proxy.connect('g-signal', self.__on_signals)
+
+    def __on_get_clients(self, proxy, task):
+        """
+            Search us in clients
+            @param proxy as Gio.DBusProxy
+            @param task as Gio.Task
+        """
+        try:
+            for client in proxy.call_finish(task)[0]:
+                Gio.DBusProxy.new(self.get_dbus_connection(),
+                                  Gio.DBusProxyFlags.NONE, None,
+                                  'org.gnome.SessionManager',
+                                  client,
+                                  'org.gnome.SessionManager.Client', None,
+                                  self.__on_sm_client_listener_ok, client)
+        except:
+            pass
+
+    def __on_get_app_id(self, proxy, task, client):
+        """
+            Connect signals if we are this client
+            @param proxy as Gio.DBusProxy
+            @param task as Gio.Task
+            @param client as str
+        """
+        try:
+            if proxy.call_finish(task)[0] == "org.gnome.Lollypop":
+                Gio.DBusProxy.new(self.get_dbus_connection(),
+                                  Gio.DBusProxyFlags.NONE, None,
+                                  'org.gnome.SessionManager',
+                                  client,
+                                  'org.gnome.SessionManager.ClientPrivate',
+                                  None,
+                                  self.__on_sm_client_private_listener_ok)
+        except:
+            pass
+
+    def __on_signals(self, proxy, sender, signal, parameters):
+        """
+            Connect to Session Manager QueryEndSession signal
+        """
+        if signal == "EndSession":
+            # Save session, do not quit as we may be killed to quickly
+            # to be able to VACUUM database
+            self.prepare_to_exit(False)
+
+    def __listen_to_gnome_sm(self):
+        """
+            Connect to GNOME session manager
+        """
+        try:
+            Gio.DBusProxy.new(self.get_dbus_connection(),
+                              Gio.DBusProxyFlags.NONE, None,
+                              'org.gnome.SessionManager',
+                              '/org/gnome/SessionManager',
+                              'org.gnome.SessionManager', None,
+                              self.__on_sm_listener_ok)
+        except:
+            pass
 
     def __settings_dialog(self, action=None, param=None):
         """

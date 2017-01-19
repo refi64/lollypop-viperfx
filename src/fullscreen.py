@@ -14,7 +14,6 @@ from gi.repository import Gtk, Gdk, GLib
 
 from datetime import datetime
 
-from lollypop.inhibitor import Inhibitor
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_next import NextPopover
 from lollypop.controllers import InfosController, PlaybackController
@@ -115,7 +114,9 @@ class FullScreen(Gtk.Window, InfosController,
         if Lp().player.next_track.id != Type.RADIOS:
             self._next_popover.show()
         # Disable idle
-        Lp().inhibitor.inhibit(Inhibitor.IDLE)
+        self.__cookie = Lp().inhibit(Lp().window,
+                                     Gtk.ApplicationInhibitFlags.IDLE,
+                                     None)
 
     def do_hide(self):
         """
@@ -137,8 +138,7 @@ class FullScreen(Gtk.Window, InfosController,
             GLib.source_remove(self.__timeout2)
         self._next_popover.set_relative_to(None)
         self._next_popover.hide()
-        # Enable idle
-        Lp().inhibitor.uninhibit(Inhibitor.IDLE)
+        Lp().uninhibit(self.__cookie)
 
     def on_current_changed(self, player):
         """

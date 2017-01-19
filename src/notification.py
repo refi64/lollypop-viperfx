@@ -30,7 +30,8 @@ class NotificationManager:
         self.__inhibitor = False
         self.__fully_initted = False
         self.__supports_actions = False
-        self.__notification = GioNotify.async_init('Lollypop', self.__on_init_finish)
+        self.__notification = GioNotify.async_init('Lollypop',
+                                                   self.__on_init_finish)
 
     def send(self, message, sub=""):
         """
@@ -40,7 +41,7 @@ class NotificationManager:
         """
         if not self.__fully_initted:
             return
-        
+
         if self.__supports_actions:
             self.__notification.clear_actions()
 
@@ -64,6 +65,11 @@ class NotificationManager:
 #######################
 
     def __on_init_finish(self, info, caps):
+        """
+            Set actions et connect signals
+            @param info as {str:str}
+            @param caps as [str]
+        """
         self.__notification.set_hint(
             'category',
             GLib.Variant('s', 'x-gnome.music'),
@@ -80,15 +86,15 @@ class NotificationManager:
                 GLib.Variant('b', True),
             )
 
-        if 'persistence' in caps:
-            self.__notification.set_hint(
-                'transient',
-                GLib.Variant('b', True),
-            )
-
         if 'actions' in caps:
             self.__supports_actions = True
             self.__set_actions()
+
+        if 'persistence' in caps:
+                    self.__notification.set_hint(
+                        'transient',
+                        GLib.Variant('b', True),
+                    )
 
         Lp().player.connect(
             'current-changed',

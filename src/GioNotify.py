@@ -32,22 +32,12 @@ class GioNotify(Gio.DBusProxy):
         REASON_CLOSEMETHOD = 3
         REASON_UNDEFINED = 4
 
-        @property
-        def explanation(self):
-            value = self.value
-            if value == 1:
-                return 'The notification expired.'
-            elif value == 2:
-                return 'The notification was dismissed by the user.'
-            elif value == 3:
-                return 'The notification was closed by a call to CloseNotification.'
-            elif value == 4:
-                return 'The notification was closed by undefined/reserved reasons.'
-
     __gtype_name__ = 'GioNotify'
     __gsignals__ = {
-        'action-invoked': (GObject.SignalFlags.RUN_FIRST, None, (GObject.TYPE_STRING,)),
-        'closed': (GObject.SignalFlags.RUN_FIRST, None, (GObject.TYPE_PYOBJECT,)),
+        'action-invoked': (GObject.SignalFlags.RUN_FIRST,
+                           None, (GObject.TYPE_STRING,)),
+        'closed': (GObject.SignalFlags.RUN_FIRST,
+                   None, (GObject.TYPE_PYOBJECT,)),
     }
 
     def __init__(self, **kwargs):
@@ -154,9 +144,11 @@ class GioNotify(Gio.DBusProxy):
         def on_Notify_finish(self, result):
             self._replace_id = self.call_finish(result).unpack()[0]
 
-        args = GLib.Variant('(susssasa{sv}i)', (self._app_name, self._replace_id,
+        args = GLib.Variant('(susssasa{sv}i)', (self._app_name,
+                                                self._replace_id,
                                                 icon, summary, body,
-                                                self._actions, self._hints, self.time_out))
+                                                self._actions, self._hints,
+                                                self.time_out))
 
         self.call(
             'Notify',
