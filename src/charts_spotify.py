@@ -30,10 +30,12 @@ class SpotifyCharts:
 
     __ALL = "https://spotifycharts.com/regional/%s/weekly/latest/download"
 
-    def __init__(self):
+    def __init__(self, time):
         """
             Init charts
+            @param time as int
         """
+        self.__time = time
         self.__cancel = Gio.Cancellable.new()
         self.__stop = False
 
@@ -78,7 +80,7 @@ class SpotifyCharts:
         ids = self.__get_ids(url)
         web = Web()
         search = SpotifySearch()
-        popularity = len(ids)
+        position = len(ids)
         while ids:
             sleep(10)
             track_id = ids.pop(0)
@@ -86,10 +88,10 @@ class SpotifyCharts:
             if self.__stop:
                 return
             if album is None:
-                popularity -= 1
+                position -= 1
                 continue
             if album.subitems:
-                album.subitems[0].popularity = popularity
+                album.subitems[0].mtime = position * self.__time
             else:
                 continue
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (
@@ -97,7 +99,7 @@ class SpotifyCharts:
                                                                 album.artists,
                                                                 track_id))
             web.save_album_thread(album, DbPersistent.CHARTS, [Type.SPOTIFY])
-            popularity -= 1
+            position -= 1
 
     def __get_ids(self, url):
         """

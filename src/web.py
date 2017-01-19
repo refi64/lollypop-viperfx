@@ -159,8 +159,8 @@ class Web(GObject.Object):
                 return (None, None)
             # Store popularity in mtime for web item
             # Hack but mtime is unused for web items
-            if uri.startswith("http") and item.popularity:
-                Lp().tracks.set_mtime(track_id, item.popularity)
+            if uri.startswith("http"):
+                Lp().tracks.set_mtime(track_id, item.mtime)
             album_id = Lp().tracks.get_album_id(track_id)
             t.update_track(track_id, [], genre_ids)
             t.update_album(album_id, [], genre_ids, None)
@@ -191,7 +191,8 @@ class Web(GObject.Object):
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
                                        item.year, 0, 0,
-                                       0, item.popularity, persistent)
+                                       0, item.mtime,
+                                       persistent)
             t.update_track(track_id, artist_ids, genre_ids)
             t.update_album(album_id, album_artist_ids, genre_ids, None)
             sql.commit()

@@ -79,10 +79,12 @@ class ItunesCharts:
         "https://itunes.apple.com/%s/rss/topalbums/limit=%s/genre=%s/json"
     __INFO = "https://itunes.apple.com/lookup?id=%s&entity=song&country=%s"
 
-    def __init__(self):
+    def __init__(self, time):
         """
             Init charts
+            @param time as int
         """
+        self.__time = time
         self.__cancel = Gio.Cancellable.new()
         self.__stop = False
 
@@ -145,6 +147,8 @@ class ItunesCharts:
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
+            if album.subitems:
+                album.subitems[0].mtime = self.__time
             t = TagReader()
             genre_ids = t.add_genres(itunes_genre)
             genre_ids.append(Type.ITUNES)

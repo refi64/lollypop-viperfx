@@ -11,9 +11,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from threading import Thread
+from time import time
 
 from lollypop.charts_itunes import ItunesCharts
 from lollypop.charts_spotify import SpotifyCharts
+from lollypop.define import Lp
 
 
 class Charts:
@@ -25,7 +27,9 @@ class Charts:
         """
             Init charts
         """
-        self.__providers = [SpotifyCharts(), ItunesCharts()]
+        self.__time = time()
+        self.__providers = [SpotifyCharts(self.__time),
+                            ItunesCharts(self.__time)]
 
     def update(self):
         """
@@ -50,5 +54,9 @@ class Charts:
             Update charts
             @thread safe
         """
+        # Remove charts older than one week
+        t = self.__time - 604800
+        Lp().db.del_tracks(Lp().tracks.get_old_charts_track_ids(t))
+        # Update charts
         for provider in self.__providers:
             provider.update()

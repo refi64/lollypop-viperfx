@@ -133,9 +133,10 @@ class GenresDatabase:
                                  (Type.CHARTS,))
             return list(itertools.chain(*result))
 
-    def get_charts(self):
+    def get_charts(self, filter=Type.CHARTS):
         """
             Get genre for charts
+            @param filter as Type
             @return [(id as int, name as string)]
         """
         with SqlCursor(Lp().db) as sql:
@@ -148,7 +149,7 @@ class GenresDatabase:
                                     WHERE AG.album_id=album_genres.album_id)\
                                   ORDER BY genres.name\
                                   COLLATE NOCASE COLLATE LOCALIZED",
-                                 (Type.CHARTS,))
+                                 (filter,))
             return list(result)
 
     def clean(self, genre_id):

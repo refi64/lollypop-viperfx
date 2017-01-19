@@ -153,6 +153,7 @@ class TracksDatabase:
             if not get_network_available():
                 request += " AND tracks.persistent=%s" % DbPersistent.NONE
             request += order
+            request += " LIMIT 200"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
@@ -614,32 +615,6 @@ class TracksDatabase:
                                   WHERE persistent=0")
             return list(itertools.chain(*result))
 
-    def get_old_from_charts(self, limit):
-        """
-            Return old tracks from charts
-            @param limit as int
-            @return track ids as [int]
-        """
-        with SqlCursor(Lp().db) as sql:
-            # Get charts album count
-            result = sql.execute("SELECT COUNT(DISTINCT(album_id))\
-                                  FROM tracks\
-                                  WHERE persistent=3")
-            v = result.fetchone()
-            count = v[0] if v is not None else 0
-            if count > limit:
-                diff = count - limit
-                result = sql.execute("SELECT DISTINCT(album_id)\
-                                      FROM tracks\
-                                      WHERE persistent=3 LIMIT %s" % diff)
-            v = result.fetchone()
-            album_id = v[0] if v is not None else None
-            if album_id is not None:
-                result = sql.execute("SELECT rowid FROM tracks\
-                                     WHERE album_id=?", (album_id,))
-                return list(itertools.chain(*result))
-            return []
-
     def get_randoms(self):
         """
             Return random tracks
@@ -710,6 +685,20 @@ class TracksDatabase:
             if v is not None:
                 return v[0]
             return 0
+
+    def get_old_charts_track_ids(self, time):
+        """
+            Return old tracks from charts
+            @param time as int
+            @return track ids as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            # First tracks loaded by play on search
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE persistent=? AND\
+                                  mtime < ?",
+                                 (DbPersistent.CHARTS, time))
+            return list(itertools.chain(*result))
 
     def set_mtime(self, track_id, mtime):
         """

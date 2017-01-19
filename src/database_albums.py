@@ -841,6 +841,7 @@ class AlbumsDatabase:
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += order
+            request += " LIMIT 200"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
