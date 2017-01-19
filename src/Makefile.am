@@ -27,8 +27,6 @@ app_PYTHON = \
     downloader.py\
     fastscroll.py\
     fullscreen.py\
-    inhibitor.py\
-    inhibitor_legacy.py\
     inotify.py\
     lastfm.py\
     lio.py\

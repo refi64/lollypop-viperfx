@@ -65,6 +65,11 @@ class NotificationManager:
 #######################
 
     def __on_init_finish(self, info, caps):
+        """
+            Set actions et connect signals
+            @param info as {str:str}
+            @param caps as [str]
+        """
         self.__notification.set_hint(
             'category',
             GLib.Variant('s', 'x-gnome.music'),

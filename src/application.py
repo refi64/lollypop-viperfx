@@ -68,6 +68,7 @@ class Application(Gtk.Application):
                             self,
                             application_id='org.gnome.Lollypop',
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        self.set_property('register-session', True)
         GLib.setenv('PULSE_PROP_media.role', 'music', True)
         GLib.setenv('PULSE_PROP_application.icon_name', 'lollypop', True)
 
@@ -198,14 +199,6 @@ class Application(Gtk.Application):
             # We add to mainloop as we want to run
             # after player::restore_state() signals
             GLib.idle_add(self.window.toolbar.set_mark)
-            # Will not start sooner
-            # Ubuntu > 16.04
-            if Gtk.get_minor_version() > 18:
-                from lollypop.inhibitor import Inhibitor
-            # Ubuntu <= 16.04, Debian Jessie, ElementaryOS
-            else:
-                from lollypop.inhibitor_legacy import Inhibitor
-            self.inhibitor = Inhibitor()
             self.charts = None
             if self.settings.get_value('show-charts'):
                 if GLib.find_program_in_path("youtube-dl") is not None:
