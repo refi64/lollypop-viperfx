@@ -109,4 +109,5 @@ app_PYTHON = \
     widgets_track.py\
     widgets_web.py\
     wikipedia.py\
-    window.py
+    window.py\
+    GioNotify.py

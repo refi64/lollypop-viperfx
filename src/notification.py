@@ -30,7 +30,8 @@ class NotificationManager:
         self.__inhibitor = False
         self.__fully_initted = False
         self.__supports_actions = False
-        self.__notification = GioNotify.async_init('Lollypop', self.__on_init_finish)
+        self.__notification = GioNotify.async_init('Lollypop',
+                                                   self.__on_init_finish)
 
     def send(self, message, sub=""):
         """
@@ -40,7 +41,7 @@ class NotificationManager:
         """
         if not self.__fully_initted:
             return
-        
+
         if self.__supports_actions:
             self.__notification.clear_actions()
 
@@ -77,12 +78,6 @@ class NotificationManager:
         if 'action-icons' in caps:
             self.__notification.set_hint(
                 'action-icons',
-                GLib.Variant('b', True),
-            )
-
-        if 'persistence' in caps:
-            self.__notification.set_hint(
-                'transient',
                 GLib.Variant('b', True),
             )
 
