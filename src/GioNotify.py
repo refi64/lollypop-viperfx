@@ -18,27 +18,12 @@
 # <https://github.com/JasonLG1979/possibly-useful-scraps/wiki/GioNotify>
 # for documentation.
 
-from enum import Enum
-
-from gi.repository import GLib, GObject, Gio
+from gi.repository import GLib, Gio
 
 
 class GioNotify(Gio.DBusProxy):
 
-    # Notification Closed Reason Constants.
-    class Closed(Enum):
-        REASON_EXPIRED = 1
-        REASON_DISMISSED = 2
-        REASON_CLOSEMETHOD = 3
-        REASON_UNDEFINED = 4
-
     __gtype_name__ = 'GioNotify'
-    __gsignals__ = {
-        'action-invoked': (GObject.SignalFlags.RUN_FIRST,
-                           None, (GObject.TYPE_STRING,)),
-        'closed': (GObject.SignalFlags.RUN_FIRST,
-                   None, (GObject.TYPE_PYOBJECT,)),
-    }
 
     def __init__(self, **kwargs):
         super().__init__(
@@ -49,10 +34,6 @@ class GioNotify(Gio.DBusProxy):
             **kwargs
         )
 
-        self.time_out = -1
-        self._last_signal = None
-        self._caps = None
-        self._server_info = None
         self._replace_id = 0
         self._actions = []
         self._callbacks = {}
@@ -74,71 +55,14 @@ class GioNotify(Gio.DBusProxy):
 
         def on_GetCapabilities_finish(self, result, callback):
             caps = self.call_finish(result).unpack()[0]
-            user_data = callback, caps
-            self.call(
-                'GetServerInformation',
-                None,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                None,
-                on_GetServerInformation_finish,
-                user_data,
-            )
 
-        def on_GetServerInformation_finish(self, result, user_data):
-            callback, caps = user_data
-            info = self.call_finish(result).unpack()
-            self._server_info = {
-                'name': info[0],
-                'vendor': info[1],
-                'version': info[2],
-                'spec_version': info[3],
-            }
-
-            self._caps = caps
             self._app_name = app_name
 
-            callback(self._server_info, self._caps)
+            callback(caps)
 
         self = cls()
         self.init_async(GLib.PRIORITY_DEFAULT, None, on_init_finish, callback)
         return self
-
-    @classmethod
-    def sync_init(cls, app_name):
-        self = cls()
-        self.init()
-        self._caps = self.call_sync(
-            'GetCapabilities',
-            None,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            None).unpack()[0]
-
-        info = self.call_sync(
-            'GetServerInformation',
-            None,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            None).unpack()
-
-        self._server_info = {
-            'name': info[0],
-            'vendor': info[1],
-            'version': info[2],
-            'spec_version': info[3],
-        }
-
-        self._app_name = app_name
-        return self
-
-    @property
-    def capabilities(self):
-        return self._caps
-
-    @property
-    def server_information(self):
-        return self._server_info
 
     def show_new(self, summary, body, icon):
         def on_Notify_finish(self, result):
@@ -148,7 +72,7 @@ class GioNotify(Gio.DBusProxy):
                                                 self._replace_id,
                                                 icon, summary, body,
                                                 self._actions, self._hints,
-                                                self.time_out))
+                                                -1))
 
         self.call(
             'Notify',
@@ -157,18 +81,6 @@ class GioNotify(Gio.DBusProxy):
             -1,
             None,
             on_Notify_finish,
-        )
-
-    def close(self):
-        if self._replace_id == 0:
-            return
-        self.call(
-            'CloseNotification',
-            GLib.Variant('(u)', (self._replace_id,)),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            None,
-            None,
         )
 
     def add_action(self, action_id, label, callback):
@@ -191,17 +103,5 @@ class GioNotify(Gio.DBusProxy):
         # We only care about our notifications.
         if id != self._replace_id:
             return
-        # In GNOME Shell at least this stops multiple
-        # redundant 'NotificationClosed' signals from being emmitted.
-        if (id, signal_name) == self._last_signal:
-            return
-        self._last_signal = id, signal_name
         if signal_name == 'ActionInvoked':
-            self.emit('action-invoked', signal_value)
             self._callbacks[signal_value]()
-        else:
-            self.emit('closed', GioNotify.Closed(signal_value))
-
-    def __getattr__(self, name):
-        # PyGObject ships an override that breaks our usage.
-        return object.__getattr__(self, name)
