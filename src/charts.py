@@ -28,8 +28,8 @@ class Charts:
             Init charts
         """
         self.__time = int(time())
-        self.__providers = [ItunesCharts(self.__time),
-                            SpotifyCharts(self.__time)]
+        self.__providers = [SpotifyCharts(self.__time),
+                            ItunesCharts(self.__time)]
 
     def update(self):
         """

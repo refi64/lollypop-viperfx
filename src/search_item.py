@@ -45,11 +45,12 @@ class SearchItem:
             artist_id = Lp().artists.get_id(artist)
             artist_ids.append(artist_id)
         if self.is_track:
-            for track_id in Lp().tracks.get_ids_for_name(self.name):
-                db_artist_ids = Lp().tracks.get_artist_ids(track_id)
-                union = list(set(artist_ids) & set(db_artist_ids))
-                if union == db_artist_ids:
-                    return (True, track_id)
+            album_id = Lp().albums.get_id(self.album.name, artist_ids, True)
+            track_id = Lp().tracks.get_id_by(self.name,
+                                             album_id,
+                                             artist_ids)
+            if track_id is not None:
+                return (True, track_id)
         else:
             album_ids = Lp().albums.get_ids(artist_ids, [])
             for album_id in album_ids:

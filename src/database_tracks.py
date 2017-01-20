@@ -155,19 +155,6 @@ class TracksDatabase:
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_ids_for_name(self, name):
-        """
-            Return tracks ids with name
-            @param name as str
-            @return track id as [int]
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid\
-                                  FROM tracks WHERE name=?\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (name,))
-            return list(itertools.chain(*result))
-
     def get_id_by_uri(self, uri):
         """
             Return track id for uri
@@ -182,7 +169,7 @@ class TracksDatabase:
                 return v[0]
             return None
 
-    def get_id_by(self, name, album_id):
+    def get_id_by(self, name, album_id, artist_ids):
         """
             Return track id for uri
             @param name as str
@@ -190,10 +177,20 @@ class TracksDatabase:
             @return track id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE name = ?\
-                                  AND album_id = ?",
-                                 (name, album_id))
+            filters = (name, album_id) + tuple(artist_ids)
+            request = "SELECT tracks.rowid FROM tracks\
+                       WHERE name = ?\
+                       AND album_id = ?\
+                       AND EXISTS (\
+                            SELECT rowid\
+                            FROM track_artists\
+                            WHERE track_artists.track_id=tracks.rowid\
+                            AND ("
+            for artist_id in artist_ids:
+                request += " track_artists.artist_id=? OR"
+            request += " 1=0))"
+            request += " COLLATE NOCASE"
+            result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
                 return v[0]

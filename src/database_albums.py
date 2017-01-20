@@ -373,6 +373,7 @@ class AlbumsDatabase:
                     request += " AND synced=%s" % Type.NONE
                 else:
                     request += " AND synced!=%s" % Type.NONE
+            request += " COLLATE NOCASE"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
