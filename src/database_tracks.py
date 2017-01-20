@@ -128,7 +128,7 @@ class TracksDatabase:
             @return albums ids as [int]
         """
         result = []
-        order = " ORDER BY popularity DESC,\
+        order = " ORDER BY mtime DESC,\
                  artists.sortname\
                  COLLATE NOCASE COLLATE LOCALIZED,\
                  tracks.year,\

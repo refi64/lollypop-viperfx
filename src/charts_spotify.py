@@ -91,8 +91,7 @@ class SpotifyCharts:
                 position -= 1
                 continue
             for item in album.subitems:
-                item.mtime = self.__time
-                item.popularity = position
+                item.mtime = self.__time + position
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (
                                                                 album.name,
                                                                 album.artists,

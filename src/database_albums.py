@@ -832,7 +832,7 @@ class AlbumsDatabase:
         """
         result = []
         if genre_ids:
-            order = " ORDER BY popularity DESC,"
+            order = " ORDER BY mtime DESC,"
         else:
             order = " ORDER BY"
         order += " artists.sortname\

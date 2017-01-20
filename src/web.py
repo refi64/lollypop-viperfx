@@ -160,10 +160,8 @@ class Web(GObject.Object):
                 Lp().tracks.set_persistent(track_id, DbPersistent.EXTERNAL)
                 return (None, None)
             album_id = Lp().tracks.get_album_id(track_id)
-            t.update_track(track_id, [], genre_ids,
-                           item.mtime, item.popularity)
-            t.update_album(album_id, [], genre_ids,
-                           item.mtime, None, item.album.popularity)
+            t.update_track(track_id, [], genre_ids, item.mtime)
+            t.update_album(album_id, [], genre_ids, item.album.mtime, None)
             return (None, None)
 
         with SqlCursor(Lp().db) as sql:

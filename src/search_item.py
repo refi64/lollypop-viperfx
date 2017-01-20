@@ -33,7 +33,6 @@ class SearchItem:
         self.subitems = []
         self.album = None
         self.mtime = 0
-        self.popularity = 0
 
     def exists_in_db(self):
         """

@@ -484,8 +484,7 @@ class TagReader(Discoverer):
 
         return (album_id, new)
 
-    def update_album(self, album_id, artist_ids,
-                     genre_ids, mtime, year, popularity=None):
+    def update_album(self, album_id, artist_ids, genre_ids, mtime, year):
         """
             Set album artists
             @param album id as int
@@ -493,7 +492,6 @@ class TagReader(Discoverer):
             @param genre ids as [int]
             @param mtime as int
             @param year as int
-            @param popularity as int
             @commit needed
         """
         # Set artist ids based on content
@@ -508,11 +506,8 @@ class TagReader(Discoverer):
         # Update year based on tracks
         year = Lp().albums.get_year_from_tracks(album_id)
         Lp().albums.set_year(album_id, year)
-        if popularity is not None:
-            Lp().albums.set_popularity(album_id, popularity, True)
 
-    def update_track(self, track_id, artist_ids,
-                     genre_ids, mtime, popularity=None):
+    def update_track(self, track_id, artist_ids, genre_ids, mtime):
         """
             Set track artists/genres
             @param track id as int
@@ -522,8 +517,6 @@ class TagReader(Discoverer):
             @param popularity as int
             @commit needed
         """
-        if popularity is not None:
-            Lp().tracks.set_popularity(track_id, popularity)
         # Set artists/genres for track
         for artist_id in artist_ids:
             Lp().tracks.add_artist(track_id, artist_id)

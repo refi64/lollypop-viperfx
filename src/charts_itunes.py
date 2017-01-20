@@ -147,7 +147,7 @@ class ItunesCharts:
             if album is None or not album.subitems:
                 position -= 1
                 continue
-            album.popularity = position
+            album.mtime = self.__time + position
             for item in album.subitems:
                 item.mtime = self.__time
             debug("ItunesCharts::__update_for_url(): %s - %s" % (

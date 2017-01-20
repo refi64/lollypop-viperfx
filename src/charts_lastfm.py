@@ -123,7 +123,6 @@ class LastfmCharts:
                                                                 item.artists))
                 search.stop()
                 search.disconnect_by_func(self.__on_item_found)
-                item.mtime = self.__time
-                item.popularity = position
+                item.mtime = self.__time + position
                 web = Web()
                 web.save_track(item, DbPersistent.CHARTS, [Type.LASTFM])
