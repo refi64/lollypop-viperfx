@@ -90,8 +90,9 @@ class SpotifyCharts:
             if album is None:
                 position -= 1
                 continue
-            if album.subitems:
-                album.subitems[0].mtime = position * self.__time
+            for item in album.subitems:
+                item.mtime = self.__time
+                item.popularity = position
             else:
                 continue
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (

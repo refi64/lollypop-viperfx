@@ -147,8 +147,8 @@ class ItunesCharts:
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
-            if album.subitems:
-                album.subitems[0].mtime = self.__time
+            for item in album.subitems:
+                item.mtime = self.__time
             t = TagReader()
             genre_ids = t.add_genres(itunes_genre)
             genre_ids.append(Type.ITUNES)

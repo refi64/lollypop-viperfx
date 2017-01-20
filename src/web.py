@@ -13,7 +13,6 @@
 from gi.repository import GObject, GLib
 
 from threading import Thread
-from time import time
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
@@ -160,7 +159,7 @@ class Web(GObject.Object):
             # Store popularity in mtime for web item
             # Hack but mtime is unused for web items
             if uri.startswith("http"):
-                Lp().tracks.set_mtime(track_id, item.mtime)
+                Lp().tracks.set_mtime(track_id, genre_ids, item.mtime)
             album_id = Lp().tracks.get_album_id(track_id)
             t.update_track(track_id, [], genre_ids)
             t.update_album(album_id, [], genre_ids, None)
@@ -176,7 +175,7 @@ class Web(GObject.Object):
             (album_id, new_album) = t.add_album(item.album.name,
                                                 album_artist_ids, "",
                                                 False, 0,
-                                                0, int(time()), True)
+                                                0, True)
             # FIXME: Check this, could move this in add_album()
             if new_album:
                 Lp().albums.set_synced(album_id, Type.NONE)
@@ -190,10 +189,8 @@ class Web(GObject.Object):
             # Add track to db
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
-                                       item.year, 0, 0,
-                                       0, item.mtime,
-                                       persistent)
-            t.update_track(track_id, artist_ids, genre_ids)
+                                       item.year, 0, 0, 0, persistent)
+            t.update_track(track_id, artist_ids, genre_ids, item.mtime)
             t.update_album(album_id, album_artist_ids, genre_ids, None)
             sql.commit()
 

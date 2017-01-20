@@ -94,7 +94,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Clean charts in db
         """
-        track_ids = Lp().tracks.get_charts()
+        track_ids = Lp().tracks.get_old_charts_track_ids(int(time()))
         Lp().db.del_tracks(track_ids)
         self.stop()
 
@@ -294,7 +294,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Restore stats
         (track_pop, track_rate, track_ltime, amtime,
          loved, album_pop, album_rate) = self.__history.get(name, duration)
-        # If nothing in stats, set mtime
+        # If nothing in stats, use track mtime
         if amtime == 0:
             amtime = mtime
 
@@ -311,7 +311,7 @@ class CollectionScanner(GObject.GObject, TagReader):
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
                                                uri, loved, album_pop,
-                                               album_rate, amtime, False)
+                                               album_rate, False)
 
         genre_ids = self.add_genres(genres)
 
@@ -320,11 +320,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         track_id = Lp().tracks.add(title, uri, duration,
                                    tracknumber, discnumber, discname,
                                    album_id, year, track_pop, track_rate,
-                                   track_ltime, mtime)
+                                   track_ltime)
 
         debug("CollectionScanner::add2db(): Update tracks")
-        self.update_track(track_id, artist_ids, genre_ids)
-        self.update_album(album_id, album_artist_ids, genre_ids, year)
+        self.update_track(track_id, artist_ids, genre_ids, mtime)
+        self.update_album(album_id, album_artist_ids, genre_ids, amtime, year)
         if new_album:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()

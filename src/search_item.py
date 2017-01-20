@@ -33,6 +33,7 @@ class SearchItem:
         self.subitems = []
         self.album = None
         self.mtime = 0
+        self.popularity = 0
 
     def exists_in_db(self):
         """
@@ -53,6 +54,6 @@ class SearchItem:
             album_ids = Lp().albums.get_ids(artist_ids, [])
             for album_id in album_ids:
                 album_name = Lp().albums.get_name(album_id)
-                if album_name.lower() == self.album_name.lower():
+                if album_name.lower() == self.name.lower():
                     return (True, album_id)
         return (False, None)

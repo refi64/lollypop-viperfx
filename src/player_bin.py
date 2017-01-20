@@ -350,8 +350,6 @@ class BinPlayer(BasePlayer):
             duration = reader.get_info(track.uri).get_duration() / 1000000000
             if duration != track.duration and duration > 0:
                 Lp().tracks.set_duration(track.id, duration)
-                # We modify mtime to be sure not looking for tags again
-                Lp().tracks.set_mtime(track.id, 1)
                 self._current_track.set_duration(duration)
                 GLib.idle_add(self.emit, 'duration-changed', track.id)
         except:
@@ -508,8 +506,7 @@ class BinPlayer(BasePlayer):
         """
         # Some radio streams send message tag every seconds!
         changed = False
-        if (self._current_track.persistent == DbPersistent.INTERNAL or
-            self._current_track.mtime != 0) and\
+        if self._current_track.persistent == DbPersistent.INTERNAL and\
             (self._current_track.id >= 0 or
              self._current_track.duration > 0.0):
             return

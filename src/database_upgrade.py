@@ -13,6 +13,7 @@
 from gi.repository import GLib
 
 import itertools
+from time import time
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
@@ -53,6 +54,7 @@ class DatabaseUpgrade:
             17: "ALTER TABLE albums ADD loved INT NOT NULL DEFAULT 0",
             18: self.__upgrade_18,
             19: self.__upgrade_19,
+            20: self.__upgrade_20,
                          }
 
     """
@@ -287,3 +289,119 @@ class DatabaseUpgrade:
             sql.execute("ALTER TABLE albums ADD rate\
                         INT NOT NULL DEFAULT -1")
             sql.commit()
+
+    def __upgrade_20(self):
+        """
+            Add mtimes tables
+        """
+        mtime = int(time())
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("ALTER TABLE album_genres\
+                         ADD mtime INT NOT NULL DEFAULT %s" % mtime)
+            sql.execute("ALTER TABLE track_genres\
+                         ADD mtime INT NOT NULL DEFAULT %s" % mtime)
+            # Remove mtimes from albums table
+            sql.execute("CREATE TEMPORARY TABLE backup(\
+                                          id INTEGER PRIMARY KEY,\
+                                          name TEXT NOT NULL,\
+                                          no_album_artist BOOLEAN NOT NULL,\
+                                          year INT,\
+                                          uri TEXT NOT NULL,\
+                                          popularity INT NOT NULL,\
+                                          rate INT NOT NULL,\
+                                          loved INT NOT NULL,\
+                                          synced INT NOT NULL)")
+            sql.execute("INSERT INTO backup\
+                            SELECT id,\
+                                   name,\
+                                   no_album_artist,\
+                                   year,\
+                                   uri,\
+                                   popularity,\
+                                   rate,\
+                                   loved,\
+                                   synced FROM albums")
+            sql.execute("DROP TABLE albums")
+            sql.execute("CREATE TABLE albums(\
+                                          id INTEGER PRIMARY KEY,\
+                                          name TEXT NOT NULL,\
+                                          no_album_artist BOOLEAN NOT NULL,\
+                                          year INT,\
+                                          uri TEXT NOT NULL,\
+                                          popularity INT NOT NULL,\
+                                          rate INT NOT NULL,\
+                                          loved INT NOT NULL,\
+                                          synced INT NOT NULL)")
+            sql.execute("INSERT INTO albums\
+                            SELECT id,\
+                                   name,\
+                                   no_album_artist,\
+                                   year,\
+                                   uri,\
+                                   popularity,\
+                                   rate,\
+                                   loved,\
+                                   synced FROM backup")
+            sql.execute("DROP TABLE backup")
+            # Remove mtimes from tracks table
+            sql.execute("CREATE TEMPORARY TABLE backup(\
+                                          id INTEGER PRIMARY KEY,\
+                                          name TEXT NOT NULL,\
+                                          uri TEXT NOT NULL,\
+                                          duration INT,\
+                                          tracknumber INT,\
+                                          discnumber INT,\
+                                          discname TEXT,\
+                                          album_id INT NOT NULL,\
+                                          year INT,\
+                                          popularity INT NOT NULL,\
+                                          rate INT NOT NULL,\
+                                          ltime INT NOT NULL,\
+                                          persistent INT NOT NULL)")
+            sql.execute("INSERT INTO backup\
+                            SELECT id,\
+                                   name,\
+                                   uri,\
+                                   duration,\
+                                   tracknumber,\
+                                   discnumber,\
+                                   discname,\
+                                   album_id,\
+                                   year,\
+                                   popularity,\
+                                   rate,\
+                                   ltime,\
+                                   persistent FROM tracks")
+            sql.execute("DROP TABLE tracks")
+            sql.execute("CREATE TABLE tracks(\
+                                          id INTEGER PRIMARY KEY,\
+                                          name TEXT NOT NULL,\
+                                          uri TEXT NOT NULL,\
+                                          duration INT,\
+                                          tracknumber INT,\
+                                          discnumber INT,\
+                                          discname TEXT,\
+                                          album_id INT NOT NULL,\
+                                          year INT,\
+                                          popularity INT NOT NULL,\
+                                          rate INT NOT NULL,\
+                                          ltime INT NOT NULL,\
+                                          persistent INT NOT NULL)")
+            sql.execute("INSERT INTO tracks\
+                            SELECT id,\
+                                   name,\
+                                   uri,\
+                                   duration,\
+                                   tracknumber,\
+                                   discnumber,\
+                                   discname,\
+                                   album_id,\
+                                   year,\
+                                   popularity,\
+                                   rate,\
+                                   ltime,\
+                                   persistent FROM backup")
+            sql.execute("DROP TABLE backup")
+            sql.commit()
+        # Clean all charts
+        Lp().db.del_tracks(Lp().tracks.get_old_charts_track_ids(mtime*2))

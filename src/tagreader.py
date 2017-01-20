@@ -452,7 +452,7 @@ class TagReader(Discoverer):
         return genre_ids
 
     def add_album(self, album_name, artist_ids,
-                  uri, loved, popularity, rate, mtime, remote):
+                  uri, loved, popularity, rate, remote):
         """
             Add album to db
             @param album name as string
@@ -462,7 +462,6 @@ class TagReader(Discoverer):
             @param loved as bool
             @param popularity as int
             @param rate as int
-            @param mtime as int
             @param remote as bool
             @return (album id as int, new as bool)
             @commit needed
@@ -478,19 +477,20 @@ class TagReader(Discoverer):
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids, parent_uri,
-                                       loved, popularity, rate, mtime)
+                                       loved, popularity, rate)
         # Now we have our album id, check if path doesn't change
         if Lp().albums.get_uri(album_id) != parent_uri:
             Lp().albums.set_uri(album_id, parent_uri)
 
         return (album_id, new)
 
-    def update_album(self, album_id, artist_ids, genre_ids, year):
+    def update_album(self, album_id, artist_ids, genre_ids, mtime, year):
         """
             Set album artists
             @param album id as int
             @param artist ids as [int]
             @param genre ids as [int]
+            @param mtime as int
             @param year as int
             @commit needed
         """
@@ -501,22 +501,23 @@ class TagReader(Discoverer):
                                     Lp().albums.calculate_artist_ids(album_id))
         # Update album genres
         for genre_id in genre_ids:
-            Lp().albums.add_genre(album_id, genre_id)
+            Lp().albums.add_genre(album_id, genre_id, mtime)
 
         # Update year based on tracks
         year = Lp().albums.get_year_from_tracks(album_id)
         Lp().albums.set_year(album_id, year)
 
-    def update_track(self, track_id, artist_ids, genre_ids):
+    def update_track(self, track_id, artist_ids, genre_ids, mtime):
         """
             Set track artists/genres
             @param track id as int
             @param artist ids as [int]
             @param genre ids as [int]
+            @param mtime as int
             @commit needed
         """
         # Set artists/genres for track
         for artist_id in artist_ids:
             Lp().tracks.add_artist(track_id, artist_id)
         for genre_id in genre_ids:
-            Lp().tracks.add_genre(track_id, genre_id)
+            Lp().tracks.add_genre(track_id, genre_id, mtime)
