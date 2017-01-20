@@ -121,10 +121,7 @@ class WebYouTube:
                     return None
                 else:
                     return dic[best]
-        except IndexError:
-            pass
         except Exception as e:
-            print("WebYouTube::__get_youtube_id():", e)
             self.__fallback = True
             return self.__get_youtube_id_fallback(item)
         return None

@@ -239,6 +239,8 @@ class Playlists(GObject.GObject):
         """
         if playlist_id == Type.LOVED:
             return self.LOVED
+        elif playlist_id == Type.SPOTIFY:
+            return _("Spotify charts")
 
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name\

@@ -508,6 +508,8 @@ class TagReader(Discoverer):
         # Update year based on tracks
         year = Lp().albums.get_year_from_tracks(album_id)
         Lp().albums.set_year(album_id, year)
+        if popularity is not None:
+            Lp().albums.set_popularity(album_id, popularity, True)
 
     def update_track(self, track_id, artist_ids,
                      genre_ids, mtime, popularity=None):
