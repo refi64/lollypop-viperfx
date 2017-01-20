@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
+
 import json
 
 from lollypop.utils import escape
@@ -79,9 +81,9 @@ class WebJmg90:
             if c in unescaped:
                 unescaped = unescaped.replace(c, ' ')
 
-        search = Lio.uri_escape_string(unescaped,
-                                       '',
-                                       True)
+        search = GLib.uri_escape_string(unescaped,
+                                        '',
+                                        True)
         try:
             # Strip /? as API doesn't like it
             f = Lio.File.new_for_uri("http://app.jgm90.com/cmapi/search/"

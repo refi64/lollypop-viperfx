@@ -84,9 +84,9 @@ class Downloader:
                                      "&q=%s&searchType=image" %
                                      (cs_api_key,
                                       GOOGLE_API_ID,
-                                      Lio.uri_escape_string(search,
-                                                            "",
-                                                            False)))
+                                      GLib.uri_escape_string(search,
+                                                             "",
+                                                             False)))
 
             (status, data, tag) = f.load_contents()
             if status:
@@ -132,7 +132,7 @@ class Downloader:
             @return (url as str/None, content as None)
         """
         try:
-            artist_formated = Lio.uri_escape_string(
+            artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(' ', '+')
             s = Lio.File.new_for_uri("https://api.deezer.com/search/artist/?"
                                      "q=%s&output=json&index=0&limit=1&" %
@@ -153,7 +153,7 @@ class Downloader:
             @return (url as str/None, content as None)
         """
         try:
-            artist_formated = Lio.uri_escape_string(
+            artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(' ', '+')
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
@@ -178,7 +178,7 @@ class Downloader:
         """
         image = None
         try:
-            album_formated = Lio.uri_escape_string(album, None, True)
+            album_formated = GLib.uri_escape_string(album, None, True)
             s = Lio.File.new_for_uri("https://api.deezer.com/search/album/?"
                                      "q=%s&output=json" %
                                      album_formated)
@@ -208,7 +208,7 @@ class Downloader:
         image = None
         artists_spotify_ids = []
         try:
-            artist_formated = Lio.uri_escape_string(
+            artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(' ', '+')
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
@@ -249,7 +249,7 @@ class Downloader:
         """
         image = None
         try:
-            album_formated = Lio.uri_escape_string(
+            album_formated = GLib.uri_escape_string(
                                 album, None, True).replace(' ', '+')
             s = Lio.File.new_for_uri("https://itunes.apple.com/search"
                                      "?entity=album&term=%s" % album_formated)
