@@ -437,6 +437,8 @@ class SelectionList(Gtk.Overlay):
             icon = 'lollypop-spotify'
         elif object_id == Type.ITUNES:
             icon = 'lollypop-itunes'
+        elif object_id == Type.LASTFM:
+            icon = 'lollypop-lastfm'
         return icon
 
     def __sort_items(self, model, itera, iterb, data):

@@ -12,6 +12,8 @@
 
 from gi.repository import Gio, GObject, Soup
 
+from lollypop.define import Lp
+
 
 class Lio:
     class File(GObject.Object, Gio.File):
@@ -44,5 +46,7 @@ class Lio:
                 else:
                     return Gio.File.load_contents(self, cancellable)
             except Exception as e:
-                print("Lio.load_contents()", e)
+                # FIXME Use debug, need to be moved outside utils.py
+                if Lp().debug:
+                    print("Lio.load_contents():",  e)
                 return (False, b'', "")

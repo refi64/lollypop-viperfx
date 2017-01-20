@@ -55,9 +55,23 @@ class NetworkSearch(SpotifySearch, ItunesSearch, GObject.GObject):
     def stop(self):
         self._cancel.cancel()
 
+    def do_tracks(self, name):
+        """
+            Populate items with tracks containing name
+            @param name as str
+            @return tracks/albums as [SearchItem]
+        """
+        if get_network_available():
+            if Lp().settings.get_value('search-itunes'):
+                ItunesSearch.tracks(self, name)
+            if Lp().settings.get_value('search-spotify'):
+                SpotifySearch.tracks(self, name)
+        self._finished = True
+        GLib.idle_add(self.emit, 'item-found')
+
     def do(self, name):
         """
-            Return tracks and albums containing name
+            Populate items with albums/tracks containing name
             @param name as str
             @return tracks/albums as [SearchItem]
         """

@@ -15,6 +15,7 @@ from time import time
 
 from lollypop.charts_itunes import ItunesCharts
 from lollypop.charts_spotify import SpotifyCharts
+from lollypop.charts_lastfm import LastfmCharts
 from lollypop.define import Lp
 
 
@@ -28,7 +29,8 @@ class Charts:
             Init charts
         """
         self.__time = int(time())
-        self.__providers = [SpotifyCharts(self.__time),
+        self.__providers = [LastfmCharts(self.__time),
+                            SpotifyCharts(self.__time),
                             ItunesCharts(self.__time)]
 
     def update(self):

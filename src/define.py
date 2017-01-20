@@ -126,7 +126,8 @@ class Type:
     CHARTS = -9
     SPOTIFY = -10
     ITUNES = -11
-    ALL = -12
+    LASTFM = -12
+    ALL = -13
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

@@ -46,9 +46,12 @@ class SpotifySearch:
                 for item in decode['tracks']['items']:
                     if item['name'].lower() in tracks:
                         continue
+                    album_item = SearchItem()
                     search_item = SearchItem()
                     search_item.is_track = True
                     search_item.name = item['name']
+                    album_item.name = item['name']
+                    search_item.album = album_item
                     tracks.append(search_item.name.lower())
                     search_item.tracknumber = int(item['track_number'])
                     search_item.discnumber = int(item['disc_number'])

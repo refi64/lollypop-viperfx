@@ -30,7 +30,7 @@ hicolor_icon256_DATA = icons/hicolor/256x256/apps/org.gnome.Lollypop.png
 hicolor_iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
 hicolor_iconscalable_DATA = icons/hicolor/scalable/apps/org.gnome.Lollypop-symbolic.svg
 hicolor_placescalabledir = $(datadir)/icons/hicolor/scalable/places
-hicolor_placescalable_DATA = icons/hicolor/scalable/apps/lollypop-spotify.svg icons/hicolor/scalable/apps/lollypop-itunes.svg
+hicolor_placescalable_DATA = icons/hicolor/scalable/apps/lollypop-spotify.svg icons/hicolor/scalable/apps/lollypop-itunes.svg icons/hicolor/scalable/apps/lollypop-lastfm.svg
 hicolor_icon_files = \
 	$(hicolor_icon16_DATA) \
 	$(hicolor_icon22_DATA) \

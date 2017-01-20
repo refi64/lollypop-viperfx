@@ -493,6 +493,7 @@ class Container:
         def setup(genres):
             genres.insert(0, (Type.SEPARATOR, ''))
             genres.insert(0, (Type.ITUNES, 'Itunes'))
+            genres.insert(0, (Type.LASTFM, 'Last.fm'))
             genres.insert(0, (Type.SPOTIFY, "Spotify"))
             self.__list_two.populate(genres)
             self.__list_two.mark_as_artists(False)
@@ -598,7 +599,8 @@ class Container:
                 items = Lp().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 items = Lp().albums.get_randoms()
-            elif genre_ids and genre_ids[0] == Type.SPOTIFY:
+            elif genre_ids and genre_ids[0] in [Type.SPOTIFY,
+                                                Type.LASTFM]:
                 items = Lp().tracks.get_charts_ids(genre_ids)
             elif genre_ids and genre_ids[0] == Type.ITUNES:
                 items = Lp().albums.get_charts_ids(genre_ids)
@@ -613,9 +615,10 @@ class Container:
             return items
 
         # Spotify albums contains only one tracks, show playlist view
-        if genre_ids and genre_ids[0] == Type.SPOTIFY:
+        if genre_ids and genre_ids[0] in [Type.SPOTIFY,
+                                          Type.LASTFM]:
             from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView([Type.SPOTIFY])
+            view = PlaylistsView(genre_ids)
             loader = Loader(target=load, view=view)
             loader.start()
         else:
