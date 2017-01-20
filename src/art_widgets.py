@@ -283,7 +283,7 @@ class ArtworkSearch(Gtk.Bin):
         try:
             for search in self.__get_current_searches():
                 url = "https://www.google.fr/search?q=%s&tbm=isch" %\
-                    Lio.uri_escape_string(search, None, True)
+                    GLib.uri_escape_string(search, None, True)
                 f = Lio.File.new_for_uri(url)
                 (status, data, tag) = f.load_contents()
                 if status:

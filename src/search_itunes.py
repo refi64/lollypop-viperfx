@@ -35,7 +35,7 @@ class ItunesSearch:
             @param name as str
         """
         try:
-            formated = Lio.uri_escape_string(name, None, True).replace(
+            formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
             s = Lio.File.new_for_uri("https://itunes.apple.com/search"
                                      "?entity=musicTrack&term=%s" % formated)
@@ -83,7 +83,7 @@ class ItunesSearch:
         """
         try:
             # Read album list
-            formated = Lio.uri_escape_string(name, None, True).replace(
+            formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
             s = Lio.File.new_for_uri("https://itunes.apple.com/search"
                                      "?entity=album&term=%s" % formated)

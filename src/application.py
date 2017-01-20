@@ -123,7 +123,6 @@ class Application(Gtk.Application):
         """
             Init main application
         """
-        self.fixed_775600 = Lio.check_fix_775600()
         self.__is_fs = False
         if Gtk.get_minor_version() > 18:
             cssProviderFile = Lio.File.new_for_uri(
@@ -350,7 +349,7 @@ class Application(Gtk.Application):
             if value > 0 and value < 6 and\
                     self.player.current_track.id is not None:
                 self.player.current_track.set_rate(value)
-        if options.contains('play-pause'):
+        elif options.contains('play-pause'):
             self.player.play_pause()
         elif options.contains('play-ids'):
             try:

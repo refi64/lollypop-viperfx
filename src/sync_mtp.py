@@ -474,6 +474,8 @@ class MtpSync:
                 pipeline = Gst.parse_launch(
                             'filesrc location="%s" ! decodebin\
                             ! audioconvert\
+                            ! audioresample\
+                            ! audio/x-raw,rate=44100,channels=2\
                             ! rgvolume pre-amp=6.0 headroom=10.0\
                             ! rglimiter ! audioconvert\
                             ! lamemp3enc target=quality quality=%s ! id3v2mux\
@@ -483,6 +485,8 @@ class MtpSync:
                 pipeline = Gst.parse_launch(
                             'filesrc location="%s" ! decodebin\
                             ! audioconvert\
+                            ! audioresample\
+                            ! audio/x-raw,rate=44100,channels=2\
                             ! lamemp3enc target=quality quality=%s\
                             ! id3v2mux\
                             ! filesink location="%s"'

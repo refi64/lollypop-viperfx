@@ -64,10 +64,9 @@ class NotificationManager:
 # PRIVATE             #
 #######################
 
-    def __on_init_finish(self, info, caps):
+    def __on_init_finish(self, caps):
         """
-            Set actions et connect signals
-            @param info as {str:str}
+            Set actions and connect signals
             @param caps as [str]
         """
         self.__notification.set_hint(
@@ -86,15 +85,15 @@ class NotificationManager:
                 GLib.Variant('b', True),
             )
 
+        if 'persistence' in caps:
+            self.__notification.set_hint(
+                'transient',
+                GLib.Variant('b', True),
+            )
+
         if 'actions' in caps:
             self.__supports_actions = True
             self.__set_actions()
-
-        if 'persistence' in caps:
-                    self.__notification.set_hint(
-                        'transient',
-                        GLib.Variant('b', True),
-                    )
 
         Lp().player.connect(
             'current-changed',

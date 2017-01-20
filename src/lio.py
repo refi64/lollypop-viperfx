@@ -10,52 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GObject, GLib
-
-import urllib.request
-from urllib.parse import quote
-from uuid import uuid4
-
-from lollypop.define import Lp
-
-
-class AppURLopener(urllib.request.URLopener):
-    version = "Mozilla/5.0 (X11; Linux x86_64;rv:10.0)"\
-              " Gecko/20100101 Firefox/10.0"
-
-
-class CancelException(Exception):
-    pass
+from gi.repository import Gio, GObject, Soup
 
 
 class Lio:
-    def check_fix_775600():
-        fixed = False
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                           'org.gtk.vfs.Daemon',
-                                           '/org/gtk/vfs/mounttracker',
-                                           'org.gtk.vfs.MountTracker', None)
-            proxy.call_sync('ListMounts', GLib.Variant('(b)', (False,)),
-                            Gio.DBusCallFlags.NO_AUTO_START, 500, None)
-            fixed = True
-        except Exception as e:
-            print("Disabling GVFS http module: "
-                  "https://bugzilla.gnome.org/show_bug.cgi?id=775600")
-        return fixed
-
-    def uri_escape_string(value, exclude, ignored):
-        if Lp().fixed_775600:
-            return GLib.uri_escape_string(value, exclude, ignored)
-        else:
-            if exclude is None:
-                exclude = ''
-            return quote(value, exclude)
-
     class File(GObject.Object, Gio.File):
         """
-            Workaround https://bugzilla.gnome.org/show_bug.cgi?id=775600
+            Extending Gio.File
+            - http download over libsoup
         """
         def new_for_uri(uri):
             f = Gio.File.new_for_uri(uri)
@@ -63,43 +25,24 @@ class Lio:
             return f
 
         def load_contents(self, cancellable=None):
-            if Lp().fixed_775600:
-                return Gio.File.load_contents(self, cancellable)
-            else:
-                self.__cancel = cancellable
-                tmp_path = None
-                try:
-                    uri = self.get_uri()
-                    if uri.startswith("http"):
-                        tmp_path = "/tmp/lollypop_" + str(uuid4())
-                        opener = AppURLopener()
-                        opener.retrieve(uri, tmp_path,
-                                        reporthook=self.__check_cancel)
-                        f = Gio.File.new_for_path(tmp_path)
-                        (s, data, t) = f.load_contents(cancellable)
-                        f.delete()
-                        return (s, data, t)
-                    else:
-                        return Gio.File.load_contents(self, cancellable)
-                except CancelException:
-                    print("Lio::File::load_contents(): cancelled", uri)
-                    try:
-                        if tmp_path is not None:
-                            f = Gio.File.new_for_path(tmp_path)
-                            f.delete()
-                    except:
-                        pass
-                    return (False, None, "")
-                except Exception as e:
-                    print(e, uri)
-                    raise e
-
-    #######################
-    # PRIVATE             #
-    #######################
-        def __check_cancel(self, count, block, total):
             """
-                Just check for cancel and raise if needed
+                Load uri with libsoup (better performance)
+                @param cancellable as Gio.Cancellable
             """
-            if self.__cancel is not None and self.__cancel.is_cancelled():
-                raise CancelException
+            try:
+                uri = self.get_uri()
+                if uri.startswith("http") or uri.startswith("https"):
+                    session = Soup.Session.new()
+                    request = session.request(uri)
+                    stream = request.send(cancellable)
+                    bytes = bytearray(0)
+                    buf = stream.read_bytes(1024, cancellable).get_data()
+                    while buf:
+                        bytes += buf
+                        buf = stream.read_bytes(1024, cancellable).get_data()
+                    return (True, bytes, "")
+                else:
+                    return Gio.File.load_contents(self, cancellable)
+            except Exception as e:
+                print("Lio.load_contents()", e)
+                return (False, b'', "")

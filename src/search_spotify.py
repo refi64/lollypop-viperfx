@@ -35,7 +35,7 @@ class SpotifySearch:
             @param name as str
         """
         try:
-            formated = Lio.uri_escape_string(name, None, True).replace(
+            formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=track" % formated)
@@ -176,7 +176,7 @@ class SpotifySearch:
         """
         try:
             # Read album list
-            formated = Lio.uri_escape_string(name, None, True).replace(
+            formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % formated)
@@ -249,7 +249,7 @@ class SpotifySearch:
         """
         try:
             # Read album list
-            formated = Lio.uri_escape_string(name, None, True).replace(
+            formated = GLib.uri_escape_string(name, None, True).replace(
                                                                       ' ', '+')
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=album" % formated)
