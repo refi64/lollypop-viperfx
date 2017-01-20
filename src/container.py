@@ -788,7 +788,7 @@ class Container:
         if genre_ids[0] == Type.PLAYLISTS:
             self.__update_view_playlists(selected_ids)
         elif genre_ids[0] == Type.CHARTS:
-            self.__update_view_albums(selected_ids, [])
+            self.__update_view_albums(selected_ids, [Type.CHARTS])
         elif selected_ids[0] == Type.COMPILATIONS:
             self.__update_view_albums(genre_ids, selected_ids)
         else:

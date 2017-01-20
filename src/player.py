@@ -307,6 +307,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
             self._albums = Lp().albums.get_compilation_ids()
+        # We are in charts view with a genre
+        elif artist_ids and artist_ids[0] == Type.CHARTS:
+            self._albums = Lp().albums.get_charts_ids(genre_ids)
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,

@@ -612,7 +612,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if not Lp().player.is_party and not\
                     Lp().settings.get_enum('playback') == NextContext.STOP:
                 # If in artist view, reset album list
-                if self._filter_ids:
+                if self._filter_ids and Type.CHARTS not in self._filter_ids:
                     Lp().player.set_albums(track_id,
                                            self._filter_ids,
                                            self._album.genre_ids)
