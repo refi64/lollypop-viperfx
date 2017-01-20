@@ -91,13 +91,14 @@ class ContextWidget(Gtk.Grid):
         can_launch = False
 
         if self.__object.is_web:
-            if self.__object.genre_ids == [Type.CHARTS]:
+            if Type.CHARTS in self.__object.genre_ids:
                 if isinstance(self.__object, Album):
                     save = HoverWidget('document-save-symbolic',
                                        self.__save_object)
                     save.set_tooltip_text(_("Save into collection"))
                     save.set_margin_end(10)
                     save.show()
+                    self.add(save)
             else:
                 trash = HoverWidget('user-trash-symbolic',
                                     self.__remove_object)
@@ -107,6 +108,7 @@ class ContextWidget(Gtk.Grid):
                     trash.set_tooltip_text(_("Remove track"))
                 trash.set_margin_end(10)
                 trash.show()
+                self.add(trash)
         else:
             # Check portal for tag editor
             try:
@@ -128,11 +130,14 @@ class ContextWidget(Gtk.Grid):
                 edit.set_tooltip_text(_("Modify information"))
                 edit.set_margin_end(10)
                 edit.show()
+                self.add(edit)
 
-        playlist = HoverWidget('view-list-symbolic',
-                               self.__show_playlist_manager)
-        playlist.set_tooltip_text(_("Playlists"))
-        playlist.show()
+        if Type.CHARTS not in self.__object.genre_ids:
+            playlist = HoverWidget('view-list-symbolic',
+                                   self.__show_playlist_manager)
+            playlist.set_tooltip_text(_("Playlists"))
+            playlist.show()
+            self.add(playlist)
 
         if isinstance(self.__object, Album):
             if Lp().player.album_in_queue(self.__object):
@@ -144,21 +149,8 @@ class ContextWidget(Gtk.Grid):
                 queue.set_tooltip_text(_("Add to queue"))
             queue.set_margin_start(10)
             queue.show()
+            self.add(queue)
         else:
-            rating = RatingWidget(object)
-            rating.set_margin_top(5)
-            rating.set_margin_end(10)
-            rating.set_margin_bottom(5)
-            rating.set_property('halign', Gtk.Align.END)
-            rating.set_property('hexpand', True)
-            rating.show()
-
-            loved = LovedWidget(object)
-            loved.set_margin_end(5)
-            loved.set_margin_top(5)
-            loved.set_margin_bottom(5)
-            loved.show()
-
             if self.__object.is_web:
                 web = Gtk.LinkButton(self.__object.uri)
                 icon = Gtk.Image.new_from_icon_name('web-browser-symbolic',
@@ -178,23 +170,26 @@ class ContextWidget(Gtk.Grid):
                 search.set_tooltip_text(uri)
                 search.show_all()
 
-        if self.__object.is_web:
-            if self.__object.genre_ids == [Type.CHARTS]:
-                if isinstance(self.__object, Album):
-                    self.add(save)
-            else:
-                self.add(trash)
-        elif can_launch:
-            self.add(edit)
-        self.add(playlist)
-        if isinstance(self.__object, Album):
-            self.add(queue)
-        else:
-            if self.__object.album.is_web:
                 self.add(web)
                 self.add(search)
-            self.add(rating)
-            self.add(loved)
+
+            if Type.CHARTS not in self.__object.genre_ids:
+                rating = RatingWidget(object)
+                rating.set_margin_top(5)
+                rating.set_margin_end(10)
+                rating.set_margin_bottom(5)
+                rating.set_property('halign', Gtk.Align.END)
+                rating.set_property('hexpand', True)
+                rating.show()
+
+                loved = LovedWidget(object)
+                loved.set_margin_end(5)
+                loved.set_margin_top(5)
+                loved.set_margin_bottom(5)
+                loved.show()
+
+                self.add(rating)
+                self.add(loved)
 
 #######################
 # PRIVATE             #

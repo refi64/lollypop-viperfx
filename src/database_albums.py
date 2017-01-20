@@ -83,7 +83,7 @@ class AlbumsDatabase:
             if genre_id not in genres:
                 sql.execute("INSERT INTO "
                             "album_genres (album_id, genre_id, mtime)"
-                            "VALUES (?, ?)", (album_id, genre_id, mtime))
+                            "VALUES (?, ?, ?)", (album_id, genre_id, mtime))
 
     def del_genres(self, album_id):
         """
@@ -830,12 +830,15 @@ class AlbumsDatabase:
             @return albums ids as [int]
         """
         result = []
-        order = " ORDER BY popularity DESC,\
-                 artists.sortname\
-                 COLLATE NOCASE COLLATE LOCALIZED,\
-                 albums.year,\
-                 albums.name\
-                 COLLATE NOCASE COLLATE LOCALIZED"
+        if genre_ids:
+            order = " ORDER BY popularity DESC,"
+        else:
+            order = " ORDER BY"
+        order += " artists.sortname\
+                   COLLATE NOCASE COLLATE LOCALIZED,\
+                   albums.year,\
+                   albums.name\
+                   COLLATE NOCASE COLLATE LOCALIZED"
         with SqlCursor(Lp().db) as sql:
             filters = tuple([Type.CHARTS] + genre_ids)
             request = "SELECT DISTINCT albums.rowid FROM albums,\
@@ -854,7 +857,6 @@ class AlbumsDatabase:
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             request += order
-            request += " LIMIT 200"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 

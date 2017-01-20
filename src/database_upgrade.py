@@ -74,11 +74,11 @@ class DatabaseUpgrade:
                 try:
                     if isinstance(self._UPGRADES[i], str):
                         sql.execute(self._UPGRADES[i])
+                        sql.commit()
                     else:
                         self._UPGRADES[i]()
                 except Exception as e:
                     print("Database upgrade failed: ", e)
-            sql.commit()
             return len(self._UPGRADES)
 
 #######################

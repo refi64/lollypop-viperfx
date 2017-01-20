@@ -22,6 +22,7 @@ from lollypop.define import DbPersistent, Lp, Type
 from lollypop.utils import debug, get_network_available
 from lollypop.search_item import SearchItem
 from lollypop.tagreader import TagReader
+from lollypop.sqlcursor import SqlCursor
 from lollypop.lio import Lio
 
 
@@ -136,23 +137,29 @@ class ItunesCharts:
                                                               self.__LIMIT))
         web = Web()
         ids = self.__get_ids(url)
+        position = len(ids)
         while ids:
             sleep(10)
             (itunes_id, itunes_genre) = ids.pop(0)
             album = self.__get_album(itunes_id)
             if self.__stop:
                 return
-            if album is None:
+            if album is None or not album.subitems:
+                position -= 1
                 continue
+            album.popularity = position
+            for item in album.subitems:
+                item.mtime = self.__time
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
-            for item in album.subitems:
-                item.mtime = self.__time
             t = TagReader()
-            genre_ids = t.add_genres(itunes_genre)
+            with SqlCursor(Lp().db) as sql:
+                genre_ids = t.add_genres(itunes_genre)
+                sql.commit()
             genre_ids.append(Type.ITUNES)
             web.save_album_thread(album, DbPersistent.CHARTS, genre_ids)
+            position -= 1
 
     def __get_album(self, itunes_id):
         """

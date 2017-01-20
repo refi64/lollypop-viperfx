@@ -99,7 +99,7 @@ class TracksDatabase:
             if genre_id not in genres:
                 sql.execute("INSERT INTO "
                             "track_genres (track_id, genre_id, mtime)"
-                            "VALUES (?, ?)", (track_id, genre_id, mtime))
+                            "VALUES (?, ?, ?)", (track_id, genre_id, mtime))
 
     def del_genres(self, track_id):
         """
@@ -128,7 +128,7 @@ class TracksDatabase:
             @return albums ids as [int]
         """
         result = []
-        order = " ORDER BY mtime DESC,\
+        order = " ORDER BY popularity DESC,\
                  artists.sortname\
                  COLLATE NOCASE COLLATE LOCALIZED,\
                  tracks.year,\
@@ -152,7 +152,6 @@ class TracksDatabase:
             if not get_network_available():
                 request += " AND tracks.persistent=%s" % DbPersistent.NONE
             request += order
-            request += " LIMIT 200"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 

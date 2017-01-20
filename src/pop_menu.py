@@ -472,24 +472,6 @@ class TrackMenuPopover(Gtk.Popover):
         else:
             track_year = ""
 
-        rating = RatingWidget(track)
-        rating.set_margin_top(5)
-        rating.set_margin_bottom(5)
-        rating.set_property('halign', Gtk.Align.START)
-        rating.set_property('hexpand', True)
-        rating.show()
-
-        loved = LovedWidget(track)
-        loved.set_margin_end(5)
-        loved.set_margin_top(5)
-        loved.set_margin_bottom(5)
-        if track_year == "":
-            loved.set_property('halign', Gtk.Align.END)
-        else:
-            loved.set_property('halign', Gtk.Align.CENTER)
-        loved.set_property('hexpand', True)
-        loved.show()
-
         if track_year != "":
             year = Gtk.Label()
             year.set_text(track_year)
@@ -536,20 +518,41 @@ class TrackMenuPopover(Gtk.Popover):
             self.remove(menu_widget)
             grid.add(menu_widget)
 
-        if not track.album.is_web:
-            separator = Gtk.Separator()
-            separator.show()
-            grid.add(separator)
-
         hgrid = Gtk.Grid()
-        hgrid.add(rating)
-        hgrid.add(loved)
-        if track.album.is_web:
-            hgrid.add(web)
-            hgrid.add(search)
-        if track_year != "":
-            hgrid.add(year)
-        hgrid.show()
+        if Type.CHARTS not in track.genre_ids:
+            if not track.album.is_web:
+                separator = Gtk.Separator()
+                separator.show()
+                grid.add(separator)
+
+            rating = RatingWidget(track)
+            rating.set_margin_top(5)
+            rating.set_margin_bottom(5)
+            rating.set_property('halign', Gtk.Align.START)
+            rating.set_property('hexpand', True)
+            rating.show()
+
+            loved = LovedWidget(track)
+            loved.set_margin_end(5)
+            loved.set_margin_top(5)
+            loved.set_margin_bottom(5)
+            if track_year == "":
+                loved.set_property('halign', Gtk.Align.END)
+            else:
+                loved.set_property('halign', Gtk.Align.CENTER)
+            loved.set_property('hexpand', True)
+            loved.show()
+
+            hgrid.add(rating)
+            hgrid.add(loved)
+
+            if track.album.is_web:
+                hgrid.add(web)
+                hgrid.add(search)
+            if track_year != "":
+                hgrid.add(year)
+            hgrid.show()
+
         if track.album.is_web:
             grid.set_row_spacing(2)
             uri = Lp().tracks.get_uri(track.id)
@@ -668,7 +671,7 @@ class AlbumMenuPopover(Gtk.Popover):
             Lp().tracks.del_genres(track_id)
             Lp().tracks.add_genre(track_id, genre_id)
         for genre_id in orig_genre_ids:
-            if genre_id != Type.CHARTS:
+            if genre_id >= 0:
                 Lp().genres.clean(genre_id)
                 GLib.idle_add(Lp().scanner.emit, 'genre-updated',
                               genre_id, False)

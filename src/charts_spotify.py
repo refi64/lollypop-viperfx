@@ -87,14 +87,12 @@ class SpotifyCharts:
             album = search.get_track(track_id)
             if self.__stop:
                 return
-            if album is None:
+            if album is None or not album.subitems:
                 position -= 1
                 continue
             for item in album.subitems:
                 item.mtime = self.__time
                 item.popularity = position
-            else:
-                continue
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (
                                                                 album.name,
                                                                 album.artists,

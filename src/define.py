@@ -131,4 +131,4 @@ class Type:
     NEVER = -998
     DEVICES = -1000
     SEPARATOR = -2000
-    COMPILATIONS = -2001  # Changing this will break db
+    COMPILATIONS = -2001

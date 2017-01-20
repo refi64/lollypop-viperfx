@@ -105,7 +105,8 @@ class Web(GObject.Object):
             start += 1
             GLib.idle_add(self.emit, "progress", start / nb_items)
         GLib.idle_add(self.emit, "progress", 1)
-        if Lp().settings.get_value('artist-artwork'):
+        if Lp().settings.get_value('artist-artwork')and\
+                Type.CHARTS not in genre_ids:
             Lp().art.cache_artists_info()
         if album_id is not None:
             GLib.idle_add(self.emit, "saved", album_id)
@@ -126,7 +127,8 @@ class Web(GObject.Object):
         if track_id is None:
             return
         self.__save_cover(item, album_id)
-        if Lp().settings.get_value('artist-artwork'):
+        if Lp().settings.get_value('artist-artwork') and\
+                Type.CHARTS not in genre_ids:
             Lp().art.cache_artists_info()
         GLib.idle_add(self.emit, "saved", track_id)
 
@@ -145,6 +147,7 @@ class Web(GObject.Object):
             uri = helper.get_uri(item)
             if uri:
                 break
+
         # Don't found anything
         if not uri:
             return (None, None)
@@ -156,13 +159,11 @@ class Web(GObject.Object):
                     and persistent == DbPersistent.EXTERNAL:
                 Lp().tracks.set_persistent(track_id, DbPersistent.EXTERNAL)
                 return (None, None)
-            # Store popularity in mtime for web item
-            # Hack but mtime is unused for web items
-            if uri.startswith("http"):
-                Lp().tracks.set_mtime(track_id, genre_ids, item.mtime)
             album_id = Lp().tracks.get_album_id(track_id)
-            t.update_track(track_id, [], genre_ids)
-            t.update_album(album_id, [], genre_ids, None)
+            t.update_track(track_id, [], genre_ids,
+                           item.mtime, item.popularity)
+            t.update_album(album_id, [], genre_ids,
+                           item.mtime, None, item.album.popularity)
             return (None, None)
 
         with SqlCursor(Lp().db) as sql:
@@ -174,7 +175,7 @@ class Web(GObject.Object):
             album_artist_ids = t.add_album_artists(album_artist, "")
             (album_id, new_album) = t.add_album(item.album.name,
                                                 album_artist_ids, "",
-                                                False, 0,
+                                                False, item.album.popularity,
                                                 0, True)
             # FIXME: Check this, could move this in add_album()
             if new_album:
@@ -189,9 +190,11 @@ class Web(GObject.Object):
             # Add track to db
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
-                                       item.year, 0, 0, 0, persistent)
+                                       item.year, item.popularity,
+                                       0, 0, persistent)
             t.update_track(track_id, artist_ids, genre_ids, item.mtime)
-            t.update_album(album_id, album_artist_ids, genre_ids, None)
+            t.update_album(album_id, album_artist_ids,
+                           genre_ids, item.mtime, None)
             sql.commit()
 
         if persistent != DbPersistent.CHARTS:
