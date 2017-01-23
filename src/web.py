@@ -173,7 +173,7 @@ class Web(GObject.Object):
             album_artist_ids = t.add_album_artists(album_artist, "")
             (album_id, new_album) = t.add_album(item.album.name,
                                                 album_artist_ids, "",
-                                                False, item.album.popularity,
+                                                False, 0,
                                                 0, True)
             # FIXME: Check this, could move this in add_album()
             if new_album:
@@ -188,7 +188,7 @@ class Web(GObject.Object):
             # Add track to db
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
-                                       item.year, item.popularity,
+                                       item.year, 0,
                                        0, 0, persistent)
             t.update_track(track_id, artist_ids, genre_ids, item.mtime)
             t.update_album(album_id, album_artist_ids,
