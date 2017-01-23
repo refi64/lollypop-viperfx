@@ -295,7 +295,7 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="tooltip_text" translatable="yes">Configure lollypop appearance</property>
+            <property name="tooltip_text" translatable="yes">Configure Lollypop appearance</property>
             <property name="label" translatable="yes">Appearance</property>
           </object>
           <packing>
@@ -481,7 +481,7 @@
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="tooltip_text" translatable="yes">Configure lollypop behaviour</property>
+            <property name="tooltip_text" translatable="yes">Configure Lollypop behaviour</property>
             <property name="label" translatable="yes">Behaviour</property>
           </object>
           <packing>
@@ -980,7 +980,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Use Librefm</property>
+                    <property name="label" translatable="yes">Use Libre.fm</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1039,7 +1039,7 @@
                     <property name="halign">center</property>
                     <property name="margin_top">10</property>
                     <property name="label" translatable="yes">Google Web Services need a custom API key.
-Without one, you will reach default quota soon...
+Without one, you will reach default quota soon…
 Lollypop needs this to search artwork and music.</property>
                     <property name="justify">center</property>
                   </object>

@@ -65,7 +65,7 @@ http://www.onlinewebfonts.com/icon (Last.fm icon)
             </child>
             <child>
               <object class="GtkLinkButton" id="paypal">
-                <property name="label" translatable="yes">Paypal</property>
+                <property name="label" translatable="yes">PayPal</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

@@ -91,7 +91,7 @@ class TuneinPopover(Gtk.Popover):
         self.__current_url = url
         self.__back_btn.set_sensitive(False)
         self.__home_btn.set_sensitive(False)
-        self.__label.set_text(_("Please wait..."))
+        self.__label.set_text(_("Please wait…"))
         t = Thread(target=self.__populate, args=(url,))
         t.daemon = True
         t.start()
@@ -178,7 +178,7 @@ class TuneinPopover(Gtk.Popover):
                     GLib.idle_add(self.__show_not_found)
         except:
             GLib.idle_add(self.__show_not_found,
-                          _("Can't connect to TuneIn..."))
+                          _("Can't connect to TuneIn…"))
 
     def __add_items(self, items, url):
         """

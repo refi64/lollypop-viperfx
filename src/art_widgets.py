@@ -279,7 +279,7 @@ class ArtworkSearch(Gtk.Bin):
             return
         urls = []
         GLib.idle_add(self._label.set_text,
-                      _("Low quality, missing API key..."))
+                      _("Low quality, missing API key…"))
         try:
             for search in self.__get_current_searches():
                 url = "https://www.google.fr/search?q=%s&tbm=isch" %\

@@ -426,7 +426,7 @@ class ToolbarEnd(Gtk.Bin):
             @param tooltip as Gtk.Tooltip
         """
         if Lp().player.current_track.id == Type.EXTERNALS:
-            widget.set_tooltip_text(_("Externals tracks playing"))
+            widget.set_tooltip_text(_("External tracks"))
         elif Lp().player.get_queue():
             widget.set_tooltip_text(_("Queue"))
         elif Lp().player.get_user_playlist_ids():

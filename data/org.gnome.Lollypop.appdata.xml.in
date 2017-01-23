@@ -12,7 +12,8 @@
 	It provides:
   </_p>
   <ul>
-	<_li> mp3/4, ogg and flac playback</_li>
+	<_li> MP3, Ogg and FLAC playback</_li>
+        <_li> Web playback</_li>
 	<_li> Genre/Cover browsing</_li>
 	<_li> Genre/Artist/Cover browsing</_li>
 	<_li> Search</_li>
@@ -27,7 +28,7 @@
 	<_li> Last.fm support</_li>
 	<_li> Auto install codecs</_li>
 	<_li> HiDPI support</_li>
-	<_li> Tunein support</_li>
+	<_li> TuneIn support</_li>
  </ul>
  </description>
  <screenshots>
