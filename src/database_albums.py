@@ -909,16 +909,21 @@ class AlbumsDatabase:
                 result = sql.execute(request, filters)
             # Get albums for genre
             elif not artist_ids:
-                filters = (Type.CHARTS,) + tuple(genre_ids)
+                # Only show charts if wanted
+                if Type.CHARTS in genre_ids:
+                    filters = tuple(genre_ids)
+                else:
+                    filters = (Type.CHARTS,) + tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
                            album_genres as AG, artists, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
-                           AND albums.rowid=album_artists.album_id\
-                           AND ? NOT IN (\
-                                SELECT album_genres.genre_id\
-                                FROM album_genres\
-                                WHERE AG.album_id=album_genres.album_id)\
-                           AND AG.album_id=albums.rowid AND ("
+                           AND albums.rowid=album_artists.album_id "
+                if Type.CHARTS not in genre_ids:
+                    request += "AND ? NOT IN (\
+                                  SELECT album_genres.genre_id\
+                                  FROM album_genres\
+                                  WHERE AG.album_id=album_genres.album_id)"
+                request += " AND AG.album_id=albums.rowid AND ( "
                 for genre_id in genre_ids:
                     request += "AG.genre_id=? OR "
                 request += "1=0)"
