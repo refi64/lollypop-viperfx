@@ -152,8 +152,19 @@ class Web(GObject.Object):
         if not uri:
             return (None, None)
 
-        (exists, track_id) = item.exists_in_db()
+        # If album exists, is not in charts and we want to save
+        # a charts track to this album, abort!
+        # User already saved this album to collection,
+        # may have removed some tracks, do not add them again!
+        (exists, album_id) = item.album.exists_in_db()
+        if exists:
+            album_genre_ids = Lp().albums.get_genre_ids(album_id)
+            if Type.CHARTS not in album_genre_ids and\
+                    persistent == DbPersistent.CHARTS:
+                        return
+
         # Check if track needs to be updated
+        (exists, track_id) = item.exists_in_db()
         if exists:
             if Lp().tracks.get_persistent(track_id) == DbPersistent.NONE\
                     and persistent == DbPersistent.EXTERNAL:
