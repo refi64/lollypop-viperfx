@@ -106,7 +106,7 @@ class Web(GObject.Object):
             GLib.idle_add(self.emit, "progress", start / nb_items)
         GLib.idle_add(self.emit, "progress", 1)
         if Lp().settings.get_value('artist-artwork')and\
-                Type.CHARTS not in genre_ids:
+                persistent != DbPersistent.CHARTS:
             Lp().art.cache_artists_info()
         if album_id is not None:
             GLib.idle_add(self.emit, "saved", album_id)
@@ -128,7 +128,7 @@ class Web(GObject.Object):
             return
         self.__save_cover(item, album_id)
         if Lp().settings.get_value('artist-artwork') and\
-                Type.CHARTS not in genre_ids:
+                persistent != DbPersistent.CHARTS:
             Lp().art.cache_artists_info()
         GLib.idle_add(self.emit, "saved", track_id)
 
