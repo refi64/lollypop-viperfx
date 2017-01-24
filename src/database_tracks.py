@@ -95,11 +95,23 @@ class TracksDatabase:
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            genres = self.get_genre_ids(track_id)
-            if genre_id not in genres:
-                sql.execute("INSERT INTO "
-                            "track_genres (track_id, genre_id, mtime)"
-                            "VALUES (?, ?, ?)", (track_id, genre_id, mtime))
+            # Check if already exists:
+            result = sql.execute("SELECT mtime FROM track_genres\
+                                  WHERE track_id=? AND genre_id=?",
+                                 (track_id, genre_id))
+            v = result.fetchone()
+            if v is not None:
+                sql.execute("UPDATE track_genres\
+                             SET mtime=?\
+                             WHERE track_id=? AND genre_id=?",
+                            (mtime, track_id, genre_id))
+            else:
+                genres = self.get_genre_ids(track_id)
+                if genre_id not in genres:
+                    sql.execute("INSERT INTO\
+                                 track_genres (track_id, genre_id, mtime)\
+                                 VALUES (?, ?, ?)",
+                                (track_id, genre_id, mtime))
 
     def del_genres(self, track_id):
         """

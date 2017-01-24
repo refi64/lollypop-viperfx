@@ -163,8 +163,11 @@ class Web(GObject.Object):
             track_genre_ids = Lp().tracks.get_genre_ids(track_id)
             if Type.CHARTS in track_genre_ids:
                 album_id = Lp().tracks.get_album_id(track_id)
-                t.update_track(track_id, [], genre_ids, item.mtime)
-                t.update_album(album_id, [], genre_ids, item.album.mtime, None)
+                with SqlCursor(Lp().db) as sql:
+                    t.update_track(track_id, [], genre_ids, item.mtime)
+                    t.update_album(album_id, [], genre_ids, item.album.mtime,
+                                   None)
+                    sql.commit()
                 return (None, None)
 
         with SqlCursor(Lp().db) as sql:
