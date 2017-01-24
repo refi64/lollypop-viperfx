@@ -48,12 +48,8 @@ class SearchItem:
             track_id = Lp().tracks.get_id_by(self.name,
                                              album_id,
                                              artist_ids)
-            if track_id is not None:
-                return (True, track_id)
+            return (track_id is not None, track_id)
         else:
-            album_ids = Lp().albums.get_ids(artist_ids, [])
-            for album_id in album_ids:
-                album_name = Lp().albums.get_name(album_id)
-                if album_name.lower() == self.name.lower():
-                    return (True, album_id)
+            album_id = Lp().albums.get_id(self.name, artist_ids, True)
+            return (album_id is not None, album_id)
         return (False, None)
