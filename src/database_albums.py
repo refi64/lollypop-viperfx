@@ -909,14 +909,18 @@ class AlbumsDatabase:
                 result = sql.execute(request, filters)
             # Get albums for genre
             elif not artist_ids:
-                filters = tuple(genre_ids)
+                filters = (Type.CHARTS,) + tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
-                           album_genres, artists, album_artists\
+                           album_genres as AG, artists, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
                            AND albums.rowid=album_artists.album_id\
-                           AND album_genres.album_id=albums.rowid AND ("
+                           AND ? NOT IN (\
+                                SELECT album_genres.genre_id\
+                                FROM album_genres\
+                                WHERE AG.album_id=album_genres.album_id)\
+                           AND AG.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
-                    request += "album_genres.genre_id=? OR "
+                    request += "AG.genre_id=? OR "
                 request += "1=0)"
                 if not get_network_available():
                     request += " AND albums.synced!=%s" % Type.NONE
