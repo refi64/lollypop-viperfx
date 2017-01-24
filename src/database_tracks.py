@@ -191,7 +191,7 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (name, album_id) + tuple(artist_ids)
             request = "SELECT tracks.rowid FROM tracks\
-                       WHERE name = ?\
+                       WHERE name = ? COLLATE NOCASE\
                        AND album_id = ?\
                        AND EXISTS (\
                             SELECT rowid\
@@ -201,7 +201,6 @@ class TracksDatabase:
             for artist_id in artist_ids:
                 request += " track_artists.artist_id=? OR"
             request += " 1=0))"
-            request += " COLLATE NOCASE"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:

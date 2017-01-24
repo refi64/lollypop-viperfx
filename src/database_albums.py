@@ -367,7 +367,7 @@ class AlbumsDatabase:
             if artist_ids:
                 filters += tuple(artist_ids)
                 request = "SELECT albums.rowid FROM albums, album_artists\
-                           WHERE name=? AND\
+                           WHERE name=? COLLATE NOCASE AND\
                            no_album_artist=0 AND\
                            album_artists.album_id=albums.rowid AND (1=0 "
                 for artist_id in artist_ids:
@@ -385,7 +385,6 @@ class AlbumsDatabase:
                     request += " AND synced=%s" % Type.NONE
                 else:
                     request += " AND synced!=%s" % Type.NONE
-            request += " COLLATE NOCASE"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
