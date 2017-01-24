@@ -14,6 +14,7 @@ from gi.repository import Gio, GLib, Gtk
 
 from gettext import gettext as _
 from threading import Thread
+from time import time
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
@@ -602,7 +603,7 @@ class AlbumMenuPopover(Gtk.Popover):
         edit.set_margin_bottom(5)
         edit.set_property('hexpand', True)
         edit.set_property('halign', Gtk.Align.CENTER)
-        genres = ", ".join(Lp().albums.get_genres(album.id))
+        genres = ";".join(Lp().albums.get_genres(album.id))
         if not genres:
             genres = "Web"
         edit.set_text(genres)
@@ -657,19 +658,21 @@ class AlbumMenuPopover(Gtk.Popover):
             @param edit as Gtk.Edit
             @param album as Album
         """
-        genre = edit.get_text()
-        if not genre:
+        genres = edit.get_text()
+        if not genres:
             return
         orig_genre_ids = Lp().albums.get_genre_ids(album.id)
-        genre_id = Lp().genres.get_id(genre)
-        if genre_id is None:
-            genre_id = Lp().genres.add(genre)
-            Lp().scanner.emit('genre-updated', genre_id, True)
         Lp().albums.del_genres(album.id)
-        Lp().albums.add_genre(album.id, genre_id)
         for track_id in album.track_ids:
-            Lp().tracks.del_genres(track_id)
-            Lp().tracks.add_genre(track_id, genre_id)
+                Lp().tracks.del_genres(track_id)
+        for genre in genres.split(";"):
+            genre_id = Lp().genres.get_id(genre)
+            if genre_id is None:
+                genre_id = Lp().genres.add(genre)
+                Lp().scanner.emit('genre-updated', genre_id, True)
+            Lp().albums.add_genre(album.id, genre_id, int(time()))
+            for track_id in album.track_ids:
+                Lp().tracks.add_genre(track_id, genre_id, int(time()))
         for genre_id in orig_genre_ids:
             if genre_id >= 0:
                 Lp().genres.clean(genre_id)
