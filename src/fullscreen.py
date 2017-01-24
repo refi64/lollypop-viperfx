@@ -140,6 +140,13 @@ class FullScreen(Gtk.Window, InfosController,
         self._next_popover.hide()
         Lp().uninhibit(self.__cookie)
 
+    def show_hide_volume_control(self):
+        """
+            Show/Hide volume control
+        """
+        self._show_volume_control = not self._show_volume_control
+        self._update_state()
+
     def on_current_changed(self, player):
         """
             Update infos and show/hide popover
