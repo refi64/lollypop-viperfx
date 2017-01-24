@@ -969,15 +969,20 @@ class AlbumsDatabase:
                 filters = tuple(artist_ids)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres, artists, album_artists\
-                           WHERE album_genres.album_id=albums.rowid AND\
+                           FROM albums, album_genres as AG,\
+                           artists, album_artists\
+                           WHERE AG.album_id=albums.rowid AND\
                            artists.rowid=album_artists.artist_id AND\
+                           AND ? NOT IN (\
+                                SELECT album_genres.genre_id\
+                                FROM album_genres\
+                                WHERE AG.album_id=album_genres.album_id)\
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "
                 request += "1=0) AND ("
                 for genre_id in genre_ids:
-                    request += "album_genres.genre_id=? OR "
+                    request += "AG.genre_id=? OR "
                 request += "1=0)"
                 if not get_network_available():
                     request += " AND albums.synced!=%s" % Type.NONE
