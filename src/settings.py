@@ -577,6 +577,8 @@ class SettingsDialog:
             self.__reset_button.get_toplevel().set_deletable(False)
             self.__reset_button.set_sensitive(False)
             self.__infobar.hide()
+            if Lp().charts is not None:
+                Lp().charts.stop()
             self.__reset_database(track_ids, len(track_ids), history)
         except Exception as e:
             print("Application::_on_confirm_button_clicked():", e)
