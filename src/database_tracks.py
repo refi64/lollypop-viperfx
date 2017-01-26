@@ -130,7 +130,8 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE persistent=?", (DbPersistent.INTERNAL))
+                                  WHERE persistent=?",
+                                 (DbPersistent.INTERNAL,))
             return list(itertools.chain(*result))
 
     def get_charts_ids(self, genre_ids=[]):
@@ -678,16 +679,16 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             if genre_ids:
                 filters = tuple([track_id] + genre_ids)
-                request = "SELECT mtime FROM track_genres,\
+                request = "SELECT mtime FROM track_genres\
                            WHERE track_id=?"
                 for genre_id in genre_ids:
                     request += " AND genre_id=?"
             else:
                 filters = (track_id,)
-                request = "SELECT mtime FROM track_genres AS TG,\
+                request = "SELECT mtime FROM track_genres AS TG\
                            WHERE TG.track_id=?\
                            AND NOT EXISTS (\
-                                SELECT mtime FROM track_genres,\
+                                SELECT mtime FROM track_genres\
                                 WHERE track_id=TG.track_id\
                                 AND genre_id < 0)"
             result = sql.execute(request, filters)

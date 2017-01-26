@@ -286,16 +286,16 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             if genre_ids:
                 filters = tuple([album_id] + genre_ids)
-                request = "SELECT mtime FROM album_genres,\
+                request = "SELECT mtime FROM album_genres\
                            WHERE album_id=?"
                 for genre_id in genre_ids:
                     request += " AND genre_id=?"
             else:
                 filters = (album_id,)
-                request = "SELECT mtime FROM album_genres AS AG,\
+                request = "SELECT mtime FROM album_genres AS AG\
                            WHERE AG.album_id=?\
                            AND NOT EXISTS (\
-                                SELECT mtime FROM album_genres,\
+                                SELECT mtime FROM album_genres\
                                 WHERE album_id=AG.album_id\
                                 AND genre_id < 0)"
             result = sql.execute(request, filters)
