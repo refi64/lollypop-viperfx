@@ -785,6 +785,8 @@ class SettingsDialog:
             Lp().window.show_genres(Lp().settings.get_value('show-genres'))
             Lp().window.update_db()
             self.__progress.get_toplevel().set_deletable(True)
+            if Lp().charts is not None:
+                Lp().charts.start()
 
 
 class ChooserWidget(Gtk.Grid):
