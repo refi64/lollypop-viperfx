@@ -204,7 +204,7 @@ class Application(Gtk.Application):
                     from lollypop.charts import Charts
                     self.charts = Charts()
                     if get_network_available():
-                        self.charts.update()
+                        self.charts.start()
                 else:
                     self.settings.set_value('network-search',
                                             GLib.Variant('b', False))
@@ -453,7 +453,7 @@ class Application(Gtk.Application):
         self.settings.set_value('network-access', param)
         if self.charts is not None:
             if param.get_boolean():
-                self.charts.update()
+                self.charts.start()
             else:
                 self.charts.stop()
         self.window.reload_view()

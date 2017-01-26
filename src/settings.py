@@ -360,7 +360,7 @@ class SettingsDialog:
                 from lollypop.charts import Charts
                 Lp().charts = Charts()
             if get_network_available():
-                Lp().charts.update()
+                Lp().charts.start()
             elif Lp().notify is not None:
                 Lp().notify.send(_("The charts"),
                                  _("Network access disabled"))
@@ -785,7 +785,7 @@ class SettingsDialog:
             Lp().window.show_genres(Lp().settings.get_value('show-genres'))
             Lp().window.update_db()
             self.__progress.get_toplevel().set_deletable(True)
-            if Lp().charts is not None:
+            if Lp().charts is not None and get_network_available():
                 Lp().charts.start()
 
 

@@ -33,9 +33,9 @@ class Charts:
                             LastfmCharts(self.__time),
                             ItunesCharts(self.__time)]
 
-    def update(self):
+    def start(self):
         """
-            Update charts
+            Start charts update
         """
         t = Thread(target=self.__update)
         t.daemon = True
