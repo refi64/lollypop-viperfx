@@ -324,16 +324,20 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if playlists and not self.__stop:
             # Cache directory playlists
             if not files_list:
-                d = Lio.File.new_for_uri(self._uri)
-                infos = d.enumerate_children('standard::name,standard::type',
-                                             Gio.FileQueryInfoFlags.NONE,
-                                             None)
-                for info in infos:
-                    if info.get_file_type() != Gio.FileType.DIRECTORY:
-                        f = infos.get_child(info)
-                        if f.get_uri().endswith(".m3u"):
-                            files_list.append(
+                try:
+                    d = Lio.File.new_for_uri(self._uri)
+                    infos = d.enumerate_children(
+                                            'standard::name,standard::type',
+                                            Gio.FileQueryInfoFlags.NONE,
+                                            None)
+                    for info in infos:
+                        if info.get_file_type() != Gio.FileType.DIRECTORY:
+                            f = infos.get_child(info)
+                            if f.get_uri().endswith(".m3u"):
+                                files_list.append(
                                           GLib.path_get_basename(f.get_path()))
+                except:
+                    pass
             playlist = playlists.pop(0)
             selected = playlist[1] + ".m3u" in files_list
             self.__model.append([selected, playlist[1], playlist[0]])
