@@ -37,7 +37,7 @@ class ArtistView(ArtistAlbumsView):
             @param artist id as int (Current if None)
             @param genre id as int
         """
-        ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
+        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
         self.__art_signal_id = None
         self.connect('realize', self.__on_realize)
         self.connect('unrealize', self.__on_unrealize)

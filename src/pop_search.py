@@ -18,7 +18,6 @@ from threading import Thread
 from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
-from lollypop.pop_album import AlbumPopover
 from lollypop.view_albums import AlbumBackView
 from lollypop.utils import noaccents, get_network_available
 from lollypop.lio import Lio
@@ -696,12 +695,6 @@ class SearchPopover(Gtk.Popover):
                 track = Track(row.id)
                 popover = TrackMenuPopover(track,
                                            TrackMenu(track))
-                popover.set_relative_to(widget)
-                popover.set_pointing_to(rect)
-                popover.show()
-            else:
-                popover = AlbumPopover(row.id, [],
-                                       row.artist_ids)
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

@@ -29,7 +29,7 @@ class ArtistAlbumsView(LazyLoadingView):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, artist_ids, genre_ids, art_size=ArtSize.BIG):
+    def __init__(self, artist_ids, genre_ids, art_size):
         """
             Init ArtistAlbumsView
             @param artist ids as [int]
