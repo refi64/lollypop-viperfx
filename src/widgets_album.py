@@ -313,8 +313,7 @@ class AlbumWidget(BaseWidget):
         Album widget
     """
 
-    def __init__(self, album_id, genre_ids=[],
-                 artist_ids=[], art_size=ArtSize.BIG):
+    def __init__(self, album_id, genre_ids, artist_ids, art_size):
         """
             Init Album widget
         """

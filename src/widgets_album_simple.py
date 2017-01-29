@@ -39,7 +39,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         Gtk.FlowBoxChild.__init__(self)
         self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class('loading')
-        AlbumWidget.__init__(self, album_id, genre_ids, artist_ids)
+        AlbumWidget.__init__(self, album_id, genre_ids,
+                             artist_ids, ArtSize.BIG)
 
     def populate(self):
         """
