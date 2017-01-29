@@ -106,8 +106,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Return preferred width
             @return (int, int)
         """
-        # Padding: 3px, border: 1px + spacing
-        width = ArtSize.BIG + 14
+        if self._widget is None:
+            return (0, 0)
+        width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
 #######################
