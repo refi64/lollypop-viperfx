@@ -375,12 +375,15 @@ class TracksDatabase:
             @return dict of {uri as string: mtime as int}
         """
         with SqlCursor(Lp().db) as sql:
+            mtimes = {}
             result = sql.execute("SELECT DISTINCT tracks.uri, TG.mtime\
                                   FROM tracks, track_genres AS TG\
                                   WHERE tracks.rowid=TG.track_id\
                                   AND tracks.persistent=?",
                                  (DbPersistent.INTERNAL,))
-            return list(result)
+            for row in result:
+                mtimes.update((row,))
+            return mtimes
 
     def get_uris(self, exclude=[]):
         """
