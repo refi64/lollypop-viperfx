@@ -202,6 +202,10 @@ class Web(GObject.Object):
             else:
                 new_artist_ids = list(set(artist_ids) | set(album_artist_ids))
 
+            # Default genre id if missing
+            if not genre_ids:
+                genre_ids = t.add_genres("Web", album_id)
+
             # Add track to db
             track_id = Lp().tracks.add(item.name, uri, item.duration,
                                        0, item.discnumber, "", album_id,
