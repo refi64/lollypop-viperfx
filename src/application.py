@@ -277,11 +277,17 @@ class Application(Gtk.Application):
         try:
             from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:
+                sql.isolation_level = None
                 sql.execute('VACUUM')
+                sql.isolation_level = ''
             with SqlCursor(self.playlists) as sql:
+                sql.isolation_level = None
                 sql.execute('VACUUM')
+                sql.isolation_level = ''
             with SqlCursor(Radios()) as sql:
+                sql.isolation_level = None
                 sql.execute('VACUUM')
+                sql.isolation_level = ''
         except Exception as e:
             print("Application::quit(): ", e)
         self.window.destroy()
