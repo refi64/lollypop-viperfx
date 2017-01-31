@@ -435,7 +435,7 @@ class TagReader(Discoverer):
     def add_genres(self, genres):
         """
             Add genres to db
-            @param genres as [string]
+            @param genres as string
             @return genre ids as [int]
             @commit needed
         """

@@ -161,7 +161,7 @@ class Web(GObject.Object):
             album_genre_ids = Lp().albums.get_genre_ids(album_id)
             if Type.CHARTS not in album_genre_ids and\
                     persistent == DbPersistent.CHARTS:
-                        return
+                        return (None, None)
 
         # Check if track needs to be updated
         (exists, track_id) = item.exists_in_db()
@@ -204,11 +204,12 @@ class Web(GObject.Object):
 
             # Default genre id if missing
             if not genre_ids:
-                genre_ids = t.add_genres("Web", album_id)
+                genre_ids = t.add_genres("Web")
 
             # Add track to db
             track_id = Lp().tracks.add(item.name, uri, item.duration,
-                                       0, item.discnumber, "", album_id,
+                                       item.tracknumber, item.discnumber,
+                                       "", album_id,
                                        item.year, 0,
                                        0, 0, persistent)
             t.update_track(track_id, artist_ids, genre_ids, item.mtime)
