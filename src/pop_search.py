@@ -320,7 +320,6 @@ class SearchPopover(Gtk.Popover):
         self.__entry = builder.get_object('entry')
 
         self.__view = Gtk.ListBox()
-        self.__view.set_sort_func(self.__sort_func)
         self.__view.connect("button-press-event", self.__on_button_press)
         self.__view.connect("row-activated", self.__on_row_activated)
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -335,7 +334,9 @@ class SearchPopover(Gtk.Popover):
             self.__switch.set_tooltip_text(_("You need to install youtube-dl"))
         else:
             self.__switch.set_state(Lp().settings.get_value('network-search'))
-        builder.get_object('scrolled').add(self.__view)
+
+        self.__scrolled = builder.get_object('scrolled')
+        self.__scrolled.add(self.__view)
         # Connect here because we don't want previous switch.set_state()
         # to emit a signal on init
         builder.connect_signals(self)
@@ -468,6 +469,7 @@ class SearchPopover(Gtk.Popover):
             Populate searching items
             in db based on text entry current text
         """
+        self.__view.set_sort_func(None)
         self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
@@ -575,6 +577,9 @@ class SearchPopover(Gtk.Popover):
                     (self.__nsearch is None or self.__nsearch.finished):
                 self.__header_stack.set_visible_child(self.__new_btn)
                 self.__spinner.stop()
+                # Prevent jumping UI
+                if self.__scrolled.get_vadjustment().get_value() == 0:
+                    self.__view.set_sort_func(self.__sort_func)
             return
         item = search.items.pop(0)
         search_row = SearchRow(item)
@@ -592,6 +597,9 @@ class SearchPopover(Gtk.Popover):
             if self.__nsearch.finished and self.__lsearch.finished:
                 self.__header_stack.set_visible_child(self.__new_btn)
                 self.__spinner.stop()
+                # Prevent jumping UI
+                if self.__scrolled.get_vadjustment().get_value() == 0:
+                    self.__view.set_sort_func(self.__sort_func)
             return
         item = search.items.pop(0)
         if item.exists_in_db()[0]:
