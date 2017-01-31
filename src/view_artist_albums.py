@@ -265,7 +265,7 @@ class CurrentArtistAlbumsView(ViewContainer):
         self.clean_old_views(view)
 
         # Populate artist albums view
-        view = ArtistAlbumsView(self.__track.artist_ids, [])
+        view = ArtistAlbumsView(self.__track.artist_ids, [], ArtSize.BIG)
         view.connect('populated', self.__on_populated, spinner)
         view.show()
         view.populate(albums)
