@@ -145,7 +145,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._context.artist_ids[album.id] = list(album.artist_ids)
         self.shuffle_albums(True)
         if self._current_track.id is not None and self._current_track.id > 0:
-            self.set_next()
+            if not self.is_party:
+                self.set_next()
             self.set_prev()
         self.emit('album-added', album.id)
 
