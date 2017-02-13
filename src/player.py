@@ -180,8 +180,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self._albums.remove(album.id)
                 if album.id in self._albums_backup:
                     self._albums_backup.remove(album.id)
+            if not self.is_party or self._next_track.album_id == album.id:
+                self.set_next()
             self.set_prev()
-            self.set_next()
             self.emit('album-added', album.id)
         except Exception as e:
             print("Player::remove_album():", e)
