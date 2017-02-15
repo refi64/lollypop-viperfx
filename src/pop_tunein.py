@@ -272,18 +272,23 @@ class TuneinPopover(Gtk.Popover):
             @param image as Gtk.Image
             @param stream as Gio.MemoryInputStream
         """
-        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                           ArtSize.MEDIUM,
-                                                           ArtSize.MEDIUM,
-                                                           True,
+        try:
+            # Strange issue #969, stream is None
+            # But there is a check in __download_images()
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                               ArtSize.MEDIUM,
+                                                               ArtSize.MEDIUM,
+                                                               True,
+                                                               None)
+            stream.close()
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
+                                                           0,
                                                            None)
-        stream.close()
-        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
-                                                       0,
-                                                       None)
-        del pixbuf
-        image.set_from_surface(surface)
-        del surface
+            del pixbuf
+            image.set_from_surface(surface)
+            del surface
+        except Exception as e:
+            print("TuneinPopover::__set_image():", e)
 
     def __clear(self):
         """
