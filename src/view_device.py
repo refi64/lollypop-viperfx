@@ -198,7 +198,10 @@ class DeviceView(View):
             Set combobox text
             @param text list as [str]
         """
+        # Just update device widget if already populated
         if self.__memory_combo.get_active_text() is not None:
+            if not self.__device_widget.is_syncing():
+                self.__device_widget.populate()
             return
         for text in text_list:
             self.__memory_combo.append_text(text)
