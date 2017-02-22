@@ -38,6 +38,7 @@ hicolor_icon_files = \
 	$(hicolor_icon48_DATA) \
 	$(hicolor_icon256_DATA) \
 	$(hicolor_iconscalable_DATA)\
+	$(hicolor_placescalable_DATA)\
 	icons/hicolor/org.gnome.Lollypop.svg
 
 gtk_update_hicolor_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
