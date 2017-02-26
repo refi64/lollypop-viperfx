@@ -127,7 +127,8 @@ class Type:
     SPOTIFY = -10
     ITUNES = -11
     LASTFM = -12
-    ALL = -13
+    NOPARTY = -13
+    ALL = -14
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

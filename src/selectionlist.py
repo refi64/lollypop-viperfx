@@ -298,6 +298,7 @@ class SelectionList(Gtk.Overlay):
         items.append((Type.RECENTS, _("Recently played")))
         items.append((Type.NEVER, _("Never played")))
         items.append((Type.RANDOMS, _("Random tracks")))
+        items.append((Type.NOPARTY, _("Not in party")))
         items.append((Type.SEPARATOR, ''))
         return items
 
@@ -439,6 +440,8 @@ class SelectionList(Gtk.Overlay):
             icon = 'lollypop-itunes-symbolic'
         elif object_id == Type.LASTFM:
             icon = 'lollypop-lastfm-symbolic'
+        elif object_id == Type.NOPARTY:
+            icon = 'emblem-music-symbolic'
         return icon
 
     def __sort_items(self, model, itera, iterb, data):

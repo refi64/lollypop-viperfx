@@ -208,9 +208,30 @@ class PlaylistsMenu(BaseMenu):
         """
         playlist_action = Gio.SimpleAction(name="playlist_action")
         Lp().add_action(playlist_action)
-        playlist_action.connect('activate',
+        playlist_action.connect("activate",
                                 self.__add_to_playlists)
         self.append(_("Add to others"), 'app.playlist_action')
+
+        playlist_action = Gio.SimpleAction(name="playlist_not_in_party")
+        Lp().add_action(playlist_action)
+        if isinstance(self._object, Album):
+            exists = Lp().playlists.exists_album(Type.NOPARTY,
+                                                 self._object.id,
+                                                 self._object.genre_ids,
+                                                 self._object.artist_ids)
+        else:
+            exists = Lp().playlists.exists_track(Type.NOPARTY,
+                                                 self._object.id)
+        if exists:
+            self.append(_('Remove from "Not in party"'),
+                        "app.playlist_not_in_party")
+            playlist_action.connect("activate",
+                                    self.__remove_from_playlist, Type.NOPARTY)
+        else:
+            self.append(_('Add to "Not in party"'),
+                        "app.playlist_not_in_party")
+            playlist_action.connect("activate",
+                                    self.__add_to_playlist, Type.NOPARTY)
 
         i = 0
         for playlist in Lp().playlists.get_last():

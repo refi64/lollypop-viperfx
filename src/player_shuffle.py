@@ -11,6 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import random
+from threading import Thread
 
 from lollypop.define import Shuffle, NextContext, Lp, Type
 from lollypop.player_base import BasePlayer
@@ -29,9 +30,9 @@ class ShufflePlayer(BasePlayer):
             Init shuffle player
         """
         BasePlayer.__init__(self)
-        self.reset_history()
         # Party mode
         self.__is_party = False
+        self.reset_history()
         Lp().settings.connect('changed::shuffle', self.__set_shuffle)
 
     def reset_history(self):
@@ -46,6 +47,10 @@ class ShufflePlayer(BasePlayer):
         self.__already_played_albums = []
         # Tracks already played for albums
         self.__already_played_tracks = {}
+        # If we have tracks/albums to ignore in party mode, add them
+        t = Thread(target=self.__init_party_blacklist)
+        t.daemon = True
+        t.start()
         # Reset user playlist
         self._user_playlist = []
         self._user_playlist_ids = []
@@ -309,3 +314,12 @@ class ShufflePlayer(BasePlayer):
             self.__already_played_tracks[track.album_id] = []
         if track.id not in self.__already_played_tracks[track.album_id]:
             self.__already_played_tracks[track.album_id].append(track.id)
+
+    def __init_party_blacklist(self):
+        """
+            Add party mode blacklist to already played tracks
+        """
+        if self.__is_party:
+            for track_id in Lp().playlists.get_track_ids(Type.NOPARTY):
+                track = Track(track_id)
+                self.__add_to_shuffle_history(track)

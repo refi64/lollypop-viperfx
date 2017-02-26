@@ -53,7 +53,8 @@ class PlaylistsView(View):
             split_button.hide()
 
         if len(playlist_ids) > 1 or (
-           playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or\
+           playlist_ids[0] < 0 and playlist_ids[0] not in [Type.LOVED,
+                                                           Type.NOPARTY]) or\
                 not editable:
             self.__edit_button.hide()
 
