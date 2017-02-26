@@ -70,7 +70,8 @@ class Application(Gtk.Application):
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.set_property('register-session', True)
         GLib.setenv('PULSE_PROP_media.role', 'music', True)
-        GLib.setenv('PULSE_PROP_application.icon_name', 'lollypop', True)
+        GLib.setenv('PULSE_PROP_application.icon_name',
+                    'org.gnome.Lollypop', True)
 
         # Ideally, we will be able to delete this once Flatpak has a solution
         # for SSL certificate management inside of applications.
