@@ -43,6 +43,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
+            <property name="round_digits">2</property>
             <property name="draw_value">False</property>
             <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
             <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
