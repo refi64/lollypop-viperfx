@@ -69,7 +69,6 @@ class BinPlayer(BasePlayer):
         """
         if self.__preview is None:
             self.__preview = Gst.ElementFactory.make('playbin', 'player')
-            PluginsPlayer(self.__preview)
             self.set_preview_output()
         return self.__preview
 
