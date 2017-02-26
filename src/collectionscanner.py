@@ -226,8 +226,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 for uri in orig_tracks:
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
-                    if uri.startswith('file:'):
-                        self.__del_from_db(uri)
+                    self.__del_from_db(uri)
                 # Add files to db
                 for (uri, mtime) in to_add:
                     try:

@@ -392,13 +392,12 @@ class TracksDatabase:
             @return Array of uri as string
         """
         with SqlCursor(Lp().db) as sql:
-            filters = ()
+            filters = (DbPersistent.INTERNAL,)
             for e in exclude:
                 filters += ('%' + e + '%',)
-            request = "SELECT uri FROM tracks"
-            if exclude:
-                request += " WHERE uri not like ?"
-            for e in exclude[1:]:
+            request = "SELECT uri FROM tracks\
+                       WHERE persistent=?"
+            for e in exclude:
                 request += " AND uri not like ?"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
