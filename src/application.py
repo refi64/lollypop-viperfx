@@ -124,6 +124,20 @@ class Application(Gtk.Application):
         """
             Init main application
         """
+        self.settings = Settings.new()
+        # Mount enclosing volume as soon as possible
+        uris = self.settings.get_music_uris()
+        try:
+            for uri in uris:
+                if uri.startswith("file:/"):
+                    continue
+                f = Gio.File.new_for_uri(uri)
+                f.mount_enclosing_volume(Gio.MountMountFlags.NONE,
+                                         None,
+                                         None,
+                                         None)
+        except Exception as e:
+            print("Application::init():", e)
         self.__is_fs = False
         if Gtk.get_minor_version() > 18:
             cssProviderFile = Lio.File.new_for_uri(
@@ -137,7 +151,6 @@ class Application(Gtk.Application):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
-        self.settings = Settings.new()
         self.db = Database()
         self.playlists = Playlists()
         # We store cursors for main thread
