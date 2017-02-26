@@ -90,15 +90,16 @@ class DeviceView(View):
         self.__timeout_id = None
         self.__device = device
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
-        self.__memory_combo = builder.get_object('memory_combo')
-        self.__syncing_btn = builder.get_object('sync_btn')
+        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
+        self.__memory_combo = builder.get_object("memory_combo")
+        self.__syncing_btn = builder.get_object("sync_btn")
         self.__syncing_btn.set_label(_("Synchronize %s") % device.name)
         builder.connect_signals(self)
-        grid = builder.get_object('device')
+        grid = builder.get_object("device")
+        self.__warning = builder.get_object("warning")
         self.add(grid)
         self.__device_widget = DeviceManagerWidget(self)
-        self.__device_widget.connect('sync-finished', self.__on_sync_finished)
+        self.__device_widget.connect("sync-finished", self.__on_sync_finished)
         self.__device_widget.show()
         self._viewport.add(self.__device_widget)
         self.add(self._scrolled)
@@ -155,6 +156,11 @@ class DeviceView(View):
         self.__timeout_id = None
         text = combo.get_active_text()
         uri = "%s%s/Music" % (self.__device.uri, text)
+        already_synced = Gio.File.new_for_uri(uri + "/unsync")
+        if already_synced.query_exists():
+            self.__warning.hide()
+        else:
+            self.__warning.show()
         self.__device_widget.set_uri(uri)
         self.__device_widget.populate()
 
