@@ -203,7 +203,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Return artist ids for album
             @param album id as int
-            @return genre ids as [int]
+            @return artist ids as [int]
         """
         if album_id in self._context.artist_ids.keys():
             return self._context.artist_ids[album_id]
