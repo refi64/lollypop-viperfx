@@ -333,8 +333,12 @@ class BinPlayer(BasePlayer):
                                     self._current_track.album_name,
                                     self._current_track.title,
                                     int(self._current_track.duration))
-        if not Lp().scanner.is_locked():
-            Lp().tracks.set_listened_at(self._current_track.id, int(time()))
+        try:
+            if not Lp().scanner.is_locked():
+                Lp().tracks.set_listened_at(self._current_track.id,
+                                            int(time()))
+        except:  # Locked database
+            pass
 
 #######################
 # PRIVATE             #
