@@ -134,6 +134,19 @@ class TracksDatabase:
                                  (DbPersistent.INTERNAL,))
             return list(itertools.chain(*result))
 
+    def get_ids_for_name(self, name):
+        """
+            Return tracks ids with name
+            @param name as str
+            @return track id as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM tracks WHERE name=?\
+                                  COLLATE NOCASE COLLATE LOCALIZED",
+                                 (name,))
+            return list(itertools.chain(*result))
+
     def get_charts_ids(self, genre_ids=[]):
         """
             Get charts track ids
