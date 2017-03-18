@@ -469,7 +469,8 @@ class Window(Gtk.ApplicationWindow, Container):
                                     GLib.Variant('b', state))
             Lp().window.show_genres(state)
         elif string == "loved":
-            if Lp().player.current_track.id is not None:
+            if Lp().player.current_track.id is not None and\
+                    Lp().player.current_track.id >= 0:
                 isloved = is_loved(Lp().player.current_track.id)
                 set_loved(Lp().player.current_track.id, not isloved)
                 if Lp().notify is not None:

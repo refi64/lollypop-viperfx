@@ -78,6 +78,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         self.set_cover()
         self.update_state()
         self.show_all()
+        self._lock_overlay = False
 
     def set_sensitive(self, b):
         """
