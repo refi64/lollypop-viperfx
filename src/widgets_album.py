@@ -37,7 +37,7 @@ class BaseWidget:
         self._artwork_button = None
         self._action_button = None
         self._show_overlay = False
-        self._lock_overlay = False
+        self._lock_overlay = True
         self._timeout_id = None
         self.__parent_filter = False
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL

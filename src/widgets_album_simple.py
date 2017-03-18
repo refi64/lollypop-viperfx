@@ -98,6 +98,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
         self._widget.connect('button-press-event', self.__on_button_press)
+        self._lock_overlay = False
         if self._album.is_web:
             self._cover.get_style_context().add_class(
                                                 'cover-frame-web')

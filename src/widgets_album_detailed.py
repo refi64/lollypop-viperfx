@@ -178,6 +178,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # This prevent artifacts
         self.set_opacity(0)
 
+        self._lock_overlay = False
         if self._album.is_web and self._cover is not None:
             self._cover.get_style_context().add_class(
                                                 'cover-frame-web')
