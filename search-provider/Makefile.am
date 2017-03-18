@@ -6,6 +6,7 @@ lollypop-sp: lollypop-sp.in Makefile
 		-e s!\@pkgdatadir\@!$(pkgdatadir)!	\
 		-e s!\@libexecdir\@!$(libexecdir)!	\
 		-e s!\@libdir\@!$(libdir)!		\
+		-e s!\@PYTHON\@!$(PYTHON)!	\
 		-e s!\@pkglibdir\@!$(pkglibdir)!	\
 		-e s!\@localedir\@!$(localedir)!	\
 		-e s!\@pythondir\@!$(pythondir)!	\
