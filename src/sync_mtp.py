@@ -426,7 +426,7 @@ class MtpSync:
                                                     artists,
                                                     album_name)
             f = Lio.File.new_for_uri(track.uri)
-            track_name = f.get_basename()
+            track_name = escape(f.get_basename())
             # Check extension, if not mp3, convert
             m = match('.*(\.[^.]*)', track.uri)
             ext = m.group(1)
