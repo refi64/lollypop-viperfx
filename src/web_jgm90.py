@@ -86,9 +86,8 @@ class WebJmg90:
                                         '',
                                         True)
         try:
-            # Strip /? as API doesn't like it
             f = Lio.File.new_for_uri("http://app.jgm90.com/cmapi/search/"
-                                     "%s/1/10" % search.strip('/?'))
+                                     "%s/1/10" % search)
             (status, data, tag) = f.load_contents(None)
             if status:
                 decode = json.loads(data.decode('utf-8'))

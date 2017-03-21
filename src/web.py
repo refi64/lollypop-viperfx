@@ -17,7 +17,7 @@ from threading import Thread
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.web_youtube import WebYouTube
-from lollypop.web_jgm90 import WebJmg90
+# from lollypop.web_jgm90 import WebJmg90
 from lollypop.define import Lp, DbPersistent, Type
 from lollypop.lio import Lio
 
@@ -39,12 +39,12 @@ class Web(GObject.Object):
             @param play as bool
             @param callback as func(uri: str, track: Track, play: bool)
         """
-        if track.is_jgm:
-            uri = WebJmg90.get_uri_content(track.uri)
-        elif track.is_youtube:
-            uri = WebYouTube.get_uri_content(track.uri)
-        else:
-            return
+        # if track.is_jgm:
+        #    uri = WebJmg90.get_uri_content(track.uri)
+        # elif track.is_youtube:
+        uri = WebYouTube.get_uri_content(track.uri)
+        # else:
+        #    return
         GLib.idle_add(callback, uri, track, play)
 
     def __init__(self):
@@ -52,7 +52,7 @@ class Web(GObject.Object):
             Init helper
         """
         GObject.Object.__init__(self)
-        self.__helpers = [WebJmg90(), WebYouTube()]
+        self.__helpers = [WebYouTube()]
 
     def save_track(self, item, persistent, genre_ids=[]):
         """
