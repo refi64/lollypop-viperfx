@@ -190,7 +190,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Add monitors on dirs
         if self.__inotify is not None:
             for d in new_dirs:
-                self.__inotify.add_monitor(d)
+                if d.startswith("file://"):
+                    self.__inotify.add_monitor(d)
 
         with SqlCursor(Lp().db) as sql:
             i = 0
