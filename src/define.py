@@ -134,3 +134,9 @@ class Type:
     DEVICES = -1000
     SEPARATOR = -2000
     COMPILATIONS = -2001
+
+
+ENCODING = ["utf_8",
+            "iso8859_1",
+            "utf_16",
+            "utf_16_be"]

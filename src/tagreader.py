@@ -17,7 +17,7 @@ from re import match
 from gettext import gettext as _
 
 from lollypop.define import Lp
-from lollypop.utils import format_artist_name
+from lollypop.utils import format_artist_name, decode_all
 from lollypop.lio import Lio
 
 
@@ -322,8 +322,8 @@ class TagReader(Discoverer):
                 (exists, sample) = tags.get_string_index('lyrics', 0)
                 if exists:
                     return sample
-            except:
-                pass
+            except Exception as e:
+                print("TagReader::get_mp4()", e)
             return ""
 
         def get_id3():
@@ -338,12 +338,12 @@ class TagReader(Discoverer):
                     (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
                     if not exists:
                         continue
-                    string = m.data.decode('utf-8')
+                    string = decode_all(m.data)
                     if string.startswith('USLT'):
                         split = string.split('\x00')
                         return split[-1:][0]
-            except:
-                pass
+            except Exception as e:
+                print("TagReader::get_id3()", e)
             return ""
 
         def get_ogg():
@@ -356,8 +356,8 @@ class TagReader(Discoverer):
                     if not exists or not sample.startswith("LYRICS="):
                         continue
                     return sample[7:]
-            except:
-                pass
+            except Exception as e:
+                print("TagReader::get_ogg()", e)
             return ""
 
         if tags is None:

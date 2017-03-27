@@ -16,9 +16,22 @@ from gettext import gettext as _
 from threading import Thread
 import unicodedata
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, ENCODING
 from lollypop.objects import Track
 from lollypop.lio import Lio
+
+
+def decode_all(bytes):
+    """
+        Decode bytes trying all encodings
+        @param bytes as bytes
+        @return str
+    """
+    for encoding in ENCODING:
+        try:
+            return bytes.decode(encoding)
+        except:
+            pass
 
 
 def get_network_available():
