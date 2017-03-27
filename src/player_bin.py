@@ -487,7 +487,8 @@ class BinPlayer(BasePlayer):
         stop = False
         playback = Lp().settings.get_enum('playback')
         if playback == NextContext.STOP:
-            if not self._albums or playback == self._next_context:
+            if (not self._albums and not self.queue) or\
+                    playback == self._next_context:
                 stop = True
         return stop and self.is_playing
 

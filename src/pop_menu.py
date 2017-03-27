@@ -93,7 +93,7 @@ class QueueMenu(BaseMenu):
         """
             Set queue actions
         """
-        queue = Lp().player.get_queue()
+        queue = Lp().player.queue
         append = True
         prepend = True
         delete = True

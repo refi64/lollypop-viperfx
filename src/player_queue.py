@@ -112,15 +112,13 @@ class QueuePlayer:
         if notify:
             self.emit('queue-changed')
 
-    def get_queue(self):
+    @property
+    def queue(self):
         """
             Return queue
             @return [ids as int]
         """
-        if self.__queue:
-            return self.__queue
-        else:
-            return []
+        return self.__queue
 
     def track_in_queue(self, track):
         """

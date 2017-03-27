@@ -260,7 +260,7 @@ class Row(Gtk.ListBoxRow):
                 self.__on_button_clicked(self.__menu_button)
             return True
         elif event.button == 2:
-            if self._track.id in Lp().player.get_queue():
+            if self._track.id in Lp().player.queue:
                 Lp().player.del_from_queue(self._track.id)
             else:
                 Lp().player.append_to_queue(self._track.id)

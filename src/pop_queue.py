@@ -279,9 +279,9 @@ class QueuePopover(Gtk.Popover):
         """
             Populate widget with queue rows
         """
-        if Lp().player.get_queue():
+        if Lp().player.queue:
             self.__clear_button.set_sensitive(True)
-        self.__add_items(list(Lp().player.get_queue()))
+        self.__add_items(list(Lp().player.queue))
 
 #######################
 # PROTECTED           #

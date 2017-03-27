@@ -480,7 +480,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         # Add to queue by default
         if Lp().player.locked:
-            if track_id in Lp().player.get_queue():
+            if track_id in Lp().player.queue:
                 Lp().player.del_from_queue(track_id)
             else:
                 Lp().player.append_to_queue(track_id)

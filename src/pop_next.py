@@ -56,7 +56,7 @@ class NextPopover(Gtk.Popover):
             del art
             self.__cover.set_tooltip_text(Lp().player.next_track.album.name)
             self.__cover.show()
-            queue = Lp().player.get_queue()
+            queue = Lp().player.queue
             if queue and queue[0] == Lp().player.next_track.id:
                 self.__skip_btn.hide()
             else:

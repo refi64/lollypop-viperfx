@@ -264,7 +264,7 @@ class ToolbarEnd(Gtk.Bin):
             self.__list_popover.set_relative_to(self.__list_button)
             self.__list_popover.populate()
             self.__list_popover.show()
-        elif Lp().player.get_queue():
+        elif Lp().player.queue:
             from lollypop.pop_queue import QueuePopover
             self.__list_popover = QueuePopover()
             self.__list_popover.set_relative_to(self.__list_button)
@@ -427,7 +427,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         if Lp().player.current_track.id == Type.EXTERNALS:
             widget.set_tooltip_text(_("External tracks"))
-        elif Lp().player.get_queue():
+        elif Lp().player.queue:
             widget.set_tooltip_text(_("Queue"))
         elif Lp().player.get_user_playlist_ids():
             widget.set_tooltip_text(_("Playing playlists"))

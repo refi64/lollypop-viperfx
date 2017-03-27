@@ -103,7 +103,7 @@ class IndicatorWidget(Gtk.EventBox):
             Update button based on queue status
         """
         self.__init()
-        if self.__id in Lp().player.get_queue():
+        if self.__id in Lp().player.queue:
             self.__button.set_tooltip_text(_("Remove from queue"))
             self.__image.set_from_icon_name('list-remove-symbolic',
                                             Gtk.IconSize.MENU)
@@ -183,7 +183,7 @@ class IndicatorWidget(Gtk.EventBox):
             Popup menu for track relative to button
             @param widget as Gtk.Button
         """
-        if self.__id in Lp().player.get_queue():
+        if self.__id in Lp().player.queue:
             Lp().player.del_from_queue(self.__id)
         else:
             Lp().player.append_to_queue(self.__id)
