@@ -88,8 +88,6 @@ class ContextWidget(Gtk.Grid):
         self.__object = object
         self.__button = button
 
-        can_launch = False
-
         if self.__object.is_web:
             if Type.CHARTS in self.__object.genre_ids:
                 if isinstance(self.__object, Album):
@@ -112,25 +110,18 @@ class ContextWidget(Gtk.Grid):
         else:
             # Check portal for tag editor
             try:
-                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-                proxy = Gio.DBusProxy.new_sync(
-                                            bus, Gio.DBusProxyFlags.NONE, None,
-                                            'org.gnome.Lollypop.Portal',
-                                            '/org/gnome/LollypopPortal',
-                                            'org.gnome.Lollypop.Portal', None)
-                can_launch = proxy.call_sync('CanLaunchTagEditor', None,
-                                             Gio.DBusCallFlags.NO_AUTO_START,
-                                             500, None)[0]
-            except:
-                print("You are missing lollypop-portal: "
-                      "https://github.com/gnumdk/lollypop-portal")
-            if can_launch:
-                edit = HoverWidget('document-properties-symbolic',
-                                   self.__edit_tags)
-                edit.set_tooltip_text(_("Modify information"))
-                edit.set_margin_end(10)
-                edit.show()
-                self.add(edit)
+                Gio.bus_get(Gio.BusType.SESSION, None,
+                            self.__on_get_bus, "CanLaunchTagEditor",
+                            None,
+                            self.__on_can_launch_tag_editor)
+            except Exception as e:
+                print("ContextWidget::__init__():", e)
+
+            self.__edit = HoverWidget('document-properties-symbolic',
+                                      self.__edit_tags)
+            self.__edit.set_tooltip_text(_("Modify information"))
+            self.__edit.set_margin_end(10)
+            self.add(self.__edit)
 
         if Type.CHARTS not in self.__object.genre_ids:
             playlist = HoverWidget('view-list-symbolic',
@@ -226,19 +217,12 @@ class ContextWidget(Gtk.Grid):
         """
         try:
             path = GLib.filename_from_uri(self.__object.uri)[0]
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            proxy = Gio.DBusProxy.new_sync(
-                                    bus, Gio.DBusProxyFlags.NONE, None,
-                                    'org.gnome.Lollypop.Portal',
-                                    '/org/gnome/LollypopPortal',
-                                    'org.gnome.Lollypop.Portal', None)
-            proxy.call('LaunchTagEditor',
-                       GLib.Variant('(s)', (path,)),
-                       Gio.DBusCallFlags.NO_AUTO_START,
-                       500, None)
+            Gio.bus_get(Gio.BusType.SESSION, None,
+                        self.__on_get_bus, "LaunchTagEditor",
+                        GLib.Variant('(s)', (path,)),
+                        None)
         except Exception as e:
-            print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal", e)
+            print("ContextWidget::__edit_tags", e)
         self.__button.emit('clicked')
 
     def __add_to_queue(self, args):
@@ -265,3 +249,48 @@ class ContextWidget(Gtk.Grid):
                                           self.__object.artist_ids,
                                           isinstance(self.__object, Album))
         self.__button.emit('clicked')
+
+    def __on_get_bus(self, source, result, call, args, callback):
+        """
+            Get proxy
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param call as str
+            @param args as GLib.Variant()/None
+            @param callback as function
+        """
+        bus = Gio.bus_get_finish(result)
+        Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
+                          "org.gnome.Lollypop.Portal",
+                          "/org/gnome/LollypopPortal",
+                          "org.gnome.Lollypop.Portal", None,
+                          self.__on_get_portal_proxy, call, args, callback)
+
+    def __on_get_portal_proxy(self, source, result, call, args, callback):
+        """
+            Launch call and connect it to callback
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param call as str
+            @param args as GLib.Variant()/None
+            @param callback as function
+        """
+        try:
+            proxy = source.new_finish(result)
+            proxy.call(call, args, Gio.DBusCallFlags.NO_AUTO_START,
+                       500, None, callback)
+        except Exception as e:
+            print("You are missing lollypop-portal: "
+                  "https://github.com/gnumdk/lollypop-portal", e)
+
+    def __on_can_launch_tag_editor(self, source, result):
+        """
+            Add action if launchable
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+        """
+        try:
+            if source.call_finish(result)[0]:
+                self.__edit.show()
+        except Exception as e:
+            print("ContextWidget::__on_can_launch_tag_editor():", e)
