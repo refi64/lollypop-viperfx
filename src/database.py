@@ -160,6 +160,7 @@ class Database:
             Delete tracks from db
             @param track_ids as [int]
         """
+        SqlCursor.add(Lp().playlists)
         with SqlCursor(self) as sql:
             all_album_ids = []
             all_artist_ids = []
@@ -185,6 +186,7 @@ class Database:
             for genre_id in list(set(all_genre_ids)):
                 Lp().genres.clean(genre_id)
             sql.commit()
+        SqlCursor.remove(Lp().playlists)
 
 #######################
 # PRIVATE             #
