@@ -40,21 +40,17 @@ service_DATA = $(service_in_files:.service.in=.service)
 service_in_files = org.gnome.Lollypop.SearchProvider.service.in
 
 
-appdatadir = $(pkgdatadir)
-appdata_DATA = lollypop-sp
+libexec_SCRIPTS = lollypop-sp
 
 EXTRA_DIST = \
         org.gnome.Lollypop.SearchProvider.service.in\
         lollypop-sp.in\
-	$(appdata_DATA)\
+	$(libexec_SCRIPTS)\
 	$(searchprovider_DATA) \
 	$(service_DATA)
 
 CLEANFILES = \
-        $(appdata_DATA)\
+        $(libexec_SCRIPTS)\
 	$(service_DATA)
-
-install-data-hook:
-	test -f $(pkgdatadir)/$(appdata_DATA) && chmod +x $(pkgdatadir)/$(appdata_DATA); exit 0
 
 -include $(top_srcdir)/git.mk
