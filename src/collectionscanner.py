@@ -201,27 +201,31 @@ class CollectionScanner(GObject.GObject, TagReader):
                 for uri in new_tracks:
                     if self.__thread is None:
                         return
-                    GLib.idle_add(self.__update_progress, i, count)
-                    f = Lio.File.new_for_uri(uri)
-                    info = f.query_info('time::modified',
-                                        Gio.FileQueryInfoFlags.NONE,
-                                        None)
-                    mtime = int(info.get_attribute_as_string('time::modified'))
-                    # If songs exists and mtime unchanged, continue,
-                    # else rescan
-                    if uri in orig_tracks:
-                        orig_tracks.remove(uri)
-                        i += 1
-                        if mtime <= mtimes[uri]:
+                    try:
+                        GLib.idle_add(self.__update_progress, i, count)
+                        f = Lio.File.new_for_uri(uri)
+                        info = f.query_info("time::modified",
+                                            Gio.FileQueryInfoFlags.NONE,
+                                            None)
+                        mtime = int(info.get_attribute_as_string(
+                                                             "time::modified"))
+                        # If songs exists and mtime unchanged, continue,
+                        # else rescan
+                        if uri in orig_tracks:
+                            orig_tracks.remove(uri)
                             i += 1
-                            continue
-                        else:
-                            self.__del_from_db(uri)
-                    # On first scan, use modification time
-                    # Else, use current time
-                    if not was_empty:
-                        mtime = int(time())
-                    to_add.append((uri, mtime))
+                            if mtime <= mtimes[uri]:
+                                i += 1
+                                continue
+                            else:
+                                self.__del_from_db(uri)
+                        # On first scan, use modification time
+                        # Else, use current time
+                        if not was_empty:
+                            mtime = int(time())
+                        to_add.append((uri, mtime))
+                    except Exception as e:
+                        print("CollectionScanner::__scan(mtime):", e, uri)
                 # Clean deleted files
                 # Now because we need to populate history
                 for uri in orig_tracks:
@@ -235,15 +239,15 @@ class CollectionScanner(GObject.GObject, TagReader):
                         i += 1
                         GLib.idle_add(self.__update_progress, i, count)
                         self.__add2db(uri, mtime)
-                    except GLib.GError as e:
-                        print("CollectionScanner::__scan:", e, uri)
+                    except Exception as e:
+                        print("CollectionScanner::__scan(add):", e, uri)
                         if e.message != gst_message:
                             gst_message = e.message
                             if Lp().notify is not None:
                                 Lp().notify.send(gst_message, uri)
                 sql.commit()
             except Exception as e:
-                print("CollectionScanner::__scan()", e)
+                print("CollectionScanner::__scan():", e)
         GLib.idle_add(self.__finish)
         del self.__history
         self.__history = None
@@ -339,34 +343,38 @@ class CollectionScanner(GObject.GObject, TagReader):
             Delete track from db
             @param uri as str
         """
-        f = Lio.File.new_for_uri(uri)
-        name = f.get_basename()
-        track_id = Lp().tracks.get_id_by_uri(uri)
-        album_id = Lp().tracks.get_album_id(track_id)
-        genre_ids = Lp().tracks.get_genre_ids(track_id)
-        album_artist_ids = Lp().albums.get_artist_ids(album_id)
-        artist_ids = Lp().tracks.get_artist_ids(track_id)
-        popularity = Lp().tracks.get_popularity(track_id)
-        rate = Lp().tracks.get_rate(track_id)
-        ltime = Lp().tracks.get_ltime(track_id)
-        mtime = Lp().albums.get_mtime(album_id)
-        duration = Lp().tracks.get_duration(track_id)
-        album_popularity = Lp().albums.get_popularity(album_id)
-        album_rate = Lp().albums.get_rate(album_id)
-        loved = Lp().albums.get_loved(album_id)
-        uri = Lp().tracks.get_uri(track_id)
-        self.__history.add(name, duration, popularity, rate,
-                           ltime, mtime, loved, album_popularity, album_rate)
-        Lp().tracks.remove(track_id)
-        Lp().tracks.clean(track_id)
-        deleted = Lp().albums.clean(album_id)
-        if deleted:
-            with SqlCursor(Lp().db) as sql:
-                sql.commit()
-            GLib.idle_add(self.emit, 'album-updated', album_id, True)
-        for artist_id in album_artist_ids + artist_ids:
-            Lp().artists.clean(artist_id)
-            GLib.idle_add(self.emit, 'artist-updated', artist_id, False)
-        for genre_id in genre_ids:
-            Lp().genres.clean(genre_id)
-            GLib.idle_add(self.emit, 'genre-updated', genre_id, False)
+        try:
+            f = Lio.File.new_for_uri(uri)
+            name = f.get_basename()
+            track_id = Lp().tracks.get_id_by_uri(uri)
+            album_id = Lp().tracks.get_album_id(track_id)
+            genre_ids = Lp().tracks.get_genre_ids(track_id)
+            album_artist_ids = Lp().albums.get_artist_ids(album_id)
+            artist_ids = Lp().tracks.get_artist_ids(track_id)
+            popularity = Lp().tracks.get_popularity(track_id)
+            rate = Lp().tracks.get_rate(track_id)
+            ltime = Lp().tracks.get_ltime(track_id)
+            mtime = Lp().albums.get_mtime(album_id)
+            duration = Lp().tracks.get_duration(track_id)
+            album_popularity = Lp().albums.get_popularity(album_id)
+            album_rate = Lp().albums.get_rate(album_id)
+            loved = Lp().albums.get_loved(album_id)
+            uri = Lp().tracks.get_uri(track_id)
+            self.__history.add(name, duration, popularity, rate,
+                               ltime, mtime, loved, album_popularity,
+                               album_rate)
+            Lp().tracks.remove(track_id)
+            Lp().tracks.clean(track_id)
+            deleted = Lp().albums.clean(album_id)
+            if deleted:
+                with SqlCursor(Lp().db) as sql:
+                    sql.commit()
+                GLib.idle_add(self.emit, 'album-updated', album_id, True)
+            for artist_id in album_artist_ids + artist_ids:
+                Lp().artists.clean(artist_id)
+                GLib.idle_add(self.emit, 'artist-updated', artist_id, False)
+            for genre_id in genre_ids:
+                Lp().genres.clean(genre_id)
+                GLib.idle_add(self.emit, 'genre-updated', genre_id, False)
+        except Exception as e:
+            print("CollectionScanner::__del_from_db:", e)
