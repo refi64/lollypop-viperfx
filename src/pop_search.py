@@ -262,9 +262,12 @@ class SearchRow(Gtk.ListBoxRow):
             if self.__item.is_track:
                 Lp().player.emit('loading-changed', True)
             self.emit("activate")
-        self.__stack.get_visible_child().stop()
-        self.__stack.set_visible_child_name("save")
-        self.__stack.get_visible_child().set_sensitive(False)
+        # If no visible widget in stack, self destroyed
+        visible = self.__stack.get_visible_child()
+        if visible is not None:
+            visible.stop()
+            self.__stack.set_visible_child_name("save")
+            self.__stack.get_visible_child().set_sensitive(False)
 
     def __on_progress(self, web, progress):
         """
