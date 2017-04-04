@@ -782,10 +782,14 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid, tracks.name\
-                                  FROM tracks, track_genres\
+                                  FROM tracks, track_genres AS TG\
                                   WHERE noaccents(name) LIKE ?\
-                                  AND tracks.rowid=track_genres.track_id\
-                                  AND track_genres.genre_id!=? LIMIT 25",
+                                  AND tracks.rowid=TG.track_id\
+                                  AND ? NOT IN (\
+                                    SELECT track_genres.genre_id\
+                                    FROM track_genres\
+                                    WHERE TG.track_id=track_genres.track_id)\
+                                  LIMIT 25",
                                  ('%' + noaccents(searched) + '%',
                                   Type.CHARTS))
             return list(result)

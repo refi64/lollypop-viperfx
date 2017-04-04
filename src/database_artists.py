@@ -260,12 +260,15 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT artists.rowid FROM artists, albums,\
-                                  album_genres, album_artists\
+                                  album_genres AS AG, album_artists\
                                   WHERE noaccents(artists.name) LIKE ?\
                                   AND album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  AND album_genres.album_id=albums.rowid\
-                                  AND album_genres.genre_id!=?\
+                                  AND AG.album_id=albums.rowid\
+                                  AND ? NOT IN (\
+                                    SELECT album_genres.genre_id\
+                                    FROM album_genres\
+                                    WHERE AG.album_id=album_genres.album_id)\
                                   LIMIT 25", ('%' + noaccents(string) + '%',
                                               Type.CHARTS))
             return list(itertools.chain(*result))

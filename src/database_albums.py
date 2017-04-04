@@ -252,10 +252,13 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (Type.CHARTS, year)
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres\
-                       WHERE album_genres.genre_id!=?\
+                       FROM albums, album_genres AS AG\
+                       WHERE ? NOT IN (\
+                            SELECT album_genres.genre_id\
+                            FROM album_genres\
+                            WHERE AG.album_id=album_genres.album_id)\
                        AND year=?\
-                       AND album_genres.album_id=albums.rowid"
+                       AND AG.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
             result = sql.execute(request, filters)
@@ -1074,10 +1077,13 @@ class AlbumsDatabase:
             else:
                 filters = ('%' + noaccents(string) + '%', Type.CHARTS, limit)
             request = ("SELECT albums.rowid\
-                       FROM albums, album_genres\
+                       FROM albums, album_genres AS AG\
                        WHERE noaccents(name) LIKE ?\
-                       AND album_genres.genre_id!=?\
-                       AND album_genres.album_id=albums.rowid")
+                       AND ? NOT IN (\
+                                SELECT album_genres.genre_id\
+                                FROM album_genres\
+                                WHERE AG.album_id=album_genres.album_id)\
+                       AND AG.album_id=albums.rowid")
             if limit is not None:
                 request += " LIMIT ?"
             result = sql.execute(request, filters)
