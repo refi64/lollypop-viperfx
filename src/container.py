@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from gettext import gettext as _
+from urllib.parse import urlparse
 
 from lollypop.define import Lp, Type
 from lollypop.loader import Loader
@@ -696,14 +697,16 @@ class Container:
         """
         if mount.get_volume() is None:
             return
-        name = mount.get_name()
         uri = mount.get_default_location().get_uri()
-        if uri is not None and (
-                mount.can_eject() or uri.startswith('mtp')):
+        if uri is None:
+            return
+        parsed = urlparse(uri)
+        is_removable = parsed.scheme == "file" and mount.can_eject()
+        if is_removable or parsed.scheme == "mtp":
             self.__devices_index -= 1
             dev = Device()
             dev.id = self.__devices_index
-            dev.name = name
+            dev.name = mount.get_name()
             dev.uri = uri
             self.__devices[self.__devices_index] = dev
             if show:
