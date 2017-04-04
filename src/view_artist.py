@@ -16,7 +16,7 @@ from gettext import gettext as _
 from math import pi
 from random import choice
 
-from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.define import Lp, ArtSize, Shuffle, Type
 from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_info import InfoPopover
@@ -144,7 +144,7 @@ class ArtistView(ArtistAlbumsView):
             @param event as Gdk.Event
         """
         if InfoPopover.should_be_shown() and self._artist_ids:
-            pop = InfoPopover(self._artist_ids, False)
+            pop = InfoPopover(self._artist_ids, Type.NONE)
             pop.set_relative_to(eventbox)
             pop.show()
 
@@ -154,7 +154,7 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if InfoPopover.should_be_shown() and self._artist_ids:
+        if self._artist_ids:
             pop = ArtworkPopover(self._artist_ids[0])
             pop.set_relative_to(eventbox)
             pop.show()

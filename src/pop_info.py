@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp, OpenLink
+from lollypop.define import Lp, OpenLink, Type
 from lollypop.objects import Track
 from lollypop.utils import get_network_available
 from lollypop.widgets_info import WikipediaContent, LastfmContent
@@ -52,11 +52,11 @@ class InfoPopover(Gtk.Popover):
             InfoPopover.Wikipedia is not None or\
             InfoPopover.WebView is not None
 
-    def __init__(self, artist_ids=[], show_albums=True):
+    def __init__(self, artist_ids=[], view_type=Type.ALBUMS):
         """
             Init artist infos
-            @param artist id as int
-            @param show albums as bool
+            @param artist_ids as int
+            @param view_type as Type
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -77,12 +77,14 @@ class InfoPopover(Gtk.Popover):
         if Lp().settings.get_value('inforeload'):
             builder.get_object('reload').get_style_context().add_class(
                                                                     'selected')
-        if show_albums:
+
+        if view_type == Type.ALBUMS:
             self.__stack.get_child_by_name('albums').show()
-        if InfoPopover.Wikipedia is not None:
+        show_bio = view_type != Type.RADIOS
+        if InfoPopover.Wikipedia is not None and show_bio:
             builder.get_object('scrollwikipedia').show()
         if Lp().lastfm is not None and\
-                not Lp().settings.get_value('use-librefm'):
+                not Lp().settings.get_value('use-librefm') and show_bio:
             builder.get_object('scrolllastfm').show()
         if InfoPopover.WebView is not None and get_network_available():
             builder.get_object('scrollduck').show()
@@ -263,9 +265,13 @@ class InfoPopover(Gtk.Popover):
                        string +
                        "</span>")
         elif get_network_available():
-            artists = ", ".join(Lp().player.current_track.artists)
             title = self.__current_track.name
-            search = GLib.uri_escape_string(artists + " " + title, None, True)
+            if self.__current_track.id == Type.RADIOS:
+                search = GLib.uri_escape_string(title, None, True)
+            else:
+                artists = ", ".join(Lp().player.current_track.artists)
+                search = GLib.uri_escape_string(artists + " " + title,
+                                                None, True)
             url = "http://genius.com/search?q=%s" % search
             # Delayed load due to WebKit memory loading and Gtk animation
             web = self.WebView(True, True)
@@ -292,9 +298,12 @@ class InfoPopover(Gtk.Popover):
                 artists.append(Lp().artists.get_name(artist_id))
             search = ", ".join(artists)
         else:
-            title = self.__current_track.name
-            artists = ", ".join(Lp().player.current_track.artists)
-            search = "%s+%s" % (artists, title)
+            if self.__current_track.id == Type.RADIOS:
+                search = self.__current_track.name
+            else:
+                title = self.__current_track.name
+                artists = ", ".join(Lp().player.current_track.artists)
+                search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading and Gtk animation

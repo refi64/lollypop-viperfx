@@ -14,7 +14,7 @@ import gi
 gi.require_version('WebKit2', '4.0')
 from gi.repository import Gtk, WebKit2, GLib
 
-from urllib.parse import urlsplit
+from urllib.parse import urlparse
 
 from lollypop.define import OpenLink
 
@@ -102,7 +102,6 @@ class WebView(Gtk.Stack):
         self.__open_link = open_link
         self.__url = url
         self.__current_domain = self.__get_domain(url)
-        self.__view.grab_focus()
         self.__view.load_uri(url)
 
     def stop(self):
@@ -119,9 +118,8 @@ class WebView(Gtk.Stack):
             Return domain for url
             @param url as str
         """
-        hostname = urlsplit(url)[1]
-        split = hostname.split('.')
-        return split[-2] + "." + split[-1]
+        parsed = urlparse(url)
+        return parsed.netloc
 
     def __on_destroy(self, widget):
         """
@@ -142,7 +140,7 @@ class WebView(Gtk.Stack):
             self.set_visible_child_name('spinner')
             self.__spinner.start()
             self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        elif event == WebKit2.LoadEvent.FINISHED:
+        elif event == WebKit2.LoadEvent.COMMITTED:
             self.set_visible_child_name('view')
             self.__spinner.stop()
 

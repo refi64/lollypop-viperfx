@@ -128,7 +128,8 @@ class Type:
     ITUNES = -11
     LASTFM = -12
     NOPARTY = -13
-    ALL = -14
+    ALBUMS = -14
+    ALL = -15
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

@@ -149,19 +149,15 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             expopover.populate()
             expopover.show()
         elif Lp().player.current_track.id is not None:
-            if Lp().player.current_track.id == Type.RADIOS:
-                if self.__pop_tunein is None:
-                    from lollypop.pop_tunein import TuneinPopover
-                    self.__pop_tunein = TuneinPopover()
-                    self.__pop_tunein.populate()
-                    self.__pop_tunein.set_relative_to(self._infobox)
-                self.__pop_tunein.show()
-            else:
-                if self.__pop_info is None:
-                    from lollypop.pop_info import InfoPopover
-                    self.__pop_info = InfoPopover()
-                    self.__pop_info.set_relative_to(self._infobox)
-                self.__pop_info.show()
+            if self.__pop_info is None:
+                from lollypop.pop_info import InfoPopover
+                if Lp().player.current_track.id == Type.RADIOS:
+                    view_type = Type.RADIOS
+                else:
+                    view_type = Type.ALBUMS
+                self.__pop_info = InfoPopover([], view_type)
+                self.__pop_info.set_relative_to(self._infobox)
+            self.__pop_info.show()
 
     def __on_loading_changed(self, player, show):
         """
