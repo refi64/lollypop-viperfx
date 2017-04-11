@@ -138,7 +138,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                         elif is_audio(f):
                             tracks.append(child_uri)
                         else:
-                            debug("%s not detected as a music file" % uri)
+                            debug("%s not detected as a music file" %
+                                  child_uri)
                     except Exception as e:
                         print("CollectionScanner::"
                               "__get_objects_for_uris():", e)
