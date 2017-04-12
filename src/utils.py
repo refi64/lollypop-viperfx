@@ -92,13 +92,25 @@ def is_audio(f):
         Return True if files is audio
         @param f as Gio.File
     """
+    audio = ["application/ogg", "application/x-ogg", "application/x-ogm-audio",
+             "audio/aac", "audio/mp4", "audio/mpeg", "audio/mpegurl",
+             "audio/ogg", "audio/vnd.rn-realaudio", "audio/vorbis",
+             "audio/x-flac", "audio/x-mp3", "audio/x-mpeg", "audio/x-mpegurl",
+             "audio/x-ms-wma", "audio/x-musepack", "audio/x-oggflac",
+             "audio/x-pn-realaudio", "application/x-flac", "audio/x-speex",
+             "audio/x-vorbis", "audio/x-vorbis+ogg", "audio/x-wav",
+             "x-content/audio-player", "audio/x-aac", "audio/m4a",
+             "audio/x-m4a", "audio/mp3", "audio/ac3", "audio/flac",
+             "audio/x-opus+ogg", "application/x-extension-mp4",
+             "audio/x-pn-aiff", "audio/x-pn-au", "audio/x-pn-wav",
+             "audio/x-pn-windows-acm", "application/x-matroska",
+             "audio/x-matroska"]
     try:
         info = f.query_info('standard::content-type',
                             Gio.FileQueryInfoFlags.NONE)
         if info is not None:
-            # Issue with GLib mime detection, should detect mp4 audio as audio
-            if info.get_content_type()[0:6] == "audio/" or\
-               info.get_content_type() == "video/mp4":
+            content_type = info.get_content_type()
+            if content_type in audio:
                 return True
     except:
         pass
