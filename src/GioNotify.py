@@ -54,11 +54,14 @@ class GioNotify(Gio.DBusProxy):
             )
 
         def on_GetCapabilities_finish(self, result, callback):
-            caps = self.call_finish(result).unpack()[0]
+            try:
+                caps = self.call_finish(result).unpack()[0]
 
-            self._app_name = app_name
+                self._app_name = app_name
 
-            callback(caps)
+                callback(caps)
+            except Exception as e:
+                print("GioNotify::async_init():", e)
 
         self = cls()
         self.init_async(GLib.PRIORITY_DEFAULT, None, on_init_finish, callback)
