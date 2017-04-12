@@ -227,7 +227,38 @@ class Application(Gtk.Application):
             t.daemon = True
             t.start()
 
-    def prepare_to_exit(self, action=None, param=None, exit=True):
+    def quit(self, vacuum=False):
+        """
+            Quit Lollypop
+            @param vacuum as bool
+        """
+        # First save state
+        self.__save_state()
+        # Then vacuum db
+        if vacuum:
+            self.__vacuum()
+        self.window.destroy()
+        Gio.Application.quit(self)
+
+    def is_fullscreen(self):
+        """
+            Return True if application is fullscreen
+        """
+        return self.__is_fs
+
+    def set_mini(self, action, param):
+        """
+            Set mini player on/off
+            @param dialog as Gtk.Dialog
+            @param response id as int
+        """
+        if self.window is not None:
+            self.window.set_mini()
+
+#######################
+# PRIVATE             #
+#######################
+    def __save_state(self):
         """
             Save window position and view
         """
@@ -255,7 +286,7 @@ class Application(Gtk.Application):
                     dump(self.player.get_albums(),
                          open(DataPath + "/albums.bin", "wb"))
                 except Exception as e:
-                    print("Application::prepare_to_exit()", e)
+                    print("Application::__save_state()", e)
             dump(track_id, open(DataPath + "/track_id.bin", "wb"))
             dump([self.player.is_playing, self.player.is_party],
                  open(DataPath + "/player.bin", "wb"))
@@ -277,16 +308,14 @@ class Application(Gtk.Application):
         self.window.stop_all()
         if self.charts is not None:
             self.charts.stop()
-        if exit:
-            self.quit()
 
-    def quit(self):
+    def __vacuum(self):
         """
-            Quit lollypop
+            VACUUM DB
         """
         if self.scanner.is_locked():
             self.scanner.stop()
-            GLib.idle_add(self.quit)
+            GLib.idle_add(self.vacuum)
             return
         self.db.del_tracks(self.tracks.get_non_persistent())
         try:
@@ -304,27 +333,8 @@ class Application(Gtk.Application):
                 sql.execute('VACUUM')
                 sql.isolation_level = ''
         except Exception as e:
-            print("Application::quit(): ", e)
-        self.window.destroy()
+            print("Application::__vacuum(): ", e)
 
-    def is_fullscreen(self):
-        """
-            Return True if application is fullscreen
-        """
-        return self.__is_fs
-
-    def set_mini(self, action, param):
-        """
-            Set mini player on/off
-            @param dialog as Gtk.Dialog
-            @param response id as int
-        """
-        if self.window is not None:
-            self.window.set_mini()
-
-#######################
-# PRIVATE             #
-#######################
     def __preload_portal(self):
         """
             Preload lollypop portal
@@ -448,8 +458,7 @@ class Application(Gtk.Application):
         """
         if not self.settings.get_value('background-mode') or\
                 self.player.current_track.id is None:
-            GLib.timeout_add(500, self.prepare_to_exit)
-            self.scanner.stop()
+            GLib.timeout_add(500, self.quit, True)
         return widget.hide_on_delete()
 
     def __update_db(self, action=None, param=None):
@@ -499,7 +508,7 @@ class Application(Gtk.Application):
         """
         self.__is_fs = False
         if not self.window.is_visible():
-            self.prepare_to_exit()
+            self.quit(True)
 
     def __on_activate(self, application):
         """
@@ -508,101 +517,21 @@ class Application(Gtk.Application):
         """
         self.window.present()
 
-    def __on_sm_listener_ok(self, proxy, task):
-        """
-            Connect signals
-            @param proxy as Gio.DBusProxy
-            @param task as Gio.Task
-        """
-        try:
-            proxy.call('GetClients', None,
-                       Gio.DBusCallFlags.NO_AUTO_START,
-                       500, None, self.__on_get_clients)
-        except:
-            pass
-
-    def __on_sm_client_listener_ok(self, proxy, task, client):
-        """
-            Get app id
-            @param proxy as Gio.DBusProxy
-            @param task as Gio.Task
-            @param client as str
-        """
-        try:
-            proxy.call('GetAppId', None,
-                       Gio.DBusCallFlags.NO_AUTO_START,
-                       500, None, self.__on_get_app_id, client)
-        except:
-            pass
-
-    def __on_sm_client_private_listener_ok(self, proxy, task):
-        """
-            Connect signals
-            @param proxy as Gio.DBusProxy
-            @param task as Gio.Task
-        """
-        # Needed or object will be destroyed
-        self.__proxy = proxy
-        proxy.connect('g-signal', self.__on_signals)
-
-    def __on_get_clients(self, proxy, task):
-        """
-            Search us in clients
-            @param proxy as Gio.DBusProxy
-            @param task as Gio.Task
-        """
-        try:
-            for client in proxy.call_finish(task)[0]:
-                Gio.DBusProxy.new(self.get_dbus_connection(),
-                                  Gio.DBusProxyFlags.NONE, None,
-                                  'org.gnome.SessionManager',
-                                  client,
-                                  'org.gnome.SessionManager.Client', None,
-                                  self.__on_sm_client_listener_ok, client)
-        except:
-            pass
-
-    def __on_get_app_id(self, proxy, task, client):
-        """
-            Connect signals if we are this client
-            @param proxy as Gio.DBusProxy
-            @param task as Gio.Task
-            @param client as str
-        """
-        try:
-            if proxy.call_finish(task)[0] == "org.gnome.Lollypop":
-                Gio.DBusProxy.new(self.get_dbus_connection(),
-                                  Gio.DBusProxyFlags.NONE, None,
-                                  'org.gnome.SessionManager',
-                                  client,
-                                  'org.gnome.SessionManager.ClientPrivate',
-                                  None,
-                                  self.__on_sm_client_private_listener_ok)
-        except:
-            pass
-
-    def __on_signals(self, proxy, sender, signal, parameters):
-        """
-            Connect to Session Manager QueryEndSession signal
-        """
-        if signal == "EndSession":
-            # Save session, do not quit as we may be killed to quickly
-            # to be able to VACUUM database
-            self.prepare_to_exit(False)
-
     def __listen_to_gnome_sm(self):
         """
-            Connect to GNOME session manager
+            Save state on EndSession signal
         """
         try:
-            Gio.DBusProxy.new(self.get_dbus_connection(),
-                              Gio.DBusProxyFlags.NONE, None,
-                              'org.gnome.SessionManager',
-                              '/org/gnome/SessionManager',
-                              'org.gnome.SessionManager', None,
-                              self.__on_sm_listener_ok)
-        except:
-            pass
+            bus = self.get_dbus_connection()
+            bus.signal_subscribe(None,
+                                 "org.gnome.SessionManager.EndSessionDialog",
+                                 "ConfirmedLogout",
+                                 "/org/gnome/SessionManager/EndSessionDialog",
+                                 None,
+                                 Gio.DBusSignalFlags.NONE,
+                                 lambda a, b, c, d, e, f: self.__save_state())
+        except Exception as e:
+            print("Application::__listen_to_gnome_sm():", e)
 
     def __settings_dialog(self, action=None, param=None):
         """
@@ -704,7 +633,7 @@ class Application(Gtk.Application):
         self.add_action(helpAction)
 
         quitAction = Gio.SimpleAction.new('quit', None)
-        quitAction.connect('activate', self.prepare_to_exit)
+        quitAction.connect('activate', lambda x, y: self.quit(True))
         self.add_action(quitAction)
 
         return menu
