@@ -226,7 +226,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             mtime = int(time())
                         to_add.append((uri, mtime))
                     except Exception as e:
-                        print("CollectionScanner::__scan(mtime):", e, uri)
+                        print("CollectionScanner::__scan(mtime):", e)
                 # Clean deleted files
                 # Now because we need to populate history
                 for uri in orig_tracks:
@@ -297,11 +297,11 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
-        (track_pop, track_rate, track_ltime, amtime,
+        (track_pop, track_rate, track_ltime, album_mtime,
          loved, album_pop, album_rate) = self.__history.get(name, duration)
         # If nothing in stats, use track mtime
-        if amtime == 0:
-            amtime = mtime
+        if album_mtime == 0:
+            album_mtime = mtime
 
         debug("CollectionScanner::add2db(): Add artists %s" % artists)
         artist_ids = self.add_artists(artists, album_artists, a_sortnames)
@@ -329,7 +329,8 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         debug("CollectionScanner::add2db(): Update tracks")
         self.update_track(track_id, artist_ids, genre_ids, mtime)
-        self.update_album(album_id, album_artist_ids, genre_ids, amtime, year)
+        self.update_album(album_id, album_artist_ids,
+                          genre_ids, album_mtime, year)
         if new_album:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
