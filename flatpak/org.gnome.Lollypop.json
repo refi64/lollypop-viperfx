@@ -32,8 +32,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://github.com/pylast/pylast/archive/1.7.0.tar.gz",
-       "sha256": "0b3c72dd734136532e1d78533718b6ae5e81681a1c62d5077f5f6a9fb8dc5a0e"
+        "url": "https://github.com/pylast/pylast/archive/1.8.0.tar.gz",
+       "sha256": "a84c1c3acd62a072205e545ea2550ffbb7b702e073793bfcfbc9f86a14149e7e"
       },{
         "type": "file",
         "path": "pip-Makefile",
@@ -57,8 +57,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://pypi.python.org/packages/2e/ad/e627446492cc374c284e82381215dcd9a0a87c4f6e90e9789afefe6da0ad/requests-2.11.1.tar.gz",
-       "sha256": "5acf980358283faba0b897c73959cecf8b841205bb4b2ad3ef545f46eae1a133"
+        "url": "https://pypi.python.org/packages/16/09/37b69de7c924d318e51ece1c4ceb679bf93be9d05973bb30c35babd596e2/requests-2.13.0.tar.gz",
+       "sha256": "5722cd09762faa01276230270ff16af7acf7c5c45d623868d9ba116f15791ce8"
       },{
         "type": "file",
         "path": "pip-Makefile",
@@ -107,8 +107,8 @@
       "no-autogen": true,
       "sources": [{
         "type": "archive",
-        "url": "https://github.com/rg3/youtube-dl/releases/download/2017.01.14/youtube-dl-2017.01.14.tar.gz",
-        "sha256": "76c8bd77db6c820bfa72f1e2a873101ca736fd1d9954ccebf349fa7caef99cca"
+        "url": "https://yt-dl.org/downloads/2017.04.11/youtube-dl-2017.04.11.tar.gz",
+        "sha256": "4df5af6b3199a93a7e4dc58de0c6da6759b065ceeeaac9470865a5cefdfdc149"
       },{
         "type": "file",
         "path": "pip-Makefile",
@@ -134,7 +134,8 @@
       "no-autogen": true,
       "sources": [{
           "type": "archive",
-          "url": "file:///home/gnumdk/Dev/rpmbuild/SOURCES/lollypop-0.9.231.tar.xz"
+          "url": "file:///home/gnumdk/Dev/rpmbuild/SOURCES/lollypop-0.9.231.tar.xz",
+          "sha256": "d30040fd45d7c0d61e5d89d3564e0171cad3b4ce7d2fee7283065638e1d4e964"
         }]
     }]
 }
