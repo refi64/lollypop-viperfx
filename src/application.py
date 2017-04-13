@@ -181,8 +181,11 @@ class Application(Gtk.Application):
             self.notify = NotificationManager()
 
         settings = Gtk.Settings.get_default()
-        dark = self.settings.get_value('dark-ui')
-        settings.set_property('gtk-application-prefer-dark-theme', dark)
+        self.__gtk_dark = settings.get_property(
+                                           'gtk-application-prefer-dark-theme')
+        if not self.__gtk_dark:
+            dark = self.settings.get_value('dark-ui')
+            settings.set_property('gtk-application-prefer-dark-theme', dark)
 
         self.add_action(self.settings.create_action('playback'))
         self.add_action(self.settings.create_action('shuffle'))
@@ -254,6 +257,14 @@ class Application(Gtk.Application):
         """
         if self.window is not None:
             self.window.set_mini()
+
+    @property
+    def gtk_application_prefer_dark_theme(self):
+        """
+            Return default gtk value
+            @return bool
+        """
+        return self.__gtk_dark
 
 #######################
 # PRIVATE             #

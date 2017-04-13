@@ -129,7 +129,10 @@ class SettingsDialog:
         switch_scan.set_state(Lp().settings.get_value('auto-update'))
 
         switch_view = builder.get_object('switch_dark')
-        switch_view.set_state(Lp().settings.get_value('dark-ui'))
+        if Lp().gtk_application_prefer_dark_theme:
+            switch_view.set_sensitive(False)
+        else:
+            switch_view.set_state(Lp().settings.get_value('dark-ui'))
 
         switch_background = builder.get_object('switch_background')
         switch_background.set_state(Lp().settings.get_value('background-mode'))
