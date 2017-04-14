@@ -126,7 +126,7 @@ class ContextWidget(Gtk.Grid):
         if Type.CHARTS not in self.__object.genre_ids:
             playlist = HoverWidget('view-list-symbolic',
                                    self.__show_playlist_manager)
-            playlist.set_tooltip_text(_("Playlists"))
+            playlist.set_tooltip_text(_("Add to playlist"))
             playlist.show()
             self.add(playlist)
 
