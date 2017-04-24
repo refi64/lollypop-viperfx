@@ -13,9 +13,10 @@
 from gi.repository import Gdk, GLib
 from gettext import gettext as _
 
-from .GioNotify import GioNotify
+from lollypop.GioNotify import GioNotify
 
 from lollypop.define import Lp, ArtSize, Type
+from lollypop.utils import is_gnome
 
 
 class NotificationManager:
@@ -30,6 +31,7 @@ class NotificationManager:
         self.__inhibitor = False
         self.__fully_initted = False
         self.__supports_actions = False
+        self.__is_gnome = is_gnome()
         self.__notification = GioNotify.async_init('Lollypop',
                                                    self.__on_init_finish)
 
@@ -133,14 +135,19 @@ class NotificationManager:
                 state & Gdk.WindowState.FOCUSED or\
                 app.is_fullscreen():
             return
-        if player.current_track.id == Type.RADIOS:
-            cover_path = Lp().art.get_radio_cache_path(
-                player.current_track.album_artists[0], ArtSize.BIG)
+        # Since GNOME 3.24, using album cover looks bad
+        if self.__is_gnome:
+            cover_path = "org.gnome.Lollypop-symbolic"
         else:
-            cover_path = Lp().art.get_album_cache_path(
-                player.current_track.album, ArtSize.BIG)
-        if cover_path is None:
-            cover_path = 'org.gnome.Lollypop'
+            if player.current_track.id == Type.RADIOS:
+                cover_path = Lp().art.get_radio_cache_path(
+                    player.current_track.album_artists[0], ArtSize.BIG)
+            else:
+                cover_path = Lp().art.get_album_cache_path(
+                    player.current_track.album, ArtSize.BIG)
+            if cover_path is None:
+                cover_path = "org.gnome.Lollypop-symbolic"
+
         if player.current_track.album.name == '':
             self.__notification.show_new(
                 player.current_track.title,
