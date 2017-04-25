@@ -216,7 +216,7 @@ class MPRIS(Server):
     def Seek(self, offset):
         # Convert position in seconds
         position = Lp().player.position / 1000000 / 60
-        Lp().player.seek(position + offset)
+        Lp().player.seek(position + offset / 1000000)
 
     def Seeked(self, position):
         self.__bus.emit_signal(
