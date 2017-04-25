@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
+from gettext import gettext as _
+
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
@@ -39,9 +41,9 @@ class PlaylistsView(View):
                                                    self.__on_playlist_del)
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
-
-        builder.get_object('title').set_label(
+        builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
+        self.__duration_label = builder.get_object("duration")
+        builder.get_object("title").set_label(
                              ", ".join(Lp().playlists.get_names(playlist_ids)))
 
         self.__edit_button = builder.get_object('edit-button')
@@ -68,6 +70,7 @@ class PlaylistsView(View):
         # Connect signals after ui init
         # 'split-button' will emit a signal otherwise
         builder.connect_signals(self)
+        self.__set_duration()
 
     def populate(self, tracks):
         """
@@ -186,6 +189,25 @@ class PlaylistsView(View):
 #######################
 # PRIVATE             #
 #######################
+    def __set_duration(self):
+        """
+            Set playlist duration
+        """
+        duration = 0
+        for playlist_id in self.__playlist_ids:
+            duration += Lp().playlists.get_duration(playlist_id)
+
+        hours = int(duration / 3600)
+        mins = int(duration / 60)
+        if hours > 0:
+            mins -= hours * 60
+            if mins > 0:
+                self.__duration_label.set_text(_("%s h  %s m") % (hours, mins))
+            else:
+                self.__duration_label.set_text(_("%s h") % hours)
+        else:
+            self.__duration_label.set_text(_("%s m") % mins)
+
     def __update_jump_button(self):
         """
             Update jump button status

@@ -190,6 +190,24 @@ class Playlists(GObject.GObject):
                                  (playlist_id,))
             return list(itertools.chain(*result))
 
+    def get_duration(self, playlist_id):
+        """
+            Return playlist duration
+            @param playlist_id as int
+            @return duration as int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT SUM(music.tracks.duration)\
+                                  FROM tracks, music.tracks\
+                                  WHERE tracks.playlist_id=?\
+                                  AND music.tracks.uri=\
+                                  main.tracks.uri",
+                                 (playlist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_track_ids_sorted(self, playlist_id):
         """
             Return availables track ids for playlist sorted by artist/album
