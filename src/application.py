@@ -326,7 +326,7 @@ class Application(Gtk.Application):
         """
         if self.scanner.is_locked():
             self.scanner.stop()
-            GLib.idle_add(self.vacuum)
+            GLib.idle_add(self.__vacuum)
             return
         self.db.del_tracks(self.tracks.get_non_persistent())
         try:
