@@ -208,10 +208,15 @@ class MPRIS(Server):
             Lp().player.play()
 
     def SetPosition(self, track_id, position):
-        Lp().player.seek(position/1000000)
+        Lp().player.seek(position / 1000000)
 
     def OpenUri(self, uri):
         pass
+
+    def Seek(self, offset):
+        # Convert position in seconds
+        position = Lp().player.position / 1000000 / 60
+        Lp().player.seek(position + offset)
 
     def Seeked(self, position):
         self.__bus.emit_signal(
