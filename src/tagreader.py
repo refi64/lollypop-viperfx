@@ -71,7 +71,8 @@ class TagReader(Discoverer):
         if tags is None:
             return GLib.path_get_basename(filepath)
         (exists, title) = tags.get_string_index('title', 0)
-        if not exists:
+        # We need to check tag is not just spaces
+        if not exists or not title.strip(" "):
             title = GLib.path_get_basename(filepath)
         return title
 
@@ -86,7 +87,8 @@ class TagReader(Discoverer):
         artists = []
         for i in range(tags.get_tag_size('artist')):
             (exists, read) = tags.get_string_index('artist', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 artists.append(read)
         return "; ".join(artists)
 
@@ -101,7 +103,8 @@ class TagReader(Discoverer):
         composers = []
         for i in range(tags.get_tag_size('composer')):
             (exists, read) = tags.get_string_index('composer', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 composers.append(read)
         return "; ".join(composers)
 
@@ -116,7 +119,8 @@ class TagReader(Discoverer):
         performers = []
         for i in range(tags.get_tag_size('performer')):
             (exists, read) = tags.get_string_index('performer', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 performers.append(read)
         return "; ".join(performers)
 
@@ -131,7 +135,8 @@ class TagReader(Discoverer):
         sortnames = []
         for i in range(tags.get_tag_size('artist-sortname')):
             (exists, read) = tags.get_string_index('artist-sortname', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 sortnames.append(read)
         return "; ".join(sortnames)
 
@@ -146,7 +151,8 @@ class TagReader(Discoverer):
         sortnames = []
         for i in range(tags.get_tag_size('album-artist-sortname')):
             (exists, read) = tags.get_string_index('album-artist-sortname', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 sortnames.append(read)
         return "; ".join(sortnames)
 
@@ -161,7 +167,8 @@ class TagReader(Discoverer):
         artists = []
         for i in range(tags.get_tag_size('album-artist')):
             (exists, read) = tags.get_string_index('album-artist', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 artists.append(read)
         return "; ".join(artists)
 
@@ -174,7 +181,8 @@ class TagReader(Discoverer):
         if tags is None:
             return _("Unknown")
         (exists, album_name) = tags.get_string_index('album', 0)
-        if not exists:
+        # We need to check tag is not just spaces
+        if not exists or not album_name.strip(" "):
             album_name = _("Unknown")
         return album_name
 
@@ -189,7 +197,8 @@ class TagReader(Discoverer):
         genres = []
         for i in range(tags.get_tag_size('genre')):
             (exists, read) = tags.get_string_index('genre', i)
-            if exists:
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
                 genres.append(read)
         if not genres:
             return _("Unknown")
