@@ -130,10 +130,9 @@ class NotificationManager:
             self.__inhibitor = False
             return
         state = Lp().window.get_window().get_state()
-        app = Lp().window.get_application()
         if player.current_track.id is None or\
                 state & Gdk.WindowState.FOCUSED or\
-                app.is_fullscreen():
+                Lp().is_fullscreen():
             return
         # Since GNOME 3.24, using album cover looks bad
         if self.__is_gnome:
