@@ -28,18 +28,18 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         Gtk.Bin.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ToolbarPlayback.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/ToolbarPlayback.ui")
         builder.connect_signals(self)
 
-        self.add(builder.get_object('playback'))
+        self.add(builder.get_object("playback"))
 
-        self._prev_btn = builder.get_object('previous_button')
-        self._play_btn = builder.get_object('play_button')
-        self._next_btn = builder.get_object('next_button')
-        self._play_image = builder.get_object('play_image')
-        self._pause_image = builder.get_object('pause_image')
+        self._prev_btn = builder.get_object("previous_button")
+        self._play_btn = builder.get_object("play_button")
+        self._next_btn = builder.get_object("next_button")
+        self._play_image = builder.get_object("play_image")
+        self._pause_image = builder.get_object("pause_image")
 
-        Lp().player.connect('lock-changed', self.__on_lock_changed)
+        Lp().player.connect("lock-changed", self.__on_lock_changed)
 
 #######################
 # PRIVATE             #

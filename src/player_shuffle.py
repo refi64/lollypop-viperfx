@@ -33,7 +33,7 @@ class ShufflePlayer(BasePlayer):
         # Party mode
         self.__is_party = False
         self.reset_history()
-        Lp().settings.connect('changed::shuffle', self.__set_shuffle)
+        Lp().settings.connect("changed::shuffle", self.__set_shuffle)
 
     def reset_history(self):
         """
@@ -104,7 +104,7 @@ class ShufflePlayer(BasePlayer):
             Return party ids
             @return [ids as int]
         """
-        party_settings = Lp().settings.get_value('party-ids')
+        party_settings = Lp().settings.get_value("party-ids")
         ids = []
         genre_ids = Lp().genres.get_ids()
         genre_ids.append(Type.POPULARS)
@@ -153,7 +153,7 @@ class ShufflePlayer(BasePlayer):
                 self._albums.insert(0, self._current_track.album.id)
             self.set_next()
             self.set_prev()
-        self.emit('party-changed', party)
+        self.emit("party-changed", party)
 
     @property
     def is_party(self):
@@ -242,7 +242,7 @@ class ShufflePlayer(BasePlayer):
             Set shuffle mode to gettings value
             @param settings as Gio.Settings, value as str
         """
-        self._shuffle = Lp().settings.get_enum('shuffle')
+        self._shuffle = Lp().settings.get_enum("shuffle")
 
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
@@ -296,7 +296,7 @@ class ShufflePlayer(BasePlayer):
                    track not in self.__already_played_tracks[album_id]:
                     return track
             # No new tracks for this album, remove it
-            # If albums not in shuffle history, it's not present
+            # If albums not in shuffle history, it"s not present
             # in db anymore (update since shuffle set)
             if album_id in self.__already_played_tracks.keys():
                 self.__already_played_tracks.pop(album_id)

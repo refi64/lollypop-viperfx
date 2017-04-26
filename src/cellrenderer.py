@@ -92,7 +92,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         size = ArtSize.ARTIST_SMALL * self.__scale_factor
         draw_artwork = self.__is_artists and\
             self.rowid >= 0 and\
-            Lp().settings.get_value('artist-artwork')
+            Lp().settings.get_value("artist-artwork")
         if draw_artwork:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = ArtSize.ARTIST_SMALL + self.xshift * 2
@@ -130,7 +130,7 @@ class CellRendererArtist(Gtk.CellRendererText):
                     break
         if surface is None:
             surface = Gtk.IconTheme.get_default().load_surface(
-                                             'avatar-default-symbolic',
+                                             "avatar-default-symbolic",
                                              ArtSize.ARTIST_SMALL,
                                              1,
                                              widget.get_window(),
@@ -153,7 +153,7 @@ class CellRendererArtist(Gtk.CellRendererText):
     def do_get_preferred_height_for_width(self, widget, width):
         draw_artwork = self.__is_artists and\
                        self.rowid >= 0 and\
-                       Lp().settings.get_value('artist-artwork')
+                       Lp().settings.get_value("artist-artwork")
         if draw_artwork:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:

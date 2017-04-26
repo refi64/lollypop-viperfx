@@ -26,7 +26,7 @@ class PlaylistsWidget(Gtk.Grid):
         Show playlist tracks/albums
     """
     __gsignals__ = {
-        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     def __init__(self, playlist_ids):
@@ -51,15 +51,15 @@ class PlaylistsWidget(Gtk.Grid):
         self.__grid.set_column_homogeneous(True)
         self.__grid.show()
 
-        self.connect('size-allocate', self.__on_size_allocate)
+        self.connect("size-allocate", self.__on_size_allocate)
 
         self.__tracks_widget_left = TracksWidget(True)
         self.__tracks_widget_left.set_vexpand(True)
         self.__tracks_widget_right = TracksWidget(True)
         self.__tracks_widget_right.set_vexpand(True)
-        self.__tracks_widget_left.connect('activated',
+        self.__tracks_widget_left.connect("activated",
                                           self.__on_activated)
-        self.__tracks_widget_right.connect('activated',
+        self.__tracks_widget_right.connect("activated",
                                            self.__on_activated)
         self.__tracks_widget_left.show()
         self.__tracks_widget_right.show()
@@ -67,7 +67,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect('drag-data-received', self.__on_drag_data_received)
+        self.connect("drag-data-received", self.__on_drag_data_received)
 
         self.add(self.__grid)
 
@@ -133,7 +133,7 @@ class PlaylistsWidget(Gtk.Grid):
     def populate_list_left(self, tracks, pos):
         """
             Populate left list
-            @param track's ids as array of int (not null)
+            @param track"s ids as array of int (not null)
             @param track position as int
             @thread safe
         """
@@ -148,7 +148,7 @@ class PlaylistsWidget(Gtk.Grid):
     def populate_list_right(self, tracks, pos):
         """
             Populate right list
-            @param track's ids as array of int (not null)
+            @param track"s ids as array of int (not null)
             @param track position as int
             @thread safe
         """
@@ -251,14 +251,14 @@ class PlaylistsWidget(Gtk.Grid):
             elif widget == self.__tracks_widget_left:
                 self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:
-                self.emit('populated')
+                self.emit("populated")
             self.__locked_widget_right = False
             return
 
         track = Track(tracks.pop(0))
         row = PlaylistRow(track.id, pos,
                           track.album.id != previous_album_id)
-        row.connect('track-moved', self.__on_track_moved)
+        row.connect("track-moved", self.__on_track_moved)
         row.show()
         widget.insert(row, pos)
         GLib.idle_add(self.__add_tracks, tracks, widget,
@@ -380,7 +380,7 @@ class PlaylistsWidget(Gtk.Grid):
                           index,
                           index == 0 or
                           src_track.album.id != prev_track.album.id)
-        row.connect('track-moved', self.__on_track_moved)
+        row.connect("track-moved", self.__on_track_moved)
         row.show()
         dst_widget.insert(row, index)
         return (src_widget, dst_widget, src_index, index)
@@ -455,11 +455,11 @@ class PlaylistsWidget(Gtk.Grid):
         self.__width = allocation.width
         redraw = False
         if allocation.width < WindowSize.MONSTER or\
-                not Lp().settings.get_value('split-view'):
-            self.__grid.set_property('valign', Gtk.Align.START)
+                not Lp().settings.get_value("split-view"):
+            self.__grid.set_property("valign", Gtk.Align.START)
             orientation = Gtk.Orientation.VERTICAL
         else:
-            self.__grid.set_property('valign', Gtk.Align.FILL)
+            self.__grid.set_property("valign", Gtk.Align.FILL)
             orientation = Gtk.Orientation.HORIZONTAL
         if orientation != self.__orientation:
             self.__orientation = orientation
@@ -515,54 +515,54 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self.__deleted_path = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/'
-                                  'PlaylistsManagerWidget.ui')
-        self.__infobar = builder.get_object('infobar')
-        self.__infobar_label = builder.get_object('infobarlabel')
+        builder.add_from_resource("/org/gnome/Lollypop/"
+                                  "PlaylistsManagerWidget.ui")
+        self.__infobar = builder.get_object("infobar")
+        self.__infobar_label = builder.get_object("infobarlabel")
 
         self.__model = Gtk.ListStore(bool, str, str, int)
         self.__model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self.__model.set_sort_func(1, self.__sort_items)
 
-        self.__view = builder.get_object('view')
+        self.__view = builder.get_object("view")
         self.__view.set_model(self.__model)
         self.__view.drag_dest_set(
                            Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.__view.drag_dest_add_text_targets()
-        self.__view.connect('drag-data-received', self.__on_drag_data_received)
+        self.__view.connect("drag-data-received", self.__on_drag_data_received)
 
         builder.connect_signals(self)
 
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
 
         if self.__object_id != Type.NONE:
             renderer0 = Gtk.CellRendererToggle()
-            renderer0.set_property('activatable', True)
-            renderer0.connect('toggled', self.__on_playlist_toggled)
+            renderer0.set_property("activatable", True)
+            renderer0.connect("toggled", self.__on_playlist_toggled)
             column0 = Gtk.TreeViewColumn(" ✓", renderer0, active=0)
             column0.set_clickable(True)
-            column0.connect('clicked', self.__on_column0_clicked)
+            column0.connect("clicked", self.__on_column0_clicked)
 
         renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set', True)
-        renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer1.set_property('editable', True)
-        renderer1.connect('edited',
+        renderer1.set_property("ellipsize-set", True)
+        renderer1.set_property("ellipsize", Pango.EllipsizeMode.END)
+        renderer1.set_property("editable", True)
+        renderer1.connect("edited",
                           self.__on_playlist_edited)
-        renderer1.connect('editing-started',
+        renderer1.connect("editing-started",
                           self.__on_playlist_editing_start)
-        renderer1.connect('editing-canceled',
+        renderer1.connect("editing-canceled",
                           self.__on_playlist_editing_cancel)
         column1 = Gtk.TreeViewColumn(_("Playlists"), renderer1, text=1)
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column1.set_expand(True)
 
         renderer2 = Gtk.CellRendererPixbuf()
-        column2 = Gtk.TreeViewColumn('', renderer2)
-        column2.add_attribute(renderer2, 'icon-name', 2)
+        column2 = Gtk.TreeViewColumn("", renderer2)
+        column2.add_attribute(renderer2, "icon-name", 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column2.set_property('fixed_width', 50)
+        column2.set_property("fixed_width", 50)
 
         if self.__object_id != Type.NONE:
             self.__view.append_column(column0)
@@ -594,7 +594,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             name = _("New playlist ") + str(count)
         Lp().playlists.add(name)
         playlist_id = Lp().playlists.get_id(name)
-        self.__model.append([True, name, 'user-trash-symbolic', playlist_id])
+        self.__model.append([True, name, "user-trash-symbolic", playlist_id])
         self.__set_current_object(playlist_id, True)
 
 #######################
@@ -617,7 +617,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self.__model.get_iter(path)
         if iterator:
-            if column.get_title() == '':
+            if column.get_title() == "":
                 self.__show_infobar(path)
 
     def _on_delete_confirm(self, button):
@@ -683,7 +683,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             else:
                 selected = False
             self.__model.append([selected, playlist[1],
-                                'user-trash-symbolic', playlist[0]])
+                                "user-trash-symbolic", playlist[0]])
 
     def __show_infobar(self, path):
         """
@@ -769,7 +769,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
            Lp().playlists.get_id(name) != Type.NONE:
             return
         self.__model.remove(iterator)
-        self.__model.append([True, name, 'user-trash-symbolic', playlist_id])
+        self.__model.append([True, name, "user-trash-symbolic", playlist_id])
         Lp().playlists.rename(name, old_name)
 
     def __on_playlist_editing_start(self, widget, editable, path):
@@ -818,13 +818,13 @@ class PlaylistEditWidget(Gtk.Bin):
         self.__playlist_id = playlist_id
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditWidget.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/PlaylistEditWidget.ui")
         builder.connect_signals(self)
 
-        self.__infobar = builder.get_object('infobar')
-        self.__infobar_label = builder.get_object('infobarlabel')
+        self.__infobar = builder.get_object("infobar")
+        self.__infobar_label = builder.get_object("infobarlabel")
 
-        self.__view = builder.get_object('view')
+        self.__view = builder.get_object("view")
 
         self.__model = Gtk.ListStore(int,
                                      str,
@@ -837,22 +837,22 @@ class PlaylistEditWidget(Gtk.Bin):
         renderer0 = CellRendererAlbum()
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, album=0)
         renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set', True)
-        renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer1.set_property("ellipsize-set", True)
+        renderer1.set_property("ellipsize", Pango.EllipsizeMode.END)
         column1 = Gtk.TreeViewColumn("text1", renderer1, markup=1)
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column1.set_expand(True)
         renderer2 = Gtk.CellRendererPixbuf()
-        column2 = Gtk.TreeViewColumn('delete', renderer2)
-        column2.add_attribute(renderer2, 'icon-name', 2)
+        column2 = Gtk.TreeViewColumn("delete", renderer2)
+        column2.add_attribute(renderer2, "icon-name", 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column2.set_property('fixed_width', 50)
+        column2.set_property("fixed_width", 50)
 
         self.__view.append_column(column0)
         self.__view.append_column(column1)
         self.__view.append_column(column2)
 
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
 
     def populate(self):
         """
@@ -900,8 +900,8 @@ class PlaylistEditWidget(Gtk.Bin):
             iterator = model.get_iter(path)
             self.__infobar_label.set_markup(_("Remove \"%s\"?") %
                                             model.get_value(iterator,
-                                                            1).replace('\n',
-                                                                       ' - '))
+                                                            1).replace("\n",
+                                                                       " - "))
             self.__infobar.show()
             # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
             self.__infobar.queue_resize()
@@ -975,7 +975,7 @@ class PlaylistEditWidget(Gtk.Bin):
                                 "<b>%s</b>\n%s" % (
                                    GLib.markup_escape_text(artists),
                                    GLib.markup_escape_text(track.name)),
-                                 'user-trash-symbolic', track.id])
+                                 "user-trash-symbolic", track.id])
             GLib.idle_add(self.__append_track, track_ids)
         else:
             self.__view.grab_focus()

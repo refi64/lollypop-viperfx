@@ -37,7 +37,7 @@ class AlbumArt(BaseArt, TagReader):
         BaseArt.__init__(self)
         TagReader.__init__(self)
         self.__favorite = Lp().settings.get_value(
-                                                'favorite-cover').get_string()
+                                                "favorite-cover").get_string()
 
     def get_album_cache_path(self, album, size):
         """
@@ -46,7 +46,7 @@ class AlbumArt(BaseArt, TagReader):
             @param size as int
             @return cover path as string or None if no cover
         """
-        filename = ''
+        filename = ""
         try:
             filename = self.get_album_cache_name(album)
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
@@ -62,7 +62,7 @@ class AlbumArt(BaseArt, TagReader):
                 else:
                     return self._get_default_icon_path(
                                            size,
-                                           'folder-music-symbolic')
+                                           "folder-music-symbolic")
         except Exception as e:
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
@@ -106,7 +106,7 @@ class AlbumArt(BaseArt, TagReader):
         if Lp().albums.get_uri_count(album.uri) > 1:
             return None
         f = Lio.File.new_for_uri(album.uri)
-        infos = f.enumerate_children('standard::name',
+        infos = f.enumerate_children("standard::name",
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                      None)
         all_uris = []
@@ -127,7 +127,7 @@ class AlbumArt(BaseArt, TagReader):
             return []
 
         f = Lio.File.new_for_uri(album.uri)
-        infos = f.enumerate_children('standard::name',
+        infos = f.enumerate_children("standard::name",
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                      None)
         all_uris = []
@@ -205,20 +205,20 @@ class AlbumArt(BaseArt, TagReader):
                 # Use default artwork
                 if pixbuf is None:
                     self.cache_album_art(album.id)
-                    return self.get_default_icon('folder-music-symbolic',
+                    return self.get_default_icon("folder-music-symbolic",
                                                  size,
                                                  scale)
                 else:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(Lp().settings.get_value(
-                                                'cover-quality').get_int32())])
+                                                "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             del pixbuf
             return surface
 
         except Exception as e:
             print("AlbumArt::get_album_artwork()", e)
-            return self.get_default_icon('folder-music-symbolic', size, scale)
+            return self.get_default_icon("folder-music-symbolic", size, scale)
 
     def get_album_artwork2(self, uri, size, scale):
         """
@@ -236,7 +236,7 @@ class AlbumArt(BaseArt, TagReader):
             del pixbuf
             return surface
         else:
-            return self.get_default_icon('folder-music-symbolic', size, scale)
+            return self.get_default_icon("folder-music-symbolic", size, scale)
 
     def save_album_artwork(self, data, album_id):
         """
@@ -253,17 +253,17 @@ class AlbumArt(BaseArt, TagReader):
                 bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
                 proxy = Gio.DBusProxy.new_sync(
                                             bus, Gio.DBusProxyFlags.NONE, None,
-                                            'org.gnome.Lollypop.Portal',
-                                            '/org/gnome/LollypopPortal',
-                                            'org.gnome.Lollypop.Portal', None)
+                                            "org.gnome.Lollypop.Portal",
+                                            "/org/gnome/LollypopPortal",
+                                            "org.gnome.Lollypop.Portal", None)
                 can_set_cover = proxy.call_sync(
-                                               'CanSetCover', None,
+                                               "CanSetCover", None,
                                                Gio.DBusCallFlags.NO_AUTO_START,
                                                500, None)[0]
             except:
                 print("You are missing lollypop-portal: "
                       "https://github.com/gnumdk/lollypop-portal")
-            save_to_tags = Lp().settings.get_value('save-to-tags') and\
+            save_to_tags = Lp().settings.get_value("save-to-tags") and\
                 can_set_cover and not album.is_web
 
             uri_count = Lp().albums.get_uri_count(album.uri)
@@ -299,7 +299,7 @@ class AlbumArt(BaseArt, TagReader):
                 stream.close()
                 pixbuf.savev(store_path, "jpeg", ["quality"],
                              [str(Lp().settings.get_value(
-                                                'cover-quality').get_int32())])
+                                                "cover-quality").get_int32())])
                 dst = Lio.File.new_for_uri(arturi)
                 src = Lio.File.new_for_path(store_path)
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
@@ -314,7 +314,7 @@ class AlbumArt(BaseArt, TagReader):
             Announce album cover update
             @param album id as int
         """
-        self.emit('album-artwork-changed', album_id)
+        self.emit("album-artwork-changed", album_id)
 
     def remove_album_artwork(self, album):
         """
@@ -334,22 +334,22 @@ class AlbumArt(BaseArt, TagReader):
                 bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
                 proxy = Gio.DBusProxy.new_sync(
                                             bus, Gio.DBusProxyFlags.NONE, None,
-                                            'org.gnome.Lollypop.Portal',
-                                            '/org/gnome/LollypopPortal',
-                                            'org.gnome.Lollypop.Portal', None)
+                                            "org.gnome.Lollypop.Portal",
+                                            "/org/gnome/LollypopPortal",
+                                            "org.gnome.Lollypop.Portal", None)
                 can_set_cover = proxy.call_sync(
-                                               'CanSetCover', None,
+                                               "CanSetCover", None,
                                                Gio.DBusCallFlags.NO_AUTO_START,
                                                500, None)[0]
             except Exception as e:
                 print("You are missing lollypop-portal: "
                       "https://github.com/gnumdk/lollypop-portal", e)
-            if Lp().settings.get_value('save-to-tags') and can_set_cover:
+            if Lp().settings.get_value("save-to-tags") and can_set_cover:
                 for uri in Lp().albums.get_track_uris(album.id, [], []):
                     try:
                         path = GLib.filename_from_uri(uri)[0]
-                        proxy.call_sync('SetCover',
-                                        GLib.Variant('(ss)', (path, "")),
+                        proxy.call_sync("SetCover",
+                                        GLib.Variant("(ss)", (path, "")),
                                         Gio.DBusCallFlags.NO_AUTO_START,
                                         500, None)
                     except Exception as e:
@@ -366,14 +366,14 @@ class AlbumArt(BaseArt, TagReader):
         try:
             d = Lio.File.new_for_path(self._CACHE_PATH)
             infos = d.enumerate_children(
-                'standard::name',
+                "standard::name",
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
                 f = infos.get_child(info)
                 f = infos.get_child(info)
                 basename = f.get_basename()
-                if re.search('%s_.*\.jpg' % re.escape(cache_name), basename):
+                if re.search("%s_.*\.jpg" % re.escape(cache_name), basename):
                     f.delete()
         except Exception as e:
             print("Art::clean_album_cache(): ", e, cache_name)
@@ -385,17 +385,17 @@ class AlbumArt(BaseArt, TagReader):
             @param size as int
         """
         pixbuf = None
-        if uri.startswith('http:') or uri.startswith('https:'):
+        if uri.startswith("http:") or uri.startswith("https:"):
             return
         try:
             info = self.get_info(uri)
             exist = False
             if info is not None:
-                (exist, sample) = info.get_tags().get_sample_index('image', 0)
+                (exist, sample) = info.get_tags().get_sample_index("image", 0)
                 # Some file store it in a preview-image tag
                 if not exist:
                     (exist, sample) = info.get_tags().get_sample_index(
-                                                            'preview-image', 0)
+                                                            "preview-image", 0)
             if exist:
                 (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
             if exist:
@@ -440,7 +440,7 @@ class AlbumArt(BaseArt, TagReader):
         stream.close()
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], [str(Lp().settings.get_value(
-                                           'cover-quality').get_int32())])
+                                           "cover-quality").get_int32())])
         del pixbuf
         f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)
@@ -451,12 +451,12 @@ class AlbumArt(BaseArt, TagReader):
                     bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
                     proxy = Gio.DBusProxy.new_sync(
                                             bus, Gio.DBusProxyFlags.NONE, None,
-                                            'org.gnome.Lollypop.Portal',
-                                            '/org/gnome/LollypopPortal',
-                                            'org.gnome.Lollypop.Portal', None)
-                    proxy.call_sync('SetCover',
+                                            "org.gnome.Lollypop.Portal",
+                                            "/org/gnome/LollypopPortal",
+                                            "org.gnome.Lollypop.Portal", None)
+                    proxy.call_sync("SetCover",
                                     GLib.Variant(
-                                     '(ss)', (path,
+                                     "(ss)", (path,
                                               "%s/lollypop_cover_tags.jpg" %
                                               self._CACHE_PATH)),
                                     Gio.DBusCallFlags.NO_AUTO_START,

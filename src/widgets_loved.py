@@ -29,10 +29,10 @@ class LovedWidget(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.__object = object
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/LovedWidget.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/LovedWidget.ui")
         builder.connect_signals(self)
 
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
         if isinstance(object, Album):
             self.set_opacity(0.8 if object.loved else 0.2)
         else:

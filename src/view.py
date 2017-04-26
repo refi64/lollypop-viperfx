@@ -26,15 +26,15 @@ class View(Gtk.Grid):
             @param filtered as bool
         """
         Gtk.Grid.__init__(self)
-        self.connect('destroy', self._on_destroy)
+        self.connect("destroy", self._on_destroy)
         self.__overlayed = None
-        self.set_property('orientation', Gtk.Orientation.VERTICAL)
+        self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        self.__current_signal = Lp().player.connect('current-changed',
+        self.__current_signal = Lp().player.connect("current-changed",
                                                     self._on_current_changed)
-        self.__duration_signal = Lp().player.connect('duration-changed',
+        self.__duration_signal = Lp().player.connect("duration-changed",
                                                      self._on_duration_changed)
-        self.__cover_signal = Lp().art.connect('album-artwork-changed',
+        self.__cover_signal = Lp().art.connect("album-artwork-changed",
                                                self.__on_cover_changed)
 
         # Stop populate thread
@@ -46,16 +46,16 @@ class View(Gtk.Grid):
             grid = Gtk.Grid()
             grid.set_column_spacing(2)
             self.__search_entry = Gtk.SearchEntry.new()
-            self.__search_entry.connect('search-changed',
+            self.__search_entry.connect("search-changed",
                                         self._on_search_changed)
-            self.__search_entry.connect('key-press-event',
+            self.__search_entry.connect("key-press-event",
                                         self.__on_key_press)
             self.__search_entry.set_size_request(400, -1)
             self.__search_entry.show()
-            button = Gtk.Button.new_from_icon_name('window-close-symbolic',
+            button = Gtk.Button.new_from_icon_name("window-close-symbolic",
                                                    Gtk.IconSize.MENU)
             button.set_relief(Gtk.ReliefStyle.NONE)
-            button.connect('clicked', self.__on_button_clicked)
+            button.connect("clicked", self.__on_button_clicked)
             button.show()
             grid.add(self.__search_entry)
             grid.add(button)
@@ -67,7 +67,7 @@ class View(Gtk.Grid):
             self._filter = None
 
         self._scrolled = Gtk.ScrolledWindow()
-        self._scrolled.connect('leave-notify-event', self.__on_leave_notify)
+        self._scrolled.connect("leave-notify-event", self.__on_leave_notify)
         self._scrolled.show()
         self._viewport = Gtk.Viewport()
         self._scrolled.add(self._viewport)
@@ -216,7 +216,7 @@ class View(Gtk.Grid):
 
     def __on_button_clicked(self, widget):
         """
-            Hide widget, why GTK doesn't do that?
+            Hide widget, why GTK doesn"t do that?
             Otherwise, we get an ugly frame
             @param widget as Gtk.Button
         """
@@ -226,7 +226,7 @@ class View(Gtk.Grid):
 
     def __on_key_press(self, widget, event):
         """
-            If Esc, hide widget, why GTK doesn't do that?
+            If Esc, hide widget, why GTK doesn"t do that?
             Otherwise, we get an ugly frame
             @param widget as Gtk.SearchEntry
             @param event as Gdk.Event
@@ -275,7 +275,7 @@ class LazyLoadingView(View):
         self._lazy_queue = []  # Widgets not initialized
         self._scroll_value = 0
         self.__prev_scroll_value = 0
-        self._scrolled.get_vadjustment().connect('value-changed',
+        self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
 
     def stop(self):

@@ -35,7 +35,7 @@ class ArtworkSearch(Gtk.Bin):
             @param album as Album/None
         """
         Gtk.Bin.__init__(self)
-        self.connect('unmap', self.__on_self_unmap)
+        self.connect("unmap", self.__on_self_unmap)
         self.__timeout_id = None
         self.__loading = False
         self.__album = album
@@ -49,35 +49,35 @@ class ArtworkSearch(Gtk.Bin):
             self.__artist = Lp().artists.get_name(artist_id)
         self.__datas = {}
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ArtworkSearch.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/ArtworkSearch.ui")
         builder.connect_signals(self)
-        self._infobar = builder.get_object('infobar')
-        self._infobar_label = builder.get_object('infobarlabel')
-        widget = builder.get_object('widget')
-        self._stack = builder.get_object('stack')
-        self._entry = builder.get_object('entry')
-        self._api_entry = builder.get_object('api_entry')
+        self._infobar = builder.get_object("infobar")
+        self._infobar_label = builder.get_object("infobarlabel")
+        widget = builder.get_object("widget")
+        self._stack = builder.get_object("stack")
+        self._entry = builder.get_object("entry")
+        self._api_entry = builder.get_object("api_entry")
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.SINGLE)
-        self._view.connect('child-activated', self.__on_activate)
+        self._view.connect("child-activated", self.__on_activate)
         self._view.set_max_children_per_line(100)
-        self._view.set_property('row-spacing', 10)
+        self._view.set_property("row-spacing", 10)
         self._view.show()
 
-        self._popover = builder.get_object('popover')
+        self._popover = builder.get_object("popover")
 
-        self._label = builder.get_object('label')
+        self._label = builder.get_object("label")
         self._label.set_text(_("Select artwork"))
 
-        builder.get_object('viewport').add(self._view)
+        builder.get_object("viewport").add(self._view)
 
-        self._spinner = builder.get_object('spinner')
-        self._stack.add_named(builder.get_object('scrolled'), 'main')
-        self._stack.set_visible_child_name('main')
+        self._spinner = builder.get_object("spinner")
+        self._stack.add_named(builder.get_object("scrolled"), "main")
+        self._stack.set_visible_child_name("main")
         self.add(widget)
         self._api_entry.set_text(
-                            Lp().settings.get_value('cs-api-key').get_string())
+                            Lp().settings.get_value("cs-api-key").get_string())
         self.set_size_request(700, 400)
 
     def populate(self):
@@ -85,14 +85,14 @@ class ArtworkSearch(Gtk.Bin):
             Populate view
         """
         image = Gtk.Image()
-        surface = Lp().art.get_default_icon('edit-clear-all-symbolic',
+        surface = Lp().art.get_default_icon("edit-clear-all-symbolic",
                                             ArtSize.BIG,
                                             self.get_scale_factor())
         image.set_from_surface(surface)
         del surface
-        image.set_property('valign', Gtk.Align.CENTER)
-        image.set_property('halign', Gtk.Align.CENTER)
-        image.get_style_context().add_class('cover-frame')
+        image.set_property("valign", Gtk.Align.CENTER)
+        image.set_property("halign", Gtk.Align.CENTER)
+        image.get_style_context().add_class("cover-frame")
         image.show()
         self._view.add(image)
 
@@ -156,7 +156,7 @@ class ArtworkSearch(Gtk.Bin):
                         InfoCache.uncache_artwork(self.__artist, suffix,
                                                   button.get_scale_factor())
                         InfoCache.add(self.__artist, None, data, suffix)
-                    Lp().art.emit('artist-artwork-changed', self.__artist)
+                    Lp().art.emit("artist-artwork-changed", self.__artist)
                 self._streams = {}
             except Exception as e:
                 print("ArtworkSearch::_on_button_clicked():", e)
@@ -171,13 +171,13 @@ class ArtworkSearch(Gtk.Bin):
         if self.__album is not None:
             Lp().art.remove_album_artwork(self.__album)
             Lp().art.clean_album_cache(self.__album)
-            Lp().art.emit('album-artwork-changed', self.__album.id)
+            Lp().art.emit("album-artwork-changed", self.__album.id)
         else:
             for suffix in ["lastfm", "wikipedia", "spotify", "deezer"]:
                 InfoCache.uncache_artwork(self.__artist, suffix,
                                           button.get_scale_factor())
                 InfoCache.add(self.__artist, None, None, suffix)
-                Lp().art.emit('artist-artwork-changed', self.__artist)
+                Lp().art.emit("artist-artwork-changed", self.__artist)
         self.__close_popover()
 
     def _on_info_response(self, infobar, response_id):
@@ -197,7 +197,7 @@ class ArtworkSearch(Gtk.Bin):
         """
         self._popover.show()
         self._api_entry.set_text(
-                            Lp().settings.get_value('cs-api-key').get_string())
+                            Lp().settings.get_value("cs-api-key").get_string())
 
     def _on_api_entry_changed(self, entry):
         """
@@ -205,7 +205,7 @@ class ArtworkSearch(Gtk.Bin):
             @param entry as Gtk.Entry
         """
         value = entry.get_text().strip()
-        Lp().settings.set_value('cs-api-key', GLib.Variant('s', value))
+        Lp().settings.set_value("cs-api-key", GLib.Variant("s", value))
 
 #######################
 # PRIVATE             #
@@ -287,11 +287,11 @@ class ArtworkSearch(Gtk.Bin):
                 f = Lio.File.new_for_uri(url)
                 (status, data, tag) = f.load_contents()
                 if status:
-                    html = data.decode('utf-8')
-                    soup = BeautifulSoup(html, 'html.parser')
-                    for link in soup.findAll('img'):
+                    html = data.decode("utf-8")
+                    soup = BeautifulSoup(html, "html.parser")
+                    for link in soup.findAll("img"):
                         try:
-                            urls.append(link.attrs['data-src'])
+                            urls.append(link.attrs["data-src"])
                         except:
                             pass
         except Exception as e:
@@ -321,9 +321,9 @@ class ArtworkSearch(Gtk.Bin):
                     None)
                 stream.close()
             image = Gtk.Image()
-            image.get_style_context().add_class('cover-frame')
-            image.set_property('halign', Gtk.Align.CENTER)
-            image.set_property('valign', Gtk.Align.CENTER)
+            image.get_style_context().add_class("cover-frame")
+            image.set_property("halign", Gtk.Align.CENTER)
+            image.set_property("valign", Gtk.Align.CENTER)
             self.__datas[image] = data
             surface = Gdk.cairo_surface_create_from_pixbuf(big,
                                                            0,
@@ -370,7 +370,7 @@ class ArtworkSearch(Gtk.Bin):
                     InfoCache.uncache_artwork(self.__artist, suffix,
                                               flowbox.get_scale_factor())
                     InfoCache.add(self.__artist, None, data, suffix)
-                Lp().art.emit('artist-artwork-changed', self.__artist)
+                Lp().art.emit("artist-artwork-changed", self.__artist)
             self._streams = {}
         except:
             self._infobar_label.set_text(_("Reset artwork?"))

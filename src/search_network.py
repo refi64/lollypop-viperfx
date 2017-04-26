@@ -23,7 +23,7 @@ class NetworkSearch(SpotifySearch, ItunesSearch, GObject.GObject):
         Search provider over network
     """
     __gsignals__ = {
-        'item-found': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "item-found": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self):
@@ -62,12 +62,12 @@ class NetworkSearch(SpotifySearch, ItunesSearch, GObject.GObject):
             @return tracks/albums as [SearchItem]
         """
         if get_network_available():
-            if Lp().settings.get_value('search-itunes'):
+            if Lp().settings.get_value("search-itunes"):
                 ItunesSearch.tracks(self, name)
-            if Lp().settings.get_value('search-spotify'):
+            if Lp().settings.get_value("search-spotify"):
                 SpotifySearch.tracks(self, name)
         self._finished = True
-        GLib.idle_add(self.emit, 'item-found')
+        GLib.idle_add(self.emit, "item-found")
 
     def do(self, name):
         """
@@ -76,11 +76,11 @@ class NetworkSearch(SpotifySearch, ItunesSearch, GObject.GObject):
             @return tracks/albums as [SearchItem]
         """
         if get_network_available():
-            if Lp().settings.get_value('search-itunes'):
+            if Lp().settings.get_value("search-itunes"):
                 ItunesSearch.albums(self, name)
                 ItunesSearch.tracks(self, name)
-            if Lp().settings.get_value('search-spotify'):
+            if Lp().settings.get_value("search-spotify"):
                 SpotifySearch.albums(self, name)
                 SpotifySearch.tracks(self, name)
         self._finished = True
-        GLib.idle_add(self.emit, 'item-found')
+        GLib.idle_add(self.emit, "item-found")

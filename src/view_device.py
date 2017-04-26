@@ -31,9 +31,9 @@ class DeviceLocked(View):
         """
         View.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
-        self.add(builder.get_object('message'))
-        builder.get_object('label').set_text(_("Please unlock your device"))
+        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
+        self.add(builder.get_object("message"))
+        builder.get_object("label").set_text(_("Please unlock your device"))
 
 
 class DeviceView(View):
@@ -61,7 +61,7 @@ class DeviceView(View):
             if not d.query_exists():
                 d.make_directory_with_parents()
             infos = d.enumerate_children(
-                'standard::name,standard::type',
+                "standard::name,standard::type",
                 Gio.FileQueryInfoFlags.NONE,
                 None)
             for info in infos:
@@ -175,13 +175,13 @@ class DeviceView(View):
         uri = self.__device.uri
         # Mtp device contain a virtual folder
         # For others, just go up in path
-        if uri.find('mtp:') == -1:
-            m = re.search('(.*)/[^/]*', uri)
+        if uri.find("mtp:") == -1:
+            m = re.search("(.*)/[^/]*", uri)
             if m:
                 uri = m.group(1)
         # Add / to uri if needed, some gvfs modules add one and some not
-        if uri is not None and len(uri) > 1 and uri[-1:] != '/':
-            uri += '/'
+        if uri is not None and len(uri) > 1 and uri[-1:] != "/":
+            uri += "/"
         self.__device.uri = uri
 
     def stop(self):

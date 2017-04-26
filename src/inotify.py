@@ -44,7 +44,7 @@ class Inotify:
             monitor = f.monitor_directory(Gio.FileMonitorFlags.NONE,
                                           None)
             if monitor is not None:
-                monitor.connect('changed', self.__on_dir_changed)
+                monitor.connect("changed", self.__on_dir_changed)
                 self.__monitors.append(uri)
         except Exception as e:
             print("Inotify::add_monitor():", e)

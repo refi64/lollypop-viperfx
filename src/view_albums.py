@@ -43,15 +43,15 @@ class AlbumsView(LazyLoadingView):
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._box.connect('child-activated', self.__on_album_activated)
+        self._box.connect("child-activated", self.__on_album_activated)
         # Allow lazy loading to not jump up and down
         self._box.set_homogeneous(True)
         self._box.set_max_children_per_line(1000)
         self._box.show()
 
-        self._viewport.set_property('valign', Gtk.Align.START)
-        self._viewport.set_property('margin', 5)
-        self._scrolled.set_property('expand', True)
+        self._viewport.set_property("valign", Gtk.Align.START)
+        self._viewport.set_property("margin", 5)
+        self._scrolled.set_property("expand", True)
 
         self.add(self._scrolled)
 
@@ -91,7 +91,7 @@ class AlbumsView(LazyLoadingView):
             widget = AlbumSimpleWidget(albums.pop(0),
                                        self.__genre_ids,
                                        self.__artist_ids)
-            widget.connect('overlayed', self._on_overlayed)
+            widget.connect("overlayed", self._on_overlayed)
             self._box.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
@@ -144,7 +144,7 @@ class AlbumsView(LazyLoadingView):
         popover.set_position(Gtk.PositionType.BOTTOM)
         album_widget.show_overlay(False)
         album_widget.lock_overlay(True)
-        popover.connect('closed', self.__on_album_popover_closed, album_widget)
+        popover.connect("closed", self.__on_album_popover_closed, album_widget)
         popover.show()
         self.__current = album_widget
         cover.set_opacity(0.9)
@@ -164,7 +164,7 @@ class AlbumBackView(Gtk.Grid):
         Show an album view with a back button (destroying AlbumView)
     """
     __gsignals__ = {
-        'back-clicked': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "back-clicked": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self, album_id, genre_ids, artist_ids):
@@ -179,8 +179,8 @@ class AlbumBackView(Gtk.Grid):
         back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic",
                                                     Gtk.IconSize.MENU)
         back_button.set_tooltip_text(_("Go back"))
-        back_button.connect('clicked', self.__on_back_button_clicked)
-        back_button.set_property('halign', Gtk.Align.START)
+        back_button.connect("clicked", self.__on_back_button_clicked)
+        back_button.set_property("halign", Gtk.Align.START)
         back_button.set_relief(Gtk.ReliefStyle.NONE)
         back_button.show()
         self.add(back_button)
@@ -198,4 +198,4 @@ class AlbumBackView(Gtk.Grid):
             Destroy self
             @param button as Gtk.Button
         """
-        self.emit('back-clicked')
+        self.emit("back-clicked")

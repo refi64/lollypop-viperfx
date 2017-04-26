@@ -29,8 +29,8 @@ class PlaylistsPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self.__on_map)
-        self.connect('unmap', self.__on_unmap)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
         self._widget = PlaylistsView(Lp().player.get_user_playlist_ids(),
                                      False)
         self._widget.show()

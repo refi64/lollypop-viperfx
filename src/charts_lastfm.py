@@ -43,7 +43,7 @@ class LastfmCharts:
         """
             Update charts
         """
-        if not Lp().settings.get_value('show-charts'):
+        if not Lp().settings.get_value("show-charts"):
             return
         self.__cancel.reset()
         self._stop = False
@@ -82,7 +82,7 @@ class LastfmCharts:
             sleep(10)
             (track_name, artist_name) = ids.pop(0)
             search = NetworkSearch()
-            search.connect('item-found', self.__on_item_found, position)
+            search.connect("item-found", self.__on_item_found, position)
             search.do_tracks(track_name + " " + artist_name)
             if self.__stop:
                 return
@@ -100,10 +100,10 @@ class LastfmCharts:
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return []
-            decode = json.loads(data.decode('utf-8'))
-            for entry in decode['tracks']['track']:
-                track = entry['name']
-                artist = entry['artist']['name']
+            decode = json.loads(data.decode("utf-8"))
+            for entry in decode["tracks"]["track"]:
+                track = entry["name"]
+                artist = entry["artist"]["name"]
                 items.append((track, artist))
         except Exception as e:
             print("LastfmCharts::__get_ids:", e)

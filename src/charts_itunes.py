@@ -93,7 +93,7 @@ class ItunesCharts:
         """
             Update charts
         """
-        if not Lp().settings.get_value('show-charts'):
+        if not Lp().settings.get_value("show-charts"):
             return
         self.__cancel.reset()
         self.__stop = False
@@ -177,30 +177,30 @@ class ItunesCharts:
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return
-            decode = json.loads(data.decode('utf-8'))
-            item = decode['results'][0]
+            decode = json.loads(data.decode("utf-8"))
+            item = decode["results"][0]
             album_item = SearchItem()
-            album_item.name = item['collectionName']
-            album_item.artists.append(item['artistName'])
-            album_item.cover = item['artworkUrl60'].replace(
-                                               '60x60',
-                                               '512x512')
+            album_item.name = item["collectionName"]
+            album_item.artists.append(item["artistName"])
+            album_item.cover = item["artworkUrl60"].replace(
+                                               "60x60",
+                                               "512x512")
 
-            for item in decode['results'][1:]:
+            for item in decode["results"][1:]:
                 track_item = SearchItem()
                 track_item.is_track = True
-                track_item.name = item['trackName']
+                track_item.name = item["trackName"]
                 track_item.album = album_item
-                track_item.year = item['releaseDate'][:4]
+                track_item.year = item["releaseDate"][:4]
                 track_item.tracknumber = int(
-                                          item['trackNumber'])
+                                          item["trackNumber"])
                 track_item.discnumber = int(
-                                           item['discNumber'])
+                                           item["discNumber"])
                 track_item.duration = int(
-                                    item['trackTimeMillis']) / 1000
-                if album_item.artists[0] != item['artistName']:
+                                    item["trackTimeMillis"]) / 1000
+                if album_item.artists[0] != item["artistName"]:
                     track_item.artists.append(album_item.artists[0])
-                track_item.artists.append(item['artistName'])
+                track_item.artists.append(item["artistName"])
                 album_item.subitems.append(track_item)
             return album_item
         except Exception as e:
@@ -218,10 +218,10 @@ class ItunesCharts:
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return []
-            decode = json.loads(data.decode('utf-8'))
-            for entry in decode['feed']['entry']:
-                itunes_id = entry['id']['attributes']['im:id']
-                itunes_genre = entry['category']['attributes']['term']
+            decode = json.loads(data.decode("utf-8"))
+            for entry in decode["feed"]["entry"]:
+                itunes_id = entry["id"]["attributes"]["im:id"]
+                itunes_genre = entry["category"]["attributes"]["term"]
                 items.append((itunes_id, itunes_genre))
         except Exception as e:
             print("ItunesCharts::__get_ids:", e)

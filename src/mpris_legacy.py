@@ -23,10 +23,10 @@ from lollypop.define import Lp, ArtSize, Type
 
 
 class MPRIS(dbus.service.Object):
-    MPRIS_IFACE = 'org.mpris.MediaPlayer2'
-    MPRIS_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
-    MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
-    MPRIS_PATH = '/org/mpris/MediaPlayer2'
+    MPRIS_IFACE = "org.mpris.MediaPlayer2"
+    MPRIS_PLAYER_IFACE = "org.mpris.MediaPlayer2.Player"
+    MPRIS_LOLLYPOP = "org.mpris.MediaPlayer2.Lollypop"
+    MPRIS_PATH = "/org/mpris/MediaPlayer2"
 
     def __init__(self, app):
         DBusGMainLoop(set_as_default=True)
@@ -34,11 +34,11 @@ class MPRIS(dbus.service.Object):
         dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
         self._app = app
         self._metadata = {}
-        Lp().player.connect('current-changed', self._on_current_changed)
-        Lp().player.connect('rate-changed', self._on_current_changed)
-        Lp().player.connect('seeked', self._on_seeked)
-        Lp().player.connect('status-changed', self._on_status_changed)
-        Lp().player.connect('volume-changed', self._on_volume_changed)
+        Lp().player.connect("current-changed", self._on_current_changed)
+        Lp().player.connect("rate-changed", self._on_current_changed)
+        Lp().player.connect("seeked", self._on_seeked)
+        Lp().player.connect("status-changed", self._on_status_changed)
+        Lp().player.connect("volume-changed", self._on_volume_changed)
 
     @dbus.service.method(dbus_interface=MPRIS_IFACE)
     def Raise(self):
@@ -81,54 +81,54 @@ class MPRIS(dbus.service.Object):
             Lp().player.play()
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
-                         in_signature='ox')
+                         in_signature="ox")
     def SetPosition(self, track_id, position):
         Lp().player.seek(position/1000000)
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
-                         in_signature='s')
+                         in_signature="s")
     def OpenUri(self, uri):
         pass
 
     @dbus.service.signal(dbus_interface=MPRIS_PLAYER_IFACE,
-                         signature='x')
+                         signature="x")
     def Seeked(self, position):
         pass
 
     @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
-                         in_signature='ss', out_signature='v')
+                         in_signature="ss", out_signature="v")
     def Get(self, interface, property_name):
         return self.GetAll(interface)[property_name]
 
     @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
-                         in_signature='s', out_signature='a{sv}')
+                         in_signature="s", out_signature="a{sv}")
     def GetAll(self, interface):
         if interface == self.MPRIS_IFACE:
             return {
-                'CanQuit': True,
-                'CanRaise': True,
-                'HasTrackList': False,
-                'Identity': 'Lollypop',
-                'DesktopEntry': 'org.gnome.Lollypop'
+                "CanQuit": True,
+                "CanRaise": True,
+                "HasTrackList": False,
+                "Identity": "Lollypop",
+                "DesktopEntry": "org.gnome.Lollypop"
             }
         elif interface == self.MPRIS_PLAYER_IFACE:
             return {
-                'PlaybackStatus': self._get_status(),
-                'LoopStatus': 'Playlist',
-                'Rate': dbus.Double(1.0),
-                'Shuffle': True,
-                'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
-                'Volume': dbus.Double(Lp().player.volume),
-                'Position': dbus.Int64(
+                "PlaybackStatus": self._get_status(),
+                "LoopStatus": "Playlist",
+                "Rate": dbus.Double(1.0),
+                "Shuffle": True,
+                "Metadata": dbus.Dictionary(self._metadata, signature="sv"),
+                "Volume": dbus.Double(Lp().player.volume),
+                "Position": dbus.Int64(
                                      Lp().player.position / 60),
-                'MinimumRate': dbus.Double(1.0),
-                'MaximumRate': dbus.Double(1.0),
-                'CanGoNext': True,
-                'CanGoPrevious': True,
-                'CanPlay': True,
-                'CanPause': True,
-                'CanSeek': True,
-                'CanControl': True,
+                "MinimumRate": dbus.Double(1.0),
+                "MaximumRate": dbus.Double(1.0),
+                "CanGoNext": True,
+                "CanGoPrevious": True,
+                "CanPlay": True,
+                "CanPause": True,
+                "CanSeek": True,
+                "CanControl": True,
             }
         else:
             raise dbus.exceptions.DBusException(
@@ -137,13 +137,13 @@ class MPRIS(dbus.service.Object):
                 % interface)
 
     @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
-                         in_signature='ssv')
+                         in_signature="ssv")
     def Set(self, interface, property_name, new_value):
-        if property_name == 'Volume':
+        if property_name == "Volume":
             Lp().player.set_volume(new_value)
 
     @dbus.service.signal(dbus_interface=dbus.PROPERTIES_IFACE,
-                         signature='sa{sv}as')
+                         signature="sa{sv}as")
     def PropertiesChanged(self, interface, changed_properties,
                           invalidated_properties):
         pass
@@ -155,39 +155,39 @@ class MPRIS(dbus.service.Object):
     def _get_status(self):
         state = Lp().player.get_status()
         if state == Gst.State.PLAYING:
-            return 'Playing'
+            return "Playing"
         elif state == Gst.State.PAUSED:
-            return 'Paused'
+            return "Paused"
         else:
-            return 'Stopped'
+            return "Stopped"
 
     def _update_metadata(self):
-        if self._get_status() == 'Stopped':
+        if self._get_status() == "Stopped":
             self._metadata = {}
         else:
             if Lp().player.current_track.id >= 0:
-                self._metadata['mpris:trackid'] = dbus.ObjectPath(
-                    '/org/lollypop/%s' % Lp().player.current_track.id)
+                self._metadata["mpris:trackid"] = dbus.ObjectPath(
+                    "/org/lollypop/%s" % Lp().player.current_track.id)
             else:
                 # MPRIS SUX
                 track_id = randint(10000000, 90000000)
-                self._metadata['mpris:trackid'] = dbus.ObjectPath(
-                    '/org/lollypop/%s' % track_id)
+                self._metadata["mpris:trackid"] = dbus.ObjectPath(
+                    "/org/lollypop/%s" % track_id)
             track_number = Lp().player.current_track.number
             if track_number is None:
                 track_number = 1
-            self._metadata['xesam:trackNumber'] = track_number
-            self._metadata['xesam:title'] = Lp().player.current_track.name
-            self._metadata['xesam:album'] = Lp(
+            self._metadata["xesam:trackNumber"] = track_number
+            self._metadata["xesam:title"] = Lp().player.current_track.name
+            self._metadata["xesam:album"] = Lp(
                                               ).player.current_track.album.name
-            self._metadata['xesam:artist'] = Lp().player.current_track.artists
-            self._metadata['xesam:albumArtist'] = \
+            self._metadata["xesam:artist"] = Lp().player.current_track.artists
+            self._metadata["xesam:albumArtist"] = \
                 ", ".join(Lp().player.current_track.album_artists)
-            self._metadata['mpris:length'] = dbus.Int64(
+            self._metadata["mpris:length"] = dbus.Int64(
                 Lp().player.current_track.duration * 1000000)
-            self._metadata['xesam:genre'] = Lp().player.current_track.genres\
+            self._metadata["xesam:genre"] = Lp().player.current_track.genres\
                 or "Web"
-            self._metadata['xesam:url'] = Lp().player.current_track.uri
+            self._metadata["xesam:url"] = Lp().player.current_track.uri
             rate = Lp().player.current_track.get_rate()
             if rate == Type.NONE:
                 rate = Lp().player.current_track.get_popularity()
@@ -208,28 +208,28 @@ class MPRIS(dbus.service.Object):
                 cover_path = Lp().art.get_album_cache_path(
                     Lp().player.current_track.album, ArtSize.MONSTER)
             if cover_path is not None:
-                self._metadata['mpris:artUrl'] = "file://" + cover_path
-            elif 'mpris:artUrl' in self._metadata:
-                self._metadata['mpris:artUrl'] = ''
+                self._metadata["mpris:artUrl"] = "file://" + cover_path
+            elif "mpris:artUrl" in self._metadata:
+                self._metadata["mpris:artUrl"] = ""
 
     def _on_seeked(self, player, position):
         self.Seeked(position * 1000000)
 
     def _on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
-                               {'Volume': dbus.Double(
+                               {"Volume": dbus.Double(
                                 Lp().player.volume), },
                                [])
 
     def _on_current_changed(self, player):
         self._update_metadata()
-        properties = {'Metadata': dbus.Dictionary(self._metadata,
-                                                  signature='sv')}
+        properties = {"Metadata": dbus.Dictionary(self._metadata,
+                                                  signature="sv")}
         try:
             self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
         except Exception as e:
             print("MPRIS::_on_current_changed(): %s" % e)
 
     def _on_status_changed(self, data=None):
-        properties = {'PlaybackStatus': self._get_status()}
+        properties = {"PlaybackStatus": self._get_status()}
         self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])

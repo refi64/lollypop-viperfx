@@ -36,10 +36,10 @@ class BaseArt(GObject.GObject):
     else:
         _STORE_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop/store"
     __gsignals__ = {
-        'album-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'artist-artwork-changed': (GObject.SignalFlags.RUN_FIRST,
+        "album-artwork-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "artist-artwork-changed": (GObject.SignalFlags.RUN_FIRST,
                                    None, (str,)),
-        'radio-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
+        "radio-artwork-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 
     def __init__(self):
@@ -52,7 +52,7 @@ class BaseArt(GObject.GObject):
         """
             Update value with some check
         """
-        value = Lp().settings.get_value('cover-size').get_int32()
+        value = Lp().settings.get_value("cover-size").get_int32()
         # Check value as user can enter bad value via dconf
         if value < ArtSize.SMALL or value > ArtSize.MAX:
             value = 200
@@ -117,16 +117,16 @@ class BaseArt(GObject.GObject):
                 try:
                     pixbuf.save(cache_path_jpg, "jpeg",
                                 ["quality"], [str(Lp().settings.get_value(
-                                              'cover-quality').get_int32())])
+                                              "cover-quality").get_int32())])
                 except:
                     pixbuf.savev(cache_path_jpg, "jpeg",
                                  ["quality"], [str(Lp().settings.get_value(
-                                              'cover-quality').get_int32())])
+                                              "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             del pixbuf
             return surface
         except:
-            return self.get_default_icon('computer-fail-symbolic',
+            return self.get_default_icon("computer-fail-symbolic",
                                          ArtSize.MEDIUM,
                                          scale)
 

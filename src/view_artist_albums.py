@@ -26,7 +26,7 @@ class ArtistAlbumsView(LazyLoadingView):
         Show artist albums and tracks
     """
     __gsignals__ = {
-        'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self, artist_ids, genre_ids, art_size):
@@ -45,8 +45,8 @@ class ArtistAlbumsView(LazyLoadingView):
         self.__spinner.set_vexpand(True)
         spinner_size = int(ArtSize.BIG / 3)
         self.__spinner.set_size_request(spinner_size, spinner_size)
-        self.__spinner.set_property('halign', Gtk.Align.CENTER)
-        self.__spinner.set_property('valign', Gtk.Align.CENTER)
+        self.__spinner.set_property("halign", Gtk.Align.CENTER)
+        self.__spinner.set_property("valign", Gtk.Align.CENTER)
         self.__spinner.show()
 
         self._albumbox = Gtk.Grid()
@@ -75,10 +75,10 @@ class ArtistAlbumsView(LazyLoadingView):
             label = Gtk.Label.new()
             string = GLib.markup_escape_text(_("Network access disabled"))
             label.set_markup(
-                       "<span font_weight='bold' size='xx-large'>" +
+                       '<span font_weight="bold" size="xx-large">' +
                        string +
                        "</span>")
-            label.set_property('halign', Gtk.Align.CENTER)
+            label.set_property("halign", Gtk.Align.CENTER)
             label.set_hexpand(True)
             label.show()
             self.set_sensitive(False)
@@ -163,7 +163,7 @@ class ArtistAlbumsView(LazyLoadingView):
         elif self._lazy_queue:
             widget = self._lazy_queue.pop(0)
         if widget is not None:
-            widget.connect('populated', self._on_populated,
+            widget.connect("populated", self._on_populated,
                            widgets, scroll_value)
             widget.populate()
 
@@ -180,7 +180,7 @@ class ArtistAlbumsView(LazyLoadingView):
                                          self._artist_ids,
                                          self.__art_size)
             widget.set_filter_func(self._filter_func)
-            widget.connect('overlayed', self._on_overlayed)
+            widget.connect("overlayed", self._on_overlayed)
             self._lazy_queue.append(widget)
             widget.show()
             self._albumbox.add(widget)
@@ -188,7 +188,7 @@ class ArtistAlbumsView(LazyLoadingView):
         else:
             self.__spinner.stop()
             self.__spinner.hide()
-            self.emit('populated')
+            self.emit("populated")
             GLib.idle_add(self.lazy_loading)
 
 
@@ -203,7 +203,7 @@ class CurrentArtistAlbumsView(ViewContainer):
             Init popover
         """
         ViewContainer.__init__(self, 1000)
-        self.connect('destroy', self.__on_destroy)
+        self.connect("destroy", self.__on_destroy)
         self.__track = Track()
 
     def populate(self, track):
@@ -253,8 +253,8 @@ class CurrentArtistAlbumsView(ViewContainer):
         spinner.set_vexpand(True)
         spinner_size = int(ArtSize.BIG / 3)
         spinner.set_size_request(spinner_size, spinner_size)
-        spinner.set_property('halign', Gtk.Align.CENTER)
-        spinner.set_property('valign', Gtk.Align.CENTER)
+        spinner.set_property("halign", Gtk.Align.CENTER)
+        spinner.set_property("valign", Gtk.Align.CENTER)
         spinner.start()
         view.add(spinner)
         view.show_all()
@@ -266,7 +266,7 @@ class CurrentArtistAlbumsView(ViewContainer):
 
         # Populate artist albums view
         view = ArtistAlbumsView(self.__track.artist_ids, [], ArtSize.BIG)
-        view.connect('populated', self.__on_populated, spinner)
+        view.connect("populated", self.__on_populated, spinner)
         view.show()
         view.populate(albums)
 

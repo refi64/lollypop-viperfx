@@ -90,10 +90,10 @@ class WebYouTube:
         unescaped = "%s %s" % (artist,
                                item.name)
         search = GLib.uri_escape_string(
-                            unescaped.replace(' ', '+'),
+                            unescaped.replace(" ", "+"),
                             None,
                             True)
-        key = Lp().settings.get_value('cs-api-key').get_string()
+        key = Lp().settings.get_value("cs-api-key").get_string()
         try:
             f = Lio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
                                      "search?part=snippet&q=%s&"
@@ -103,11 +103,11 @@ class WebYouTube:
                                                               GOOGLE_API_ID))
             (status, data, tag) = f.load_contents(None)
             if status:
-                decode = json.loads(data.decode('utf-8'))
+                decode = json.loads(data.decode("utf-8"))
                 dic = {}
                 best = self.__BAD_SCORE
-                for i in decode['items']:
-                    score = self.__get_youtube_score(i['snippet']['title'],
+                for i in decode["items"]:
+                    score = self.__get_youtube_score(i["snippet"]["title"],
                                                      item.name,
                                                      artist,
                                                      item.album.name)
@@ -115,7 +115,7 @@ class WebYouTube:
                         best = score
                     elif score == best:
                         continue  # Keep first result
-                    dic[score] = i['id']['videoId']
+                    dic[score] = i["id"]["videoId"]
                 # Return url from first dic item
                 if best == self.__BAD_SCORE:
                     return None
@@ -140,15 +140,15 @@ class WebYouTube:
         if len(page_title) < len(title):
             return self.__BAD_SCORE
         # Remove common word for a valid track
-        page_title = page_title.replace('official', '')
-        page_title = page_title.replace('video', '')
-        page_title = page_title.replace('audio', '')
+        page_title = page_title.replace("official", "")
+        page_title = page_title.replace("video", "")
+        page_title = page_title.replace("audio", "")
         # Remove artist name
-        page_title = page_title.replace(artist, '')
+        page_title = page_title.replace(artist, "")
         # Remove album name
-        page_title = page_title.replace(album, '')
+        page_title = page_title.replace(album, "")
         # Remove title
-        page_title = page_title.replace(title, '')
+        page_title = page_title.replace(title, "")
         return len(page_title)
 
     def __get_youtube_id_fallback(self, item):
@@ -176,7 +176,7 @@ class WebYouTube:
             unescaped = "%s %s" % (artist,
                                    item.name)
             search = GLib.uri_escape_string(
-                            unescaped.replace(' ', '+'),
+                            unescaped.replace(" ", "+"),
                             None,
                             True)
             f = Lio.File.new_for_uri("https://www.youtube.com/"
@@ -185,12 +185,12 @@ class WebYouTube:
             if not status:
                 return None
 
-            html = data.decode('utf-8')
-            soup = BeautifulSoup(html, 'html.parser')
+            html = data.decode("utf-8")
+            soup = BeautifulSoup(html, "html.parser")
             ytems = []
-            for link in soup.findAll('a'):
-                href = link.get('href')
-                title = link.get('title')
+            for link in soup.findAll("a"):
+                href = link.get("href")
+                title = link.get("title")
                 if href is None or title is None:
                     continue
                 if href.startswith("/watch?v="):

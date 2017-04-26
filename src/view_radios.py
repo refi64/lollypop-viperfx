@@ -32,20 +32,20 @@ class RadiosView(LazyLoadingView):
             Init view
         """
         LazyLoadingView.__init__(self, True)
-        self.__signal = Lp().art.connect('radio-artwork-changed',
+        self.__signal = Lp().art.connect("radio-artwork-changed",
                                          self.__on_logo_changed)
 
         self.__radios_manager = Radios()
-        self.__radios_manager.connect('radios-changed',
+        self.__radios_manager.connect("radios-changed",
                                       self.__on_radios_changed)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/RadiosView.ui")
         builder.connect_signals(self)
-        widget = builder.get_object('widget')
-        self.__empty = builder.get_object('empty')
+        widget = builder.get_object("widget")
+        self.__empty = builder.get_object("empty")
 
         self.__pop_tunein = TuneinPopover(self.__radios_manager)
-        self.__pop_tunein.set_relative_to(builder.get_object('search_btn'))
+        self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
 
         self._box = Gtk.FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -63,8 +63,8 @@ class RadiosView(LazyLoadingView):
         self.__stack.show()
 
         self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.set_property('margin', 5)
-        self._scrolled.set_property('expand', True)
+        self._viewport.set_property("margin", 5)
+        self._scrolled.set_property("expand", True)
 
         self.add(widget)
         self.add(self.__stack)
@@ -109,7 +109,7 @@ class RadiosView(LazyLoadingView):
             Show popover for adding a new radio
             @param widget as Gtk.Widget
         """
-        popover = RadioPopover('', self.__radios_manager)
+        popover = RadioPopover("", self.__radios_manager)
         popover.set_relative_to(widget)
         popover.show()
 
@@ -221,7 +221,7 @@ class RadiosView(LazyLoadingView):
             radio = radios.pop(0)
             widget = RadioWidget(radio,
                                  self.__radios_manager)
-            widget.connect('overlayed', self._on_overlayed)
+            widget.connect("overlayed", self._on_overlayed)
             widget.show()
             self._lazy_queue.append(widget)
             if first:

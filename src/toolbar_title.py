@@ -27,17 +27,17 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         Gtk.Bin.__init__(self)
         ProgressController.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ToolbarTitle.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/ToolbarTitle.ui")
         builder.connect_signals(self)
 
-        self.add(builder.get_object('title'))
+        self.add(builder.get_object("title"))
 
-        self._progress = builder.get_object('progress_scale')
+        self._progress = builder.get_object("progress_scale")
         self._progress.set_sensitive(False)
         self._progress.set_hexpand(True)
 
-        self._timelabel = builder.get_object('playback')
-        self._total_time_label = builder.get_object('duration')
+        self._timelabel = builder.get_object("playback")
+        self._total_time_label = builder.get_object("duration")
 
     def set_width(self, width):
         """

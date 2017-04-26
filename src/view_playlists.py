@@ -35,9 +35,9 @@ class PlaylistsView(View):
         View.__init__(self, True)
         self.__tracks = []
         self.__playlist_ids = playlist_ids
-        self.__signal_id1 = Lp().playlists.connect('playlist-add',
+        self.__signal_id1 = Lp().playlists.connect("playlist-add",
                                                    self.__on_playlist_add)
-        self.__signal_id2 = Lp().playlists.connect('playlist-del',
+        self.__signal_id2 = Lp().playlists.connect("playlist-del",
                                                    self.__on_playlist_del)
 
         builder = Gtk.Builder()
@@ -46,11 +46,11 @@ class PlaylistsView(View):
         builder.get_object("title").set_label(
                              ", ".join(Lp().playlists.get_names(playlist_ids)))
 
-        self.__edit_button = builder.get_object('edit-button')
-        self.__jump_button = builder.get_object('jump-button')
-        split_button = builder.get_object('split-button')
+        self.__edit_button = builder.get_object("edit-button")
+        self.__jump_button = builder.get_object("jump-button")
+        split_button = builder.get_object("split-button")
         if editable:
-            split_button.set_active(not Lp().settings.get_value('split-view'))
+            split_button.set_active(not Lp().settings.get_value("split-view"))
         else:
             split_button.hide()
 
@@ -63,12 +63,12 @@ class PlaylistsView(View):
         self.__playlists_widget = PlaylistsWidget(playlist_ids)
         self.__playlists_widget.set_filter_func(self._filter_func)
         self.__playlists_widget.show()
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
         self._viewport.add(self.__playlists_widget)
-        self._scrolled.set_property('expand', True)
+        self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
         # Connect signals after ui init
-        # 'split-button' will emit a signal otherwise
+        # "split-button" will emit a signal otherwise
         builder.connect_signals(self)
         self.__set_duration()
 
@@ -158,8 +158,8 @@ class PlaylistsView(View):
         """
             Split/Unsplit view
         """
-        Lp().settings.set_value('split-view',
-                                GLib.Variant('b', not button.get_active()))
+        Lp().settings.set_value("split-view",
+                                GLib.Variant("b", not button.get_active()))
         self.__playlists_widget.update_allocation()
 
     def _on_jump_button_clicked(self, button):
@@ -221,7 +221,7 @@ class PlaylistsView(View):
                                               Lp().player.current_track.name)))
         else:
             self.__jump_button.set_sensitive(False)
-            self.__jump_button.set_tooltip_text('')
+            self.__jump_button.set_tooltip_text("")
 
     def __on_playlist_add(self, manager, playlist_id, track_id, pos):
         """
@@ -261,9 +261,9 @@ class PlaylistsManageView(View):
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource(
-            '/org/gnome/Lollypop/PlaylistsManagerView.ui')
+            "/org/gnome/Lollypop/PlaylistsManagerView.ui")
         if object_id != Type.NONE:
-            builder.get_object('back_btn').show()
+            builder.get_object("back_btn").show()
         builder.connect_signals(self)
         self.__manage_widget = PlaylistsManagerWidget(object_id,
                                                       genre_ids,
@@ -271,7 +271,7 @@ class PlaylistsManageView(View):
                                                       is_album)
         self.__manage_widget.show()
         self._viewport.add(self.__manage_widget)
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
         self.add(self._scrolled)
 
     def populate(self):
@@ -312,11 +312,11 @@ class PlaylistEditView(View):
         """
         View.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditView.ui')
-        builder.get_object('title').set_label(
+        builder.add_from_resource("/org/gnome/Lollypop/PlaylistEditView.ui")
+        builder.get_object("title").set_label(
                                           Lp().playlists.get_name(playlist_id))
         builder.connect_signals(self)
-        grid = builder.get_object('widget')
+        grid = builder.get_object("widget")
         self.add(grid)
         self.__edit_widget = PlaylistEditWidget(playlist_id)
         self.__edit_widget.show()

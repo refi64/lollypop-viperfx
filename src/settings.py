@@ -45,7 +45,7 @@ class Settings(Gio.Settings):
         """
             Return a new Settings object
         """
-        settings = Gio.Settings.new('org.gnome.Lollypop')
+        settings = Gio.Settings.new("org.gnome.Lollypop")
         settings.__class__ = Settings
         return settings
 
@@ -54,7 +54,7 @@ class Settings(Gio.Settings):
             Return music uris
             @return [str]
         """
-        uris = self.get_value('music-uris')
+        uris = self.get_value("music-uris")
         if not uris:
             filename = GLib.get_user_special_dir(
                                             GLib.UserDirectory.DIRECTORY_MUSIC)
@@ -80,9 +80,9 @@ class SettingsDialog:
         self.__mix_tid = None
         self.__popover = None
 
-        cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
+        cs_api_key = Lp().settings.get_value("cs-api-key").get_string()
         default_cs_api_key = Lp().settings.get_default_value(
-                                                     'cs-api-key').get_string()
+                                                     "cs-api-key").get_string()
         if (not cs_api_key or
             cs_api_key == default_cs_api_key) and\
                 get_network_available() and\
@@ -92,137 +92,137 @@ class SettingsDialog:
                          _("Lollypop needs this to search artwork and music."))
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
-        self.__progress = builder.get_object('progress')
-        self.__infobar = builder.get_object('infobar')
-        self.__reset_button = builder.get_object('reset_button')
+        builder.add_from_resource("/org/gnome/Lollypop/SettingsDialog.ui")
+        self.__progress = builder.get_object("progress")
+        self.__infobar = builder.get_object("infobar")
+        self.__reset_button = builder.get_object("reset_button")
         if Lp().lastfm is None or Lp().lastfm.is_goa:
-            builder.get_object('lastfm_grid').hide()
+            builder.get_object("lastfm_grid").hide()
         if Lp().scanner.is_locked():
-            builder.get_object('reset_button').set_sensitive(False)
+            builder.get_object("reset_button").set_sensitive(False)
         artists = Lp().artists.count()
         albums = Lp().albums.count()
         tracks = Lp().tracks.count()
-        builder.get_object('artists').set_text(
+        builder.get_object("artists").set_text(
                         ngettext("%d artist", "%d artists", artists) % artists)
-        builder.get_object('albums').set_text(
+        builder.get_object("albums").set_text(
                             ngettext("%d album", "%d albums", albums) % albums)
-        builder.get_object('tracks').set_text(
+        builder.get_object("tracks").set_text(
                             ngettext("%d track", "%d tracks", tracks) % tracks)
 
-        self.__popover_content = builder.get_object('popover')
-        duration = builder.get_object('duration')
+        self.__popover_content = builder.get_object("popover")
+        duration = builder.get_object("duration")
         duration.set_range(1, 20)
-        duration.set_value(Lp().settings.get_value('mix-duration').get_int32())
+        duration.set_value(Lp().settings.get_value("mix-duration").get_int32())
 
-        self.__settings_dialog = builder.get_object('settings_dialog')
+        self.__settings_dialog = builder.get_object("settings_dialog")
         self.__settings_dialog.set_transient_for(Lp().window)
 
-        if Lp().settings.get_value('disable-csd'):
+        if Lp().settings.get_value("disable-csd"):
             self.__settings_dialog.set_title(_("Preferences"))
         else:
-            headerbar = builder.get_object('header_bar')
+            headerbar = builder.get_object("header_bar")
             headerbar.set_title(_("Preferences"))
             self.__settings_dialog.set_titlebar(headerbar)
 
-        switch_scan = builder.get_object('switch_scan')
-        switch_scan.set_state(Lp().settings.get_value('auto-update'))
+        switch_scan = builder.get_object("switch_scan")
+        switch_scan.set_state(Lp().settings.get_value("auto-update"))
 
-        switch_view = builder.get_object('switch_dark')
+        switch_view = builder.get_object("switch_dark")
         if Lp().gtk_application_prefer_dark_theme:
             switch_view.set_sensitive(False)
         else:
-            switch_view.set_state(Lp().settings.get_value('dark-ui'))
+            switch_view.set_state(Lp().settings.get_value("dark-ui"))
 
-        switch_background = builder.get_object('switch_background')
-        switch_background.set_state(Lp().settings.get_value('background-mode'))
+        switch_background = builder.get_object("switch_background")
+        switch_background.set_state(Lp().settings.get_value("background-mode"))
 
-        switch_state = builder.get_object('switch_state')
-        switch_state.set_state(Lp().settings.get_value('save-state'))
+        switch_state = builder.get_object("switch_state")
+        switch_state.set_state(Lp().settings.get_value("save-state"))
 
-        switch_mix = builder.get_object('switch_mix')
-        switch_mix.set_state(Lp().settings.get_value('mix'))
+        switch_mix = builder.get_object("switch_mix")
+        switch_mix.set_state(Lp().settings.get_value("mix"))
         self.__helper = TouchHelper(switch_mix, None, None)
         self.__helper.set_long_func(self.__mix_long_func, switch_mix)
         self.__helper.set_short_func(self.__mix_short_func, switch_mix)
 
-        switch_mix_party = builder.get_object('switch_mix_party')
-        switch_mix_party.set_state(Lp().settings.get_value('party-mix'))
+        switch_mix_party = builder.get_object("switch_mix_party")
+        switch_mix_party.set_state(Lp().settings.get_value("party-mix"))
 
-        switch_librefm = builder.get_object('switch_librefm')
-        switch_librefm.set_state(Lp().settings.get_value('use-librefm'))
+        switch_librefm = builder.get_object("switch_librefm")
+        switch_librefm.set_state(Lp().settings.get_value("use-librefm"))
 
-        switch_artwork_tags = builder.get_object('switch_artwork_tags')
+        switch_artwork_tags = builder.get_object("switch_artwork_tags")
         # Check portal for kid3-cli
         can_set_cover = False
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                           'org.gnome.Lollypop.Portal',
-                                           '/org/gnome/LollypopPortal',
-                                           'org.gnome.Lollypop.Portal', None)
-            can_set_cover = proxy.call_sync('CanSetCover', None,
+                                           "org.gnome.Lollypop.Portal",
+                                           "/org/gnome/LollypopPortal",
+                                           "org.gnome.Lollypop.Portal", None)
+            can_set_cover = proxy.call_sync("CanSetCover", None,
                                             Gio.DBusCallFlags.NO_AUTO_START,
                                             500, None)[0]
         except Exception as e:
             print("You are missing lollypop-portal: "
                   "https://github.com/gnumdk/lollypop-portal", e)
         if not can_set_cover:
-            grid = builder.get_object('grid_behaviour')
-            h = grid.child_get_property(switch_artwork_tags, 'height')
-            w = grid.child_get_property(switch_artwork_tags, 'width')
-            l = grid.child_get_property(switch_artwork_tags, 'left-attach')
-            t = grid.child_get_property(switch_artwork_tags, 'top-attach')
+            grid = builder.get_object("grid_behaviour")
+            h = grid.child_get_property(switch_artwork_tags, "height")
+            w = grid.child_get_property(switch_artwork_tags, "width")
+            l = grid.child_get_property(switch_artwork_tags, "left-attach")
+            t = grid.child_get_property(switch_artwork_tags, "top-attach")
             switch_artwork_tags.destroy()
             label = Gtk.Label.new(_("You need to install kid3-cli"))
-            label.get_style_context().add_class('dim-label')
-            label.set_property('halign', Gtk.Align.END)
+            label.get_style_context().add_class("dim-label")
+            label.set_property("halign", Gtk.Align.END)
             label.show()
             grid.attach(label, l, t, w, h)
         else:
             switch_artwork_tags.set_state(
-                                      Lp().settings.get_value('save-to-tags'))
+                                      Lp().settings.get_value("save-to-tags"))
 
         if GLib.find_program_in_path("youtube-dl") is None:
-            builder.get_object('charts_grid').hide()
+            builder.get_object("charts_grid").hide()
         else:
-            switch_charts = builder.get_object('switch_charts')
-            switch_charts.set_state(Lp().settings.get_value('show-charts'))
+            switch_charts = builder.get_object("switch_charts")
+            switch_charts.set_state(Lp().settings.get_value("show-charts"))
 
-        switch_genres = builder.get_object('switch_genres')
-        switch_genres.set_state(Lp().settings.get_value('show-genres'))
+        switch_genres = builder.get_object("switch_genres")
+        switch_genres.set_state(Lp().settings.get_value("show-genres"))
 
-        switch_compilations = builder.get_object('switch_compilations')
+        switch_compilations = builder.get_object("switch_compilations")
         switch_compilations.set_state(
-            Lp().settings.get_value('show-compilations'))
+            Lp().settings.get_value("show-compilations"))
 
-        switch_artwork = builder.get_object('switch_artwork')
-        switch_artwork.set_state(Lp().settings.get_value('artist-artwork'))
+        switch_artwork = builder.get_object("switch_artwork")
+        switch_artwork.set_state(Lp().settings.get_value("artist-artwork"))
 
-        switch_spotify = builder.get_object('switch_spotify')
-        switch_spotify.set_state(Lp().settings.get_value('search-spotify'))
+        switch_spotify = builder.get_object("switch_spotify")
+        switch_spotify.set_state(Lp().settings.get_value("search-spotify"))
 
-        switch_itunes = builder.get_object('switch_itunes')
-        switch_itunes.set_state(Lp().settings.get_value('search-itunes'))
+        switch_itunes = builder.get_object("switch_itunes")
+        switch_itunes.set_state(Lp().settings.get_value("search-itunes"))
 
         if GLib.find_program_in_path("youtube-dl") is None:
-            builder.get_object('yt-dl').show()
+            builder.get_object("yt-dl").show()
 
-        combo_orderby = builder.get_object('combo_orderby')
-        combo_orderby.set_active(Lp().settings.get_enum(('orderby')))
+        combo_orderby = builder.get_object("combo_orderby")
+        combo_orderby.set_active(Lp().settings.get_enum(("orderby")))
 
-        combo_preview = builder.get_object('combo_preview')
+        combo_preview = builder.get_object("combo_preview")
 
-        scale_coversize = builder.get_object('scale_coversize')
+        scale_coversize = builder.get_object("scale_coversize")
         scale_coversize.set_range(150, 300)
         scale_coversize.set_value(
-                            Lp().settings.get_value('cover-size').get_int32())
-        self.__settings_dialog.connect('destroy', self.__edit_settings_close)
+                            Lp().settings.get_value("cover-size").get_int32())
+        self.__settings_dialog.connect("destroy", self.__edit_settings_close)
 
         builder.connect_signals(self)
 
-        main_chooser_box = builder.get_object('main_chooser_box')
-        self.__chooser_box = builder.get_object('chooser_box')
+        main_chooser_box = builder.get_object("main_chooser_box")
+        self.__chooser_box = builder.get_object("chooser_box")
 
         self.__set_outputs(combo_preview)
 
@@ -230,7 +230,7 @@ class SettingsDialog:
         # Music tab
         #
         dirs = []
-        for directory in Lp().settings.get_value('music-uris'):
+        for directory in Lp().settings.get_value("music-uris"):
             dirs.append(directory)
 
         # Main chooser
@@ -259,24 +259,24 @@ class SettingsDialog:
         #
         # Google tab
         #
-        builder.get_object('cs-entry').set_text(
-                            Lp().settings.get_value('cs-api-key').get_string())
+        builder.get_object("cs-entry").set_text(
+                            Lp().settings.get_value("cs-api-key").get_string())
         #
         # Last.fm tab
         #
         if Lp().lastfm is not None and Secret is not None:
-            self.__test_img = builder.get_object('test_img')
-            self.__login = builder.get_object('login')
-            self.__password = builder.get_object('password')
+            self.__test_img = builder.get_object("test_img")
+            self.__login = builder.get_object("login")
+            self.__password = builder.get_object("password")
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
                                        SecretSchema)
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self.__on_password_lookup)
-            builder.get_object('lastfm_grid').set_sensitive(True)
-            builder.get_object('lastfm_error').hide()
+            builder.get_object("lastfm_grid").set_sensitive(True)
+            builder.get_object("lastfm_error").hide()
             self.__login.set_text(
-                Lp().settings.get_value('lastfm-login').get_string())
+                Lp().settings.get_value("lastfm-login").get_string())
 
     def show(self):
         """
@@ -305,7 +305,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('dark-ui', GLib.Variant('b', state))
+        Lp().settings.set_value("dark-ui", GLib.Variant("b", state))
         if not Lp().player.is_party:
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
@@ -316,8 +316,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('auto-update',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("auto-update",
+                                GLib.Variant("b", state))
 
     def _update_background_setting(self, widget, state):
         """
@@ -325,8 +325,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('background-mode',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("background-mode",
+                                GLib.Variant("b", state))
 
     def _update_state_setting(self, widget, state):
         """
@@ -334,8 +334,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('save-state',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("save-state",
+                                GLib.Variant("b", state))
 
     def _update_genres_setting(self, widget, state):
         """
@@ -344,8 +344,8 @@ class SettingsDialog:
             @param state as bool
         """
         Lp().window.show_genres(state)
-        Lp().settings.set_value('show-genres',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("show-genres",
+                                GLib.Variant("b", state))
 
     def _update_charts_setting(self, widget, state):
         """
@@ -353,7 +353,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        if Lp().settings.get_value('network-access'):
+        if Lp().settings.get_value("network-access"):
             GLib.idle_add(Lp().window.add_remove_from,
                           (Type.CHARTS, _("The charts"), ""),
                           True,
@@ -370,8 +370,8 @@ class SettingsDialog:
         else:
             Lp().charts.stop()
             Lp().scanner.clean_charts()
-        Lp().settings.set_value('show-charts',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("show-charts",
+                                GLib.Variant("b", state))
 
     def _update_mix_setting(self, widget, state):
         """
@@ -379,7 +379,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('mix', GLib.Variant('b', state))
+        Lp().settings.set_value("mix", GLib.Variant("b", state))
         Lp().player.update_crossfading()
         if state:
             if self.__popover is None:
@@ -395,7 +395,7 @@ class SettingsDialog:
             Update party mix setting
             @param widget as Gtk.Range
         """
-        Lp().settings.set_value('party-mix', GLib.Variant('b', state))
+        Lp().settings.set_value("party-mix", GLib.Variant("b", state))
         Lp().player.update_crossfading()
 
     def _update_librefm_setting(self, widget, state):
@@ -404,7 +404,7 @@ class SettingsDialog:
             @param widget as Gtk.Range
         """
         from lollypop.lastfm import LastFM
-        Lp().settings.set_value('use-librefm', GLib.Variant('b', state))
+        Lp().settings.set_value("use-librefm", GLib.Variant("b", state))
         # Reset lastfm object
         Lp().lastfm = LastFM()
 
@@ -414,7 +414,7 @@ class SettingsDialog:
             @param widget as Gtk.Range
         """
         value = widget.get_value()
-        Lp().settings.set_value('mix-duration', GLib.Variant('i', value))
+        Lp().settings.set_value("mix-duration", GLib.Variant("i", value))
 
     def _update_artwork_tags_setting(self, widget, state):
         """
@@ -422,7 +422,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('save-to-tags', GLib.Variant('b', state))
+        Lp().settings.set_value("save-to-tags", GLib.Variant("b", state))
 
     def _update_compilations_setting(self, widget, state):
         """
@@ -430,8 +430,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('show-compilations',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("show-compilations",
+                                GLib.Variant("b", state))
 
     def _update_artwork_setting(self, widget, state):
         """
@@ -439,8 +439,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('artist-artwork',
-                                GLib.Variant('b', state))
+        Lp().settings.set_value("artist-artwork",
+                                GLib.Variant("b", state))
         Lp().window.reload_view()
         if state:
             Lp().art.cache_artists_info()
@@ -450,7 +450,7 @@ class SettingsDialog:
             Update orderby setting
             @param widget as Gtk.ComboBoxText
         """
-        Lp().settings.set_enum('orderby', widget.get_active())
+        Lp().settings.set_enum("orderby", widget.get_active())
 
     def _update_spotify_setting(self, widget, state):
         """
@@ -458,7 +458,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('search-spotify', GLib.Variant('b', state))
+        Lp().settings.set_value("search-spotify", GLib.Variant("b", state))
 
     def _update_itunes_setting(self, widget, state):
         """
@@ -466,7 +466,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('search-itunes', GLib.Variant('b', state))
+        Lp().settings.set_value("search-itunes", GLib.Variant("b", state))
 
     def _update_lastfm_settings(self, sync=False):
         """
@@ -485,8 +485,8 @@ class SettingsDialog:
                                            self.__login.get_text(),
                                            self.__password.get_text(),
                                            None)
-                Lp().settings.set_value('lastfm-login',
-                                        GLib.Variant('s',
+                Lp().settings.set_value("lastfm-login",
+                                        GLib.Variant("s",
                                                      self.__login.get_text()))
                 if sync:
                     Lp().lastfm.connect_sync(self.__password.get_text())
@@ -501,15 +501,15 @@ class SettingsDialog:
             @param entry as Gtk.Entry
         """
         value = entry.get_text().strip()
-        Lp().settings.set_value('cs-api-key', GLib.Variant('s', value))
+        Lp().settings.set_value("cs-api-key", GLib.Variant("s", value))
 
     def _on_preview_changed(self, combo):
         """
             Update preview setting
             @param combo as Gtk.ComboBoxText
         """
-        Lp().settings.set_value('preview-output',
-                                GLib.Variant('s', combo.get_active_id()))
+        Lp().settings.set_value("preview-output",
+                                GLib.Variant("s", combo.get_active_id()))
         Lp().player.set_preview_output()
 
     def _on_preview_query_tooltip(self, combo, x, y, keyboard, tooltip):
@@ -539,7 +539,7 @@ class SettingsDialog:
         """
         self._update_lastfm_settings(True)
         if not get_network_available():
-            self.__test_img.set_from_icon_name('computer-fail-symbolic',
+            self.__test_img.set_from_icon_name("computer-fail-symbolic",
                                                Gtk.IconSize.MENU)
             return
         t = Thread(target=self.__test_lastfm_connection)
@@ -570,9 +570,9 @@ class SettingsDialog:
         try:
             Lp().player.stop()
             Lp().player.reset_pcn()
-            Lp().player.emit('current-changed')
-            Lp().player.emit('prev-changed')
-            Lp().player.emit('next-changed')
+            Lp().player.emit("current-changed")
+            Lp().player.emit("prev-changed")
+            Lp().player.emit("next-changed")
             Lp().cursors = {}
             track_ids = Lp().tracks.get_ids()
             self.__progress.show()
@@ -603,7 +603,7 @@ class SettingsDialog:
             Show popover
             @param args as []
         """
-        if Lp().settings.get_value('mix'):
+        if Lp().settings.get_value("mix"):
             if self.__popover is None:
                 self.__popover = Gtk.Popover.new(args[0])
                 self.__popover.set_modal(False)
@@ -627,10 +627,10 @@ class SettingsDialog:
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                           'org.gnome.Lollypop.Portal',
-                                           '/org/gnome/LollypopPortal',
-                                           'org.gnome.Lollypop.Portal', None)
-            ret = proxy.call_sync('PaListSinks', None,
+                                           "org.gnome.Lollypop.Portal",
+                                           "/org/gnome/LollypopPortal",
+                                           "org.gnome.Lollypop.Portal", None)
+            ret = proxy.call_sync("PaListSinks", None,
                                   Gio.DBusCallFlags.NO_AUTO_START,
                                   500, None)
             return ret[0]
@@ -644,10 +644,10 @@ class SettingsDialog:
             Set outputs in combo
             @parma combo as Gtk.ComboxBoxText
         """
-        current = Lp().settings.get_value('preview-output').get_string()
+        current = Lp().settings.get_value("preview-output").get_string()
         renderer = combo.get_cells()[0]
-        renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer.set_property('max-width-chars', 60)
+        renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
+        renderer.set_property("max-width-chars", 60)
         outputs = self.__get_pa_outputs()
         if outputs:
             for output in outputs:
@@ -677,13 +677,13 @@ class SettingsDialog:
         """
         self.__cover_tid = None
         value = widget.get_value()
-        Lp().settings.set_value('cover-size', GLib.Variant('i', value))
+        Lp().settings.set_value("cover-size", GLib.Variant("i", value))
         Lp().art.update_art_size()
         for suffix in ["lastfm", "wikipedia", "spotify"]:
             for artist in Lp().artists.get([]):
                 InfoCache.uncache_artwork(artist[1], suffix,
                                           widget.get_scale_factor())
-                Lp().art.emit('artist-artwork-changed', artist[1])
+                Lp().art.emit("artist-artwork-changed", artist[1])
         Lp().window.reload_view()
 
     def __edit_settings_close(self, widget):
@@ -708,8 +708,8 @@ class SettingsDialog:
                 if uri is not None and uri not in uris:
                     uris.append(uri)
 
-        previous = Lp().settings.get_value('music-uris')
-        Lp().settings.set_value('music-uris', GLib.Variant('as', uris))
+        previous = Lp().settings.get_value("music-uris")
+        Lp().settings.set_value("music-uris", GLib.Variant("as", uris))
 
         # Last.fm
         try:
@@ -732,11 +732,11 @@ class SettingsDialog:
         """
         if Lp().lastfm.session_key:
             GLib.idle_add(self.__test_img.set_from_icon_name,
-                          'object-select-symbolic',
+                          "object-select-symbolic",
                           Gtk.IconSize.MENU)
         else:
             GLib.idle_add(self.__test_img.set_from_icon_name,
-                          'computer-fail-symbolic',
+                          "computer-fail-symbolic",
                           Gtk.IconSize.MENU)
 
     def __on_password_lookup(self, source, result):
@@ -785,7 +785,7 @@ class SettingsDialog:
             Lp().player.stop()
             Lp().db.drop_db()
             Lp().db = Database()
-            Lp().window.show_genres(Lp().settings.get_value('show-genres'))
+            Lp().window.show_genres(Lp().settings.get_value("show-genres"))
             Lp().window.update_db()
             self.__progress.get_toplevel().set_deletable(True)
             if Lp().charts is not None and get_network_available():

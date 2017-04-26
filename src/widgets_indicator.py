@@ -34,9 +34,9 @@ class IndicatorWidget(Gtk.EventBox):
         self.__timeout_id = None
         self.__button = None
         self.__stack = None
-        self.__signal_id = Lp().player.connect('queue-changed',
+        self.__signal_id = Lp().player.connect("queue-changed",
                                                self.__on_queue_changed)
-        self.connect('destroy', self.__on_destroy)
+        self.connect("destroy", self.__on_destroy)
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px, we set directly on stack
         # min-width = 24px, borders = 2px, padding = 8px
@@ -47,22 +47,22 @@ class IndicatorWidget(Gtk.EventBox):
             Show spinner
         """
         self.__init()
-        spinner = self.__stack.get_child_by_name('spinner')
+        spinner = self.__stack.get_child_by_name("spinner")
         if spinner is None:
             spinner = Gtk.Spinner()
-            spinner.set_property('halign', Gtk.Align.CENTER)
-            spinner.set_property('valign', Gtk.Align.CENTER)
+            spinner.set_property("halign", Gtk.Align.CENTER)
+            spinner.set_property("valign", Gtk.Align.CENTER)
             spinner.show()
-            self.__stack.add_named(spinner, 'spinner')
+            self.__stack.add_named(spinner, "spinner")
         spinner.start()
-        self.__stack.set_visible_child_name('spinner')
+        self.__stack.set_visible_child_name("spinner")
 
     def empty(self):
         """
             Show no indicator
         """
         if self.__button is not None:
-            self.__stack.set_visible_child_name('button')
+            self.__stack.set_visible_child_name("button")
 
     def play(self):
         """
@@ -70,7 +70,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
         self.__init()
         self.__clear_spinner()
-        self.__stack.set_visible_child_name('play')
+        self.__stack.set_visible_child_name("play")
 
     def loved(self):
         """
@@ -78,7 +78,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
         self.__init()
         self.__clear_spinner()
-        self.__stack.set_visible_child_name('loved')
+        self.__stack.set_visible_child_name("loved")
 
     def play_loved(self):
         """
@@ -105,11 +105,11 @@ class IndicatorWidget(Gtk.EventBox):
         self.__init()
         if self.__id in Lp().player.queue:
             self.__button.set_tooltip_text(_("Remove from queue"))
-            self.__image.set_from_icon_name('list-remove-symbolic',
+            self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
         else:
             self.__button.set_tooltip_text(_("Add to queue"))
-            self.__image.set_from_icon_name('list-add-symbolic',
+            self.__image.set_from_icon_name("list-add-symbolic",
                                             Gtk.IconSize.MENU)
 
 #######################
@@ -119,7 +119,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Clear spinner
         """
-        spinner = self.__stack.get_child_by_name('spinner')
+        spinner = self.__stack.get_child_by_name("spinner")
         if spinner is not None:
             spinner.stop()
 
@@ -136,21 +136,21 @@ class IndicatorWidget(Gtk.EventBox):
         self.__image = Gtk.Image.new()
         self.__button.set_image(self.__image)
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__button.get_style_context().add_class('menu-button')
-        self.__button.get_style_context().add_class('track-menu-button')
+        self.__button.get_style_context().add_class("menu-button")
+        self.__button.get_style_context().add_class("track-menu-button")
         self.__image.set_opacity(0.2)
         self.__button.show()
-        self.__button.connect('clicked', self.__on_button_clicked)
-        play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
+        self.__button.connect("clicked", self.__on_button_clicked)
+        play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
                                             Gtk.IconSize.MENU)
-        loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
+        loved = Gtk.Image.new_from_icon_name("emblem-favorite-symbolic",
                                              Gtk.IconSize.MENU)
-        self.__stack.add_named(self.__button, 'button')
-        self.__stack.add_named(play, 'play')
-        self.__stack.add_named(loved, 'loved')
+        self.__stack.add_named(self.__button, "button")
+        self.__stack.add_named(play, "play")
+        self.__stack.add_named(loved, "loved")
         self.add(self.__stack)
-        self.connect('enter-notify-event', self.__on_enter_notify)
-        self.connect('leave-notify-event', self.__on_leave_notify)
+        self.connect("enter-notify-event", self.__on_enter_notify)
+        self.connect("leave-notify-event", self.__on_leave_notify)
         self.show_all()
 
     def __on_enter_notify(self, widget, event):
@@ -203,7 +203,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
         if self.__timeout_id is None:
             return False
-        if self.__stack.get_visible_child_name() == 'play':
+        if self.__stack.get_visible_child_name() == "play":
             if self.__pass == 10:
                 self.__pass = 0
                 self.loved()

@@ -32,7 +32,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         Widget for synchronize mtp devices
     """
     __gsignals__ = {
-        'sync-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
+        "sync-finished": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     def __init__(self, parent):
@@ -48,54 +48,54 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._uri = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerWidget.ui')
-        widget = builder.get_object('widget')
-        self.__error_label = builder.get_object('error-label')
-        self.__switch_albums = builder.get_object('switch_albums')
-        self.__switch_albums.set_state(Lp().settings.get_value('sync-albums'))
-        self.__switch_mp3 = builder.get_object('switch_mp3')
-        self.__switch_normalize = builder.get_object('switch_normalize')
+        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerWidget.ui")
+        widget = builder.get_object("widget")
+        self.__error_label = builder.get_object("error-label")
+        self.__switch_albums = builder.get_object("switch_albums")
+        self.__switch_albums.set_state(Lp().settings.get_value("sync-albums"))
+        self.__switch_mp3 = builder.get_object("switch_mp3")
+        self.__switch_normalize = builder.get_object("switch_normalize")
         if not self._check_encoder_status():
             self.__switch_mp3.set_sensitive(False)
             self.__switch_normalize.set_sensitive(False)
             self.__switch_mp3.set_tooltip_text(_("You need to install " +
                                                "gstreamer-plugins-ugly"))
         else:
-            self.__switch_mp3.set_state(Lp().settings.get_value('convert-mp3'))
-        self.__menu_items = builder.get_object('menu-items')
-        self.__menu = builder.get_object('menu')
+            self.__switch_mp3.set_state(Lp().settings.get_value("convert-mp3"))
+        self.__menu_items = builder.get_object("menu-items")
+        self.__menu = builder.get_object("menu")
 
         self.__model = Gtk.ListStore(bool, str, int)
 
         self.__selection_list = SelectionList(False)
-        self.__selection_list.connect('item-selected',
+        self.__selection_list.connect("item-selected",
                                       self.__on_item_selected)
         widget.attach(self.__selection_list, 1, 1, 1, 1)
         self.__selection_list.set_hexpand(True)
 
-        self.__view = builder.get_object('view')
+        self.__view = builder.get_object("view")
         self.__view.set_model(self.__model)
 
         builder.connect_signals(self)
 
         self.add(widget)
 
-        self.__infobar = builder.get_object('infobar')
-        self.__infobar_label = builder.get_object('infobarlabel')
+        self.__infobar = builder.get_object("infobar")
+        self.__infobar_label = builder.get_object("infobarlabel")
 
         renderer0 = Gtk.CellRendererToggle()
-        renderer0.set_property('activatable', True)
-        renderer0.connect('toggled', self.__on_item_toggled)
+        renderer0.set_property("activatable", True)
+        renderer0.connect("toggled", self.__on_item_toggled)
         column0 = Gtk.TreeViewColumn(" ✓", renderer0, active=0)
         column0.set_clickable(True)
-        column0.connect('clicked', self.__on_column0_clicked)
+        column0.connect("clicked", self.__on_column0_clicked)
 
         renderer1 = CellRendererAlbum()
         self.__column1 = Gtk.TreeViewColumn("", renderer1, album=2)
 
         renderer2 = Gtk.CellRendererText()
-        renderer2.set_property('ellipsize-set', True)
-        renderer2.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer2.set_property("ellipsize-set", True)
+        renderer2.set_property("ellipsize", Pango.EllipsizeMode.END)
         self.__column2 = Gtk.TreeViewColumn("", renderer2, markup=1)
         self.__column2.set_expand(True)
 
@@ -110,7 +110,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         self.__model.clear()
         self.__stop = False
-        if Lp().settings.get_value('sync-albums'):
+        if Lp().settings.get_value("sync-albums"):
             self.__selection_list.clear()
             self.__setup_list_artists(self.__selection_list)
             self.__column1.set_visible(True)
@@ -152,7 +152,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         Lp().window.progress.add(self)
         self.__menu.set_sensitive(False)
         playlists = []
-        if not Lp().settings.get_value('sync-albums'):
+        if not Lp().settings.get_value("sync-albums"):
             self.__view.set_sensitive(False)
             for item in self.__model:
                 if item[0]:
@@ -224,7 +224,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if not self.__switch_albums.get_state():
             self.__view.set_sensitive(True)
         self.__menu.set_sensitive(True)
-        self.emit('sync-finished')
+        self.emit("sync-finished")
 
     def _on_errors(self):
         """
@@ -235,8 +235,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                        " try to reboot your device")
         try:
             d = Lio.File.new_for_uri(self._uri)
-            info = d.query_filesystem_info('filesystem::free')
-            free = info.get_attribute_as_string('filesystem::free')
+            info = d.query_filesystem_info("filesystem::free")
+            free = info.get_attribute_as_string("filesystem::free")
 
             if free is None or int(free) < 1024:
                 error_text = _("No free space available on device")
@@ -253,7 +253,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param state as bool
         """
         self.__stop = True
-        Lp().settings.set_value('sync-albums', GLib.Variant('b', state))
+        Lp().settings.set_value("sync-albums", GLib.Variant("b", state))
         GLib.idle_add(self.populate)
 
     def _on_mp3_state_set(self, widget, state):
@@ -262,11 +262,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('convert-mp3', GLib.Variant('b', state))
+        Lp().settings.set_value("convert-mp3", GLib.Variant("b", state))
         if not state:
             self.__switch_normalize.set_active(False)
-            Lp().settings.set_value('normalize-mp3',
-                                    GLib.Variant('b', False))
+            Lp().settings.set_value("normalize-mp3",
+                                    GLib.Variant("b", False))
 
     def _on_normalize_state_set(self, widget, state):
         """
@@ -274,10 +274,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('normalize-mp3', GLib.Variant('b', state))
+        Lp().settings.set_value("normalize-mp3", GLib.Variant("b", state))
         if state:
             self.__switch_mp3.set_active(True)
-            Lp().settings.set_value('convert-mp3', GLib.Variant('b', True))
+            Lp().settings.set_value("convert-mp3", GLib.Variant("b", True))
 
     def _on_response(self, infobar, response_id):
         """
@@ -307,7 +307,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             items.append((Type.ALL, _("Synced albums")))
             if compilations:
                 items.append((Type.COMPILATIONS, _("Compilations")))
-                items.append((Type.SEPARATOR, ''))
+                items.append((Type.SEPARATOR, ""))
             items += artists
             selection_list.mark_as_artists(True)
             selection_list.populate(items)
@@ -327,7 +327,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 try:
                     d = Lio.File.new_for_uri(self._uri)
                     infos = d.enumerate_children(
-                                            'standard::name,standard::type',
+                                            "standard::name,standard::type",
                                             Gio.FileQueryInfoFlags.NONE,
                                             None)
                     for info in infos:
@@ -370,7 +370,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param toggle as bool
             @warning commit on default sql cursor needed
         """
-        if Lp().settings.get_value('sync-albums'):
+        if Lp().settings.get_value("sync-albums"):
             Lp().albums.set_synced(album_id, toggle)
 
     def __on_item_selected(self, selection_list):

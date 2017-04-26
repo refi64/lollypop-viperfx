@@ -38,7 +38,7 @@ class Database:
     # is an alias for the ROWID.
     # Here, we define an id INT PRIMARY KEY but never feed it,
     # this make VACUUM not destroy rowids...
-    __create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
+    __create_albums = """CREATE TABLE albums (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
                                               no_album_artist BOOLEAN NOT NULL,
                                               year INT,
@@ -46,20 +46,20 @@ class Database:
                                               popularity INT NOT NULL,
                                               rate INT NOT NULL,
                                               loved INT NOT NULL,
-                                              synced INT NOT NULL)'''
-    __create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
+                                              synced INT NOT NULL)"""
+    __create_artists = """CREATE TABLE artists (id INTEGER PRIMARY KEY,
                                                name TEXT NOT NULL,
-                                               sortname TEXT NOT NULL)'''
-    __create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
-                                            name TEXT NOT NULL)'''
-    __create_album_artists = '''CREATE TABLE album_artists (
+                                               sortname TEXT NOT NULL)"""
+    __create_genres = """CREATE TABLE genres (id INTEGER PRIMARY KEY,
+                                            name TEXT NOT NULL)"""
+    __create_album_artists = """CREATE TABLE album_artists (
                                                 album_id INT NOT NULL,
-                                                artist_id INT NOT NULL)'''
-    __create_album_genres = '''CREATE TABLE album_genres (
+                                                artist_id INT NOT NULL)"""
+    __create_album_genres = """CREATE TABLE album_genres (
                                                 album_id INT NOT NULL,
                                                 mtime INT NOT NULL,
-                                                genre_id INT NOT NULL)'''
-    __create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
+                                                genre_id INT NOT NULL)"""
+    __create_tracks = """CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
                                               uri TEXT NOT NULL,
                                               duration INT,
@@ -72,22 +72,22 @@ class Database:
                                               rate INT NOT NULL,
                                               ltime INT NOT NULL,
                                               persistent INT NOT NULL DEFAULT 1
-                                              )'''
-    __create_track_artists = '''CREATE TABLE track_artists (
+                                              )"""
+    __create_track_artists = """CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
-                                                artist_id INT NOT NULL)'''
-    __create_track_genres = '''CREATE TABLE track_genres (
+                                                artist_id INT NOT NULL)"""
+    __create_track_genres = """CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 mtime INT NOT NULL,
-                                                genre_id INT NOT NULL)'''
-    __create_album_artists_idx = '''CREATE index idx_aa ON album_artists(
-                                                album_id)'''
-    __create_track_artists_idx = '''CREATE index idx_ta ON track_artists(
-                                                track_id)'''
-    __create_album_genres_idx = '''CREATE index idx_ag ON album_genres(
-                                                album_id)'''
-    __create_track_genres_idx = '''CREATE index idx_tg ON track_genres(
-                                                track_id)'''
+                                                genre_id INT NOT NULL)"""
+    __create_album_artists_idx = """CREATE index idx_aa ON album_artists(
+                                                album_id)"""
+    __create_track_artists_idx = """CREATE index idx_ta ON track_artists(
+                                                track_id)"""
+    __create_album_genres_idx = """CREATE index idx_ag ON album_genres(
+                                                album_id)"""
+    __create_track_genres_idx = """CREATE index idx_tg ON track_genres(
+                                                track_id)"""
 
     def __init__(self):
         """
@@ -95,7 +95,7 @@ class Database:
         """
         f = Lio.File.new_for_path(self.DB_PATH)
         if not f.query_exists():
-            db_version = Lp().settings.get_value('db-version').get_int32()
+            db_version = Lp().settings.get_value("db-version").get_int32()
             upgrade = DatabaseUpgrade(db_version)
             try:
                 d = Lio.File.new_for_path(self.__LOCAL_PATH)
@@ -116,8 +116,8 @@ class Database:
                     sql.execute(self.__create_album_genres_idx)
                     sql.execute(self.__create_track_genres_idx)
                     sql.commit()
-                    Lp().settings.set_value('db-version',
-                                            GLib.Variant('i', upgrade.count()))
+                    Lp().settings.set_value("db-version",
+                                            GLib.Variant("i", upgrade.count()))
             except Exception as e:
                 print("Database::__init__(): %s" % e)
 
@@ -125,13 +125,13 @@ class Database:
         """
             Upgrade database
         """
-        db_version = Lp().settings.get_value('db-version').get_int32()
+        db_version = Lp().settings.get_value("db-version").get_int32()
         upgrade = DatabaseUpgrade(db_version)
         f = Lio.File.new_for_path(self.DB_PATH)
         if f.query_exists():
             upgrade.do_db_upgrade()
-            Lp().settings.set_value('db-version',
-                                    GLib.Variant('i', upgrade.count()))
+            Lp().settings.set_value("db-version",
+                                    GLib.Variant("i", upgrade.count()))
 
     def get_cursor(self):
         """
@@ -139,7 +139,7 @@ class Database:
         """
         try:
             c = sqlite3.connect(self.DB_PATH, 600.0)
-            c.create_collation('LOCALIZED', LocalizedCollation())
+            c.create_collation("LOCALIZED", LocalizedCollation())
             c.create_function("noaccents", 1, noaccents)
             return c
         except:

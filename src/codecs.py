@@ -33,7 +33,7 @@ class Codecs:
         try:
             context = GstPbutils.InstallPluginsContext.new()
             try:
-                context.set_desktop_id('org.gnome.Lollypop.desktop')
+                context.set_desktop_id("org.gnome.Lollypop.desktop")
             except:
                 pass  # Not supported by Ubuntu VIVID
             details = []

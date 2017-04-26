@@ -37,7 +37,7 @@ Lp = Gio.Application.get_default
 
 GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 
-TAG_EDITORS = ['kid3-qt', 'exfalso', 'easytag', 'picard', 'puddletag']
+TAG_EDITORS = ["kid3-qt", "exfalso", "easytag", "picard", "puddletag"]
 
 
 # Represent what to do on next track

@@ -34,7 +34,7 @@ class AlbumPopover(Gtk.Popover):
             @param art size as int
         """
         Gtk.Popover.__init__(self)
-        self.get_style_context().add_class('box-shadow')
+        self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
         view.populate([album_id])
 
@@ -48,7 +48,7 @@ class AlbumPopover(Gtk.Popover):
         # Get height requested by child
         requested_height = view.children[0].requested_height
         wanted_height = min(400, min(height, requested_height))
-        view.set_property('height-request', wanted_height)
+        view.set_property("height-request", wanted_height)
         view.show()
         self.add(view)
 

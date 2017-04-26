@@ -33,7 +33,7 @@ class WebJmg90:
             f = Lio.File.new_for_uri(uri)
             (status, data, tag) = f.load_contents(None)
             if status:
-                return data.decode('utf-8')
+                return data.decode("utf-8")
         except IndexError:
             pass
         except Exception as e:
@@ -78,25 +78,25 @@ class WebJmg90:
             artist = item.artists[0]
         unescaped = "%s %s" % (artist,
                                item.name)
-        for c in ['/', '?', '!']:
+        for c in ["/", "?", "!"]:
             if c in unescaped:
-                unescaped = unescaped.replace(c, ' ')
+                unescaped = unescaped.replace(c, " ")
 
         search = GLib.uri_escape_string(unescaped,
-                                        '',
+                                        "",
                                         True)
         try:
             f = Lio.File.new_for_uri("http://app.jgm90.com/cmapi/search/"
                                      "%s/1/10" % search)
             (status, data, tag) = f.load_contents(None)
             if status:
-                decode = json.loads(data.decode('utf-8'))
-                for song in decode['result']['songs']:
+                decode = json.loads(data.decode("utf-8"))
+                for song in decode["result"]["songs"]:
                     try:
                         song_artist = escape(
-                                            song['artists'][0]['name'].lower())
+                                            song["artists"][0]["name"].lower())
                         if song_artist == escape(artist.lower()):
-                            return song['id']
+                            return song["id"]
                     except Exception as e:
                         print("WebJmg90::__get_jmg_id():", e)
         except IndexError:

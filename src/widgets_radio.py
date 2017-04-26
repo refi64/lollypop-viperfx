@@ -26,7 +26,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         Widget with radio cover and title
     """
     __gsignals__ = {
-        'overlayed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
+        "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
     def __init__(self, name, radios_manager):
@@ -37,7 +37,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
         Gtk.FlowBoxChild.__init__(self)
         BaseWidget.__init__(self)
-        self.get_style_context().add_class('loading')
+        self.get_style_context().add_class("loading")
         self.__name = name
         self.__radios_manager = radios_manager
 
@@ -45,35 +45,35 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
             Init widget content
         """
-        self.get_style_context().remove_class('loading')
+        self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         self.__helper = TouchHelper(self._widget, None, None)
         self.__helper.set_long_func(self.__on_click_long)
         self.__helper.set_short_func(self.__on_click_short)
-        self._widget.connect('enter-notify-event', self._on_enter_notify)
-        self._widget.connect('leave-notify-event', self._on_leave_notify)
+        self._widget.connect("enter-notify-event", self._on_enter_notify)
+        self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._cover = Gtk.Image()
-        self._cover.set_property('halign', Gtk.Align.CENTER)
+        self._cover.set_property("halign", Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.__title_label = Gtk.Label()
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__title_label.set_property('halign', Gtk.Align.CENTER)
+        self.__title_label.set_property("halign", Gtk.Align.CENTER)
         self.__title_label.set_text(self.__name)
-        self.__title_label.set_property('has-tooltip', True)
-        self.__title_label.connect('query-tooltip', self._on_query_tooltip)
+        self.__title_label.set_property("has-tooltip", True)
+        self.__title_label.connect("query-tooltip", self._on_query_tooltip)
         self._overlay = Gtk.Overlay()
         frame = Gtk.Frame()
-        frame.get_style_context().add_class('cover-frame')
+        frame.get_style_context().add_class("cover-frame")
         frame.add(self._cover)
         self._overlay.add(frame)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._overlay.get_style_context().add_class('white')
+        self._overlay.get_style_context().add_class("white")
         grid.add(self._overlay)
         grid.add(self.__title_label)
         self._widget.add(grid)
-        self.set_property('halign', Gtk.Align.CENTER)
-        self.set_property('valign', Gtk.Align.CENTER)
+        self.set_property("halign", Gtk.Align.CENTER)
+        self.set_property("valign", Gtk.Align.CENTER)
         self.add(self._widget)
         self.set_cover()
         self.update_state()
@@ -160,10 +160,10 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             self.__name == Lp().player.current_track.album_artists[0]
         if selected:
             self._overlay.get_style_context().add_class(
-                                                    'cover-frame-selected')
+                                                    "cover-frame-selected")
         else:
             self._overlay.get_style_context().remove_class(
-                                                    'cover-frame-selected')
+                                                    "cover-frame-selected")
 
 #######################
 # PROTECTED           #
@@ -179,32 +179,32 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         if set:
             # Play button
             self._play_event = Gtk.EventBox()
-            self._play_event.set_property('has-tooltip', True)
+            self._play_event.set_property("has-tooltip", True)
             self._play_event.set_tooltip_text(_("Play"))
             self._play_event.set_hexpand(True)
-            self._play_event.set_property('valign', Gtk.Align.CENTER)
-            self._play_event.set_property('halign', Gtk.Align.CENTER)
-            self._play_event.connect('realize', self._on_eventbox_realize)
-            self._play_event.connect('button-press-event',
+            self._play_event.set_property("valign", Gtk.Align.CENTER)
+            self._play_event.set_property("halign", Gtk.Align.CENTER)
+            self._play_event.connect("realize", self._on_eventbox_realize)
+            self._play_event.connect("button-press-event",
                                      self._on_play_press_event)
             self._play_button = Gtk.Image.new_from_icon_name(
-                                               'media-playback-start-symbolic',
+                                               "media-playback-start-symbolic",
                                                Gtk.IconSize.DND)
             self._play_button.set_opacity(0)
             # Edit button
             self._artwork_event = Gtk.EventBox()
             self._artwork_event.set_margin_bottom(5)
             self._artwork_event.set_margin_end(5)
-            self._artwork_event.set_property('has-tooltip', True)
+            self._artwork_event.set_property("has-tooltip", True)
             self._artwork_event.set_tooltip_text(_("Modify radio"))
-            self._artwork_event.set_property('halign', Gtk.Align.END)
-            self._artwork_event.connect('realize', self._on_eventbox_realize)
-            self._artwork_event.connect('button-press-event',
+            self._artwork_event.set_property("halign", Gtk.Align.END)
+            self._artwork_event.connect("realize", self._on_eventbox_realize)
+            self._artwork_event.connect("button-press-event",
                                         self._on_edit_press_event)
-            self._artwork_event.set_property('valign', Gtk.Align.END)
-            self._artwork_event.set_property('halign', Gtk.Align.END)
+            self._artwork_event.set_property("valign", Gtk.Align.END)
+            self._artwork_event.set_property("halign", Gtk.Align.END)
             self._artwork_button = Gtk.Image.new_from_icon_name(
-                                               'document-properties-symbolic',
+                                               "document-properties-symbolic",
                                                Gtk.IconSize.BUTTON)
             self._artwork_button.set_opacity(0)
             self._play_event.add(self._play_button)
@@ -254,7 +254,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         if layout.is_ellipsized():
             widget.set_tooltip_text(widget.get_text())
         else:
-            widget.set_tooltip_text('')
+            widget.set_tooltip_text("")
 
     def _on_play_press_event(self, widget, event):
         """
@@ -278,6 +278,6 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
         popover = RadioPopover(self.__name, self.__radios_manager)
         popover.set_relative_to(widget)
-        popover.connect('closed', self._on_pop_cover_closed)
+        popover.connect("closed", self._on_pop_cover_closed)
         self._lock_overlay = True
         popover.show()

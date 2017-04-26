@@ -41,22 +41,22 @@ class SearchRow(Gtk.ListBoxRow):
         builder = Gtk.Builder()
         if internal:
             builder.add_from_resource(
-                                    '/org/gnome/Lollypop/InternalSearchRow.ui')
+                                    "/org/gnome/Lollypop/InternalSearchRow.ui")
             self.__progress = None
         else:
             builder.add_from_resource(
-                                    '/org/gnome/Lollypop/ExternalSearchRow.ui')
-            self.__progress = builder.get_object('progress')
-            self.__stack = builder.get_object('stack')
+                                    "/org/gnome/Lollypop/ExternalSearchRow.ui")
+            self.__progress = builder.get_object("progress")
+            self.__stack = builder.get_object("stack")
         builder.connect_signals(self)
-        self.set_property('has-tooltip', True)
-        self.connect('query-tooltip', self.__on_query_tooltip)
-        self.__row_widget = builder.get_object('row')
+        self.set_property("has-tooltip", True)
+        self.connect("query-tooltip", self.__on_query_tooltip)
+        self.__row_widget = builder.get_object("row")
         self.__row_widget.set_margin_top(2)
         self.__row_widget.set_margin_end(2)
-        self.__artist = builder.get_object('artist')
-        self.__name = builder.get_object('item')
-        self.__cover = builder.get_object('cover')
+        self.__artist = builder.get_object("artist")
+        self.__name = builder.get_object("item")
+        self.__cover = builder.get_object("cover")
         self.add(self.__row_widget)
         self.__init()
 
@@ -231,7 +231,7 @@ class SearchRow(Gtk.ListBoxRow):
             else:
                 self.__name.set_text(self.__item.name)
             artists = self.__item.artists
-            surface = Lp().art.get_default_icon('emblem-music-symbolic',
+            surface = Lp().art.get_default_icon("emblem-music-symbolic",
                                                 ArtSize.MEDIUM,
                                                 self.get_scale_factor())
         else:
@@ -260,7 +260,7 @@ class SearchRow(Gtk.ListBoxRow):
         self.__item.id = item_id
         if persistent == DbPersistent.NONE:
             if self.__item.is_track:
-                Lp().player.emit('loading-changed', True)
+                Lp().player.emit("loading-changed", True)
             self.emit("activate")
         # If no visible widget in stack, self destroyed
         visible = self.__stack.get_visible_child()
@@ -294,7 +294,7 @@ class SearchRow(Gtk.ListBoxRow):
             title = GLib.markup_escape_text(self.__name.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
-            self.set_tooltip_text('')
+            self.set_tooltip_text("")
 
 
 class SearchPopover(Gtk.Popover):
@@ -308,19 +308,19 @@ class SearchPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self.__on_map)
-        self.connect('unmap', self.__on_unmap)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
         self.__timeout = None
-        self.__current_search = ''
+        self.__current_search = ""
         self.__nsearch = None
         self.__lsearch = None
         self.__history = []
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/SearchPopover.ui")
 
-        self.__new_btn = builder.get_object('new_btn')
-        self.__entry = builder.get_object('entry')
+        self.__new_btn = builder.get_object("new_btn")
+        self.__entry = builder.get_object("entry")
 
         self.__view = Gtk.ListBox()
         self.__view.set_sort_func(self.__sort_func)
@@ -330,18 +330,18 @@ class SearchPopover(Gtk.Popover):
         self.__view.set_activate_on_single_click(True)
         self.__view.show()
 
-        self.__spinner = builder.get_object('spinner')
-        self.__header_stack = builder.get_object('stack')
+        self.__spinner = builder.get_object("spinner")
+        self.__header_stack = builder.get_object("stack")
 
-        self.__switch = builder.get_object('search-switch')
+        self.__switch = builder.get_object("search-switch")
         if GLib.find_program_in_path("youtube-dl") is None:
             self.__switch.set_tooltip_text(_("You need to install youtube-dl"))
         else:
-            self.__switch.set_state(Lp().settings.get_value('network-search'))
+            self.__switch.set_state(Lp().settings.get_value("network-search"))
 
-        self.__scrolled = builder.get_object('scrolled')
+        self.__scrolled = builder.get_object("scrolled")
         self.__scrolled.add(self.__view)
-        # Connect here because we don't want previous switch.set_state()
+        # Connect here because we don"t want previous switch.set_state()
         # to emit a signal on init
         builder.connect_signals(self)
 
@@ -349,7 +349,7 @@ class SearchPopover(Gtk.Popover):
         self.__stack.set_transition_duration(250)
         self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self.__stack.show()
-        self.__stack.add_named(builder.get_object('widget'), "search")
+        self.__stack.add_named(builder.get_object("widget"), "search")
         self.add(self.__stack)
 
     def set_text(self, text):
@@ -394,7 +394,7 @@ class SearchPopover(Gtk.Popover):
             @param switch as Gtk.switch
             @param state as bool
         """
-        Lp().settings.set_boolean('network-search', state)
+        Lp().settings.set_boolean("network-search", state)
         GLib.idle_add(self._on_search_changed, self.__entry)
 
 #######################
@@ -564,7 +564,7 @@ class SearchPopover(Gtk.Popover):
             Return True if network search needed
             @return True
         """
-        return Lp().settings.get_value('network-search') and\
+        return Lp().settings.get_value("network-search") and\
             GLib.find_program_in_path("youtube-dl") is not None
 
     def __on_local_item_found(self, search):
@@ -645,10 +645,10 @@ class SearchPopover(Gtk.Popover):
         from lollypop.search_network import NetworkSearch
         self.__timeout = None
         self.__lsearch = LocalSearch()
-        self.__lsearch.connect('item-found', self.__on_local_item_found)
+        self.__lsearch.connect("item-found", self.__on_local_item_found)
         if self.__need_network_search():
             self.__nsearch = NetworkSearch()
-            self.__nsearch.connect('item-found', self.__on_network_item_found)
+            self.__nsearch.connect("item-found", self.__on_network_item_found)
         self.__populate()
 
     def __on_row_activated(self, widget, row):
@@ -669,7 +669,7 @@ class SearchPopover(Gtk.Popover):
             Lp().player.load(Track(row.id))
         else:
             album_view = AlbumBackView(row.id, [], [])
-            album_view.connect('back-clicked', self.__on_back_clicked)
+            album_view.connect("back-clicked", self.__on_back_clicked)
             album_view.show()
             self.__stack.add(album_view)
             self.__stack.set_visible_child(album_view)

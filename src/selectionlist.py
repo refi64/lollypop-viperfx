@@ -25,8 +25,8 @@ class SelectionList(Gtk.Overlay):
         A list for artists/genres
     """
     __gsignals__ = {
-        'item-selected': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "item-selected": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self, sidebar=True):
@@ -43,33 +43,33 @@ class SelectionList(Gtk.Overlay):
         self.__updating = False       # Sort disabled if False
         self.__is_artists = False
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/SelectionList.ui")
         builder.connect_signals(self)
-        self.__selection = builder.get_object('selection')
+        self.__selection = builder.get_object("selection")
         self.__selection.set_select_function(self.__selection_validation)
-        self.__model = builder.get_object('model')
+        self.__model = builder.get_object("model")
         self.__model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.__model.set_sort_func(0, self.__sort_items)
-        self.__view = builder.get_object('view')
+        self.__view = builder.get_object("view")
         if sidebar:
-            self.__view.get_style_context().add_class('sidebar')
+            self.__view.get_style_context().add_class("sidebar")
         self.__view.set_row_separator_func(self.__row_separator_func)
         self.__renderer0 = CellRendererArtist()
-        self.__renderer0.set_property('ellipsize-set', True)
-        self.__renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
+        self.__renderer0.set_property("ellipsize-set", True)
+        self.__renderer0.set_property("ellipsize", Pango.EllipsizeMode.END)
         self.__renderer1 = Gtk.CellRendererPixbuf()
         # 16px for Gtk.IconSize.MENU
         self.__renderer1.set_fixed_size(16, -1)
-        column = Gtk.TreeViewColumn('')
+        column = Gtk.TreeViewColumn("")
         column.set_expand(True)
         column.pack_start(self.__renderer0, True)
-        column.add_attribute(self.__renderer0, 'text', 1)
-        column.add_attribute(self.__renderer0, 'artist', 1)
-        column.add_attribute(self.__renderer0, 'rowid', 0)
+        column.add_attribute(self.__renderer0, "text", 1)
+        column.add_attribute(self.__renderer0, "artist", 1)
+        column.add_attribute(self.__renderer0, "rowid", 0)
         column.pack_start(self.__renderer1, False)
-        column.add_attribute(self.__renderer1, 'icon-name', 2)
+        column.add_attribute(self.__renderer1, "icon-name", 2)
         self.__view.append_column(column)
-        self.__view.set_property('has_tooltip', True)
+        self.__view.set_property("has_tooltip", True)
         self.__scrolled = Gtk.ScrolledWindow()
         self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
@@ -83,10 +83,10 @@ class SelectionList(Gtk.Overlay):
             self.add_overlay(self.__fast_scroll)
         else:
             self.__fast_scroll = None
-        self.__scrolled.connect('enter-notify-event', self.__on_enter_notify)
-        self.__scrolled.connect('leave-notify-event', self.__on_leave_notify)
+        self.__scrolled.connect("enter-notify-event", self.__on_enter_notify)
+        self.__scrolled.connect("leave-notify-event", self.__on_leave_notify)
 
-        Lp().art.connect('artist-artwork-changed',
+        Lp().art.connect("artist-artwork-changed",
                          self.__on_artist_artwork_changed)
 
     def hide(self):
@@ -129,7 +129,7 @@ class SelectionList(Gtk.Overlay):
         if len(self.__model) > 0:
             self.__updating = True
         self.__add_values(values)
-        self.emit('populated')
+        self.emit("populated")
         self.__updating = False
         self.__populating = False
 
@@ -205,7 +205,7 @@ class SelectionList(Gtk.Overlay):
         for item in self.__model:
             if item[0] == object_id:
                 return item[1]
-        return ''
+        return ""
 
     def will_be_selected(self):
         """
@@ -278,8 +278,8 @@ class SelectionList(Gtk.Overlay):
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
-        if Lp().settings.get_value('show-charts') and\
-                Lp().settings.get_value('network-access'):
+        if Lp().settings.get_value("show-charts") and\
+                Lp().settings.get_value("network-access"):
             items.append((Type.CHARTS, _("The charts")))
         if self.__is_artists:
             items.append((Type.ALL, _("All albums")))
@@ -299,7 +299,7 @@ class SelectionList(Gtk.Overlay):
         items.append((Type.NEVER, _("Never played")))
         items.append((Type.RANDOMS, _("Random tracks")))
         items.append((Type.NOPARTY, _("Not in party")))
-        items.append((Type.SEPARATOR, ''))
+        items.append((Type.SEPARATOR, ""))
         return items
 
 #######################
@@ -339,7 +339,7 @@ class SelectionList(Gtk.Overlay):
                 text = self.__model.get_value(iterator, 1)
                 column = self.__view.get_column(0)
                 (position, width) = column.cell_get_position(self.__renderer0)
-                if Lp().settings.get_value('artist-artwork') and\
+                if Lp().settings.get_value("artist-artwork") and\
                         self.__is_artists:
                     width -= ArtSize.ARTIST_SMALL +\
                              CellRendererArtist.xshift * 2
@@ -359,7 +359,7 @@ class SelectionList(Gtk.Overlay):
             @param view as Gtk.TreeSelection
         """
         if not self.__updating and not self.__to_select_ids:
-            self.emit('item-selected')
+            self.emit("item-selected")
 
 #######################
 # PRIVATE             #
@@ -408,40 +408,40 @@ class SelectionList(Gtk.Overlay):
             Return pixbuf for id
             @param ojbect_id as id
         """
-        icon = ''
+        icon = ""
         if object_id == Type.POPULARS:
-            icon = 'starred-symbolic'
+            icon = "starred-symbolic"
         elif object_id == Type.PLAYLISTS:
-            icon = 'emblem-documents-symbolic'
+            icon = "emblem-documents-symbolic"
         elif object_id == Type.ALL:
             if self.__is_artists:
-                icon = 'media-optical-cd-audio-symbolic'
+                icon = "media-optical-cd-audio-symbolic"
             else:
-                icon = 'avatar-default-symbolic'
+                icon = "avatar-default-symbolic"
         elif object_id == Type.COMPILATIONS:
-            icon = 'system-users-symbolic'
+            icon = "system-users-symbolic"
         elif object_id == Type.RECENTS:
-            icon = 'document-open-recent-symbolic'
+            icon = "document-open-recent-symbolic"
         elif object_id == Type.RADIOS:
-            icon = 'audio-input-microphone-symbolic'
+            icon = "audio-input-microphone-symbolic"
         elif object_id < Type.DEVICES:
-            icon = 'multimedia-player-symbolic'
+            icon = "multimedia-player-symbolic"
         elif object_id == Type.RANDOMS:
-            icon = 'media-playlist-shuffle-symbolic'
+            icon = "media-playlist-shuffle-symbolic"
         elif object_id == Type.LOVED:
-            icon = 'emblem-favorite-symbolic'
+            icon = "emblem-favorite-symbolic"
         elif object_id == Type.NEVER:
-            icon = 'document-new-symbolic'
+            icon = "document-new-symbolic"
         elif object_id == Type.CHARTS:
-            icon = 'application-rss+xml-symbolic'
+            icon = "application-rss+xml-symbolic"
         elif object_id == Type.SPOTIFY:
-            icon = 'lollypop-spotify-symbolic'
+            icon = "lollypop-spotify-symbolic"
         elif object_id == Type.ITUNES:
-            icon = 'lollypop-itunes-symbolic'
+            icon = "lollypop-itunes-symbolic"
         elif object_id == Type.LASTFM:
-            icon = 'lollypop-lastfm-symbolic'
+            icon = "lollypop-lastfm-symbolic"
         elif object_id == Type.NOPARTY:
-            icon = 'emblem-music-symbolic'
+            icon = "emblem-music-symbolic"
         return icon
 
     def __sort_items(self, model, itera, iterb, data):

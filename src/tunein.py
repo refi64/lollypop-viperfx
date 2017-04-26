@@ -17,9 +17,9 @@ from lollypop.lio import Lio
 
 
 class TuneItem:
-    TEXT = ''
-    URL = ''
-    LOGO = ''
+    TEXT = ""
+    URL = ""
+    LOGO = ""
 
 
 class TuneIn:
@@ -46,16 +46,16 @@ class TuneIn:
         if not status:
             raise
         root = xml.fromstring(data)
-        for child in root.iter('outline'):
+        for child in root.iter("outline"):
             try:
                 item = TuneItem()
-                item.URL = child.attrib['URL']
-                item.TEXT = child.attrib['text']
+                item.URL = child.attrib["URL"]
+                item.TEXT = child.attrib["text"]
                 try:
-                    item.LOGO = child.attrib['image']
+                    item.LOGO = child.attrib["image"]
                 except:
                     pass
-                item.TYPE = child.attrib['type']
+                item.TYPE = child.attrib["type"]
                 items.append(item)
             except:
                 del item

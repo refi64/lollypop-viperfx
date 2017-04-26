@@ -11,7 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import gi
-gi.require_version('Soup', '2.4')
+gi.require_version("Soup", "2.4")
 
 from gi.repository import Gio, GObject, Soup
 
@@ -52,4 +52,4 @@ class Lio:
                 # FIXME Use debug, need to be moved outside utils.py
                 if Lp().debug:
                     print("Lio.load_contents():",  e)
-                return (False, b'', "")
+                return (False, b"", "")

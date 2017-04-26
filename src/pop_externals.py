@@ -28,40 +28,40 @@ class ExternalsPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('unmap', self.__on_self_unmap)
+        self.connect("unmap", self.__on_self_unmap)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ExternalsPopover.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/ExternalsPopover.ui")
         builder.connect_signals(self)
 
         self.__signal_id = None
-        self.__view = builder.get_object('view')
-        self.__model = builder.get_object('model')
+        self.__view = builder.get_object("view")
+        self.__model = builder.get_object("model")
         self.__tagreader = TagReader()
 
         renderer0 = Gtk.CellRendererPixbuf()
         renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('weight', 800)
-        renderer1.set_property('weight-set', True)
-        renderer1.set_property('ellipsize-set', True)
-        renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer1.set_property("weight", 800)
+        renderer1.set_property("weight-set", True)
+        renderer1.set_property("ellipsize-set", True)
+        renderer1.set_property("ellipsize", Pango.EllipsizeMode.END)
         renderer2 = Gtk.CellRendererText()
-        renderer2.set_property('ellipsize-set', True)
-        renderer2.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer2.set_property("ellipsize-set", True)
+        renderer2.set_property("ellipsize", Pango.EllipsizeMode.END)
         renderer3 = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn('')
+        column = Gtk.TreeViewColumn("")
         column.pack_start(renderer0, True)
         column.pack_start(renderer1, True)
         column.pack_start(renderer2, True)
         column.pack_end(renderer3, False)
-        column.add_attribute(renderer0, 'icon-name', 1)
-        column.add_attribute(renderer1, 'text', 2)
-        column.add_attribute(renderer2, 'text', 3)
-        column.add_attribute(renderer3, 'text', 4)
+        column.add_attribute(renderer0, "icon-name", 1)
+        column.add_attribute(renderer1, "text", 2)
+        column.add_attribute(renderer2, "text", 3)
+        column.add_attribute(renderer3, "text", 4)
         column.set_expand(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         self.__view.append_column(column)
         self.add(self.__view)
-        self.__signal_id = Lp().player.connect('current-changed',
+        self.__signal_id = Lp().player.connect("current-changed",
                                                self.__on_current_changed)
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
@@ -124,11 +124,11 @@ class ExternalsPopover(Gtk.Popover):
             @param filepath as string
         """
         if track.uri == Lp().player.current_track.uri:
-            self.__model.append((track.uri, 'media-playback-start-symbolic',
+            self.__model.append((track.uri, "media-playback-start-symbolic",
                                 track.artist, track.title,
                                 seconds_to_string(track.duration)))
         else:
-            self.__model.append((track.uri, '', track.artist, track.title,
+            self.__model.append((track.uri, "", track.artist, track.title,
                                 seconds_to_string(track.duration)))
 
     def __on_self_unmap(self, widget):
@@ -147,6 +147,6 @@ class ExternalsPopover(Gtk.Popover):
         """
         for item in self.__model:
             if item[0] == player.current_track.uri:
-                item[1] = 'media-playback-start-symbolic'
+                item[1] = "media-playback-start-symbolic"
             else:
-                item[1] = ''
+                item[1] = ""

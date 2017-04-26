@@ -45,10 +45,10 @@ class Toolbar(Gtk.HeaderBar):
         self.set_custom_title(self.__toolbar_title)
         self.pack_end(self.__toolbar_end)
 
-        Lp().player.connect('status-changed', self.__on_status_changed)
-        Lp().player.connect('current-changed', self.__on_current_changed)
-        Lp().player.connect('next-changed', self.__on_next_changed)
-        Lp().player.connect('prev-changed', self.__on_prev_changed)
+        Lp().player.connect("status-changed", self.__on_status_changed)
+        Lp().player.connect("current-changed", self.__on_current_changed)
+        Lp().player.connect("next-changed", self.__on_next_changed)
+        Lp().player.connect("prev-changed", self.__on_prev_changed)
 
     def do_get_preferred_height(self):
         """
@@ -120,7 +120,7 @@ class Toolbar(Gtk.HeaderBar):
             Mark toolbar with previously saved position
         """
         try:
-            if Lp().settings.get_value('save-state'):
+            if Lp().settings.get_value("save-state"):
                 from pickle import load
                 position = load(open(DataPath + "/position.bin", "rb"))
                 self.__toolbar_title.add_mark(position/1000000)

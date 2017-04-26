@@ -22,7 +22,7 @@ from lollypop.utils import noaccents, get_network_available
 class TracksDatabase:
     """
         All functions take a sqlite cursor as last parameter,
-        set another one if you're in a thread
+        set another one if you"re in a thread
     """
 
     def __init__(self):
@@ -407,7 +407,7 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             filters = (DbPersistent.INTERNAL,)
             for e in exclude:
-                filters += ('%' + e + '%',)
+                filters += ("%" + e + "%",)
             request = "SELECT uri FROM tracks\
                        WHERE persistent=?"
             for e in exclude:
@@ -468,7 +468,7 @@ class TracksDatabase:
 
     def get_as_non_album_artist(self, artist_id):
         """
-            Get tracks for artist_id where artist_id isn't main artist
+            Get tracks for artist_id where artist_id isn"t main artist
             @param artist id as int
             @return list of [tracks id as int, track name as string]
         """
@@ -790,7 +790,7 @@ class TracksDatabase:
                                     FROM track_genres\
                                     WHERE TG.track_id=track_genres.track_id)\
                                   LIMIT 25",
-                                 ('%' + noaccents(searched) + '%',
+                                 ("%" + noaccents(searched) + "%",
                                   Type.CHARTS))
             return list(result)
 

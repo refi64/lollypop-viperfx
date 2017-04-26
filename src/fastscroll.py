@@ -34,10 +34,10 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__leave_timeout_id = None
         self.set_vexpand(True)
         self.set_margin_end(10)
-        self.get_style_context().add_class('no-border')
+        self.get_style_context().add_class("no-border")
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.EXTERNAL)
-        self.set_property('halign', Gtk.Align.END)
+        self.set_property("halign", Gtk.Align.END)
         self.get_vscrollbar().hide()
         self.__chars = []
         self.__view = view
@@ -45,15 +45,15 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__scrolled = scrolled
         self.__grid = Gtk.Grid()
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self.__grid.set_property('valign', Gtk.Align.START)
+        self.__grid.set_property("valign", Gtk.Align.START)
         self.__grid.show()
         eventbox = Gtk.EventBox()
         eventbox.add(self.__grid)
-        eventbox.connect('button-press-event', self.__on_button_press)
+        eventbox.connect("button-press-event", self.__on_button_press)
         eventbox.show()
         self.add(eventbox)
-        scrolled.get_vadjustment().connect('value_changed', self.__on_scroll)
-        self.connect('leave-notify-event', self.__on_leave_notify)
+        scrolled.get_vadjustment().connect("value_changed", self.__on_scroll)
+        self.connect("leave-notify-event", self.__on_leave_notify)
 
     def clear(self):
         """
@@ -83,7 +83,7 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         for c in sorted(self.__chars, key=strxfrm):
             label = Gtk.Label()
-            label.set_markup("<span font='Monospace'><b>%s</b></span>" % c)
+            label.set_markup('<span font="Monospace"><b>%s</b></span>' % c)
             label.show()
             self.__grid.add(label)
         GLib.idle_add(self.__check_value_to_mark)

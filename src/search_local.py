@@ -21,7 +21,7 @@ class LocalSearch(GObject.GObject):
         Search provider over network
     """
     __gsignals__ = {
-        'item-found': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "item-found": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self):
@@ -90,7 +90,7 @@ class LocalSearch(GObject.GObject):
                 search_item.artist_ids = [artist_id]
                 search_item.year = Lp().albums.get_year(album_id)
                 self._items.append(search_item)
-                GLib.idle_add(self.emit, 'item-found')
+                GLib.idle_add(self.emit, "item-found")
 
             try:
                 year = int(item)
@@ -110,7 +110,7 @@ class LocalSearch(GObject.GObject):
                 search_item.artist_ids = Lp().albums.get_artist_ids(album_id)
                 search_item.year = Lp().albums.get_year(album_id)
                 self._items.append(search_item)
-                GLib.idle_add(self.emit, 'item-found')
+                GLib.idle_add(self.emit, "item-found")
 
             for track_id, track_name in Lp().tracks.search(
                                                item) + tracks_non_album_artist:
@@ -124,6 +124,6 @@ class LocalSearch(GObject.GObject):
                 search_item.is_track = True
                 search_item.artist_ids = Lp().tracks.get_artist_ids(track_id)
                 self._items.append(search_item)
-                GLib.idle_add(self.emit, 'item-found')
+                GLib.idle_add(self.emit, "item-found")
         self._finished = True
-        GLib.idle_add(self.emit, 'item-found')
+        GLib.idle_add(self.emit, "item-found")

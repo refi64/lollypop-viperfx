@@ -28,16 +28,16 @@ class MiniPlayer(Gtk.Bin, InfosController):
         Gtk.Bin.__init__(self)
         InfosController.__init__(self, WindowSize.SMALL)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/MiniPlayer.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
         builder.connect_signals(self)
-        self.__grid = builder.get_object('grid')
-        self._title_label = builder.get_object('title')
-        self._artist_label = builder.get_object('artist')
-        self._cover = builder.get_object('cover')
-        self._signal_id = Lp().player.connect('current-changed',
+        self.__grid = builder.get_object("grid")
+        self._title_label = builder.get_object("title")
+        self._artist_label = builder.get_object("artist")
+        self._cover = builder.get_object("cover")
+        self._signal_id = Lp().player.connect("current-changed",
                                               self.on_current_changed)
         self.on_current_changed(Lp().player)
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
 
     def do_get_preferred_height(self):
         """

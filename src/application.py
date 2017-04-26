@@ -11,12 +11,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gst', '1.0')
-gi.require_version('GstAudio', '1.0')
-gi.require_version('GstPbutils', '1.0')
-gi.require_version('Notify', '0.7')
-gi.require_version('TotemPlParser', '1.0')
+gi.require_version("Gtk", "3.0")
+gi.require_version("Gst", "1.0")
+gi.require_version("GstAudio", "1.0")
+gi.require_version("GstPbutils", "1.0")
+gi.require_version("Notify", "0.7")
+gi.require_version("TotemPlParser", "1.0")
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
 from pickle import dump
@@ -66,12 +66,12 @@ class Application(Gtk.Application):
         """
         Gtk.Application.__init__(
                             self,
-                            application_id='org.gnome.Lollypop',
+                            application_id="org.gnome.Lollypop",
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
-        self.set_property('register-session', True)
-        GLib.setenv('PULSE_PROP_media.role', 'music', True)
-        GLib.setenv('PULSE_PROP_application.icon_name',
-                    'org.gnome.Lollypop', True)
+        self.set_property("register-session", True)
+        GLib.setenv("PULSE_PROP_media.role", "music", True)
+        GLib.setenv("PULSE_PROP_application.icon_name",
+                    "org.gnome.Lollypop", True)
 
         # Ideally, we will be able to delete this once Flatpak has a solution
         # for SSL certificate management inside of applications.
@@ -81,7 +81,7 @@ class Application(Gtk.Application):
                      "/etc/ssl/cert.pem"]
             for path in paths:
                 if GLib.file_test(path, GLib.FileTest.EXISTS):
-                    GLib.setenv('SSL_CERT_FILE', path, True)
+                    GLib.setenv("SSL_CERT_FILE", path, True)
                     break
 
         self.cursors = {}
@@ -91,30 +91,30 @@ class Application(Gtk.Application):
         self.debug = False
         self.__externals_count = 0
         self.__init_proxy()
-        GLib.set_application_name('Lollypop')
-        GLib.set_prgname('lollypop')
-        self.add_main_option("play-ids", b'a', GLib.OptionFlags.NONE,
+        GLib.set_application_name("Lollypop")
+        GLib.set_prgname("lollypop")
+        self.add_main_option("play-ids", b"a", GLib.OptionFlags.NONE,
                              GLib.OptionArg.STRING, "Play ids", None)
-        self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
+        self.add_main_option("debug", b"d", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Debug lollypop", None)
-        self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
+        self.add_main_option("set-rating", b"r", GLib.OptionFlags.NONE,
                              GLib.OptionArg.INT, "Rate the current track",
                              None)
-        self.add_main_option("play-pause", b't', GLib.OptionFlags.NONE,
+        self.add_main_option("play-pause", b"t", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Toggle playback",
                              None)
-        self.add_main_option("next", b'n', GLib.OptionFlags.NONE,
+        self.add_main_option("next", b"n", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Go to next track",
                              None)
-        self.add_main_option("prev", b'p', GLib.OptionFlags.NONE,
+        self.add_main_option("prev", b"p", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Go to prev track",
                              None)
-        self.add_main_option("emulate-phone", b'e', GLib.OptionFlags.NONE,
+        self.add_main_option("emulate-phone", b"e", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE,
                              "Emulate an Android Phone",
                              None)
-        self.connect('command-line', self.__on_command_line)
-        self.connect('activate', self.__on_activate)
+        self.connect("command-line", self.__on_command_line)
+        self.connect("activate", self.__on_activate)
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
@@ -141,10 +141,10 @@ class Application(Gtk.Application):
         self.__is_fs = False
         if Gtk.get_minor_version() > 18:
             cssProviderFile = Lio.File.new_for_uri(
-                'resource:///org/gnome/Lollypop/application.css')
+                "resource:///org/gnome/Lollypop/application.css")
         else:
             cssProviderFile = Lio.File.new_for_uri(
-                'resource:///org/gnome/Lollypop/application-legacy.css')
+                "resource:///org/gnome/Lollypop/application-legacy.css")
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
@@ -164,11 +164,11 @@ class Application(Gtk.Application):
         self.scanner = CollectionScanner()
         self.art = Art()
         self.art.update_art_size()
-        if self.settings.get_value('artist-artwork'):
+        if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
         if LastFM is not None:
             self.lastfm = LastFM()
-        if not self.settings.get_value('disable-mpris'):
+        if not self.settings.get_value("disable-mpris"):
             # Ubuntu > 16.04
             if Gtk.get_minor_version() > 18:
                 from lollypop.mpris import MPRIS
@@ -176,19 +176,20 @@ class Application(Gtk.Application):
             else:
                 from lollypop.mpris_legacy import MPRIS
             MPRIS(self)
-        if not self.settings.get_value('disable-notifications'):
+        if not self.settings.get_value("disable-notifications"):
             from lollypop.notification import NotificationManager
             self.notify = NotificationManager()
 
         settings = Gtk.Settings.get_default()
         self.__gtk_dark = settings.get_property(
-                                           'gtk-application-prefer-dark-theme')
+                                           "gtk-application-prefer-dark-theme")
         if not self.__gtk_dark:
-            dark = self.settings.get_value('dark-ui')
-            settings.set_property('gtk-application-prefer-dark-theme', dark)
+            dark = self.settings.get_value("dark-ui")
+            settings.set_property("gtk-application-prefer-dark-theme", dark)
 
-        self.add_action(self.settings.create_action('playback'))
-        self.add_action(self.settings.create_action('shuffle'))
+        # Map some settings to actions
+        self.add_action(self.settings.create_action("playback"))
+        self.add_action(self.settings.create_action("shuffle"))
 
         self.db.upgrade()
 
@@ -209,7 +210,7 @@ class Application(Gtk.Application):
             # If not GNOME/Unity add menu to toolbar
             if not is_gnome() and not is_unity():
                 self.window.setup_menu(menu)
-            self.window.connect('delete-event', self.__hide_on_delete)
+            self.window.connect("delete-event", self.__hide_on_delete)
             self.window.init_list_one()
             self.window.show()
             self.player.restore_state()
@@ -217,15 +218,15 @@ class Application(Gtk.Application):
             # after player::restore_state() signals
             GLib.idle_add(self.window.toolbar.set_mark)
             self.charts = None
-            if self.settings.get_value('show-charts'):
+            if self.settings.get_value("show-charts"):
                 if GLib.find_program_in_path("youtube-dl") is not None:
                     from lollypop.charts import Charts
                     self.charts = Charts()
                     if get_network_available():
                         self.charts.start()
                 else:
-                    self.settings.set_value('network-search',
-                                            GLib.Variant('b', False))
+                    self.settings.set_value("network-search",
+                                            GLib.Variant("b", False))
             t = Thread(target=self.__preload_portal)
             t.daemon = True
             t.start()
@@ -275,7 +276,7 @@ class Application(Gtk.Application):
         """
         if self.__is_fs:
             return
-        if self.settings.get_value('save-state'):
+        if self.settings.get_value("save-state"):
             self.window.save_view_state()
             # Save current track
             if self.player.current_track.id is None:
@@ -333,16 +334,16 @@ class Application(Gtk.Application):
             from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:
                 sql.isolation_level = None
-                sql.execute('VACUUM')
-                sql.isolation_level = ''
+                sql.execute("VACUUM")
+                sql.isolation_level = ""
             with SqlCursor(self.playlists) as sql:
                 sql.isolation_level = None
-                sql.execute('VACUUM')
-                sql.isolation_level = ''
+                sql.execute("VACUUM")
+                sql.isolation_level = ""
             with SqlCursor(Radios()) as sql:
                 sql.isolation_level = None
-                sql.execute('VACUUM')
-                sql.isolation_level = ''
+                sql.execute("VACUUM")
+                sql.isolation_level = ""
         except Exception as e:
             print("Application::__vacuum(): ", e)
 
@@ -353,9 +354,9 @@ class Application(Gtk.Application):
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                   'org.gnome.Lollypop.Portal',
-                                   '/org/gnome/LollypopPortal',
-                                   'org.gnome.Lollypop.Portal', None)
+                                   "org.gnome.Lollypop.Portal",
+                                   "/org/gnome/LollypopPortal",
+                                   "org.gnome.Lollypop.Portal", None)
         except:
             pass
 
@@ -364,14 +365,14 @@ class Application(Gtk.Application):
             Init proxy setting env
         """
         try:
-            proxy = Gio.Settings.new('org.gnome.system.proxy')
-            https = Gio.Settings.new('org.gnome.system.proxy.https')
-            mode = proxy.get_value('mode').get_string()
-            if mode != 'none':
-                h = https.get_value('host').get_string()
-                p = https.get_value('port').get_int32()
-                GLib.setenv('http_proxy', "http://%s:%s" % (h, p), True)
-                GLib.setenv('https_proxy', "http://%s:%s" % (h, p), True)
+            proxy = Gio.Settings.new("org.gnome.system.proxy")
+            https = Gio.Settings.new("org.gnome.system.proxy.https")
+            mode = proxy.get_value("mode").get_string()
+            if mode != "none":
+                h = https.get_value("host").get_string()
+                p = https.get_value("port").get_int32()
+                GLib.setenv("http_proxy", "http://%s:%s" % (h, p), True)
+                GLib.setenv("https_proxy", "http://%s:%s" % (h, p), True)
         except Exception as e:
             print("Application::__init_proxy()", e)
 
@@ -384,19 +385,19 @@ class Application(Gtk.Application):
         self.__externals_count = 0
         args = app_cmd_line.get_arguments()
         options = app_cmd_line.get_options_dict()
-        if options.contains('debug'):
+        if options.contains("debug"):
             self.debug = True
-        if options.contains('set-rating'):
-            value = options.lookup_value('set-rating').get_int32()
+        if options.contains("set-rating"):
+            value = options.lookup_value("set-rating").get_int32()
             if value > 0 and value < 6 and\
                     self.player.current_track.id is not None:
                 self.player.current_track.set_rate(value)
-        elif options.contains('play-pause'):
+        elif options.contains("play-pause"):
             self.player.play_pause()
-        elif options.contains('play-ids'):
+        elif options.contains("play-ids"):
             try:
-                value = options.lookup_value('play-ids').get_string()
-                ids = value.split(';')
+                value = options.lookup_value("play-ids").get_string()
+                ids = value.split(";")
                 track_ids = []
                 for id in ids:
                     if id[0:2] == "a:":
@@ -411,11 +412,11 @@ class Application(Gtk.Application):
             except Exception as e:
                 print(e)
                 pass
-        elif options.contains('next'):
+        elif options.contains("next"):
             self.player.next()
-        elif options.contains('prev'):
+        elif options.contains("prev"):
             self.player.prev()
-        elif options.contains('emulate-phone'):
+        elif options.contains("emulate-phone"):
             self.window.add_fake_phone()
         elif len(args) > 1:
             self.player.clear_externals()
@@ -425,7 +426,7 @@ class Application(Gtk.Application):
                 except:
                     pass
                 parser = TotemPlParser.Parser.new()
-                parser.connect('entry-parsed', self.__on_entry_parsed)
+                parser.connect("entry-parsed", self.__on_entry_parsed)
                 parser.parse_async(uri, True, None, None)
         elif self.window is not None and self.window.is_visible():
             self.window.present()
@@ -440,11 +441,11 @@ class Application(Gtk.Application):
             if not is_gnome() and not is_unity():
                 menu = self.__setup_app_menu()
                 self.window.setup_menu(menu)
-            self.window.connect('delete-event', self.__hide_on_delete)
+            self.window.connect("delete-event", self.__hide_on_delete)
             self.window.init_list_one()
             self.window.show()
-            self.player.emit('status-changed')
-            self.player.emit('current-changed')
+            self.player.emit("status-changed")
+            self.player.emit("current-changed")
         return 0
 
     def __on_entry_parsed(self, parser, uri, metadata):
@@ -467,7 +468,7 @@ class Application(Gtk.Application):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if not self.settings.get_value('background-mode') or\
+        if not self.settings.get_value("background-mode") or\
                 self.player.current_track.id is None:
             GLib.timeout_add(500, self.quit, True)
         return widget.hide_on_delete()
@@ -491,7 +492,7 @@ class Application(Gtk.Application):
             @param param as GLib.Variant
         """
         action.set_state(param)
-        self.settings.set_value('network-access', param)
+        self.settings.set_value("network-access", param)
         if self.charts is not None:
             if param.get_boolean():
                 self.charts.start()
@@ -560,8 +561,8 @@ class Application(Gtk.Application):
             @param param as GLib.Variant
         """
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        about = builder.get_object('about_dialog')
+        builder.add_from_resource("/org/gnome/Lollypop/AboutDialog.ui")
+        about = builder.get_object("about_dialog")
         about.set_transient_for(self.window)
         about.connect("response", self.__about_response)
         about.show()
@@ -574,9 +575,9 @@ class Application(Gtk.Application):
         """
         try:
             builder = Gtk.Builder()
-            builder.add_from_resource('/org/gnome/Lollypop/Shortcuts.ui')
-            builder.get_object('shortcuts').set_transient_for(self.window)
-            builder.get_object('shortcuts').show()
+            builder.add_from_resource("/org/gnome/Lollypop/Shortcuts.ui")
+            builder.get_object("shortcuts").set_transient_for(self.window)
+            builder.get_object("shortcuts").show()
         except:  # GTK < 3.20
             self.__help(action, param)
 
@@ -605,46 +606,46 @@ class Application(Gtk.Application):
             @return menu as Gio.Menu
         """
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/Appmenu.ui')
-        menu = builder.get_object('app-menu')
+        builder.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
+        menu = builder.get_object("app-menu")
 
-        settingsAction = Gio.SimpleAction.new('settings', None)
-        settingsAction.connect('activate', self.__settings_dialog)
+        settingsAction = Gio.SimpleAction.new("settings", None)
+        settingsAction.connect("activate", self.__settings_dialog)
         self.add_action(settingsAction)
 
-        updateAction = Gio.SimpleAction.new('update_db', None)
-        updateAction.connect('activate', self.__update_db)
+        updateAction = Gio.SimpleAction.new("update_db", None)
+        updateAction.connect("activate", self.__update_db)
         self.add_action(updateAction)
 
         networkAction = Gio.SimpleAction.new_stateful(
-           'network',
+           "network",
            None,
-           GLib.Variant.new_boolean(self.settings.get_value('network-access')))
-        networkAction.connect('change-state', self.__set_network)
+           GLib.Variant.new_boolean(self.settings.get_value("network-access")))
+        networkAction.connect("change-state", self.__set_network)
         self.add_action(networkAction)
 
-        fsAction = Gio.SimpleAction.new('fullscreen', None)
-        fsAction.connect('activate', self.__fullscreen)
+        fsAction = Gio.SimpleAction.new("fullscreen", None)
+        fsAction.connect("activate", self.__fullscreen)
         self.add_action(fsAction)
 
-        mini_action = Gio.SimpleAction.new('mini', None)
-        mini_action.connect('activate', self.set_mini)
+        mini_action = Gio.SimpleAction.new("mini", None)
+        mini_action.connect("activate", self.set_mini)
         self.add_action(mini_action)
 
-        aboutAction = Gio.SimpleAction.new('about', None)
-        aboutAction.connect('activate', self.__about)
+        aboutAction = Gio.SimpleAction.new("about", None)
+        aboutAction.connect("activate", self.__about)
         self.add_action(aboutAction)
 
-        shortcutsAction = Gio.SimpleAction.new('shortcuts', None)
-        shortcutsAction.connect('activate', self.__shortcuts)
+        shortcutsAction = Gio.SimpleAction.new("shortcuts", None)
+        shortcutsAction.connect("activate", self.__shortcuts)
         self.add_action(shortcutsAction)
 
-        helpAction = Gio.SimpleAction.new('help', None)
-        helpAction.connect('activate', self.__help)
+        helpAction = Gio.SimpleAction.new("help", None)
+        helpAction.connect("activate", self.__help)
         self.add_action(helpAction)
 
-        quitAction = Gio.SimpleAction.new('quit', None)
-        quitAction.connect('activate', lambda x, y: self.quit(True))
+        quitAction = Gio.SimpleAction.new("quit", None)
+        quitAction.connect("activate", lambda x, y: self.quit(True))
         self.add_action(quitAction)
 
         return menu

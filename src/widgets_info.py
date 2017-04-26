@@ -42,22 +42,22 @@ class InfoContent(Gtk.Stack):
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
-        self.__content = builder.get_object('content')
-        self.__image = builder.get_object('image')
-        self._menu_found = builder.get_object('menu-found')
-        self._menu_not_found = builder.get_object('menu-not-found')
-        self.__error = builder.get_object('error')
-        self.add_named(builder.get_object('widget'), 'widget')
-        self.add_named(builder.get_object('notfound'), 'notfound')
-        self._spinner = builder.get_object('spinner')
-        self.add_named(self._spinner, 'spinner')
+        builder.add_from_resource("/org/gnome/Lollypop/InfoContent.ui")
+        self.__content = builder.get_object("content")
+        self.__image = builder.get_object("image")
+        self._menu_found = builder.get_object("menu-found")
+        self._menu_not_found = builder.get_object("menu-not-found")
+        self.__error = builder.get_object("error")
+        self.add_named(builder.get_object("widget"), "widget")
+        self.add_named(builder.get_object("notfound"), "notfound")
+        self._spinner = builder.get_object("spinner")
+        self.add_named(self._spinner, "spinner")
 
     def clear(self):
         """
             Clear content
         """
-        self.__content.set_text('')
+        self.__content.set_text("")
         self.__image.hide()
         self.__image.clear()
 
@@ -129,10 +129,10 @@ class InfoContent(Gtk.Stack):
         else:
             error = _("Network access disabled")
         self.__error.set_markup(
-                       "<span font_weight='bold' size='xx-large'>" +
+                       '<span font_weight="bold" size="xx-large">' +
                        error +
                        "</span>")
-        self.set_visible_child_name('notfound')
+        self.set_visible_child_name("notfound")
 
 #######################
 # PRIVATE             #
@@ -145,7 +145,7 @@ class InfoContent(Gtk.Stack):
         """
         if content is not None:
             self.__content.set_markup(
-                              GLib.markup_escape_text(content.decode('utf-8')))
+                              GLib.markup_escape_text(content.decode("utf-8")))
             if stream is not None:
                 scale = self.__image.get_scale_factor()
                 # Will happen if cache is broken or when reading empty files
@@ -153,7 +153,7 @@ class InfoContent(Gtk.Stack):
                     pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                stream,
                                Lp().settings.get_value(
-                                        'cover-size').get_int32() + 50 * scale,
+                                        "cover-size").get_int32() + 50 * scale,
                                -1,
                                True,
                                None)
@@ -167,7 +167,7 @@ class InfoContent(Gtk.Stack):
                     self.__image.show()
                 except:
                     pass
-            self.set_visible_child_name('widget')
+            self.set_visible_child_name("widget")
         else:
             self.__on_not_found()
         self._spinner.stop()
@@ -198,8 +198,8 @@ class WikipediaContent(InfoContent):
         """
         self._artist = artist
         self.__album = album
-        if not self._load_cache_content(artist, 'wikipedia'):
-            GLib.idle_add(self.set_visible_child_name, 'spinner')
+        if not self._load_cache_content(artist, "wikipedia"):
+            GLib.idle_add(self.set_visible_child_name, "spinner")
             self._spinner.start()
             self.__load_page_content(artist)
         elif get_network_available():
@@ -245,7 +245,7 @@ class WikipediaContent(InfoContent):
             url = content = None
         if not self._stop:
             InfoContent.set_content(self, self._artist, content,
-                                    url, 'wikipedia')
+                                    url, "wikipedia")
             if get_network_available():
                 t = Thread(target=self.__setup_menu,
                            args=(self._artist, self.__album))
@@ -260,7 +260,7 @@ class WikipediaContent(InfoContent):
         """
         wp = Wikipedia()
         result = wp.search(artist)
-        result += wp.search(artist + ' ' + album)
+        result += wp.search(artist + " " + album)
         cleaned = list(set(result))
         if artist in cleaned:
             cleaned.remove(artist)
@@ -280,7 +280,7 @@ class WikipediaContent(InfoContent):
         for string in strings:
             action = Gio.SimpleAction(name="wikipedia_%s" % i)
             self.__app.add_action(action)
-            action.connect('activate',
+            action.connect("activate",
                            self.__on_search_activated,
                            string)
             self.__menu_model.append(string, "app.wikipedia_%s" % i)
@@ -293,9 +293,9 @@ class WikipediaContent(InfoContent):
             @param variant as GVariant
             @param artist as str
         """
-        InfoCache.remove(artist, 'wikipedia')
+        InfoCache.remove(artist, "wikipedia")
         InfoContent.clear(self)
-        self.set_visible_child_name('spinner')
+        self.set_visible_child_name("spinner")
         self._spinner.start()
         t = Thread(target=self.__load_page_content, args=(artist,))
         t.daemon = True
@@ -320,8 +320,8 @@ class LastfmContent(InfoContent):
             @thread safe
         """
         self._artist = artist
-        if not self._load_cache_content(artist, 'lastfm'):
-            GLib.idle_add(self.set_visible_child_name, 'spinner')
+        if not self._load_cache_content(artist, "lastfm"):
+            GLib.idle_add(self.set_visible_child_name, "spinner")
             self._spinner.start()
             self.__load_page_content(artist)
 
@@ -338,4 +338,4 @@ class LastfmContent(InfoContent):
         except:
             url = content = None
         if not self._stop:
-            InfoContent.set_content(self, artist, content, url, 'lastfm')
+            InfoContent.set_content(self, artist, content, url, "lastfm")

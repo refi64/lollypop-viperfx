@@ -28,8 +28,8 @@ class Web(GObject.Object):
     """
 
     __gsignals__ = {
-        'saved': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'progress': (GObject.SignalFlags.RUN_FIRST, None, (float,))
+        "saved": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "progress": (GObject.SignalFlags.RUN_FIRST, None, (float,))
     }
 
     def play_track(track, play, callback):
@@ -105,7 +105,7 @@ class Web(GObject.Object):
             start += 1
             GLib.idle_add(self.emit, "progress", start / nb_items)
         GLib.idle_add(self.emit, "progress", 1)
-        if Lp().settings.get_value('artist-artwork')and\
+        if Lp().settings.get_value("artist-artwork")and\
                 persistent != DbPersistent.CHARTS:
             Lp().art.cache_artists_info()
         if album_id is not None:
@@ -127,7 +127,7 @@ class Web(GObject.Object):
         if track_id is None:
             return
         self.__save_cover(item, album_id)
-        if Lp().settings.get_value('artist-artwork') and\
+        if Lp().settings.get_value("artist-artwork") and\
                 persistent != DbPersistent.CHARTS:
             Lp().art.cache_artists_info()
         GLib.idle_add(self.emit, "saved", track_id)
@@ -148,7 +148,7 @@ class Web(GObject.Object):
             if uri:
                 break
 
-        # Don't found anything
+        # Don"t found anything
         if not uri:
             return (None, None)
 
@@ -220,10 +220,10 @@ class Web(GObject.Object):
         if persistent != DbPersistent.CHARTS:
             for genre_id in genre_ids:
                 GLib.idle_add(Lp().scanner.emit,
-                              'genre-updated', genre_id, True)
+                              "genre-updated", genre_id, True)
             for artist_id in new_artist_ids:
                 GLib.idle_add(Lp().scanner.emit,
-                              'artist-updated', artist_id, True)
+                              "artist-updated", artist_id, True)
         return (album_id, track_id)
 
     def __save_cover(self, item, album_id):

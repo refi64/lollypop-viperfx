@@ -32,7 +32,7 @@ class Wikipedia:
         wikipedia.set_lang(language)
         # Translators: Put here words added by wikipedia in band search
         # Ex: Muse_(band), Peaches(musician)
-        # Unused be we keep this for now (as it's already translated)
+        # Unused be we keep this for now (as it"s already translated)
         self._search_str = _("musician;band")
 
     def search(self, search):
@@ -55,20 +55,20 @@ class Wikipedia:
         if page is None:
             return (None, None)
         content = page.content
-        content = re.sub(r'%s ==' % _('Modify'), ' ==', content)
+        content = re.sub(r"%s ==" % _("Modify"), " ==", content)
         jpegs = []
         shuffle(page.images)
         for url in page.images:
-            if url.lower().endswith('.jpg'):
+            if url.lower().endswith(".jpg"):
                 jpegs.append(url)
             # Search specific string in urls
-            if name.replace(' ', '_').lower() in url.lower():
-                return (url, content.encode(encoding='UTF-8'))
+            if name.replace(" ", "_").lower() in url.lower():
+                return (url, content.encode(encoding="UTF-8"))
         # If we only found one jpg, then use it
         url = None
         if jpegs:
             url = jpegs[0]
-        return (url, content.encode(encoding='UTF-8'))
+        return (url, content.encode(encoding="UTF-8"))
 
 #######################
 # PRIVATE             #

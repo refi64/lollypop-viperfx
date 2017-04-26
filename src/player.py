@@ -46,7 +46,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ExternalsPlayer.__init__(self)
         self.update_crossfading()
         self.__do_not_update_next = False
-        Lp().settings.connect('changed::playback', self.__on_playback_changed)
+        Lp().settings.connect("changed::playback", self.__on_playback_changed)
 
     @property
     def next_track(self):
@@ -118,7 +118,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 BinPlayer.load(self, track)
             else:
                 BinPlayer._load_track(self, track)
-                self.emit('current-changed')
+                self.emit("current-changed")
 
     def add_album(self, album):
         """
@@ -148,7 +148,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if not self.is_party:
                 self.set_next()
             self.set_prev()
-        self.emit('album-added', album.id)
+        self.emit("album-added", album.id)
 
     def move_album(self, album_id, position):
         """
@@ -184,7 +184,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if not self.is_party or self._next_track.album_id == album.id:
                 self.set_next()
             self.set_prev()
-            self.emit('album-added', album.id)
+            self.emit("album-added", album.id)
         except Exception as e:
             print("Player::remove_album():", e)
 
@@ -255,7 +255,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         for artist_id in album.artist_ids:
             if artist_id >= 0:
                 self._context.artist_ids[album.id].append(artist_id)
-        if Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
+        if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(album.tracks)
         else:
             track = album.tracks[0]
@@ -291,7 +291,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self._albums += Lp().albums.get_ids(artist_ids)
             # Genres: all, Artists: all
             else:
-                if Lp().settings.get_value('show-compilations'):
+                if Lp().settings.get_value("show-compilations"):
                     self._albums += Lp().albums.get_compilation_ids()
                 self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
@@ -320,7 +320,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self._albums += Lp().albums.get_compilation_ids(genre_ids)
             else:
                 if not artist_ids and\
-                        Lp().settings.get_value('show-compilations'):
+                        Lp().settings.get_value("show-compilations"):
                     self._albums += Lp().albums.get_compilation_ids(genre_ids)
                 self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
@@ -370,7 +370,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Restore player state
         """
         try:
-            if Lp().settings.get_value('save-state'):
+            if Lp().settings.get_value("save-state"):
                 track_id = load(open(DataPath + "/track_id.bin", "rb"))
                 playlist_ids = load(open(DataPath + "/playlist_ids.bin",
                                     "rb"))
@@ -415,7 +415,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                                                                   pids)
                     else:
                         if was_party:
-                            self.emit('party-changed', True)
+                            self.emit("party-changed", True)
                         else:
                             self._albums = load(open(
                                                 DataPath + "/albums.bin",
@@ -454,7 +454,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Set previous track
         """
         try:
-            if Lp().settings.get_enum('playback') == NextContext.REPEAT_TRACK:
+            if Lp().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 self._prev_track = self._current_track
             else:
                 # Look at externals
@@ -475,7 +475,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # Get a linear track then
             if self._prev_track.id is None:
                 self._prev_track = LinearPlayer.prev(self)
-            self.emit('prev-changed')
+            self.emit("prev-changed")
         except Exception as e:
             print("Player::set_prev():", e)
 
@@ -489,7 +489,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # Reset finished context
             self._next_context = NextContext.NONE
 
-            if Lp().settings.get_enum('playback') == NextContext.REPEAT_TRACK:
+            if Lp().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 next_track = self._current_track
             else:
                 # Look at externals
@@ -517,7 +517,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if next_track.is_web:
                 self._load_web(next_track, False)
             self._next_track = next_track
-            self.emit('next-changed')
+            self.emit("next-changed")
         except Exception as e:
             print("Player::set_next():", e)
 
@@ -527,10 +527,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         # In party or shuffle, just update next track
         if self.is_party or\
-                Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
+                Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
             self.set_next()
             # We send this signal to update next popover
-            self.emit('queue-changed')
+            self.emit("queue-changed")
         elif self._current_track.id is not None:
             pos = self._albums.index(self._current_track.album.id)
             if pos + 1 >= len(self._albums):
@@ -543,8 +543,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Calculate if crossfading is needed
         """
-        mix = Lp().settings.get_value('mix')
-        party_mix = Lp().settings.get_value('party-mix')
+        mix = Lp().settings.get_value("mix")
+        party_mix = Lp().settings.get_value("party-mix")
         self._crossfading = (mix and not party_mix) or\
                             (mix and party_mix and self.is_party)
 

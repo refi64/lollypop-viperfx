@@ -23,14 +23,14 @@ from gi.repository import GLib, Gio
 
 class GioNotify(Gio.DBusProxy):
 
-    __gtype_name__ = 'GioNotify'
+    __gtype_name__ = "GioNotify"
 
     def __init__(self, **kwargs):
         super().__init__(
             g_bus_type=Gio.BusType.SESSION,
-            g_interface_name='org.freedesktop.Notifications',
-            g_name='org.freedesktop.Notifications',
-            g_object_path='/org/freedesktop/Notifications',
+            g_interface_name="org.freedesktop.Notifications",
+            g_name="org.freedesktop.Notifications",
+            g_object_path="/org/freedesktop/Notifications",
             **kwargs
         )
 
@@ -44,7 +44,7 @@ class GioNotify(Gio.DBusProxy):
         def on_init_finish(self, result, callback):
             self.init_finish(result)
             self.call(
-                'GetCapabilities',
+                "GetCapabilities",
                 None,
                 Gio.DBusCallFlags.NONE,
                 -1,
@@ -71,14 +71,14 @@ class GioNotify(Gio.DBusProxy):
         def on_Notify_finish(self, result):
             self._replace_id = self.call_finish(result).unpack()[0]
 
-        args = GLib.Variant('(susssasa{sv}i)', (self._app_name,
+        args = GLib.Variant("(susssasa{sv}i)", (self._app_name,
                                                 self._replace_id,
                                                 icon, summary, body,
                                                 self._actions, self._hints,
                                                 -1))
 
         self.call(
-            'Notify',
+            "Notify",
             args,
             Gio.DBusCallFlags.NONE,
             -1,
@@ -106,5 +106,5 @@ class GioNotify(Gio.DBusProxy):
         # We only care about our notifications.
         if id != self._replace_id:
             return
-        if signal_name == 'ActionInvoked':
+        if signal_name == "ActionInvoked":
             self._callbacks[signal_value]()

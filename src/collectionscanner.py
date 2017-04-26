@@ -30,10 +30,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         Scan user music collection
     """
     __gsignals__ = {
-        'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'artist-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        'genre-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        'album-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
+        "scan-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "artist-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        "genre-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        "album-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
     def __init__(self):
@@ -45,7 +45,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         self.__thread = None
         self.__history = None
-        if Lp().settings.get_value('auto-update'):
+        if Lp().settings.get_value("auto-update"):
             self.__inotify = Inotify()
         else:
             self.__inotify = None
@@ -115,7 +115,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             try:
                 d = Lio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
-                    'standard::name,standard::type,standard::is-hidden',
+                    "standard::name,standard::type,standard::is-hidden",
                     Gio.FileQueryInfoFlags.NONE,
                     None)
             except Exception as e:
@@ -165,7 +165,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         self.emit("scan-finished")
         # Update max count value
         Lp().albums.update_max_count()
-        if Lp().settings.get_value('artist-artwork'):
+        if Lp().settings.get_value("artist-artwork"):
             Lp().art.cache_artists_info()
 
     def __scan(self, uris):
@@ -283,16 +283,16 @@ class CollectionScanner(GObject.GObject, TagReader):
         duration = int(info.get_duration()/1000000000)
 
         # If no artists tag, use album artist
-        if artists == '':
+        if artists == "":
             artists = album_artists
         # if artists is always null, no album artists too,
         # use composer/performer
-        if artists == '':
+        if artists == "":
             artists = performers
             album_artists = composers
-            if artists == '':
+            if artists == "":
                 artists = album_artists
-            if artists == '':
+            if artists == "":
                 artists = _("Unknown")
 
         debug("CollectionScanner::add2db(): Restore stats")
@@ -335,9 +335,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
         for genre_id in genre_ids:
-            GLib.idle_add(self.emit, 'genre-updated', genre_id, True)
+            GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         for artist_id in new_artist_ids:
-            GLib.idle_add(self.emit, 'artist-updated', artist_id, True)
+            GLib.idle_add(self.emit, "artist-updated", artist_id, True)
         return track_id
 
     def __del_from_db(self, uri):
@@ -371,12 +371,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             if deleted:
                 with SqlCursor(Lp().db) as sql:
                     sql.commit()
-                GLib.idle_add(self.emit, 'album-updated', album_id, True)
+                GLib.idle_add(self.emit, "album-updated", album_id, True)
             for artist_id in album_artist_ids + artist_ids:
                 Lp().artists.clean(artist_id)
-                GLib.idle_add(self.emit, 'artist-updated', artist_id, False)
+                GLib.idle_add(self.emit, "artist-updated", artist_id, False)
             for genre_id in genre_ids:
                 Lp().genres.clean(genre_id)
-                GLib.idle_add(self.emit, 'genre-updated', genre_id, False)
+                GLib.idle_add(self.emit, "genre-updated", genre_id, False)
         except Exception as e:
             print("CollectionScanner::__del_from_db:", e)

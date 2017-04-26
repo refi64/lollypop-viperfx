@@ -27,19 +27,19 @@ class NextPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self.__inhibited = False
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self.__on_map)
-        self.connect('unmap', self.__on_unmap)
-        self.connect('enter-notify-event', self.__on_enter_notify)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
+        self.connect("enter-notify-event", self.__on_enter_notify)
         self.set_modal(False)
-        self.get_style_context().add_class('osd-popover')
+        self.get_style_context().add_class("osd-popover")
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/NextPopover.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/NextPopover.ui")
         builder.connect_signals(self)
-        self.add(builder.get_object('widget'))
-        self.__title_label = builder.get_object('title')
-        self.__artist_label = builder.get_object('artist')
-        self.__cover = builder.get_object('cover')
-        self.__skip_btn = builder.get_object('skip_btn')
+        self.add(builder.get_object("widget"))
+        self.__title_label = builder.get_object("title")
+        self.__artist_label = builder.get_object("artist")
+        self.__cover = builder.get_object("cover")
+        self.__skip_btn = builder.get_object("skip_btn")
 
     def update(self, unused=None):
         """
@@ -70,7 +70,7 @@ class NextPopover(Gtk.Popover):
         """
         return not self.__inhibited and (
                 Lp().player.is_party or
-                Lp().settings.get_enum('shuffle') == Shuffle.TRACKS) and\
+                Lp().settings.get_enum("shuffle") == Shuffle.TRACKS) and\
             Lp().player.next_track.id is not None and\
             Lp().player.next_track.id >= 0
 
@@ -121,7 +121,7 @@ class NextPopover(Gtk.Popover):
             @param btn as Gtk.Button
         """
         Lp().player.set_next(True)
-        Lp().player.emit('queue-changed')
+        Lp().player.emit("queue-changed")
 
 #######################
 # PRIVATE             #
@@ -133,7 +133,7 @@ class NextPopover(Gtk.Popover):
         """
         self.__inhibited = False
         self.update()
-        self._signal_id = Lp().player.connect('queue-changed', self.update)
+        self._signal_id = Lp().player.connect("queue-changed", self.update)
 
     def __on_unmap(self, widget):
         """

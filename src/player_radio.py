@@ -53,7 +53,7 @@ class RadioPlayer(BasePlayer):
             if self.is_party:
                 self.set_party(False)
             self._next_track = Track()
-            self.emit('next-changed')
+            self.emit("next-changed")
 
     def next(self):
         """
@@ -122,14 +122,14 @@ class RadioPlayer(BasePlayer):
         """
         self._plugins.volume.props.volume = 1.0
         self._playbin.set_state(Gst.State.NULL)
-        self._playbin.set_property('uri', track.uri)
+        self._playbin.set_property("uri", track.uri)
         Radios().set_more_popular(track.album_artists[0])
         self._current_track = track
         self.__current = None
         self._playbin.set_state(Gst.State.PLAYING)
         if not self.__radios:
             self.__radios = Radios().get()
-        self.emit('status-changed')
+        self.emit("status-changed")
 
     def __on_parse_finished(self, parser, result, track):
         """

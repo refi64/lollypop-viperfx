@@ -141,7 +141,7 @@ class ProgressController:
         self.__timeout_id = None
         # Show volume control
         self._show_volume_control = False
-        Lp().player.connect('duration-changed', self.__on_duration_changed)
+        Lp().player.connect("duration-changed", self.__on_duration_changed)
 
     def on_current_changed(self, player):
         """

@@ -52,7 +52,7 @@ class QueuePlayer:
         self.set_next()
         self.set_prev()
         if notify:
-            self.emit('queue-changed')
+            self.emit("queue-changed")
 
     def insert_in_queue(self, track_id, pos=0, notify=True):
         """
@@ -77,7 +77,7 @@ class QueuePlayer:
         self.set_next()
         self.set_prev()
         if notify:
-            self.emit('queue-changed')
+            self.emit("queue-changed")
 
     def del_from_queue(self, track_id, notify=True):
         """
@@ -94,7 +94,7 @@ class QueuePlayer:
                 self.set_next()
             self.set_prev()
         if notify:
-            self.emit('queue-changed')
+            self.emit("queue-changed")
 
     def clear_queue(self, notify=True):
         """
@@ -110,7 +110,7 @@ class QueuePlayer:
             self.__backup_next = None
         self.set_prev()
         if notify:
-            self.emit('queue-changed')
+            self.emit("queue-changed")
 
     @property
     def queue(self):

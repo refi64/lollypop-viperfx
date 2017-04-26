@@ -29,20 +29,20 @@ class LastfmPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/LastfmPopover.ui')
-        self.connect('map', self.__on_map)
-        self.__stack = builder.get_object('stack')
-        self.__spinner = builder.get_object('spinner')
+        builder.add_from_resource("/org/gnome/Lollypop/LastfmPopover.ui")
+        self.connect("map", self.__on_map)
+        self.__stack = builder.get_object("stack")
+        self.__spinner = builder.get_object("spinner")
         self.__spinner.start()
         self.__view = Gtk.ListBox()
-        self.__view.get_style_context().add_class('trackswidget')
+        self.__view.get_style_context().add_class("trackswidget")
         self.__view.set_vexpand(True)
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
         self.__view.connect("row-activated", self.__on_row_activated)
         self.__view.show()
         self.__stack.add(self.__view)
-        self.add(builder.get_object('widget'))
+        self.add(builder.get_object("widget"))
 
     def populate(self, artist_ids):
         """

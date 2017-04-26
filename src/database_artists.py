@@ -269,7 +269,7 @@ class ArtistsDatabase:
                                     SELECT album_genres.genre_id\
                                     FROM album_genres\
                                     WHERE AG.album_id=album_genres.album_id)\
-                                  LIMIT 25", ('%' + noaccents(string) + '%',
+                                  LIMIT 25", ("%" + noaccents(string) + "%",
                                               Type.CHARTS))
             return list(itertools.chain(*result))
 

@@ -45,7 +45,7 @@ class RadioArt(BaseArt):
             @param name as string
             @return cover path as string or None if no cover
         """
-        filename = ''
+        filename = ""
         try:
             filename = self.__get_radio_cache_name(name)
             cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
@@ -61,7 +61,7 @@ class RadioArt(BaseArt):
                 else:
                     return self._get_default_icon_path(
                                            size,
-                                           'audio-input-microphone-symbolic')
+                                           "audio-input-microphone-symbolic")
         except Exception as e:
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
@@ -94,7 +94,7 @@ class RadioArt(BaseArt):
                                                                     size)
             if pixbuf is None:
                 return self.get_default_icon(
-                                             'audio-input-microphone-symbolic',
+                                             "audio-input-microphone-symbolic",
                                              size,
                                              scale)
             pixbuf.savev(cache_path_png, "png", [None], [None])
@@ -104,7 +104,7 @@ class RadioArt(BaseArt):
 
         except Exception as e:
             print(e)
-            return self.get_default_icon('audio-input-microphone-symbolic',
+            return self.get_default_icon("audio-input-microphone-symbolic",
                                          size,
                                          scale)
 
@@ -121,7 +121,7 @@ class RadioArt(BaseArt):
         s = Lio.File.new_for_uri(uri)
         d = Lio.File.new_for_path(cache_path_png)
         s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
-        GLib.idle_add(self.emit, 'radio-artwork-changed', name)
+        GLib.idle_add(self.emit, "radio-artwork-changed", name)
 
     def rename_radio(self, old_name, new_name):
         """
@@ -146,7 +146,7 @@ class RadioArt(BaseArt):
         """
         try:
             artpath = self._RADIOS_PATH + "/" +\
-                      radio.replace('/', '-') + ".png"
+                      radio.replace("/", "-") + ".png"
             pixbuf.savev(artpath, "png", [None], [None])
         except Exception as e:
             print("RadioArt::save_radio_artwork(): %s" % e)
@@ -156,7 +156,7 @@ class RadioArt(BaseArt):
             Announce radio logo update
             @param radio name as string
         """
-        self.emit('radio-artwork-changed', name)
+        self.emit("radio-artwork-changed", name)
 
     def clean_radio_cache(self, name):
         """
@@ -167,13 +167,13 @@ class RadioArt(BaseArt):
         try:
             f = Lio.File.new_for_path(self._CACHE_PATH)
             infos = f.enumerate_children(
-                'standard::name',
+                "standard::name",
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
                 f = infos.get_child(info)
                 basename = f.get_basename()
-                if re.search('%s_.*\.png' % re.escape(cache_name), basename):
+                if re.search("%s_.*\.png" % re.escape(cache_name), basename):
                     f.delete()
         except Exception as e:
             print("RadioArt::clean_radio_cache(): ", e, cache_name)
@@ -188,7 +188,7 @@ class RadioArt(BaseArt):
             @return cover file path as string
         """
         try:
-            name = name.replace('/', '-')
+            name = name.replace("/", "-")
             f = Lio.File.new_for_path(self._RADIOS_PATH + "/" + name + ".png")
             if f.query_exists():
                 return self._RADIOS_PATH + "/" + name + ".png"
@@ -202,4 +202,4 @@ class RadioArt(BaseArt):
             @param album id as int
             @param sql as sqlite cursor
         """
-        return "@@"+name.replace('/', '-')+"@@radio@@"
+        return "@@"+name.replace("/", "-")+"@@radio@@"

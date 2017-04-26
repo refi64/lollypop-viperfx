@@ -11,7 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import gi
-gi.require_version('Secret', '1')
+gi.require_version("Secret", "1")
 from gi.repository import GLib, Gio
 
 from gettext import gettext as _
@@ -24,7 +24,7 @@ except Exception as e:
     Secret = None
 
 try:
-    gi.require_version('Goa', '1.0')
+    gi.require_version("Goa", "1.0")
     from gi.repository import Goa
 except:
     pass
@@ -44,12 +44,12 @@ from lollypop.utils import debug, get_network_available
 class LastFM(LastFMNetwork, LibreFMNetwork):
     """
        Lastfm:
-       We recommend you don't distribute the API key and secret with your app,
+       We recommend you don"t distribute the API key and secret with your app,
        and that you ask users who want to build it to apply for a key of
-       their own. We don't believe that this would violate the terms of most
+       their own. We don"t believe that this would violate the terms of most
        open-source licenses.
-       That said, we can't stop you from distributing the key and secret if you
-       want, and if your app isn't written in a compiled language, you don't
+       That said, we can"t stop you from distributing the key and secret if you
+       want, and if your app isn"t written in a compiled language, you don"t
        really have much option :).
     """
 
@@ -57,20 +57,20 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Init lastfm support
         """
-        self.__username = ''
+        self.__username = ""
         self.__is_auth = False
         self.__password = None
         self.__check_for_proxy()
         self.__goa = self.__get_goa_oauth()
-        if self.__goa is None and Lp().settings.get_value('use-librefm'):
+        if self.__goa is None and Lp().settings.get_value("use-librefm"):
             LibreFMNetwork.__init__(self)
         else:
             if self.__goa is not None:
                 self.__API_KEY = self.__goa.props.client_id
                 self.__API_SECRET = self.__goa.props.client_secret
             else:
-                self.__API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
-                self.__API_SECRET = '9254319364d73bec6c59ace485a95c98'
+                self.__API_KEY = "7a9619a850ccf7377c46cf233c51e3c6"
+                self.__API_SECRET = "9254319364d73bec6c59ace485a95c98"
             LastFMNetwork.__init__(self,
                                    api_key=self.__API_KEY,
                                    api_secret=self.__API_SECRET)
@@ -82,14 +82,14 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param password as str/None
         """
         if self.__goa is not None:
-            t = Thread(target=self.__connect, args=('', '', True))
+            t = Thread(target=self.__connect, args=("", "", True))
             t.daemon = True
             t.start()
         # Get username/password from GSettings/Secret
         elif Secret is not None and\
                 get_network_available():
             self.__username = Lp().settings.get_value(
-                                                   'lastfm-login').get_string()
+                                                   "lastfm-login").get_string()
             if password is None:
                 schema = Secret.Schema.new("org.gnome.Lollypop",
                                            Secret.SchemaFlags.NONE,
@@ -109,7 +109,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if get_network_available():
             self.__username = Lp().settings.get_value(
-                                                   'lastfm-login').get_string()
+                                                   "lastfm-login").get_string()
             self.__connect(self.__username, password)
             t = Thread(target=self.__populate_loved_tracks, args=(True,))
             t.daemon = True
@@ -129,9 +129,9 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                 language=getdefaultlocale()[0][0:2])
         except:
             content = last_artist.get_bio_content()
-        content = re.sub(r'<.*Last.fm.*>.', '', content)
+        content = re.sub(r"<.*Last.fm.*>.", "", content)
         url = last_artist.get_cover_image(3)
-        return (url, content.encode(encoding='UTF-8'))
+        return (url, content.encode(encoding="UTF-8"))
 
     def do_scrobble(self, artist, album, title, timestamp):
         """
@@ -253,13 +253,13 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             Enable proxy if needed
         """
         try:
-            proxy = Gio.Settings.new('org.gnome.system.proxy')
-            https = Gio.Settings.new('org.gnome.system.proxy.https')
-            mode = proxy.get_value('mode').get_string()
-            if mode != 'none':
-                h = https.get_value('host').get_string()
-                p = https.get_value('port').get_int32()
-                if h != '' and p != 0:
+            proxy = Gio.Settings.new("org.gnome.system.proxy")
+            https = Gio.Settings.new("org.gnome.system.proxy.https")
+            mode = proxy.get_value("mode").get_string()
+            if mode != "none":
+                h = https.get_value("host").get_string()
+                p = https.get_value("port").get_int32()
+                if h != "" and p != 0:
                     self.enable_proxy(host=h, port=p)
             else:
                 self.disable_proxy()
@@ -274,7 +274,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         self.__username = username
-        if self.__goa is not None or (password != '' and username != ''):
+        if self.__goa is not None or (password != "" and username != ""):
             self.__is_auth = True
         else:
             self.__is_auth = False

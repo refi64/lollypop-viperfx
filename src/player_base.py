@@ -21,20 +21,20 @@ class BasePlayer(GObject.GObject):
         Base player object
     """
     __gsignals__ = {
-        'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'album-added': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'album-removed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'next-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'prev-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'lock-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'loading-changed': (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
-        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'duration-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'rate-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'party-changed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
+        "current-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "album-added": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "album-removed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "next-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "prev-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "seeked": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "lock-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "status-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "volume-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "loading-changed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
+        "queue-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "duration-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "rate-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "party-changed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
     def __init__(self):
@@ -43,7 +43,7 @@ class BasePlayer(GObject.GObject):
         """
         # In case of multiple subclassing,
         # do not init variables for every subclass
-        if not hasattr(self, '_albums'):
+        if not hasattr(self, "_albums"):
             GObject.GObject.__init__(self)
             self._base_init = True
             # Lock adding tracks to playback, do nothing here, just get it
@@ -65,7 +65,7 @@ class BasePlayer(GObject.GObject):
             # Albums in current playlist
             self._albums = []
             # Current shuffle mode
-            self._shuffle = Lp().settings.get_enum('shuffle')
+            self._shuffle = Lp().settings.get_enum("shuffle")
             # For tracks from the cmd line
             self._external_tracks = []
 
@@ -74,7 +74,7 @@ class BasePlayer(GObject.GObject):
             Mark player as locked
         """
         self._locked = not self._locked
-        self.emit('lock-changed')
+        self.emit("lock-changed")
 
     @property
     def locked(self):

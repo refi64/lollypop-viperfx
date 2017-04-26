@@ -40,7 +40,7 @@ def get_network_available():
         @return bool
     """
     return Gio.NetworkMonitor.get_default().get_network_available() and\
-        Lp().settings.get_value('network-access')
+        Lp().settings.get_value("network-access")
 
 
 def noaccents(string):
@@ -49,11 +49,11 @@ def noaccents(string):
             @param string as str
             @return str
         """
-        nfkd_form = unicodedata.normalize('NFKD', string)
+        nfkd_form = unicodedata.normalize("NFKD", string)
         return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 
-def escape(str, ignore=['_', '-', ' ', '.']):
+def escape(str, ignore=["_", "-", " ", "."]):
     """
         Escape string
         @param string as str
@@ -106,7 +106,7 @@ def is_audio(f):
              "audio/x-pn-windows-acm", "application/x-matroska",
              "audio/x-matroska", "video/mp4"]
     try:
-        info = f.query_info('standard::content-type',
+        info = f.query_info("standard::content-type",
                             Gio.FileQueryInfoFlags.NONE)
         if info is not None:
             content_type = info.get_content_type()
@@ -123,7 +123,7 @@ def is_pls(f):
         @param f as Gio.File
     """
     try:
-        info = f.query_info('standard::content-type',
+        info = f.query_info("standard::content-type",
                             Gio.FileQueryInfoFlags.NONE)
         if info is not None:
             if info.get_content_type() in ["audio/x-mpegurl",
@@ -139,7 +139,7 @@ def format_artist_name(name):
         Return formated artist name
         @param str
     """
-    if not Lp().settings.get_value('smart-artist-sort'):
+    if not Lp().settings.get_value("smart-artist-sort"):
         return name
     # Handle language ordering
     # Translators: Add here words that shoud be ignored for artist sort order
@@ -171,7 +171,7 @@ def seconds_to_string(duration):
     minutes = seconds // 60
     seconds %= 60
 
-    return '%i:%02i' % (minutes, seconds)
+    return "%i:%02i" % (minutes, seconds)
 
 
 def is_readonly(uri):
@@ -179,10 +179,10 @@ def is_readonly(uri):
         Check if uri is readonly
     """
     f = Lio.File.new_for_uri(uri)
-    info = f.query_info('access::can-write',
+    info = f.query_info("access::can-write",
                         Gio.FileQueryInfoFlags.NONE,
                         None)
-    return not info.get_attribute_boolean('access::can-write')
+    return not info.get_attribute_boolean("access::can-write")
 
 
 def is_loved(track_id):

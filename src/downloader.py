@@ -76,7 +76,7 @@ class Downloader:
         if not get_network_available():
             return []
 
-        cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
+        cs_api_key = Lp().settings.get_value("cs-api-key").get_string()
 
         try:
             f = Lio.File.new_for_uri("https://www.googleapis.com/"
@@ -90,11 +90,11 @@ class Downloader:
 
             (status, data, tag) = f.load_contents()
             if status:
-                decode = json.loads(data.decode('utf-8'))
+                decode = json.loads(data.decode("utf-8"))
                 if decode is None:
                     return urls
-                for item in decode['items']:
-                    urls.append(item['link'])
+                for item in decode["items"]:
+                    urls.append(item["link"])
         except Exception as e:
             print(e)
         return urls
@@ -133,14 +133,14 @@ class Downloader:
         """
         try:
             artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(' ', '+')
+                                artist, None, True).replace(" ", "+")
             s = Lio.File.new_for_uri("https://api.deezer.com/search/artist/?"
                                      "q=%s&output=json&index=0&limit=1&" %
                                      artist_formated)
             (status, data, tag) = s.load_contents()
             if status:
-                decode = json.loads(data.decode('utf-8'))
-                return (decode['data'][0]['picture_xl'], None)
+                decode = json.loads(data.decode("utf-8"))
+                return (decode["data"][0]["picture_xl"], None)
         except Exception as e:
             debug("Downloader::_get_deezer_artist_artwork(): %s [%s]" %
                   (e, artist))
@@ -154,15 +154,15 @@ class Downloader:
         """
         try:
             artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(' ', '+')
+                                artist, None, True).replace(" ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
             (status, data, tag) = s.load_contents()
             if status:
-                decode = json.loads(data.decode('utf-8'))
-                for item in decode['artists']['items']:
-                    if item['name'].lower() == artist.lower():
-                        return (item['images'][0]['url'], None)
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["artists"]["items"]:
+                    if item["name"].lower() == artist.lower():
+                        return (item["images"][0]["url"], None)
         except Exception as e:
             debug("Downloader::_get_spotify_artist_artwork(): %s [%s]" %
                   (e, artist))
@@ -184,11 +184,11 @@ class Downloader:
                                      album_formated)
             (status, data, tag) = s.load_contents()
             if status:
-                decode = json.loads(data.decode('utf-8'))
+                decode = json.loads(data.decode("utf-8"))
                 url = None
-                for item in decode['data']:
-                    if item['artist']['name'].lower() == artist.lower():
-                        url = item['cover_xl']
+                for item in decode["data"]:
+                    if item["artist"]["name"].lower() == artist.lower():
+                        url = item["cover_xl"]
                         break
                 if url is not None:
                     s = Lio.File.new_for_uri(url)
@@ -209,25 +209,25 @@ class Downloader:
         artists_spotify_ids = []
         try:
             artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(' ', '+')
+                                artist, None, True).replace(" ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
             (status, data, tag) = s.load_contents()
             if status:
-                decode = json.loads(data.decode('utf-8'))
-                for item in decode['artists']['items']:
-                    artists_spotify_ids.append(item['id'])
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["artists"]["items"]:
+                    artists_spotify_ids.append(item["id"])
 
             for artist_spotify_id in artists_spotify_ids:
                 s = Lio.File.new_for_uri("https://api.spotify.com/v1/artists/"
                                          "%s/albums" % artist_spotify_id)
                 (status, data, tag) = s.load_contents()
                 if status:
-                    decode = json.loads(data.decode('utf-8'))
+                    decode = json.loads(data.decode("utf-8"))
                     url = None
-                    for item in decode['items']:
-                        if item['name'] == album:
-                            url = item['images'][0]['url']
+                    for item in decode["items"]:
+                        if item["name"] == album:
+                            url = item["images"][0]["url"]
                             break
 
                     if url is not None:
@@ -250,16 +250,16 @@ class Downloader:
         image = None
         try:
             album_formated = GLib.uri_escape_string(
-                                album, None, True).replace(' ', '+')
+                                album, None, True).replace(" ", "+")
             s = Lio.File.new_for_uri("https://itunes.apple.com/search"
                                      "?entity=album&term=%s" % album_formated)
             (status, data, tag) = s.load_contents()
             if status:
-                decode = json.loads(data.decode('utf-8'))
-                for item in decode['results']:
-                    if item['artistName'].lower() == artist.lower():
-                        url = item['artworkUrl60'].replace('60x60',
-                                                           '512x512')
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["results"]:
+                    if item["artistName"].lower() == artist.lower():
+                        url = item["artworkUrl60"].replace("60x60",
+                                                           "512x512")
                         s = Lio.File.new_for_uri(url)
                         (status, image, tag) = s.load_contents()
                         break
@@ -326,7 +326,7 @@ class Downloader:
                     print("Downloader::__cache_artists_info():", e, artist)
                     InfoCache.add(artist, None, None, api)
             if artwork_set:
-                GLib.idle_add(Lp().art.emit, 'artist-artwork-changed', artist)
+                GLib.idle_add(Lp().art.emit, "artist-artwork-changed", artist)
         self.__cache_artists_running = False
 
     def __cache_albums_art(self):

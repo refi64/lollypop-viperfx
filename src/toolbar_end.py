@@ -31,10 +31,10 @@ class PartyPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
 
         party_grid = Gtk.Grid()
-        party_grid.set_property('margin-start', 10)
-        party_grid.set_property('margin-end', 10)
-        party_grid.set_property('margin-bottom', 5)
-        party_grid.set_property('margin-top', 5)
+        party_grid.set_property("margin-start", 10)
+        party_grid.set_property("margin-end", 10)
+        party_grid.set_property("margin-bottom", 5)
+        party_grid.set_property("margin-top", 5)
         party_grid.set_column_spacing(10)
         party_grid.set_row_spacing(7)
         party_grid.show()
@@ -55,7 +55,7 @@ class PartyPopover(Gtk.Popover):
         x = 0
         for genre_id, genre in genres:
             label = Gtk.Label()
-            label.set_property('halign', Gtk.Align.START)
+            label.set_property("halign", Gtk.Align.START)
             # Hack as ellipsize not working as I want, help welcome ;)
             label_text = genre[0:20]
             if len(label_text) != len(genre):
@@ -73,7 +73,7 @@ class PartyPopover(Gtk.Popover):
             if x == 0:
                 x += 2
             else:
-                label.set_property('margin-start', 15)
+                label.set_property("margin-start", 15)
                 i += 1
                 x = 0
 
@@ -97,7 +97,7 @@ class PartyPopover(Gtk.Popover):
                 ids.remove(genre_id)
             except:
                 pass
-        Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
+        Lp().settings.set_value("party-ids",  GLib.Variant("ai", ids))
         Lp().player.set_party_ids()
         Lp().player.set_next()
 
@@ -112,51 +112,51 @@ class ToolbarEnd(Gtk.Bin):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        self.connect('show', self.__on_show)
-        self.connect('hide', self.__on_hide)
+        self.connect("show", self.__on_show)
+        self.connect("hide", self.__on_hide)
         self.set_hexpand(True)
         self.__next_popover = NextPopover()
         self.__search = None
         self.__next_was_inhibited = False
         self.__timeout_id = None
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
         builder.connect_signals(self)
 
-        self.add(builder.get_object('end'))
+        self.add(builder.get_object("end"))
 
-        self.__grid_next = builder.get_object('grid-next')
+        self.__grid_next = builder.get_object("grid-next")
 
-        self.__shuffle_button = builder.get_object('shuffle-button')
-        self.__shuffle_image = builder.get_object('shuffle-button-image')
-        shuffleAction = Gio.SimpleAction.new('shuffle-button', None)
-        shuffleAction.connect('activate', self.__activate_shuffle_button)
+        self.__shuffle_button = builder.get_object("shuffle-button")
+        self.__shuffle_image = builder.get_object("shuffle-button-image")
+        shuffleAction = Gio.SimpleAction.new("shuffle-button", None)
+        shuffleAction.connect("activate", self.__activate_shuffle_button)
         Lp().add_action(shuffleAction)
         Lp().set_accels_for_action("app.shuffle-button", ["<Control>r"])
-        Lp().settings.connect('changed::shuffle', self.__on_playback_changed)
-        Lp().settings.connect('changed::playback', self.__on_playback_changed)
+        Lp().settings.connect("changed::shuffle", self.__on_playback_changed)
+        Lp().settings.connect("changed::playback", self.__on_playback_changed)
 
-        self.__party_button = builder.get_object('party-button')
-        party_action = Gio.SimpleAction.new('party', None)
-        party_action.connect('activate', self.__activate_party_button)
+        self.__party_button = builder.get_object("party-button")
+        party_action = Gio.SimpleAction.new("party", None)
+        party_action.connect("activate", self.__activate_party_button)
         Lp().add_action(party_action)
         Lp().set_accels_for_action("app.party", ["<Control>p"])
 
-        self.__search_button = builder.get_object('search-button')
+        self.__search_button = builder.get_object("search-button")
         self.__helper = TouchHelper(self.__search_button,
                                     "search", "<Control>f")
         self.__helper.set_long_func(self.__on_search_long)
         self.__helper.set_short_func(self.__on_search_short)
 
-        self.__settings_button = builder.get_object('settings-button')
+        self.__settings_button = builder.get_object("settings-button")
 
-        self.__list_button = builder.get_object('list-button')
-        self.__list_button.set_property('has-tooltip', True)
-        self.__list_button.connect('query-tooltip',
+        self.__list_button = builder.get_object("list-button")
+        self.__list_button.set_property("has-tooltip", True)
+        self.__list_button.connect("query-tooltip",
                                    self.__on_list_button_query_tooltip)
         self.__list_popover = None
-        Lp().player.connect('party-changed', self.__on_party_changed)
-        Lp().player.connect('lock-changed', self.__on_lock_changed)
+        Lp().player.connect("party-changed", self.__on_party_changed)
+        Lp().player.connect("lock-changed", self.__on_lock_changed)
 
     def setup_menu(self, menu):
         """
@@ -227,7 +227,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         active = self.__party_button.get_active()
         self.__shuffle_button.set_sensitive(not active)
-        if not Lp().settings.get_value('dark-ui'):
+        if not Lp().settings.get_value("dark-ui"):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp().player.set_party(active)
@@ -243,7 +243,7 @@ class ToolbarEnd(Gtk.Bin):
             popover = PartyPopover()
             popover.set_relative_to(eventbox)
             self.__next_popover.hide()
-            popover.connect('closed', self.__on_popover_closed)
+            popover.connect("closed", self.__on_popover_closed)
             self.__next_popover.inhibit(True)
             popover.show()
             return True
@@ -279,7 +279,7 @@ class ToolbarEnd(Gtk.Bin):
             self.__list_popover = AlbumsPopover()
             self.__list_popover.set_relative_to(self.__list_button)
             self.__list_popover.show()
-        self.__list_popover.connect('closed', self.__on_list_popover_closed)
+        self.__list_popover.connect("closed", self.__on_list_popover_closed)
         return True
 
 #######################
@@ -304,7 +304,7 @@ class ToolbarEnd(Gtk.Bin):
         if self.__search is None:
             from lollypop.pop_search import SearchPopover
             self.__search = SearchPopover()
-            self.__search.connect('closed', self.__on_popover_closed)
+            self.__search.connect("closed", self.__on_popover_closed)
         self.__search.set_relative_to(self.__search_button)
         self.__search.show()
 
@@ -312,15 +312,15 @@ class ToolbarEnd(Gtk.Bin):
         """
             Set shuffle icon
         """
-        shuffle = Lp().settings.get_enum('shuffle')
-        repeat = Lp().settings.get_enum('playback')
+        shuffle = Lp().settings.get_enum("shuffle")
+        repeat = Lp().settings.get_enum("playback")
         if repeat == NextContext.REPEAT_TRACK:
-            self.__shuffle_image.get_style_context().remove_class('selected')
+            self.__shuffle_image.get_style_context().remove_class("selected")
             self.__shuffle_image.set_from_icon_name(
                 "media-playlist-repeat-song-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
         elif shuffle == Shuffle.NONE:
-            self.__shuffle_image.get_style_context().remove_class('selected')
+            self.__shuffle_image.get_style_context().remove_class("selected")
             if repeat == NextContext.NONE:
                 self.__shuffle_image.set_from_icon_name(
                     "media-playlist-repeat-symbolic",
@@ -334,10 +334,10 @@ class ToolbarEnd(Gtk.Bin):
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
             if shuffle == Shuffle.TRACKS:
-                self.__shuffle_image.get_style_context().add_class('selected')
+                self.__shuffle_image.get_style_context().add_class("selected")
             else:
                 self.__shuffle_image.get_style_context().remove_class(
-                                                                    'selected')
+                                                                    "selected")
 
     def __activate_party_button(self, action=None, param=None):
         """

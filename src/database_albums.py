@@ -671,7 +671,7 @@ class AlbumsDatabase:
                        FROM tracks\
                        WHERE tracks.album_id=?\
                        AND tracks.discnumber=?\
-                       AND discname!=''"
+                       AND discname!="""
             filters = (album_id, disc)
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
@@ -883,7 +883,7 @@ class AlbumsDatabase:
             @return albums ids as [int]
         """
         genre_ids = remove_static_genres(genre_ids)
-        orderby = Lp().settings.get_enum('orderby')
+        orderby = Lp().settings.get_enum("orderby")
         if orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
@@ -1073,9 +1073,9 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             if limit is None:
-                filters = ('%' + noaccents(string) + '%', Type.CHARTS)
+                filters = ("%" + noaccents(string) + "%", Type.CHARTS)
             else:
-                filters = ('%' + noaccents(string) + '%', Type.CHARTS, limit)
+                filters = ("%" + noaccents(string) + "%", Type.CHARTS, limit)
             request = ("SELECT albums.rowid\
                        FROM albums, album_genres AS AG\
                        WHERE noaccents(name) LIKE ?\

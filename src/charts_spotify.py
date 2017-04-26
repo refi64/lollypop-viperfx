@@ -43,7 +43,7 @@ class SpotifyCharts:
         """
             Update charts
         """
-        if not Lp().settings.get_value('show-charts'):
+        if not Lp().settings.get_value("show-charts"):
             return
         self.__cancel.reset()
         self._stop = False
@@ -110,7 +110,7 @@ class SpotifyCharts:
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self._stop:
                 return []
-            for line in data.decode("utf-8").split('\n'):
+            for line in data.decode("utf-8").split("\n"):
                 try:  # CSV file is mostly broken
                     for row in reader([line]):
                         if not row:
@@ -118,7 +118,7 @@ class SpotifyCharts:
                         url = row[4]
                         if url == "URL":
                             continue
-                        track_id = url.split('/')[-1:][0]
+                        track_id = url.split("/")[-1:][0]
                         ids.append(track_id)
                 except Exception as e:
                     print(e)

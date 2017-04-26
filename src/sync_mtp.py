@@ -50,7 +50,7 @@ class MtpSync:
             Check MP3 encode status
             @return bool
         """
-        if Gst.ElementFactory.find('lamemp3enc'):
+        if Gst.ElementFactory.find("lamemp3enc"):
             return True
         return False
 
@@ -77,7 +77,7 @@ class MtpSync:
         try:
             self.__in_thread = True
             self.__convert = convert
-            self.__quality = Lp().settings.get_value('mp3-quality')
+            self.__quality = Lp().settings.get_value("mp3-quality")
             self.__normalize = normalize
             self.__errors = False
             self.__errors_count = 0
@@ -123,7 +123,7 @@ class MtpSync:
             # Remove old playlists
             d = Lio.File.new_for_uri(self._uri)
             infos = d.enumerate_children(
-                'standard::name',
+                "standard::name",
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
@@ -182,7 +182,7 @@ class MtpSync:
                 uri = dir_uris.pop(0)
                 d = Lio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
-                    'standard::name,standard::type',
+                    "standard::name,standard::type",
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                     None)
                 for info in infos:
@@ -193,7 +193,7 @@ class MtpSync:
                             # On some device, Lio.File.delete() remove
                             # non empty directories #828
                             subinfos = f.enumerate_children(
-                                    'standard::name,standard::type',
+                                    "standard::name,standard::type",
                                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                     None)
                             subfiles = False
@@ -228,7 +228,7 @@ class MtpSync:
                 uri = dir_uris.pop(0)
                 d = Lio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
-                    'standard::name,standard::type',
+                    "standard::name,standard::type",
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                     None)
                 for info in infos:
@@ -238,7 +238,7 @@ class MtpSync:
                             dir_uris.append(f.get_uri())
                     else:
                         f = infos.get_child(info)
-                        if not f.get_uri().endswith('.m3u'):
+                        if not f.get_uri().endswith(".m3u"):
                             children.append(f.get_uri())
             except Exception as e:
                 print("MtpSync::__get_track_files():", e, uri)
@@ -258,7 +258,7 @@ class MtpSync:
                     # Create playlist
                     m3u = Lio.File.new_for_path(
                         "/tmp/lollypop_%s.m3u" % (playlist_name,))
-                    self.__retry(m3u.replace_contents, (b'#EXTM3U\n', None,
+                    self.__retry(m3u.replace_contents, (b"#EXTM3U\n", None,
                                  False,
                                  Gio.FileCreateFlags.REPLACE_DESTINATION,
                                  None))
@@ -282,7 +282,7 @@ class MtpSync:
                     self.__in_thread = False
                     return
                 track = Track(track_id)
-                if track.uri.startswith('https:'):
+                if track.uri.startswith("https:"):
                     continue
                 debug("MtpSync::__copy_to_device(): %s" % track.uri)
                 album_name = escape(track.album_name.lower())
@@ -318,7 +318,7 @@ class MtpSync:
                 f = Lio.File.new_for_uri(track.uri)
                 track_name = escape(f.get_basename())
                 # Check extension, if not mp3, convert
-                m = match('.*(\.[^.]*)', track.uri)
+                m = match(".*(\.[^.]*)", track.uri)
                 ext = m.group(1)
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
@@ -326,11 +326,11 @@ class MtpSync:
                 else:
                     convertion_needed = False
                 src_track = Lio.File.new_for_uri(track.uri)
-                info = src_track.query_info('time::modified',
+                info = src_track.query_info("time::modified",
                                             Gio.FileQueryInfoFlags.NONE,
                                             None)
                 # Prefix track with mtime to make sure updating it later
-                mtime = info.get_attribute_as_string('time::modified')
+                mtime = info.get_attribute_as_string("time::modified")
                 dst_uri = "%s/%s_%s" % (on_device_album_uri,
                                         mtime, track_name)
                 if stream is not None:
@@ -346,7 +346,7 @@ class MtpSync:
                                  mtime,
                                  track_name)
                     self.__retry(stream.get_output_stream().write,
-                                 (line.encode(encoding='UTF-8'), None))
+                                 (line.encode(encoding="UTF-8"), None))
                 dst_track = Lio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists():
                     if convertion_needed:
@@ -357,7 +357,7 @@ class MtpSync:
                         if pipeline is not None:
                             bus = pipeline.get_bus()
                             bus.add_signal_watch()
-                            bus.connect('message::eos', self.__on_bus_eos)
+                            bus.connect("message::eos", self.__on_bus_eos)
                             self.__encoding = True
                             while self.__encoding and self._syncing:
                                 sleep(1)
@@ -386,7 +386,7 @@ class MtpSync:
                 stream.close()
             if m3u is not None:
                 playlist_name = escape(playlist_name)
-                dst = Lio.File.new_for_uri(self._uri+'/'+playlist_name+'.m3u')
+                dst = Lio.File.new_for_uri(self._uri+"/"+playlist_name+".m3u")
                 self.__retry(m3u.move,
                              (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
@@ -414,7 +414,7 @@ class MtpSync:
                 self.__in_thread = False
                 return
             track = Track(track_id)
-            if track.uri.startswith('https:'):
+            if track.uri.startswith("https:"):
                 continue
             album_name = escape(track.album_name.lower())
             if track.album.artist_ids[0] == Type.COMPILATIONS:
@@ -428,16 +428,16 @@ class MtpSync:
             f = Lio.File.new_for_uri(track.uri)
             track_name = escape(f.get_basename())
             # Check extension, if not mp3, convert
-            m = match('.*(\.[^.]*)', track.uri)
+            m = match(".*(\.[^.]*)", track.uri)
             ext = m.group(1)
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
             on_disk = Lio.File.new_for_uri(track.uri)
-            info = on_disk.query_info('time::modified',
+            info = on_disk.query_info("time::modified",
                                       Gio.FileQueryInfoFlags.NONE,
                                       None)
             # Prefix track with mtime to make sure updating it later
-            mtime = info.get_attribute_as_string('time::modified')
+            mtime = info.get_attribute_as_string("time::modified")
             dst_uri = "%s/%s_%s" % (on_device_album_uri, mtime, track_name)
             # To be sure to get uri correctly escaped for Gio
             f = Lio.File.new_for_uri(dst_uri)

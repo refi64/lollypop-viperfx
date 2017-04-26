@@ -29,40 +29,40 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         Gtk.Bin.__init__(self)
         InfosController.__init__(self, ArtSize.SMALL)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfo.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)
         self.__pop_tunein = None
         self.__pop_info = None
         self.__timeout_id = None
         self.__width = 0
 
-        self._infobox = builder.get_object('info')
+        self._infobox = builder.get_object("info")
         self.add(self._infobox)
 
         self.__helper = TouchHelper(self._infobox, None, None)
         self.__helper.set_long_func(self.__on_info_long)
         self.__helper.set_short_func(self.__on_info_short)
 
-        self._spinner = builder.get_object('spinner')
+        self._spinner = builder.get_object("spinner")
 
-        self.__labels = builder.get_object('nowplaying_labels')
-        self.__labels.connect('query-tooltip', self.__on_query_tooltip)
-        self.__labels.set_property('has-tooltip', True)
+        self.__labels = builder.get_object("nowplaying_labels")
+        self.__labels.connect("query-tooltip", self.__on_query_tooltip)
+        self.__labels.set_property("has-tooltip", True)
 
-        self._title_label = builder.get_object('title')
-        self._artist_label = builder.get_object('artist')
-        self._cover = builder.get_object('cover')
-        self._cover.set_property('has-tooltip', True)
+        self._title_label = builder.get_object("title")
+        self._artist_label = builder.get_object("artist")
+        self._cover = builder.get_object("cover")
+        self._cover.set_property("has-tooltip", True)
         # Since GTK 3.20, we can set cover full height
         if Gtk.get_minor_version() > 18:
-            self._cover.get_style_context().add_class('toolbar-cover-frame')
+            self._cover.get_style_context().add_class("toolbar-cover-frame")
         else:
-            self._cover.get_style_context().add_class('small-cover-frame')
+            self._cover.get_style_context().add_class("small-cover-frame")
 
-        self.connect('realize', self.__on_realize)
-        Lp().player.connect('loading-changed', self.__on_loading_changed)
-        Lp().art.connect('album-artwork-changed', self.__update_cover)
-        Lp().art.connect('radio-artwork-changed', self.__update_logo)
+        self.connect("realize", self.__on_realize)
+        Lp().player.connect("loading-changed", self.__on_loading_changed)
+        Lp().art.connect("album-artwork-changed", self.__update_cover)
+        Lp().art.connect("radio-artwork-changed", self.__update_logo)
 
     def do_get_preferred_width(self):
         """
@@ -84,7 +84,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             @param width as int
         """
         self.__width = width
-        self.set_property('width-request', width)
+        self.set_property("width-request", width)
 
 #######################
 # PROTECTED           #

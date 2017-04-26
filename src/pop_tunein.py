@@ -45,38 +45,38 @@ class TuneinPopover(Gtk.Popover):
         self.__covers_to_download = []
 
         self.__stack = Gtk.Stack()
-        self.__stack.set_property('expand', True)
+        self.__stack.set_property("expand", True)
         self.__stack.show()
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/TuneinPopover.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/TuneinPopover.ui")
         builder.connect_signals(self)
-        widget = builder.get_object('widget')
+        widget = builder.get_object("widget")
         widget.attach(self.__stack, 0, 2, 5, 1)
 
-        self.__back_btn = builder.get_object('back_btn')
-        self.__home_btn = builder.get_object('home_btn')
-        self.__label = builder.get_object('label')
+        self.__back_btn = builder.get_object("back_btn")
+        self.__home_btn = builder.get_object("home_btn")
+        self.__label = builder.get_object("label")
 
         self.__view = Gtk.FlowBox()
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_max_children_per_line(100)
-        self.__view.set_property('row-spacing', 10)
-        self.__view.set_property('expand', True)
+        self.__view.set_property("row-spacing", 10)
+        self.__view.set_property("expand", True)
         self.__view.show()
 
-        self.__spinner = builder.get_object('spinner')
+        self.__spinner = builder.get_object("spinner")
 
-        builder.get_object('viewport').add(self.__view)
-        builder.get_object('viewport').set_property('margin', 10)
+        builder.get_object("viewport").add(self.__view)
+        builder.get_object("viewport").set_property("margin", 10)
 
-        self.__scrolled = builder.get_object('scrolled')
-        self.__stack.add_named(self.__spinner, 'spinner')
-        self.__stack.add_named(builder.get_object('notfound'), 'notfound')
-        self.__stack.add_named(self.__scrolled, 'scrolled')
+        self.__scrolled = builder.get_object("scrolled")
+        self.__stack.add_named(self.__spinner, "spinner")
+        self.__stack.add_named(builder.get_object("notfound"), "notfound")
+        self.__stack.add_named(self.__scrolled, "scrolled")
         self.add(widget)
-        self.connect('map', self.__on_map)
-        self.connect('unmap', self.__on_unmap)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
     def populate(self, url=None):
         """
@@ -87,7 +87,7 @@ class TuneinPopover(Gtk.Popover):
             return
         self.__spinner.start()
         self.__clear()
-        self.__stack.set_visible_child_name('spinner')
+        self.__stack.set_visible_child_name("spinner")
         self.__current_url = url
         self.__back_btn.set_sensitive(False)
         self.__home_btn.set_sensitive(False)
@@ -108,7 +108,7 @@ class TuneinPopover(Gtk.Popover):
         self.__current_url = None
         if self.__previous_urls:
             url = self.__previous_urls.pop()
-        self.__stack.set_visible_child_name('spinner')
+        self.__stack.set_visible_child_name("spinner")
         self.__spinner.start()
         self.__clear()
         self.populate(url)
@@ -155,7 +155,7 @@ class TuneinPopover(Gtk.Popover):
         """
         # TODO Add a string
         self.__label.set_text(message)
-        self.__stack.set_visible_child_name('notfound')
+        self.__stack.set_visible_child_name("notfound")
         self.__home_btn.set_sensitive(True)
 
     def __populate(self, url):
@@ -206,39 +206,39 @@ class TuneinPopover(Gtk.Popover):
         item = items.pop(0)
         child = Gtk.Grid()
         child.set_column_spacing(5)
-        child.set_property('halign', Gtk.Align.START)
+        child.set_property("halign", Gtk.Align.START)
         child.show()
         link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
         # Hack
         link.get_children()[0].set_ellipsize(Pango.EllipsizeMode.END)
-        link.connect('activate-link', self.__on_activate_link, item)
+        link.connect("activate-link", self.__on_activate_link, item)
         link.show()
         if item.TYPE == "audio":
             link.set_tooltip_text(_("Play"))
-            button = Gtk.Button.new_from_icon_name('list-add-symbolic',
+            button = Gtk.Button.new_from_icon_name("list-add-symbolic",
                                                    Gtk.IconSize.MENU)
-            button.connect('clicked', self.__on_button_clicked, item)
+            button.connect("clicked", self.__on_button_clicked, item)
             button.set_relief(Gtk.ReliefStyle.NONE)
-            button.set_property('valign', Gtk.Align.CENTER)
+            button.set_property("valign", Gtk.Align.CENTER)
             # Translators: radio context
             button.set_tooltip_text(_("Add"))
             button.show()
             child.add(button)
             image = Gtk.Image.new()
-            image.set_property('width-request', ArtSize.MEDIUM)
-            image.set_property('height-request', ArtSize.MEDIUM)
+            image.set_property("width-request", ArtSize.MEDIUM)
+            image.set_property("height-request", ArtSize.MEDIUM)
             image.show()
             child.add(image)
             self.__covers_to_download.append((item, image))
         else:
-            link.set_tooltip_text('')
+            link.set_tooltip_text("")
         child.add(link)
 
         self.__view.add(child)
 
         # Remove spinner if exist
-        if self.__stack.get_visible_child_name() == 'spinner':
-            self.__stack.set_visible_child_name('scrolled')
+        if self.__stack.get_visible_child_name() == "spinner":
+            self.__stack.set_visible_child_name("scrolled")
             self.__spinner.stop()
             self.__label.set_text("")
             if self.__current_url is not None:
@@ -308,7 +308,7 @@ class TuneinPopover(Gtk.Popover):
             cache = Art._RADIOS_PATH
             s = Lio.File.new_for_uri(item.LOGO)
             d = Lio.File.new_for_path(cache+"/%s.png" %
-                                      item.TEXT.replace('/', '-'))
+                                      item.TEXT.replace("/", "-"))
             s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
@@ -318,10 +318,10 @@ class TuneinPopover(Gtk.Popover):
             f = Lio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents()
             if status:
-                url = data.decode('utf-8').split('\n')[0]
+                url = data.decode("utf-8").split("\n")[0]
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        self.__radios_manager.add(item.TEXT.replace('/', '-'), url)
+        self.__radios_manager.add(item.TEXT.replace("/", "-"), url)
 
     def __on_map(self, widget):
         """

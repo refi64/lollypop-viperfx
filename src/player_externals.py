@@ -35,7 +35,7 @@ class ExternalsPlayer(BasePlayer):
         """
         pass
 
-    def load_external(self, uri, name=''):
+    def load_external(self, uri, name=""):
         """
             Load external tracks
             @param uri as str
@@ -44,7 +44,7 @@ class ExternalsPlayer(BasePlayer):
         track = Track()
         track.set_album_artists([name])
         track.set_uri(uri)
-        if track.uri.startswith('file://'):
+        if track.uri.startswith("file://"):
             track.id = Type.EXTERNALS
             track.name = GLib.path_get_basename(GLib.filename_from_uri(uri)[0])
         else:

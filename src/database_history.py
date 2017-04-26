@@ -28,7 +28,7 @@ class History:
     __DB_PATH = "%s/history.db" % __LOCAL_PATH
     __LIMIT = 1000000  # Delete when limit is reached
     __DELETE = 100     # How many elements to delete
-    __create_history = '''CREATE TABLE history (
+    __create_history = """CREATE TABLE history (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
                             duration INT NOT NULL,
@@ -38,7 +38,7 @@ class History:
                             mtime INT NOT NULL,
                             album_rate INT NOT NULL,
                             loved_album INT NOT NULL,
-                            album_popularity INT NOT NULL)'''
+                            album_popularity INT NOT NULL)"""
 
     def __init__(self):
         """
@@ -61,7 +61,7 @@ class History:
                                              FROM history\
                                              LIMIT %s)" % self.__DELETE)
                 sql.commit()
-                sql.execute('VACUUM')
+                sql.execute("VACUUM")
 
     def add(self, name, duration, popularity, rate,
             ltime, mtime, loved_album, album_popularity, album_rate):

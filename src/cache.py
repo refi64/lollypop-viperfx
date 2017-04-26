@@ -147,7 +147,7 @@ class InfoCache:
                         del pixbuf
                     extract.savev(filepath_at_size, "jpeg",
                                   ["quality"], [str(Lp().settings.get_value(
-                                                'cover-quality').get_int32())])
+                                                "cover-quality").get_int32())])
                     del extract
                 return filepath_at_size
         except Exception as e:
@@ -212,7 +212,7 @@ class InfoCache:
             stream.close()
             pixbuf.savev(filepath+".jpg",
                          "jpeg", ["quality"], [str(Lp().settings.get_value(
-                                               'cover-quality').get_int32())])
+                                               "cover-quality").get_int32())])
             del pixbuf
 
     def remove(prefix, suffix):

@@ -32,7 +32,7 @@ class NotificationManager:
         self.__fully_initted = False
         self.__supports_actions = False
         self.__is_gnome = is_gnome()
-        self.__notification = GioNotify.async_init('Lollypop',
+        self.__notification = GioNotify.async_init("Lollypop",
                                                    self.__on_init_finish)
 
     def send(self, message, sub=""):
@@ -50,7 +50,7 @@ class NotificationManager:
         self.__notification.show_new(
             message,
             sub,
-            'org.gnome.Lollypop',
+            "org.gnome.Lollypop",
         )
 
         if self.__supports_actions:
@@ -72,33 +72,33 @@ class NotificationManager:
             @param caps as [str]
         """
         self.__notification.set_hint(
-            'category',
-            GLib.Variant('s', 'x-gnome.music'),
+            "category",
+            GLib.Variant("s", "x-gnome.music"),
         )
 
         self.__notification.set_hint(
-            'desktop-entry',
-            GLib.Variant('s', 'org.gnome.Lollypop'),
+            "desktop-entry",
+            GLib.Variant("s", "org.gnome.Lollypop"),
         )
 
-        if 'action-icons' in caps:
+        if "action-icons" in caps:
             self.__notification.set_hint(
-                'action-icons',
-                GLib.Variant('b', True),
+                "action-icons",
+                GLib.Variant("b", True),
             )
 
-        if 'persistence' in caps:
+        if "persistence" in caps:
             self.__notification.set_hint(
-                'transient',
-                GLib.Variant('b', True),
+                "transient",
+                GLib.Variant("b", True),
             )
 
-        if 'actions' in caps:
+        if "actions" in caps:
             self.__supports_actions = True
             self.__set_actions()
 
         Lp().player.connect(
-            'current-changed',
+            "current-changed",
             self.__on_current_changed,
         )
 
@@ -110,13 +110,13 @@ class NotificationManager:
         """
 
         self.__notification.add_action(
-            'media-skip-backward',
+            "media-skip-backward",
             _("Previous"),
             Lp().player.prev,
         )
 
         self.__notification.add_action(
-            'media-skip-forward',
+            "media-skip-forward",
             _("Next"),
             Lp().player.next,
         )
@@ -126,7 +126,7 @@ class NotificationManager:
             Send notification with track_id infos
             @param player Player
         """
-        if player.current_track.title == '' or self.__inhibitor:
+        if player.current_track.title == "" or self.__inhibitor:
             self.__inhibitor = False
             return
         state = Lp().window.get_window().get_state()
@@ -148,12 +148,12 @@ class NotificationManager:
             if cover_path is None:
                 cover_path = "org.gnome.Lollypop-symbolic"
 
-        if player.current_track.album.name == '':
+        if player.current_track.album.name == "":
             self.__notification.show_new(
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
                 _("by %s") %
-                '<b>' + ", ".join(player.current_track.artists) + '</b>',
+                "<b>" + ", ".join(player.current_track.artists) + "</b>",
                 cover_path)
         else:
             self.__notification.show_new(
@@ -161,6 +161,6 @@ class NotificationManager:
                 # TRANSLATORS: by refers to the artist,
                 # from to the album
                 _("by %s, from %s") %
-                ('<b>' + ", ".join(player.current_track.artists) + '</b>',
-                 '<i>' + player.current_track.album.name + '</i>'),
+                ("<b>" + ", ".join(player.current_track.artists) + "</b>",
+                 "<i>" + player.current_track.album.name + "</i>"),
                 cover_path)

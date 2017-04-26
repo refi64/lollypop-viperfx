@@ -26,8 +26,8 @@ class CommonPopover(Gtk.Popover):
             Connect map signal
         """
         Gtk.Popover.__init__(self)
-        self.connect('map', self.__on_map)
-        self.connect('unmap', self.__on_unmap)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
 #######################
 # PRIVATE             #

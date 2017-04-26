@@ -21,7 +21,7 @@ class QueueRow(Gtk.ListBoxRow):
         Queue row (a track)
     """
     __gsignals__ = {
-        'track-moved': (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
     }
 
     def __init__(self, track_id):
@@ -42,34 +42,34 @@ class QueueRow(Gtk.ListBoxRow):
         self.__row_widget.add(grid)
         self.__cover = Gtk.Image()
         self.__cover.set_no_show_all(True)
-        self.__cover.set_property('halign', Gtk.Align.CENTER)
-        self.__cover.set_property('valign', Gtk.Align.CENTER)
-        self.__cover.get_style_context().add_class('small-cover-frame')
+        self.__cover.set_property("halign", Gtk.Align.CENTER)
+        self.__cover.set_property("valign", Gtk.Align.CENTER)
+        self.__cover.get_style_context().add_class("small-cover-frame")
         # We force width with a Box
         box = Gtk.Box()
         box.set_homogeneous(True)
         box.add(self.__cover)
-        box.set_property('width-request', ArtSize.MEDIUM+2)
+        box.set_property("width-request", ArtSize.MEDIUM+2)
         box.show()
         self.__title_label = Gtk.Label()
         self.__title_label.set_margin_start(20)
-        self.__title_label.set_property('has-tooltip', True)
-        self.__title_label.set_property('hexpand', True)
-        self.__title_label.set_property('halign', Gtk.Align.START)
+        self.__title_label.set_property("has-tooltip", True)
+        self.__title_label.set_property("hexpand", True)
+        self.__title_label.set_property("halign", Gtk.Align.START)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__menu_button = Gtk.Button.new_from_icon_name(
-                                                         'user-trash-symbolic',
+                                                         "user-trash-symbolic",
                                                          Gtk.IconSize.MENU)
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px
-        self.__menu_button.set_property('height-request', 26)
+        self.__menu_button.set_property("height-request", 26)
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__menu_button.get_style_context().add_class('menu-button')
-        self.__menu_button.get_style_context().add_class('track-menu-button')
+        self.__menu_button.get_style_context().add_class("menu-button")
+        self.__menu_button.get_style_context().add_class("track-menu-button")
         self.__menu_button.get_image().set_opacity(0.2)
-        self.__menu_button.set_property('valign', Gtk.Align.END)
+        self.__menu_button.set_property("valign", Gtk.Align.END)
         self.__menu_button.show()
-        self.__menu_button.connect('clicked', self.__on_delete_clicked)
+        self.__menu_button.connect("clicked", self.__on_delete_clicked)
         grid.add(box)
         grid.add(self.__title_label)
         grid.add(self.__menu_button)
@@ -79,13 +79,13 @@ class QueueRow(Gtk.ListBoxRow):
         self.__header.set_column_spacing(5)
         self.__artist_label = Gtk.Label()
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__artist_label.get_style_context().add_class('dim-label')
+        self.__artist_label.get_style_context().add_class("dim-label")
         self.__album_label = Gtk.Label()
         self.__album_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__album_label.get_style_context().add_class('dim-label')
+        self.__album_label.get_style_context().add_class("dim-label")
         self.__header.add(self.__artist_label)
         self.__header.add(self.__album_label)
-        self.__title_label.set_property('valign', Gtk.Align.END)
+        self.__title_label.set_property("valign", Gtk.Align.END)
         grid.attach(self.__header, 1, 0, 1, 1)
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
@@ -93,12 +93,12 @@ class QueueRow(Gtk.ListBoxRow):
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect('drag-begin', self.__on_drag_begin)
-        self.connect('drag-data-get', self.__on_drag_data_get)
-        self.connect('drag-data-received', self.__on_drag_data_received)
-        self.connect('drag-motion', self.__on_drag_motion)
-        self.connect('drag-leave', self.__on_drag_leave)
-        self.get_style_context().add_class('trackrow')
+        self.connect("drag-begin", self.__on_drag_begin)
+        self.connect("drag-data-get", self.__on_drag_data_get)
+        self.connect("drag-data-received", self.__on_drag_data_received)
+        self.connect("drag-motion", self.__on_drag_motion)
+        self.connect("drag-leave", self.__on_drag_leave)
+        self.get_style_context().add_class("trackrow")
 
     def show_header(self, show):
         """
@@ -159,7 +159,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
-        widget.drag_source_set_icon_name('emblem-music-symbolic')
+        widget.drag_source_set_icon_name("emblem-music-symbolic")
 
     def __on_drag_data_get(self, widget, context, data, info, time):
         """
@@ -184,7 +184,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        self.emit('track-moved', int(data.get_text()), x, y)
+        self.emit("track-moved", int(data.get_text()), x, y)
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
@@ -197,11 +197,11 @@ class QueueRow(Gtk.ListBoxRow):
         """
         height = self.get_allocated_height()
         if y > height/2:
-            self.get_style_context().add_class('drag-up')
-            self.get_style_context().remove_class('drag-down')
+            self.get_style_context().add_class("drag-up")
+            self.get_style_context().remove_class("drag-down")
         else:
-            self.get_style_context().remove_class('drag-up')
-            self.get_style_context().add_class('drag-down')
+            self.get_style_context().remove_class("drag-up")
+            self.get_style_context().add_class("drag-down")
 
     def __on_drag_leave(self, widget, context, time):
         """
@@ -210,8 +210,8 @@ class QueueRow(Gtk.ListBoxRow):
             @param context as Gdk.DragContext
             @param time as int
         """
-        self.get_style_context().remove_class('drag-up')
-        self.get_style_context().remove_class('drag-down')
+        self.get_style_context().remove_class("drag-up")
+        self.get_style_context().remove_class("drag-down")
 
     def __on_delete_clicked(self, button):
         """
@@ -237,7 +237,7 @@ class QueueRow(Gtk.ListBoxRow):
             title = GLib.markup_escape_text(self._title.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
-            self.set_tooltip_text('')
+            self.set_tooltip_text("")
 
 
 class QueuePopover(Gtk.Popover):
@@ -251,17 +251,17 @@ class QueuePopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self.__on_map)
-        self.connect('unmap', self.__on_unmap)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/QueuePopover.ui')
+        builder.add_from_resource("/org/gnome/Lollypop/QueuePopover.ui")
         builder.connect_signals(self)
 
-        self.__clear_button = builder.get_object('clear-button')
+        self.__clear_button = builder.get_object("clear-button")
 
         self.__view = Gtk.ListBox()
-        self.__view.get_style_context().add_class('trackswidget')
+        self.__view.get_style_context().add_class("trackswidget")
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
         self.__view.connect("row-activated", self.__on_row_activated)
@@ -270,10 +270,10 @@ class QueuePopover(Gtk.Popover):
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect('drag-data-received', self.__on_drag_data_received)
+        self.connect("drag-data-received", self.__on_drag_data_received)
 
-        builder.get_object('scrolled').add(self.__view)
-        self.add(builder.get_object('widget'))
+        builder.get_object("scrolled").add(self.__view)
+        self.add(builder.get_object("widget"))
 
     def populate(self):
         """
@@ -333,8 +333,8 @@ class QueuePopover(Gtk.Popover):
         """
         row = QueueRow(track_id)
         row.set_labels()
-        row.connect('destroy', self.__on_child_destroyed)
-        row.connect('track-moved', self.__on_track_moved)
+        row.connect("destroy", self.__on_child_destroyed)
+        row.connect("track-moved", self.__on_track_moved)
         return row
 
     def __on_map(self, widget):
@@ -346,7 +346,7 @@ class QueuePopover(Gtk.Popover):
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
         self.populate()
-        self._signal_id1 = Lp().player.connect('current-changed',
+        self._signal_id1 = Lp().player.connect("current-changed",
                                                self.__on_current_changed)
 
     def __on_unmap(self, widget):
@@ -362,7 +362,7 @@ class QueuePopover(Gtk.Popover):
 
     def __on_current_changed(self, player):
         """
-            Pop first item in queue if it's current track id
+            Pop first item in queue if it"s current track id
             @param player object
         """
         if len(self.__view.get_children()) > 0:

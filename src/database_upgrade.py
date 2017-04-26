@@ -162,7 +162,7 @@ class DatabaseUpgrade:
         """
         with SqlCursor(Lp().db) as sql:
             sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
-            sql.execute('''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
+            sql.execute("""CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
                                               uri TEXT NOT NULL,
                                               duration INT,
@@ -175,15 +175,15 @@ class DatabaseUpgrade:
                                               ltime INT NOT NULL,
                                               mtime INT NOT NULL,
                                               persistent INT NOT NULL
-                                              DEFAULT 1)''')
+                                              DEFAULT 1)""")
 
-            sql.execute('''INSERT INTO tracks(id, name, uri, duration,
+            sql.execute("""INSERT INTO tracks(id, name, uri, duration,
                         tracknumber, discnumber, discname, album_id,
                         year, popularity, ltime, mtime, persistent) SELECT
                             id, name, filepath, duration,
                             tracknumber, discnumber, discname, album_id,
                             year, popularity, ltime, mtime, persistent FROM
-                          tmp_tracks''')
+                          tmp_tracks""")
             sql.execute("DROP TABLE tmp_tracks")
             result = sql.execute("SELECT rowid FROM tracks")
             for track_id in list(itertools.chain(*result)):
@@ -199,10 +199,10 @@ class DatabaseUpgrade:
             sql.commit()
         with SqlCursor(Lp().playlists) as sql:
             sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
-            sql.execute('''CREATE TABLE tracks (playlist_id INT NOT NULL,
-                                                uri TEXT NOT NULL)''')
-            sql.execute('''INSERT INTO tracks(playlist_id, uri) SELECT
-                            playlist_id, filepath FROM tmp_tracks''')
+            sql.execute("""CREATE TABLE tracks (playlist_id INT NOT NULL,
+                                                uri TEXT NOT NULL)""")
+            sql.execute("""INSERT INTO tracks(playlist_id, uri) SELECT
+                            playlist_id, filepath FROM tmp_tracks""")
             sql.execute("DROP TABLE tmp_tracks")
             result = sql.execute("SELECT uri FROM tracks")
             for path in list(itertools.chain(*result)):
@@ -230,14 +230,14 @@ class DatabaseUpgrade:
         """
             Get ride of paths
         """
-        paths = Lp().settings.get_value('music-path')
+        paths = Lp().settings.get_value("music-path")
         uris = []
         for path in paths:
             uris.append(GLib.filename_to_uri(path))
-        Lp().settings.set_value('music-uris', GLib.Variant('as', uris))
+        Lp().settings.set_value("music-uris", GLib.Variant("as", uris))
         with SqlCursor(Lp().db) as sql:
             sql.execute("ALTER TABLE albums RENAME TO tmp_albums")
-            sql.execute('''CREATE TABLE albums (
+            sql.execute("""CREATE TABLE albums (
                                               id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
                                               no_album_artist BOOLEAN NOT NULL,
@@ -245,13 +245,13 @@ class DatabaseUpgrade:
                                               uri TEXT NOT NULL,
                                               popularity INT NOT NULL,
                                               synced INT NOT NULL,
-                                              mtime INT NOT NULL)''')
+                                              mtime INT NOT NULL)""")
 
-            sql.execute('''INSERT INTO albums(id, name, no_album_artist,
+            sql.execute("""INSERT INTO albums(id, name, no_album_artist,
                         year, uri, popularity, synced, mtime) SELECT
                             id, name, no_album_artist,
                             year, path, popularity, synced, mtime FROM
-                            tmp_albums''')
+                            tmp_albums""")
             sql.execute("DROP TABLE tmp_albums")
             result = sql.execute("SELECT rowid, uri FROM albums")
             for (rowid, uri) in result:
