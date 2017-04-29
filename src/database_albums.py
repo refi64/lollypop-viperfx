@@ -671,7 +671,7 @@ class AlbumsDatabase:
                        FROM tracks\
                        WHERE tracks.album_id=?\
                        AND tracks.discnumber=?\
-                       AND discname!="""
+                       AND discname!=''"
             filters = (album_id, disc)
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
