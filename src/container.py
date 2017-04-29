@@ -325,7 +325,9 @@ class Container:
         self.__list_two = SelectionList()
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
         self.__list_one.connect("populated", self.__on_list_populated)
+        self.__list_one.connect("pass-focus", self.__on_pass_focus)
         self.__list_two.connect("item-selected", self.__on_list_two_selected)
+        self.__list_two.connect("pass-focus", self.__on_pass_focus)
 
         self.__progress = ProgressBar()
         self.__progress.set_property("hexpand", True)
@@ -777,7 +779,7 @@ class Container:
     def __on_list_populated(self, selection_list):
         """
             Add device to list one and update db
-            @param selection list as SelectionList
+            @param selection_list as SelectionList
         """
         for dev in self.__devices.values():
             self.__list_one.add_value((dev.id, dev.name))
@@ -785,7 +787,7 @@ class Container:
     def __on_list_two_selected(self, selection_list):
         """
             Update view based on selected object
-            @param list as SelectionList
+            @param selection_list as SelectionList
         """
         genre_ids = self.__list_one.selected_ids
         selected_ids = self.__list_two.selected_ids
@@ -799,6 +801,17 @@ class Container:
             self.__update_view_albums(genre_ids, selected_ids)
         else:
             self.__update_view_artists(genre_ids, selected_ids)
+
+    def __on_pass_focus(self, selection_list):
+        """
+            Pass focus to other list
+            @param selection_list as SelectionList
+        """
+        if selection_list == self.__list_one:
+            if self.__list_two.is_visible():
+                self.__list_two.grab_focus()
+        else:
+            self.__list_one.grab_focus()
 
     def __on_genre_updated(self, scanner, genre_id, add):
         """

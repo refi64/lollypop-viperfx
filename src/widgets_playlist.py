@@ -576,7 +576,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         playlists = Lp().playlists.get()
         self.__append_playlists(playlists)
-        GLib.idle_add(self.__get_focus)
 
     def add_new_playlist(self):
         """
@@ -978,5 +977,4 @@ class PlaylistEditWidget(Gtk.Bin):
                                  "user-trash-symbolic", track.id])
             GLib.idle_add(self.__append_track, track_ids)
         else:
-            self.__view.grab_focus()
             self.__in_thread = False

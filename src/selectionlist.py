@@ -27,6 +27,7 @@ class SelectionList(Gtk.Overlay):
     __gsignals__ = {
         "item-selected": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "pass-focus": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     def __init__(self, sidebar=True):
@@ -241,6 +242,12 @@ class SelectionList(Gtk.Overlay):
         else:
             self.__selection.unselect_all()
 
+    def grab_focus(self):
+        """
+            Grab focus on treeview
+        """
+        self.__view.grab_focus()
+
     @property
     def selected_ids(self):
         """
@@ -305,7 +312,21 @@ class SelectionList(Gtk.Overlay):
 #######################
 # PROTECTED           #
 #######################
+    def _on_key_press_event(self, entry, event):
+        """
+            Forward to popover history listbox if needed
+            @param entry as Gtk.Entry
+            @param event as Gdk.Event
+        """
+        if event.keyval in [Gdk.KEY_Left, Gdk.KEY_Right]:
+            self.emit("pass-focus")
+
     def _on_button_press_event(self, view, event):
+        """
+            Handle modifier
+            @param view as Gtk.TreeView
+            @param event as Gdk.Event
+        """
         view.grab_focus()
         state = event.get_state()
         if state & Gdk.ModifierType.CONTROL_MASK or\
@@ -313,6 +334,11 @@ class SelectionList(Gtk.Overlay):
             self.__modifier = True
 
     def _on_button_release_event(self, view, event):
+        """
+            Handle modifier
+            @param view as Gtk.TreeView
+            @param event as Gdk.Event
+        """
         self.__modifier = False
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
