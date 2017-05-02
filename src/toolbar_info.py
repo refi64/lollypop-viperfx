@@ -32,7 +32,6 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)
         self.__pop_tunein = None
-        self.__pop_info = None
         self.__timeout_id = None
         self.__width = 0
 
@@ -149,15 +148,14 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             expopover.populate()
             expopover.show()
         elif Lp().player.current_track.id is not None:
-            if self.__pop_info is None:
-                from lollypop.pop_info import InfoPopover
-                if Lp().player.current_track.id == Type.RADIOS:
-                    view_type = Type.RADIOS
-                else:
-                    view_type = Type.ALBUMS
-                self.__pop_info = InfoPopover([], view_type)
-                self.__pop_info.set_relative_to(self._infobox)
-            self.__pop_info.show()
+            from lollypop.pop_info import InfoPopover
+            if Lp().player.current_track.id == Type.RADIOS:
+                view_type = Type.RADIOS
+            else:
+                view_type = Type.ALBUMS
+            pop_info = InfoPopover([], view_type)
+            pop_info.set_relative_to(self._infobox)
+            pop_info.show()
 
     def __on_loading_changed(self, player, show):
         """
