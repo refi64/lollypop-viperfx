@@ -1,7 +1,7 @@
 #APP = $(foreach file, $(wildcard *.json), $(subst .json,.app,$(file)))
 REPO = repo
 APP = $(patsubst %.json,%,$(wildcard *.json))
-VER = 0.9.231
+VER = 0.9.232
 
 all: app
 build: app
