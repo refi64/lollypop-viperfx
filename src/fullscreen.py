@@ -16,11 +16,11 @@ from datetime import datetime
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_next import NextPopover
-from lollypop.controllers import InfosController, PlaybackController
+from lollypop.controllers import InfoController, PlaybackController
 from lollypop.controllers import ProgressController
 
 
-class FullScreen(Gtk.Window, InfosController,
+class FullScreen(Gtk.Window, InfoController,
                  PlaybackController, ProgressController):
     """
         Show a fullscreen window showing current track context
@@ -57,7 +57,7 @@ class FullScreen(Gtk.Window, InfosController,
             artsize = int(ArtSize.FULLSCREEN*geometry.width/1920)
         else:
             artsize = int(ArtSize.FULLSCREEN*geometry.height/1920)
-        InfosController.__init__(self, artsize)
+        InfoController.__init__(self, artsize)
 
         self._play_btn = builder.get_object("play_btn")
         self._next_btn = builder.get_object("next_btn")
@@ -152,7 +152,7 @@ class FullScreen(Gtk.Window, InfosController,
             Update infos and show/hide popover
             @param player as Player
         """
-        InfosController.on_current_changed(self, player)
+        InfoController.on_current_changed(self, player)
         ProgressController.on_current_changed(self, player)
         if player.current_track.id is not None:
             album_name = player.current_track.album.name

@@ -12,12 +12,12 @@
 
 from gi.repository import Gtk, Gdk, GLib
 
-from lollypop.controllers import InfosController
+from lollypop.controllers import InfoController
 from lollypop.touch_helper import TouchHelper
 from lollypop.define import Lp, Type, ArtSize
 
 
-class ToolbarInfo(Gtk.Bin, InfosController):
+class ToolbarInfo(Gtk.Bin, InfoController):
     """
         Informations toolbar
     """
@@ -27,7 +27,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        InfosController.__init__(self, ArtSize.SMALL)
+        InfoController.__init__(self, ArtSize.SMALL)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)

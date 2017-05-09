@@ -12,11 +12,11 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.controllers import InfosController
+from lollypop.controllers import InfoController
 from lollypop.define import Lp, WindowSize
 
 
-class MiniPlayer(Gtk.Bin, InfosController):
+class MiniPlayer(Gtk.Bin, InfoController):
     """
         Toolbar end
     """
@@ -26,7 +26,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        InfosController.__init__(self, WindowSize.SMALL)
+        InfoController.__init__(self, WindowSize.SMALL)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
         builder.connect_signals(self)

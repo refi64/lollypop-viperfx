@@ -323,7 +323,7 @@ class ProgressController:
                     seconds_to_string(player.current_track.duration))
 
 
-class InfosController:
+class InfoController:
     """
         Infos controller (for toolbars)
     """
