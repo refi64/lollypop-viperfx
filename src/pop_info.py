@@ -78,18 +78,25 @@ class InfoPopover(Gtk.Popover):
             builder.get_object("reload").get_style_context().add_class(
                                                                     "selected")
 
+    def set_view_type(self, view_type):
+        """
+            Set current view type
+            @param view_type as Type
+        """
         if view_type == Type.ALBUMS:
             self.__stack.get_child_by_name("albums").show()
+        else:
+            self.__stack.get_child_by_name("albums").hide()
         show_bio = view_type != Type.RADIOS
         if InfoPopover.Wikipedia is not None and show_bio:
-            builder.get_object("scrollwikipedia").show()
+            self.__stack.get_child_by_name("wikipedia").show()
         if Lp().lastfm is not None and\
                 not Lp().settings.get_value("use-librefm") and show_bio:
-            builder.get_object("scrolllastfm").show()
+            self.__stack.get_child_by_name("lastfm").show()
         if InfoPopover.WebView is not None and get_network_available():
-            builder.get_object("scrollduck").show()
-        if not artist_ids:
-            builder.get_object("scrolllyrics").show()
+            self.__stack.get_child_by_name("duck").show()
+        if not self.__artist_ids:
+            self.__stack.get_child_by_name("lyrics").show()
         self.__stack.set_visible_child_name(
             Lp().settings.get_value("infoswitch").get_string())
 
@@ -221,7 +228,6 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
-        self._on_child_unmap(widget)
         Lp().settings.set_value("infoswitch",
                                 GLib.Variant("s", "lyrics"))
         self.__jump_button.hide()
@@ -240,6 +246,8 @@ class InfoPopover(Gtk.Popover):
             lyrics = reader.get_lyrics(tags)
         if lyrics or InfoPopover.WebView is None\
                 or not get_network_available():
+            # Destroy previous widgets
+            self._on_child_unmap(widget)
             label = Gtk.Label()
             label.set_vexpand(True)
             label.set_hexpand(True)
@@ -273,13 +281,21 @@ class InfoPopover(Gtk.Popover):
                 search = GLib.uri_escape_string(artists + " " + title,
                                                 None, True)
             url = "http://genius.com/search?q=%s" % search
-            # Delayed load due to WebKit memory loading and Gtk animation
-            web = self.WebView(True, True)
-            web.add_word("search")
-            web.add_word("lyrics")
-            web.show()
-            widget.add(web)
-            GLib.timeout_add(250, web.load, url, OpenLink.OPEN)
+            # If we do not have a webview in children, create a new one
+            # Else load url
+            children = widget.get_children()
+            if not children or not isinstance(children[0], self.WebView):
+                # Destroy previous widgets
+                self._on_child_unmap(widget)
+                web = self.WebView(True, True)
+                web.add_word("search")
+                web.add_word("lyrics")
+                web.show()
+                widget.add(web)
+                # Delayed load due to WebKit memory loading and Gtk animation
+                GLib.timeout_add(250, web.load, url, OpenLink.NEW)
+            elif url != children[0].url:
+                children[0].load(url, OpenLink.NEW)
 
     def _on_map_duck(self, widget):
         """
@@ -306,11 +322,19 @@ class InfoPopover(Gtk.Popover):
                 search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
-        # Delayed load due to WebKit memory loading and Gtk animation
-        web = self.WebView(False, True)
-        web.show()
-        widget.add(web)
-        GLib.timeout_add(250, web.load, url, OpenLink.NEW)
+        # If we do not have a webview in children, create a new one
+        # Else load url
+        children = widget.get_children()
+        if not children or not isinstance(children[0], self.WebView):
+            # Destroy previous widgets
+            self._on_child_unmap(widget)
+            web = self.WebView(False, True)
+            web.show()
+            widget.add(web)
+            # Delayed load due to WebKit memory loading and Gtk animation
+            GLib.timeout_add(250, web.load, url, OpenLink.NEW)
+        elif url != children[0].url:
+            children[0].load(url, OpenLink.NEW)
 
     def _on_child_unmap(self, widget):
         """

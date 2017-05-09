@@ -88,7 +88,7 @@ class WebView(Gtk.Stack):
 
     def add_word(self, word):
         """
-            Add a word to allowed urls, only urls with this word will
+            Add a word to allowed urls, only urls with this words will
             get a navigation token
         """
         self.__allowed_words.append(word)

@@ -47,7 +47,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrolllastfm">
+              <object class="GtkScrolledWindow" id="lastfm">
                 <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <child>
@@ -55,7 +55,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkGrid" id="lastfm">
+                      <object class="GtkGrid">
              m          <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <property name="can_focus">False</property>
@@ -73,7 +73,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrollwikipedia">
+              <object class="GtkScrolledWindow" id="wikipedia">
                 <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <child>
@@ -81,7 +81,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkGrid" id="wikipedia">
+                      <object class="GtkGrid">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <property name="can_focus">False</property>
@@ -99,7 +99,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrolllyrics">
+              <object class="GtkScrolledWindow" id="lyrics">
                 <property name="visible">False</property>
                 <property name="can_focus">True</property>
 		<property name="vexpand">True</property>
@@ -108,12 +108,11 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkGrid" id="lyrics">
+                      <object class="GtkGrid">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <property name="can_focus">False</property>
                         <signal name="map" handler="_on_map_lyrics" swapped="no"/>
-                        <signal name="unmap" handler="_on_child_unmap" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -126,7 +125,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrollduck">
+              <object class="GtkScrolledWindow" id="duck">
                 <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <child>
@@ -134,12 +133,11 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkGrid" id="duck">
+                      <object class="GtkGrid">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <property name="can_focus">False</property>
                         <signal name="map" handler="_on_map_duck" swapped="no"/>
-                        <signal name="unmap" handler="_on_child_unmap" swapped="no"/>
                       </object>
                     </child>
                   </object>

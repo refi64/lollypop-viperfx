@@ -155,7 +155,8 @@ class ToolbarInfo(Gtk.Bin, InfoController):
                     view_type = Type.RADIOS
                 else:
                     view_type = Type.ALBUMS
-                self.__pop_info = InfoPopover([], view_type)
+                self.__pop_info = InfoPopover([])
+                self.__pop_info.set_view_type(view_type)
                 self.__pop_info.set_relative_to(self._infobox)
             self.__pop_info.show()
 
