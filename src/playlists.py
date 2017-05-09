@@ -204,7 +204,7 @@ class Playlists(GObject.GObject):
                                   main.tracks.uri",
                                  (playlist_id,))
             v = result.fetchone()
-            if v is not None:
+            if v is not None and v[0] is not None:
                 return v[0]
             return 0
 
