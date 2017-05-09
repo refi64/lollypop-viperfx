@@ -70,7 +70,10 @@ class PlaylistsView(View):
         # Connect signals after ui init
         # "split-button" will emit a signal otherwise
         builder.connect_signals(self)
-        self.__set_duration()
+        # No duration for non user playlists
+        # FIXME
+        if playlist_ids[0] > 0:
+            self.__set_duration()
 
     def populate(self, tracks):
         """
