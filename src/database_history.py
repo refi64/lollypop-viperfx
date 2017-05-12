@@ -91,8 +91,8 @@ class History:
                              (name, duration, popularity, rate, ltime, mtime,\
                              loved_album, album_popularity, album_rate)\
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            (name, duration, popularity, rate, loved_album,
-                             ltime, mtime, album_popularity, album_rate))
+                            (name, duration, popularity, rate, ltime, mtime,
+                             loved_album, album_popularity, album_rate))
             sql.commit()
 
     def get(self, name, duration):
