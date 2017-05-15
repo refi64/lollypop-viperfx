@@ -60,14 +60,16 @@ class Application(Gtk.Application):
             - Create main window
     """
 
-    def __init__(self):
+    def __init__(self, version):
         """
             Create application
+            @param version as str
         """
         Gtk.Application.__init__(
                             self,
                             application_id="org.gnome.Lollypop",
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        self.__version = version
         self.set_property("register-session", True)
         GLib.setenv("PULSE_PROP_media.role", "music", True)
         GLib.setenv("PULSE_PROP_application.icon_name",
@@ -112,6 +114,10 @@ class Application(Gtk.Application):
         self.add_main_option("emulate-phone", b"e", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE,
                              "Emulate an Android Phone",
+                             None)
+        self.add_main_option("version", b"V", GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE,
+                             "Lollypop version",
                              None)
         self.connect("command-line", self.__on_command_line)
         self.connect("activate", self.__on_activate)
@@ -418,6 +424,9 @@ class Application(Gtk.Application):
             self.player.prev()
         elif options.contains("emulate-phone"):
             self.window.add_fake_phone()
+        elif options.contains("version"):
+            print("Lollypop %s" % self.__version)
+            exit(0)
         elif len(args) > 1:
             self.player.clear_externals()
             for uri in args[1:]:

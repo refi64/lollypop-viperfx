@@ -48,7 +48,7 @@ lollypop: lollypop.in Makefile
 		-e s!\@libexecdir\@!$(libexecdir)!	\
 		-e s!\@libdir\@!$(libdir)!		\
 		-e s!\@pkglibdir\@!$(pkglibdir)!	\
-        -e s!\@PYTHON\@!$(PYTHON)!	\
+        	-e s!\@PYTHON\@!$(PYTHON)!	\
 		-e s!\@localedir\@!$(localedir)!	\
 		-e s!\@pythondir\@!$(pythondir)!	\
 		-e s!\@pyexecdir\@!$(pyexecdir)!	\
