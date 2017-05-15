@@ -227,7 +227,8 @@ class ToolbarEnd(Gtk.Bin):
         """
         active = self.__party_button.get_active()
         self.__shuffle_button.set_sensitive(not active)
-        if not Lp().settings.get_value("dark-ui"):
+        if not Lp().gtk_application_prefer_dark_theme and\
+                not Lp().settings.get_value("dark-ui"):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp().player.set_party(active)
