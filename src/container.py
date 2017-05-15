@@ -268,10 +268,23 @@ class Container:
     def show_artists_albums(self, artist_ids):
         """
             Show albums from artists
+            @param artist id as int
         """
-        self.__update_view_artists([], artist_ids)
-        GLib.idle_add(self.__list_two.hide)
         GLib.idle_add(self.__list_one.select_ids, [])
+        GLib.idle_add(self.__list_two.select_ids, [])
+        if self.__show_genres:
+            # Get artist genres
+            genre_ids = []
+            for artist_id in artist_ids:
+                album_ids = Lp().artists.get_albums(artist_ids)
+                for album_id in album_ids:
+                    for genre_id in Lp().albums.get_genre_ids(album_id):
+                        if genre_id not in genre_ids:
+                            genre_ids.append(genre_id)
+            # Select genres
+            GLib.idle_add(self.__list_one.select_ids, genre_ids)
+        # Select artists
+        GLib.idle_add(self.__list_two.select_ids, artist_ids)
 
 ##############
 # PROTECTED  #
