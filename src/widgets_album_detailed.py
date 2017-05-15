@@ -45,6 +45,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
+        self._rounded_class = "rounded-icon-small"
         self._album.set_artists(artist_ids)
         self.__width = None
         self.__context = None
@@ -132,23 +133,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 # Here we are working around default CoverBox ui
                 # Do we really need to have another ui file?
                 # So just hack values on the fly
-                self._cover.set_halign(Gtk.Align.CENTER)
                 self._cover.get_style_context().add_class("small-cover-frame")
-                self.__coverbox.set_margin_bottom(5)
-                # We want a smaller button, so reload image
-                self._rounded_class = "rounded-icon-small"
-                self._play_button.set_from_icon_name(
-                                               "media-playback-start-symbolic",
-                                               Gtk.IconSize.MENU)
                 overlay_grid = builder.get_object("overlay-grid")
                 overlay_grid.set_margin_bottom(2)
                 overlay_grid.set_margin_end(2)
                 overlay_grid.set_column_spacing(0)
-                self._play_button.set_margin_start(2)
-                self._play_button.set_margin_bottom(2)
                 play_event = builder.get_object("play-event")
-                play_event.set_property("halign", Gtk.Align.START)
-                play_event.set_property("valign", Gtk.Align.END)
+                play_event.set_margin_start(2)
+                play_event.set_margin_bottom(2)
                 album_info.attach(self.__coverbox, 0, 0, 1, 1)
                 artist_label.set_text(", ".join(self._album.artists))
                 artist_label.show()
