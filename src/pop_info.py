@@ -89,14 +89,22 @@ class InfoPopover(Gtk.Popover):
             self.__stack.get_child_by_name("albums").hide()
         show_bio = view_type != Type.RADIOS
         if InfoPopover.Wikipedia is not None and show_bio:
+            self.__stack.get_child_by_name("wikipedia").hide()
+        else:
             self.__stack.get_child_by_name("wikipedia").show()
         if Lp().lastfm is not None and\
                 not Lp().settings.get_value("use-librefm") and show_bio:
             self.__stack.get_child_by_name("lastfm").show()
+        else:
+            self.__stack.get_child_by_name("lastfm").hide()
         if InfoPopover.WebView is not None and get_network_available():
             self.__stack.get_child_by_name("duck").show()
+        else:
+            self.__stack.get_child_by_name("duck").hide()
         if not self.__artist_ids:
             self.__stack.get_child_by_name("lyrics").show()
+        else:
+            self.__stack.get_child_by_name("lyrics").hide()
         self.__stack.set_visible_child_name(
             Lp().settings.get_value("infoswitch").get_string())
 
