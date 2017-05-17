@@ -204,15 +204,15 @@ class MPRIS(Server):
             Lp().player.play()
 
     def SetPosition(self, track_id, position):
-        Lp().player.seek(position / 1000000)
+        Lp().player.seek(position / Gst.SECOND)
 
     def OpenUri(self, uri):
         pass
 
     def Seek(self, offset):
         # Convert position in seconds
-        position = Lp().player.position / 1000000 / 60
-        Lp().player.seek(position + offset / 1000000)
+        position = Lp().player.position / Gst.SECOND
+        Lp().player.seek(position + offset / Gst.SECOND)
 
     def Seeked(self, position):
         self.__bus.emit_signal(
@@ -249,7 +249,7 @@ class MPRIS(Server):
         elif property_name == "Volume":
             return GLib.Variant("d", Lp().player.volume)
         elif property_name == "Position":
-            return GLib.Variant("x", Lp().player.position / 60)
+            return GLib.Variant("x", Lp().player.position)
         elif property_name in ["CanGoNext", "CanGoPrevious",
                                "CanPlay", "CanPause"]:
             return GLib.Variant("b", Lp().player.current_track.id is not None)
@@ -325,7 +325,7 @@ class MPRIS(Server):
             if Lp().player.current_track.id >= 0:
                 track_id = Lp().player.current_track.id
             else:
-                track_id = randint(10000000, 90000000)
+                track_id = randint(Gst.SECOND0, 90000000)
             self.__metadata["mpris:trackid"] = self.__get_media_id(track_id)
             track_number = Lp().player.current_track.number
             if track_number is None:
@@ -345,8 +345,8 @@ class MPRIS(Server):
                                        "as",
                                        Lp().player.current_track.album_artists)
             self.__metadata["mpris:length"] = GLib.Variant(
-                                  "x",
-                                  Lp().player.current_track.duration * 1000000)
+                               "x",
+                               Lp().player.current_track.duration * Gst.SECOND)
             self.__metadata["xesam:genre"] = GLib.Variant(
                                               "as",
                                               Lp().player.current_track.genres)
@@ -380,7 +380,7 @@ class MPRIS(Server):
                 self.__metadata["mpris:artUrl"] = GLib.Variant("s", "")
 
     def __on_seeked(self, player, position):
-        self.Seeked(position * 1000000)
+        self.Seeked(position * Gst.SECOND)
 
     def __on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE,

@@ -196,14 +196,14 @@ class BinPlayer(BasePlayer):
             Return bin playback position
             @HACK handle crossefade here, as we know we"re going to be
             called every seconds
-            @return position as int
+            @return position in Gst.SECOND
         """
-        position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
+        position = self._playbin.query_position(Gst.Format.TIME)[1]
         if self._crossfading and self._current_track.duration > 0:
-            duration = self._current_track.duration - position / 1000000
+            duration = self._current_track.duration * Gst.SECOND - position
             if duration < Lp().settings.get_value("mix-duration").get_int32():
                 self.__do_crossfade(duration)
-        return position * 60
+        return position
 
     @property
     def current_track(self):

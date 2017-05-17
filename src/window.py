@@ -426,14 +426,14 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         seconds = param.get_int32()
         position = Lp().player.position
-        seek = position/1000000/60+seconds
+        seek = position + seconds * Gst.SECOND
         if seek < 0:
             seek = 0
         if seek > Lp().player.current_track.duration:
             seek = Lp().player.current_track.duration - 2
         Lp().player.seek(seek)
         if Lp().player.current_track.id is not None:
-            self.__toolbar.update_position(seek*60)
+            self.__toolbar.update_position(seek)
 
     def __on_player_action(self, action, param):
         """
