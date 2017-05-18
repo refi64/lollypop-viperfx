@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, Gst, GLib
+from gi.repository import Gio, Gst, GLib, Gtk
 
 from random import randint
 
@@ -177,7 +177,7 @@ class MPRIS(Server):
 
     def Raise(self):
         self.__app.window.setup_window()
-        self.__app.window.present()
+        self.__app.window.present_with_time(Gtk.get_current_event_time())
 
     def Quit(self):
         self.__app.quit()

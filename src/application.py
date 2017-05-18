@@ -438,7 +438,7 @@ class Application(Gtk.Application):
                 parser.connect("entry-parsed", self.__on_entry_parsed)
                 parser.parse_async(uri, True, None, None)
         elif self.window is not None and self.window.is_visible():
-            self.window.present()
+            self.window.present_with_time(Gtk.get_current_event_time())
         elif self.window is not None:
             # self.window.setup_window()
             # self.window.present()
