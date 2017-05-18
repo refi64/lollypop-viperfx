@@ -99,7 +99,7 @@ class Base:
 
         rate = 0
         if self.id >= 0:
-            rate = self.db.rate(self.id)
+            rate = self.db.get_rate(self.id)
         elif self.id == Type.RADIOS:
             radios = Radios()
             rate = radios.get_rate(self._album_artists[0])
