@@ -169,7 +169,7 @@ class MPRIS(dbus.service.Object):
                     "/org/lollypop/%s" % Lp().player.current_track.id)
             else:
                 # MPRIS SUX
-                track_id = randint(Gst.SECOND, 90000000)
+                track_id = randint(10000000, 90000000)
                 self._metadata["mpris:trackid"] = dbus.ObjectPath(
                     "/org/lollypop/%s" % track_id)
             track_number = Lp().player.current_track.number

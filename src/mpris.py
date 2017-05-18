@@ -325,7 +325,7 @@ class MPRIS(Server):
             if Lp().player.current_track.id >= 0:
                 track_id = Lp().player.current_track.id
             else:
-                track_id = randint(Gst.SECOND, 90000000)
+                track_id = randint(10000000, 90000000)
             self.__metadata["mpris:trackid"] = self.__get_media_id(track_id)
             track_number = Lp().player.current_track.number
             if track_number is None:
