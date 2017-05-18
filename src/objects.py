@@ -49,13 +49,6 @@ class Base:
             else:
                 return attr_value
 
-    def get_rate(self):
-        """
-            Get rate
-            @return int between -1 and 5
-        """
-        return self.db.get_rate(self.id)
-
     def get_popularity(self):
         """
             Get popularity
@@ -76,13 +69,6 @@ class Base:
                 popularity = radios.get_popularity(self._album_artists[0])
         return popularity * 5 / avg_popularity + 0.5
 
-    def set_rate(self, rate):
-        """
-            Set rate
-            @param rate as int between -1 and 5
-        """
-        self.db.set_rate(self.id, rate)
-
     def set_popularity(self, popularity):
         """
             Set popularity
@@ -102,6 +88,33 @@ class Base:
                 radios.set_popularity(self._album_artists[0], popularity)
         except Exception as e:
             print("Base::set_popularity(): %s" % e)
+
+    def get_rate(self):
+        """
+            Get rate
+            @return int
+        """
+        if self.id is None or self.id == Type.EXTERNALS:
+            return 0
+
+        rate = 0
+        if self.id >= 0:
+            rate = self.db.rate(self.id)
+        elif self.id == Type.RADIOS:
+            radios = Radios()
+            rate = radios.get_rate(self._album_artists[0])
+        return rate
+
+    def set_rate(self, rate):
+        """
+            Set rate
+            @param rate as int between -1 and 5
+        """
+        if self.id == Type.RADIOS:
+            radios = Radios()
+            radios.set_rate(self._album_artists[0], rate)
+        else:
+            self.db.set_rate(self.id, rate)
 
 
 class Disc:

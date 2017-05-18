@@ -18,6 +18,7 @@ from time import time
 from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
 from lollypop.database_history import History
+from lollypop.radios import Radios
 from lollypop.define import Lp
 
 
@@ -55,6 +56,7 @@ class DatabaseUpgrade:
             18: self.__upgrade_18,
             19: self.__upgrade_19,
             20: self.__upgrade_20,
+            21: self.__upgrade_21,
                          }
 
     """
@@ -405,3 +407,12 @@ class DatabaseUpgrade:
             sql.commit()
         # Clean all charts
         Lp().db.del_tracks(Lp().tracks.get_old_charts_track_ids(mtime*2))
+
+    def __upgrade_21(self):
+        """
+            Add rate to radios
+        """
+        with SqlCursor(Radios()) as sql:
+            sql.execute("ALTER TABLE radios ADD rate\
+                         INT NOT NULL DEFAULT -1")
+            sql.commit()

@@ -15,6 +15,7 @@ from gi.repository import GObject, GLib, Gio, TotemPlParser
 import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
+from lollypop.define import Type
 from lollypop.lio import Lio
 
 
@@ -28,7 +29,8 @@ class Radios(GObject.GObject):
     create_radios = """CREATE TABLE radios (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
-                            url TEXY NOT NULL,
+                            url TEXT NOT NULL,
+                            rate INT NOT NULL DEFAULT -1,
                             popularity INT NOT NULL)"""
     __gsignals__ = {
         # Add, rename, delete
@@ -137,7 +139,8 @@ class Radios(GObject.GObject):
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name, url\
                                   FROM radios\
-                                  ORDER BY popularity DESC, name")
+                                  ORDER BY rate DESC,\
+                                  popularity DESC, name")
             return list(result)
 
     def get_url(self, name):
@@ -203,6 +206,21 @@ class Radios(GObject.GObject):
             except:  # Database is locked
                 pass
 
+    def set_rate(self, name, rate):
+        """
+            Set rate
+            @param name as str
+            @param rate as int
+        """
+        with SqlCursor(self) as sql:
+            try:
+                sql.execute("UPDATE radios SET\
+                            rate=? WHERE name=?",
+                            (rate, name))
+                sql.commit()
+            except:  # Database is locked
+                pass
+
     def get_id(self, name):
         """
             Get radio id by name
@@ -239,12 +257,27 @@ class Radios(GObject.GObject):
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT popularity\
-                                 FROM radios WHERE\
-                                 name=?", (name,))
+                                 FROM radios\
+                                 WHERE name=?", (name,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return 0
+
+    def get_rate(self, name):
+        """
+            Get radio rate
+            @param name as str
+            @return rate as int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rate\
+                                  FROM radios\
+                                  WHERE name=?", (name,))
+            v = result.fetchone()
+            if v and v[0]:
+                return v[0]
+            return Type.NONE
 
     def get_cursor(self):
         """

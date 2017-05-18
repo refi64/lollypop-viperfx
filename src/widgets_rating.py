@@ -156,9 +156,11 @@ class RatingWidget(Gtk.Bin):
         if isinstance(self.__object, Track):
             Lp().player.emit("rate-changed")
         # Save to tags if needed
+        # FIXME We really need a radio object
         if Lp().settings.get_value("save-to-tags") and\
                 GLib.find_program_in_path("kid3-cli") is not None and\
                 isinstance(self.__object, Track) and\
+                self.__object.id >= 0 and\
                 not self.__object.is_web:
             if pop == 0:
                 value = 0
