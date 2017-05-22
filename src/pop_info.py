@@ -89,9 +89,9 @@ class InfoPopover(Gtk.Popover):
             self.__stack.get_child_by_name("albums").hide()
         show_bio = view_type != Type.RADIOS
         if InfoPopover.Wikipedia is not None and show_bio:
-            self.__stack.get_child_by_name("wikipedia").hide()
-        else:
             self.__stack.get_child_by_name("wikipedia").show()
+        else:
+            self.__stack.get_child_by_name("wikipedia").hide()
         if Lp().lastfm is not None and\
                 not Lp().settings.get_value("use-librefm") and show_bio:
             self.__stack.get_child_by_name("lastfm").show()
