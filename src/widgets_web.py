@@ -70,9 +70,6 @@ class WebView(Gtk.Stack):
                                   " BlackBerry) AppleWebKit2/537.36 Chromium"
                                   "/35.0.1870.2 Mobile Safari/537.36")
         self.__view.set_settings(settings)
-        # FIXME TLS is broken in WebKit2, don"t know how to fix this
-        self.__view.get_context().set_tls_errors_policy(
-                                                WebKit2.TLSErrorsPolicy.IGNORE)
         self.__view.connect("decide-policy", self.__on_decide_policy)
         self.__view.connect("context-menu", self.__on_context_menu)
         self.__view.set_property("hexpand", True)
