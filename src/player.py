@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, Gst
 
 from pickle import load
 from random import choice
@@ -75,8 +75,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if self._locked:
             return
+        smart_prev = Lp().settings.get_value("smart-previous")
         if self._prev_track.id is not None:
-            self.load(self._prev_track)
+            if smart_prev and self.position / Gst.SECOND > 2:
+                self.seek(0)
+            else:
+                self.load(self._prev_track)
         else:
             self.stop()
 
