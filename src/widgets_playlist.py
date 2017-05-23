@@ -593,7 +593,12 @@ class PlaylistsManagerWidget(Gtk.Bin):
             name = _("New playlist ") + str(count)
         Lp().playlists.add(name)
         playlist_id = Lp().playlists.get_id(name)
-        self.__model.append([True, name, "user-trash-symbolic", playlist_id])
+        iterator = self.__model.append([True,
+                                        name,
+                                        "user-trash-symbolic",
+                                        playlist_id])
+        self.__view.get_selection().select_iter(iterator)
+        self.__view.grab_focus()
         self.__set_current_object(playlist_id, True)
 
 #######################
