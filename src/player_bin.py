@@ -200,7 +200,7 @@ class BinPlayer(BasePlayer):
         """
         position = self._playbin.query_position(Gst.Format.TIME)[1]
         if self._crossfading and self._current_track.duration > 0:
-            duration = self._current_track.duration * Gst.SECOND - position
+            duration = self._current_track.duration - position / Gst.SECOND
             if duration < Lp().settings.get_value("mix-duration").get_int32():
                 self.__do_crossfade(duration)
         return position
