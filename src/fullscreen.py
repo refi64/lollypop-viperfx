@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib, Gio
 
 from datetime import datetime
 
@@ -99,15 +99,16 @@ class FullScreen(Gtk.Window, InfoController,
         Gtk.Window.do_show(self)
         self.__parent.set_skip_pager_hint(True)
         self.__parent.set_skip_taskbar_hint(True)
-        now = datetime.now()
-        self._datetime.set_label(now.strftime("%a %d %b, %X")[:-3])
         if self.__timeout2 is None:
-            second = datetime.now().second
-            if 60 - second > 0:
-                GLib.timeout_add((60-second)*1000, self.__update_datetime)
-            else:
-                self.__timeout2 = GLib.timeout_add(60000,
-                                                   self.__update_datetime)
+            try:
+                interface = Gio.Settings.new("org.gnome.desktop.interface")
+                show_seconds = interface.get_value("clock-show-seconds")
+            except:
+                show_seconds = False
+            self.__update_datetime(show_seconds)
+            self.__timeout2 = GLib.timeout_add(1000,
+                                               self.__update_datetime,
+                                               show_seconds)
         self._update_position(Lp().player.position/1000000)
         self.fullscreen()
         self._next_popover.set_relative_to(self._album_label)
@@ -170,12 +171,16 @@ class FullScreen(Gtk.Window, InfoController,
 #######################
 # PRIVATE             #
 #######################
-    def __update_datetime(self):
+    def __update_datetime(self, show_seconds=False):
         """
             Update datetime in headerbar
+            @param show_seconds as bool
         """
         now = datetime.now()
-        self._datetime.set_label(now.strftime("%a %d %b, %X")[:-3])
+        if show_seconds:
+            self._datetime.set_label(now.strftime("%a %d %b, %X"))
+        else:
+            self._datetime.set_label(now.strftime("%a %d %b, %X")[:-3])
         if self.__timeout2 is None:
             self.__timeout2 = GLib.timeout_add(60000, self.__update_datetime)
             return False
