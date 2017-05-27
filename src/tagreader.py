@@ -350,7 +350,7 @@ class TagReader(Discoverer):
                     string = decode_all(m.data)
                     if string.startswith("USLT"):
                         split = string.split("\x00")
-                        return split[-1:][0]
+                        return "".join(split[5:-1])
             except Exception as e:
                 print("TagReader::get_id3()", e)
             return ""

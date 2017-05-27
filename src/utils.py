@@ -30,8 +30,8 @@ def decode_all(bytes):
     for encoding in ENCODING:
         try:
             return bytes.decode(encoding)
-        except:
-            pass
+        except Exception as e:
+            print("decode_all():", e)
 
 
 def get_network_available():
