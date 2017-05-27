@@ -280,7 +280,8 @@ class SelectionList(Gtk.Overlay):
         """
         items = []
         items.append((Type.POPULARS, _("Popular albums")))
-        items.append((Type.LOVED, _("Loved albums")))
+        if Lp().albums.has_loves():
+            items.append((Type.LOVED, _("Loved albums")))
         items.append((Type.RECENTS, _("Recently added albums")))
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))

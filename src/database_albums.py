@@ -1064,6 +1064,23 @@ class AlbumsDatabase:
                                  (album_id,))
             return list(itertools.chain(*result))
 
+    def has_loves(self):
+        """
+            True if db has loved albums
+            @return bool
+        """
+        with SqlCursor(Lp().db) as sql:
+            filters = ()
+            request = "SELECT albums.rowid\
+                       FROM albums\
+                       WHERE loved=1"
+            if not get_network_available():
+                request += " AND albums.synced!=?"
+                filters = (Type.NONE, )
+            request += " LIMIT 1"
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result)) != []
+
     def search(self, string, limit=25):
         """
             Search for albums looking like string
