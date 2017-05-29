@@ -66,6 +66,12 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.__artist_label.set_property("halign", Gtk.Align.CENTER)
         self.__artist_label.set_text(", ".join(self._album.artists))
         self.__artist_label.get_style_context().add_class("dim-label")
+        artist_eventbox = Gtk.EventBox()
+        artist_eventbox.add(self.__artist_label)
+        artist_eventbox.connect("realize", self._on_eventbox_realize)
+        artist_eventbox.connect("button-press-event",
+                                self.__on_artist_button_press)
+        artist_eventbox.show()
         self._widget.set_property("has-tooltip", True)
         self._widget.connect("query-tooltip", self._on_query_tooltip)
         self._widget.add(grid)
@@ -88,7 +94,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         color.add(self.__overlay)
         grid.add(color)
         grid.add(self.__title_label)
-        grid.add(self.__artist_label)
+        grid.add(artist_eventbox)
         self.add(self._widget)
         self.set_cover()
         self.update_state()
@@ -279,7 +285,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
     def __on_button_press(self, eventbox, event):
         """
             Store pressed button
-            @param flowbox as Gtk.EventBox
+            @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
         if event.button != 1:
@@ -303,6 +309,15 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             popover.set_pointing_to(rect)
             popover.connect("closed", self.__on_album_popover_closed)
             popover.show()
+
+    def __on_artist_button_press(self, eventbox, event):
+        """
+            Go to artist page
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventButton
+        """
+        Lp().window.show_artists_albums(self._album.artist_ids)
+        return True
 
     def __on_album_popover_closed(self, popover):
         """
