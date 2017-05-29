@@ -224,18 +224,24 @@ class SelectionList(Gtk.Overlay):
         if ids:
             try:
                 # Check if items are available for selection
-                iters = []
+                items = []
                 for i in list(ids):
                     for item in self.__model:
                         if item[0] == i:
-                            iters.append(item.iter)
+                            items.append(item)
                             ids.remove(i)
                 # Select later
                 if ids:
                     self.__to_select_ids = ids
                 else:
-                    for i in iters:
-                        self.__selection.select_iter(i)
+                    for item in items:
+                        self.__selection.select_iter(item.iter)
+                    # Scroll to first item
+                    if items:
+                        self.__view.scroll_to_cell(items[0].path,
+                                                   None,
+                                                   True,
+                                                   0, 0)
             except:
                 self.__last_motion_event = None
                 self.__to_select_ids = ids

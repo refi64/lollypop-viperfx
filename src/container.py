@@ -281,10 +281,13 @@ class Container:
                     for genre_id in Lp().albums.get_genre_ids(album_id):
                         if genre_id not in genre_ids:
                             genre_ids.append(genre_id)
-            # Select genres
+            # Select genres on list one
             GLib.idle_add(self.__list_one.select_ids, genre_ids)
-        # Select artists
-        GLib.idle_add(self.__list_two.select_ids, artist_ids)
+            # Select artists on list two
+            GLib.idle_add(self.__list_two.select_ids, artist_ids)
+        else:
+            # Select artists on list one
+            GLib.idle_add(self.__list_one.select_ids, artist_ids)
 
 ##############
 # PROTECTED  #
