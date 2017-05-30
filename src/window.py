@@ -34,7 +34,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__was_maximized = False
         Gtk.ApplicationWindow.__init__(self,
                                        application=Lp(),
-                                       title="Lollypop")
+                                       title="Lollypop",
+                                       icon_name="org.gnome.Lollypop")
         self.connect("hide", self.__on_hide)
         Lp().player.connect("current-changed", self.__on_current_changed)
         self.__timeout_configure = None
@@ -326,7 +327,6 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup window content
         """
-        self.set_default_icon_name("lollypop")
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
         vgrid.show()
