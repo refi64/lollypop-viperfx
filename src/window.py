@@ -426,7 +426,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         seconds = param.get_int32()
         position = Lp().player.position
-        seek = position + seconds * Gst.SECOND
+        seek = position / Gst.SECOND + seconds
         if seek < 0:
             seek = 0
         if seek > Lp().player.current_track.duration:
