@@ -180,7 +180,7 @@ class SearchLollypopService(Server, Gio.Application):
                     gicon = self.art.get_album_cache_path(album, ArtSize.BIG)
                 else:
                     track = Track(int(search_id[2:]))
-                    name = track.name
+                    name = "♫ " + track.name
                     description = " ".join(track.artists)
                     surface = self.art.get_album_artwork(track.album,
                                                          ArtSize.BIG, 1)
