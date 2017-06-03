@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gst
 
 from lollypop.define import Lp, WindowSize, DataPath
 from lollypop.toolbar_playback import ToolbarPlayback
@@ -123,7 +123,7 @@ class Toolbar(Gtk.HeaderBar):
             if Lp().settings.get_value("save-state"):
                 from pickle import load
                 position = load(open(DataPath + "/position.bin", "rb"))
-                self.__toolbar_title.add_mark(position/1000000)
+                self.__toolbar_title.add_mark(position / Gst.SECOND)
         except Exception as e:
             print("Toolbar::restore_state():", e)
 
