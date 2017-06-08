@@ -1124,7 +1124,7 @@ and "YouTube Data API" for your project.</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="tooltip_text" translatable="yes">Web</property>
-            <property name="label">Web</property>
+            <property name="label" translatable="yes">Web</property>
           </object>
           <packing>
             <property name="position">3</property>
