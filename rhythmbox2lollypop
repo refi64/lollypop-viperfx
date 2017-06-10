@@ -26,7 +26,7 @@ for child in root:
         except:
             count = None
         if count is not None and last is not None:
-            print(filepath, last, count)
+            print(uri, last, count)
             sql.execute("UPDATE tracks set ltime=?, popularity=? WHERE uri=?", (last, count, uri))
 
 sql.commit()
