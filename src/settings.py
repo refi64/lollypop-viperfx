@@ -183,7 +183,8 @@ class SettingsDialog:
             switch_artwork_tags.set_state(
                                       Lp().settings.get_value("save-to-tags"))
 
-        if GLib.find_program_in_path("youtube-dl") is None:
+        if GLib.find_program_in_path("youtube-dl") is None or\
+                not Lp().settings.get_value("network-access"):
             builder.get_object("charts_grid").hide()
         else:
             switch_charts = builder.get_object("switch_charts")

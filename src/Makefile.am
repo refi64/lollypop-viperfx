@@ -88,6 +88,7 @@ app_PYTHON = \
     view_artist_albums.py\
     view_container.py\
     view_device.py\
+    view_first_run.py\
     view_playlists.py\
     view.py\
     view_radios.py\

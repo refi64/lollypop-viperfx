@@ -74,6 +74,9 @@ class Container:
             Lp().scanner.stop()
             GLib.timeout_add(250, self.update_db)
         else:
+            # Allow user to disable network access before first load
+            if Lp().tracks.count() == 0:
+                self.__show_first_run()
             Lp().scanner.update()
 
     def get_genre_id(self):
@@ -322,6 +325,18 @@ class Container:
         else:
             self.__progress.set_fraction(0.0, self)
             return False
+
+    def __show_first_run(self):
+        """
+            Show first run view
+        """
+        from lollypop.view_first_run import FirstRunView
+        self.__stop_current_view()
+        view = FirstRunView()
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        self.__stack.clean_old_views(view)
 
     def __setup_view(self):
         """

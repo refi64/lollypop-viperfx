@@ -42,7 +42,7 @@
             <description>Window position (x and y).</description>
         </key>
         <key type="b" name="network-access">
-            <default>true</default>
+            <default>false</default>
             <summary>Access network</summary>
             <description></description>
         </key>
