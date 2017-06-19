@@ -416,9 +416,12 @@ class SelectionList(Gtk.Overlay):
         if value[0] > 0 and sort and self.__is_artists and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.add_char(sort[0])
+        icon_name = self.__get_icon_name(value[0])
+        if not icon_name and string == _("Unknown"):
+            icon_name = "dialog-warning-symbolic"
         i = self.__model.append([value[0],
                                 string,
-                                self.__get_icon_name(value[0]),
+                                icon_name,
                                 sort])
         if value[0] in self.__to_select_ids:
             self.__to_select_ids.remove(value[0])
