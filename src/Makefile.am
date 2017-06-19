@@ -28,6 +28,7 @@ app_PYTHON = \
     downloader.py\
     fastscroll.py\
     fullscreen.py\
+    helper_dbus.py\
     inotify.py\
     lastfm.py\
     lio.py\

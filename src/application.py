@@ -233,9 +233,7 @@ class Application(Gtk.Application):
                 else:
                     self.settings.set_value("network-search",
                                             GLib.Variant("b", False))
-            t = Thread(target=self.__preload_portal)
-            t.daemon = True
-            t.start()
+            self.__preload_portal()
 
     def quit(self, vacuum=False):
         """
@@ -358,13 +356,13 @@ class Application(Gtk.Application):
             Preload lollypop portal
         """
         try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                   "org.gnome.Lollypop.Portal",
-                                   "/org/gnome/LollypopPortal",
-                                   "org.gnome.Lollypop.Portal", None)
-        except:
-            pass
+            bus = self.get_dbus_connection()
+            Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
+                              "org.gnome.Lollypop.Portal",
+                              "/org/gnome/LollypopPortal",
+                              "org.gnome.Lollypop.Portal", None, None)
+        except Exception as e:
+            print("Application::__preload_portal():", e)
 
     def __init_proxy(self):
         """
