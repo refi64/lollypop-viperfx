@@ -476,7 +476,7 @@ class Application(Gtk.Application):
             @param event as Gdk.Event
         """
         if not self.settings.get_value("background-mode") or\
-                self.player.current_track.id is None:
+                not self.player.is_playing:
             GLib.timeout_add(500, self.quit, True)
         return widget.hide_on_delete()
 
