@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
@@ -19,6 +19,7 @@ from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
+from lollypop.helper_dbus import DBusHelper
 
 
 class HoverWidget(Gtk.EventBox):
@@ -109,14 +110,9 @@ class ContextWidget(Gtk.Grid):
                 self.add(trash)
         else:
             # Check portal for tag editor
-            try:
-                Gio.bus_get(Gio.BusType.SESSION, None,
-                            self.__on_get_bus, "CanLaunchTagEditor",
-                            None,
-                            self.__on_can_launch_tag_editor)
-            except Exception as e:
-                print("ContextWidget::__init__():", e)
-
+            dbus_helper = DBusHelper()
+            dbus_helper.call("CanLaunchTagEditor", None,
+                             self.__on_can_launch_tag_editor, None)
             self.__edit = HoverWidget("document-properties-symbolic",
                                       self.__edit_tags)
             self.__edit.set_tooltip_text(_("Modify information"))
@@ -212,17 +208,13 @@ class ContextWidget(Gtk.Grid):
 
     def __edit_tags(self, args):
         """
-            Edit tags
-            @param args as []
+            Run tags editor
+            @param args as unused
         """
-        try:
-            path = GLib.filename_from_uri(self.__object.uri)[0]
-            Gio.bus_get(Gio.BusType.SESSION, None,
-                        self.__on_get_bus, "LaunchTagEditor",
-                        GLib.Variant("(s)", (path,)),
-                        None)
-        except Exception as e:
-            print("ContextWidget::__edit_tags", e)
+        path = GLib.filename_from_uri(self.__object.uri)[0]
+        dbus_helper = DBusHelper()
+        dbus_helper.call("LaunchTagEditor", GLib.Variant("(s)", (path,)),
+                         None, None)
         self.__button.emit("clicked")
 
     def __add_to_queue(self, args):
@@ -250,47 +242,15 @@ class ContextWidget(Gtk.Grid):
                                           isinstance(self.__object, Album))
         self.__button.emit("clicked")
 
-    def __on_get_bus(self, source, result, call, args, callback):
-        """
-            Get proxy
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param call as str
-            @param args as GLib.Variant()/None
-            @param callback as function
-        """
-        bus = Gio.bus_get_finish(result)
-        Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
-                          "org.gnome.Lollypop.Portal",
-                          "/org/gnome/LollypopPortal",
-                          "org.gnome.Lollypop.Portal", None,
-                          self.__on_get_portal_proxy, call, args, callback)
-
-    def __on_get_portal_proxy(self, source, result, call, args, callback):
-        """
-            Launch call and connect it to callback
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param call as str
-            @param args as GLib.Variant()/None
-            @param callback as function
-        """
-        try:
-            proxy = source.new_finish(result)
-            proxy.call(call, args, Gio.DBusCallFlags.NO_AUTO_START,
-                       500, None, callback)
-        except Exception as e:
-            print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal", e)
-
-    def __on_can_launch_tag_editor(self, source, result):
+    def __on_can_launch_tag_editor(self, source, result, data):
         """
             Add action if launchable
             @param source as GObject.Object
             @param result as Gio.AsyncResult
+            @param data as object
         """
         try:
             if source.call_finish(result)[0]:
                 self.__edit.show()
         except Exception as e:
-            print("ContextWidget::__on_can_launch_tag_editor():", e)
+            print("EditMenu::__on_can_launch_tag_editor():", e)
