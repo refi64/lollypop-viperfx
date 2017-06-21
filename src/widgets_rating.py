@@ -10,10 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib
 
 from lollypop.objects import Track
 from lollypop.define import Lp, Type
+from lollypop.helper_dbus import DBusHelper
 
 
 class RatingWidget(Gtk.Bin):
@@ -157,6 +158,7 @@ class RatingWidget(Gtk.Bin):
             Lp().player.emit("rate-changed")
         # Save to tags if needed
         # FIXME We really need a radio object
+        # FIXME We look to kid3-cli here!
         if Lp().settings.get_value("save-to-tags") and\
                 GLib.find_program_in_path("kid3-cli") is not None and\
                 isinstance(self.__object, Track) and\
@@ -175,19 +177,8 @@ class RatingWidget(Gtk.Bin):
             else:
                 value = 255
             path = GLib.filename_from_uri(self.__object.uri)[0]
-            try:
-                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-                proxy = Gio.DBusProxy.new_sync(
-                                        bus, Gio.DBusProxyFlags.NONE, None,
-                                        "org.gnome.Lollypop.Portal",
-                                        "/org/gnome/LollypopPortal",
-                                        "org.gnome.Lollypop.Portal", None)
-                proxy.call_sync("SetPopularity",
-                                GLib.Variant(
-                                 "(is)", (value,
-                                          path)),
-                                Gio.DBusCallFlags.NO_AUTO_START,
-                                500, None)
-            except Exception as e:
-                print("RatingWidget::_on_button_press():", e)
+            dbus_helper = DBusHelper()
+            dbus_helper.call("SetPopularity",
+                             GLib.Variant("(is)", (value, path)),
+                             None, None)
         return True
