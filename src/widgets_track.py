@@ -194,6 +194,15 @@ class Row(Gtk.ListBoxRow):
             self._grid.add(self.__menu_button)
             self.__menu_button.show()
 
+    def __on_artist_button_press(self, eventbox, event):
+        """
+            Go to artist page
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventButton
+        """
+        Lp().window.show_artists_albums(self._album.artist_ids)
+        return True
+
     def __on_enter_notify(self, widget, event):
         """
             Set image on buttons now, speed reason
@@ -389,7 +398,13 @@ class PlaylistRow(Row):
             self.__album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
             self.__album_artist_label.get_style_context().add_class(
                                                                    "dim-label")
-            self.__header.add(self.__album_artist_label)
+            artist_eventbox = Gtk.EventBox()
+            artist_eventbox.add(self.__album_artist_label)
+            artist_eventbox.connect("realize", self.__on_eventbox_realize)
+            artist_eventbox.connect("button-press-event",
+                                    self.__on_artist_button_press)
+            artist_eventbox.show()
+            self.__header.add(artist_eventbox)
         self.__album_label = Gtk.Label.new(self._track.album.name)
         self.__album_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__album_label.get_style_context().add_class("dim-label")
@@ -469,6 +484,24 @@ class PlaylistRow(Row):
 #######################
 # PRIVATE             #
 #######################
+    def __on_artist_button_press(self, eventbox, event):
+        """
+            Go to artist page
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventButton
+        """
+        Lp().window.show_artists_albums(self._track.album.artist_ids)
+        return True
+
+    def __on_eventbox_realize(self, eventbox):
+        """
+            Change cursor over eventbox
+            @param eventbox as Gdk.Eventbox
+        """
+        window = eventbox.get_window()
+        if window is not None:
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+
     def __on_drag_begin(self, widget, context):
         """
             Set icon
