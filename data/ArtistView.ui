@@ -94,7 +94,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Play</property>
+            <property name="tooltip_text" translatable="yes">Play albums</property>
             <property name="image">image1</property>
             <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
           </object>
@@ -109,7 +109,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes" context="artist context">Add</property>
+            <property name="tooltip_text" translatable="yes" context="artist context">Add albums</property>
             <property name="image">image3</property>
             <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
           </object>
