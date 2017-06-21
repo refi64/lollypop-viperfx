@@ -21,7 +21,8 @@ from lollypop.widgets_loved import LovedWidget
 from lollypop.define import Lp, Type
 from lollypop.sqlcursor import SqlCursor
 from lollypop.objects import Track, Album
-from lollypop import utils
+from lollypop.utils import set_loved
+from lollypop.helper_dbus import DBusHelper
 
 
 class BaseMenu(Gio.Menu):
@@ -329,7 +330,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist name as str
         """
-        utils.set_loved(self._object.id, True)
+        set_loved(self._object.id, True)
 
     def __del_from_loved(self, action, variant):
         """
@@ -338,7 +339,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist name as str
         """
-        utils.set_loved(self._object.id, False)
+        set_loved(self._object.id, False)
 
 
 class EditMenu(BaseMenu):
@@ -361,14 +362,9 @@ class EditMenu(BaseMenu):
         if self._object.is_web:
             self.__set_remove_action()
         else:
-            # Check portal for tag editor
-            try:
-                Gio.bus_get(Gio.BusType.SESSION, None,
-                            self.__on_get_bus, "CanLaunchTagEditor",
-                            None,
-                            self.__on_can_launch_tag_editor)
-            except Exception as e:
-                print("EditMenu::__init__():", e)
+            dbus_helper = DBusHelper()
+            dbus_helper.call("CanLaunchTagEditor", None,
+                             self.__on_can_launch_tag_editor, None)
 
 #######################
 # PRIVATE             #
@@ -408,52 +404,17 @@ class EditMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        try:
-            path = GLib.filename_from_uri(self._object.uri)[0]
-            Gio.bus_get(Gio.BusType.SESSION, None,
-                        self.__on_get_bus, "LaunchTagEditor",
-                        GLib.Variant("(s)", (path,)),
-                        None)
-        except Exception as e:
-            print("EditMenu::__edit_tag():", e)
+        path = GLib.filename_from_uri(self._object.uri)[0]
+        dbus_helper = DBusHelper()
+        dbus_helper.call("LaunchTagEditor", GLib.Variant("(s)", (path,)),
+                         None, None)
 
-    def __on_get_bus(self, source, result, call, args, callback):
-        """
-            Get proxy
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param call as str
-            @param args as GLib.Variant()/None
-            @param callback as function
-        """
-        bus = Gio.bus_get_finish(result)
-        Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
-                          "org.gnome.Lollypop.Portal",
-                          "/org/gnome/LollypopPortal",
-                          "org.gnome.Lollypop.Portal", None,
-                          self.__on_get_portal_proxy, call, args, callback)
-
-    def __on_get_portal_proxy(self, source, result, call, args, callback):
-        """
-            Launch call and connect it to callback
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param call as str
-            @param args as GLib.Variant()/None
-            @param callback as function
-        """
-        try:
-            proxy = source.new_finish(result)
-            proxy.call(call, args, Gio.DBusCallFlags.NO_AUTO_START,
-                       500, None, callback)
-        except Exception as e:
-            print("EditMenu::__on_get_portal_proxy():", e)
-
-    def __on_can_launch_tag_editor(self, source, result):
+    def __on_can_launch_tag_editor(self, source, result, data):
         """
             Add action if launchable
             @param source as GObject.Object
             @param result as Gio.AsyncResult
+            @param data as object
         """
         try:
             if source.call_finish(result)[0]:
