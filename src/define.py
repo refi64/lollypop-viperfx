@@ -137,6 +137,11 @@ class Type:
     COMPILATIONS = -2001
 
 
+PROXY_BUS = "org.gnome.Lollypop.Portal"
+PROXY_PATH = "/org/gnome/LollypopPortal"
+PROXY_INTERFACE = "org.gnome.Lollypop.Portal"
+
+
 ENCODING = ["utf_8",
             "iso8859_1",
             "utf_16",

@@ -362,6 +362,8 @@ class Application(Gtk.Application):
                               "/org/gnome/LollypopPortal",
                               "org.gnome.Lollypop.Portal", None, None)
         except Exception as e:
+            print("You are missing lollypop-portal: "
+                  "https://github.com/gnumdk/lollypop-portal")
             print("Application::__preload_portal():", e)
 
     def __init_proxy(self):

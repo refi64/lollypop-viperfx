@@ -21,6 +21,7 @@ from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import escape, is_readonly
 from lollypop.lio import Lio
+from lollypop.helper_dbus import DBusHelper
 
 
 class AlbumArt(BaseArt, TagReader):
@@ -247,25 +248,8 @@ class AlbumArt(BaseArt, TagReader):
         try:
             album = Album(album_id)
             arturi = None
-            # Check portal for kid3-cli
-            can_set_cover = False
-            try:
-                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-                proxy = Gio.DBusProxy.new_sync(
-                                            bus, Gio.DBusProxyFlags.NONE, None,
-                                            "org.gnome.Lollypop.Portal",
-                                            "/org/gnome/LollypopPortal",
-                                            "org.gnome.Lollypop.Portal", None)
-                can_set_cover = proxy.call_sync(
-                                               "CanSetCover", None,
-                                               Gio.DBusCallFlags.NO_AUTO_START,
-                                               500, None)[0]
-            except:
-                print("You are missing lollypop-portal: "
-                      "https://github.com/gnumdk/lollypop-portal")
             save_to_tags = Lp().settings.get_value("save-to-tags") and\
-                can_set_cover and not album.is_web
-
+                not album.is_web
             uri_count = Lp().albums.get_uri_count(album.uri)
             filename = self.get_album_cache_name(album) + ".jpg"
             if save_to_tags:
@@ -321,41 +305,15 @@ class AlbumArt(BaseArt, TagReader):
             Remove album artwork
             @param album as Album
         """
-        try:
-            for uri in self.get_album_artworks(album):
-                f = Lio.File.new_for_uri(uri)
-                try:
-                    f.trash()
-                except:
-                    f.delete(None)
-            # Check portal for kid3-cli
-            can_set_cover = False
+        for uri in self.get_album_artworks(album):
+            f = Lio.File.new_for_uri(uri)
             try:
-                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-                proxy = Gio.DBusProxy.new_sync(
-                                            bus, Gio.DBusProxyFlags.NONE, None,
-                                            "org.gnome.Lollypop.Portal",
-                                            "/org/gnome/LollypopPortal",
-                                            "org.gnome.Lollypop.Portal", None)
-                can_set_cover = proxy.call_sync(
-                                               "CanSetCover", None,
-                                               Gio.DBusCallFlags.NO_AUTO_START,
-                                               500, None)[0]
-            except Exception as e:
-                print("You are missing lollypop-portal: "
-                      "https://github.com/gnumdk/lollypop-portal", e)
-            if Lp().settings.get_value("save-to-tags") and can_set_cover:
-                for uri in Lp().albums.get_track_uris(album.id, [], []):
-                    try:
-                        path = GLib.filename_from_uri(uri)[0]
-                        proxy.call_sync("SetCover",
-                                        GLib.Variant("(ss)", (path, "")),
-                                        Gio.DBusCallFlags.NO_AUTO_START,
-                                        500, None)
-                    except Exception as e:
-                        print("AlbumArt::remove_album_artwork2():", e)
-        except Exception as e:
-            print("AlbumArt::remove_album_artwork3():", e)
+                f.trash()
+            except:
+                f.delete(None)
+        dbus_helper = DBusHelper()
+        dbus_helper.call("CanSetCover", None,
+                         self.__on_remove_album_artwork, album.id)
 
     def clean_album_cache(self, album):
         """
@@ -445,27 +403,46 @@ class AlbumArt(BaseArt, TagReader):
         f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)
         if f.query_exists():
-            for uri in Lp().albums.get_track_uris(album.id, [], []):
+            dbus_helper = DBusHelper()
+            dbus_helper.call("CanSetCover", None,
+                             self.__on_save_artwork_tags, album.id)
+
+    def __on_save_artwork_tags(self, source, result, album_id):
+        """
+            Save image to tags
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param album_id as int
+        """
+        if not source.call_finish(result):
+            return
+        dbus_helper = DBusHelper()
+        for uri in Lp().albums.get_track_uris(album_id, [], []):
+            path = GLib.filename_from_uri(uri)[0]
+            dbus_helper.call("SetCover",
+                             GLib.Variant(
+                                 "(ss)",
+                                 (path,
+                                  "%s/lollypop_cover_tags.jpg" %
+                                  self._CACHE_PATH)), None, None)
+        self.clean_album_cache(Album(album_id))
+        GLib.idle_add(self.album_artwork_update, album_id)
+
+    def __on_remove_album_artwork(self, source, result, album_id):
+        """
+            Remove album image from tags
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param album_id
+        """
+        can_set_cover = source.call_finish(result)
+        if Lp().settings.get_value("save-to-tags") and can_set_cover:
+            dbus_helper = DBusHelper()
+            for uri in Lp().albums.get_track_uris(album_id, [], []):
                 try:
                     path = GLib.filename_from_uri(uri)[0]
-                    bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-                    proxy = Gio.DBusProxy.new_sync(
-                                            bus, Gio.DBusProxyFlags.NONE, None,
-                                            "org.gnome.Lollypop.Portal",
-                                            "/org/gnome/LollypopPortal",
-                                            "org.gnome.Lollypop.Portal", None)
-                    proxy.call_sync("SetCover",
-                                    GLib.Variant(
-                                     "(ss)", (path,
-                                              "%s/lollypop_cover_tags.jpg" %
-                                              self._CACHE_PATH)),
-                                    Gio.DBusCallFlags.NO_AUTO_START,
-                                    500, None)
+                    dbus_helper.call("SetCover",
+                                     GLib.Variant("(ss)", (path, "")),
+                                     None, None)
                 except Exception as e:
-                    print("You are missing lollypop-portal: "
-                          "https://github.com/gnumdk/lollypop-portal", e)
-            f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
-                                      self._CACHE_PATH)
-            f.delete()
-            self.clean_album_cache(album)
-            GLib.idle_add(self.album_artwork_update, album.id)
+                    print("AlbumArt::__on_remove_album_artwork():", e)
