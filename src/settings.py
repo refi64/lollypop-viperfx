@@ -28,6 +28,7 @@ from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
 from lollypop.utils import get_network_available
 from lollypop.lio import Lio
+from lollypop.helper_dbus import DBusHelper
 
 
 class Settings(Gio.Settings):
@@ -153,35 +154,12 @@ class SettingsDialog:
         switch_librefm.set_state(Lp().settings.get_value("use-librefm"))
 
         switch_artwork_tags = builder.get_object("switch_artwork_tags")
+        grid_behaviour = builder.get_object("grid_behaviour")
         # Check portal for kid3-cli
-        can_set_cover = False
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                           "org.gnome.Lollypop.Portal",
-                                           "/org/gnome/LollypopPortal",
-                                           "org.gnome.Lollypop.Portal", None)
-            can_set_cover = proxy.call_sync("CanSetCover", None,
-                                            Gio.DBusCallFlags.NO_AUTO_START,
-                                            500, None)[0]
-        except Exception as e:
-            print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal", e)
-        if not can_set_cover:
-            grid = builder.get_object("grid_behaviour")
-            h = grid.child_get_property(switch_artwork_tags, "height")
-            w = grid.child_get_property(switch_artwork_tags, "width")
-            l = grid.child_get_property(switch_artwork_tags, "left-attach")
-            t = grid.child_get_property(switch_artwork_tags, "top-attach")
-            switch_artwork_tags.destroy()
-            label = Gtk.Label.new(_("You need to install kid3-cli"))
-            label.get_style_context().add_class("dim-label")
-            label.set_property("halign", Gtk.Align.END)
-            label.show()
-            grid.attach(label, l, t, w, h)
-        else:
-            switch_artwork_tags.set_state(
-                                      Lp().settings.get_value("save-to-tags"))
+        dbus_helper = DBusHelper()
+        dbus_helper.call("CanSetCover", None,
+                         self.__on_can_set_cover,
+                         (switch_artwork_tags, grid_behaviour))
 
         if GLib.find_program_in_path("youtube-dl") is None or\
                 not Lp().settings.get_value("network-access"):
@@ -619,44 +597,17 @@ class SettingsDialog:
         args[0].set_active(not args[0].get_active())
         return True
 
-    def __get_pa_outputs(self):
-        """
-            Get PulseAudio outputs
-            @return name/device as [(str, str)]
-        """
-        ret = []
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                           "org.gnome.Lollypop.Portal",
-                                           "/org/gnome/LollypopPortal",
-                                           "org.gnome.Lollypop.Portal", None)
-            ret = proxy.call_sync("PaListSinks", None,
-                                  Gio.DBusCallFlags.NO_AUTO_START,
-                                  500, None)
-            return ret[0]
-        except Exception as e:
-            print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal", e)
-        return ret
-
     def __set_outputs(self, combo):
         """
             Set outputs in combo
             @parma combo as Gtk.ComboxBoxText
         """
-        current = Lp().settings.get_value("preview-output").get_string()
         renderer = combo.get_cells()[0]
         renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
         renderer.set_property("max-width-chars", 60)
-        outputs = self.__get_pa_outputs()
-        if outputs:
-            for output in outputs:
-                combo.append(output[1], output[0])
-                if output[1] == current:
-                    combo.set_active_id(output[1])
-        else:
-            combo.set_sensitive(False)
+        dbus_helper = DBusHelper()
+        dbus_helper.call("PaListSinks", None,
+                         self.__on_pa_list_sinks, combo)
 
     def __add_chooser(self, directory=None):
         """
@@ -739,6 +690,48 @@ class SettingsDialog:
             GLib.idle_add(self.__test_img.set_from_icon_name,
                           "computer-fail-symbolic",
                           Gtk.IconSize.MENU)
+
+    def __on_pa_list_sinks(self, source, result, combo):
+        """
+            Populate combo
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param combo as Gtk.ComboBoxText
+        """
+        current = Lp().settings.get_value("preview-output").get_string()
+        outputs = source.call_finish(result)[0]
+        if outputs:
+            for output in outputs:
+                combo.append(output[1], output[0])
+                if output[1] == current:
+                    combo.set_active_id(output[1])
+        else:
+            combo.set_sensitive(False)
+
+    def __on_can_set_cover(self, source, result, data):
+        """
+            Update grid/switch based on result
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param data as (Gtk.Switch, Gtk.Grid)
+        """
+        can_set_cover = source.call_finish(result)
+        switch_artwork_tags = data[0]
+        if not can_set_cover:
+            grid = data[1]
+            h = grid.child_get_property(switch_artwork_tags, "height")
+            w = grid.child_get_property(switch_artwork_tags, "width")
+            l = grid.child_get_property(switch_artwork_tags, "left-attach")
+            t = grid.child_get_property(switch_artwork_tags, "top-attach")
+            switch_artwork_tags.destroy()
+            label = Gtk.Label.new(_("You need to install kid3-cli"))
+            label.get_style_context().add_class("dim-label")
+            label.set_property("halign", Gtk.Align.END)
+            label.show()
+            grid.attach(label, l, t, w, h)
+        else:
+            switch_artwork_tags.set_state(
+                                       Lp().settings.get_value("save-to-tags"))
 
     def __on_password_lookup(self, source, result):
         """
