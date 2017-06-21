@@ -274,46 +274,65 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup media player keys
         """
-        self.__proxy = Gio.DBusProxy.new_sync(Gio.bus_get_sync(Gio.BusType.
-                                                               SESSION, None),
-                                              Gio.DBusProxyFlags.NONE,
-                                              None,
-                                              "org.gnome.SettingsDaemon",
-                                              "/org/gnome/SettingsDaemon/"
-                                              "MediaKeys",
-                                              "org.gnome.SettingsDaemon."
-                                              "MediaKeys",
-                                              None)
-        self.__grab_media_player_keys()
         try:
-            self.__proxy.connect("g-signal", self.__handle_media_keys)
-        except GLib.GError:
-            # We cannot grab media keys if no settings daemon is running
-            pass
+            bus = Lp().get_dbus_connection()
+            Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
+                              "org.gnome.SettingsDaemon",
+                              "/org/gnome/SettingsDaemon/MediaKeys",
+                              "org.gnome.SettingsDaemon.MediaKeys", None,
+                              self.__on_get_proxy)
+        except Exception as e:
+            print("Window::__setup_media_keys():", e)
 
-    def __grab_media_player_keys(self):
+    def __on_get_proxy(self, source, result):
         """
-            Do key grabbing
+            Grab keys
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
         """
         try:
-            self.__proxy.call_sync("GrabMediaPlayerKeys",
-                                   GLib.Variant("(su)", ("Lollypop", 0)),
-                                   Gio.DBusCallFlags.NONE,
-                                   -1,
-                                   None)
-        except GLib.GError:
-            # We cannot grab media keys if no settings daemon is running
-            pass
+            proxy = source.new_finish(result)
 
-    def __handle_media_keys(self, proxy, sender, signal, parameters):
+            proxy.call("GrabMediaPlayerKeys",
+                       GLib.Variant("(su)", ("Lollypop", 0)),
+                       Gio.DBusCallFlags.NONE,
+                       -1, None,
+                       self.__on_grab_media_player_keys, proxy)
+        except Exception as e:
+            print("Window::__on_get_proxy():", e)
+
+    def __on_grab_media_player_keys(self, source, result, proxy):
+        """
+            Listen to key signal
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param proxy as Gio.DBusConnection
+        """
+        try:
+            bus = Lp().get_dbus_connection()
+            bus.signal_subscribe(None, "org.gnome.SettingsDaemon.MediaKeys",
+                                 "MediaPlayerKeyPressed",
+                                 "/org/gnome/SettingsDaemon/MediaKeys",
+                                 None,
+                                 Gio.DBusSignalFlags.NONE,
+                                 self.__on_signal,
+                                 None)
+        except Exception as e:
+            print("Window::__on_grab_media_player_keys():", e)
+
+    def __on_signal(self, connection, sender, path,
+                    interface, signal, params, data):
         """
             Do player actions in response to media key pressed
+            @param connection as Gio.DBusConnection
+            @param sender as str
+            @param path as str
+            @param interface as str
+            @param signal as str
+            @param parameters as GLib.Variant
+            @param data as object
         """
-        if signal != "MediaPlayerKeyPressed":
-            print("Received an unexpected signal\
-                   \"%s\" from media player".format(signal))
-            return
-        response = parameters.get_child_value(1).get_string()
+        response = params[1]
         if "Play" in response:
             Lp().player.play_pause()
         elif "Stop" in response:
