@@ -83,7 +83,7 @@ class MPRIS(dbus.service.Object):
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
                          in_signature="ox")
     def SetPosition(self, track_id, position):
-        Lp().player.seek(position/Gst.SECOND)
+        Lp().player.seek(position/(1000 * 1000))
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
                          in_signature="s")
@@ -119,7 +119,7 @@ class MPRIS(dbus.service.Object):
                 "Shuffle": True,
                 "Metadata": dbus.Dictionary(self._metadata, signature="sv"),
                 "Volume": dbus.Double(Lp().player.volume),
-                "Position": dbus.Int64(Lp().player.position),
+                "Position": dbus.Int64(Lp().player.position / Gst.SECOND * (1000 * 1000)),
                 "MinimumRate": dbus.Double(1.0),
                 "MaximumRate": dbus.Double(1.0),
                 "CanGoNext": True,
@@ -183,7 +183,7 @@ class MPRIS(dbus.service.Object):
             self._metadata["xesam:albumArtist"] = \
                 ", ".join(Lp().player.current_track.album_artists)
             self._metadata["mpris:length"] = dbus.Int64(
-                Lp().player.current_track.duration * Gst.SECOND)
+                Lp().player.current_track.duration * (1000 * 1000))
             self._metadata["xesam:genre"] = Lp().player.current_track.genres\
                 or "Web"
             self._metadata["xesam:url"] = Lp().player.current_track.uri
@@ -212,7 +212,7 @@ class MPRIS(dbus.service.Object):
                 self._metadata["mpris:artUrl"] = ""
 
     def _on_seeked(self, player, position):
-        self.Seeked(position * Gst.SECOND)
+        self.Seeked(position * (1000 * 1000))
 
     def _on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
