@@ -120,6 +120,7 @@ class Application(Gtk.Application):
                              "Lollypop version",
                              None)
         self.connect("command-line", self.__on_command_line)
+        self.connect("handle-local-options", self.__on_handle_local_options)
         self.connect("activate", self.__on_activate)
         self.register(None)
         if self.get_is_remote():
@@ -382,6 +383,17 @@ class Application(Gtk.Application):
         except Exception as e:
             print("Application::__init_proxy()", e)
 
+    def __on_handle_local_options(self, app, options):
+        """
+            Handle local options
+            @param app as Gio.Application
+            @param options as GLib.VariantDict
+        """
+        if options.contains("version"):
+            print("Lollypop %s" % self.__version)
+            return 0
+        return -1
+
     def __on_command_line(self, app, app_cmd_line):
         """
             Handle command line
@@ -424,9 +436,6 @@ class Application(Gtk.Application):
             self.player.prev()
         elif options.contains("emulate-phone"):
             self.window.add_fake_phone()
-        elif options.contains("version"):
-            print("Lollypop %s" % self.__version)
-            exit(0)
         elif len(args) > 1:
             self.player.clear_externals()
             for uri in args[1:]:
