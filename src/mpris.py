@@ -204,7 +204,7 @@ class MPRIS(Server):
             Lp().player.play()
 
     def SetPosition(self, track_id, position):
-        Lp().player.seek(position / Gst.SECOND)
+        Lp().player.seek(position / (1000 * 1000))
 
     def OpenUri(self, uri):
         pass
@@ -212,7 +212,7 @@ class MPRIS(Server):
     def Seek(self, offset):
         # Convert position in seconds
         position = Lp().player.position / Gst.SECOND
-        Lp().player.seek(position + offset / Gst.SECOND)
+        Lp().player.seek(position + offset / (1000 * 1000))
 
     def Seeked(self, position):
         self.__bus.emit_signal(
@@ -249,7 +249,7 @@ class MPRIS(Server):
         elif property_name == "Volume":
             return GLib.Variant("d", Lp().player.volume)
         elif property_name == "Position":
-            return GLib.Variant("x", Lp().player.position)
+            return GLib.Variant("x", Lp().player.position / Gst.SECOND * (1000 * 1000))
         elif property_name in ["CanGoNext", "CanGoPrevious",
                                "CanPlay", "CanPause"]:
             return GLib.Variant("b", Lp().player.current_track.id is not None)
@@ -346,7 +346,7 @@ class MPRIS(Server):
                                        Lp().player.current_track.album_artists)
             self.__metadata["mpris:length"] = GLib.Variant(
                                "x",
-                               Lp().player.current_track.duration * Gst.SECOND)
+                               Lp().player.current_track.duration * (1000 * 1000))
             self.__metadata["xesam:genre"] = GLib.Variant(
                                               "as",
                                               Lp().player.current_track.genres)
@@ -380,7 +380,7 @@ class MPRIS(Server):
                 self.__metadata["mpris:artUrl"] = GLib.Variant("s", "")
 
     def __on_seeked(self, player, position):
-        self.Seeked(position * Gst.SECOND)
+        self.Seeked(position * (1000 * 1000))
 
     def __on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE,
