@@ -153,10 +153,12 @@ class Downloader:
             @return (url as str/None, content as None)
         """
         try:
+            from lollypop.search_spotify import SpotifySearch
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
+            s.add_spotify_headers(SpotifySearch.get_token(None))
             (status, data, tag) = s.load_contents()
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -208,10 +210,13 @@ class Downloader:
         image = None
         artists_spotify_ids = []
         try:
+            from lollypop.search_spotify import SpotifySearch
+            token = SpotifySearch.get_token(None)
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % artist_formated)
+            s.add_spotify_headers(token)
             (status, data, tag) = s.load_contents()
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -221,6 +226,7 @@ class Downloader:
             for artist_spotify_id in artists_spotify_ids:
                 s = Lio.File.new_for_uri("https://api.spotify.com/v1/artists/"
                                          "%s/albums" % artist_spotify_id)
+                s.add_spotify_headers(token)
                 (status, data, tag) = s.load_contents()
                 if status:
                     decode = json.loads(data.decode("utf-8"))

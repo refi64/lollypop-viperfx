@@ -249,7 +249,9 @@ class MPRIS(Server):
         elif property_name == "Volume":
             return GLib.Variant("d", Lp().player.volume)
         elif property_name == "Position":
-            return GLib.Variant("x", Lp().player.position / Gst.SECOND * (1000 * 1000))
+            return GLib.Variant(
+                               "x",
+                               Lp().player.position / Gst.SECOND * 1000 * 1000)
         elif property_name in ["CanGoNext", "CanGoPrevious",
                                "CanPlay", "CanPause"]:
             return GLib.Variant("b", Lp().player.current_track.id is not None)
@@ -345,8 +347,8 @@ class MPRIS(Server):
                                        "as",
                                        Lp().player.current_track.album_artists)
             self.__metadata["mpris:length"] = GLib.Variant(
-                               "x",
-                               Lp().player.current_track.duration * (1000 * 1000))
+                              "x",
+                              Lp().player.current_track.duration * 1000 * 1000)
             self.__metadata["xesam:genre"] = GLib.Variant(
                                               "as",
                                               Lp().player.current_track.genres)

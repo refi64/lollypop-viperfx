@@ -119,7 +119,8 @@ class MPRIS(dbus.service.Object):
                 "Shuffle": True,
                 "Metadata": dbus.Dictionary(self._metadata, signature="sv"),
                 "Volume": dbus.Double(Lp().player.volume),
-                "Position": dbus.Int64(Lp().player.position / Gst.SECOND * (1000 * 1000)),
+                "Position": dbus.Int64(
+                              Lp().player.position / Gst.SECOND * 1000 * 1000),
                 "MinimumRate": dbus.Double(1.0),
                 "MaximumRate": dbus.Double(1.0),
                 "CanGoNext": True,

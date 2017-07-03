@@ -142,6 +142,9 @@ PROXY_PATH = "/org/gnome/LollypopPortal"
 PROXY_INTERFACE = "org.gnome.Lollypop.Portal"
 
 
+SPOTIFY_CLIENT_ID = "0b144843878a46b2b12e0958c342c3ac"
+SPOTIFY_SECRET = "265ab8e057684f1b9e69e0c58f4881c1"
+
 ENCODING = ["utf_8",
             "iso8859_1",
             "utf_16",

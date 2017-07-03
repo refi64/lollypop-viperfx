@@ -10,22 +10,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib, Gio, Soup
 
 import json
+from base64 import b64encode
 
 from lollypop.search_item import SearchItem
 from lollypop.lio import Lio
+from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 
 
 class SpotifySearch:
     """
         Search provider for Spotify
     """
+    def get_token(cancellable):
+        """
+            Get a new auth token
+            @param cancellable as Gio.Cancellable
+            @return str
+        """
+        try:
+            token_uri = "https://accounts.spotify.com/api/token"
+            credentials = "%s:%s" % (SPOTIFY_CLIENT_ID, SPOTIFY_SECRET)
+            encoded = b64encode(credentials.encode("utf-8"))
+            credentials = encoded.decode("utf-8")
+            session = Soup.Session.new()
+            data = {"grant_type": "client_credentials"}
+            msg = Soup.form_request_new_from_hash("POST", token_uri, data)
+            msg.request_headers.append("Authorization",
+                                       "Basic %s" % credentials)
+            status = session.send_message(msg)
+            if status == 200:
+                body = msg.get_property("response-body")
+                data = body.flatten().get_data()
+                decode = json.loads(data.decode("utf-8"))
+                return decode["access_token"]
+        except:
+            return ""
+
     def __init__(self):
         """
             Init provider
         """
+        self.__token = SpotifySearch.get_token(None)
         if not hasattr(self, "_cancel"):
             self._cancel = Gio.Cancellable.new()
 
@@ -39,6 +67,7 @@ class SpotifySearch:
                                                                       " ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=track" % formated)
+            s.add_spotify_headers(self.__token)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -83,6 +112,7 @@ class SpotifySearch:
         try:
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "tracks/%s" % track_id)
+            s.add_spotify_headers(self.__token)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -99,6 +129,7 @@ class SpotifySearch:
         try:
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "albums/%s" % album_id)
+            s.add_spotify_headers(self.__token)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -142,6 +173,7 @@ class SpotifySearch:
         try:
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "tracks/%s" % track_id)
+            s.add_spotify_headers(self.__token)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -183,6 +215,7 @@ class SpotifySearch:
                                                                       " ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % formated)
+            s.add_spotify_headers(self.__token)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -197,6 +230,7 @@ class SpotifySearch:
                     s = Lio.File.new_for_uri("https://api.spotify.com/"
                                              "v1/artists/%s/albums" %
                                              artist_id)
+                    s.add_spotify_headers(self.__token)
                     (status, data, tag) = s.load_contents(self._cancel)
                     if status:
                         decode = json.loads(data.decode("utf-8"))
@@ -216,6 +250,7 @@ class SpotifySearch:
                         s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                                  "albums/%s" %
                                                  album_item.ex_id)
+                        s.add_spotify_headers(self.__token)
                         (status, data, tag) = s.load_contents(self._cancel)
                         if status:
                             decode = json.loads(data.decode("utf-8"))
@@ -256,6 +291,7 @@ class SpotifySearch:
                                                                       " ", "+")
             s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=album" % formated)
+            s.add_spotify_headers(self.__token)
             (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -268,6 +304,7 @@ class SpotifySearch:
                     album_item.smallcover = item["images"][2]["url"]
                     s = Lio.File.new_for_uri("https://api.spotify.com/v1/"
                                              "albums/%s" % item["id"])
+                    s.add_spotify_headers(self.__token)
                     (status, data, tag) = s.load_contents(self._cancel)
                     if status:
                         decode = json.loads(data.decode("utf-8"))

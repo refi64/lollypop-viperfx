@@ -27,7 +27,15 @@ class Lio:
         def new_for_uri(uri):
             f = Gio.File.new_for_uri(uri)
             f.__class__ = Lio.File
+            f.__token = None
             return f
+
+        def add_spotify_headers(self, token):
+            """
+                Add spotify headers
+                @param token as str
+            """
+            self.__token = token
 
         def load_contents(self, cancellable=None):
             """
@@ -38,13 +46,26 @@ class Lio:
                 uri = self.get_uri()
                 if uri.startswith("http") or uri.startswith("https"):
                     session = Soup.Session.new()
-                    request = session.request(uri)
-                    stream = request.send(cancellable)
-                    bytes = bytearray(0)
-                    buf = stream.read_bytes(1024, cancellable).get_data()
-                    while buf:
-                        bytes += buf
+                    # Post message
+                    if self.__token is not None:
+                        msg = Soup.Message.new("GET", uri)
+                        headers = msg.get_property("request-headers")
+                        headers.append("Authorization",
+                                       "Bearer %s" % self.__token)
+                        session.send_message(msg)
+                        body = msg.get_property("response-body")
+                        bytes = body.flatten().get_data()
+                    # Get message
+                    else:
+                        request = session.request(uri)
+                        stream = request.send(cancellable)
+                        bytes = bytearray(0)
                         buf = stream.read_bytes(1024, cancellable).get_data()
+                        while buf:
+                            bytes += buf
+                            buf = stream.read_bytes(1024,
+                                                    cancellable).get_data()
+                        stream.close()
                     return (True, bytes, "")
                 else:
                     return Gio.File.load_contents(self, cancellable)
