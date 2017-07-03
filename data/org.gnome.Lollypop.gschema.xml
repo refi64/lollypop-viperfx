@@ -278,7 +278,7 @@
         </key>
         <key type="b" name="smart-previous">
             <default>false</default>
-            <summary>Reset current track position on previous</summary>
+            <summary>Restart current track on previous</summary>
             <description></description>
         </key>
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
