@@ -14,9 +14,11 @@ from gi.repository import GLib, Gio, Soup
 
 import json
 from base64 import b64encode
+from time import time
 
 from lollypop.search_item import SearchItem
 from lollypop.lio import Lio
+from lollypop.utils import debug
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 
 
@@ -24,12 +26,20 @@ class SpotifySearch:
     """
         Search provider for Spotify
     """
+    __EXPIRES = 0
+    __TOKEN = None
+
     def get_token(cancellable):
         """
             Get a new auth token
             @param cancellable as Gio.Cancellable
             @return str
         """
+        # Remove 60 seconds to be sure
+        if int(time()) + 60 < SpotifySearch.__EXPIRES and\
+                SpotifySearch.__TOKEN is not None:
+            debug("Use spotify token: %s" % SpotifySearch.__TOKEN)
+            return SpotifySearch.__TOKEN
         try:
             token_uri = "https://accounts.spotify.com/api/token"
             credentials = "%s:%s" % (SPOTIFY_CLIENT_ID, SPOTIFY_SECRET)
@@ -45,7 +55,10 @@ class SpotifySearch:
                 body = msg.get_property("response-body")
                 data = body.flatten().get_data()
                 decode = json.loads(data.decode("utf-8"))
-                return decode["access_token"]
+                SpotifySearch.__EXPIRES = int(time()) +\
+                    int(decode["expires_in"])
+                SpotifySearch.__TOKEN = decode["access_token"]
+                return SpotifySearch.__TOKEN
         except:
             return ""
 
