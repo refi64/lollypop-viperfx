@@ -699,7 +699,10 @@ class SettingsDialog:
             @param combo as Gtk.ComboBoxText
         """
         current = Lp().settings.get_value("preview-output").get_string()
-        outputs = source.call_finish(result)[0]
+        try:
+            outputs = source.call_finish(result)[0]
+        except:
+            outputs = []
         if outputs:
             for output in outputs:
                 combo.append(output[1], output[0])
@@ -715,7 +718,10 @@ class SettingsDialog:
             @param result as Gio.AsyncResult
             @param data as (Gtk.Switch, Gtk.Grid)
         """
-        can_set_cover = source.call_finish(result)
+        try:
+            can_set_cover = source.call_finish(result)
+        except:
+            can_set_cover = False
         switch_artwork_tags = data[0]
         if not can_set_cover:
             grid = data[1]
