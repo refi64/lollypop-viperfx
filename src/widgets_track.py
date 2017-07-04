@@ -417,7 +417,10 @@ class PlaylistRow(Row):
             self._artists_label.set_property("valign", Gtk.Align.END)
         self._duration_label.set_property("valign", Gtk.Align.END)
         self._indicator.set_property("valign", Gtk.Align.END)
-        self._grid.attach(self.__header, 1, 0, 4, 1)
+        if self._artists_label is not None:
+            self._grid.attach(self.__header, 1, 0, 5, 1)
+        else:
+            self._grid.attach(self.__header, 1, 0, 4, 1)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self.show_headers(self.__show_headers)
