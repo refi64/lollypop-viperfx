@@ -414,19 +414,22 @@ class AlbumArt(BaseArt, TagReader):
             @param result as Gio.AsyncResult
             @param album_id as int
         """
-        if not source.call_finish(result):
-            return
-        dbus_helper = DBusHelper()
-        for uri in Lp().albums.get_track_uris(album_id, [], []):
-            path = GLib.filename_from_uri(uri)[0]
-            dbus_helper.call("SetCover",
-                             GLib.Variant(
-                                 "(ss)",
-                                 (path,
-                                  "%s/lollypop_cover_tags.jpg" %
-                                  self._CACHE_PATH)), None, None)
-        self.clean_album_cache(Album(album_id))
-        GLib.idle_add(self.album_artwork_update, album_id)
+        try:
+            can_set_cover = source.call_finish(result)
+        except:
+            can_set_cover = False
+        if can_set_cover:
+            dbus_helper = DBusHelper()
+            for uri in Lp().albums.get_track_uris(album_id, [], []):
+                path = GLib.filename_from_uri(uri)[0]
+                dbus_helper.call("SetCover",
+                                 GLib.Variant(
+                                     "(ss)",
+                                     (path,
+                                      "%s/lollypop_cover_tags.jpg" %
+                                      self._CACHE_PATH)), None, None)
+            self.clean_album_cache(Album(album_id))
+            GLib.idle_add(self.album_artwork_update, album_id)
 
     def __on_remove_album_artwork(self, source, result, album_id):
         """
@@ -435,7 +438,10 @@ class AlbumArt(BaseArt, TagReader):
             @param result as Gio.AsyncResult
             @param album_id
         """
-        can_set_cover = source.call_finish(result)
+        try:
+            can_set_cover = source.call_finish(result)
+        except:
+            can_set_cover = False
         if Lp().settings.get_value("save-to-tags") and can_set_cover:
             dbus_helper = DBusHelper()
             for uri in Lp().albums.get_track_uris(album_id, [], []):
