@@ -430,6 +430,9 @@ class AlbumArt(BaseArt, TagReader):
                                       self._CACHE_PATH)), None, None)
             self.clean_album_cache(Album(album_id))
             GLib.idle_add(self.album_artwork_update, album_id)
+        else:
+            # Lollypop-portal or kid3-cli removed?
+            Lp().settings.set_value("save-to-tags", GLib.Variant("b", False))
 
     def __on_remove_album_artwork(self, source, result, album_id):
         """
@@ -442,7 +445,7 @@ class AlbumArt(BaseArt, TagReader):
             can_set_cover = source.call_finish(result)
         except:
             can_set_cover = False
-        if Lp().settings.get_value("save-to-tags") and can_set_cover:
+        if can_set_cover:
             dbus_helper = DBusHelper()
             for uri in Lp().albums.get_track_uris(album_id, [], []):
                 try:
@@ -452,3 +455,6 @@ class AlbumArt(BaseArt, TagReader):
                                      None, None)
                 except Exception as e:
                     print("AlbumArt::__on_remove_album_artwork():", e)
+        else:
+            # Lollypop-portal or kid3-cli removed?
+            Lp().settings.set_value("save-to-tags", GLib.Variant("b", False))
