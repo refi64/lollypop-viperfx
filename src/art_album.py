@@ -270,9 +270,8 @@ class AlbumArt(BaseArt, TagReader):
                     favorite.trash()
             else:
                 arturi = album.uri + "/" + self.__favorite
-            f = Lio.File.new_for_uri(arturi)
-            # Update cover file if exists even if we have written to tags
-            if not save_to_tags or f.query_exists():
+            # Save cover to uri
+            if not save_to_tags:
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                stream,
@@ -290,6 +289,10 @@ class AlbumArt(BaseArt, TagReader):
                 del pixbuf
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
+            else:
+                dst = Lio.File.new_for_uri(arturi)
+                if dst.query_exists():
+                    dst.trash()
         except Exception as e:
             print("Art::save_album_artwork(): %s" % e)
 
