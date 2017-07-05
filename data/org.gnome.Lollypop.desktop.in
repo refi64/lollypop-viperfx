@@ -1,7 +1,7 @@
 [Desktop Entry]
-_Name=Lollypop
-_GenericName=Music Player
-_Comment=Play and organize your music collection
+Name=Lollypop
+GenericName=Music Player
+Comment=Play and organize your music collection
 Icon=org.gnome.Lollypop
 Exec=lollypop %U
 Terminal=false
@@ -13,13 +13,13 @@ MimeType=application/ogg;application/x-ogg;application/x-ogm-audio;audio/aac;aud
 Actions=Toggle;Next;Prev;
 
 [Desktop Action Toggle]
-_Name=Play/Pause
+Name=Play/Pause
 Exec=lollypop -t
 
 [Desktop Action Next]
-_Name=Next
+Name=Next
 Exec=lollypop -n
 
 [Desktop Action Prev]
-_Name=Previous
+Name=Previous
 Exec=lollypop -p

@@ -13,9 +13,9 @@
 
 import sys
 # Make sure we'll find the pygobject module, even in JHBuild
-sys.path.insert(1, '@pyexecdir@')
+sys.path.insert(1, '@PYTHON_EXEC_DIR@')
 # Make sure we'll find the lollypop modules, even in JHBuild
-sys.path.insert(1, '@pythondir@')
+sys.path.insert(1, '@PYTHON_DIR@')
 import gi
 gi.require_version('Secret', '1')
 gi.require_version('TotemPlParser', '1.0')
@@ -120,7 +120,7 @@ class Application(Gtk.Application):
 
 
 if __name__ == '__main__':
-    
+
     app = Application()
     larg = len(sys.argv)
     if larg == 1:

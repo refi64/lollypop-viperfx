@@ -1,4 +1,4 @@
-#!@PYTHON@
+#!/usr/bin/env python3
 
 import sys
 import signal
@@ -10,14 +10,14 @@ if 'LOLLYPOP_TRACE' in os.environ:
     from pycallgraph import PyCallGraph
     from pycallgraph.output import GraphvizOutput
 # Make sure we'll find the pygobject module, even in JHBuild
-sys.path.insert(1, '@pyexecdir@')
+sys.path.insert(1, '@PYTHON_EXEC_DIR@')
 # Make sure we'll find the lollypop modules, even in JHBuild
-sys.path.insert(1, '@pythondir@')
+sys.path.insert(1, '@PYTHON_DIR@')
 
 from gi.repository import Gio
 
-localedir = '@localedir@'
-pkgdatadir = '@pkgdatadir@'
+localedir = '@LOCALE_DIR@'
+pkgdatadir = '@DATA_DIR@'
 
 from lollypop.application import Application
 
@@ -35,7 +35,7 @@ def install_excepthook():
 
 if __name__ == "__main__":
     install_excepthook()
-    
+
     locale.bindtextdomain('lollypop', localedir)
     locale.textdomain('lollypop')
     gettext.bindtextdomain('lollypop', localedir)
