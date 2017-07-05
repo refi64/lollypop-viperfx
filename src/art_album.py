@@ -432,7 +432,9 @@ class AlbumArt(BaseArt, TagReader):
                                       "%s/lollypop_cover_tags.jpg" %
                                       self._CACHE_PATH)), None, None)
             self.clean_album_cache(Album(album_id))
-            GLib.idle_add(self.album_artwork_update, album_id)
+            # FIXME Should be better to send all covers at once and listen
+            # to as signal but it works like this
+            GLib.timeout_add(2000, self.album_artwork_update, album_id)
         else:
             # Lollypop-portal or kid3-cli removed?
             Lp().settings.set_value("save-to-tags", GLib.Variant("b", False))
