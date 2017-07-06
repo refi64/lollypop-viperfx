@@ -1,7 +1,5 @@
 *~
 /lollypop-cli
-/po
-/help
 /*.bak
 /*.lo
 /*.o
@@ -73,7 +71,6 @@ data/Makefile
 data/Makefile.in
 flatpak/metadata
 *.pyc
-lollypop
 *.valid
 /src/Makefile.in
 /data/AboutDialog.ui
@@ -83,3 +80,5 @@ lollypop
 /flatpak/*.bundle
 /flatpak/*.flatpak
 /flatpak/.flatpak-builder
+/builddir
+.vscode/

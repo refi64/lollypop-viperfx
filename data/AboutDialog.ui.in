@@ -8,7 +8,7 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="program_name">Lollypop</property>
-    <property name="version">@PACKAGE_VERSION@</property>
+    <property name="version">@VERSION@</property>
     <property name="copyright">Copyright © 2014-2016 Cédric Bellegarde</property>
     <property name="comments" translatable="yes">A music player for GNOME.</property>
     <property name="website">@PACKAGE_URL@</property>
@@ -73,8 +73,8 @@ http://www.onlinewebfonts.com/icon (Last.fm icon)
                 <property name="uri">https://www.paypal.me/lollypopgnome</property>
               </object>
             </child>
-          </object> 
-        </child>      
+          </object>
+        </child>
       </object>
     </child>
   </object>

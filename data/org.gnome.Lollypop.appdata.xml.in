@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application>
- <id type="desktop">org.gnome.Lollypop.desktop</id>
- <licence>CC0</licence>
- <_name>Lollypop</_name>
- <_summary>Play and organize your music collection</_summary>
- <description>
-  <_p>
-	Lollypop is a new GNOME music playing application.
-  </_p>
-  <_p>
-	It provides:
-  </_p>
-  <ul>
-	<_li> MP3, Ogg and FLAC playback</_li>
-        <_li> Web playback</_li>
-	<_li> Genre/Cover browsing</_li>
-	<_li> Genre/Artist/Cover browsing</_li>
-	<_li> Search</_li>
-	<_li> Queue</_li>
-	<_li> Party mode</_li>
-	<_li> Replay gain</_li>
-	<_li> Cover art downloader</_li>
-	<_li> Context artist view</_li>
-	<_li> MTP sync</_li>
-	<_li> Fullscreen view</_li>
-	<_li> Radios support</_li>
-	<_li> Last.fm support</_li>
-	<_li> Auto install codecs</_li>
-	<_li> HiDPI support</_li>
-	<_li> TuneIn support</_li>
- </ul>
- </description>
- <screenshots>
-  <screenshot type="default" width="800" height="439">https://raw.githubusercontent.com/gnumdk/lollypop-data/master/main_small.jpg</screenshot>
- </screenshots>
- <url type="homepage">https://github.com/gnumdk/lollypop</url>
- <updatecontact>cedric.bellegarde@adishatz.org</updatecontact>
-</application>
+<component type="desktop">
+  <id>org.gnome.Lollypop.desktop</id>
+  <licence>CC0</licence>
+  <name>Lollypop</name>
+  <summary>Play and organize your music collection</summary>
+  <description>
+    <p>
+      Lollypop is a new GNOME music playing application.
+    </p>
+    <p>
+      It provides:
+    </p>
+    <ul>
+      <li>MP3, Ogg and FLAC playback</li>
+      <li>Web playback</li>
+      <li>Genre/Cover browsing</li>
+      <li>Genre/Artist/Cover browsing</li>
+      <li>Search</li>
+      <li>Queue</li>
+      <li>Party mode</li>
+      <li>Replay gain</li>
+      <li>Cover art downloader</li>
+      <li>Context artist view</li>
+      <li>MTP sync</li>
+      <li>Fullscreen view</li>
+      <li>Radios support</li>
+      <li>Last.fm support</li>
+      <li>Auto install codecs</li>
+      <li>HiDPI support</li>
+      <li>TuneIn support</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default" width="800" height="439">https://raw.githubusercontent.com/gnumdk/lollypop-data/master/mainsmall.jpg</screenshot>
+  </screenshots>
+  <url type="homepage">https://gnumdk.github.io/lollypop-web/</url>
+  <url type="bugtracker">https://github.com/gnumdk/lollypop/issues</url>
+  <updatecontact>cedric.bellegarde@adishatz.org</updatecontact>
+</component>
