@@ -50,11 +50,4 @@ configure_file(
   install_dir: 'bin'
 )
 
-configure_file(
-  input: 'rhythmbox2lollypop.in',
-  output: 'rhythmbox2lollypop',
-  configuration: conf,
-  install_dir: 'bin'
-)
-
 meson.add_install_script('meson_post_install.py')

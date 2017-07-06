@@ -22,7 +22,7 @@ gi.require_version('TotemPlParser', '1.0')
 gi.require_version('GstPbutils', '1.0')
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-from gi.repository import Gtk, Gst
+from gi.repository import Gtk, Gst, GLib
 
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_tracks import TracksDatabase
@@ -35,6 +35,9 @@ from lollypop.settings import Settings
 from lollypop.define import Type, DbPersistent
 from lollypop.playlists import Playlists
 
+import xml.etree.ElementTree as etree
+import os
+import sqlite3
 from time import time
 import sys
 
@@ -73,6 +76,9 @@ class Application(Gtk.Application):
         print("")
         print("usage: lollypop-cli export-playlists")
         print("Export playlists to m3u format in current directory")
+        print("")
+        print("usage: lollypop-cli import-rhythmbox")
+        print("Import Rhythmbox stats")
 
     def add_youtube(self, argv):
         """
@@ -107,6 +113,36 @@ class Application(Gtk.Application):
             t.update_album(album_id, album_artist_ids, genre_ids, None)
             sql.commit()
 
+    def import_rhythmbox(self):
+        """
+            Import rhythmbox stats
+        """
+        LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+        DB_PATH = "%s/lollypop.db" % LOCAL_PATH
+        RB_DB_PATH = os.path.expanduser("~") + "/.local/share/rhythmbox/rhythmdb.xml"
+
+        sql = sqlite3.connect(DB_PATH, 600.0)
+
+        tree = etree.parse(RB_DB_PATH)
+        root = tree.getroot()
+        for child in root:
+            if child.attrib['type'] == 'song':
+                uri = child.find('location').text
+                try:
+                    last = child.find('last-played').text
+                except:
+                    last = None
+                try:
+                    count = child.find('play-count').text
+                except:
+                    count = None
+                if count is not None and last is not None:
+                    print(uri, last, count)
+                    sql.execute("UPDATE tracks set ltime=?, popularity=? WHERE uri=?", (last, count, uri))
+
+        sql.commit()
+        sql.close()
+
     def export_playlists(self):
         """
             Export playlists to m3u format
@@ -128,6 +164,8 @@ if __name__ == '__main__':
         exit(0)
     if sys.argv[1] == "youtube" and larg == 6:
         app.add_youtube(sys.argv)
+    elif sys.argv[1] == "import-rhythmbox":
+        app.rhythmbox()
     elif sys.argv[1] == "export-playlists":
         app.export_playlists()
     else:
