@@ -14,12 +14,112 @@ from gi.repository import GLib, Gio, Gst
 
 from time import sleep
 from re import match
+import json
 
 from lollypop.utils import escape, debug
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.lio import Lio
 
+class MtpSyncDb:
+    """
+        Synchronisation db stored on MTP device
+
+        Some MTP devices for instance cannot properly store / retrieve file
+        modification times, so we store them in a dedicated file at the root
+        of the MTP device instead.
+
+        The storage format is a simple JSON dump.
+        It also implements the context manager interface, ensuring database is
+        loaded before entering the scope and saving it when exiting.
+    """
+    def __init__(self, base_uri):
+        """
+            Constructor for MtpSyncDb
+            @param base_uri as str
+        """
+        self.__base_uri = base_uri
+        self.__db_uri = self.__base_uri + "/lollypop-sync.db"
+        self.__metadata = {}
+
+    def get_mtime(self, uri):
+        """
+            Get mtime for a uri on MTP device from the metadata db
+            @param uri as str
+        """
+        return self.__metadata.get(self._get_reluri(uri), {}).get("time::modified", 0)
+
+    def set_mtime(self, uri, mtime):
+        """
+            Set mtime for a uri on MTP device from the metadata db
+            @param uri as str
+            @param mtime as int
+        """
+        self.__metadata.setdefault(self._get_reluri(uri), dict())["time::modified"] = mtime
+
+    def delete_uri(self, uri):
+        """
+            Deletes metadata for a uri from the on-device metadata db
+            @param uri as str
+        """
+        if self._get_reluri(uri) in self.__metadata:
+            del self.__metadata[self._get_reluri(uri)]
+
+    def _get_reluri(self, uri):
+        """
+            Returns a relative on-device uri from an absolute on-device.
+            We do not want to store absolute uri in the db as the same
+            peripheral could have a different path when mounted on another host
+            machine.
+            @param uri as str
+        """
+        if uri.startswith(self.__base_uri):
+            uri = uri[len(self.__base_uri) + 1:]
+        return uri
+
+    def _load_db(self):
+        """
+            Loads the metadata db from the MTP device
+        """
+        debug("MtpSyncDb::_load_db()")
+        dbfile = Lio.File.new_for_uri(self.__db_uri)
+        ok, jsonraw, _ = dbfile.load_contents(None)
+        if not ok:
+            debug("MtpSyncDb::_load_db() sync db is absent")
+            return
+        try:
+            jsondb = json.loads(jsonraw.decode("utf-8"))
+            if "version" in jsondb and jsondb["version"] == 1:
+                for m in jsondb["tracks_metadata"]:
+                    self.__metadata[m["uri"]] = m["metadata"]
+            else:
+                print("MtpSyncDb::_load_db() unknown sync db version")
+        except Exception as e:
+            print("MtpSyncDb::_load_db() sync db is invalid : %s" % e)
+
+    def _save_db(self):
+        """
+            Saves the metadata db to the MTP device
+        """
+        debug("MtpSyncDb::_save_db()")
+        jsondb = json.dumps({"version": 1, "tracks_metadata": [{"uri": x, "metadata": y} for x, y in sorted(self.__metadata.items())]})
+        dbfile = Lio.File.new_for_uri(self.__db_uri)
+        ok, _ = dbfile.replace_contents(jsondb.encode("utf-8"), None, False, Gio.FileCreateFlags.REPLACE_DESTINATION, None)
+        if not ok:
+            print("MtpSyncDb::_save_db() failed")
+
+    def __enter__(self):
+        """
+            Context manager implementation
+        """
+        self._load_db()
+        return self
+
+    def __exit__(self, *args):
+        """
+            Context manager implementation
+        """
+        self._save_db()
 
 # TODO Rework this code: was designed
 # for playlists and then for albums, it sucks!
@@ -41,6 +141,7 @@ class MtpSync:
         self.__done = 0   # Handled files on sync
         self._fraction = 0.0
         self.__copied_art_uris = []
+        self.__mtpmetadata = None
 
 #######################
 # PROTECTED           #
@@ -109,13 +210,15 @@ class MtpSync:
                 pass
             GLib.idle_add(self._update_progress)
 
-            # Copy new tracks to device
-            if self._syncing:
-                self.__copy_to_device(playlists)
+            with MtpSyncDb(self._uri) as db:
+                self.__mtpmetadata = db
+                # Copy new tracks to device
+                if self._syncing:
+                    self.__copy_to_device(playlists)
 
-            # Remove old tracks from device
-            if self._syncing:
-                self.__remove_from_device(playlists)
+                # Remove old tracks from device
+                if self._syncing:
+                    self.__remove_from_device(playlists)
 
             # Remove empty dirs
             self.__remove_empty_dirs()
@@ -237,6 +340,8 @@ class MtpSync:
                             f = infos.get_child(info)
                             dir_uris.append(f.get_uri())
                     else:
+                        if info.get_name() == "lollypop-sync.db":
+                            continue
                         f = infos.get_child(info)
                         if not f.get_uri().endswith(".m3u"):
                             children.append(f.get_uri())
@@ -330,25 +435,23 @@ class MtpSync:
                                             Gio.FileQueryInfoFlags.NONE,
                                             None)
                 # Prefix track with mtime to make sure updating it later
-                mtime = info.get_attribute_as_string("time::modified")
-                dst_uri = "%s/%s_%s" % (on_device_album_uri,
-                                        mtime, track_name)
+                mtime = info.get_attribute_uint64("time::modified")
+                dst_uri = "%s/%s" % (on_device_album_uri,
+                                        track_name)
                 if stream is not None:
                     if is_compilation:
-                        line = "%s/%s_%s\n" %\
+                        line = "%s/%s\n" %\
                                 (album_name,
-                                 mtime,
                                  track_name)
                     else:
-                        line = "%s_%s/%s_%s\n" %\
+                        line = "%s_%s/%s\n" %\
                                 (artists,
                                  album_name,
-                                 mtime,
                                  track_name)
                     self.__retry(stream.get_output_stream().write,
                                  (line.encode(encoding="UTF-8"), None))
                 dst_track = Lio.File.new_for_uri(dst_uri)
-                if not dst_track.query_exists():
+                if not dst_track.query_exists() or self.__mtpmetadata.get_mtime(dst_track.get_uri()) < mtime:
                     if convertion_needed:
                         mp3_uri = "file:///tmp/%s" % track_name
                         mp3_file = Lio.File.new_for_uri(mp3_uri)
@@ -378,6 +481,7 @@ class MtpSync:
                         self.__retry(src_track.copy,
                                      (dst_track, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
+                    self.__mtpmetadata.set_mtime(dst_track.get_uri(), mtime)
                 else:
                     self.__done += 1
                 self.__done += 1
@@ -436,9 +540,7 @@ class MtpSync:
             info = on_disk.query_info("time::modified",
                                       Gio.FileQueryInfoFlags.NONE,
                                       None)
-            # Prefix track with mtime to make sure updating it later
-            mtime = info.get_attribute_as_string("time::modified")
-            dst_uri = "%s/%s_%s" % (on_device_album_uri, mtime, track_name)
+            dst_uri = "%s/%s" % (on_device_album_uri, track_name)
             # To be sure to get uri correctly escaped for Gio
             f = Lio.File.new_for_uri(dst_uri)
             track_uris.append(f.get_uri())
@@ -456,6 +558,7 @@ class MtpSync:
                 debug("MtpSync::__remove_from_device(): deleting %s" % uri)
                 to_delete = Lio.File.new_for_uri(uri)
                 self.__retry(to_delete.delete, (None,))
+                self.__mtpmetadata.delete_uri(uri)
             self.__done += 1
             self._fraction = self.__done/self.__total
 
