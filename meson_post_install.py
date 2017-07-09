@@ -12,6 +12,3 @@ if not destdir:
     call(['gtk-update-icon-cache', '-qtf', path.join(datadir, 'icons', 'hicolor')])
     print("Installing new Schemas")
     call(['glib-compile-schemas', path.join(datadir, 'glib-2.0/schemas')])
-    call(['chmod', '+x', path.join(prefix, 'bin', 'lollypop')])
-    call(['chmod', '+x', path.join(prefix, 'bin', 'lollypop-cli')])
-    call(['chmod', '+x', path.join(prefix, 'libexec', 'lollypop-sp')])
