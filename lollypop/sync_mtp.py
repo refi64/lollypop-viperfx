@@ -21,6 +21,7 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.lio import Lio
 
+
 class MtpSyncDb:
     """
         Synchronisation db stored on MTP device
@@ -33,6 +34,7 @@ class MtpSyncDb:
         It also implements the context manager interface, ensuring database is
         loaded before entering the scope and saving it when exiting.
     """
+
     def __init__(self, base_uri):
         """
             Constructor for MtpSyncDb
@@ -47,7 +49,8 @@ class MtpSyncDb:
             Get mtime for a uri on MTP device from the metadata db
             @param uri as str
         """
-        return self.__metadata.get(self._get_reluri(uri), {}).get("time::modified", 0)
+        return self.__metadata.get(
+                           self.__get_reluri(uri), {}).get("time::modified", 0)
 
     def set_mtime(self, uri, mtime):
         """
@@ -55,17 +58,21 @@ class MtpSyncDb:
             @param uri as str
             @param mtime as int
         """
-        self.__metadata.setdefault(self._get_reluri(uri), dict())["time::modified"] = mtime
+        self.__metadata.setdefault(self.__get_reluri(uri),
+                                   dict())["time::modified"] = mtime
 
     def delete_uri(self, uri):
         """
             Deletes metadata for a uri from the on-device metadata db
             @param uri as str
         """
-        if self._get_reluri(uri) in self.__metadata:
-            del self.__metadata[self._get_reluri(uri)]
+        if self.__get_reluri(uri) in self.__metadata:
+            del self.__metadata[self.__get_reluri(uri)]
 
-    def _get_reluri(self, uri):
+############
+# Private  #
+############
+    def __get_reluri(self, uri):
         """
             Returns a relative on-device uri from an absolute on-device.
             We do not want to store absolute uri in the db as the same
@@ -77,15 +84,15 @@ class MtpSyncDb:
             uri = uri[len(self.__base_uri) + 1:]
         return uri
 
-    def _load_db(self):
+    def __load_db(self):
         """
             Loads the metadata db from the MTP device
         """
-        debug("MtpSyncDb::_load_db()")
+        debug("MtpSyncDb::__load_db()")
         dbfile = Lio.File.new_for_uri(self.__db_uri)
         ok, jsonraw, _ = dbfile.load_contents(None)
         if not ok:
-            debug("MtpSyncDb::_load_db() sync db is absent")
+            debug("MtpSyncDb::__load_db() sync db is absent")
             return
         try:
             jsondb = json.loads(jsonraw.decode("utf-8"))
@@ -93,33 +100,41 @@ class MtpSyncDb:
                 for m in jsondb["tracks_metadata"]:
                     self.__metadata[m["uri"]] = m["metadata"]
             else:
-                print("MtpSyncDb::_load_db() unknown sync db version")
+                print("MtpSyncDb::__load_db() unknown sync db version")
         except Exception as e:
-            print("MtpSyncDb::_load_db() sync db is invalid : %s" % e)
+            print("MtpSyncDb::__load_db() sync db is invalid : %s" % e)
 
-    def _save_db(self):
+    def __save_db(self):
         """
             Saves the metadata db to the MTP device
         """
-        debug("MtpSyncDb::_save_db()")
-        jsondb = json.dumps({"version": 1, "tracks_metadata": [{"uri": x, "metadata": y} for x, y in sorted(self.__metadata.items())]})
+        debug("MtpSyncDb::__save_db()")
+        jsondb = json.dumps({"version": 1,
+                             "tracks_metadata": [
+                                {"uri": x, "metadata": y}
+                                for x, y in sorted(self.__metadata.items())]})
         dbfile = Lio.File.new_for_uri(self.__db_uri)
-        ok, _ = dbfile.replace_contents(jsondb.encode("utf-8"), None, False, Gio.FileCreateFlags.REPLACE_DESTINATION, None)
+        ok, _ = dbfile.replace_contents(
+                                    jsondb.encode("utf-8"),
+                                    None, False,
+                                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                    None)
         if not ok:
-            print("MtpSyncDb::_save_db() failed")
+            print("MtpSyncDb::__save_db() failed")
 
     def __enter__(self):
         """
             Context manager implementation
         """
-        self._load_db()
+        self.__load_db()
         return self
 
     def __exit__(self, *args):
         """
             Context manager implementation
         """
-        self._save_db()
+        self.__save_db()
+
 
 # TODO Rework this code: was designed
 # for playlists and then for albums, it sucks!
@@ -437,7 +452,7 @@ class MtpSync:
                 # Prefix track with mtime to make sure updating it later
                 mtime = info.get_attribute_uint64("time::modified")
                 dst_uri = "%s/%s" % (on_device_album_uri,
-                                        track_name)
+                                     track_name)
                 if stream is not None:
                     if is_compilation:
                         line = "%s/%s\n" %\
@@ -451,7 +466,9 @@ class MtpSync:
                     self.__retry(stream.get_output_stream().write,
                                  (line.encode(encoding="UTF-8"), None))
                 dst_track = Lio.File.new_for_uri(dst_uri)
-                if not dst_track.query_exists() or self.__mtpmetadata.get_mtime(dst_track.get_uri()) < mtime:
+                if not dst_track.query_exists() or\
+                        self.__mtpmetadata.get_mtime(
+                                                  dst_track.get_uri()) < mtime:
                     if convertion_needed:
                         mp3_uri = "file:///tmp/%s" % track_name
                         mp3_file = Lio.File.new_for_uri(mp3_uri)
@@ -536,10 +553,6 @@ class MtpSync:
             ext = m.group(1)
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
-            on_disk = Lio.File.new_for_uri(track.uri)
-            info = on_disk.query_info("time::modified",
-                                      Gio.FileQueryInfoFlags.NONE,
-                                      None)
             dst_uri = "%s/%s" % (on_device_album_uri, track_name)
             # To be sure to get uri correctly escaped for Gio
             f = Lio.File.new_for_uri(dst_uri)
