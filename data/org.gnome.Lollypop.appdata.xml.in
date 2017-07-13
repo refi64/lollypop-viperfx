@@ -32,7 +32,7 @@
     </ul>
   </description>
   <screenshots>
-    <screenshot type="default" width="800" height="439">https://raw.githubusercontent.com/gnumdk/lollypop-data/master/mainsmall.jpg</screenshot>
+    <screenshot type="default" width="800" height="439">http://gnumdk.github.io/lollypop-web/images/screenshot.jpg</screenshot>
   </screenshots>
   <url type="homepage">https://gnumdk.github.io/lollypop-web/</url>
   <url type="bugtracker">https://github.com/gnumdk/lollypop/issues</url>
