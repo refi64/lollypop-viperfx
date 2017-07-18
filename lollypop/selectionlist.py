@@ -77,13 +77,10 @@ class SelectionList(Gtk.Overlay):
         self.__scrolled.add(self.__view)
         self.__scrolled.show()
         self.add(self.__scrolled)
-        if Gtk.get_minor_version() > 14:
-            self.__fast_scroll = FastScroll(self.__view,
-                                            self.__model,
-                                            self.__scrolled)
-            self.add_overlay(self.__fast_scroll)
-        else:
-            self.__fast_scroll = None
+        self.__fast_scroll = FastScroll(self.__view,
+                                        self.__model,
+                                        self.__scrolled)
+        self.add_overlay(self.__fast_scroll)
         self.__scrolled.connect("enter-notify-event", self.__on_enter_notify)
         self.__scrolled.connect("leave-notify-event", self.__on_leave_notify)
 

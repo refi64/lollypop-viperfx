@@ -92,11 +92,7 @@ class Row(Gtk.ListBoxRow):
         if self._artists_label is not None:
             self._grid.add(self._artists_label)
         self._grid.add(self._duration_label)
-        # TODO Remove this later
-        if Gtk.get_minor_version() > 16:
-            self._grid.add(self.__menu_button)
-        else:
-            self.connect("map", self.__on_map)
+        self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
 

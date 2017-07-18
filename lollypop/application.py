@@ -146,12 +146,9 @@ class Application(Gtk.Application):
         except Exception as e:
             print("Application::init():", e)
         self.__is_fs = False
-        if Gtk.get_minor_version() > 18:
-            cssProviderFile = Lio.File.new_for_uri(
+
+        cssProviderFile = Lio.File.new_for_uri(
                 "resource:///org/gnome/Lollypop/application.css")
-        else:
-            cssProviderFile = Lio.File.new_for_uri(
-                "resource:///org/gnome/Lollypop/application-legacy.css")
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
