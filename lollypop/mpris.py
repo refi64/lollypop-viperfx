@@ -174,6 +174,7 @@ class MPRIS(Server):
         Lp().player.connect("seeked", self.__on_seeked)
         Lp().player.connect("status-changed", self.__on_status_changed)
         Lp().player.connect("volume-changed", self.__on_volume_changed)
+        Lp().player.connect("rate-changed", self.__on_rate_changed)
         Lp().settings.connect("changed::shuffle", self.__on_shuffle_changed)
         Lp().settings.connect("changed::playback", self.__on_playback_changed)
 
@@ -432,6 +433,13 @@ class MPRIS(Server):
         else:
             mpris_value = "None"
         properties = {"LoopStatus": GLib.Variant("s", mpris_value)}
+        self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
+
+    def __on_rate_changed(self, player):
+        rate = Lp().player.current_track.get_rate()
+        if rate == Type.NONE:
+            rate = Lp().player.current_track.get_popularity()
+        properties = {"xesam:userRating": GLib.Variant("d", rate / 5)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
