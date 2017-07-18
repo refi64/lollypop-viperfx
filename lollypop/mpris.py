@@ -18,7 +18,7 @@ from gi.repository import Gio, Gst, GLib, Gtk
 
 from random import randint
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type, Shuffle, NextContext
 
 
 class Server:
@@ -225,8 +225,11 @@ class MPRIS(Server):
     def Get(self, interface, property_name):
         if property_name in ["CanQuit", "CanRaise", "CanSeek", "CanControl"]:
             return GLib.Variant("b", True)
-        elif property_name in ["HasTrackList", "Shuffle"]:
+        elif property_name == "HasTrackList":
             return GLib.Variant("b", False)
+        elif property_name == "Shuffle":
+            return Lp().player.is_party or\
+                Lp().settings.get_enum("shuffle") != Shuffle.NONE
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
         elif property_name == "Identity":
@@ -243,7 +246,14 @@ class MPRIS(Server):
         elif property_name == "PlaybackStatus":
             return GLib.Variant("s", self.__get_status())
         elif property_name == "LoopStatus":
-            return GLib.Variant("s", "Playlist")
+            repeat = Lp().settings.get_enum("playback")
+            if repeat == NextContext.NONE:
+                value = "Playlist"
+            elif repeat == NextContext.REPEAT_TRACK:
+                value = "Track"
+            else:
+                value = "None"
+            return GLib.Variant("s", value)
         elif property_name == "Metadata":
             return GLib.Variant("a{sv}", self.__metadata)
         elif property_name == "Volume":
