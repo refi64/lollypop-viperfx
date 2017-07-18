@@ -228,8 +228,10 @@ class MPRIS(Server):
         elif property_name == "HasTrackList":
             return GLib.Variant("b", False)
         elif property_name == "Shuffle":
-            return Lp().player.is_party or\
-                Lp().settings.get_enum("shuffle") != Shuffle.NONE
+            return GLib.Variant(
+                             "b",
+                             Lp().player.is_party or
+                             Lp().settings.get_enum("shuffle") != Shuffle.NONE)
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
         elif property_name == "Identity":
