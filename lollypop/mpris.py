@@ -174,6 +174,8 @@ class MPRIS(Server):
         Lp().player.connect("seeked", self.__on_seeked)
         Lp().player.connect("status-changed", self.__on_status_changed)
         Lp().player.connect("volume-changed", self.__on_volume_changed)
+        Lp().settings.connect("changed::shuffle", self.__on_shuffle_changed)
+        Lp().settings.connect("changed::playback", self.__on_playback_changed)
 
     def Raise(self):
         self.__app.window.setup_window()
@@ -230,7 +232,6 @@ class MPRIS(Server):
         elif property_name == "Shuffle":
             return GLib.Variant(
                            "b",
-                           Lp().player.is_party or
                            Lp().settings.get_enum("shuffle") == Shuffle.TRACKS)
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
@@ -414,6 +415,24 @@ class MPRIS(Server):
                                {"Volume": GLib.Variant("d",
                                 Lp().player.volume), },
                                [])
+
+    def __on_shuffle_changed(self, settings, value):
+        value = GLib.Variant(
+                           "b",
+                           Lp().settings.get_enum("shuffle") == Shuffle.TRACKS)
+        properties = {"Shuffle": GLib.Variant("b", value)}
+        self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
+
+    def __on_playback_changed(self, settings, value):
+        value = Lp().settings.get_enum("playback")
+        if value == NextContext.NONE:
+            mpris_value = "Playlist"
+        elif value == NextContext.REPEAT_TRACK:
+            mpris_value = "Track"
+        else:
+            mpris_value = "None"
+        properties = {"LoopStatus": GLib.Variant("s", mpris_value)}
+        self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
         self.__update_metadata()
