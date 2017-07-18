@@ -10,13 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib, Gio, TotemPlParser
+from gi.repository import GObject, GLib
 
 import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Type
-from lollypop.lio import Lio
 
 
 class Radios(GObject.GObject):
@@ -42,8 +41,6 @@ class Radios(GObject.GObject):
             Init playlists manager
         """
         GObject.GObject.__init__(self)
-        f = Lio.File.new_for_path(self.DB_PATH)
-        try_import = not f.query_exists()
         # Create db schema
         try:
             with SqlCursor(self) as sql:
@@ -51,23 +48,6 @@ class Radios(GObject.GObject):
                 sql.commit()
         except:
             pass
-
-        # We import radios from lollypop < 0.9.60
-        if try_import:
-            d = Lio.File.new_for_path(self.LOCAL_PATH + "/radios")
-            infos = d.enumerate_children(
-                "standard::name",
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                None)
-            for info in infos:
-                f = info.get_name()
-                if f.endswith(".m3u"):
-                    parser = TotemPlParser.Parser.new()
-                    parser.connect("entry-parsed",
-                                   self.__on_entry_parsed,
-                                   f[:-4])
-                    parser.parse_async(d.get_uri() + "/%s" % f,
-                                       True, None, None)
 
     def add(self, name, url):
         """
