@@ -229,9 +229,9 @@ class MPRIS(Server):
             return GLib.Variant("b", False)
         elif property_name == "Shuffle":
             return GLib.Variant(
-                             "b",
-                             Lp().player.is_party or
-                             Lp().settings.get_enum("shuffle") != Shuffle.NONE)
+                           "b",
+                           Lp().player.is_party or
+                           Lp().settings.get_enum("shuffle") == Shuffle.TRACKS)
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
         elif property_name == "Identity":
@@ -301,6 +301,19 @@ class MPRIS(Server):
     def Set(self, interface, property_name, new_value):
         if property_name == "Volume":
             Lp().player.set_volume(new_value)
+        elif property_name == "Shuffle":
+            if new_value is True:
+                Lp().settings.set_enum("shuffle", Shuffle.TRACKS)
+            else:
+                Lp().settings.set_enum("shuffle", Shuffle.NONE)
+        elif property_name == "LoopStatus":
+            if new_value == "Playlist":
+                value = NextContext.NONE
+            elif new_value == "Track":
+                value = NextContext.REPEAT_TRACK
+            else:
+                value = NextContext.STOP
+            Lp().settings.set_enum("playback", value)
 
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
