@@ -174,7 +174,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as [string], uris to scan
             @thread safe
         """
-        gst_message = None
         if self.__history is None:
             self.__history = History()
         mtimes = Lp().tracks.get_mtimes()
@@ -242,10 +241,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                         self.__add2db(uri, mtime)
                     except Exception as e:
                         print("CollectionScanner::__scan(add):", e, uri)
-                        if e.message != gst_message:
-                            gst_message = e.message
-                            if Lp().notify is not None:
-                                Lp().notify.send(gst_message, uri)
                 sql.commit()
             except Exception as e:
                 print("CollectionScanner::__scan():", e)
