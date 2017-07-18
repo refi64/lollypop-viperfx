@@ -176,12 +176,7 @@ class Application(Gtk.Application):
         if LastFM is not None:
             self.lastfm = LastFM()
         if not self.settings.get_value("disable-mpris"):
-            # Ubuntu > 16.04
-            if Gtk.get_minor_version() > 18:
-                from lollypop.mpris import MPRIS
-            # Ubuntu <= 16.04, Debian Jessie, ElementaryOS
-            else:
-                from lollypop.mpris_legacy import MPRIS
+            from lollypop.mpris import MPRIS
             MPRIS(self)
         if not self.settings.get_value("disable-notifications"):
             from lollypop.notification import NotificationManager
