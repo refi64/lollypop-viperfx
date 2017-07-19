@@ -259,9 +259,9 @@ class TracksDatabase:
             result = sql.execute("SELECT rate FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
-            if v and v[0]:
+            if v:
                 return v[0]
-            return Type.NONE
+            return 0
 
     def get_uri(self, track_id):
         """

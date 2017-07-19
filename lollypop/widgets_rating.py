@@ -76,7 +76,8 @@ class RatingWidget(Gtk.Bin):
         """
         user_rating = True
         stars = self.__object.get_rate()
-        if stars == Type.NONE:
+        # -1 for compatiblity with previous release
+        if stars in [0, -1]:
             stars = self.__object.get_popularity()
             user_rating = False
         if stars < 1:
@@ -138,7 +139,8 @@ class RatingWidget(Gtk.Bin):
         """
         if Lp().scanner.is_locked():
             return
-        user_rating = self.__object.get_rate() != Type.NONE
+        # -1 for compatiblity with previous release
+        user_rating = self.__object.get_rate() not in [0, -1]
         event_star = widget.get_children()[0]
         if event_star in self._stars:
             position = self._stars.index(event_star)

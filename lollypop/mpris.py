@@ -383,8 +383,6 @@ class MPRIS(Server):
                                                  "s",
                                                  Lp().player.current_track.uri)
             rate = Lp().player.current_track.get_rate()
-            if rate == Type.NONE:
-                rate = Lp().player.current_track.get_popularity()
             self.__metadata["xesam:userRating"] = GLib.Variant("d", rate / 5)
             if Lp().player.current_track.id == Type.RADIOS:
                 cover_path = Lp().art.get_radio_cache_path(
@@ -437,8 +435,6 @@ class MPRIS(Server):
 
     def __on_rate_changed(self, player):
         rate = Lp().player.current_track.get_rate()
-        if rate == Type.NONE:
-            rate = Lp().player.current_track.get_popularity()
         properties = {"xesam:userRating": GLib.Variant("d", rate / 5)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 

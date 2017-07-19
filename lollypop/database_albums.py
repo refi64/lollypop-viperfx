@@ -275,9 +275,9 @@ class AlbumsDatabase:
                                  rowid=?", (album_id,))
 
             v = result.fetchone()
-            if v is not None:
+            if v:
                 return v[0]
-            return Type.NONE
+            return 0
 
     def get_mtime(self, album_id, genre_ids=[]):
         """

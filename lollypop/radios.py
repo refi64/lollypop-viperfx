@@ -15,7 +15,6 @@ from gi.repository import GObject, GLib
 import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Type
 
 
 class Radios(GObject.GObject):
@@ -255,9 +254,9 @@ class Radios(GObject.GObject):
                                   FROM radios\
                                   WHERE name=?", (name,))
             v = result.fetchone()
-            if v and v[0]:
+            if v:
                 return v[0]
-            return Type.NONE
+            return 0
 
     def get_cursor(self):
         """
