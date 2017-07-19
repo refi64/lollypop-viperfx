@@ -100,7 +100,7 @@ class Application(Gtk.Application):
         self.add_main_option("debug", b"d", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Debug lollypop", None)
         self.add_main_option("set-rating", b"r", GLib.OptionFlags.NONE,
-                             GLib.OptionArg.INT, "Rate the current track",
+                             GLib.OptionArg.STRING, "Rate the current track",
                              None)
         self.add_main_option("play-pause", b"t", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Toggle playback",
