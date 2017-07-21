@@ -161,11 +161,17 @@ class MPRIS(Server):
 
     def __init__(self, app):
         self.__app = app
-        self.__metadata = {"mpris:trackid": GLib.Variant("o", "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
-        # Get the shuffle state for our shuffle toggle setting so we can remember the last non-NONE
-        # suffle state if we start with Shuffle.NONE then our "on" setting starts with Shuffle.TRACKS. 
+        self.__metadata = {"mpris:trackid": GLib.Variant(
+                                  "o",
+                                  "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
+        # Get the shuffle state for our shuffle toggle setting so we can
+        # remember the last non-NONE suffle state if we start with Shuffle.NONE
+        # then our "on" setting starts with Shuffle.TRACKS.
         shuffle_state = Lp().settings.get_enum("shuffle")
-        self.__shuffle_state = shuffle_state if shuffle_state != Shuffle.NONE else Shuffle.TRACKS
+        if shuffle_state != Shuffle.NONE:
+            self.__shuffle_state = shuffle_state
+        else:
+            self.__shuffle_state = Shuffle.TRACKS
         self.__track_id = self.__get_media_id(0)
         self.__bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         Gio.bus_own_name_on_connection(self.__bus,
@@ -175,7 +181,6 @@ class MPRIS(Server):
                                        None)
         Server.__init__(self, self.__bus, self.__MPRIS_PATH)
         Lp().player.connect("current-changed", self.__on_current_changed)
-        Lp().player.connect("rate-changed", self.__on_current_changed)
         Lp().player.connect("seeked", self.__on_seeked)
         Lp().player.connect("status-changed", self.__on_status_changed)
         Lp().player.connect("volume-changed", self.__on_volume_changed)
@@ -339,11 +344,15 @@ class MPRIS(Server):
 #######################
 # PRIVATE             #
 #######################
-    # TrackId's must be unique even up to the point that if you repeat a song
-    # it must have a different TrackId.
+
     def __get_media_id(self, track_id):
+        """
+            TrackId's must be unique even up to
+            the point that if you repeat a song
+            it must have a different TrackId.
+        """
         track_id = track_id + randint(10000000, 90000000)
-        return GLib.Variant("o", "/org/gnome/Lollypop/TrackId/%s" %track_id)
+        return GLib.Variant("o", "/org/gnome/Lollypop/TrackId/%s" % track_id)
 
     def __get_status(self):
         state = Lp().player.get_status()
@@ -356,7 +365,9 @@ class MPRIS(Server):
 
     def __update_metadata(self):
         if self.__get_status() == "Stopped":
-            self.__metadata = {"mpris:trackid": GLib.Variant("o", "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
+            self.__metadata = {"mpris:trackid": GLib.Variant(
+                                  "o",
+                                  "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
         else:
             self.__metadata["mpris:trackid"] = self.__track_id
             track_number = Lp().player.current_track.number

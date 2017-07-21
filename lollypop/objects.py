@@ -114,6 +114,7 @@ class Base:
             radios = Radios()
             radios.set_rate(self._album_artists[0], rate)
         else:
+            Lp().player.emit("rate-changed")
             self.db.set_rate(self.id, rate)
 
 

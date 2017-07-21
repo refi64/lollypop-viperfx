@@ -156,8 +156,6 @@ class RatingWidget(Gtk.Bin):
             self.__object.set_rate(pop)
         else:
             self.__object.set_popularity(pop)
-        if isinstance(self.__object, Track):
-            Lp().player.emit("rate-changed")
         # Save to tags if needed
         # FIXME We really need a radio object
         # FIXME We look to kid3-cli here!
