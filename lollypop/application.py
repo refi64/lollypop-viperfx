@@ -398,12 +398,14 @@ class Application(Gtk.Application):
         if options.contains("debug"):
             self.debug = True
         if options.contains("set-rating"):
-            value = options.lookup_value("set-rating").get_int32()
-            if self.player.current_track.id is not None:
-                if value > 0 and value < 6:
+            value = options.lookup_value("set-rating").get_string()
+            try:
+                value = min(max(0, int(value)), 5)
+                if self.player.current_track.id is not None:
                     self.player.current_track.set_rate(value)
-                elif value == 0:
-                    self.player.current_track.set_rate(Type.NONE)
+            except Exception as e:
+                print(e)
+                pass
         elif options.contains("play-pause"):
             self.player.play_pause()
         elif options.contains("play-ids"):

@@ -161,7 +161,12 @@ class MPRIS(Server):
 
     def __init__(self, app):
         self.__app = app
-        self.__metadata = {}
+        self.__metadata = {"mpris:trackid": GLib.Variant("o", "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
+        # Get the shuffle state for our shuffle toggle setting so we can remember the last non-NONE
+        # suffle state if we start with Shuffle.NONE then our "on" setting starts with Shuffle.TRACKS. 
+        shuffle_state = Lp().settings.get_enum("shuffle")
+        self.__shuffle_state = shuffle_state if shuffle_state != Shuffle.NONE else Shuffle.TRACKS
+        self.__track_id = self.__get_media_id(0)
         self.__bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         Gio.bus_own_name_on_connection(self.__bus,
                                        self.__MPRIS_LOLLYPOP,
@@ -233,7 +238,7 @@ class MPRIS(Server):
         elif property_name == "Shuffle":
             return GLib.Variant(
                            "b",
-                           Lp().settings.get_enum("shuffle") == Shuffle.TRACKS)
+                           Lp().settings.get_enum("shuffle") != Shuffle.NONE)
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
         elif property_name == "Identity":
@@ -305,7 +310,7 @@ class MPRIS(Server):
             Lp().player.set_volume(new_value)
         elif property_name == "Shuffle":
             if new_value is True:
-                Lp().settings.set_enum("shuffle", Shuffle.TRACKS)
+                Lp().settings.set_enum("shuffle", self.__shuffle_state)
             else:
                 Lp().settings.set_enum("shuffle", Shuffle.NONE)
         elif property_name == "LoopStatus":
@@ -334,9 +339,11 @@ class MPRIS(Server):
 #######################
 # PRIVATE             #
 #######################
+    # TrackId's must be unique even up to the point that if you repeat a song
+    # it must have a different TrackId.
     def __get_media_id(self, track_id):
-        return GLib.Variant("s", "/org/mpris/MediaPlayer2/TrackList/%s" %
-                            (track_id if track_id is not None else "NoTrack"))
+        track_id = track_id + randint(10000000, 90000000)
+        return GLib.Variant("o", "/org/gnome/Lollypop/TrackId/%s" %track_id)
 
     def __get_status(self):
         state = Lp().player.get_status()
@@ -349,13 +356,9 @@ class MPRIS(Server):
 
     def __update_metadata(self):
         if self.__get_status() == "Stopped":
-            self.__metadata = {}
+            self.__metadata = {"mpris:trackid": GLib.Variant("o", "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
         else:
-            if Lp().player.current_track.id >= 0:
-                track_id = Lp().player.current_track.id
-            else:
-                track_id = randint(10000000, 90000000)
-            self.__metadata["mpris:trackid"] = self.__get_media_id(track_id)
+            self.__metadata["mpris:trackid"] = self.__track_id
             track_number = Lp().player.current_track.number
             if track_number is None:
                 track_number = 1
@@ -403,8 +406,6 @@ class MPRIS(Server):
                 self.__metadata["mpris:artUrl"] = GLib.Variant(
                                                         "s",
                                                         "file://" + cover_path)
-            elif "mpris:artUrl" in self.__metadata:
-                self.__metadata["mpris:artUrl"] = GLib.Variant("s", "")
 
     def __on_seeked(self, player, position):
         self.Seeked(position * (1000 * 1000))
@@ -416,9 +417,13 @@ class MPRIS(Server):
                                [])
 
     def __on_shuffle_changed(self, settings, value):
+        shuffle_state = Lp().settings.get_enum("shuffle")
+        # We only want to remember the last non-NONE shuffle state.
+        if shuffle_state != Shuffle.NONE:
+            self.__shuffle_state = shuffle_state
         value = GLib.Variant(
                            "b",
-                           Lp().settings.get_enum("shuffle") == Shuffle.TRACKS)
+                           shuffle_state != Shuffle.NONE)
         properties = {"Shuffle": GLib.Variant("b", value)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
@@ -434,11 +439,17 @@ class MPRIS(Server):
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_rate_changed(self, player):
-        rate = Lp().player.current_track.get_rate()
-        properties = {"xesam:userRating": GLib.Variant("d", rate / 5)}
+        self.__update_metadata()
+        properties = {"Metadata": GLib.Variant("a{sv}", self.__metadata)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
+        if Lp().player.current_track.id >= 0:
+            track_id = Lp().player.current_track.id
+        else:
+            track_id = 0
+        # We only need to recalculate a new trackId at song changes.
+        self.__track_id = self.__get_media_id(track_id)
         self.__update_metadata()
         properties = {"Metadata": GLib.Variant("a{sv}", self.__metadata),
                       "CanPlay": GLib.Variant("b", True),
