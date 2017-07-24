@@ -161,6 +161,8 @@ class MPRIS(Server):
 
     def __init__(self, app):
         self.__app = app
+        self.__rating = None
+        self.__lollypop_id = 0
         self.__metadata = {"mpris:trackid": GLib.Variant(
                                   "o",
                                   "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
@@ -396,8 +398,9 @@ class MPRIS(Server):
             self.__metadata["xesam:url"] = GLib.Variant(
                                                  "s",
                                                  Lp().player.current_track.uri)
-            rate = Lp().player.current_track.get_rate()
-            self.__metadata["xesam:userRating"] = GLib.Variant("d", rate / 5)
+            if self.__rating is None:
+                self.__rating = Lp().player.current_track.get_rate()
+            self.__metadata["xesam:userRating"] = GLib.Variant("d", self.__rating / 5)
             if Lp().player.current_track.id == Type.RADIOS:
                 cover_path = Lp().art.get_radio_cache_path(
                      ", ".join(Lp().player.current_track.artists),
@@ -449,18 +452,23 @@ class MPRIS(Server):
         properties = {"LoopStatus": GLib.Variant("s", mpris_value)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
-    def __on_rate_changed(self, player):
-        self.__update_metadata()
-        properties = {"Metadata": GLib.Variant("a{sv}", self.__metadata)}
-        self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
+    def __on_rate_changed(self, player, id_rating):
+        rated_track_id, rating = id_rating
+        # We only care about the current Track's rating.
+        if rated_track_id == self.__lollypop_id and self.__rating != rating:
+            self.__rating = rating
+            self.__update_metadata()
+            properties = {"Metadata": GLib.Variant("a{sv}", self.__metadata)}
+            self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
         if Lp().player.current_track.id >= 0:
-            track_id = Lp().player.current_track.id
+            self.__lollypop_id = Lp().player.current_track.id
         else:
-            track_id = 0
+            self.__lollypop_id = 0
         # We only need to recalculate a new trackId at song changes.
-        self.__track_id = self.__get_media_id(track_id)
+        self.__track_id = self.__get_media_id(self.__lollypop_id)
+        self.__rating = None
         self.__update_metadata()
         properties = {"Metadata": GLib.Variant("a{sv}", self.__metadata),
                       "CanPlay": GLib.Variant("b", True),
