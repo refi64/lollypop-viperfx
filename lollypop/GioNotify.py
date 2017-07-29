@@ -41,31 +41,37 @@ class GioNotify(Gio.DBusProxy):
 
     @classmethod
     def async_init(cls, app_name, callback):
-        def on_init_finish(self, result, callback):
-            self.init_finish(result)
-            self.call(
-                "GetCapabilities",
-                None,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                None,
-                on_GetCapabilities_finish,
-                callback,
-            )
+        def on_init_finish(self, result, data):
+            try:
+                self.init_finish(result)
+            except GLib.Error as e:
+                callback(None, None, error=e)
+            else:
+                if not self.get_name_owner():
+                    callback(None, None, error='Notification service is unowned')
+                else:
+                    self.call(
+                        'GetCapabilities',
+                        None,
+                        Gio.DBusCallFlags.NONE,
+                        -1,
+                        None,
+                        on_GetCapabilities_finish,
+                        None,
+                    )
 
-        def on_GetCapabilities_finish(self, result, callback):
+        def on_GetCapabilities_finish(self, result, data):
             try:
                 caps = self.call_finish(result).unpack()[0]
 
                 self._app_name = app_name
 
-                callback(caps)
+                callback(self, caps)
             except Exception as e:
-                print("GioNotify::async_init():", e)
+                callback(None, None, error=e)
 
         self = cls()
-        self.init_async(GLib.PRIORITY_DEFAULT, None, on_init_finish, callback)
-        return self
+        self.init_async(GLib.PRIORITY_DEFAULT, None, on_init_finish, None)
 
     def show_new(self, summary, body, icon):
         def on_Notify_finish(self, result):

@@ -29,11 +29,11 @@ class NotificationManager:
             Init notification object with lollypop infos
         """
         self.__inhibitor = False
-        self.__fully_initted = False
         self.__supports_actions = False
         self.__is_gnome = is_gnome()
-        self.__notification = GioNotify.async_init("Lollypop",
-                                                   self.__on_init_finish)
+        self.__notification = None
+        GioNotify.async_init("Lollypop",
+                             self.__on_init_finish)
 
     def send(self, message, sub=""):
         """
@@ -41,7 +41,8 @@ class NotificationManager:
             @param message as str
             @param sub as str
         """
-        if not self.__fully_initted:
+
+        if not self.__notification:
             return
 
         if self.__supports_actions:
@@ -66,11 +67,17 @@ class NotificationManager:
 # PRIVATE             #
 #######################
 
-    def __on_init_finish(self, caps):
+    def __on_init_finish(self, notification, caps, error=None):
         """
             Set actions and connect signals
             @param caps as [str]
         """
+        if error:
+            print("notification::__on_init_finish():", error)
+            return
+
+        self.__notification = notification
+
         self.__notification.set_hint(
             "category",
             GLib.Variant("s", "x-gnome.music"),
@@ -101,8 +108,6 @@ class NotificationManager:
             "current-changed",
             self.__on_current_changed,
         )
-
-        self.__fully_initted = True
 
     def __set_actions(self):
         """
