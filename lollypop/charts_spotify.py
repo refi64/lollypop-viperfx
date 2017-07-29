@@ -66,7 +66,11 @@ class SpotifyCharts:
         sleep(5)
         if self._stop:
             return
-        language = getdefaultlocale()[0][0:2]
+        # Try to get region
+        try:
+            language = getdefaultlocale()[0][3:5].lower()
+        except:
+            language = getdefaultlocale()[0][0:2]
         self.__update_for_url(self.__ALL % language)
 
     def __update_for_url(self, url):
