@@ -152,10 +152,18 @@ class MPRIS(Server):
             <property name="CanSeek" type="b" access="read"/>
             <property name="CanControl" type="b" access="read"/>
         </interface>
+        <interface name="org.mpris.MediaPlayer2.ExtensionSetRatings">
+            <method name="SetRating">\
+                <arg direction="in" name="TrackId" type="o"/>
+                <arg direction="in" name="Rating" type="d"/>\
+            </method>\
+            <property name="HasRatingsExtension" type="b" access="read"/>\
+        </interface>
     </node>
     """
     __MPRIS_IFACE = "org.mpris.MediaPlayer2"
     __MPRIS_PLAYER_IFACE = "org.mpris.MediaPlayer2.Player"
+    __MPRIS_RATINGS_IFACE = "org.mpris.MediaPlayer2.ExtensionSetRatings"
     __MPRIS_LOLLYPOP = "org.mpris.MediaPlayer2.Lollypop"
     __MPRIS_PATH = "/org/mpris/MediaPlayer2"
 
@@ -237,8 +245,13 @@ class MPRIS(Server):
                           "Seeked",
                           GLib.Variant.new_tuple(GLib.Variant("x", position)))
 
+    def SetRating(self, track_id, rating):
+        # We don't currently care about the trackId since
+        # we have not yet implemented the TrackList interface.
+        Lp().player.current_track.set_rate(int(rating * 5))
+
     def Get(self, interface, property_name):
-        if property_name in ["CanQuit", "CanRaise", "CanSeek", "CanControl"]:
+        if property_name in ["CanQuit", "CanRaise", "CanSeek", "CanControl", "HasRatingsExtension"]:
             return GLib.Variant("b", True)
         elif property_name == "HasTrackList":
             return GLib.Variant("b", False)
@@ -310,6 +323,8 @@ class MPRIS(Server):
                                   "CanSeek",
                                   "CanControl"]:
                 ret[property_name] = self.Get(interface, property_name)
+        elif interface == self.__MPRIS_RATINGS_IFACE:
+            ret["HasRatingsExtension"] = GLib.Variant("b", True)            
         return ret
 
     def Set(self, interface, property_name, new_value):
