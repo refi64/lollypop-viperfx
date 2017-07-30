@@ -126,18 +126,22 @@ class AlbumArt(BaseArt, TagReader):
         """
         if album.is_web:
             return []
-
-        f = Lio.File.new_for_uri(album.uri)
-        infos = f.enumerate_children("standard::name",
+        try:
+            f = Lio.File.new_for_uri(album.uri)
+            infos = f.enumerate_children(
+                                     "standard::name",
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                      None)
-        all_uris = []
-        for info in infos:
-            f = infos.get_child(info)
-            all_uris.append(f.get_uri())
-        uris = []
-        for uri in filter(lambda p: p.lower().endswith(self._MIMES), all_uris):
-            uris.append(uri)
+            all_uris = []
+            for info in infos:
+                f = infos.get_child(info)
+                all_uris.append(f.get_uri())
+            uris = []
+            for uri in filter(lambda p: p.lower().endswith(self._MIMES),
+                              all_uris):
+                uris.append(uri)
+        except Exception as e:
+            print("AlbumArt::get_album_artworks()", e)
         return uris
 
     def get_album_artwork(self, album, size, scale):
