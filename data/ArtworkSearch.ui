@@ -218,9 +218,9 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Lollypop uses "Google Custom Search API" to search images on the web.
-This API is limited so it mays not work with default API key.
-Please create a "Custom Search Engine" here:</property>
+            <property name="label" translatable="yes">&lt;b&gt;Lollypop uses the Google Custom Search API to search for images on the web.&lt;/b&gt;
+&lt;small&gt;This API is limited, so it may not work with the default API key.&lt;/small&gt;</property>
+            <property name="use_markup">True</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -236,20 +236,20 @@ Please create a "Custom Search Engine" here:</property>
             <property name="has_focus">True</property>
             <property name="has_default">True</property>
             <property name="receives_default">True</property>
-            <property name="halign">center</property>
+            <property name="halign">end</property>
             <property name="relief">none</property>
             <property name="uri">https://console.developers.google.com/apis/</property>
           </object>
           <packing>
-            <property name="left_attach">0</property>
+            <property name="left_attach">1</property>
             <property name="top_attach">1</property>
-            <property name="width">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">start</property>
             <property name="label" translatable="yes">API key</property>
           </object>
           <packing>
@@ -258,9 +258,24 @@ Please create a "Custom Search Engine" here:</property>
           </packing>
         </child>
         <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="label" translatable="yes">&lt;b&gt;Please create a "Custom Search Engine" here&lt;/b&gt;:</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkEntry" id="api_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">start</property>
             <property name="placeholder_text">AIzaSyAfXimyn-JsnPzAhhIuxYwgyMrj21Ee7e0</property>
             <signal name="changed" handler="_on_api_entry_changed" swapped="no"/>
           </object>

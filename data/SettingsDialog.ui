@@ -105,6 +105,7 @@
   <object class="GtkWindow" id="settings_dialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Preferences</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
@@ -120,7 +121,10 @@
           <object class="GtkGrid" id="grid_appearance">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
             <property name="margin_start">10</property>
             <property name="margin_end">10</property>
             <property name="margin_top">10</property>
@@ -306,7 +310,10 @@
           <object class="GtkGrid" id="grid_behaviour">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
             <property name="margin_start">10</property>
             <property name="margin_end">10</property>
             <property name="margin_top">10</property>
@@ -695,6 +702,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
+                <property name="margin_bottom">10</property>
                 <property name="row_spacing">5</property>
                 <property name="column_spacing">5</property>
                 <child>
@@ -803,6 +811,10 @@
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
                 <property name="row_spacing">10</property>
                 <property name="column_spacing">10</property>
                 <child>
@@ -883,7 +895,11 @@
                 <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
-                <property name="margin_top">40</property>
+                <property name="valign">center</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
                 <property name="row_spacing">20</property>
                 <property name="column_spacing">20</property>
                 <child>
@@ -1026,6 +1042,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
+                <property name="valign">center</property>
                 <property name="margin_left">10</property>
                 <property name="margin_right">10</property>
                 <property name="margin_top">10</property>
@@ -1036,12 +1053,11 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="margin_top">10</property>
-                    <property name="label" translatable="yes">Google Web Services need a custom API key.
-Without one, you will reach default quota soon…
-Lollypop needs this to search artwork and music.</property>
-                    <property name="justify">center</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Google Web Services require an API key.&lt;/b&gt;
+&lt;small&gt;Otherwise you will soon reach the default quota…
+Lollypop needs this to search for artwork and music.&lt;/small&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1053,6 +1069,7 @@ Lollypop needs this to search artwork and music.</property>
                   <object class="GtkEntry" id="cs-entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="placeholder_text">AIzaSyAfXimyn-JsnPzAhhIuxYwgyMrj21Ee7e0</property>
                     <signal name="changed" handler="_on_cs_api_changed" swapped="no"/>
                   </object>
@@ -1067,6 +1084,7 @@ Lollypop needs this to search artwork and music.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="halign">start</property>
                     <property name="relief">none</property>
                     <property name="uri">https://console.developers.google.com/apis/</property>
                   </object>
@@ -1079,9 +1097,10 @@ Lollypop needs this to search artwork and music.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">You need to enable "Custom Search API" 
-and "YouTube Data API" for your project.</property>
-                    <property name="justify">center</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">&lt;small&gt;You need to enable "Custom Search API" 
+and "YouTube Data API" for your project.&lt;/small&gt;</property>
+                    <property name="use_markup">True</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
