@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 
 from datetime import datetime
 
@@ -109,7 +109,7 @@ class FullScreen(Gtk.Window, InfoController,
             self.__timeout2 = GLib.timeout_add(1000,
                                                self.__update_datetime,
                                                show_seconds)
-        self._update_position(Lp().player.position/1000000)
+        self._update_position(Lp().player.position/Gst.SECOND)
         self.fullscreen()
         self._next_popover.set_relative_to(self._album_label)
         if Lp().player.next_track.id != Type.RADIOS:
