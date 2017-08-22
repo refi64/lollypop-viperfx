@@ -30,7 +30,7 @@ except Exception as e:
     print(e)
     print(_("    - Scrobbler disabled\n"
             "    - Auto cover download disabled\n"
-            "    - Artist informations disabled"))
+            "    - Artist information disabled"))
     print("$ sudo pip3 install pylast")
     LastFM = None
 
@@ -516,7 +516,7 @@ class Application(Gtk.Application):
 
     def __fullscreen(self, action=None, param=None):
         """
-            Show a fullscreen window with cover and artist informations
+            Show a fullscreen window with cover and artist information
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """

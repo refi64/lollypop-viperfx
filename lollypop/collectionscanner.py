@@ -250,7 +250,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
     def __add2db(self, uri, mtime):
         """
-            Add new file to db with informations
+            Add new file to db with information
             @param uri as string
             @param mtime as int
             @return track id as int

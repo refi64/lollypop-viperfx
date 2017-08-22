@@ -472,7 +472,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
 
     def _listplaylistinfo(self, cmd_args):
         """
-            List playlist informations
+            List playlist information
             @syntax listplaylistinfo name
             @param args as str
             @return msg as str
@@ -750,7 +750,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
 
     def _playlistid(self, cmd_args):
         """
-            Send informations about current playlist
+            Send information about current playlist
             @param playlistid
             @param args as str
             @return msg as str
@@ -773,7 +773,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
 
     def _playlistinfo(self, cmd_args):
         """
-            Send informations about current playlist
+            Send information about current playlist
             @syntax playlistinfo [[pos]|[start:end]]
             @param playlistinfo
             @param args as str

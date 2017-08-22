@@ -25,7 +25,7 @@ from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 class InfoPopover(Gtk.Popover):
     """
-        Popover with artist informations
+        Popover with artist information
         @Warning: Auto destroy on hide if artist id is not None
     """
 
@@ -33,7 +33,7 @@ class InfoPopover(Gtk.Popover):
         from lollypop.wikipedia import Wikipedia
     except Exception as e:
         print(e)
-        print(_("Advanced artist informations disabled"))
+        print(_("Advanced artist information disabled"))
         print("$ sudo pip3 install wikipedia")
         Wikipedia = None
 
