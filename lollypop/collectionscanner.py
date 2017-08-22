@@ -214,7 +214,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                         if uri in orig_tracks:
                             orig_tracks.remove(uri)
                             i += 1
-                            if mtime <= mtimes[uri]:
+                            if mtime <= mtimes.get(uri, mtime + 1):
                                 i += 1
                                 continue
                             else:
