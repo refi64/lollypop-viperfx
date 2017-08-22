@@ -20,6 +20,7 @@ dependency('gtk+-3.0', version :'>=3.14')
 python_dir = join_paths(get_option('prefix'), python.sysconfig_path('purelib'))
 LIBEXEC_DIR = join_paths(get_option('prefix'), get_option('libexecdir'))
 DATA_DIR = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
+bindir = join_paths(get_option('prefix'), get_option('bindir'))
 
 conf = configuration_data()
 conf.set('PACKAGE_URL', 'https://github.com/gnumdk/lollypop')
@@ -45,14 +46,14 @@ configure_file(
   input: 'lollypop.in',
   output: 'lollypop',
   configuration: conf,
-  install_dir: 'bin'
+  install_dir: bindir
 )
 
 configure_file(
   input: 'lollypop-cli.in',
   output: 'lollypop-cli',
   configuration: conf,
-  install_dir: 'bin'
+  install_dir: bindir
 )
 
 meson.add_install_script('meson_post_install.py')
