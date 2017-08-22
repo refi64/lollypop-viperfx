@@ -323,7 +323,7 @@ class Window(Gtk.ApplicationWindow, Container):
             "GrabMediaPlayerKeys",
             GLib.Variant("(su)", ("org.gnome.Lollypop", 0)),
             Gio.DBusCallFlags.NONE,
-            -1, 
+            -1,
             None,
             None,
         )
