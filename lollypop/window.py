@@ -31,6 +31,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__signal1 = None
         self.__signal2 = None
         self.__timeout = None
+        self.__mediakeys = None
+        self.__media_keys_busnames = []
         self.__was_maximized = False
         Gtk.ApplicationWindow.__init__(self,
                                        application=Lp(),
@@ -274,73 +276,72 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup media player keys
         """
-        try:
-            bus = Lp().get_dbus_connection()
-            Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
-                              "org.gnome.SettingsDaemon",
-                              "/org/gnome/SettingsDaemon/MediaKeys",
-                              "org.gnome.SettingsDaemon.MediaKeys", None,
-                              self.__on_get_proxy)
-        except Exception as e:
-            print("Window::__setup_media_keys():", e)
+        self.__media_keys_busnames = [
+            "org.gnome.SettingDaemon.MediaKeys",
+            "org.gnome.SettingsDaemon",
+        ]
+
+        self.__get_media_keys_proxy()
+
+    def __get_media_keys_proxy(self):
+        if self.__media_keys_busnames:
+            bus_name = self.__media_keys_busnames.pop(0)
+            try:
+                bus = Lp().get_dbus_connection()
+                Gio.DBusProxy.new(
+                    bus,
+                    Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
+                    None,
+                    bus_name,
+                    "/org/gnome/SettingsDaemon/MediaKeys",
+                    "org.gnome.SettingsDaemon.MediaKeys",
+                    None,
+                    self.__on_get_proxy,
+                )
+
+            except Exception as e:
+                print("Window::__setup_media_keys():", e)
 
     def __on_get_proxy(self, source, result):
-        """
-            Grab keys
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-        """
         try:
-            proxy = source.new_finish(result)
-
-            proxy.call("GrabMediaPlayerKeys",
-                       GLib.Variant("(su)", ("Lollypop", 0)),
-                       Gio.DBusCallFlags.NONE,
-                       -1, None,
-                       self.__on_grab_media_player_keys, proxy)
+            self.__mediakeys = source.new_finish(result)
         except Exception as e:
+            self.__mediakeys = None
             print("Window::__on_get_proxy():", e)
+        else:
+            if self.__mediakeys.get_name_owner():
+                self.__grab_media_keys()
+                self.__mediakeys.connect('g-signal', self.__mediakey_signal)
+            else:
+                self.__mediakeys = None
+                self.__get_media_keys_proxy()
 
-    def __on_grab_media_player_keys(self, source, result, proxy):
-        """
-            Listen to key signal
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param proxy as Gio.DBusConnection
-        """
-        try:
-            bus = Lp().get_dbus_connection()
-            bus.signal_subscribe(None, "org.gnome.SettingsDaemon.MediaKeys",
-                                 "MediaPlayerKeyPressed",
-                                 "/org/gnome/SettingsDaemon/MediaKeys",
-                                 None,
-                                 Gio.DBusSignalFlags.NONE,
-                                 self.__on_signal,
-                                 None)
-        except Exception as e:
-            print("Window::__on_grab_media_player_keys():", e)
+    def __grab_media_keys(self):
+        if not self.__mediakeys:
+            return
+        self.__mediakeys.call(
+            "GrabMediaPlayerKeys",
+            GLib.Variant("(su)", ("org.gnome.Lollypop", 0)),
+            Gio.DBusCallFlags.NONE,
+            -1, 
+            None,
+            None,
+        )
 
-    def __on_signal(self, connection, sender, path,
-                    interface, signal, params, data):
-        """
-            Do player actions in response to media key pressed
-            @param connection as Gio.DBusConnection
-            @param sender as str
-            @param path as str
-            @param interface as str
-            @param signal as str
-            @param parameters as GLib.Variant
-            @param data as object
-        """
-        response = params[1]
-        if "Play" in response:
-            Lp().player.play_pause()
-        elif "Stop" in response:
-            Lp().player.stop()
-        elif "Next" in response:
-            Lp().player.next()
-        elif "Previous" in response:
-            Lp().player.prev()
+    def __mediakey_signal(self, proxy, sender, signal, param, userdata=None):
+        if signal != "MediaPlayerKeyPressed":
+            return
+
+        app, action = param.unpack()
+        if app == "org.gnome.Lollypop":
+            if action == "Play":
+                Lp().player.play_pause()
+            elif action == "Next":
+                Lp().player.next()
+            elif action == "Stop":
+                Lp().player.stop()
+            elif action == "Previous":
+                Lp().player.prev()
 
     def __setup_content(self):
         """
@@ -418,6 +419,10 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp().settings.set_boolean("window-maximized",
                                   "GDK_WINDOW_STATE_MAXIMIZED" in
                                   event.new_window_state.value_names)
+
+        if event.changed_mask & Gdk.WindowState.FOCUSED and \
+           event.new_window_state & Gdk.WindowState.FOCUSED:
+            self.__grab_media_keys()
 
     def __on_destroyed_window(self, widget):
         """
