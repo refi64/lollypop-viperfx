@@ -251,7 +251,8 @@ class MPRIS(Server):
         Lp().player.current_track.set_rate(int(rating * 5))
 
     def Get(self, interface, property_name):
-        if property_name in ["CanQuit", "CanRaise", "CanSeek", "CanControl", "HasRatingsExtension"]:
+        if property_name in ["CanQuit", "CanRaise", "CanSeek",
+                             "CanControl", "HasRatingsExtension"]:
             return GLib.Variant("b", True)
         elif property_name == "HasTrackList":
             return GLib.Variant("b", False)
@@ -324,7 +325,7 @@ class MPRIS(Server):
                                   "CanControl"]:
                 ret[property_name] = self.Get(interface, property_name)
         elif interface == self.__MPRIS_RATINGS_IFACE:
-            ret["HasRatingsExtension"] = GLib.Variant("b", True)            
+            ret["HasRatingsExtension"] = GLib.Variant("b", True)
         return ret
 
     def Set(self, interface, property_name, new_value):

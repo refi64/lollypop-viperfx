@@ -48,7 +48,8 @@ class GioNotify(Gio.DBusProxy):
                 callback(None, None, error=e)
             else:
                 if not self.get_name_owner():
-                    callback(None, None, error='Notification service is unowned')
+                    callback(None, None,
+                             error='Notification service is unowned')
                 else:
                     self.call(
                         'GetCapabilities',
