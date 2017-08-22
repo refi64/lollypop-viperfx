@@ -218,8 +218,11 @@
         </key>
         <key type="b" name="disable-notifications">
             <default>false</default>
-            <summary>Disable notifications</summary>
-            <description>Restart needed</description>
+            <summary>Disable all notifications</summary>
+        </key>
+        <key type="b" name="disable-song-notifications">
+            <default>false</default>
+            <summary>Disable notifications at song changes</summary>
         </key>
         <key type="b" name="show-tag-tracknumber">
             <default>false</default>

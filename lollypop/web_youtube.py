@@ -93,7 +93,8 @@ class WebYouTube:
                             unescaped.replace(" ", "+"),
                             None,
                             True)
-        key = Lp().settings.get_value("cs-api-key").get_string()
+        key = Lp().settings.get_value("cs-api-key").get_string() or\
+            Lp().settings.get_default_value("cs-api-key").get_string()
         try:
             f = Lio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
                                      "search?part=snippet&q=%s&"

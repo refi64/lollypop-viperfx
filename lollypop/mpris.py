@@ -479,8 +479,9 @@ class MPRIS(Server):
             self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
-        if Lp().player.current_track.id >= 0:
-            self.__lollypop_id = Lp().player.current_track.id
+        current_track_id = Lp().player.current_track.id
+        if current_track_id and current_track_id >= 0:
+            self.__lollypop_id = current_track_id
         else:
             self.__lollypop_id = 0
         # We only need to recalculate a new trackId at song changes.

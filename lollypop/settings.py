@@ -81,17 +81,6 @@ class SettingsDialog:
         self.__mix_tid = None
         self.__popover = None
 
-        cs_api_key = Lp().settings.get_value("cs-api-key").get_string()
-        default_cs_api_key = Lp().settings.get_default_value(
-                                                     "cs-api-key").get_string()
-        if (not cs_api_key or
-            cs_api_key == default_cs_api_key) and\
-                get_network_available() and\
-                Lp().notify is not None:
-            Lp().notify.send(
-                         _("Google Web Services need a custom API key"),
-                         _("Lollypop needs this to search artwork and music."))
-
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SettingsDialog.ui")
         self.__progress = builder.get_object("progress")
@@ -143,6 +132,24 @@ class SettingsDialog:
 
         switch_mix = builder.get_object("switch_mix")
         switch_mix.set_state(Lp().settings.get_value("mix"))
+
+        self._switch_song_notifications = builder.get_object(
+            "switch_song_notifications",
+        )
+
+        self._switch_song_notifications.set_state(
+            not Lp().settings.get_value("disable-song-notifications"),
+        )
+
+        self._switch_song_notifications.set_sensitive(
+            not Lp().settings.get_value("disable-notifications"),
+        )
+
+        Lp().settings.connect(
+            "changed::disable-notifications",
+            self._on_notifications_setting_changed,
+        )
+
         self.__helper = TouchHelper(switch_mix, None, None)
         self.__helper.set_long_func(self.__mix_long_func, switch_mix)
         self.__helper.set_short_func(self.__mix_short_func, switch_mix)
@@ -238,8 +245,9 @@ class SettingsDialog:
         #
         # Google tab
         #
-        builder.get_object("cs-entry").set_text(
-                            Lp().settings.get_value("cs-api-key").get_string())
+        key = Lp().settings.get_value("cs-api-key").get_string() or\
+            Lp().settings.get_default_value("cs-api-key").get_string()
+        builder.get_object("cs-entry").set_text(key)
         #
         # Last.fm tab
         #
@@ -368,6 +376,25 @@ class SettingsDialog:
             self.__popover.show_all()
         elif self.__popover is not None:
             self.__popover.hide()
+
+    def _update_song_notifications_setting(self, widget, state):
+        """
+            Update notifications setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value(
+            "disable-song-notifications",
+            GLib.Variant("b", not state),
+        )
+
+    def _on_notifications_setting_changed(self, *ignore):
+        """
+            Update switch_song_notifications
+        """
+        self._switch_song_notifications.set_sensitive(
+            not Lp().settings.get_value("disable-notifications"),
+        )
 
     def _update_party_mix_setting(self, widget, state):
         """

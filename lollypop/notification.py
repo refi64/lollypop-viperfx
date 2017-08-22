@@ -30,8 +30,10 @@ class NotificationManager:
         """
         self.__inhibitor = False
         self.__supports_actions = False
+        self.__disable_all_notifications = True
         self.__is_gnome = is_gnome()
         self.__notification = None
+        self.__notification_handler_id = None
         GioNotify.async_init("Lollypop",
                              self.__on_init_finish)
 
@@ -42,7 +44,7 @@ class NotificationManager:
             @param sub as str
         """
 
-        if not self.__notification:
+        if self.__disable_all_notifications:
             return
 
         if self.__supports_actions:
@@ -51,7 +53,7 @@ class NotificationManager:
         self.__notification.show_new(
             message,
             sub,
-            "org.gnome.Lollypop",
+            "org.gnome.Lollypop-symbolic",
         )
 
         if self.__supports_actions:
@@ -104,9 +106,16 @@ class NotificationManager:
             self.__supports_actions = True
             self.__set_actions()
 
-        Lp().player.connect(
-            "current-changed",
-            self.__on_current_changed,
+        self.__on_notifications_settings_changed()
+
+        Lp().settings.connect(
+            "changed::disable-song-notifications",
+            self.__on_notifications_settings_changed,
+        )
+
+        Lp().settings.connect(
+            "changed::disable-notifications",
+            self.__on_notifications_settings_changed,
         )
 
     def __set_actions(self):
@@ -168,3 +177,23 @@ class NotificationManager:
                 ("<b>" + ", ".join(player.current_track.artists) + "</b>",
                  "<i>" + player.current_track.album.name + "</i>"),
                 cover_path)
+
+    def __on_notifications_settings_changed(self, *ignore):
+        self.__disable_all_notifications = Lp().settings.get_value(
+            "disable-notifications",
+        )
+
+        disable_song_notifications = Lp().settings.get_value(
+            "disable-song-notifications",
+        )
+
+        if self.__notification_handler_id:
+            Lp().player.disconnect(self.__notification_handler_id)
+            self.__notification_handler_id = None
+
+        if (not self.__disable_all_notifications and not
+                disable_song_notifications):
+            self.__notification_handler_id = Lp().player.connect(
+                "current-changed",
+                self.__on_current_changed,
+            )

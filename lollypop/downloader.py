@@ -76,13 +76,14 @@ class Downloader:
         if not get_network_available():
             return []
 
-        cs_api_key = Lp().settings.get_value("cs-api-key").get_string()
+        key = Lp().settings.get_value("cs-api-key").get_string() or\
+            Lp().settings.get_default_value("cs-api-key").get_string()
 
         try:
             f = Lio.File.new_for_uri("https://www.googleapis.com/"
                                      "customsearch/v1?key=%s&cx=%s"
                                      "&q=%s&searchType=image" %
-                                     (cs_api_key,
+                                     (key,
                                       GOOGLE_API_ID,
                                       GLib.uri_escape_string(search,
                                                              "",

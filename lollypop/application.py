@@ -46,6 +46,7 @@ from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
+from lollypop.notification import NotificationManager
 from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
 from lollypop.collectionscanner import CollectionScanner
@@ -167,6 +168,7 @@ class Application(Gtk.Application):
         self.player = Player()
         self.scanner = CollectionScanner()
         self.art = Art()
+        self.notify = NotificationManager()
         self.art.update_art_size()
         if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
@@ -175,9 +177,6 @@ class Application(Gtk.Application):
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)
-        if not self.settings.get_value("disable-notifications"):
-            from lollypop.notification import NotificationManager
-            self.notify = NotificationManager()
 
         settings = Gtk.Settings.get_default()
         self.__gtk_dark = settings.get_property(

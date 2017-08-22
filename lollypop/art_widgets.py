@@ -76,8 +76,9 @@ class ArtworkSearch(Gtk.Bin):
         self._stack.add_named(builder.get_object("scrolled"), "main")
         self._stack.set_visible_child_name("main")
         self.add(widget)
-        self._api_entry.set_text(
-                            Lp().settings.get_value("cs-api-key").get_string())
+        key = Lp().settings.get_value("cs-api-key").get_string() or\
+            Lp().settings.get_default_value("cs-api-key").get_string()
+        self._api_entry.set_text(key)
         self.set_size_request(700, 400)
 
     def populate(self):
@@ -287,11 +288,11 @@ class ArtworkSearch(Gtk.Bin):
                 f = Lio.File.new_for_uri(url)
                 (status, data, tag) = f.load_contents()
                 if status:
-                    html = data.decode("utf-8")
+                    html = data.decode("latin-1")
                     soup = BeautifulSoup(html, "html.parser")
                     for link in soup.findAll("img"):
                         try:
-                            urls.append(link.attrs["data-src"])
+                            urls.append(link.attrs["src"])
                         except:
                             pass
         except Exception as e:
