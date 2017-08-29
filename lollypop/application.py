@@ -39,6 +39,7 @@ from lollypop.define import Type, DataPath
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
+from lollypop.inhibitor import Inhibitor
 from lollypop.art import Art
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
@@ -166,6 +167,7 @@ class Application(Gtk.Application):
         self.genres = GenresDatabase()
         self.tracks = TracksDatabase()
         self.player = Player()
+        self.inhibitor = Inhibitor()
         self.scanner = CollectionScanner()
         self.art = Art()
         self.notify = NotificationManager()

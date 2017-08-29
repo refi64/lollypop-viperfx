@@ -99,6 +99,13 @@ class Shuffle:
     ALBUMS = 2           # Shuffle by albums on genre
 
 
+class PowerManagement:
+    NONE = 0             # Use OS defaults
+    IDLE = 1             # Inhibit screensaver
+    SUSPEND = 2          # Inhibit suspend
+    BOTH = 3             # Inhibit screensaver and suspend
+
+
 class WindowSize:
     SMALL = 400
     MEDIUM = 500

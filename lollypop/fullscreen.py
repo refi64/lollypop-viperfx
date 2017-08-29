@@ -114,10 +114,9 @@ class FullScreen(Gtk.Window, InfoController,
         self._next_popover.set_relative_to(self._album_label)
         if Lp().player.next_track.id != Type.RADIOS:
             self._next_popover.show()
-        # Disable idle
-        self.__cookie = Lp().inhibit(Lp().window,
-                                     Gtk.ApplicationInhibitFlags.IDLE,
-                                     None)
+
+        # Disable screensaver (idle)
+        Lp().inhibitor.manual_inhibit(suspend=False, idle=True)
 
     def do_hide(self):
         """
@@ -139,7 +138,7 @@ class FullScreen(Gtk.Window, InfoController,
             GLib.source_remove(self.__timeout2)
         self._next_popover.set_relative_to(None)
         self._next_popover.hide()
-        Lp().uninhibit(self.__cookie)
+        Lp().inhibitor.manual_uninhibit()
 
     def show_hide_volume_control(self):
         """
