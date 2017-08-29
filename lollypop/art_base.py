@@ -144,6 +144,7 @@ class BaseArt(GObject.GObject):
         bytes = GLib.Bytes(data)
         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
         bytes.unref()
+        del data
         cover = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
         stream.close()
         cover_width = cover.get_width()

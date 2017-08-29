@@ -128,6 +128,7 @@ class RadioPopover(Gtk.Popover):
                     bytes = GLib.Bytes(data)
                     stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                     bytes.unref()
+                    del data
             except:
                 if self._thread:
                     self.__add_pixbufs()

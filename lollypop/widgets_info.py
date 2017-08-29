@@ -95,6 +95,7 @@ class InfoContent(Gtk.Stack):
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
+                        del data
                     else:
                         data = None
                 InfoCache.add(prefix, content, data, suffix)
@@ -119,6 +120,7 @@ class InfoContent(Gtk.Stack):
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
+                del data
             GLib.idle_add(self.__set_content, content, stream)
             return True
         return False

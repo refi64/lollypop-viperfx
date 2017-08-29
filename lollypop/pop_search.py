@@ -504,6 +504,7 @@ class SearchPopover(Gtk.Popover):
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
+                del data
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                    stream,
                                                    ArtSize.MEDIUM,

@@ -260,6 +260,7 @@ class TuneinPopover(Gtk.Popover):
                     bytes = GLib.Bytes(data)
                     stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                     bytes.unref()
+                    del data
                     if stream is not None:
                         GLib.idle_add(self.__set_image, image, stream)
             except Exception as e:
