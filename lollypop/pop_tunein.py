@@ -257,7 +257,9 @@ class TuneinPopover(Gtk.Popover):
                 f = Lio.File.new_for_uri(item.LOGO)
                 (status, data, tag) = f.load_contents()
                 if status:
-                    stream = Gio.MemoryInputStream.new_from_data(data, None)
+                    bytes = GLib.Bytes(data)
+                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                    bytes.unref()
                     if stream is not None:
                         GLib.idle_add(self.__set_image, image, stream)
             except Exception as e:

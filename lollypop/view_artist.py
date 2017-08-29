@@ -297,8 +297,11 @@ class ArtistView(ArtistAlbumsView):
                     if uri is not None:
                         f = Lio.File.new_for_path(uri)
                         (status, data, tag) = f.load_contents(None)
-                        stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                     None)
+                        if not status:
+                            continue
+                        bytes = GLib.Bytes(data)
+                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                        bytes.unref()
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                        stream,
                                                                        size,

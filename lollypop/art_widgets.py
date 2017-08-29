@@ -305,7 +305,8 @@ class ArtworkSearch(Gtk.Bin):
             @param data as bytes
         """
         try:
-            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            bytes = GLib.Bytes(data)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
             if stream is not None:
                 monster = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                     stream, ArtSize.MONSTER,
@@ -313,7 +314,8 @@ class ArtworkSearch(Gtk.Bin):
                     True,
                     None)
                 stream.close()
-            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            bytes.unref()
             if stream is not None:
                 big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                     stream, ArtSize.BIG,

@@ -173,8 +173,10 @@ class AlbumArt(BaseArt, TagReader):
                         f = Lio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
                         ratio = self._respect_ratio(uri)
-                        stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                     None)
+                        bytes = GLib.Bytes(data)
+                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                        bytes.unref()
+                        del data
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                        stream,
                                                                        size,
@@ -198,8 +200,10 @@ class AlbumArt(BaseArt, TagReader):
                         f = Lio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
                         ratio = self._respect_ratio(uri)
-                        stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                     None)
+                        bytes = GLib.Bytes(data)
+                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                        bytes.unref()
+                        del data
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                        stream,
                                                                        size,
@@ -276,7 +280,9 @@ class AlbumArt(BaseArt, TagReader):
                 arturi = album.uri + "/" + self.__favorite
             # Save cover to uri
             if not save_to_tags:
-                stream = Gio.MemoryInputStream.new_from_data(data, None)
+                bytes = GLib.Bytes(data)
+                stream = Gio.MemoryInputStream.new_from_bytes(data)
+                bytes.unref()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                stream,
                                                                ArtSize.MONSTER,
@@ -364,8 +370,9 @@ class AlbumArt(BaseArt, TagReader):
             if exist:
                 (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
             if exist:
-                stream = Gio.MemoryInputStream.new_from_data(mapflags.data,
-                                                             None)
+                bytes = GLib.Bytes(mapflags.data)
+                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                bytes.unref()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    size,
                                                                    size,
@@ -396,7 +403,10 @@ class AlbumArt(BaseArt, TagReader):
         """
         if album.is_web:
             return
-        stream = Gio.MemoryInputStream.new_from_data(data, None)
+        # https://bugzilla.gnome.org/show_bug.cgi?id=747431
+        bytes = GLib.Bytes(data)
+        stream = Gio.MemoryInputStream.new_from_bytes(data)
+        bytes.unref()
         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                            ArtSize.MONSTER,
                                                            ArtSize.MONSTER,

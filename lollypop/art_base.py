@@ -141,8 +141,9 @@ class BaseArt(GObject.GObject):
         """
         f = Lio.File.new_for_uri(uri)
         (status, data, tag) = f.load_contents(None)
-        stream = Gio.MemoryInputStream.new_from_data(data,
-                                                     None)
+        bytes = GLib.Bytes(data)
+        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+        bytes.unref()
         cover = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
         stream.close()
         cover_width = cover.get_width()

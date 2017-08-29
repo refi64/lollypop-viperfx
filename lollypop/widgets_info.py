@@ -92,8 +92,9 @@ class InfoContent(Gtk.Stack):
                     f = Lio.File.new_for_uri(image_url)
                     (status, data, tag) = f.load_contents(self.__cancel)
                     if status:
-                        stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                     None)
+                        bytes = GLib.Bytes(data)
+                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                        bytes.unref()
                     else:
                         data = None
                 InfoCache.add(prefix, content, data, suffix)
@@ -115,7 +116,9 @@ class InfoContent(Gtk.Stack):
         if content is not None:
             stream = None
             if data is not None:
-                stream = Gio.MemoryInputStream.new_from_data(data, None)
+                bytes = GLib.Bytes(data)
+                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                bytes.unref()
             GLib.idle_add(self.__set_content, content, stream)
             return True
         return False

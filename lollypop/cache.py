@@ -203,14 +203,16 @@ class InfoCache:
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
         else:
-            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            bytes = GLib.Bytes(data)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            bytes.unref()
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                ArtSize.ARTIST,
                                                                -1,
                                                                True,
                                                                None)
             stream.close()
-            pixbuf.savev(filepath+".jpg",
+            pixbuf.savev(filepath + ".jpg",
                          "jpeg", ["quality"], [str(Lp().settings.get_value(
                                                "cover-quality").get_int32())])
             del pixbuf

@@ -125,7 +125,9 @@ class RadioPopover(Gtk.Popover):
                 f = Lio.File.new_for_uri(url)
                 (status, data, tag) = f.load_contents()
                 if status:
-                    stream = Gio.MemoryInputStream.new_from_data(data, None)
+                    bytes = GLib.Bytes(data)
+                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                    bytes.unref()
             except:
                 if self._thread:
                     self.__add_pixbufs()
