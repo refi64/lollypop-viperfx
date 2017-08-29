@@ -242,7 +242,6 @@ class ArtistView(ArtistAlbumsView):
                                                          pixbuf,
                                                          self.__scale_factor,
                                                          None)
-            del pixbuf
         else:
             surface = image.props.surface
 
@@ -302,7 +301,6 @@ class ArtistView(ArtistAlbumsView):
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
-                        del data
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                        stream,
                                                                        size,
@@ -312,9 +310,7 @@ class ArtistView(ArtistAlbumsView):
                         stream.close()
                         surface = Gdk.cairo_surface_create_from_pixbuf(
                                             pixbuf, self.__scale_factor, None)
-                        del pixbuf
                         self.__artwork.set_from_surface(surface)
-                        del surface
                         artwork_height = ArtSize.ARTIST_SMALL * 2
                         self.__artwork.get_style_context().remove_class(
                                                                 "artwork-icon")

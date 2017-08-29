@@ -176,7 +176,6 @@ class AlbumArt(BaseArt, TagReader):
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
-                        del data
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                        stream,
                                                                        size,
@@ -203,7 +202,6 @@ class AlbumArt(BaseArt, TagReader):
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
-                        del data
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                        stream,
                                                                        size,
@@ -222,7 +220,6 @@ class AlbumArt(BaseArt, TagReader):
                                  [str(Lp().settings.get_value(
                                                 "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-            del pixbuf
             return surface
 
         except Exception as e:
@@ -242,7 +239,6 @@ class AlbumArt(BaseArt, TagReader):
         pixbuf = self.pixbuf_from_tags(uri, size)
         if pixbuf is not None:
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-            del pixbuf
             return surface
         else:
             return self.get_default_icon("folder-music-symbolic", size, scale)
@@ -283,7 +279,6 @@ class AlbumArt(BaseArt, TagReader):
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(data)
                 bytes.unref()
-                del data
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                stream,
                                                                ArtSize.MONSTER,
@@ -297,7 +292,6 @@ class AlbumArt(BaseArt, TagReader):
                 dst = Lio.File.new_for_uri(arturi)
                 src = Lio.File.new_for_path(store_path)
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
-                del pixbuf
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
             else:
@@ -408,7 +402,6 @@ class AlbumArt(BaseArt, TagReader):
         bytes = GLib.Bytes(data)
         stream = Gio.MemoryInputStream.new_from_bytes(data)
         bytes.unref()
-        del data
         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                            ArtSize.MONSTER,
                                                            ArtSize.MONSTER,
@@ -418,7 +411,6 @@ class AlbumArt(BaseArt, TagReader):
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], [str(Lp().settings.get_value(
                                            "cover-quality").get_int32())])
-        del pixbuf
         f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)
         if f.query_exists():

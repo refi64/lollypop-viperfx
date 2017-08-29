@@ -115,7 +115,6 @@ class InfoCache:
                     else:
                         extract = pixbuf
                     if extract is None:
-                        del pixbuf
                         extract = GdkPixbuf.Pixbuf.new(
                                                     GdkPixbuf.Colorspace.RGB,
                                                     True, 8,
@@ -144,11 +143,9 @@ class InfoCache:
                                              pixbuf.get_height(),
                                              extract,
                                              0, 0)
-                        del pixbuf
                     extract.savev(filepath_at_size, "jpeg",
                                   ["quality"], [str(Lp().settings.get_value(
                                                 "cover-quality").get_int32())])
-                    del extract
                 return filepath_at_size
         except Exception as e:
             print("InfoCache::get_artwork():", e)
@@ -206,7 +203,6 @@ class InfoCache:
             bytes = GLib.Bytes(data)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
             bytes.unref()
-            del data
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                ArtSize.ARTIST,
                                                                -1,
@@ -216,7 +212,6 @@ class InfoCache:
             pixbuf.savev(filepath + ".jpg",
                          "jpeg", ["quality"], [str(Lp().settings.get_value(
                                                "cover-quality").get_int32())])
-            del pixbuf
 
     def remove(prefix, suffix):
         """

@@ -260,7 +260,6 @@ class TuneinPopover(Gtk.Popover):
                     bytes = GLib.Bytes(data)
                     stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                     bytes.unref()
-                    del data
                     if stream is not None:
                         GLib.idle_add(self.__set_image, image, stream)
             except Exception as e:
@@ -287,9 +286,7 @@ class TuneinPopover(Gtk.Popover):
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                            0,
                                                            None)
-            del pixbuf
             image.set_from_surface(surface)
-            del surface
         except Exception as e:
             print("TuneinPopover::__set_image():", e)
 

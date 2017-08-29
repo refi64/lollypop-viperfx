@@ -148,7 +148,6 @@ class QueueRow(Gtk.ListBoxRow):
         else:
             self.__cover.set_from_surface(surface)
             self.__cover.show()
-            del surface
 
 #######################
 # PRIVATE             #

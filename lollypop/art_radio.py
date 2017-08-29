@@ -99,7 +99,6 @@ class RadioArt(BaseArt):
                                              scale)
             pixbuf.savev(cache_path_png, "png", [None], [None])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-            del pixbuf
             return surface
 
         except Exception as e:

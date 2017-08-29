@@ -128,7 +128,6 @@ class RadioPopover(Gtk.Popover):
                     bytes = GLib.Bytes(data)
                     stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                     bytes.unref()
-                    del data
             except:
                 if self._thread:
                     self.__add_pixbufs()
@@ -172,14 +171,11 @@ class RadioPopover(Gtk.Popover):
             scaled_pixbuf = pixbuf.scale_simple(width,
                                                 height,
                                                 GdkPixbuf.InterpType.BILINEAR)
-            del pixbuf
             surface = Gdk.cairo_surface_create_from_pixbuf(
                                                        scaled_pixbuf,
                                                        self.get_scale_factor(),
                                                        None)
-            del scaled_pixbuf
             image.set_from_surface(surface)
-            del surface
             image.show()
             self.__view.add(image)
         except Exception as e:

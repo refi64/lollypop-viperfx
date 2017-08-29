@@ -56,7 +56,6 @@ class CellRendererAlbum(Gtk.CellRenderer):
         ctx.set_line_width(1)
         ctx.fill()
         ctx.set_source_surface(surface, 1, 1)
-        del surface
         ctx.paint()
 
     def do_get_preferred_width(self, widget):
@@ -125,7 +124,6 @@ class CellRendererArtist(Gtk.CellRendererText):
                                                      pixbuf,
                                                      self.__scale_factor,
                                                      None)
-                    del pixbuf
                     self.__surfaces[self.rowid] = surface
                     break
         if surface is None:
@@ -146,7 +144,6 @@ class CellRendererArtist(Gtk.CellRendererText):
         ctx.set_source_rgba(0, 0, 0, 0.3)
         ctx.stroke_preserve()
         ctx.set_source_surface(surface, 0, 0)
-        del surface
         ctx.clip()
         ctx.paint()
 

@@ -368,7 +368,6 @@ class AlbumWidget(BaseWidget):
             self._overlay_orientation = Gtk.Orientation.VERTICAL
         else:
             self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-        del surface
 
     def update_cover(self):
         """
@@ -385,7 +384,6 @@ class AlbumWidget(BaseWidget):
             self._overlay_orientation = Gtk.Orientation.VERTICAL
         else:
             self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-        del surface
 
     def update_state(self):
         """

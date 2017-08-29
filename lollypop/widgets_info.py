@@ -95,7 +95,6 @@ class InfoContent(Gtk.Stack):
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
-                        del data
                     else:
                         data = None
                 InfoCache.add(prefix, content, data, suffix)
@@ -120,7 +119,6 @@ class InfoContent(Gtk.Stack):
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
-                del data
             GLib.idle_add(self.__set_content, content, stream)
             return True
         return False
@@ -166,9 +164,7 @@ class InfoContent(Gtk.Stack):
                     surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                                    scale,
                                                                    None)
-                    del pixbuf
                     self.__image.set_from_surface(surface)
-                    del surface
                     self.__image.show()
                 except:
                     pass

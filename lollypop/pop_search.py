@@ -148,9 +148,7 @@ class SearchRow(Gtk.ListBoxRow):
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                        self.get_scale_factor(),
                                                        None)
-        del pixbuf
         self.__cover.set_from_surface(surface)
-        del surface
 
     @property
     def is_loading(self):
@@ -245,7 +243,6 @@ class SearchRow(Gtk.ListBoxRow):
                                                  ArtSize.MEDIUM,
                                                  self.get_scale_factor())
         self.__cover.set_from_surface(surface)
-        del surface
         self.__artist.set_text(", ".join(artists))
 
     def __on_saved(self, web, item_id, persistent):
@@ -504,7 +501,6 @@ class SearchPopover(Gtk.Popover):
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
-                del data
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                    stream,
                                                    ArtSize.MEDIUM,

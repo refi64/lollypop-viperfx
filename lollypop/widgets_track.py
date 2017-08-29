@@ -472,7 +472,6 @@ class PlaylistRow(Row):
                                         self.get_scale_factor())
             self.__cover.set_from_surface(surface)
             self.__cover.show()
-            del surface
             self.__header.show_all()
         else:
             self.__cover.set_tooltip_text("")

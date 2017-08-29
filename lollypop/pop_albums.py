@@ -94,7 +94,6 @@ class AlbumRow(Gtk.ListBoxRow):
                                         self.get_scale_factor())
         cover.set_from_surface(surface)
         cover.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
-        del surface
         self.__play_indicator = Gtk.Image.new_from_icon_name(
                                                "media-playback-start-symbolic",
                                                Gtk.IconSize.MENU)

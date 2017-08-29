@@ -90,7 +90,6 @@ class ArtworkSearch(Gtk.Bin):
                                             ArtSize.BIG,
                                             self.get_scale_factor())
         image.set_from_surface(surface)
-        del surface
         image.set_property("valign", Gtk.Align.CENTER)
         image.set_property("halign", Gtk.Align.CENTER)
         image.get_style_context().add_class("cover-frame")
@@ -307,14 +306,6 @@ class ArtworkSearch(Gtk.Bin):
         try:
             bytes = GLib.Bytes(data)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            if stream is not None:
-                monster = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                    stream, ArtSize.MONSTER,
-                    ArtSize.MONSTER,
-                    True,
-                    None)
-                stream.close()
-            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
             bytes.unref()
             if stream is not None:
                 big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
@@ -331,10 +322,7 @@ class ArtworkSearch(Gtk.Bin):
             surface = Gdk.cairo_surface_create_from_pixbuf(big,
                                                            0,
                                                            None)
-            del monster
-            del big
             image.set_from_surface(surface)
-            del surface
             image.show()
             self._view.add(image)
         except Exception as e:

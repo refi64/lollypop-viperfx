@@ -135,7 +135,6 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
                     ArtSize.BIG,
                     self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
-        del surface
 
     def update_cover(self):
         """
@@ -148,7 +147,6 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
                     ArtSize.BIG,
                     self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
-        del surface
 
     def update_state(self):
         """
