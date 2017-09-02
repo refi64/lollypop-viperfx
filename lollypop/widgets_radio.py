@@ -112,8 +112,9 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             Return preferred width
             @return (int, int)
         """
-        # Padding: 3px, border: 1px + spacing
-        width = ArtSize.BIG + 16
+        if self._widget is None:
+            return (0, 0)
+        width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
     def set_name(self, name):
