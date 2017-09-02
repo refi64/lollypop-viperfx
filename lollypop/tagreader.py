@@ -253,8 +253,7 @@ class TagReader(Discoverer):
                     tracknumber = 0
             else:
                 tracknumber = 0
-        return min(tracknumber if tracknumber > -1 else abs(tracknumber),
-                   GLib.MAXINT32)
+        return min(abs(tracknumber), GLib.MAXINT32)
 
     def get_year(self, tags):
         """
