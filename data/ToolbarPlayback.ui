@@ -45,12 +45,6 @@
             <property name="always_show_image">True</property>
             <property name="tooltip_text" translatable="yes">Play</property>
             <child>
-              <object class="GtkImage" id="pause_image">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">media-playback-pause-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
               <object class="GtkImage" id="play_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -96,4 +90,10 @@
           <class name="linked"/>
         </style>
       </object>
+     <object class="GtkImage" id="pause_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">media-playback-pause-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
 </interface>

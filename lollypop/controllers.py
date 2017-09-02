@@ -79,6 +79,8 @@ class PlaybackController:
             Update buttons and progress bar
             @param player as Player
         """
+        # GTK bug, should not be needed, see #1214
+        self._play_btn.set_sensitive(True)
         if player.is_playing:
             self.__change_play_btn_status(self._pause_image, _("Pause"))
         else:
