@@ -93,6 +93,7 @@ class Application(Gtk.Application):
         self.notify = None
         self.lastfm = None
         self.debug = False
+        self.__fs = None
         self.__externals_count = 0
         self.__init_proxy()
         GLib.set_application_name("Lollypop")
@@ -147,7 +148,6 @@ class Application(Gtk.Application):
                                          None)
         except Exception as e:
             print("Application::init():", e)
-        self.__is_fs = False
 
         cssProviderFile = Lio.File.new_for_uri(
                 "resource:///org/gnome/Lollypop/application.css")
@@ -246,7 +246,7 @@ class Application(Gtk.Application):
         """
             Return True if application is fullscreen
         """
-        return self.__is_fs
+        return self.__fs is not None
 
     def set_mini(self, action, param):
         """
@@ -272,7 +272,7 @@ class Application(Gtk.Application):
         """
             Save window position and view
         """
-        if self.__is_fs:
+        if self.is_fullscreen():
             return
         if self.settings.get_value("save-state"):
             self.window.save_view_state()
@@ -521,19 +521,20 @@ class Application(Gtk.Application):
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        if self.window and not self.__is_fs:
+        if self.window and not self.is_fullscreen():
             from lollypop.fullscreen import FullScreen
-            fs = FullScreen(self, self.window)
-            fs.connect("destroy", self.__on_fs_destroyed)
-            self.__is_fs = True
-            fs.show()
+            self.__fs = FullScreen(self, self.window)
+            self.__fs.connect("destroy", self.__on_fs_destroyed)
+            self.__fs.show()
+        elif self.window and self.is_fullscreen():
+            self.__fs.destroy()
 
     def __on_fs_destroyed(self, widget):
         """
             Mark fullscreen as False
             @param widget as Fullscreen
         """
-        self.__is_fs = False
+        self.__fs = None
         if not self.window.is_visible():
             self.quit(True)
 
