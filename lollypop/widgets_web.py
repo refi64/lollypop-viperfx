@@ -57,7 +57,7 @@ class WebView(Gtk.Stack):
         settings.set_property("enable-plugins", False)
         settings.set_property("enable-fullscreen", False)
         settings.set_property("enable-html5-database", False)
-        settings.set_property("enable-html5-local-storage", False)
+        settings.set_property("enable-html5-local-storage", True)
         settings.set_property("enable-media-stream", False)
         settings.set_property("enable-mediasource", False)
         settings.set_property("enable-offline-web-application-cache", False)
