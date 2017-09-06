@@ -42,6 +42,11 @@ install_subdir(
   install_dir: python_dir
 )
 
+install_subdir(
+  'thirdparty',
+  install_dir: join_paths(python_dir, 'lollypop')
+)
+
 message('Preparing init file')
 configure_file(
   input: 'lollypop.in',

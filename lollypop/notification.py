@@ -13,7 +13,7 @@
 from gi.repository import Gdk, GLib
 from gettext import gettext as _
 
-from lollypop.GioNotify import GioNotify
+from lollypop.thirdparty.GioNotify import GioNotify
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import is_gnome
@@ -69,12 +69,14 @@ class NotificationManager:
 # PRIVATE             #
 #######################
 
-    def __on_init_finish(self, notification, caps, error=None):
+    def __on_init_finish(self, notification, server_info, caps, error=None):
         """
             Set actions and connect signals
+            @param notification as GioNotify
+            @param server_info as {}
             @param caps as [str]
         """
-        if error:
+        if error is not None:
             print("notification::__on_init_finish():", error)
             return
 
