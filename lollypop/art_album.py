@@ -275,9 +275,10 @@ class AlbumArt(BaseArt, TagReader):
             else:
                 arturi = album.uri + "/" + self.__favorite
             # Save cover to uri
-            if not save_to_tags:
+            dst = Lio.File.new_for_uri(arturi)
+            if dst.query_exists():
                 bytes = GLib.Bytes(data)
-                stream = Gio.MemoryInputStream.new_from_bytes(data)
+                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                stream,
@@ -294,10 +295,6 @@ class AlbumArt(BaseArt, TagReader):
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
-            else:
-                dst = Lio.File.new_for_uri(arturi)
-                if dst.query_exists():
-                    dst.trash()
         except Exception as e:
             print("Art::save_album_artwork(): %s" % e)
 
@@ -400,7 +397,7 @@ class AlbumArt(BaseArt, TagReader):
             return
         # https://bugzilla.gnome.org/show_bug.cgi?id=747431
         bytes = GLib.Bytes(data)
-        stream = Gio.MemoryInputStream.new_from_bytes(data)
+        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
         bytes.unref()
         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                            ArtSize.MONSTER,
@@ -426,7 +423,7 @@ class AlbumArt(BaseArt, TagReader):
             @param album_id as int
         """
         try:
-            can_set_cover = source.call_finish(result)
+            can_set_cover = source.call_finish(result)[0]
         except:
             can_set_cover = False
         if can_set_cover:
