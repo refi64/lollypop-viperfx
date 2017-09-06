@@ -17,20 +17,6 @@ from gi.repository import Gio
 
 from os import path
 
-try:
-    from gi.repository import Secret
-
-    SecretSchema = {
-        "org.gnome.Lollypop.lastfm.login": Secret.SchemaAttributeType.STRING
-    }
-    SecretAttributes = {
-        "org.gnome.Lollypop.lastfm.login": "Last.fm login"
-    }
-except:
-    Secret = None
-    SecretSchema = None
-    SecretAttributes = None
-
 DataPath = path.expanduser("~") + "/.local/share/lollypop"
 
 Lp = Gio.Application.get_default

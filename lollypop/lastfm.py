@@ -36,7 +36,8 @@ from locale import getdefaultlocale
 from threading import Thread
 import re
 
-from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
+from lollypop.helper_task import TaskHelper
+from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.utils import debug, get_network_available
 
@@ -53,18 +54,21 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
        really have much option :).
     """
 
-    def __init__(self):
+    def __init__(self, name):
         """
             Init lastfm support
+            @param name as str
         """
-        self.__username = ""
+        self.__name = name
+        self.__login = ""
         self.__is_auth = False
         self.__password = None
+        self.__goa = None
         self.__check_for_proxy()
-        self.__goa = self.__get_goa_oauth()
-        if self.__goa is None and Lp().settings.get_value("use-librefm"):
+        if name == "librefm":
             LibreFMNetwork.__init__(self)
         else:
+            self.__goa = self.__get_goa_oauth()
             if self.__goa is not None:
                 self.__API_KEY = self.__goa.props.client_id
                 self.__API_SECRET = self.__goa.props.client_secret
@@ -74,46 +78,24 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             LastFMNetwork.__init__(self,
                                    api_key=self.__API_KEY,
                                    api_secret=self.__API_SECRET)
-        self.connect(None)
+        self.connect()
 
-    def connect(self, password):
+    def connect(self, full_sync=False, callback=None, *args):
         """
-            Connect lastfm
-            @param password as str/None
+            Connect service
+            @param full_sync as bool
+            @param callback as function
         """
         if self.__goa is not None:
-            t = Thread(target=self.__connect, args=("", "", True))
-            t.daemon = True
-            t.start()
-        # Get username/password from GSettings/Secret
-        elif Secret is not None and\
-                get_network_available():
-            self.__username = Lp().settings.get_value(
-                                                   "lastfm-login").get_string()
-            if password is None:
-                schema = Secret.Schema.new("org.gnome.Lollypop",
-                                           Secret.SchemaFlags.NONE,
-                                           SecretSchema)
-                Secret.password_lookup(schema, SecretAttributes, None,
-                                       self.__on_password_lookup)
-            else:
-                t = Thread(target=self.__connect, args=(self.__username,
-                                                        password, True))
-                t.daemon = True
-                t.start()
-
-    def connect_sync(self, password):
-        """
-            Connect lastfm sync
-            @param password as str
-        """
-        if get_network_available():
-            self.__username = Lp().settings.get_value(
-                                                   "lastfm-login").get_string()
-            self.__connect(self.__username, password)
-            t = Thread(target=self.__populate_loved_tracks, args=(True,))
-            t.daemon = True
-            t.start()
+            helper = TaskHelper()
+            helper.run(self.__connect, (full_sync,))
+        elif get_network_available():
+            from lollypop.helper_passwords import PasswordsHelper
+            helper = PasswordsHelper()
+            helper.get(self.__name,
+                       self.__on_get_password,
+                       callback,
+                       *args)
 
     def get_artist_info(self, artist):
         """
@@ -266,15 +248,14 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         except:
             pass
 
-    def __connect(self, username, password, populate_loved=False):
+    def __connect(self, full_sync=False):
         """
-            Connect lastfm
-            @param username as str
-            @param password as str
+            Connect service
+            @param full_sync as bool
             @thread safe
         """
-        self.__username = username
-        if self.__goa is not None or (password != "" and username != ""):
+        if self.__goa is not None or (self.__password != "" and
+                                      self.__login != ""):
             self.__is_auth = True
         else:
             self.__is_auth = False
@@ -287,12 +268,12 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             else:
                 skg = SessionKeyGenerator(self)
                 self.session_key = skg.get_session_key(
-                                                  username=self.__username,
-                                                  password_hash=md5(password))
-            if populate_loved:
+                                          username=self.__login,
+                                          password_hash=md5(self.__password))
+            if full_sync:
                 self.__populate_loved_tracks()
         except Exception as e:
-            debug("Lastfm::__connect(): %s" % e)
+            debug("LastFM::__connect(): %s" % e)
             self.__is_auth = False
 
     def __scrobble(self, artist, album, title, timestamp, first=True):
@@ -318,10 +299,10 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         except BadAuthenticationError as e:
             pass
         except Exception as e:
-            print("Lastfm::scrobble():", e)
+            print("LastFM::__scrobble():", e)
             # Scrobble sometimes fails
             if first:
-                self.__connect(self.__username, self.__password)
+                self.__connect()
                 self.__scrobble(artist, album, title, timestamp, False)
 
     def __now_playing(self, artist, album, title, duration, first=True):
@@ -347,10 +328,10 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             if Lp().notify is not None:
                 GLib.idle_add(Lp().notify.send, _("Wrong Last.fm credentials"))
         except Exception as e:
-            print("Lastfm::scrobble():", e)
+            print("LastFM::__now_playing():", e)
             # now playing sometimes fails
             if first:
-                self.__connect(self.__username, self.__password)
+                self.__connect()
                 self.__now_playing(artist, album, title, duration, False)
 
     def __populate_loved_tracks(self, force=False):
@@ -363,7 +344,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         try:
             if force or len(Lp().playlists.get_tracks(Type.LOVED)) == 0:
                 tracks = []
-                user = self.get_user(self.__username)
+                user = self.get_user(self.__login)
                 for loved in user.get_loved_tracks():
                     track_id = Lp().tracks.search_track(
                                                       str(loved.track.artist),
@@ -374,19 +355,18 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         except Exception as e:
                 print("LastFM::__populate_loved_tracks: %s" % e)
 
-    def __on_password_lookup(self, source, result):
+    def __on_get_password(self, attributes, password, name, callback, *args):
         """
-            Init self object
-            @param source as GObject.Object
-            @param result Gio.AsyncResult
+             Set password label
+             @param attributes as {}
+             @param password as str
+             @param name as str
+             @param callback as function
         """
-        try:
-            password = Secret.password_lookup_finish(result)
-            self.__password = password
-            if get_network_available():
-                t = Thread(target=self.__connect,
-                           args=(self.__username, password))
-                t.daemon = True
-                t.start()
-        except Exception as e:
-            print("Lastfm::__on_password_lookup(): %s" % e)
+        if attributes is None:
+            return
+        self.__login = attributes["login"]
+        self.__password = password
+        if get_network_available():
+            helper = TaskHelper()
+            helper.run(self.__connect, (), callback, *args)

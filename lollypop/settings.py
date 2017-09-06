@@ -11,17 +11,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gdk, GLib, Gio, Pango
-try:
-    from gi.repository import Secret
-except:
-    Secret = None
-
 
 from gettext import gettext as _
 from gettext import ngettext as ngettext
-from threading import Thread
 
-from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
+from lollypop.define import Lp, Type
 from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.touch_helper import TouchHelper
@@ -157,9 +151,6 @@ class SettingsDialog:
         switch_mix_party = builder.get_object("switch_mix_party")
         switch_mix_party.set_state(Lp().settings.get_value("party-mix"))
 
-        switch_librefm = builder.get_object("switch_librefm")
-        switch_librefm.set_state(Lp().settings.get_value("use-librefm"))
-
         switch_artwork_tags = builder.get_object("switch_artwork_tags")
         grid_behaviour = builder.get_object("grid_behaviour")
         # Check portal for kid3-cli
@@ -248,22 +239,32 @@ class SettingsDialog:
         key = Lp().settings.get_value("cs-api-key").get_string() or\
             Lp().settings.get_default_value("cs-api-key").get_string()
         builder.get_object("cs-entry").set_text(key)
+
+        from lollypop.helper_passwords import PasswordsHelper
+        helper = PasswordsHelper()
         #
         # Last.fm tab
         #
-        if Lp().lastfm is not None and Secret is not None:
-            self.__test_img = builder.get_object("test_img")
-            self.__login = builder.get_object("login")
-            self.__password = builder.get_object("password")
-            schema = Secret.Schema.new("org.gnome.Lollypop",
-                                       Secret.SchemaFlags.NONE,
-                                       SecretSchema)
-            Secret.password_lookup(schema, SecretAttributes, None,
-                                   self.__on_password_lookup)
+        if Lp().lastfm is not None:
+            self.__lastfm_test_image = builder.get_object("lastfm_test_image")
+            self.__lastfm_login = builder.get_object("lastfm_login")
+            self.__lastfm_password = builder.get_object("lastfm_password")
+            helper.get("lastfm",
+                       self.__on_get_password)
             builder.get_object("lastfm_grid").set_sensitive(True)
-            builder.get_object("lastfm_error").hide()
-            self.__login.set_text(
-                Lp().settings.get_value("lastfm-login").get_string())
+            builder.get_object("lastfm_error_label").hide()
+        #
+        # Libre.fm tab
+        #
+        if Lp().librefm is not None:
+            self.__librefm_test_image = builder.get_object(
+                                                          "librefm_test_image")
+            self.__librefm_login = builder.get_object("librefm_login")
+            self.__librefm_password = builder.get_object("librefm_password")
+            helper.get("librefm",
+                       self.__on_get_password)
+            builder.get_object("librefm_grid").set_sensitive(True)
+            builder.get_object("librefm_error_label").hide()
 
     def show(self):
         """
@@ -404,16 +405,6 @@ class SettingsDialog:
         Lp().settings.set_value("party-mix", GLib.Variant("b", state))
         Lp().player.update_crossfading()
 
-    def _update_librefm_setting(self, widget, state):
-        """
-            Update librefm setting
-            @param widget as Gtk.Range
-        """
-        from lollypop.lastfm import LastFM
-        Lp().settings.set_value("use-librefm", GLib.Variant("b", state))
-        # Reset lastfm object
-        Lp().lastfm = LastFM()
-
     def _update_mix_duration_setting(self, widget):
         """
             Update mix duration setting
@@ -474,32 +465,37 @@ class SettingsDialog:
         """
         Lp().settings.set_value("search-itunes", GLib.Variant("b", state))
 
-    def _update_lastfm_settings(self, sync=False):
+    def _update_fm_settings(self, name):
         """
             Update lastfm settings
-            @param sync as bool
+            @param name as str (librefm/lastfm)
         """
+        fm = None
+        if name == "librefm" and Lp().librefm is not None:
+            fm = Lp().librefm
+            callback = self.__test_librefm_connection
+            login = self.__librefm_login.get_text()
+            password = self.__librefm_password.get_text()
+        elif Lp().lastfm is not None:
+            fm = Lp().lastfm
+            callback = self.__test_lastfm_connection
+            login = self.__lastfm_login.get_text()
+            password = self.__lastfm_password.get_text()
         try:
-            if Lp().lastfm is not None and Secret is not None:
-                schema = Secret.Schema.new("org.gnome.Lollypop",
-                                           Secret.SchemaFlags.NONE,
-                                           SecretSchema)
-                Secret.password_store_sync(schema, SecretAttributes,
-                                           Secret.COLLECTION_DEFAULT,
-                                           "org.gnome.Lollypop"
-                                           ".lastfm.login %s" %
-                                           self.__login.get_text(),
-                                           self.__password.get_text(),
-                                           None)
-                Lp().settings.set_value("lastfm-login",
-                                        GLib.Variant("s",
-                                                     self.__login.get_text()))
-                if sync:
-                    Lp().lastfm.connect_sync(self.__password.get_text())
-                else:
-                    Lp().lastfm.connect(self.__password.get_text())
+            if fm is not None and login and password:
+                from lollypop.helper_passwords import PasswordsHelper
+                helper = PasswordsHelper()
+                helper.clear(name,
+                             helper.store,
+                             name,
+                             login,
+                             password,
+                             self.__on_password_store,
+                             fm,
+                             False,
+                             callback)
         except Exception as e:
-            print("Settings::_update_lastfm_settings(): %s" % e)
+            print("Settings::_update_fm_settings(): %s" % e)
 
     def _on_cs_api_changed(self, entry):
         """
@@ -538,19 +534,29 @@ class SettingsDialog:
         if event.keyval == Gdk.KEY_Escape:
             self.__settings_dialog.destroy()
 
-    def _on_test_btn_clicked(self, button):
+    def _on_lastfm_test_btn_clicked(self, button):
         """
             Test lastfm connection
             @param button as Gtk.Button
         """
-        self._update_lastfm_settings(True)
+        self._update_fm_settings("lastfm")
         if not get_network_available():
-            self.__test_img.set_from_icon_name("computer-fail-symbolic",
+            self.__lastfm_test_image.set_from_icon_name(
+                                               "computer-fail-symbolic",
                                                Gtk.IconSize.MENU)
             return
-        t = Thread(target=self.__test_lastfm_connection)
-        t.daemon = True
-        t.start()
+
+    def _on_librefm_test_btn_clicked(self, button):
+        """
+            Test librefm connection
+            @param button as Gtk.Button
+        """
+        self._update_fm_settings("librefm")
+        if not get_network_available():
+            self.__librefm_test_image.set_from_icon_name(
+                                               "computer-fail-symbolic",
+                                               Gtk.IconSize.MENU)
+            return
 
     def _hide_popover(self, widget):
         """
@@ -690,13 +696,6 @@ class SettingsDialog:
         previous = Lp().settings.get_value("music-uris")
         Lp().settings.set_value("music-uris", GLib.Variant("as", uris))
 
-        # Last.fm
-        try:
-            if not Lp().lastfm.is_goa:
-                self._update_lastfm_settings()
-        except:
-            pass
-
         self.__settings_dialog.hide()
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
@@ -704,19 +703,43 @@ class SettingsDialog:
         if Lp().window.view is not None:
             Lp().window.view.update_children()
 
-    def __test_lastfm_connection(self):
+    def __test_lastfm_connection(self, result):
         """
             Test lastfm connection
-            @thread safe
+            @param result as None
         """
         if Lp().lastfm.session_key:
-            GLib.idle_add(self.__test_img.set_from_icon_name,
+            self.__lastfm_test_image.set_from_icon_name(
                           "object-select-symbolic",
                           Gtk.IconSize.MENU)
         else:
-            GLib.idle_add(self.__test_img.set_from_icon_name,
+            self.__lastfm_test_image.set_from_icon_name(
                           "computer-fail-symbolic",
                           Gtk.IconSize.MENU)
+
+    def __test_librefm_connection(self, result):
+        """
+            Test librefm connection
+            @param result as None
+        """
+        if Lp().librefm.session_key:
+            self.__librefm_test_image.set_from_icon_name(
+                          "object-select-symbolic",
+                          Gtk.IconSize.MENU)
+        else:
+            self.__librefm_test_image.set_from_icon_name(
+                          "computer-fail-symbolic",
+                          Gtk.IconSize.MENU)
+
+    def __on_password_store(self, source, result, fm, full_sync, callback):
+        """
+            Connect service
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param fm as LastFM
+            @param full_sync as bool
+        """
+        fm.connect(full_sync, callback)
 
     def __on_pa_list_sinks(self, source, result, combo):
         """
@@ -766,20 +789,21 @@ class SettingsDialog:
             switch_artwork_tags.set_state(
                                        Lp().settings.get_value("save-to-tags"))
 
-    def __on_password_lookup(self, source, result):
+    def __on_get_password(self, attributes, password, name):
         """
-            Set password entry
-            @param source as GObject.Object
-            @param result Gio.AsyncResult
+             Set password label
+             @param attributes as {}
+             @param password as str
+             @param name as str
         """
-        try:
-            password = None
-            if result is not None:
-                password = Secret.password_lookup_finish(result)
-            if password is not None:
-                self.__password.set_text(password)
-        except:
-            pass
+        if attributes is None:
+            return
+        if name == "librefm":
+            self.__librefm_login.set_text(attributes["login"])
+            self.__librefm_password.set_text(password)
+        else:
+            self.__lastfm_login.set_text(attributes["login"])
+            self.__lastfm_password.set_text(password)
 
     def __reset_database(self, track_ids, count, history):
         """

@@ -305,7 +305,7 @@ class BinPlayer(BasePlayer):
         if finished.duration < 30:
             return
         # Scrobble on lastfm
-        if Lp().lastfm is not None:
+        if Lp().lastfm is not None and Lp().lastfm.session_key:
             artists = ", ".join(finished.artists)
             played = time() - finished_start_time
             # We can scrobble if the track has been played
@@ -315,6 +315,17 @@ class BinPlayer(BasePlayer):
                                         finished.album_name,
                                         finished.title,
                                         int(finished_start_time))
+        # Scrobble on librefm
+        if Lp().librefm is not None and Lp().librefm.session_key:
+            artists = ", ".join(finished.artists)
+            played = time() - finished_start_time
+            # We can scrobble if the track has been played
+            # for at least half its duration, or for 4 minutes
+            if played >= finished.duration / 2 or played >= 240:
+                Lp().librefm.do_scrobble(artists,
+                                         finished.album_name,
+                                         finished.title,
+                                         int(finished_start_time))
 
     def _on_stream_start(self, bus, message):
         """
@@ -327,7 +338,10 @@ class BinPlayer(BasePlayer):
         debug("Player::_on_stream_start(): %s" % self._current_track.uri)
         self.emit("current-changed")
         # Update now playing on lastfm
-        if Lp().lastfm is not None and self._current_track.id >= 0:
+        # Not supported by librefm
+        if Lp().lastfm is not None and\
+                Lp().lastfm.session_key and\
+                self._current_track.id >= 0:
             artists = ", ".join(self._current_track.artists)
             Lp().lastfm.now_playing(artists,
                                     self._current_track.album_name,

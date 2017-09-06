@@ -92,6 +92,7 @@ class Application(Gtk.Application):
         self.window = None
         self.notify = None
         self.lastfm = None
+        self.librefm = None
         self.debug = False
         self.__fs = None
         self.__externals_count = 0
@@ -175,7 +176,8 @@ class Application(Gtk.Application):
         if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
         if LastFM is not None:
-            self.lastfm = LastFM()
+            self.lastfm = LastFM("lastfm")
+            self.librefm = LastFM("librefm")
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)
