@@ -83,7 +83,7 @@ def is_gnome():
     """
         Return True if desktop is Gnome
     """
-    return GLib.getenv("XDG_CURRENT_DESKTOP") == "GNOME"
+    return GLib.getenv("XDG_CURRENT_DESKTOP") in ["ubuntu:GNOME", "GNOME"]
 
 
 def is_audio(f):
