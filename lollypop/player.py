@@ -103,9 +103,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param play as bool, ignored for radios
         """
         if track.id == Type.RADIOS:
-            if not Lp().scanner.is_locked():
-                Lp().window.pulse(False)
-                Lp().window.pulse(True)
             RadioPlayer.load(self, track)
         else:
             if play:
@@ -543,6 +540,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 #######################
 # PROTECTED           #
 #######################
+    def _on_bus_error(self, bus, message):
+        """
+            Pass error to Bin/Radio
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        BinPlayer._on_bus_error(self, bus, message)
+        RadioPlayer._on_bus_error(self, bus, message)
+
     def _on_stream_start(self, bus, message):
         """
             On stream start, set next and previous track

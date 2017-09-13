@@ -49,14 +49,14 @@ class BinPlayer(BasePlayer):
             playbin.set_property("buffer-size", 5 << 20)
             playbin.set_property("buffer-duration", 10 * Gst.SECOND)
             playbin.connect("about-to-finish",
-                            self.__on_stream_about_to_finish)
+                            self._on_stream_about_to_finish)
             bus = playbin.get_bus()
             bus.add_signal_watch()
-            bus.connect("message::error", self.__on_bus_error)
-            bus.connect("message::eos", self.__on_bus_eos)
-            bus.connect("message::element", self.__on_bus_element)
+            bus.connect("message::error", self._on_bus_error)
+            bus.connect("message::eos", self._on_bus_eos)
+            bus.connect("message::element", self._on_bus_element)
             bus.connect("message::stream-start", self._on_stream_start)
-            bus.connect("message::tag", self.__on_bus_message_tag)
+            bus.connect("message::tag", self._on_bus_message_tag)
         self._start_time = 0
 
     @property
@@ -315,6 +315,119 @@ class BinPlayer(BasePlayer):
         except:  # Locked database
             pass
 
+    def _on_bus_message_tag(self, bus, message):
+        """
+            Read tags from stream
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        # Some radio streams send message tag every seconds!
+        changed = False
+        if self._current_track.id >= 0 or self._current_track.duration > 0.0:
+            return
+        debug("Player::__on_bus_message_tag(): %s" % self._current_track.uri)
+        reader = TagReader()
+        tags = message.parse_tag()
+        title = reader.get_title(tags, "")
+        if title != "" and self._current_track.name != title:
+            self._current_track.name = title
+            changed = True
+        if self._current_track.name == "":
+            self._current_track.name = self._current_track.uri
+            changed = True
+        artists = reader.get_artists(tags)
+        if artists != "" and self._current_track.artists != artists:
+            self._current_track.artists = artists.split(",")
+            changed = True
+        if not self._current_track.artists:
+            self._current_track.artists = self._current_track.album_artists
+            changed = True
+
+        if self._current_track.id == Type.EXTERNALS:
+            (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
+            if b:
+                self._current_track.duration = duration/1000000000
+            # We do not use tagreader as we need to check if value is None
+            self._current_track.album_name = tags.get_string_index("album",
+                                                                   0)[1]
+            if self._current_track.album_name is None:
+                self._current_track.album_name = ""
+            self._current_track.genres = reader.get_genres(tags).split(",")
+            changed = True
+        if changed:
+            self.emit("current-changed")
+
+    def _on_bus_element(self, bus, message):
+        """
+            Set elements for missings plugins
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        if GstPbutils.is_missing_plugin_message(message):
+            self.__codecs.append(message)
+
+    def _on_bus_error(self, bus, message):
+        """
+            Try a codec install and update current track
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        debug("Error playing: %s" % self._current_track.uri)
+        Lp().window.pulse(False)
+        if self.__codecs.is_missing_codec(message):
+            self.__codecs.install()
+            Lp().scanner.stop()
+        elif Lp().notify is not None:
+            Lp().notify.send(message.parse_error()[0].message)
+        self.stop()
+
+    def _on_bus_eos(self, bus, message):
+        """
+            On end of stream, stop playback
+            go next otherwise
+        """
+        debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
+        if self._playbin.get_bus() == bus:
+            self.stop()
+            self._next_context = NextContext.NONE
+            if self._next_track.id is not None:
+                self._load_track(self._next_track)
+            self.emit("current-changed")
+
+    def _on_stream_about_to_finish(self, playbin):
+        """
+            When stream is about to finish, switch to next track without gap
+            @param playbin as Gst bin
+        """
+        debug("Player::__on_stream_about_to_finish(): %s" % playbin)
+        # Don"t do anything if crossfade on, track already changed
+        if self._crossfading:
+            return
+        if self._current_track.id == Type.RADIOS:
+            return
+        self._scrobble(self._current_track, self._start_time)
+        # Increment popularity
+        if not Lp().scanner.is_locked() and self._current_track.id >= 0:
+            Lp().tracks.set_more_popular(self._current_track.id)
+            # In party mode, linear popularity
+            if self.is_party:
+                pop_to_add = 1
+            # In normal mode, based on tracks count
+            else:
+                # Some users report an issue where get_tracks_count() return 0
+                # See issue #886
+                # Don"t understand how this can happen!
+                count = Lp().albums.get_tracks_count(
+                                                 self._current_track.album_id)
+                if count:
+                    pop_to_add = int(Lp().albums.max_count / count)
+                else:
+                    pop_to_add = 1
+            Lp().albums.set_more_popular(self._current_track.album_id,
+                                         pop_to_add)
+        if self._next_track.id is not None:
+            self._load_track(self._next_track)
+
 #######################
 # PRIVATE             #
 #######################
@@ -467,120 +580,6 @@ class BinPlayer(BasePlayer):
             vol = self.__playbin2.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
             self.__playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
         self.emit("volume-changed")
-
-    def __on_bus_message_tag(self, bus, message):
-        """
-            Read tags from stream
-            @param bus as Gst.Bus
-            @param message as Gst.Message
-        """
-        # Some radio streams send message tag every seconds!
-        changed = False
-        if self._current_track.id >= 0 or self._current_track.duration > 0.0:
-            return
-        debug("Player::__on_bus_message_tag(): %s" % self._current_track.uri)
-        reader = TagReader()
-        tags = message.parse_tag()
-        title = reader.get_title(tags, "")
-        if title != "" and self._current_track.name != title:
-            self._current_track.name = title
-            changed = True
-        if self._current_track.name == "":
-            self._current_track.name = self._current_track.uri
-            changed = True
-        artists = reader.get_artists(tags)
-        if artists != "" and self._current_track.artists != artists:
-            self._current_track.artists = artists.split(",")
-            changed = True
-        if not self._current_track.artists:
-            self._current_track.artists = self._current_track.album_artists
-            changed = True
-
-        if self._current_track.id == Type.EXTERNALS:
-            (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
-            if b:
-                self._current_track.duration = duration/1000000000
-            # We do not use tagreader as we need to check if value is None
-            self._current_track.album_name = tags.get_string_index("album",
-                                                                   0)[1]
-            if self._current_track.album_name is None:
-                self._current_track.album_name = ""
-            self._current_track.genres = reader.get_genres(tags).split(",")
-            changed = True
-        if changed:
-            self.emit("current-changed")
-
-    def __on_bus_element(self, bus, message):
-        """
-            Set elements for missings plugins
-            @param bus as Gst.Bus
-            @param message as Gst.Message
-        """
-        if GstPbutils.is_missing_plugin_message(message):
-            self.__codecs.append(message)
-
-    def __on_bus_error(self, bus, message):
-        """
-            Handle first bus error, ignore others
-            @param bus as Gst.Bus
-            @param message as Gst.Message
-        """
-        debug("Error playing: %s" % self._current_track.uri)
-        Lp().window.pulse(False)
-        if self.__codecs.is_missing_codec(message):
-            self.__codecs.install()
-            Lp().scanner.stop()
-        elif Lp().notify is not None:
-            Lp().notify.send(message.parse_error()[0].message)
-        self.emit("current-changed")
-        return True
-
-    def __on_bus_eos(self, bus, message):
-        """
-            On end of stream, stop playback
-            go next otherwise
-        """
-        debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
-        if self._playbin.get_bus() == bus:
-            self.stop()
-            self._next_context = NextContext.NONE
-            if self._next_track.id is not None:
-                self._load_track(self._next_track)
-            self.emit("current-changed")
-
-    def __on_stream_about_to_finish(self, playbin):
-        """
-            When stream is about to finish, switch to next track without gap
-            @param playbin as Gst bin
-        """
-        debug("Player::__on_stream_about_to_finish(): %s" % playbin)
-        # Don"t do anything if crossfade on, track already changed
-        if self._crossfading:
-            return
-        if self._current_track.id == Type.RADIOS:
-            return
-        self._scrobble(self._current_track, self._start_time)
-        # Increment popularity
-        if not Lp().scanner.is_locked() and self._current_track.id >= 0:
-            Lp().tracks.set_more_popular(self._current_track.id)
-            # In party mode, linear popularity
-            if self.is_party:
-                pop_to_add = 1
-            # In normal mode, based on tracks count
-            else:
-                # Some users report an issue where get_tracks_count() return 0
-                # See issue #886
-                # Don"t understand how this can happen!
-                count = Lp().albums.get_tracks_count(
-                                                 self._current_track.album_id)
-                if count:
-                    pop_to_add = int(Lp().albums.max_count / count)
-                else:
-                    pop_to_add = 1
-            Lp().albums.set_more_popular(self._current_track.album_id,
-                                         pop_to_add)
-        if self._next_track.id is not None:
-            self._load_track(self._next_track)
 
     def __set_gv_uri(self, uri, track, play):
         """

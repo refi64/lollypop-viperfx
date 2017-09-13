@@ -10,11 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import TotemPlParser, Gst, Gio
+from gi.repository import TotemPlParser, Gst, Gio, GLib
 
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
-from lollypop.define import Type
+from lollypop.define import Type, Lp
 from lollypop.objects import Track
 
 
@@ -42,6 +42,8 @@ class RadioPlayer(BasePlayer):
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
             try:
+                if not Lp().scanner.is_locked():
+                    Lp().window.pulse(True)
                 self.__current = track
                 parser = TotemPlParser.Parser.new()
                 parser.connect("entry-parsed", self.__on_entry_parsed, track)
@@ -112,8 +114,31 @@ class RadioPlayer(BasePlayer):
         self.__radios = radios
 
 #######################
+# PROTECTED           #
+#######################
+    def _on_bus_error(self, bus, message):
+        """
+            Try a codec install and update current track
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        # Reload track if network is down
+        if self._current_track.id < 0 and\
+                not Gio.NetworkMonitor.get_default().get_network_available():
+            GLib.timeout_add(1000, self.__check_for_network)
+
+#######################
 # PRIVATE             #
 #######################
+    def __check_for_network(self):
+        """
+            Play track again once network is up
+        """
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            self.load(self._current_track)
+        else:
+            return True
+
     def __start_playback(self, track):
         """
             Start playing track
@@ -142,6 +167,7 @@ class RadioPlayer(BasePlayer):
         # Only start playing if context always True
         if self.__current == track:
             self.__start_playback(track)
+            Lp().window.pulse(False)
 
     def __on_entry_parsed(self, parser, uri, metadata, track):
         """
