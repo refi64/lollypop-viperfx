@@ -65,7 +65,7 @@ class Container:
         Lp().playlists.connect("playlists-changed",
                                self.__update_playlists)
 
-    def update_db(self):
+    def update_db(self, *ignore):
         """
             Update db at startup only if needed
         """

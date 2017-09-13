@@ -602,20 +602,16 @@ Nous traitons le problème dès que possible (salle très occupée).
                 return v[0]
             return 0
 
-    def get_mtime(self, track_id, genre_ids=[]):
+    def get_mtime(self, track_id):
         """
             Get modification time, if genre_ids empty, only local tracks
             @param track_id as int
-            @param genre_ids as [int]
             @return modification time as int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = tuple([track_id] + genre_ids)
-            request = "SELECT mtime FROM track_genres\
-                       WHERE track_id=?"
-            for genre_id in genre_ids:
-                request += " AND genre_id=?"
-            result = sql.execute(request, filters)
+            request = "SELECT mtime FROM tracks\
+                       WHERE tracks.rowid=?"
+            result = sql.execute(request, (track_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
