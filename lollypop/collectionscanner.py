@@ -294,7 +294,7 @@ class CollectionScanner(GObject.GObject, TagReader):
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
                                                uri, loved, album_pop,
-                                               album_rate, False)
+                                               album_rate, mtime)
 
         genre_ids = self.add_genres(genres)
 
@@ -303,10 +303,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         track_id = Lp().tracks.add(title, uri, duration,
                                    tracknumber, discnumber, discname,
                                    album_id, year, track_pop, track_rate,
-                                   track_ltime)
+                                   track_ltime, mtime)
 
-        debug("CollectionScanner::add2db(): Update tracks")
-        self.update_track(track_id, artist_ids, genre_ids, mtime)
+        debug("CollectionScanner::add2db(): Update track")
+        self.update_track(track_id, artist_ids, genre_ids)
+        debug("CollectionScanner::add2db(): Update album")
         self.update_album(album_id, album_artist_ids,
                           genre_ids, album_mtime, year)
         if new_album:
@@ -334,7 +335,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             popularity = Lp().tracks.get_popularity(track_id)
             rate = Lp().tracks.get_rate(track_id)
             ltime = Lp().tracks.get_ltime(track_id)
-            mtime = Lp().albums.get_mtime(album_id)
+            mtime = Lp().tracks.get_mtime(track_id)
             duration = Lp().tracks.get_duration(track_id)
             album_popularity = Lp().albums.get_popularity(album_id)
             album_rate = Lp().albums.get_rate(album_id)

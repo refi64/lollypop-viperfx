@@ -30,7 +30,7 @@ class AlbumsDatabase:
         self.__max_count = 1
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, uri, loved, popularity, rate):
+    def add(self, name, artist_ids, uri, loved, popularity, rate, mtime):
         """
             Add a new album to database
             @param Album name as string
@@ -39,16 +39,17 @@ class AlbumsDatabase:
             @param loved as bool
             @param popularity as int
             @param rate as int
+            @param mtime as int
             @return inserted rowid as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, no_album_artist,\
-                                  uri, loved, popularity, rate, synced)\
-                                  VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                  uri, loved, popularity, rate, mtime, synced)\
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                  (name, artist_ids == [],
-                                  uri, loved, popularity, rate, 0))
+                                  uri, loved, popularity, rate, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -69,42 +70,20 @@ class AlbumsDatabase:
                             "album_artists (album_id, artist_id)"
                             "VALUES (?, ?)", (album_id, artist_id))
 
-    def add_genre(self, album_id, genre_id, mtime):
+    def add_genre(self, album_id, genre_id):
         """
             Add genre to album
             @param album id as int
             @param genre id as int
-            @param mtime as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            # Check if already exists:
-            result = sql.execute("SELECT mtime FROM album_genres\
-                                  WHERE album_id=? AND genre_id=?",
-                                 (album_id, genre_id))
-            v = result.fetchone()
-            if v is not None:
-                sql.execute("UPDATE album_genres\
-                             SET mtime=?\
-                             WHERE album_id=? AND genre_id=?",
-                            (mtime, album_id, genre_id))
-            else:
-                genres = self.get_genre_ids(album_id)
-                if genre_id not in genres:
-                    sql.execute("INSERT INTO\
-                                 album_genres (album_id, genre_id, mtime)\
-                                 VALUES (?, ?, ?)",
-                                (album_id, genre_id, mtime))
-
-    def del_genres(self, album_id):
-        """
-            Delete all genres for album
-            @parma album id as int
-            @warning: commit needed
-        """
-        with SqlCursor(Lp().db) as sql:
-            sql.execute("DELETE FROM album_genres "
-                        "WHERE album_id=?", (album_id,))
+            genres = self.get_genre_ids(album_id)
+            if genre_id not in genres:
+                sql.execute("INSERT INTO\
+                             album_genres (album_id, genre_id)\
+                             VALUES (?, ?)",
+                            (album_id, genre_id))
 
     def set_artist_ids(self, album_id, artist_ids):
         """
@@ -271,34 +250,6 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def get_mtime(self, album_id, genre_ids=[]):
-        """
-            Get modification time, if genre_ids empty, only local albums
-            @param album_id as int
-            @param genre_ids as [int]
-            @return modification time as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            if genre_ids:
-                filters = tuple([album_id] + genre_ids)
-                request = "SELECT mtime FROM album_genres\
-                           WHERE album_id=?"
-                for genre_id in genre_ids:
-                    request += " AND genre_id=?"
-            else:
-                filters = (album_id,)
-                request = "SELECT mtime FROM album_genres AS AG\
-                           WHERE AG.album_id=?\
-                           AND NOT EXISTS (\
-                                SELECT mtime FROM album_genres\
-                                WHERE album_id=AG.album_id\
-                                AND genre_id < 0)"
-            result = sql.execute(request, filters)
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return 0
-
     def get_popularity(self, album_id):
         """
             Get popularity
@@ -349,12 +300,11 @@ class AlbumsDatabase:
                 return v[0]
             return 5
 
-    def get_id(self, album_name, artist_ids, remote):
+    def get_id(self, album_name, artist_ids):
         """
             Get non compilation album id
             @param Album name as string,
             @param artist ids as [int]
-            @param remote as bool
             @return Album id as int
         """
         with SqlCursor(Lp().db) as sql:
@@ -368,18 +318,10 @@ class AlbumsDatabase:
                 for artist_id in artist_ids:
                     request += "OR artist_id=? "
                 request += ")"
-                if remote:
-                    request += " AND synced=%s" % Type.NONE
-                else:
-                    request += " AND synced!=%s" % Type.NONE
             else:
                 request = "SELECT rowid FROM albums\
                            WHERE name=?\
                            AND no_album_artist=1"
-                if remote:
-                    request += " AND synced=%s" % Type.NONE
-                else:
-                    request += " AND synced!=%s" % Type.NONE
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:

@@ -32,7 +32,7 @@ class TracksDatabase:
         pass
 
     def add(self, name, uri, duration, tracknumber, discnumber,
-            discname, album_id, year, popularity, rate, ltime):
+            discname, album_id, year, popularity, rate, ltime, mtime):
         """
             Add a new track to database
             @param name as string
@@ -47,6 +47,7 @@ class TracksDatabase:
             @param popularity as int
             @param rate as int
             @param ltime as int
+            @param mtime as int
             @return inserted rowid as int
             @warning: commit needed
         """
@@ -54,8 +55,8 @@ class TracksDatabase:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
-                year, popularity, rate, ltime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                year, popularity, rate, ltime, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
                                                         name,
                                                         uri,
                                                         duration,
@@ -66,7 +67,8 @@ class TracksDatabase:
                                                         year,
                                                         popularity,
                                                         rate,
-                                                        ltime))
+                                                        ltime,
+                                                        mtime))
             return result.lastrowid
 
     def add_artist(self, track_id, artist_id):
@@ -83,42 +85,20 @@ class TracksDatabase:
                             "track_artists (track_id, artist_id)"
                             "VALUES (?, ?)", (track_id, artist_id))
 
-    def add_genre(self, track_id, genre_id, mtime):
+    def add_genre(self, track_id, genre_id):
         """
             Add genre to track
             @param track id as int
             @param genre id as int
-            @param mtime as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            # Check if already exists:
-            result = sql.execute("SELECT mtime FROM track_genres\
-                                  WHERE track_id=? AND genre_id=?",
-                                 (track_id, genre_id))
-            v = result.fetchone()
-            if v is not None:
-                sql.execute("UPDATE track_genres\
-                             SET mtime=?\
-                             WHERE track_id=? AND genre_id=?",
-                            (mtime, track_id, genre_id))
-            else:
-                genres = self.get_genre_ids(track_id)
-                if genre_id not in genres:
-                    sql.execute("INSERT INTO\
-                                 track_genres (track_id, genre_id, mtime)\
-                                 VALUES (?, ?, ?)",
-                                (track_id, genre_id, mtime))
-
-    def del_genres(self, track_id):
-        """
-            Delete all genres for track
-            @parma album id as int
-            @warning: commit needed
-        """
-        with SqlCursor(Lp().db) as sql:
-            sql.execute("DELETE FROM track_genres "
-                        "WHERE track_id=?", (track_id,))
+            genres = self.get_genre_ids(track_id)
+            if genre_id not in genres:
+                sql.execute("INSERT INTO\
+                             track_genres (track_id, genre_id)\
+                             VALUES (?, ?)",
+                            (track_id, genre_id))
 
     def get_ids(self):
         """
@@ -350,9 +330,8 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             mtimes = {}
-            result = sql.execute("SELECT DISTINCT tracks.uri, TG.mtime\
-                                  FROM tracks, track_genres AS TG\
-                                  WHERE tracks.rowid=TG.track_id")
+            result = sql.execute("SELECT DISTINCT uri, mtime\
+                                  FROM tracks")
             for row in result:
                 mtimes.update((row,))
             return mtimes
@@ -631,43 +610,16 @@ Nous traitons le problème dès que possible (salle très occupée).
             @return modification time as int
         """
         with SqlCursor(Lp().db) as sql:
-            if genre_ids:
-                filters = tuple([track_id] + genre_ids)
-                request = "SELECT mtime FROM track_genres\
-                           WHERE track_id=?"
-                for genre_id in genre_ids:
-                    request += " AND genre_id=?"
-            else:
-                filters = (track_id,)
-                request = "SELECT mtime FROM track_genres AS TG\
-                           WHERE TG.track_id=?\
-                           AND NOT EXISTS (\
-                                SELECT mtime FROM track_genres\
-                                WHERE track_id=TG.track_id\
-                                AND genre_id < 0)"
+            filters = tuple([track_id] + genre_ids)
+            request = "SELECT mtime FROM track_genres\
+                       WHERE track_id=?"
+            for genre_id in genre_ids:
+                request += " AND genre_id=?"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return 0
-
-    def set_mtime(self, track_id, genre_ids, mtime):
-        """
-            Get modification time
-            @param track id  as int
-            @param mtime as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            filters = (mtime, track_id,) + tuple(genre_ids)
-            request = "UPDATE track_genres\
-                       SET mtime=?\
-                       WHERE track_id=?\
-                       AND ("
-            for genre_id in genre_ids:
-                request += "genre_id=? OR "
-            request += "1=0)"
-            sql.execute(request, filters)
-            sql.commit()
 
     def count(self):
         """

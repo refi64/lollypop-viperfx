@@ -45,6 +45,7 @@ class Database:
                                               popularity INT NOT NULL,
                                               rate INT NOT NULL,
                                               loved INT NOT NULL,
+                                              mtime INT NOT NULL,
                                               synced INT NOT NULL)"""
     __create_artists = """CREATE TABLE artists (id INTEGER PRIMARY KEY,
                                                name TEXT NOT NULL,
@@ -56,7 +57,6 @@ class Database:
                                                 artist_id INT NOT NULL)"""
     __create_album_genres = """CREATE TABLE album_genres (
                                                 album_id INT NOT NULL,
-                                                mtime INT NOT NULL,
                                                 genre_id INT NOT NULL)"""
     __create_tracks = """CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
@@ -69,14 +69,14 @@ class Database:
                                               year INT,
                                               popularity INT NOT NULL,
                                               rate INT NOT NULL,
-                                              ltime INT NOT NULL
+                                              ltime INT NOT NULL,
+                                              mtime INT NOT NULL
                                               )"""
     __create_track_artists = """CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
                                                 artist_id INT NOT NULL)"""
     __create_track_genres = """CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
-                                                mtime INT NOT NULL,
                                                 genre_id INT NOT NULL)"""
     __create_album_artists_idx = """CREATE index idx_aa ON album_artists(
                                                 album_id)"""

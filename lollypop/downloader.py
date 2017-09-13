@@ -314,7 +314,8 @@ class Downloader:
                     method = getattr(self, helper)
                     (uri, content) = method(artist)
                     if uri is not None:
-                        (status, data) = helper.load_uri_content_sync(uri,
+                        (status, data) = TaskHelper().load_uri_content_sync(
+                                                                      uri,
                                                                       None)
                         if status:
                             artwork_set = True

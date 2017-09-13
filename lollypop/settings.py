@@ -763,7 +763,7 @@ class SettingsDialog:
             popularity = Lp().tracks.get_popularity(track_id)
             rate = Lp().tracks.get_rate(track_id)
             ltime = Lp().tracks.get_ltime(track_id)
-            mtime = Lp().albums.get_mtime(album_id)
+            mtime = Lp().tracks.get_mtime(track_id)
             duration = Lp().tracks.get_duration(track_id)
             loved = Lp().albums.get_loved(album_id)
             album_popularity = Lp().albums.get_popularity(album_id)

@@ -17,7 +17,6 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
-from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp
 from lollypop.helper_dbus import DBusHelper
 
@@ -137,31 +136,6 @@ class ContextWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def __save_object(self, args):
-        """
-            Save object
-            @param args as []
-        """
-        genre_id = Lp().genres.get_id("Web")
-        if genre_id is None:
-            genre_id = Lp().genres.add("Web")
-            Lp().scanner.emit("genre-updated", genre_id, True)
-        Lp().albums.del_genres(self.__object.id)
-        Lp().albums.add_genre(self.__object.id, genre_id)
-        for track_id in self.__object.track_ids:
-            Lp().tracks.del_genres(track_id)
-            Lp().tracks.add_genre(track_id, genre_id)
-        with SqlCursor(Lp().db) as sql:
-            sql.commit()
-        Lp().scanner.emit("album-updated", self.__object.id, True)
-
-    def __remove_object(self, args):
-        """
-            Remove object
-            @param args as []
-        """
-        self.__object.remove()
-
     def __edit_tags(self, args):
         """
             Run tags editor

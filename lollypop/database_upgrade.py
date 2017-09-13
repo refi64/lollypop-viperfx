@@ -58,6 +58,7 @@ class DatabaseUpgrade:
             20: self.__upgrade_20,
             21: self.__upgrade_21,
             22: self.__upgrade_22,
+            23: self.__upgrade_23,
                          }
 
     """
@@ -482,4 +483,41 @@ class DatabaseUpgrade:
                                    rate,\
                                    ltime FROM backup")
             sql.execute("DROP TABLE backup")
+            sql.commit()
+
+    def __upgrade_23(self):
+        """
+            Restore back mtime in tracks
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("ALTER TABLE tracks ADD mtime INT")
+            sql.execute("ALTER TABLE albums ADD mtime INT")
+
+            sql.execute("UPDATE tracks SET mtime = (\
+                            SELECT mtime FROM track_genres\
+                            WHERE track_genres.track_id=tracks.rowid)")
+
+            sql.execute("UPDATE albums SET mtime = (\
+                            SELECT mtime FROM album_genres\
+                            WHERE album_genres.album_id=albums.rowid)")
+            sql.commit()
+            # Remove mtime from album_genres table
+            sql.execute("CREATE TABLE album_genres2 (\
+                                                album_id INT NOT NULL,\
+                                                genre_id INT NOT NULL)")
+            sql.execute("INSERT INTO album_genres2\
+                            SELECT album_id,\
+                                   genre_id FROM album_genres")
+            sql.execute("DROP TABLE album_genres")
+            sql.execute("ALTER TABLE album_genres2 RENAME TO album_genres")
+
+            # Remove mtime from track_genres table
+            sql.execute("CREATE TABLE track_genres2 (\
+                                                track_id INT NOT NULL,\
+                                                genre_id INT NOT NULL)")
+            sql.execute("INSERT INTO track_genres2\
+                            SELECT track_id,\
+                                   genre_id FROM track_genres")
+            sql.execute("DROP TABLE track_genres")
+            sql.execute("ALTER TABLE track_genres2 RENAME TO track_genres")
             sql.commit()
