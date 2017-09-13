@@ -495,12 +495,6 @@ class Application(Gtk.Application):
         """
         action.set_state(param)
         self.settings.set_value("network-access", param)
-        if self.charts is not None:
-            if param.get_boolean():
-                self.charts.start()
-            else:
-                self.charts.stop()
-        self.window.reload_view()
 
     def __fullscreen(self, action=None, param=None):
         """
