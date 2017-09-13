@@ -90,22 +90,16 @@ class CollectionImporter:
             artists = self.__tag_reader.get_artists(tags)
             album_artists = self.__tag_reader.get_album_artist(tags)
             album_name = self.__tag_reader.get_album_name(tags)
-            genres = self.__tag_reader.get_genres(tags)
             tracknumber = self.__tag_reader.get_tracknumber(tags, name)
-            year = self.__tag_reader.get_original_year(tags)
-            if year is None:
-                year = self.__tag_reader.get_year(tags)
-
             # If no artists tag, use album artist
             if album_artists == "":
                 album_artists = artists
             if album_artists == "":
                 album_artists = _("Unknown")
             extension = f.get_uri().split(".")[-1]
-            dest_dir_uri = "%s/%s/%s/%s" % (music_uri,
-                                            genres,
-                                            album_artists,
-                                            album_name)
+            dest_dir_uri = "%s/%s/%s" % (music_uri,
+                                         album_artists,
+                                         album_name)
             dest_dir = Gio.File.new_for_uri(dest_dir_uri)
             if not dest_dir.query_exists():
                 dest_dir.make_directory_with_parents(None)
