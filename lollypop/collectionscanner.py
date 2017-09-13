@@ -308,8 +308,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): Update track")
         self.update_track(track_id, artist_ids, genre_ids)
         debug("CollectionScanner::add2db(): Update album")
-        self.update_album(album_id, album_artist_ids,
-                          genre_ids, album_mtime, year)
+        self.update_album(album_id, album_artist_ids, genre_ids, year)
         if new_album:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
