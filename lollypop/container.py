@@ -612,6 +612,8 @@ class Container:
                 items = Lp().albums.get_loves()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
                 items = Lp().albums.get_recents()
+            elif genre_ids and genre_ids[0] == Type.NEVER:
+                items = Lp().albums.get_never_listened_to()
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 items = Lp().albums.get_randoms()
             else:
@@ -748,6 +750,7 @@ class Container:
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
+                                 Type.NEVER,
                                  Type.RANDOMS]:
             self.__list_two.hide()
             self.__update_view_albums(selected_ids, [])

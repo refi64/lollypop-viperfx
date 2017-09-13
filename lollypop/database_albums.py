@@ -883,6 +883,20 @@ class AlbumsDatabase:
                                  (album_id,))
             return list(itertools.chain(*result))
 
+    def get_never_listened_to(self):
+        """
+            Return random albums never listened to
+            @return album ids as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT DISTINCT albums.rowid\
+                                  FROM albums, tracks\
+                                  WHERE tracks.ltime=0 AND\
+                                  albums.rowid=tracks.album_id\
+                                  AND albums.popularity < 10\
+                                  ORDER BY random() LIMIT 100")
+            return list(itertools.chain(*result))
+
     def has_loves(self):
         """
             True if db has loved albums

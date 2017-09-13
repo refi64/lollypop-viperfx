@@ -287,6 +287,7 @@ class SelectionList(Gtk.Overlay):
             items.append((Type.LOVED, _("Loved albums")))
         items.append((Type.RECENTS, _("Recently added albums")))
         items.append((Type.RANDOMS, _("Random albums")))
+        items.append((Type.NEVER, _("Never played albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
         if self.__is_artists:
@@ -461,7 +462,7 @@ class SelectionList(Gtk.Overlay):
         elif object_id == Type.LOVED:
             icon = "emblem-favorite-symbolic"
         elif object_id == Type.NEVER:
-            icon = "document-new-symbolic"
+            icon = "audio-speakers-symbolic"
         elif object_id == Type.NOPARTY:
             icon = "emblem-music-symbolic"
         return icon
