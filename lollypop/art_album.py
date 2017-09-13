@@ -270,7 +270,7 @@ class AlbumArt(BaseArt, TagReader):
                 arturi = album.uri + "/" + self.__favorite
             # Save cover to uri
             dst = Gio.File.new_for_uri(arturi)
-            if dst.query_exists():
+            if not save_to_tags or dst.query_exists():
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()

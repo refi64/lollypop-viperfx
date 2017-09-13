@@ -353,11 +353,9 @@ class Downloader:
                     method = getattr(self, helper)
                     data = method(artist, album)
                     if data is not None:
+                        self.__albums_history.append(album_id)
+                        Lp().art.save_album_artwork(data, album_id)
                         break
-                if data is None:
-                    self.__albums_history.append(album_id)
-                    continue
-                Lp().art.save_album_artwork(data, album_id)
         except Exception as e:
             print("Downloader::__cache_albums_art: %s" % e)
         self.__albums_history.append(album_id)
