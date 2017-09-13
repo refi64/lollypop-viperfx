@@ -21,7 +21,6 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
 from pickle import dump
 from gettext import gettext as _
-from threading import Thread
 
 
 try:
@@ -34,7 +33,7 @@ except Exception as e:
     print("$ sudo pip3 install pylast")
     LastFM = None
 
-from lollypop.utils import is_gnome, is_unity, get_network_available
+from lollypop.utils import is_gnome, is_unity
 from lollypop.define import Type, DataPath
 from lollypop.window import Window
 from lollypop.database import Database
@@ -50,8 +49,8 @@ from lollypop.database_tracks import TracksDatabase
 from lollypop.notification import NotificationManager
 from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
+from lollypop.helper_task import TaskHelper
 from lollypop.collectionscanner import CollectionScanner
-from lollypop.lio import Lio
 
 
 class Application(Gtk.Application):
@@ -150,7 +149,7 @@ class Application(Gtk.Application):
         except Exception as e:
             print("Application::init():", e)
 
-        cssProviderFile = Lio.File.new_for_uri(
+        cssProviderFile = Gio.File.new_for_uri(
                 "resource:///org/gnome/Lollypop/application.css")
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
@@ -219,16 +218,6 @@ class Application(Gtk.Application):
             # We add to mainloop as we want to run
             # after player::restore_state() signals
             GLib.idle_add(self.window.toolbar.set_mark)
-            self.charts = None
-            if self.settings.get_value("show-charts"):
-                if GLib.find_program_in_path("youtube-dl") is not None:
-                    from lollypop.charts import Charts
-                    self.charts = Charts()
-                    if get_network_available():
-                        self.charts.start()
-                else:
-                    self.settings.set_value("network-search",
-                                            GLib.Variant("b", False))
             self.__preload_portal()
 
     def quit(self, vacuum=False):
@@ -318,8 +307,6 @@ class Application(Gtk.Application):
         dump(position, open(DataPath + "/position.bin", "wb"))
         self.player.stop_all()
         self.window.stop_all()
-        if self.charts is not None:
-            self.charts.stop()
 
     def __vacuum(self):
         """
@@ -329,7 +316,6 @@ class Application(Gtk.Application):
             self.scanner.stop()
             GLib.idle_add(self.__vacuum)
             return
-        self.db.del_tracks(self.tracks.get_non_persistent())
         try:
             from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:
@@ -497,9 +483,8 @@ class Application(Gtk.Application):
             @param param as GLib.Variant
         """
         if self.window:
-            t = Thread(target=self.art.clean_all_cache)
-            t.daemon = True
-            t.start()
+            helper = TaskHelper()
+            helper.run(self.art.clean_all_cache)
             self.window.update_db()
 
     def __set_network(self, action, param):

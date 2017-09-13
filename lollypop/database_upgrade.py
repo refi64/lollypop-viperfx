@@ -57,6 +57,7 @@ class DatabaseUpgrade:
             19: self.__upgrade_19,
             20: self.__upgrade_20,
             21: self.__upgrade_21,
+            22: self.__upgrade_22,
                          }
 
     """
@@ -405,8 +406,6 @@ class DatabaseUpgrade:
                                    persistent FROM backup")
             sql.execute("DROP TABLE backup")
             sql.commit()
-        # Clean all charts
-        Lp().db.del_tracks(Lp().tracks.get_old_charts_track_ids(mtime*2))
 
     def __upgrade_21(self):
         """
@@ -415,4 +414,72 @@ class DatabaseUpgrade:
         with SqlCursor(Radios()) as sql:
             sql.execute("ALTER TABLE radios ADD rate\
                          INT NOT NULL DEFAULT -1")
+            sql.commit()
+
+    def __upgrade_22(self):
+        """
+            Remove Charts/Web entries
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE persistent=0 OR\
+                                  persistent=2 OR\
+                                  persistent=3")
+            track_ids = list(itertools.chain(*result))
+            Lp().db.del_tracks(track_ids)
+            # Remove persistent from tracks table
+            sql.execute("CREATE TEMPORARY TABLE backup(\
+                                          id INTEGER PRIMARY KEY,\
+                                          name TEXT NOT NULL,\
+                                          uri TEXT NOT NULL,\
+                                          duration INT,\
+                                          tracknumber INT,\
+                                          discnumber INT,\
+                                          discname TEXT,\
+                                          album_id INT NOT NULL,\
+                                          year INT,\
+                                          popularity INT NOT NULL,\
+                                          rate INT NOT NULL,\
+                                          ltime INT NOT NULL)")
+            sql.execute("INSERT INTO backup\
+                            SELECT id,\
+                                   name,\
+                                   uri,\
+                                   duration,\
+                                   tracknumber,\
+                                   discnumber,\
+                                   discname,\
+                                   album_id,\
+                                   year,\
+                                   popularity,\
+                                   rate,\
+                                   ltime FROM tracks")
+            sql.execute("DROP TABLE tracks")
+            sql.execute("CREATE TABLE tracks(\
+                                          id INTEGER PRIMARY KEY,\
+                                          name TEXT NOT NULL,\
+                                          uri TEXT NOT NULL,\
+                                          duration INT,\
+                                          tracknumber INT,\
+                                          discnumber INT,\
+                                          discname TEXT,\
+                                          album_id INT NOT NULL,\
+                                          year INT,\
+                                          popularity INT NOT NULL,\
+                                          rate INT NOT NULL,\
+                                          ltime INT NOT NULL)")
+            sql.execute("INSERT INTO tracks\
+                            SELECT id,\
+                                   name,\
+                                   uri,\
+                                   duration,\
+                                   tracknumber,\
+                                   discnumber,\
+                                   discname,\
+                                   album_id,\
+                                   year,\
+                                   popularity,\
+                                   rate,\
+                                   ltime FROM backup")
+            sql.execute("DROP TABLE backup")
             sql.commit()

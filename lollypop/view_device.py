@@ -18,7 +18,6 @@ import re
 from lollypop.view import View
 from lollypop.define import Lp
 from lollypop.widgets_device import DeviceManagerWidget
-from lollypop.lio import Lio
 
 
 class DeviceLocked(View):
@@ -46,7 +45,7 @@ class DeviceView(View):
             @param uri as str
             @return bool
         """
-        d = Lio.File.new_for_uri(uri+"/Music/lollypop/tracks")
+        d = Gio.File.new_for_uri(uri+"/Music/lollypop/tracks")
         return d.query_exists()
 
     def get_files(uri):
@@ -57,7 +56,7 @@ class DeviceView(View):
         """
         files = []
         try:
-            d = Lio.File.new_for_uri(uri)
+            d = Gio.File.new_for_uri(uri)
             if not d.query_exists():
                 d.make_directory_with_parents()
             infos = d.enumerate_children(
@@ -70,7 +69,7 @@ class DeviceView(View):
                 f = infos.get_child(info)
                 # We look to this folder to select an already synced uri
                 suburi = f.get_uri() + "/Music/unsync"
-                sub = Lio.File.new_for_uri(suburi)
+                sub = Gio.File.new_for_uri(suburi)
                 if sub.query_exists():
                     files.insert(0, info.get_name())
                 else:

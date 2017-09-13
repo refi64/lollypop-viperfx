@@ -104,15 +104,9 @@ class GenresDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT DISTINCT genres.rowid, genres.name\
-                                  FROM genres,album_genres AS AG\
-                                  WHERE AG.genre_id=genres.rowid\
-                                  AND ? NOT IN (\
-                                    SELECT album_genres.genre_id\
-                                    FROM album_genres\
-                                    WHERE AG.album_id=album_genres.album_id)\
+                                  FROM genres\
                                   ORDER BY genres.name\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (Type.CHARTS,))
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             return list(result)
 
     def get_ids(self):
@@ -122,35 +116,10 @@ class GenresDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT DISTINCT genres.rowid\
-                                  FROM genres,album_genres AS AG\
-                                  WHERE AG.genre_id=genres.rowid\
-                                  AND ? NOT IN (\
-                                    SELECT album_genres.genre_id\
-                                    FROM album_genres\
-                                    WHERE AG.album_id=album_genres.album_id)\
+                                  FROM genres\
                                   ORDER BY genres.name\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (Type.CHARTS,))
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
-
-    def get_charts(self, filter=Type.CHARTS):
-        """
-            Get genre for charts
-            @param filter as Type
-            @return [(id as int, name as string)]
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT DISTINCT genres.rowid, genres.name\
-                                  FROM genres,album_genres AS AG\
-                                  WHERE AG.genre_id=genres.rowid\
-                                  AND ? IN (\
-                                    SELECT album_genres.genre_id\
-                                    FROM album_genres\
-                                    WHERE AG.album_id=album_genres.album_id)\
-                                  ORDER BY genres.name\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (filter,))
-            return list(result)
 
     def clean(self, genre_id):
         """

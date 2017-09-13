@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio
 
-from threading import Thread
 from gettext import gettext as _
 
 try:
@@ -22,7 +21,7 @@ except:
 from lollypop.define import Lp
 from lollypop.utils import get_network_available
 from lollypop.cache import InfoCache
-from lollypop.lio import Lio
+from lollypop.helper_task import TaskHelper
 
 
 class InfoContent(Gtk.Stack):
@@ -36,8 +35,8 @@ class InfoContent(Gtk.Stack):
         """
         Gtk.Stack.__init__(self)
         InfoCache.init()
-        self._stop = False
-        self.__cancel = Gio.Cancellable.new()
+        self._helper = TaskHelper()
+        self._cancellable = Gio.Cancellable.new()
         self._artist = ""
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
@@ -65,8 +64,7 @@ class InfoContent(Gtk.Stack):
         """
             Stop loading
         """
-        self._stop = True
-        self.__cancel.cancel()
+        self._cancellable.cancel()
 
     @property
     def artist(self):
@@ -75,32 +73,24 @@ class InfoContent(Gtk.Stack):
         """
         return self._artist
 
-    def set_content(self, prefix, content, image_url, suffix):
+    def set_content(self, prefix, content, image_uri, suffix):
         """
             populate widget with content
             @param prefix as str
             @param content as str
-            @param image url as str
+            @param image uri as str
             @param suffix as str
             @thread safe
         """
-        try:
-            data = None
-            stream = None
-            if content is not None:
-                if image_url is not None:
-                    f = Lio.File.new_for_uri(image_url)
-                    (status, data, tag) = f.load_contents(self.__cancel)
-                    if status:
-                        bytes = GLib.Bytes(data)
-                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        bytes.unref()
-                    else:
-                        data = None
-                InfoCache.add(prefix, content, data, suffix)
-            GLib.idle_add(self.__set_content, content, stream)
-        except Exception as e:
-            print("InfoContent::set_content: %s" % e)
+        if image_uri is None:
+            self.__set_content(content, None)
+        else:
+            self._helper.load_uri_content(image_uri,
+                                          self._cancellable,
+                                          self.__on_uri_content,
+                                          prefix,
+                                          content,
+                                          suffix)
 
 #######################
 # PROTECTED           #
@@ -173,6 +163,24 @@ class InfoContent(Gtk.Stack):
             self.__on_not_found()
         self._spinner.stop()
 
+    def __on_uri_content(self, uri, status, uri_content,
+                         prefix, content, suffix):
+        """
+            Set image
+            @param uri as str
+            @param status as bool
+            @param uri_content as bytes  # The image
+            @param prefix as str
+            @param content as bytes
+            @param suffix as str
+        """
+        if status:
+            bytes = GLib.Bytes(uri_content)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            bytes.unref()
+            InfoCache.add(prefix, content, uri_content, suffix)
+            self.__set_content(content, stream)
+
 
 class WikipediaContent(InfoContent):
     """
@@ -202,12 +210,10 @@ class WikipediaContent(InfoContent):
         if not self._load_cache_content(artist, "wikipedia"):
             GLib.idle_add(self.set_visible_child_name, "spinner")
             self._spinner.start()
-            self.__load_page_content(artist)
+            self._helper.run(self.__load_page_content, artist)
         elif get_network_available():
-            t = Thread(target=self.__setup_menu,
-                       args=(self._artist, self.__album))
-            t.daemon = True
-            t.start()
+            self._helper.run(self.__get_menu, self._artist, self.__album,
+                             callback=(self.__on_get_menu,))
 
     def clear(self):
         """
@@ -225,10 +231,8 @@ class WikipediaContent(InfoContent):
         """
         InfoContent.__on_not_found(self)
         if get_network_available():
-            t = Thread(target=self.__setup_menu,
-                       args=(self._artist, self.__album))
-            t.daemon = True
-            t.start()
+            self._helper.run(self.__get_menu, self._artist, self.__album,
+                             callback=(self.__on_get_menu,))
 
 #######################
 # PRIVATE             #
@@ -242,22 +246,22 @@ class WikipediaContent(InfoContent):
         wp = Wikipedia()
         try:
             (url, content) = wp.get_page_infos(artist)
-        except:
+        except Exception as e:
+            print("WikipediaContent::__load_page_content():", e)
             url = content = None
-        if not self._stop:
+        if not self._cancellable.is_cancelled():
             InfoContent.set_content(self, self._artist, content,
                                     url, "wikipedia")
             if get_network_available():
-                t = Thread(target=self.__setup_menu,
-                           args=(self._artist, self.__album))
-                t.daemon = True
-                t.start()
+                self._helper.run(self.__get_menu, self._artist, self.__album,
+                                 callback=(self.__on_get_menu,))
 
-    def __setup_menu(self, artist, album):
+    def __get_menu(self, artist, album):
         """
             Setup menu for artist
             @param artist as str
             @param album as str
+            @return menu as [str]
         """
         wp = Wikipedia()
         result = wp.search(artist)
@@ -265,9 +269,9 @@ class WikipediaContent(InfoContent):
         cleaned = list(set(result))
         if artist in cleaned:
             cleaned.remove(artist)
-        GLib.idle_add(self.__setup_menu_strings, cleaned)
+        return cleaned
 
-    def __setup_menu_strings(self, strings):
+    def __on_get_menu(self, strings):
         """
             Setup a menu with strings
             @param strings as [str]
@@ -298,9 +302,7 @@ class WikipediaContent(InfoContent):
         InfoContent.clear(self)
         self.set_visible_child_name("spinner")
         self._spinner.start()
-        t = Thread(target=self.__load_page_content, args=(artist,))
-        t.daemon = True
-        t.start()
+        self._helper.run(self.__load_page_content, artist)
 
 
 class LastfmContent(InfoContent):
@@ -322,9 +324,9 @@ class LastfmContent(InfoContent):
         """
         self._artist = artist
         if not self._load_cache_content(artist, "lastfm"):
-            GLib.idle_add(self.set_visible_child_name, "spinner")
+            self.set_visible_child_name("spinner")
             self._spinner.start()
-            self.__load_page_content(artist)
+            self._helper.run(self.__load_page_content, artist)
 
 #######################
 # PRIVATE             #
@@ -336,7 +338,8 @@ class LastfmContent(InfoContent):
         """
         try:
             (url, content) = Lp().lastfm.get_artist_info(artist)
-        except:
+        except Exception as e:
+            print("LastfmContent::__load_page_content():", e)
             url = content = None
-        if not self._stop:
+        if not self._cancellable.is_cancelled():
             InfoContent.set_content(self, artist, content, url, "lastfm")

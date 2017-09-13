@@ -12,13 +12,12 @@
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
-from threading import Thread
 from gettext import gettext as _
 
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import get_network_available
-from lollypop.lio import Lio
+from lollypop.helper_task import TaskHelper
 
 
 class ArtworkSearch(Gtk.Bin):
@@ -37,9 +36,9 @@ class ArtworkSearch(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.connect("unmap", self.__on_self_unmap)
         self.__timeout_id = None
-        self.__loading = False
         self.__album = album
         self.__artist_id = artist_id
+        self.__cancellable = Gio.Cancellable()
         is_compilation = album is not None and\
             album.artist_ids and\
             album.artist_ids[0] == Type.COMPILATIONS
@@ -47,7 +46,7 @@ class ArtworkSearch(Gtk.Bin):
             self.__artist = ""
         else:
             self.__artist = Lp().artists.get_name(artist_id)
-        self.__datas = {}
+        self.__contents = {}
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtworkSearch.ui")
         builder.connect_signals(self)
@@ -101,22 +100,23 @@ class ArtworkSearch(Gtk.Bin):
             uris = Lp().art.get_album_artworks(self.__album)
             for uri in uris:
                 try:
-                    f = Lio.File.new_for_uri(uri)
-                    (status, data, tag) = f.load_contents()
-                    self.__add_pixbuf(data)
+                    f = Gio.File.new_for_uri(uri)
+                    (status, content, tag) = f.load_contents()
+                    self.__add_pixbuf(uri, status, content, print)
                 except Exception as e:
                     print("ArtworkSearch::populate()", e)
         # Then google
-        self.__loading = True
-        t = Thread(target=self.__populate)
-        t.daemon = True
-        t.start()
+        uri = Lp().art.get_google_search_uri(self.__get_current_search())
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                self.__cancellable,
+                                self.__on_google_content_loaded)
 
     def stop(self):
         """
             Stop loading
         """
-        self.__loading = False
+        self.__cancellable.cancel()
 
 #######################
 # PROTECTED           #
@@ -145,7 +145,7 @@ class ArtworkSearch(Gtk.Bin):
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
-                f = Lio.File.new_for_path(dialog.get_filename())
+                f = Gio.File.new_for_path(dialog.get_filename())
                 (status, data, tag) = f.load_contents()
                 if not status:
                     raise
@@ -210,123 +210,106 @@ class ArtworkSearch(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def __get_current_searches(self):
+    def __get_current_search(self):
         """
             Return current searches
-            @return [str]
+            @return str
         """
-        searches = []
         if self._entry.get_text() != "":
-            searches = [self._entry.get_text()]
+            search = self._entry.get_text()
         elif self.__album is not None:
-            searches = ["%s+%s" % (self.__artist, self.__album.name)]
+            search = "%s+%s" % (self.__artist, self.__album.name)
         elif self.__artist_id is not None:
-            for album_id in Lp().artists.get_albums([self.__artist_id]):
-                for genre_id in Lp().albums.get_genre_ids(album_id):
-                    genre = Lp().genres.get_name(genre_id)
-                    searches.append("%s+%s" % (self.__artist, genre))
-            searches.append(self.__artist)
-        return searches
+            search = self.__artist
+        return search
 
-    def __populate(self, current_search=""):
+    def __populate(self, uris):
         """
-            Same as populate
-            @param current search as str
-            @thread safe
+            Add uris to view
+            @param uris as [str]
         """
-        urls = []
-        if get_network_available():
-            for search in self.__get_current_searches():
-                urls += Lp().art.get_google_arts(search)
-            if urls:
-                self.__add_pixbufs(urls, current_search)
-            else:
-                self.__fallback(current_search)
-        else:
-            GLib.idle_add(self._spinner.stop)
-
-    def __add_pixbufs(self, urls, current_search):
-        """
-            Add urls to the view
-            @param urls as [string]
-            @param current search as str
-        """
-        if current_search != self._entry.get_text():
+        if self.__cancellable.is_cancelled():
             return
-        if urls and self.__loading:
-            url = urls.pop(0)
-            try:
-                f = Lio.File.new_for_uri(url)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    GLib.idle_add(self.__add_pixbuf, data)
-            except Exception as e:
-                print("ArtworkSearch::__add_pixbufs: %s" % e)
-            if self.__loading:
-                self.__add_pixbufs(urls, current_search)
+        helper = TaskHelper()
+        # Fallback to link extraction
+        if uris is None:
+            self._label.set_text(_("Low quality, missing API key…"))
+            uri = "https://www.google.fr/search?q=%s&tbm=isch" %\
+                GLib.uri_escape_string(self.__get_current_search(), None, True)
+            helper.load_uri_content(uri,
+                                    self.__cancellable,
+                                    self.__extract_links)
+        # Populate the view
+        elif uris:
+            uri = uris.pop(0)
+            helper.load_uri_content(uri,
+                                    self.__cancellable,
+                                    self.__add_pixbuf,
+                                    self.__populate,
+                                    uris)
+        # Nothing to load, stop
         else:
             self._spinner.stop()
 
-    def __fallback(self, current_search):
+    def __add_pixbuf(self, uri, loaded, content, callback, *args):
         """
-            Fallback google image search, low quality
-            @param current search as str
+            Add uri to the view and load callback
+            @param uri as str
+            @param loaded as bool
+            @param content as bytes
+            @param callback as function
         """
+        if self.__cancellable.is_cancelled():
+            return
+        try:
+            if loaded:
+                bytes = GLib.Bytes(content)
+                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                bytes.unref()
+                if stream is not None:
+                    big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                        stream, ArtSize.BIG,
+                        ArtSize.BIG,
+                        True,
+                        None)
+                    stream.close()
+                image = Gtk.Image()
+                image.get_style_context().add_class("cover-frame")
+                image.set_property("halign", Gtk.Align.CENTER)
+                image.set_property("valign", Gtk.Align.CENTER)
+                self.__contents[image] = content
+                surface = Gdk.cairo_surface_create_from_pixbuf(big,
+                                                               0,
+                                                               None)
+                image.set_from_surface(surface)
+                image.show()
+                self._view.add(image)
+        except Exception as e:
+            print("ArtworkSearch::__add_pixbuf: %s" % e)
+        callback(*args)
+
+    def __extract_links(self, uri, loaded, content):
+        """
+            Extract links from content
+            @param uri as str
+            @param loaded as bool
+            @param content as bytes
+            @param callback as function
+        """
+        uris = []
         try:
             from bs4 import BeautifulSoup
-        except:
-            print("$ sudo pip3 install beautifulsoup4")
-            return
-        urls = []
-        GLib.idle_add(self._label.set_text,
-                      _("Low quality, missing API key…"))
-        try:
-            for search in self.__get_current_searches():
-                url = "https://www.google.fr/search?q=%s&tbm=isch" %\
-                    GLib.uri_escape_string(search, None, True)
-                f = Lio.File.new_for_uri(url)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    html = data.decode("latin-1")
-                    soup = BeautifulSoup(html, "html.parser")
-                    for link in soup.findAll("img"):
-                        try:
-                            urls.append(link.attrs["src"])
-                        except:
-                            pass
+            if loaded:
+                html = content.decode("latin-1")
+                soup = BeautifulSoup(html, "html.parser")
+                for link in soup.findAll("img"):
+                    try:
+                        uris.append(link.attrs["src"])
+                    except:
+                        pass
         except Exception as e:
-            print("ArtworkSearch::__fallback: %s" % e)
-        self.__add_pixbufs(urls, current_search)
-
-    def __add_pixbuf(self, data):
-        """
-            Add pixbuf to the view
-            @param data as bytes
-        """
-        try:
-            bytes = GLib.Bytes(data)
-            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            bytes.unref()
-            if stream is not None:
-                big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                    stream, ArtSize.BIG,
-                    ArtSize.BIG,
-                    True,
-                    None)
-                stream.close()
-            image = Gtk.Image()
-            image.get_style_context().add_class("cover-frame")
-            image.set_property("halign", Gtk.Align.CENTER)
-            image.set_property("valign", Gtk.Align.CENTER)
-            self.__datas[image] = data
-            surface = Gdk.cairo_surface_create_from_pixbuf(big,
-                                                           0,
-                                                           None)
-            image.set_from_surface(surface)
-            image.show()
-            self._view.add(image)
-        except Exception as e:
-            print("ArtworkSearch::_add_pixbuf: %s" % e)
+            print("ArtworkSearch::__extract_links: %s" % e)
+        self.__populate(uris)
 
     def __close_popover(self):
         """
@@ -341,10 +324,21 @@ class ArtworkSearch(Gtk.Bin):
 
     def __on_self_unmap(self, widget):
         """
-            Kill thread
+            Cancel loading
             @param widget as Gtk.Widget
         """
-        self.stop()
+        self.__cancellable.cancel()
+
+    def __on_google_content_loaded(self, uri, loaded, content):
+        """
+            Extract content
+            @param uri as str
+            @param loaded as bool
+            @param content as bytes
+        """
+        if loaded:
+            uris = Lp().art.get_google_artwork(content)
+            self.__populate(uris)
 
     def __on_activate(self, flowbox, child):
         """
@@ -352,7 +346,7 @@ class ArtworkSearch(Gtk.Bin):
             Reset cache and use player object to announce cover change
         """
         try:
-            data = self.__datas[child.get_child()]
+            data = self.__contents[child.get_child()]
             self.__close_popover()
             if self.__album is not None:
                 Lp().art.save_album_artwork(data, self.__album.id)
@@ -374,12 +368,17 @@ class ArtworkSearch(Gtk.Bin):
             Populate widget
             @param string as str
         """
+        self.__cancellable.cancel()
         for child in self._view.get_children():
             child.destroy()
         self._spinner.start()
         self._spinner.show()
         self.__timeout_id = None
         self.__loading = True
-        t = Thread(target=self.__populate, args=(string,))
-        t.daemon = True
-        t.start()
+        self.__cancellable.reset()
+        if get_network_available():
+            uri = Lp().art.get_google_search_uri(string)
+            helper = TaskHelper()
+            helper.load_uri_content(uri,
+                                    self.__cancellable,
+                                    self.__on_google_content_loaded)

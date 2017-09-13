@@ -13,16 +13,14 @@
 from gi.repository import Gst, GstAudio, GstPbutils, GLib
 
 from time import time
-from threading import Thread
 
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import TagReader
 from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.codecs import Codecs
-from lollypop.define import Type, DbPersistent
-from lollypop.utils import debug, get_network_available
-from lollypop.objects import Track
+from lollypop.define import Type
+from lollypop.utils import debug
 
 
 class BinPlayer(BasePlayer):
@@ -252,48 +250,11 @@ class BinPlayer(BasePlayer):
         debug("BinPlayer::_load_track(): %s" % track.uri)
         try:
             self._current_track = track
-            if track.is_web:
-                loaded = self._load_web(track)
-                # If track not loaded, go next
-                if not loaded:
-                    self.set_next()
-                    GLib.timeout_add(500, self.__load,
-                                     self.next_track, init_volume)
-                return False  # Return not loaded as handled by load_web()
-            else:
-                self._playbin.set_property("uri", track.uri)
+            self._playbin.set_property("uri", track.uri)
         except Exception as e:  # Gstreamer error
             print("BinPlayer::_load_track(): ", e)
             return False
         return True
-
-    def _load_web(self, track, play=True):
-        """
-            Load track url and play it
-            @param track as Track
-            @param play as bool
-            @return True if loading
-        """
-        if not get_network_available():
-            # Force widgets to update (spinners)
-            self.emit("current-changed")
-            return False
-        try:
-            from lollypop.web import Web
-            if play:
-                self.emit("loading-changed", True)
-            t = Thread(target=Web.play_track,
-                       args=(track, play, self.__set_gv_uri))
-            t.daemon = True
-            t.start()
-            return True
-        except Exception as e:
-            self._current_track = Track()
-            self.stop()
-            self.emit("current-changed")
-            if Lp().notify is not None:
-                Lp().notify.send(str(e), track.uri)
-            print("PlayerBin::_load_web()", e)
 
     def _scrobble(self, finished, finished_start_time):
         """
@@ -357,21 +318,6 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def __update_current_duration(self, reader, track):
-        """
-            Update current track duration
-            @param reader as TagReader
-            @param track id as int
-        """
-        try:
-            duration = reader.get_info(track.uri).get_duration() / 1000000000
-            if duration != track.duration and duration > 0:
-                Lp().tracks.set_duration(track.id, duration)
-                self._current_track.set_duration(duration)
-                GLib.idle_add(self.emit, "duration-changed", track.id)
-        except:
-            pass
-
     def __load(self, track, init_volume=True):
         """
             Stop current track, load track id and play it
@@ -530,21 +476,10 @@ class BinPlayer(BasePlayer):
         """
         # Some radio streams send message tag every seconds!
         changed = False
-        if self._current_track.persistent == DbPersistent.INTERNAL and\
-            (self._current_track.id >= 0 or
-             self._current_track.duration > 0.0):
+        if self._current_track.id >= 0 or self._current_track.duration > 0.0:
             return
         debug("Player::__on_bus_message_tag(): %s" % self._current_track.uri)
         reader = TagReader()
-
-        # Update duration of non internals
-        if self._current_track.persistent != DbPersistent.INTERNAL:
-            t = Thread(target=self.__update_current_duration,
-                       args=(reader, self._current_track))
-            t.daemon = True
-            t.start()
-            return
-
         tags = message.parse_tag()
         title = reader.get_title(tags, "")
         if title != "" and self._current_track.name != title:

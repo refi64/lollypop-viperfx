@@ -15,8 +15,8 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type, DbPersistent
-from lollypop.utils import noaccents, get_network_available
+from lollypop.define import Lp
+from lollypop.utils import noaccents
 
 
 class TracksDatabase:
@@ -32,8 +32,7 @@ class TracksDatabase:
         pass
 
     def add(self, name, uri, duration, tracknumber, discnumber,
-            discname, album_id, year, popularity, rate, ltime,
-            persistent=DbPersistent.INTERNAL):
+            discname, album_id, year, popularity, rate, ltime):
         """
             Add a new track to database
             @param name as string
@@ -48,7 +47,6 @@ class TracksDatabase:
             @param popularity as int
             @param rate as int
             @param ltime as int
-            @param persistent as int
             @return inserted rowid as int
             @warning: commit needed
         """
@@ -56,8 +54,8 @@ class TracksDatabase:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
-                year, popularity, rate, ltime, persistent) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                year, popularity, rate, ltime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
                                                         name,
                                                         uri,
                                                         duration,
@@ -68,8 +66,7 @@ class TracksDatabase:
                                                         year,
                                                         popularity,
                                                         rate,
-                                                        ltime,
-                                                        persistent))
+                                                        ltime))
             return result.lastrowid
 
     def add_artist(self, track_id, artist_id):
@@ -129,9 +126,7 @@ class TracksDatabase:
             @return track ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE persistent=?",
-                                 (DbPersistent.INTERNAL,))
+            result = sql.execute("SELECT rowid FROM tracks")
             return list(itertools.chain(*result))
 
     def get_ids_for_name(self, name):
@@ -145,40 +140,6 @@ class TracksDatabase:
                                   FROM tracks WHERE name=?\
                                   COLLATE NOCASE COLLATE LOCALIZED",
                                  (name,))
-            return list(itertools.chain(*result))
-
-    def get_charts_ids(self, genre_ids=[]):
-        """
-            Get charts track ids
-            @param genre ids as [int]
-            @return albums ids as [int]
-        """
-        result = []
-        order = " ORDER BY mtime DESC,\
-                 artists.sortname\
-                 COLLATE NOCASE COLLATE LOCALIZED,\
-                 tracks.year,\
-                 tracks.name\
-                 COLLATE NOCASE COLLATE LOCALIZED"
-        with SqlCursor(Lp().db) as sql:
-            filters = tuple([Type.CHARTS] + genre_ids)
-            request = "SELECT DISTINCT tracks.rowid FROM tracks,\
-                       track_genres, artists, track_artists\
-                       WHERE EXISTS (\
-                            SELECT track_genres.track_id\
-                            FROM track_genres\
-                            WHERE tracks.rowid = track_genres.track_id\
-                            AND track_genres.genre_id=?)\
-                       AND artists.rowid=track_artists.artist_id\
-                       AND tracks.rowid=track_artists.track_id\
-                       AND track_genres.track_id=tracks.rowid AND ("
-            for genre_id in genre_ids:
-                request += "track_genres.genre_id=? OR "
-            request += "1=0)"
-            if not get_network_available():
-                request += " AND tracks.persistent=%s" % DbPersistent.NONE
-            request += order
-            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get_id_by_uri(self, uri):
@@ -391,9 +352,7 @@ class TracksDatabase:
             mtimes = {}
             result = sql.execute("SELECT DISTINCT tracks.uri, TG.mtime\
                                   FROM tracks, track_genres AS TG\
-                                  WHERE tracks.rowid=TG.track_id\
-                                  AND tracks.persistent=?",
-                                 (DbPersistent.INTERNAL,))
+                                  WHERE tracks.rowid=TG.track_id")
             for row in result:
                 mtimes.update((row,))
             return mtimes
@@ -405,11 +364,11 @@ class TracksDatabase:
             @return Array of uri as string
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (DbPersistent.INTERNAL,)
+            filters = ()
             for e in exclude:
                 filters += ("%" + e + "%",)
             request = "SELECT uri FROM tracks\
-                       WHERE persistent=?"
+                       WHERE 1=1"
             for e in exclude:
                 request += " AND uri not like ?"
             result = sql.execute(request, filters)
@@ -474,19 +433,16 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid, tracks.name\
-                                 FROM tracks, track_artists,\
-                                 track_genres, album_artists\
+                                 FROM tracks, track_artists, album_artists\
                                  WHERE album_artists.album_id=tracks.album_id\
                                  AND track_artists.artist_id=?\
                                  AND track_artists.track_id=tracks.rowid\
-                                 AND track_genres.track_id=tracks.rowid\
-                                 AND track_genres.genre_id!=?\
                                  AND NOT EXISTS (\
                                   SELECT artist_id\
                                   FROM album_artists\
                                   WHERE artist_id=track_artists.artist_id\
                                   AND album_id=tracks.album_id)",
-                                 (artist_id, Type.CHARTS))
+                                 (artist_id,))
             return list(result)
 
     def get_rated(self, limit=100):
@@ -567,12 +523,9 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
-                                  FROM tracks, track_genres\
+                                  FROM tracks\
                                   WHERE ltime=0\
-                                  AND track_genres.genre_id!=?\
-                                  AND track_genres.track_id=tracks.rowid\
-                                  ORDER BY random() LIMIT 100",
-                                 (Type.CHARTS,))
+                                  ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
     def get_recently_listened_to(self):
@@ -582,12 +535,9 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
-                                  FROM tracks, track_genres\
+                                  FROM tracks\
                                   WHERE ltime!=0\
-                                  AND track_genres.genre_id!=?\
-                                  AND track_genres.track_id=tracks.rowid\
-                                  ORDER BY ltime DESC LIMIT 100",
-                                 (Type.CHARTS,))
+                                  ORDER BY ltime DESC LIMIT 100")
             return list(itertools.chain(*result))
 
     def get_persistent(self, track_id):
@@ -616,17 +566,6 @@ class TracksDatabase:
                          WHERE rowid=?", (persistent, track_id,))
             sql.commit()
 
-    def get_non_persistent(self):
-        """
-            Return non persistent tracks
-            @return track ids as [int]
-        """
-        with SqlCursor(Lp().db) as sql:
-            # First tracks loaded by play on search
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE persistent=0")
-            return list(itertools.chain(*result))
-
     def get_randoms(self):
         """
             Return random tracks
@@ -634,10 +573,8 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
-                                  FROM tracks, track_genres\
-                                  WHERE track_genres.genre_id!=?\
-                                  AND track_genres.track_id=tracks.rowid\
-                                  ORDER BY random() LIMIT 100", (Type.CHARTS,))
+                                  FROM tracks\
+                                  ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
     def set_popularity(self, track_id, popularity, commit=False):
@@ -657,7 +594,9 @@ class TracksDatabase:
                 pass
 
     def get_popularity(self, track_id):
-        """
+        """ème a déjà été remonté en début de semaine et semble ancien.
+Nous traitons le problème dès que possible (salle très occupée).
+
             Get popularity
             @param track id  as int
             @return popularity as int
@@ -712,22 +651,6 @@ class TracksDatabase:
                 return v[0]
             return 0
 
-    def get_old_charts_track_ids(self, time):
-        """
-            Return old tracks from charts
-            @param time as int
-            @return track ids as [int]
-        """
-        with SqlCursor(Lp().db) as sql:
-            # First tracks loaded by play on search
-            result = sql.execute("SELECT tracks.rowid\
-                                  FROM tracks, track_genres\
-                                  WHERE track_genres.track_id=tracks.rowid\
-                                  AND track_genres.genre_id=?\
-                                  AND track_genres.mtime < ?",
-                                 (Type.CHARTS, time))
-            return list(itertools.chain(*result))
-
     def set_mtime(self, track_id, genre_ids, mtime):
         """
             Get modification time
@@ -752,11 +675,7 @@ class TracksDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(1)\
-                                  FROM tracks, track_genres\
-                                  WHERE tracks.rowid = track_genres.track_id\
-                                  AND track_genres.genre_id!=?",
-                                 (Type.CHARTS,))
+            result = sql.execute("SELECT COUNT(1) FROM tracks")
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -782,16 +701,9 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid, tracks.name\
-                                  FROM tracks, track_genres AS TG\
-                                  WHERE noaccents(name) LIKE ?\
-                                  AND tracks.rowid=TG.track_id\
-                                  AND ? NOT IN (\
-                                    SELECT track_genres.genre_id\
-                                    FROM track_genres\
-                                    WHERE TG.track_id=track_genres.track_id)\
-                                  LIMIT 25",
-                                 ("%" + noaccents(searched) + "%",
-                                  Type.CHARTS))
+                                  FROM tracks\
+                                  WHERE noaccents(name) LIKE ? LIMIT 25",
+                                 ("%" + noaccents(searched) + "%",))
             return list(result)
 
     def search_track(self, artist, title):

@@ -12,8 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from threading import Thread
-
+from lollypop.helper_task import TaskHelper
 from lollypop.view import LazyLoadingView
 from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
@@ -72,15 +71,13 @@ class RadiosView(LazyLoadingView):
     def populate(self):
         """
             Populate view with tracks from playlist
-            Thread safe
         """
         Lp().player.set_radios(self.__radios_manager.get())
         if Lp().player.current_track.id == Type.RADIOS:
             Lp().player.set_next()  # We force next update
             Lp().player.set_prev()  # We force prev update
-        t = Thread(target=self.__populate)
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(self.__get_radios, callback=(self.__on_get_radios,))
 
 #######################
 # PROTECTED           #
@@ -124,16 +121,16 @@ class RadiosView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
-    def __populate(self):
+    def __get_radios(self):
         """
-            Populate view with tracks from playlist
-            Thread safe
+            Get radios
+            @return [name]
         """
         radios = []
         # Get radios name
         for (name, url) in self.__radios_manager.get():
             radios.append(name)
-        GLib.idle_add(self.__show_stack, radios)
+        return radios
 
     def __on_radios_changed(self, manager):
         """
@@ -196,17 +193,6 @@ class RadiosView(LazyLoadingView):
             if child.title == name:
                 child.update_cover()
 
-    def __show_stack(self, radios):
-        """
-            Switch empty/radios view based on radios
-            @param [radio names as string]
-        """
-        if radios:
-            self.__stack.set_visible_child(self._scrolled)
-            self.__add_radios(radios, True)
-        else:
-            self.__stack.set_visible_child(self.__empty)
-
     def __add_radios(self, radios, first=False):
         """
             Pop a radio and add it to the view,
@@ -233,3 +219,14 @@ class RadiosView(LazyLoadingView):
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._box)
+
+    def __on_get_radios(self, radios):
+        """
+            Switch empty/radios view based on radios
+            @param [radio names as string]
+        """
+        if radios:
+            self.__stack.set_visible_child(self._scrolled)
+            self.__add_radios(radios, True)
+        else:
+            self.__stack.set_visible_child(self.__empty)

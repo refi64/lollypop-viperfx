@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
-from lollypop.pop_menu import AlbumMenuPopover, AlbumMenu
+from lollypop.pop_menu import AlbumMenu
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
@@ -171,9 +171,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.set_opacity(0)
 
         self._lock_overlay = False
-        if self._album.is_web and self._cover is not None:
-            self._cover.get_style_context().add_class(
-                                                "cover-frame-web")
 
     def update_playing_indicator(self):
         """
@@ -418,21 +415,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         ancestor = self.get_ancestor(Gtk.Popover)
         # Get album real genre ids (not contextual)
-        genre_ids = Lp().albums.get_genre_ids(self._album.id)
-        if genre_ids and genre_ids[0] == Type.CHARTS:
-            popover = AlbumMenuPopover(self._album, None)
-            popover.set_relative_to(widget)
-            popover.set_position(Gtk.PositionType.BOTTOM)
-        elif self._album.is_web:
-            popover = AlbumMenuPopover(self._album,
-                                       AlbumMenu(self._album,
-                                                 ancestor is not None))
-            popover.set_relative_to(widget)
-        else:
-            popover = Gtk.Popover.new_from_model(
-                                            widget,
-                                            AlbumMenu(self._album,
-                                                      ancestor is not None))
+        popover = Gtk.Popover.new_from_model(widget,
+                                             AlbumMenu(self._album,
+                                                       ancestor is not None))
         if ancestor is not None:
             Lp().window.view.show_popover(popover)
         else:
@@ -471,16 +456,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         row.show()
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
-
-    def __show_spinner(self, widget, track_id):
-        """
-            Show spinner for widget
-            @param widget as TracksWidget
-            @param track id as int
-        """
-        track = Track(track_id)
-        if track.is_web:
-            widget.show_spinner(track_id)
 
     def __on_size_allocate(self, widget, allocation):
         """
@@ -605,7 +580,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if not Lp().player.is_party and not\
                     Lp().settings.get_enum("playback") == NextContext.STOP:
                 # If in artist view, reset album list
-                if self._filter_ids and Type.CHARTS not in self._filter_ids:
+                if self._filter_ids:
                     Lp().player.set_albums(track_id,
                                            self._filter_ids,
                                            self._album.genre_ids)
@@ -616,6 +591,5 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             elif Lp().settings.get_enum("playback") == NextContext.STOP:
                 if not Lp().player.has_album(self._album):
                     Lp().player.clear_albums()
-            self.__show_spinner(widget, track_id)
             track = Track(track_id)
             Lp().player.load(track)

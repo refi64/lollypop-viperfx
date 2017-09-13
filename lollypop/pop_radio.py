@@ -12,15 +12,13 @@
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
-from threading import Thread
-
 from gettext import gettext as _
 
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.define import Lp, ArtSize
+from lollypop.helper_task import TaskHelper
 from lollypop.art import Art
-from lollypop.lio import Lio
 
 
 # Show a popover with radio logos from the web
@@ -43,6 +41,7 @@ class RadioPopover(Gtk.Popover):
         self.__radios_manager = radios_manager
         self.__start = 0
         self.__orig_pixbufs = {}
+        self.__cancellable = Gio.Cancellable()
 
         self.__stack = Gtk.Stack()
         self.__stack.set_transition_duration(1000)
@@ -94,116 +93,6 @@ class RadioPopover(Gtk.Popover):
 #######################
 # PROTECTED           #
 #######################
-    def __populate_threaded(self):
-        """
-            Populate view
-        """
-        self._thread = True
-        t = Thread(target=self.__populate)
-        t.daemon = True
-        t.start()
-
-    def __populate(self):
-        """
-            Same as __populate_threaded()
-            @thread safe
-        """
-        self._urls = Lp().art.get_google_arts(self.__name+"+logo+radio")
-        if self._urls:
-            self.__add_pixbufs()
-        else:
-            GLib.idle_add(self.__show_not_found)
-
-    def __add_pixbufs(self):
-        """
-            Add urls to the view
-        """
-        if self._urls:
-            url = self._urls.pop()
-            stream = None
-            try:
-                f = Lio.File.new_for_uri(url)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    bytes = GLib.Bytes(data)
-                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                    bytes.unref()
-            except:
-                if self._thread:
-                    self.__add_pixbufs()
-            if stream:
-                GLib.idle_add(self.__add_pixbuf, stream)
-            if self._thread:
-                self.__add_pixbufs()
-
-    def __show_not_found(self):
-        """
-            Show not found message if view empty
-        """
-        if len(self.__view.get_children()) == 0:
-            self.__stack.set_visible_child_name("notfound")
-
-    def __add_pixbuf(self, stream):
-        """
-            Add stream to the view
-        """
-        try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                stream, ArtSize.MONSTER,
-                ArtSize.MONSTER,
-                True,
-                None)
-            stream.close()
-            image = Gtk.Image()
-            image.get_style_context().add_class("cover-frame")
-            image.set_property("halign", Gtk.Align.CENTER)
-            image.set_property("valign", Gtk.Align.CENTER)
-            self.__orig_pixbufs[image] = pixbuf
-            # Scale preserving aspect ratio
-            width = pixbuf.get_width()
-            height = pixbuf.get_height()
-            if width > height:
-                height = height*ArtSize.BIG*self.get_scale_factor()/width
-                width = ArtSize.BIG*self.get_scale_factor()
-            else:
-                width = width*ArtSize.BIG*self.get_scale_factor()/height
-                height = ArtSize.BIG*self.get_scale_factor()
-            scaled_pixbuf = pixbuf.scale_simple(width,
-                                                height,
-                                                GdkPixbuf.InterpType.BILINEAR)
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                       scaled_pixbuf,
-                                                       self.get_scale_factor(),
-                                                       None)
-            image.set_from_surface(surface)
-            image.show()
-            self.__view.add(image)
-        except Exception as e:
-            print(e)
-            pass
-        if self.__stack.get_visible_child_name() == "spinner":
-            self.__spinner.stop()
-            self.__stack.set_visible_child_name("logo")
-
-    def __on_map(self, widget):
-        """
-            Grab focus/Disable global shortcuts
-            @param widget as Gtk.Widget
-        """
-        GLib.idle_add(self.__name_entry.grab_focus)
-        # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(False)
-
-    def __on_unmap(self, widget):
-        """
-            Enable global shortcuts, destroy
-            @param widget as Gtk.Widget
-        """
-        self._thread = False
-        # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(True)
-        GLib.idle_add(self.destroy)
-
     def _on_btn_add_modify_clicked(self, widget):
         """
             Add/Modify a radio
@@ -222,7 +111,11 @@ class RadioPopover(Gtk.Popover):
                 self.__radios_manager.add(new_name, uri.lstrip().rstrip())
             self.__stack.set_visible_child_name("spinner")
             self.__name = new_name
-            self.__populate_threaded()
+            uri = Lp().art.get_google_search_uri(self.__name + "+logo+radio")
+            helper = TaskHelper()
+            helper.load_uri_content(uri,
+                                    self.__cancellable,
+                                    self.__on_google_content_loaded)
             self.set_size_request(700, 400)
 
     def _on_btn_delete_clicked(self, widget):
@@ -235,7 +128,7 @@ class RadioPopover(Gtk.Popover):
             store = Art._RADIOS_PATH
             self.__radios_manager.delete(self.__name)
             Lp().art.clean_radio_cache(self.__name)
-            f = Lio.File.new_for_path(store + "/%s.png" % self.__name)
+            f = Gio.File.new_for_path(store + "/%s.png" % self.__name)
             if f.query_exists():
                 f.delete()
 
@@ -276,11 +169,108 @@ class RadioPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __populate(self, uris):
+        """
+            Add uris to view
+            @param uris as [str]
+        """
+        if uris:
+            uri = uris.pop(0)
+            helper = TaskHelper()
+            helper.load_uri_content(uri,
+                                    self.__cancellable,
+                                    self.__add_pixbuf,
+                                    self.__populate,
+                                    uris)
+        elif len(self.__view.get_children()) == 0:
+            self.__stack.set_visible_child_name("notfound")
+
+    def __add_pixbuf(self, uri, loaded, content, callback, *args):
+        """
+            Add uri to the view and load callback
+            @param uri as str
+            @param loaded as bool
+            @param content as bytes
+            @param callback as function
+        """
+        if self.__cancellable.is_cancelled():
+            return
+        if loaded:
+            bytes = GLib.Bytes(content)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            bytes.unref()
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                stream, ArtSize.MONSTER,
+                ArtSize.MONSTER,
+                True,
+                None)
+            stream.close()
+            image = Gtk.Image()
+            image.get_style_context().add_class("cover-frame")
+            image.set_property("halign", Gtk.Align.CENTER)
+            image.set_property("valign", Gtk.Align.CENTER)
+            self.__orig_pixbufs[image] = pixbuf
+            # Scale preserving aspect ratio
+            width = pixbuf.get_width()
+            height = pixbuf.get_height()
+            if width > height:
+                height = height*ArtSize.BIG*self.get_scale_factor()/width
+                width = ArtSize.BIG*self.get_scale_factor()
+            else:
+                width = width*ArtSize.BIG*self.get_scale_factor()/height
+                height = ArtSize.BIG*self.get_scale_factor()
+            scaled_pixbuf = pixbuf.scale_simple(width,
+                                                height,
+                                                GdkPixbuf.InterpType.BILINEAR)
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                       scaled_pixbuf,
+                                                       self.get_scale_factor(),
+                                                       None)
+            image.set_from_surface(surface)
+            image.show()
+            self.__view.add(image)
+        # Switch on first image
+        if self.__stack.get_visible_child_name() == "spinner":
+            self.__spinner.stop()
+            self.__stack.set_visible_child_name("logo")
+        callback(*args)
+
+    def __on_map(self, widget):
+        """
+            Grab focus/Disable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        GLib.idle_add(self.__name_entry.grab_focus)
+        # FIXME Not needed with GTK >= 3.18
+        Lp().window.enable_global_shortcuts(False)
+
+    def __on_unmap(self, widget):
+        """
+            Enable global shortcuts, destroy
+            @param widget as Gtk.Widget
+        """
+        self._thread = False
+        # FIXME Not needed with GTK >= 3.18
+        Lp().window.enable_global_shortcuts(True)
+        GLib.idle_add(self.destroy)
+
+    def __on_google_content_loaded(self, uri, loaded, content):
+        """
+            Extract content
+            @param uri as str
+            @param loaded as bool
+            @param content as bytes
+        """
+        if loaded:
+            uris = Lp().art.get_google_artwork(content)
+            self.__populate(uris)
+
     def __on_activate(self, flowbox, child):
         """
             Use pixbuf as cover
             Reset cache and use player object to announce cover change
         """
+        self.__cancellable.cancel()
         pixbuf = self.__orig_pixbufs[child.get_child()]
         Lp().art.save_radio_artwork(pixbuf, self.__name)
         Lp().art.clean_radio_cache(self.__name)

@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from threading import Thread
-
 from lollypop.define import Lp
 from lollypop.utils import get_network_available
 
@@ -53,9 +51,7 @@ class LastfmPopover(Gtk.Popover):
             artists = []
             for artist_id in artist_ids:
                 artists.append(Lp().artists.get_name(artist_id))
-            t = Thread(target=self.__populate, args=(artists,))
-            t.daemon = True
-            t.start()
+            GLib.idle_add(self.__populate, artists)
 
 #######################
 # PRIVATE             #

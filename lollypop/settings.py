@@ -15,13 +15,12 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Pango
 from gettext import gettext as _
 from gettext import ngettext as ngettext
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
 from lollypop.utils import get_network_available
-from lollypop.lio import Lio
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -159,13 +158,6 @@ class SettingsDialog:
                          self.__on_can_set_cover,
                          (switch_artwork_tags, grid_behaviour))
 
-        if GLib.find_program_in_path("youtube-dl") is None or\
-                not Lp().settings.get_value("network-access"):
-            builder.get_object("charts_grid").hide()
-        else:
-            switch_charts = builder.get_object("switch_charts")
-            switch_charts.set_state(Lp().settings.get_value("show-charts"))
-
         switch_genres = builder.get_object("switch_genres")
         switch_genres.set_state(Lp().settings.get_value("show-genres"))
 
@@ -175,12 +167,6 @@ class SettingsDialog:
 
         switch_artwork = builder.get_object("switch_artwork")
         switch_artwork.set_state(Lp().settings.get_value("artist-artwork"))
-
-        switch_spotify = builder.get_object("switch_spotify")
-        switch_spotify.set_state(Lp().settings.get_value("search-spotify"))
-
-        switch_itunes = builder.get_object("switch_itunes")
-        switch_itunes.set_state(Lp().settings.get_value("search-itunes"))
 
         if GLib.find_program_in_path("youtube-dl") is None:
             builder.get_object("yt-dl").show()
@@ -335,32 +321,6 @@ class SettingsDialog:
         Lp().settings.set_value("show-genres",
                                 GLib.Variant("b", state))
 
-    def _update_charts_setting(self, widget, state):
-        """
-            Update show charts setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        if Lp().settings.get_value("network-access"):
-            GLib.idle_add(Lp().window.add_remove_from,
-                          (Type.CHARTS, _("The charts"), ""),
-                          True,
-                          state)
-        if state:
-            if Lp().charts is None:
-                from lollypop.charts import Charts
-                Lp().charts = Charts()
-            if get_network_available():
-                Lp().charts.start()
-            elif Lp().notify is not None:
-                Lp().notify.send(_("The charts"),
-                                 _("Network access disabled"))
-        else:
-            Lp().charts.stop()
-            Lp().scanner.clean_charts()
-        Lp().settings.set_value("show-charts",
-                                GLib.Variant("b", state))
-
     def _update_mix_setting(self, widget, state):
         """
             Update mix setting
@@ -448,22 +408,6 @@ class SettingsDialog:
             @param widget as Gtk.ComboBoxText
         """
         Lp().settings.set_enum("orderby", widget.get_active())
-
-    def _update_spotify_setting(self, widget, state):
-        """
-            Update search on spotify setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        Lp().settings.set_value("search-spotify", GLib.Variant("b", state))
-
-    def _update_itunes_setting(self, widget, state):
-        """
-            Update search on spotify setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        Lp().settings.set_value("search-itunes", GLib.Variant("b", state))
 
     def _update_fm_settings(self, name):
         """
@@ -592,8 +536,6 @@ class SettingsDialog:
             self.__reset_button.get_toplevel().set_deletable(False)
             self.__reset_button.set_sensitive(False)
             self.__infobar.hide()
-            if Lp().charts is not None:
-                Lp().charts.stop()
             self.__reset_database(track_ids, len(track_ids), history)
         except Exception as e:
             print("Application::_on_confirm_button_clicked():", e)
@@ -815,7 +757,7 @@ class SettingsDialog:
         if track_ids:
             track_id = track_ids.pop(0)
             uri = Lp().tracks.get_uri(track_id)
-            f = Lio.File.new_for_uri(uri)
+            f = Gio.File.new_for_uri(uri)
             name = f.get_basename()
             album_id = Lp().tracks.get_album_id(track_id)
             popularity = Lp().tracks.get_popularity(track_id)
@@ -839,8 +781,6 @@ class SettingsDialog:
             Lp().window.show_genres(Lp().settings.get_value("show-genres"))
             Lp().window.update_db()
             self.__progress.get_toplevel().set_deletable(True)
-            if Lp().charts is not None and get_network_available():
-                Lp().charts.start()
 
 
 class ChooserWidget(Gtk.Grid):

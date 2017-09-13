@@ -110,11 +110,8 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
-                       FROM album_artists, albums, album_genres\
-                       WHERE albums.rowid=album_artists.album_id AND\
-                       album_genres.genre_id!=%s AND\
-                       albums.rowid=album_genres.album_id AND\
-                       (1=0 " % Type.CHARTS
+                       FROM album_artists, albums\
+                       WHERE albums.rowid=album_artists.album_id AND(1=0 "
             for artist_id in artist_ids:
                 request += "OR album_artists.artist_id=%s " % artist_id
             request += ") ORDER BY year"
@@ -153,33 +150,21 @@ class ArtistsDatabase:
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid,\
                                   artists.name, artists.sortname\
-                                  FROM artists, albums,\
-                                  album_genres AS AG, album_artists\
+                                  FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  AND AG.album_id=albums.rowid\
-                                  AND ? NOT IN (\
-                                    SELECT album_genres.genre_id\
-                                    FROM album_genres\
-                                    WHERE AG.album_id=album_genres.album_id)\
                                   ORDER BY artists.sortname\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (Type.CHARTS,))
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             else:
-                genres = (Type.CHARTS,) + tuple(genre_ids)
+                genres = tuple(genre_ids)
                 request = "SELECT DISTINCT artists.rowid,\
                            artists.name, artists.sortname\
-                           FROM artists, albums, album_genres AS AG,\
-                           album_artists\
+                           FROM artists, albums, album_genres, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
-                           AND ? NOT IN (\
-                                    SELECT album_genres.genre_id\
-                                    FROM album_genres\
-                                    WHERE AG.album_id=album_genres.album_id)\
                            AND albums.rowid=album_artists.album_id\
-                           AND AG.album_id=albums.rowid AND ("
+                           AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
-                    request += "AG.genre_id=? OR "
+                    request += "album_genres.genre_id=? OR "
                 request += "1=0) ORDER BY artists.sortname\
                             COLLATE NOCASE COLLATE LOCALIZED"
                 result = sql.execute(request, genres)
@@ -216,15 +201,11 @@ class ArtistsDatabase:
                 # Only artist that really have an album
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid\
-                                  FROM artists, albums,\
-                                  album_genres, album_artists\
+                                  FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  AND album_genres.album_id=albums.rowid\
-                                  AND album_genres.genre_id!=?\
                                   ORDER BY artists.sortname\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (Type.CHARTS,))
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             else:
                 genres = tuple(genre_ids)
                 request = "SELECT DISTINCT artists.rowid\
@@ -260,17 +241,11 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT artists.rowid FROM artists, albums,\
-                                  album_genres AS AG, album_artists\
+                                  album_artists\
                                   WHERE noaccents(artists.name) LIKE ?\
                                   AND album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  AND AG.album_id=albums.rowid\
-                                  AND ? NOT IN (\
-                                    SELECT album_genres.genre_id\
-                                    FROM album_genres\
-                                    WHERE AG.album_id=album_genres.album_id)\
-                                  LIMIT 25", ("%" + noaccents(string) + "%",
-                                              Type.CHARTS))
+                                  LIMIT 25", ("%" + noaccents(string) + "%",))
             return list(itertools.chain(*result))
 
     def count(self):
@@ -280,13 +255,9 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT COUNT(DISTINCT artists.rowid)\
-                                  FROM artists, album_artists,\
-                                  album_genres, albums\
+                                  FROM artists, album_artists, albums\
                                   WHERE album_artists.album_id=albums.rowid\
-                                  AND artists.rowid=album_artists.artist_id\
-                                  AND album_genres.album_id=albums.rowid\
-                                  AND album_genres.genre_id!=?",
-                                 (Type.CHARTS,))
+                                  AND artists.rowid=album_artists.artist_id")
             v = result.fetchone()
             if v is not None:
                 return v[0]

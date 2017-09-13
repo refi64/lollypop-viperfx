@@ -11,8 +11,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import random
-from threading import Thread
 
+from lollypop.helper_task import TaskHelper
 from lollypop.define import Shuffle, NextContext, Lp, Type
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
@@ -48,9 +48,8 @@ class ShufflePlayer(BasePlayer):
         # Tracks already played for albums
         self.__already_played_tracks = {}
         # If we have tracks/albums to ignore in party mode, add them
-        t = Thread(target=self.__init_party_blacklist)
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(self.__init_party_blacklist)
         # Reset user playlist
         self._user_playlist = []
         self._user_playlist_ids = []
@@ -61,7 +60,7 @@ class ShufflePlayer(BasePlayer):
             True if history provide a next track
             @return bool
         """
-        return self.__history and self.__history.has_next()
+        return self.__history and self.__history.has_next
 
     @property
     def shuffle_has_prev(self):
@@ -69,7 +68,7 @@ class ShufflePlayer(BasePlayer):
             True if history provide a prev track
             @return bool
         """
-        return self.__history and self.__history.has_prev()
+        return self.__history and self.__history.has_prev
 
     def next(self):
         """
@@ -79,7 +78,7 @@ class ShufflePlayer(BasePlayer):
         track_id = None
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_next:
-                track_id = self.__history.get_next().get_value()
+                track_id = self.__history.next.value
             elif self._albums:
                 track_id = self.__shuffle_next()
             else:
@@ -94,7 +93,7 @@ class ShufflePlayer(BasePlayer):
         track_id = None
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_prev:
-                track_id = self.__history.get_prev().get_value()
+                track_id = self.__history.prev.value
             else:
                 track_id = self._current_track.id
         return Track(track_id)
@@ -209,22 +208,22 @@ class ShufflePlayer(BasePlayer):
         # Add track to shuffle history if needed
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.__history:
-                next = self.__history.get_next()
-                prev = self.__history.get_prev()
+                next = self.__history.next
+                prev = self.__history.prev
                 # Next track
                 if next is not None and\
-                        self._current_track.id == next.get_value():
-                    next = self.__history.get_next()
+                        self._current_track.id == next.value:
+                    next = self.__history.next
                     next.set_prev(self.__history)
                     self.__history = next
                 # Previous track
                 elif prev is not None and\
-                        self._current_track.id == prev.get_value():
-                    prev = self.__history.get_prev()
+                        self._current_track.id == prev.value:
+                    prev = self.__history.prev
                     prev.set_next(self.__history)
                     self.__history = prev
                 # New track
-                elif self.__history.get_value() != self._current_track.id:
+                elif self.__history.value != self._current_track.id:
                     new_list = LinkedList(self._current_track.id,
                                           None,
                                           self.__history)

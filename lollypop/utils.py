@@ -13,12 +13,11 @@
 from gi.repository import Gio, GLib
 
 from gettext import gettext as _
-from threading import Thread
 import unicodedata
 
+from lollypop.helper_task import TaskHelper
 from lollypop.define import Lp, Type, ENCODING
 from lollypop.objects import Track
-from lollypop.lio import Lio
 
 
 def decode_all(bytes):
@@ -178,7 +177,7 @@ def is_readonly(uri):
     """
         Check if uri is readonly
     """
-    f = Lio.File.new_for_uri(uri)
+    f = Gio.File.new_for_uri(uri)
     info = f.query_info("access::can-write",
                         Gio.FileQueryInfoFlags.NONE,
                         None)
@@ -199,7 +198,7 @@ def remove_static_genres(genre_ids):
         Remove static genre ids
         @param genre ids as [int]
     """
-    return [item for item in genre_ids if item >= 0 or item == Type.CHARTS]
+    return [item for item in genre_ids if item >= 0]
 
 
 def set_loved(track_id, loved):
@@ -213,19 +212,15 @@ def set_loved(track_id, loved):
             Lp().playlists.add_tracks(Type.LOVED,
                                       [Track(track_id)])
             if Lp().lastfm is not None:
-                t = Thread(target=_set_loved_on_lastfm, args=(track_id,
-                                                              True))
-                t.daemon = True
-                t.start()
+                helper = TaskHelper()
+                helper.run(_set_loved_on_lastfm, track_id, True)
     else:
         if not loved:
             Lp().playlists.remove_tracks(Type.LOVED,
                                          [Track(track_id)])
             if Lp().lastfm is not None:
-                t = Thread(target=_set_loved_on_lastfm, args=(track_id,
-                                                              False))
-                t.daemon = True
-                t.start()
+                helper = TaskHelper()
+                helper.run(_set_loved_on_lastfm, track_id, False)
 
 
 def _set_loved_on_lastfm(track_id, loved):

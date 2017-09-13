@@ -33,7 +33,6 @@ from pylast import LastFMNetwork, LibreFMNetwork, md5, BadAuthenticationError
 from pylast import SessionKeyGenerator
 from gettext import gettext as _
 from locale import getdefaultlocale
-from threading import Thread
 import re
 
 from lollypop.helper_task import TaskHelper
@@ -88,7 +87,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if self.__goa is not None:
             helper = TaskHelper()
-            helper.run(self.__connect, (full_sync,))
+            helper.run(self.__connect, full_sync)
         elif get_network_available():
             from lollypop.helper_passwords import PasswordsHelper
             helper = PasswordsHelper()
@@ -126,13 +125,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if get_network_available() and\
            self.__is_auth and Secret is not None:
-            t = Thread(target=self.__scrobble,
-                       args=(artist,
-                             album,
-                             title,
-                             timestamp))
-            t.daemon = True
-            t.start()
+            helper = TaskHelper()
+            helper.run(self.__scrobble, artist, album, title, timestamp)
 
     def now_playing(self, artist, album, title, duration):
         """
@@ -144,13 +138,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if get_network_available() and\
            self.__is_auth and Secret is not None:
-            t = Thread(target=self.__now_playing,
-                       args=(artist,
-                             album,
-                             title,
-                             duration))
-            t.daemon = True
-            t.start()
+            helper = TaskHelper()
+            helper.run(self.__now_playing, artist, album, title, duration)
 
     def love(self, artist, title):
         """
@@ -369,4 +358,4 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.__password = password
         if get_network_available():
             helper = TaskHelper()
-            helper.run(self.__connect, (), callback, *args)
+            helper.run(self.__connect, False, callback=(callback, *args))

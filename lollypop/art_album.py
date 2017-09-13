@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
-from threading import Thread
 import re
 
 from lollypop.art_base import BaseArt
@@ -20,8 +19,8 @@ from lollypop.tagreader import TagReader
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import escape, is_readonly
-from lollypop.lio import Lio
 from lollypop.helper_dbus import DBusHelper
+from lollypop.helper_task import TaskHelper
 
 
 class AlbumArt(BaseArt, TagReader):
@@ -53,7 +52,7 @@ class AlbumArt(BaseArt, TagReader):
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            f = Lio.File.new_for_path(cache_path_jpg)
+            f = Gio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 return cache_path_jpg
             else:
@@ -90,7 +89,7 @@ class AlbumArt(BaseArt, TagReader):
                 album.uri + "/" + filename
             ]
             for uri in uris:
-                f = Lio.File.new_for_uri(uri)
+                f = Gio.File.new_for_uri(uri)
                 if f.query_exists():
                     return uri
         except:
@@ -106,7 +105,7 @@ class AlbumArt(BaseArt, TagReader):
         # Folders with many albums, get_album_artwork_uri()
         if Lp().albums.get_uri_count(album.uri) > 1:
             return None
-        f = Lio.File.new_for_uri(album.uri)
+        f = Gio.File.new_for_uri(album.uri)
         infos = f.enumerate_children("standard::name",
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                                      None)
@@ -124,10 +123,8 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
             @return [paths]
         """
-        if album.is_web:
-            return []
         try:
-            f = Lio.File.new_for_uri(album.uri)
+            f = Gio.File.new_for_uri(album.uri)
             infos = f.enumerate_children(
                                      "standard::name",
                                      Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -159,7 +156,7 @@ class AlbumArt(BaseArt, TagReader):
 
         try:
             # Look in cache
-            f = Lio.File.new_for_path(cache_path_jpg)
+            f = Gio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
                                                                 size,
@@ -170,7 +167,7 @@ class AlbumArt(BaseArt, TagReader):
                     uri = self.get_album_artwork_uri(album)
                     data = None
                     if uri is not None:
-                        f = Lio.File.new_for_uri(uri)
+                        f = Gio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
                         ratio = self._respect_ratio(uri)
                         bytes = GLib.Bytes(data)
@@ -196,7 +193,7 @@ class AlbumArt(BaseArt, TagReader):
                     uri = self.get_first_album_artwork(album)
                     # Look in album folder
                     if uri is not None:
-                        f = Lio.File.new_for_uri(uri)
+                        f = Gio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
                         ratio = self._respect_ratio(uri)
                         bytes = GLib.Bytes(data)
@@ -252,15 +249,12 @@ class AlbumArt(BaseArt, TagReader):
         try:
             album = Album(album_id)
             arturi = None
-            save_to_tags = Lp().settings.get_value("save-to-tags") and\
-                not album.is_web
+            save_to_tags = Lp().settings.get_value("save-to-tags")
             uri_count = Lp().albums.get_uri_count(album.uri)
             filename = self.get_album_cache_name(album) + ".jpg"
             if save_to_tags:
-                t = Thread(target=self.__save_artwork_tags,
-                           args=(data, album))
-                t.daemon = True
-                t.start()
+                helper = TaskHelper()
+                helper.run(self.__save_artwork_tags, data, album)
 
             store_path = self._STORE_PATH + "/" + filename
             if album.uri == "" or is_readonly(album.uri):
@@ -269,13 +263,13 @@ class AlbumArt(BaseArt, TagReader):
             elif uri_count > 1:
                 arturi = album.uri + "/" + filename
                 favorite_uri = album.uri + "/" + self.__favorite
-                favorite = Lio.File.new_for_uri(favorite_uri)
+                favorite = Gio.File.new_for_uri(favorite_uri)
                 if favorite.query_exists():
                     favorite.trash()
             else:
                 arturi = album.uri + "/" + self.__favorite
             # Save cover to uri
-            dst = Lio.File.new_for_uri(arturi)
+            dst = Gio.File.new_for_uri(arturi)
             if dst.query_exists():
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
@@ -290,8 +284,8 @@ class AlbumArt(BaseArt, TagReader):
                 pixbuf.savev(store_path, "jpeg", ["quality"],
                              [str(Lp().settings.get_value(
                                                 "cover-quality").get_int32())])
-                dst = Lio.File.new_for_uri(arturi)
-                src = Lio.File.new_for_path(store_path)
+                dst = Gio.File.new_for_uri(arturi)
+                src = Gio.File.new_for_path(store_path)
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
@@ -311,7 +305,7 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
         """
         for uri in self.get_album_artworks(album):
-            f = Lio.File.new_for_uri(uri)
+            f = Gio.File.new_for_uri(uri)
             try:
                 f.trash()
             except:
@@ -327,7 +321,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         cache_name = self.get_album_cache_name(album)
         try:
-            d = Lio.File.new_for_path(self._CACHE_PATH)
+            d = Gio.File.new_for_path(self._CACHE_PATH)
             infos = d.enumerate_children(
                 "standard::name",
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -393,8 +387,6 @@ class AlbumArt(BaseArt, TagReader):
             @param data as bytes
             @param album as Album
         """
-        if album.is_web:
-            return
         # https://bugzilla.gnome.org/show_bug.cgi?id=747431
         bytes = GLib.Bytes(data)
         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
@@ -408,7 +400,7 @@ class AlbumArt(BaseArt, TagReader):
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], [str(Lp().settings.get_value(
                                            "cover-quality").get_int32())])
-        f = Lio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
+        f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)
         if f.query_exists():
             dbus_helper = DBusHelper()

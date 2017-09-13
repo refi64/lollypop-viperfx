@@ -27,16 +27,25 @@ class TaskHelper:
             Init helper
         """
         self.__signals = {}
+        self.__headers = []
 
-    def run(self, command, params=(), callback=None, *args):
+    def add_header(self, name, value):
+        """
+            Add header
+            @param name as str
+            @param value as str
+        """
+        self.__headers.append((name, value))
+
+    def run(self, command, *args, **kwd):
         """
             run command with params and return to callback
             @param command as function
-            @param params as ()
-            @param callback as function
+            @param *args as command arguments
+            @param **kwd as { "callback": (function, *args) }
         """
         thread = Thread(target=self.__run,
-                        args=(command, params, callback, *args))
+                        args=(command, kwd, *args))
         thread.daemon = True
         thread.start()
 
@@ -46,7 +55,7 @@ class TaskHelper:
             @param uri as str
             @param cancellable as Gio.Cancellable
             @param callback as a function
-            @callback (status as bool, content as bytes, args)
+            @callback (uri as str, status as bool, content as bytes, args)
         """
         try:
             session = Soup.Session.new()
@@ -62,22 +71,58 @@ class TaskHelper:
             print("HelperTask::load_uri_content():",  e)
             callback(None, False, b"", *args)
 
+    def load_uri_content_sync(self, uri, cancellable=None):
+            """
+                Load uri
+                @param uri as str
+                @param cancellable as Gio.Cancellable
+                @return (loaded as bool, content as bytes)
+            """
+            try:
+                session = Soup.Session.new()
+                # Post message
+                if self.__headers:
+                    msg = Soup.Message.new("GET", uri)
+                    headers = msg.get_property("request-headers")
+                    for header in self.__headers:
+                        headers.append(header[0],
+                                       header[1])
+                    session.send_message(msg)
+                    body = msg.get_property("response-body")
+                    bytes = body.flatten().get_data()
+                # Get message
+                else:
+                    request = session.request(uri)
+                    stream = request.send(cancellable)
+                    bytes = bytearray(0)
+                    buf = stream.read_bytes(1024, cancellable).get_data()
+                    while buf:
+                        bytes += buf
+                        buf = stream.read_bytes(1024, cancellable).get_data()
+                    stream.close()
+                return (True, bytes)
+            except Exception as e:
+                print("Lio.load_contents():",  e)
+                return (False, b"")
+
 #######################
 # PRIVATE             #
 #######################
-    def __run(self, command, params, callback, *args):
+    def __run(self, command, kwd, *args):
         """
             Pass command result to callback
             @param command as function
-            @param params as ()
-            @param callback as function
+            @param *args as command arguments
+            @param kwd as { "callback": (function, *args) }
         """
         try:
-            result = command(params)
-            if callback:
-                GLib.idle_add(callback, result, *args)
+            result = command(*args)
+            if "callback" in kwd.keys():
+                (callback, *callback_args) = kwd["callback"]
+                if callback is not None:
+                    GLib.idle_add(callback, result, *callback_args)
         except Exception as e:
-            print("TaskHelper::__run():", command, e)
+            print("TaskHelper::__run():", e)
 
     def __on_read_bytes_async(self, stream, result, content,
                               cancellable, callback, uri, *args):

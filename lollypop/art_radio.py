@@ -15,7 +15,6 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 import re
 
 from lollypop.art_base import BaseArt
-from lollypop.lio import Lio
 
 
 class RadioArt(BaseArt):
@@ -32,7 +31,7 @@ class RadioArt(BaseArt):
             Init radio art
         """
         BaseArt.__init__(self)
-        d = Lio.File.new_for_path(self._RADIOS_PATH)
+        d = Gio.File.new_for_path(self._RADIOS_PATH)
         if not d.query_exists():
             try:
                 d.make_directory_with_parents()
@@ -51,7 +50,7 @@ class RadioArt(BaseArt):
             cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            f = Lio.File.new_for_path(cache_path_png)
+            f = Gio.File.new_for_path(cache_path_png)
             if f.query_exists():
                 return cache_path_png
             else:
@@ -81,7 +80,7 @@ class RadioArt(BaseArt):
 
         try:
             # Look in cache
-            f = Lio.File.new_for_path(cache_path_png)
+            f = Gio.File.new_for_path(cache_path_png)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
                                                                 size,
@@ -107,18 +106,17 @@ class RadioArt(BaseArt):
                                          size,
                                          scale)
 
-    def copy_uri_to_cache(self, uri, name, size):
+    def copy_uri_to_cache(self, params):
         """
             Copy uri to cache at size
-            @param uri as string
-            @param name as string
-            @param size as int
+            @param params as (str, str, int)
             @thread safe
         """
+        uri, name, size = params
         filename = self.__get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
-        s = Lio.File.new_for_uri(uri)
-        d = Lio.File.new_for_path(cache_path_png)
+        s = Gio.File.new_for_uri(uri)
+        d = Gio.File.new_for_path(cache_path_png)
         s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         GLib.idle_add(self.emit, "radio-artwork-changed", name)
 
@@ -131,8 +129,8 @@ class RadioArt(BaseArt):
         old = "%s/%s.png" % (self._RADIOS_PATH, old_name)
         new = "%s/%s.png" % (self._RADIOS_PATH, new_name)
         try:
-            src = Lio.File.new_for_path(old)
-            dst = Lio.File.new_for_path(new)
+            src = Gio.File.new_for_path(old)
+            dst = Gio.File.new_for_path(new)
             src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             print("RadioArt::rename_radio(): %s" % e)
@@ -164,7 +162,7 @@ class RadioArt(BaseArt):
         """
         cache_name = self.__get_radio_cache_name(name)
         try:
-            f = Lio.File.new_for_path(self._CACHE_PATH)
+            f = Gio.File.new_for_path(self._CACHE_PATH)
             infos = f.enumerate_children(
                 "standard::name",
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -188,7 +186,7 @@ class RadioArt(BaseArt):
         """
         try:
             name = name.replace("/", "-")
-            f = Lio.File.new_for_path(self._RADIOS_PATH + "/" + name + ".png")
+            f = Gio.File.new_for_path(self._RADIOS_PATH + "/" + name + ".png")
             if f.query_exists():
                 return self._RADIOS_PATH + "/" + name + ".png"
             return None

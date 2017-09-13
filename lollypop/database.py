@@ -20,7 +20,6 @@ from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
 from lollypop.utils import noaccents
-from lollypop.lio import Lio
 
 
 class Database:
@@ -70,8 +69,7 @@ class Database:
                                               year INT,
                                               popularity INT NOT NULL,
                                               rate INT NOT NULL,
-                                              ltime INT NOT NULL,
-                                              persistent INT NOT NULL DEFAULT 1
+                                              ltime INT NOT NULL
                                               )"""
     __create_track_artists = """CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
@@ -93,12 +91,12 @@ class Database:
         """
             Create database tables or manage update if needed
         """
-        f = Lio.File.new_for_path(self.DB_PATH)
+        f = Gio.File.new_for_path(self.DB_PATH)
         if not f.query_exists():
             db_version = Lp().settings.get_value("db-version").get_int32()
             upgrade = DatabaseUpgrade(db_version)
             try:
-                d = Lio.File.new_for_path(self.__LOCAL_PATH)
+                d = Gio.File.new_for_path(self.__LOCAL_PATH)
                 if not d.query_exists():
                     d.make_directory_with_parents()
                 # Create db schema
@@ -127,7 +125,7 @@ class Database:
         """
         db_version = Lp().settings.get_value("db-version").get_int32()
         upgrade = DatabaseUpgrade(db_version)
-        f = Lio.File.new_for_path(self.DB_PATH)
+        f = Gio.File.new_for_path(self.DB_PATH)
         if f.query_exists():
             upgrade.do_db_upgrade()
             Lp().settings.set_value("db-version",

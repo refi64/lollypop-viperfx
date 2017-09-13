@@ -18,7 +18,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -89,42 +89,21 @@ class ContextWidget(Gtk.Grid):
         self.__object = object
         self.__button = button
 
-        if self.__object.is_web:
-            if Type.CHARTS in self.__object.genre_ids:
-                if isinstance(self.__object, Album):
-                    save = HoverWidget("document-save-symbolic",
-                                       self.__save_object)
-                    save.set_tooltip_text(_("Save into collection"))
-                    save.set_margin_end(10)
-                    save.show()
-                    self.add(save)
-            else:
-                trash = HoverWidget("user-trash-symbolic",
-                                    self.__remove_object)
-                if isinstance(self.__object, Album):
-                    trash.set_tooltip_text(_("Remove album"))
-                else:
-                    trash.set_tooltip_text(_("Remove track"))
-                trash.set_margin_end(10)
-                trash.show()
-                self.add(trash)
-        else:
-            # Check portal for tag editor
-            dbus_helper = DBusHelper()
-            dbus_helper.call("CanLaunchTagEditor", None,
-                             self.__on_can_launch_tag_editor, None)
-            self.__edit = HoverWidget("document-properties-symbolic",
-                                      self.__edit_tags)
-            self.__edit.set_tooltip_text(_("Modify information"))
-            self.__edit.set_margin_end(10)
-            self.add(self.__edit)
+        # Check portal for tag editor
+        dbus_helper = DBusHelper()
+        dbus_helper.call("CanLaunchTagEditor", None,
+                         self.__on_can_launch_tag_editor, None)
+        self.__edit = HoverWidget("document-properties-symbolic",
+                                  self.__edit_tags)
+        self.__edit.set_tooltip_text(_("Modify information"))
+        self.__edit.set_margin_end(10)
+        self.add(self.__edit)
 
-        if Type.CHARTS not in self.__object.genre_ids:
-            playlist = HoverWidget("view-list-symbolic",
-                                   self.__show_playlist_manager)
-            playlist.set_tooltip_text(_("Add to playlist"))
-            playlist.show()
-            self.add(playlist)
+        playlist = HoverWidget("view-list-symbolic",
+                               self.__show_playlist_manager)
+        playlist.set_tooltip_text(_("Add to playlist"))
+        playlist.show()
+        self.add(playlist)
 
         if isinstance(self.__object, Album):
             if Lp().player.album_in_queue(self.__object):
@@ -138,45 +117,22 @@ class ContextWidget(Gtk.Grid):
             queue.show()
             self.add(queue)
         else:
-            if self.__object.is_web:
-                web = Gtk.LinkButton(self.__object.uri)
-                icon = Gtk.Image.new_from_icon_name("web-browser-symbolic",
-                                                    Gtk.IconSize.MENU)
-                web.set_image(icon)
-                web.get_style_context().add_class("no-padding")
-                web.set_margin_start(5)
-                web.set_tooltip_text(self.__object.uri)
-                web.show_all()
-                uri = "https://www.youtube.com/results?search_query=%s" %\
-                    (self.__object.artists[0] + " " + self.__object.name,)
-                search = Gtk.LinkButton(uri)
-                icon = Gtk.Image.new_from_icon_name("edit-find-symbolic",
-                                                    Gtk.IconSize.MENU)
-                search.set_image(icon)
-                search.get_style_context().add_class("no-padding")
-                search.set_tooltip_text(uri)
-                search.show_all()
+            rating = RatingWidget(object)
+            rating.set_margin_top(5)
+            rating.set_margin_end(10)
+            rating.set_margin_bottom(5)
+            rating.set_property("halign", Gtk.Align.END)
+            rating.set_property("hexpand", True)
+            rating.show()
 
-                self.add(web)
-                self.add(search)
+            loved = LovedWidget(object)
+            loved.set_margin_end(5)
+            loved.set_margin_top(5)
+            loved.set_margin_bottom(5)
+            loved.show()
 
-            if Type.CHARTS not in self.__object.genre_ids:
-                rating = RatingWidget(object)
-                rating.set_margin_top(5)
-                rating.set_margin_end(10)
-                rating.set_margin_bottom(5)
-                rating.set_property("halign", Gtk.Align.END)
-                rating.set_property("hexpand", True)
-                rating.show()
-
-                loved = LovedWidget(object)
-                loved.set_margin_end(5)
-                loved.set_margin_top(5)
-                loved.set_margin_bottom(5)
-                loved.show()
-
-                self.add(rating)
-                self.add(loved)
+            self.add(rating)
+            self.add(loved)
 
 #######################
 # PRIVATE             #

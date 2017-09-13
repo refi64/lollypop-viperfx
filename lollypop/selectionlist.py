@@ -289,9 +289,6 @@ class SelectionList(Gtk.Overlay):
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
-        if Lp().settings.get_value("show-charts") and\
-                Lp().settings.get_value("network-access"):
-            items.append((Type.CHARTS, _("The charts")))
         if self.__is_artists:
             items.append((Type.ALL, _("All albums")))
         else:
@@ -465,14 +462,6 @@ class SelectionList(Gtk.Overlay):
             icon = "emblem-favorite-symbolic"
         elif object_id == Type.NEVER:
             icon = "document-new-symbolic"
-        elif object_id == Type.CHARTS:
-            icon = "application-rss+xml-symbolic"
-        elif object_id == Type.SPOTIFY:
-            icon = "lollypop-spotify-symbolic"
-        elif object_id == Type.ITUNES:
-            icon = "lollypop-itunes-symbolic"
-        elif object_id == Type.LASTFM:
-            icon = "lollypop-lastfm-symbolic"
         elif object_id == Type.NOPARTY:
             icon = "emblem-music-symbolic"
         return icon

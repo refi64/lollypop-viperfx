@@ -10,11 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext as _
-
 from lollypop.objects import Track
-from lollypop.define import Lp
-from lollypop.utils import get_network_available
 
 
 class QueuePlayer:
@@ -36,14 +32,6 @@ class QueuePlayer:
             @param track id as int
             @param notify as bool
         """
-        track = Track(track_id)
-        if track.is_web and\
-           not get_network_available():
-            if Lp().notify is not None:
-                Lp().notify.send(_("No network available,"
-                                   " can't play this track"),
-                                 track.uri)
-            return
         if track_id in self.__queue:
             self.__queue.remove(track_id)
         self.__queue.append(track_id)
@@ -61,14 +49,6 @@ class QueuePlayer:
             @param track id as int
             @param notify as bool
         """
-        track = Track(track_id)
-        if track.is_web and\
-           not get_network_available():
-            if Lp().notify is not None:
-                Lp().notify.send(_("No network available,"
-                                   " can't play this track"),
-                                 track.uri)
-            return
         if track_id in self.__queue:
             self.__queue.remove(track_id)
         self.__queue.insert(pos, track_id)

@@ -515,25 +515,6 @@ class Container:
                         on_finished=lambda r: setup(*r))
         loader.start()
 
-    def __update_list_charts(self):
-        """
-            Setup list for charts
-            @thread safe
-        """
-        def load():
-            genres = Lp().genres.get_charts()
-            return genres
-
-        def setup(genres):
-            genres.insert(0, (Type.SEPARATOR, ""))
-            genres.insert(0, (Type.ITUNES, "Itunes"))
-            genres.insert(0, (Type.LASTFM, "Last.fm"))
-            genres.insert(0, (Type.SPOTIFY, "Spotify"))
-            self.__list_two.populate(genres)
-            self.__list_two.mark_as_artists(False)
-        loader = Loader(target=load, view=self.__list_two, on_finished=setup)
-        loader.start()
-
     def __update_list_playlists(self, update):
         """
             Setup list for playlists
@@ -633,13 +614,6 @@ class Container:
                 items = Lp().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 items = Lp().albums.get_randoms()
-            elif genre_ids and genre_ids[0] in [Type.SPOTIFY,
-                                                Type.LASTFM]:
-                items = Lp().tracks.get_charts_ids(genre_ids)
-            elif genre_ids and genre_ids[0] == Type.ITUNES:
-                items = Lp().albums.get_charts_ids(genre_ids)
-            elif artist_ids and artist_ids[0] == Type.CHARTS:
-                items = Lp().albums.get_charts_ids(genre_ids)
             else:
                 if is_compilation or\
                         Lp().settings.get_value("show-compilations"):
@@ -648,19 +622,11 @@ class Container:
                     items += Lp().albums.get_ids([], genre_ids)
             return items
 
-        # Spotify albums contains only one tracks, show playlist view
-        if genre_ids and genre_ids[0] in [Type.SPOTIFY,
-                                          Type.LASTFM]:
-            from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(genre_ids)
-            loader = Loader(target=load, view=view)
-            loader.start()
-        else:
-            from lollypop.view_albums import AlbumsView
-            self.__stop_current_view()
-            view = AlbumsView(genre_ids, artist_ids)
-            loader = Loader(target=load, view=view)
-            loader.start()
+        from lollypop.view_albums import AlbumsView
+        self.__stop_current_view()
+        view = AlbumsView(genre_ids, artist_ids)
+        loader = Loader(target=load, view=view)
+        loader.start()
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
@@ -779,10 +745,6 @@ class Container:
             self.__list_two.hide()
             if not self.__list_two.will_be_selected():
                 self.__update_view_device(selected_ids[0])
-        elif selected_ids[0] == Type.CHARTS:
-            self.__list_two.show()
-            self.__update_list_charts()
-            self.__update_view_albums(selected_ids, [])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
@@ -826,8 +788,6 @@ class Container:
             return
         if genre_ids[0] == Type.PLAYLISTS:
             self.__update_view_playlists(selected_ids)
-        elif genre_ids[0] == Type.CHARTS:
-            self.__update_view_albums(selected_ids, [Type.CHARTS])
         elif selected_ids[0] == Type.COMPILATIONS:
             self.__update_view_albums(genre_ids, selected_ids)
         else:
@@ -851,9 +811,6 @@ class Container:
             @param genre id as int
             @param add as bool
         """
-        # Ignore static genres, can happend with Charts
-        if genre_id < 0:
-            return
         if self.__show_genres:
             if add:
                 genre_name = Lp().genres.get_name(genre_id)

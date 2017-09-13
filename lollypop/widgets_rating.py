@@ -162,8 +162,7 @@ class RatingWidget(Gtk.Bin):
         if Lp().settings.get_value("save-to-tags") and\
                 GLib.find_program_in_path("kid3-cli") is not None and\
                 isinstance(self.__object, Track) and\
-                self.__object.id >= 0 and\
-                not self.__object.is_web:
+                self.__object.id >= 0:
             if pop == 0:
                 value = 0
             elif pop == 1:

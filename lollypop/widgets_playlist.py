@@ -12,13 +12,13 @@
 
 from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
-from threading import Thread
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type, WindowSize, Loading
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
+from lollypop.helper_task import TaskHelper
 
 
 class PlaylistsWidget(Gtk.Grid):
@@ -311,16 +311,6 @@ class PlaylistsWidget(Gtk.Grid):
                 prev_album_id = Track(self.__tracks_left[-1]).album.id
         self.__tracks_widget_right.update_headers(prev_album_id)
 
-    def __show_spinner(self, widget, track_id):
-        """
-            Show spinner for widget
-            @param widget as TracksWidget
-            @param track id as int
-        """
-        track = Track(track_id)
-        if track.is_web:
-            widget.show_spinner(track_id)
-
     def __move_track(self, dst, src, up):
         """
             Move track from src to row
@@ -440,9 +430,8 @@ class PlaylistsWidget(Gtk.Grid):
         self.__update_headers()
         self.__tracks_widget_left.update_indexes(1)
         self.__tracks_widget_right.update_indexes(len(self.__tracks_left) + 1)
-        t = Thread(target=update_playlist)
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(update_playlist)
 
     def __on_size_allocate(self, widget, allocation):
         """
@@ -485,7 +474,6 @@ class PlaylistsWidget(Gtk.Grid):
             else:
                 Lp().player.append_to_queue(track_id)
         else:
-            self.__show_spinner(widget, track_id)
             Lp().player.load(Track(track_id))
             if not Lp().player.is_party:
                 Lp().player.populate_user_playlist_by_tracks(
@@ -753,9 +741,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
                 Lp().playlists.add_tracks(playlist_id, tracks)
             else:
                 Lp().playlists.remove_tracks(playlist_id, tracks)
-        t = Thread(target=set, args=(playlist_id, add))
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(set, playlist_id, add)
 
     def __on_playlist_edited(self, widget, path, name):
         """
@@ -863,9 +850,8 @@ class PlaylistEditWidget(Gtk.Bin):
             populate view if needed
         """
         if len(self.__model) == 0:
-            t = Thread(target=self.__append_tracks)
-            t.daemon = True
-            t.start()
+            helper = TaskHelper()
+            helper.run(self.__append_tracks, callback=(self.__append_track,))
 
 #######################
 # PROTECTED           #
@@ -938,10 +924,8 @@ class PlaylistEditWidget(Gtk.Bin):
                     artist_name = ", ".join(track.artists)
                 else:
                     artist_name = ", ".join(track.album.artists)
-                t = Thread(target=Lp().lastfm.unlove,
-                           args=(artist_name, track.name))
-                t.daemon = True
-                t.start()
+                helper = TaskHelper()
+                helper.run(Lp().lastfm.unlove, artist_name, track.name)
             self.__model.remove(iterator)
         Lp().playlists.remove_tracks(self.__playlist_id, tracks)
         self.__infobar.hide()
@@ -961,8 +945,7 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Append tracks
         """
-        track_ids = Lp().playlists.get_track_ids(self.__playlist_id)
-        GLib.idle_add(self.__append_track, track_ids)
+        return Lp().playlists.get_track_ids(self.__playlist_id)
 
     def __append_track(self, track_ids):
         """

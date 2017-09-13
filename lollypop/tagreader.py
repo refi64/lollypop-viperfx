@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstPbutils, GLib
+from gi.repository import Gst, GstPbutils, GLib, Gio
 
 from re import match
 
@@ -18,7 +18,6 @@ from gettext import gettext as _
 
 from lollypop.define import Lp
 from lollypop.utils import format_artist_name, decode_all
-from lollypop.lio import Lio
 
 
 class Discoverer:
@@ -475,7 +474,7 @@ class TagReader(Discoverer):
             @return (album id as int, new as bool)
             @commit needed
         """
-        f = Lio.File.new_for_uri(uri)
+        f = Gio.File.new_for_uri(uri)
         d = f.get_parent()
         if d is not None:
             parent_uri = d.get_uri()

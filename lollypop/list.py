@@ -25,40 +25,12 @@ class LinkedList:
         self.__next = next
         self.__prev = prev
 
-    def has_next(self):
-        """
-            True if list has next
-            @return has next as bool
-        """
-        return self.__next is not None
-
-    def get_next(self):
-        """
-            Return next
-            @return next as LinkedList
-        """
-        return self.__next
-
     def set_next(self, next):
         """
             Set next
             @param next as linked list
         """
         self.__next = next
-
-    def has_prev(self):
-        """
-            True if list has prev
-            @return has next as bool
-        """
-        return self.__prev is not None
-
-    def get_prev(self):
-        """
-            Return prev
-            @return prev as LinkedList
-        """
-        return self.__prev
 
     def set_prev(self, prev):
         """
@@ -67,7 +39,40 @@ class LinkedList:
         """
         self.__prev = prev
 
-    def get_value(self):
+    @property
+    def has_next(self):
+        """
+            True if list has next
+            @return bool
+        """
+        return self.__next is not None
+
+    @property
+    def has_prev(self):
+        """
+            True if list has prev
+            @return bool
+        """
+        return self.__prev is not None
+
+    @property
+    def prev(self):
+        """
+            Return prev
+            @return prev as LinkedList
+        """
+        return self.__prev
+
+    @property
+    def next(self):
+        """
+            Return next
+            @return next as LinkedList
+        """
+        return self.__next
+
+    @property
+    def value(self):
         """
             Get value
             @return value as int

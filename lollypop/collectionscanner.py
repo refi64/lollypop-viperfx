@@ -22,7 +22,6 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.database_history import History
 from lollypop.utils import is_audio, is_pls, debug
-from lollypop.lio import Lio
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -67,14 +66,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__thread.daemon = True
             self.__thread.start()
 
-    def clean_charts(self):
-        """
-            Clean charts in db
-        """
-        self.__thread = Thread(target=self.__clean_charts)
-        self.__thread.daemon = True
-        self.__thread.start()
-
     def is_locked(self):
         """
             Return True if db locked
@@ -90,14 +81,6 @@ class CollectionScanner(GObject.GObject, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def __clean_charts(self):
-        """
-            Clean charts in db
-        """
-        track_ids = Lp().tracks.get_old_charts_track_ids(int(time()))
-        Lp().db.del_tracks(track_ids)
-        self.stop()
-
     def __get_objects_for_uris(self, uris):
         """
             Return all tracks/dirs for uris
@@ -113,7 +96,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             uri = walk_uris.pop(0)
             empty = True
             try:
-                d = Lio.File.new_for_uri(uri)
+                d = Gio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
                     "standard::name,standard::type,standard::is-hidden",
                     Gio.FileQueryInfoFlags.NONE,
@@ -132,7 +115,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     walk_uris.append(child_uri)
                 else:
                     try:
-                        f = Lio.File.new_for_uri(child_uri)
+                        f = Gio.File.new_for_uri(child_uri)
                         if is_pls(f):
                             pass
                         elif is_audio(f):
@@ -203,7 +186,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                         return
                     try:
                         GLib.idle_add(self.__update_progress, i, count)
-                        f = Lio.File.new_for_uri(uri)
+                        f = Gio.File.new_for_uri(uri)
                         info = f.query_info("time::modified",
                                             Gio.FileQueryInfoFlags.NONE,
                                             None)
@@ -255,7 +238,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param mtime as int
             @return track id as int
         """
-        f = Lio.File.new_for_uri(uri)
+        f = Gio.File.new_for_uri(uri)
         debug("CollectionScanner::add2db(): Read tags")
         info = self.get_info(uri)
         tags = info.get_tags()
@@ -341,7 +324,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uri as str
         """
         try:
-            f = Lio.File.new_for_uri(uri)
+            f = Gio.File.new_for_uri(uri)
             name = f.get_basename()
             track_id = Lp().tracks.get_id_by_uri(uri)
             album_id = Lp().tracks.get_album_id(track_id)

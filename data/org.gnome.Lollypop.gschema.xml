@@ -22,10 +22,6 @@
        <value nick="year" value="2"/>
        <value nick="popularity" value="3"/>
     </enum>
-    <enum id="org.gnome.Lollypop.Charts">
-       <value nick="itunes" value="0"/>
-       <value nick="spotify" value="1"/>
-    </enum>
     <schema path="/org/gnome/Lollypop/" id="org.gnome.Lollypop" gettext-domain="lollypop">
         <key type="ai" name="window-size">
             <default>[768, 600]</default>
@@ -50,11 +46,6 @@
         <key type="b" name="network-access">
             <default>false</default>
             <summary>Access network</summary>
-            <description></description>
-        </key>
-        <key type="b" name="network-search">
-            <default>false</default>
-            <summary>Search over network</summary>
             <description></description>
         </key>
         <key type="b" name="save-to-tags">
@@ -177,11 +168,6 @@
             <summary>Show navigation list</summary>
             <description></description>
         </key>
-         <key type="b" name="show-charts">
-            <default>true</default>
-            <summary>Show charts</summary>
-            <description></description>
-        </key>
         <key type="b" name="artist-artwork">
             <default>false</default>
             <summary>Show artist artwork</summary>
@@ -270,16 +256,6 @@
             <summary>Only mix songs in party mode</summary>
             <description></description>
         </key>
-        <key type="b" name="search-itunes">
-            <default>true</default>
-            <summary>Search tracks on Itunes</summary>
-            <description></description>
-        </key>
-        <key type="b" name="search-spotify">
-            <default>true</default>
-            <summary>Search tracks on Spotify</summary>
-            <description></description>
-        </key>
         <key type="i" name="mix-duration">
             <default>3</default>
             <summary>Mix duration</summary>
@@ -308,11 +284,6 @@
         <key enum="org.gnome.Lollypop.OrderBy" name="orderby">
             <default>'artist'</default>
             <summary>Order albums by</summary>
-            <description></description>
-        </key>
-        <key enum="org.gnome.Lollypop.Charts" name="charts">
-            <default>'itunes'</default>
-            <summary>Charts provider</summary>
             <description></description>
         </key>
     </schema>

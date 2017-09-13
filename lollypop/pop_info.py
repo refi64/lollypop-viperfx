@@ -13,8 +13,8 @@
 from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
-from threading import Thread
 
+from lollypop.helper_task import TaskHelper
 from lollypop.define import Lp, OpenLink, Type
 from lollypop.objects import Track
 from lollypop.utils import get_network_available
@@ -164,9 +164,8 @@ class InfoPopover(Gtk.Popover):
             view.set_property("expand", True)
             view.show()
             widget.add(view)
-        t = Thread(target=view.populate, args=(self.__current_track,))
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(view.populate, self.__current_track)
 
     def _on_map_lastfm(self, widget):
         """
@@ -195,9 +194,7 @@ class InfoPopover(Gtk.Popover):
             content = LastfmContent()
             content.show()
             widget.add(content)
-            t = Thread(target=content.populate, args=(artist, ))
-            t.daemon = True
-            t.start()
+            content.populate(artist)
 
     def _on_map_wikipedia(self, widget):
         """
@@ -226,10 +223,7 @@ class InfoPopover(Gtk.Popover):
             content = WikipediaContent()
             content.show()
             widget.add(content)
-            t = Thread(target=content.populate,
-                       args=(artist, self.__current_track.album.name))
-            t.daemon = True
-            t.start()
+            content.populate(artist, self.__current_track.album.name)
 
     def _on_map_lyrics(self, widget):
         """

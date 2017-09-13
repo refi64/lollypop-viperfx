@@ -16,8 +16,8 @@ from gettext import gettext as _
 from random import choice
 
 from lollypop.widgets_album import AlbumWidget
-from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
-from lollypop.define import Lp, ArtSize, Shuffle, Type
+from lollypop.pop_menu import AlbumMenu
+from lollypop.define import Lp, ArtSize, Shuffle
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
@@ -105,9 +105,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._widget.connect("button-press-event", self.__on_button_press)
         self._lock_overlay = False
-        if self._album.is_web:
-            self._cover.get_style_context().add_class(
-                                                "cover-frame-web")
 
     def do_get_preferred_width(self):
         """
@@ -289,18 +286,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param event as Gdk.EventButton
         """
         if event.button != 1:
-            if self._album.genre_ids and\
-                    self._album.genre_ids[0] == Type.CHARTS:
-                popover = AlbumMenuPopover(self._album, None)
-                popover.set_relative_to(self._cover)
-            elif self._album.is_web:
-                popover = AlbumMenuPopover(self._album, AlbumMenu(self._album,
-                                                                  True))
-                popover.set_relative_to(self._cover)
-            else:
-                popover = Gtk.Popover.new_from_model(self._cover,
-                                                     AlbumMenu(self._album,
-                                                               True))
+            popover = Gtk.Popover.new_from_model(self._cover,
+                                                 AlbumMenu(self._album,
+                                                           True))
             popover.set_position(Gtk.PositionType.BOTTOM)
             rect = Gdk.Rectangle()
             rect.x = event.x

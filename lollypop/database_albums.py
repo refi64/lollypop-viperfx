@@ -16,7 +16,6 @@ import itertools
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type, OrderBy
 from lollypop.utils import remove_static_genres, noaccents
-from lollypop.utils import get_network_available
 
 
 class AlbumsDatabase:
@@ -250,17 +249,10 @@ class AlbumsDatabase:
             @param year as str
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (Type.CHARTS, year)
+            filters = (year, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres AS AG\
-                       WHERE ? NOT IN (\
-                            SELECT album_genres.genre_id\
-                            FROM album_genres\
-                            WHERE AG.album_id=album_genres.album_id)\
-                       AND year=?\
-                       AND AG.album_id=albums.rowid"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
+                       FROM albums\
+                       WHERE year=?"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
@@ -530,19 +522,11 @@ class AlbumsDatabase:
             @return array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres as AG\
-                       WHERE ? NOT IN (\
-                            SELECT album_genres.genre_id\
-                            FROM album_genres\
-                            WHERE AG.album_id=album_genres.album_id)\
-                       AND rate>=4\
-                       AND AG.album_id=albums.rowid"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY popularity DESC LIMIT %s" % limit
-            result = sql.execute(request, filters)
+                       FROM albums\
+                       WHERE rate>=4\
+                       ORDER BY popularity DESC LIMIT ?"
+            result = sql.execute(request, (limit,))
             return list(itertools.chain(*result))
 
     def get_populars(self, limit=100):
@@ -552,19 +536,11 @@ class AlbumsDatabase:
             @return array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres as AG\
-                       WHERE ? NOT IN (\
-                            SELECT album_genres.genre_id\
-                            FROM album_genres\
-                            WHERE AG.album_id=album_genres.album_id)\
-                       AND popularity!=0\
-                       AND AG.album_id=albums.rowid"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY popularity DESC LIMIT %s" % limit
-            result = sql.execute(request, filters)
+                       FROM albums\
+                       WHERE popularity!=0\
+                       ORDER BY popularity DESC LIMIT ?"
+            result = sql.execute(request, (limit,))
             return list(itertools.chain(*result))
 
     def get_loves(self):
@@ -573,19 +549,11 @@ class AlbumsDatabase:
             @return array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres as AG\
-                       WHERE ? NOT IN (\
-                            SELECT album_genres.genre_id\
-                            FROM album_genres\
-                            WHERE AG.album_id=album_genres.album_id)\
-                       AND loved=1\
-                       AND AG.album_id=albums.rowid"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY popularity DESC"
-            result = sql.execute(request, filters)
+                       FROM albums\
+                       WHERE loved=1\
+                       ORDER BY popularity DESC"
+            result = sql.execute(request)
             return list(itertools.chain(*result))
 
     def get_recents(self):
@@ -594,18 +562,10 @@ class AlbumsDatabase:
             @return array of albums ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres as AG\
-                       WHERE ? NOT IN (\
-                            SELECT album_genres.genre_id\
-                            FROM album_genres\
-                            WHERE AG.album_id=album_genres.album_id)\
-                       AND AG.album_id=albums.rowid"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY mtime DESC LIMIT 100"
-            result = sql.execute(request, filters)
+                       FROM albums\
+                       ORDER BY mtime DESC LIMIT 100"
+            result = sql.execute(request)
             return list(itertools.chain(*result))
 
     def get_randoms(self):
@@ -615,18 +575,9 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             albums = []
-            filters = (Type.CHARTS, )
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, album_genres as AG\
-                       WHERE ? NOT IN (\
-                            SELECT album_genres.genre_id\
-                            FROM album_genres\
-                            WHERE AG.album_id=album_genres.album_id)\
-                       AND AG.album_id=albums.rowid"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
-            request += " ORDER BY random() LIMIT 100"
-            result = sql.execute(request, filters)
+                       FROM albums ORDER BY random() LIMIT 100"
+            result = sql.execute(request)
             albums = list(itertools.chain(*result))
             self._cached_randoms = list(albums)
             return albums
@@ -838,43 +789,6 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def get_charts_ids(self, genre_ids=[]):
-        """
-            Get charts album ids
-            @param genre ids as [int]
-            @return albums ids as [int]
-        """
-        result = []
-        if genre_ids:
-            order = " ORDER BY mtime DESC,"
-        else:
-            order = " ORDER BY"
-        order += " artists.sortname\
-                   COLLATE NOCASE COLLATE LOCALIZED,\
-                   albums.year,\
-                   albums.name\
-                   COLLATE NOCASE COLLATE LOCALIZED"
-        with SqlCursor(Lp().db) as sql:
-            filters = tuple([Type.CHARTS] + genre_ids)
-            request = "SELECT DISTINCT albums.rowid FROM albums,\
-                       album_genres, artists, album_artists\
-                       WHERE EXISTS (\
-                            SELECT album_genres.album_id\
-                            FROM album_genres\
-                            WHERE albums.rowid = album_genres.album_id\
-                            AND album_genres.genre_id=?)\
-                       AND artists.rowid=album_artists.artist_id\
-                       AND albums.rowid=album_artists.album_id\
-                       AND album_genres.album_id=albums.rowid AND ("
-            for genre_id in genre_ids:
-                request += "album_genres.genre_id=? OR "
-            request += "1=0)"
-            if not get_network_available():
-                request += " AND albums.synced!=%s" % Type.NONE
-            request += order
-            result = sql.execute(request, filters)
-            return list(itertools.chain(*result))
-
     def get_ids(self, artist_ids=[], genre_ids=[]):
         """
             Get albums ids
@@ -906,89 +820,52 @@ class AlbumsDatabase:
             result = []
             # Get albums for all artists
             if not artist_ids and not genre_ids:
-                filters = (Type.CHARTS,)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, artists,\
-                           album_artists, album_genres as AG\
-                           WHERE artists.rowid=album_artists.artist_id\
-                           AND ? NOT IN (\
-                                SELECT album_genres.genre_id\
-                                FROM album_genres\
-                                WHERE AG.album_id=album_genres.album_id)\
-                           AND AG.album_id=albums.rowid\
-                           AND albums.rowid=album_artists.album_id"
-                if not get_network_available():
-                    request += " AND albums.synced!=%s" % Type.NONE
+                           FROM albums, album_artists, artists\
+                           WHERE albums.rowid = album_artists.album_id AND\
+                           artists.rowid = album_artists.artist_id"
                 request += order
-                result = sql.execute(request, filters)
-            # Get albums for genre
+                result = sql.execute(request)
+            # Get albums for genres
             elif not artist_ids:
-                # Only show charts if wanted
-                if Type.CHARTS in genre_ids:
-                    filters = tuple(genre_ids)
-                else:
-                    filters = (Type.CHARTS,) + tuple(genre_ids)
+                filters = tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
-                           album_genres as AG, artists, album_artists\
-                           WHERE artists.rowid=album_artists.artist_id\
-                           AND albums.rowid=album_artists.album_id "
-                if Type.CHARTS not in genre_ids:
-                    request += "AND ? NOT IN (\
-                                  SELECT album_genres.genre_id\
-                                  FROM album_genres\
-                                  WHERE AG.album_id=album_genres.album_id)"
-                request += " AND AG.album_id=albums.rowid AND ( "
+                           album_genres, album_artists, artists\
+                           WHERE albums.rowid = album_artists.album_id AND\
+                           artists.rowid = album_artists.artist_id AND\
+                           album_genres.album_id=albums.rowid AND ( "
                 for genre_id in genre_ids:
-                    request += "AG.genre_id=? OR "
+                    request += "album_genres.genre_id=? OR "
                 request += "1=0)"
-                if not get_network_available():
-                    request += " AND albums.synced!=%s" % Type.NONE
                 request += order
                 result = sql.execute(request, filters)
             # Get albums for artist
             elif not genre_ids:
-                filters = (Type.CHARTS,)
-                filters += tuple(artist_ids)
+                filters = tuple(artist_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, artists,\
-                           album_artists, album_genres as AG\
-                           WHERE artists.rowid=album_artists.artist_id\
-                           AND ? NOT IN (\
-                                SELECT album_genres.genre_id\
-                                FROM album_genres\
-                                WHERE AG.album_id=album_genres.album_id)\
-                           AND AG.album_id=albums.rowid\
-                           AND album_artists.album_id=albums.rowid AND ("
+                           FROM albums, album_artists, artists\
+                           WHERE album_artists.album_id=albums.rowid AND\
+                           artists.rowid = album_artists.artist_id AND ("
                 for artist_id in artist_ids:
-                    request += "album_artists.artist_id=? OR "
+                    request += "artists.rowid=? OR "
                 request += "1=0)"
-                if not get_network_available():
-                    request += " AND albums.synced!=%s" % Type.NONE
                 request += order
                 result = sql.execute(request, filters)
             # Get albums for artist id and genre id
             else:
-                filters = (Type.CHARTS,)
-                filters += tuple(artist_ids)
+                filters = tuple(artist_ids)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres as AG,\
-                           artists, album_artists\
-                           WHERE AG.album_id=albums.rowid\
-                           AND artists.rowid=album_artists.artist_id\
-                           AND ? NOT IN (\
-                                SELECT album_genres.genre_id\
-                                FROM album_genres\
-                                WHERE AG.album_id=album_genres.album_id)\
-                           AND album_artists.album_id=albums.rowid AND ("
+                           FROM albums, album_genres, album_artists, artists\
+                           WHERE album_genres.album_id=albums.rowid AND\
+                           artists.rowid = album_artists.artist_id AND\
+                           album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
-                    request += "album_artists.artist_id=? OR "
+                    request += "artists.rowid=? OR "
                 request += "1=0) AND ("
                 for genre_id in genre_ids:
-                    request += "AG.genre_id=? OR "
+                    request += "album_genres.genre_id=? OR "
                 request += "1=0)"
-                if not get_network_available():
-                    request += " AND albums.synced!=%s" % Type.NONE
                 request += order
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
@@ -1074,9 +951,6 @@ class AlbumsDatabase:
             request = "SELECT albums.rowid\
                        FROM albums\
                        WHERE loved=1"
-            if not get_network_available():
-                request += " AND albums.synced!=?"
-                filters = (Type.NONE, )
             request += " LIMIT 1"
             result = sql.execute(request, filters)
             return list(itertools.chain(*result)) != []
@@ -1090,17 +964,12 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             if limit is None:
-                filters = ("%" + noaccents(string) + "%", Type.CHARTS)
+                filters = ("%" + noaccents(string) + "%")
             else:
-                filters = ("%" + noaccents(string) + "%", Type.CHARTS, limit)
+                filters = ("%" + noaccents(string) + "%", limit)
             request = ("SELECT albums.rowid\
-                       FROM albums, album_genres AS AG\
-                       WHERE noaccents(name) LIKE ?\
-                       AND ? NOT IN (\
-                                SELECT album_genres.genre_id\
-                                FROM album_genres\
-                                WHERE AG.album_id=album_genres.album_id)\
-                       AND AG.album_id=albums.rowid")
+                       FROM albums\
+                       WHERE noaccents(name) LIKE ?")
             if limit is not None:
                 request += " LIMIT ?"
             result = sql.execute(request, filters)
@@ -1133,11 +1002,7 @@ class AlbumsDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(1)\
-                                  FROM albums, album_genres\
-                                  WHERE album_genres.genre_id!=?\
-                                  AND album_genres.album_id=albums.rowid",
-                                 (Type.CHARTS,))
+            result = sql.execute("SELECT COUNT(1) FROM albums")
             v = result.fetchone()
             if v is not None:
                 return v[0]

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib, Gst
+from gi.repository import Gst
 
 from pickle import load
 from random import choice
@@ -109,13 +109,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             RadioPlayer.load(self, track)
         else:
             if play:
-                if track.is_web and\
-                        not Gio.NetworkMonitor.get_default(
-                                                     ).get_network_available():
-                    self._current_track = track
-                    self.set_next()
-                    GLib.idle_add(self.next)
-                    return
                 # Do not update next if user clicked on a track
                 if self.is_party and track != self._next_track:
                     self.__do_not_update_next = True
@@ -313,9 +306,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
             self._albums = Lp().albums.get_compilation_ids()
-        # We are in charts view with a genre
-        elif artist_ids and artist_ids[0] == Type.CHARTS:
-            self._albums = Lp().albums.get_charts_ids(genre_ids)
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
@@ -518,8 +508,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # Get a linear track then
             if next_track.id is None:
                 next_track = LinearPlayer.next(self)
-            if next_track.is_web:
-                self._load_web(next_track, False)
             self._next_track = next_track
             self.emit("next-changed")
         except Exception as e:

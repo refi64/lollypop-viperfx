@@ -12,15 +12,20 @@
 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk, Pango
 
-from threading import Thread
 from gettext import gettext as _
 
 from lollypop.radios import Radios
-from lollypop.tunein import TuneIn
 from lollypop.define import Lp, ArtSize, WindowSize
 from lollypop.art import Art
 from lollypop.utils import get_network_available
-from lollypop.lio import Lio
+from lollypop.list import LinkedList
+from lollypop.helper_task import TaskHelper
+
+
+class TuneItem:
+    TEXT = ""
+    URL = ""
+    LOGO = ""
 
 
 class TuneinPopover(Gtk.Popover):
@@ -34,14 +39,13 @@ class TuneinPopover(Gtk.Popover):
             @param radios_manager as Radios
         """
         Gtk.Popover.__init__(self)
-        self.__tunein = TuneIn()
+        self.__cancellable = Gio.Cancellable()
         if radios_manager is not None:
             self.__radios_manager = radios_manager
         else:
             self.__radios_manager = Radios()
-        self.__current_url = None
         self.__timeout_id = None
-        self.__previous_urls = []
+        self.__history = None
         self.__covers_to_download = []
 
         self.__stack = Gtk.Stack()
@@ -78,23 +82,25 @@ class TuneinPopover(Gtk.Popover):
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
 
-    def populate(self, url=None):
+    def populate(self, uri="http://opml.radiotime.com/Browse.ashx?c="):
         """
             Populate views
-            @param url as string
+            @param uri as str
         """
-        if url is None and self.__current_url is not None:
+        if not get_network_available():
+            self.__show_not_found(_("Can't connect to TuneIn…"))
             return
         self.__spinner.start()
         self.__clear()
         self.__stack.set_visible_child_name("spinner")
-        self.__current_url = url
         self.__back_btn.set_sensitive(False)
         self.__home_btn.set_sensitive(False)
         self.__label.set_text(_("Please wait…"))
-        t = Thread(target=self.__populate, args=(url,))
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                self.__cancellable,
+                                self.__on_uri_content)
+        self.__cancellable.reset()
 
 #######################
 # PROTECTED           #
@@ -104,22 +110,22 @@ class TuneinPopover(Gtk.Popover):
             Go to previous URL
             @param btn as Gtk.Button
         """
-        url = None
-        self.__current_url = None
-        if self.__previous_urls:
-            url = self.__previous_urls.pop()
+        if self.__history.prev is None:
+            return
+        self.__history = self.__history.prev
         self.__stack.set_visible_child_name("spinner")
         self.__spinner.start()
         self.__clear()
-        self.populate(url)
+        self.populate(self.__history.value)
+        if self.__history.prev is None:
+            self.__back_btn.set_sensitive(False)
 
     def _on_home_btn_clicked(self, btn):
         """
             Go to root URL
             @param btn as Gtk.Button
         """
-        self.__current_url = None
-        self.__previous_urls = []
+        self.__history = None
         self.populate()
 
     def _on_search_changed(self, widget):
@@ -128,7 +134,7 @@ class TuneinPopover(Gtk.Popover):
             after timeout
             @param widget as Gtk.TextEntry
         """
-        self.__current_url = None
+        self.__history = None
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
@@ -140,10 +146,8 @@ class TuneinPopover(Gtk.Popover):
                                                  self.__on_search_timeout,
                                                  text)
         else:
-            self.__home_btn.set_sensitive(False)
-            self.__timeout_id = GLib.timeout_add(1000,
-                                                 self._on_home_btn_clicked,
-                                                 None)
+            self.__history = None
+            self.populate()
 
 #######################
 # PRIVATE             #
@@ -158,142 +162,80 @@ class TuneinPopover(Gtk.Popover):
         self.__stack.set_visible_child_name("notfound")
         self.__home_btn.set_sensitive(True)
 
-    def __populate(self, url):
-        """
-            Same as populate()
-            @param url as string
-            @thread safe
-        """
-        try:
-            if url is None:
-                items = self.__tunein.get_items(
-                                    "http://opml.radiotime.com/Browse.ashx?c=")
-            else:
-                items = self.__tunein.get_items(url)
-
-            if self.__current_url == url:
-                if items:
-                    self.__add_items(items, url)
-                else:
-                    GLib.idle_add(self.__show_not_found)
-        except:
-            GLib.idle_add(self.__show_not_found,
-                          _("Can't connect to TuneIn…"))
-
-    def __add_items(self, items, url):
+    def __add_items(self, items):
         """
             Add current items
             @param items as [TuneItem]
-            @parma url as str
             @thread safe
         """
-        GLib.idle_add(self.__add_item, items, url)
+        GLib.idle_add(self.__add_item, items)
 
-    def __add_item(self, items, url):
+    def __add_item(self, items):
         """
             Add item
             @param items as [TuneItem]
-            @param url as str
         """
-        if url != self.__current_url:
+        if items:
+            item = items.pop(0)
+            child = Gtk.Grid()
+            child.set_column_spacing(5)
+            child.set_property("halign", Gtk.Align.START)
+            child.show()
+            link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
+            # Hack
+            link.get_children()[0].set_ellipsize(Pango.EllipsizeMode.END)
+            link.connect("activate-link", self.__on_activate_link, item)
+            link.show()
+            if item.TYPE == "audio":
+                link.set_tooltip_text(_("Play"))
+                button = Gtk.Button.new_from_icon_name("list-add-symbolic",
+                                                       Gtk.IconSize.MENU)
+                button.connect("clicked", self.__on_button_clicked, item)
+                button.set_relief(Gtk.ReliefStyle.NONE)
+                button.set_property("valign", Gtk.Align.CENTER)
+                # Translators: radio context
+                button.set_tooltip_text(_("Add"))
+                button.show()
+                child.add(button)
+                image = Gtk.Image.new()
+                image.set_property("width-request", ArtSize.MEDIUM)
+                image.set_property("height-request", ArtSize.MEDIUM)
+                image.show()
+                child.add(image)
+                self.__covers_to_download.append((item, image))
+            else:
+                link.set_tooltip_text("")
+            child.add(link)
+            self.__view.add(child)
+            if not self.__cancellable.is_cancelled():
+                GLib.idle_add(self.__add_items, items)
+        else:  # Download images
+            self.__home_btn.set_sensitive(self.__history is not None)
+            self.__download_images()
             return
-        if not items:
-            self.__home_btn.set_sensitive(self.__current_url is not None)
-            t = Thread(target=self.__download_images, args=(url,))
-            t.daemon = True
-            t.start()
-            return
-        item = items.pop(0)
-        child = Gtk.Grid()
-        child.set_column_spacing(5)
-        child.set_property("halign", Gtk.Align.START)
-        child.show()
-        link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
-        # Hack
-        link.get_children()[0].set_ellipsize(Pango.EllipsizeMode.END)
-        link.connect("activate-link", self.__on_activate_link, item)
-        link.show()
-        if item.TYPE == "audio":
-            link.set_tooltip_text(_("Play"))
-            button = Gtk.Button.new_from_icon_name("list-add-symbolic",
-                                                   Gtk.IconSize.MENU)
-            button.connect("clicked", self.__on_button_clicked, item)
-            button.set_relief(Gtk.ReliefStyle.NONE)
-            button.set_property("valign", Gtk.Align.CENTER)
-            # Translators: radio context
-            button.set_tooltip_text(_("Add"))
-            button.show()
-            child.add(button)
-            image = Gtk.Image.new()
-            image.set_property("width-request", ArtSize.MEDIUM)
-            image.set_property("height-request", ArtSize.MEDIUM)
-            image.show()
-            child.add(image)
-            self.__covers_to_download.append((item, image))
-        else:
-            link.set_tooltip_text("")
-        child.add(link)
-
-        self.__view.add(child)
-
         # Remove spinner if exist
         if self.__stack.get_visible_child_name() == "spinner":
             self.__stack.set_visible_child_name("scrolled")
             self.__spinner.stop()
             self.__label.set_text("")
-            if self.__current_url is not None:
-                self.__back_btn.set_sensitive(True)
-        GLib.idle_add(self.__add_items, items, url)
+            self.__home_btn.set_sensitive(self.__history is not None)
 
-    def __download_images(self, url):
+    def __download_images(self):
         """
             Download and set image for TuneItem
-            @param url as str
             @thread safe
         """
-        while self.__covers_to_download and url == self.__current_url:
+        if self.__covers_to_download and not self.__cancellable.is_cancelled():
             (item, image) = self.__covers_to_download.pop(0)
-            try:
-                f = Lio.File.new_for_uri(item.LOGO)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    bytes = GLib.Bytes(data)
-                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                    bytes.unref()
-                    if stream is not None:
-                        GLib.idle_add(self.__set_image, image, stream)
-            except Exception as e:
-                GLib.idle_add(image.set_from_icon_name,
-                              "image-missing",
-                              Gtk.IconSize.LARGE_TOOLBAR)
-                print("TuneinPopover::_download_images: %s" % e)
-
-    def __set_image(self, image, stream):
-        """
-            Set image with stream
-            @param image as Gtk.Image
-            @param stream as Gio.MemoryInputStream
-        """
-        try:
-            # Strange issue #969, stream is None
-            # But there is a check in __download_images()
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               ArtSize.MEDIUM,
-                                                               ArtSize.MEDIUM,
-                                                               True,
-                                                               None)
-            stream.close()
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
-                                                           0,
-                                                           None)
-            image.set_from_surface(surface)
-        except Exception as e:
-            print("TuneinPopover::__set_image():", e)
+            helper = TaskHelper()
+            helper.load_uri_content(item.LOGO, self.__cancellable,
+                                    self.__on_image_downloaded, image)
 
     def __clear(self):
         """
             Clear view
         """
+        self.__cancellable.cancel()
         for child in self.__view.get_children():
             self.__view.remove(child)
             child.destroy()
@@ -306,22 +248,16 @@ class TuneinPopover(Gtk.Popover):
         # Get cover art
         try:
             cache = Art._RADIOS_PATH
-            s = Lio.File.new_for_uri(item.LOGO)
-            d = Lio.File.new_for_path(cache+"/%s.png" %
-                                      item.TEXT.replace("/", "-"))
+            s = Gio.File.new_for_uri(item.LOGO)
+            d = Gio.File.new_for_path("%s/%s.png" %
+                                      (cache, item.TEXT.replace("/", "-")))
             s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        url = item.URL
-        # Tune in embbed uri in ashx files, so get content if possible
-        try:
-            f = Lio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents()
-            if status:
-                url = data.decode("utf-8").split("\n")[0]
-        except Exception as e:
-            print("TuneinPopover::_add_radio: %s" % e)
-        self.__radios_manager.add(item.TEXT.replace("/", "-"), url)
+        # Tunein in embbed uri in ashx files, so get content if possible
+        helper = TaskHelper()
+        helper.load_uri_content(item.URL, self.__cancellable,
+                                self.__on_item_content, item.TEXT)
 
     def __on_map(self, widget):
         """
@@ -338,43 +274,111 @@ class TuneinPopover(Gtk.Popover):
             Enable global shortcuts
             @param widget as Gtk.Widget
         """
+        self.__cancellable.cancel()
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shortcuts(True)
 
+    def __on_item_content(self, uri, status, content, name):
+        """
+            Add radio to manager
+            @param uri as str
+            @param status as bool
+            @param content as bytes
+            @param name as str
+        """
+        if status:
+            uri = content.decode("utf-8").split("\n")[0]
+        self.__radios_manager.add(name.replace("/", "-"), uri)
+
+    def __on_image_downloaded(self, uri, status, content, image):
+        """
+            Set downloaded image
+            @param uri as str
+            @param status as bool
+            @param content as bytes
+            @param image as Gtk.Image
+        """
+        if status:
+            bytes = GLib.Bytes(content)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            bytes.unref()
+            if stream is not None:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                       stream,
+                                                       ArtSize.MEDIUM,
+                                                       ArtSize.MEDIUM,
+                                                       True,
+                                                       None)
+                stream.close()
+                surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
+                                                               0,
+                                                               None)
+                image.set_from_surface(surface)
+        self.__download_images()
+
     def __on_activate_link(self, link, item):
         """
-            Update header with new link
+            Open new uri or just play stream
             @param link as Gtk.LinkButton
             @param item as TuneIn Item
         """
         if item.TYPE == "link":
             self.__scrolled.get_vadjustment().set_value(0.0)
-            if self.__current_url is not None:
-                self.__previous_urls.append(self.__current_url)
             self.populate(item.URL)
         elif item.TYPE == "audio":
             if get_network_available():
+                helper = TaskHelper()
                 # Cache for toolbar
-                t = Thread(target=Lp().art.copy_uri_to_cache,
-                           args=(item.LOGO, item.TEXT,
-                                 Lp().window.toolbar.artsize))
-                t.daemon = True
-                t.start()
+                helper.run(Lp().art.copy_uri_to_cache,
+                           item.LOGO, item.TEXT, Lp().window.toolbar.artsize)
                 # Cache for MPRIS
-                t = Thread(target=Lp().art.copy_uri_to_cache,
-                           args=(item.LOGO, item.TEXT,
-                                 ArtSize.BIG))
-                t.daemon = True
-                t.start()
+                helper.run(Lp().art.copy_uri_to_cache,
+                           item.LOGO, item.TEXT, ArtSize.BIG)
                 # Cache for miniplayer
-                t = Thread(target=Lp().art.copy_uri_to_cache,
-                           args=(item.LOGO, item.TEXT,
-                                 WindowSize.SMALL))
-                t.daemon = True
-                t.start()
+                helper.run(Lp().art.copy_uri_to_cache,
+                           item.LOGO, item.TEXT, WindowSize.SMALL)
             Lp().player.load_external(item.URL, item.TEXT)
             Lp().player.play_this_external(item.URL)
         return True
+
+    def __on_uri_content(self, uri, status, content):
+        """
+            Extract content
+            @param uri as str
+            @param status as bool
+            @param content as bytes
+        """
+        try:
+            if status:
+                if self.__history is not None:
+                    self.__back_btn.set_sensitive(True)
+                self.__history = LinkedList(uri, None, self.__history)
+                if content:
+                    import xml.etree.ElementTree as xml
+                    items = []
+                    root = xml.fromstring(content)
+                    for child in root.iter("outline"):
+                        try:
+                            item = TuneItem()
+                            item.URL = child.attrib["URL"]
+                            item.TEXT = child.attrib["text"]
+                            try:
+                                item.LOGO = child.attrib["image"]
+                            except:
+                                pass
+                            item.TYPE = child.attrib["type"]
+                            items.append(item)
+                        except:
+                            del item
+                    if items:
+                        self.__add_items(items)
+                    else:
+                        self.__show_not_found(_("No result…"))
+                else:
+                    self.__show_not_found(_("No result…"))
+        except Exception as e:
+            print("TuneinPopover::__on_uri_content():", e)
+            self.__show_not_found(_("Can't connect to TuneIn…"))
 
     def __on_button_clicked(self, button, item):
         """
@@ -383,9 +387,7 @@ class TuneinPopover(Gtk.Popover):
             @param item as TuneIn Item
         """
         self.__timeout_id = None
-        t = Thread(target=self.__add_radio, args=(item,))
-        t.daemon = True
-        t.start()
+        self.__add_radio(item)
         self.hide()
 
     def __on_search_timeout(self, string):
@@ -394,6 +396,6 @@ class TuneinPopover(Gtk.Popover):
             @param string as str
         """
         self.__timeout_id = None
-        url = "http://opml.radiotime.com/Search.ashx?query=%s" %\
+        uri = "http://opml.radiotime.com/Search.ashx?query=%s" %\
             GLib.uri_escape_string(string, "/", False)
-        self.populate(url)
+        self.populate(uri)

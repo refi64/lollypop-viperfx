@@ -33,13 +33,6 @@ class NextContext:
     STOP = 2             # Stop after track/album/artist
 
 
-class DbPersistent:
-    NONE = 0
-    INTERNAL = 1
-    EXTERNAL = 2
-    CHARTS = 3
-
-
 class OpenLink:
     NONE = 0
     OPEN = 1
@@ -116,13 +109,9 @@ class Type:
     RADIOS = -6
     EXTERNALS = -7
     SEARCH = -8
-    CHARTS = -9
-    SPOTIFY = -10
-    ITUNES = -11
-    LASTFM = -12
-    NOPARTY = -13
-    ALBUMS = -14
-    ALL = -15
+    NOPARTY = -9
+    ALBUMS = -10
+    ALL = -11
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

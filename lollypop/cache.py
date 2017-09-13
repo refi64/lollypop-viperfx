@@ -12,11 +12,10 @@
 
 from gi.repository import Gio, GLib, GdkPixbuf
 
-from os import mkdir, path, rename
+from os import mkdir, path  # FIXME Use Gio
 
 from lollypop.utils import escape
 from lollypop.define import ArtSize, Lp
-from lollypop.lio import Lio
 
 
 class InfoCache:
@@ -68,18 +67,6 @@ class InfoCache:
                                          suffix)
             if path.exists(filepath):
                 exists = True
-            else:
-                # FIXME Remove this code, support for old lollypop versions
-                #
-                old_path = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
-                                                escape(prefix),
-                                                suffix,
-                                                ArtSize.ARTIST)
-                if path.exists(old_path):
-                    rename(old_path, filepath)
-                    exists = True
-                #
-                ##########################################################
         return exists
 
     def get_artwork(prefix, suffix, size):
@@ -164,13 +151,13 @@ class InfoCache:
         content = None
         data = None
         if path.exists(filepath+".txt"):
-            f = Lio.File.new_for_path(filepath+".txt")
+            f = Gio.File.new_for_path(filepath+".txt")
             (status, content, tag) = f.load_contents()
             if not status:
                 content = None
             image_path = filepath+".jpg"
             if path.exists(image_path):
-                f = Lio.File.new_for_path(image_path)
+                f = Gio.File.new_for_path(image_path)
                 (status, data, tag) = f.load_contents()
                 if not status:
                     data = None
@@ -188,14 +175,14 @@ class InfoCache:
                                  escape(prefix),
                                  suffix)
         if content is not None:
-            f = Lio.File.new_for_path(filepath+".txt")
+            f = Gio.File.new_for_path(filepath+".txt")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             if fstream is not None:
                 fstream.write(content, None)
                 fstream.close()
         if data is None:
-            f = Lio.File.new_for_path(filepath+".jpg")
+            f = Gio.File.new_for_path(filepath+".jpg")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
@@ -222,7 +209,7 @@ class InfoCache:
         filepath = "%s/%s_%s.txt" % (InfoCache._INFO_PATH,
                                      escape(prefix),
                                      suffix)
-        f = Lio.File.new_for_path(filepath)
+        f = Gio.File.new_for_path(filepath)
         try:
             f.delete(None)
         except:
@@ -230,7 +217,7 @@ class InfoCache:
         filepath = "%s/%s_%s.jpg" % (InfoCache._INFO_PATH,
                                      escape(prefix),
                                      suffix)
-        f = Lio.File.new_for_path(filepath)
+        f = Gio.File.new_for_path(filepath)
         try:
             f.delete(None)
         except:
@@ -248,7 +235,7 @@ class InfoCache:
                                             escape(prefix),
                                             suffix,
                                             ArtSize.ARTIST_SMALL*scale*i)
-            f = Lio.File.new_for_path(filepath)
+            f = Gio.File.new_for_path(filepath)
             try:
                 f.delete(None)
             except:

@@ -10,66 +10,61 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gio, GLib
-
 from lollypop.define import Lp
-from lollypop.search_item import SearchItem
+from lollypop.helper_task import TaskHelper
 
 
-class LocalSearch(GObject.GObject):
+class SearchItem:
     """
-        Search provider over network
+        Represent a search item
     """
-    __gsignals__ = {
-        "item-found": (GObject.SignalFlags.RUN_FIRST, None, ()),
-    }
+    def __init__(self):
+        self.is_track = False
+        self.id = None
+
+
+class Search:
+    """
+        Local search
+    """
 
     def __init__(self):
         """
-            Init provider
+            Init search
         """
-        GObject.GObject.__init__(self)
-        self._cancel = Gio.Cancellable.new()
-        self._items = []
-        self.__stop = False
-        self._finished = False
+        pass
 
-    @property
-    def finished(self):
+    def get(self, search_items, cancellable, callback):
         """
-            True if search finished
+            Get track for name
+            @param search_items as [str]
+            @param cancellable as Gio.Cancellable
+            @param callback as callback
         """
-        return self._finished
+        helper = TaskHelper()
+        helper.run(self.__get, search_items, cancellable, callback=callback)
 
-    @property
-    def items(self):
+#######################
+# PRIVATE             #
+#######################
+    def __get(self, search_items, cancellable):
         """
-            Get items
-            @return items as [SearchItems]
+            Get track for name
+            @param search_items as [str]
+            @param cancellable as Gio.Cancellable
+            @return items as [SearchItem]
         """
-        return self._items
-
-    def stop(self):
-        self.__stop = True
-
-    def do(self, search_items):
-        """
-            Return tracks containing name
-            @param search items as [str]
-            @return tracks as [SearchItem]
-        """
-        self.__stop = False
-        # Local search
+        items = []
         added_album_ids = []
         added_track_ids = []
         for item in search_items:
-            if self.__stop:
+            if cancellable.is_cancelled():
                 return
             albums = []
             tracks_non_album_artist = []
             # Get all albums for all artists and non album_artist tracks
             for artist_id in Lp().artists.search(item):
-                if self.__stop:
+                if cancellable.is_cancelled():
                     return
                 for album_id in Lp().albums.get_ids([artist_id], []):
                     if (album_id, artist_id) not in albums:
@@ -79,7 +74,7 @@ class LocalSearch(GObject.GObject):
                     tracks_non_album_artist.append((track_id, track_name))
 
             for album_id, artist_id in albums:
-                if self.__stop:
+                if cancellable.is_cancelled():
                     return
                 if album_id in added_album_ids:
                     continue
@@ -89,8 +84,7 @@ class LocalSearch(GObject.GObject):
                 search_item.is_track = False
                 search_item.artist_ids = [artist_id]
                 search_item.year = Lp().albums.get_year(album_id)
-                self._items.append(search_item)
-                GLib.idle_add(self.emit, "item-found")
+                items.append(search_item)
 
             try:
                 year = int(item)
@@ -99,7 +93,7 @@ class LocalSearch(GObject.GObject):
                 albums = []
             albums += Lp().albums.search(item)
             for album_id in albums:
-                if self.__stop:
+                if cancellable.is_cancelled():
                     return
                 if album_id in added_album_ids:
                     continue
@@ -109,12 +103,11 @@ class LocalSearch(GObject.GObject):
                 search_item.is_track = False
                 search_item.artist_ids = Lp().albums.get_artist_ids(album_id)
                 search_item.year = Lp().albums.get_year(album_id)
-                self._items.append(search_item)
-                GLib.idle_add(self.emit, "item-found")
+                items.append(search_item)
 
             for track_id, track_name in Lp().tracks.search(
                                                item) + tracks_non_album_artist:
-                if self.__stop:
+                if cancellable.is_cancelled():
                     return
                 if track_id in added_track_ids:
                     continue
@@ -123,7 +116,5 @@ class LocalSearch(GObject.GObject):
                 added_track_ids.append(track_id)
                 search_item.is_track = True
                 search_item.artist_ids = Lp().tracks.get_artist_ids(track_id)
-                self._items.append(search_item)
-                GLib.idle_add(self.emit, "item-found")
-        self._finished = True
-        GLib.idle_add(self.emit, "item-found")
+                items.append(search_item)
+        return items

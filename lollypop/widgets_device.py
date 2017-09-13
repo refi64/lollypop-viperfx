@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Gio, GObject, Pango
 
 from gettext import gettext as _
-from threading import Thread
 
 from lollypop.sync_mtp import MtpSync
 from lollypop.sqlcursor import SqlCursor
@@ -22,7 +21,7 @@ from lollypop.selectionlist import SelectionList
 from lollypop.define import Lp, Type
 from lollypop.objects import Album
 from lollypop.loader import Loader
-from lollypop.lio import Lio
+from lollypop.helper_task import TaskHelper
 
 
 # FIXME This class should not inherit MtpSync
@@ -131,7 +130,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param uri as str
         """
         self._uri = uri
-        d = Lio.File.new_for_uri(uri)
+        d = Gio.File.new_for_uri(uri)
         try:
             if not d.query_exists():
                 d.make_directory_with_parents()
@@ -160,12 +159,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         else:
             playlists.append(Type.NONE)
 
-        t = Thread(target=self._sync,
-                   args=(playlists,
-                         self.__switch_mp3.get_active(),
-                         self.__switch_normalize.get_active()))
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(self._sync, playlists,
+                   self.__switch_mp3.get_active(),
+                   self.__switch_normalize.get_active())
 
     def cancel_sync(self):
         """
@@ -234,7 +231,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         error_text = _("Unknown error while syncing,"
                        " try to reboot your device")
         try:
-            d = Lio.File.new_for_uri(self._uri)
+            d = Gio.File.new_for_uri(self._uri)
             info = d.query_filesystem_info("filesystem::free")
             free = info.get_attribute_as_string("filesystem::free")
 
@@ -325,7 +322,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             # Cache directory playlists
             if not files_list:
                 try:
-                    d = Lio.File.new_for_uri(self._uri)
+                    d = Gio.File.new_for_uri(self._uri)
                     infos = d.enumerate_children(
                                             "standard::name,standard::type",
                                             Gio.FileQueryInfoFlags.NONE,

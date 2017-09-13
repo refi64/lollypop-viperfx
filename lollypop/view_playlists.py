@@ -78,7 +78,6 @@ class PlaylistsView(View):
     def populate(self, tracks):
         """
             Populate view with tracks from playlist
-            Thread safe
         """
         # We are looking for middle
         # Ponderate with this:

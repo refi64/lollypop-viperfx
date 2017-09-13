@@ -12,13 +12,12 @@
 
 from gi.repository import GLib
 
-from threading import Thread
 import json
 
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, GOOGLE_API_ID, Type
 from lollypop.utils import debug, get_network_available
-from lollypop.lio import Lio
+from lollypop.helper_task import TaskHelper
 
 
 class Downloader:
@@ -49,9 +48,8 @@ class Downloader:
         if get_network_available():
             self.__albums_queue.append(album_id)
             if not self.__in_albums_download:
-                t = Thread(target=self.__cache_albums_art)
-                t.daemon = True
-                t.start()
+                helper = TaskHelper()
+                helper.run(self.__cache_albums_art)
 
     def cache_artists_info(self):
         """
@@ -60,45 +58,39 @@ class Downloader:
         if self.__cache_artists_running:
             return
         self.__cache_artists_running = True
-        t = Thread(target=self.__cache_artists_info)
-        t.daemon = True
-        t.start()
+        helper = TaskHelper()
+        helper.run(self.__cache_artists_info)
 
-    def get_google_arts(self, search):
+    def get_google_search_uri(self, search):
         """
-            Get arts on duck image corresponding to search
-            @param search words as string
-            @return [urls as string]
+            Get google uri for search
+            @param search as str
         """
-        data = None
-        urls = []
-
-        if not get_network_available():
-            return []
-
         key = Lp().settings.get_value("cs-api-key").get_string() or\
             Lp().settings.get_default_value("cs-api-key").get_string()
+        uri = "https://www.googleapis.com/" +\
+              "customsearch/v1?key=%s&cx=%s" % (key, GOOGLE_API_ID) +\
+              "&q=%s&searchType=image" % GLib.uri_escape_string(search,
+                                                                "",
+                                                                False)
+        return uri
 
+    def get_google_artwork(self, content):
+        """
+            Get artwork from Google search content
+            @param content as bytes
+            @return [urls as string]
+        """
+        uris = []
         try:
-            f = Lio.File.new_for_uri("https://www.googleapis.com/"
-                                     "customsearch/v1?key=%s&cx=%s"
-                                     "&q=%s&searchType=image" %
-                                     (key,
-                                      GOOGLE_API_ID,
-                                      GLib.uri_escape_string(search,
-                                                             "",
-                                                             False)))
-
-            (status, data, tag) = f.load_contents()
-            if status:
-                decode = json.loads(data.decode("utf-8"))
-                if decode is None:
-                    return urls
-                for item in decode["items"]:
-                    urls.append(item["link"])
+            decode = json.loads(content.decode("utf-8"))
+            if decode is None:
+                return uris
+            for item in decode["items"]:
+                uris.append(item["link"])
         except Exception as e:
-            print(e)
-        return urls
+            print("Downloader::get_google_artwork():", e)
+        return uris or None
 
 #######################
 # PROTECTED           #
@@ -135,10 +127,10 @@ class Downloader:
         try:
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
-            s = Lio.File.new_for_uri("https://api.deezer.com/search/artist/?"
-                                     "q=%s&output=json&index=0&limit=1&" %
-                                     artist_formated)
-            (status, data, tag) = s.load_contents()
+            uri = "https://api.deezer.com/search/artist/?" +\
+                  "q=%s&output=json&index=0&limit=1&" % artist_formated
+            helper = TaskHelper()
+            (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 return (decode["data"][0]["picture_xl"], None)
@@ -157,10 +149,12 @@ class Downloader:
             from lollypop.search_spotify import SpotifySearch
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
-            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
-                                     "&type=artist" % artist_formated)
-            s.add_spotify_headers(SpotifySearch.get_token(None))
-            (status, data, tag) = s.load_contents()
+            uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
+                  "&type=artist"
+            token = "Bearer %s" % SpotifySearch.get_token(None)
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["artists"]["items"]:
@@ -182,20 +176,19 @@ class Downloader:
         image = None
         try:
             album_formated = GLib.uri_escape_string(album, None, True)
-            s = Lio.File.new_for_uri("https://api.deezer.com/search/album/?"
-                                     "q=%s&output=json" %
-                                     album_formated)
-            (status, data, tag) = s.load_contents()
+            uri = "https://api.deezer.com/search/album/?" +\
+                  "q=%s&output=json" % album_formated
+            helper = TaskHelper()
+            (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
-                url = None
+                uri = None
                 for item in decode["data"]:
                     if item["artist"]["name"].lower() == artist.lower():
-                        url = item["cover_xl"]
+                        uri = item["cover_xl"]
                         break
-                if url is not None:
-                    s = Lio.File.new_for_uri(url)
-                    (status, image, tag) = s.load_contents()
+                if uri is not None:
+                    (status, image) = helper.load_uri_content_sync(uri, None)
         except Exception as e:
             print("Downloader::__get_deezer_album_artwork: %s" % e)
         return image
@@ -215,31 +208,31 @@ class Downloader:
             token = SpotifySearch.get_token(None)
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
-            s = Lio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
-                                     "&type=artist" % artist_formated)
-            s.add_spotify_headers(token)
-            (status, data, tag) = s.load_contents()
+            uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
+                  "&type=artist"
+            token = "Bearer %s" % SpotifySearch.get_token(None)
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["artists"]["items"]:
                     artists_spotify_ids.append(item["id"])
 
             for artist_spotify_id in artists_spotify_ids:
-                s = Lio.File.new_for_uri("https://api.spotify.com/v1/artists/"
-                                         "%s/albums" % artist_spotify_id)
-                s.add_spotify_headers(token)
-                (status, data, tag) = s.load_contents()
+                uri = "https://api.spotify.com/v1/artists/" +\
+                      "%s/albums" % artist_spotify_id
+                (status, data) = helper.load_uri_content_sync(uri, None)
                 if status:
                     decode = json.loads(data.decode("utf-8"))
-                    url = None
+                    uri = None
                     for item in decode["items"]:
                         if item["name"] == album:
-                            url = item["images"][0]["url"]
+                            uri = item["images"][0]["url"]
                             break
-
-                    if url is not None:
-                        s = Lio.File.new_for_uri(url)
-                        (status, image, tag) = s.load_contents()
+                    if uri is not None:
+                        (status, image) = helper.load_uri_content_sync(uri,
+                                                                       None)
                     break
         except Exception as e:
             print("Downloader::_get_album_art_spotify: %s [%s/%s]" %
@@ -258,17 +251,18 @@ class Downloader:
         try:
             album_formated = GLib.uri_escape_string(
                                 album, None, True).replace(" ", "+")
-            s = Lio.File.new_for_uri("https://itunes.apple.com/search"
-                                     "?entity=album&term=%s" % album_formated)
-            (status, data, tag) = s.load_contents()
+            uri = "https://itunes.apple.com/search" +\
+                  "?entity=album&term=%s" % album_formated
+            helper = TaskHelper()
+            (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["results"]:
                     if item["artistName"].lower() == artist.lower():
-                        url = item["artworkUrl60"].replace("60x60",
+                        uri = item["artworkUrl60"].replace("60x60",
                                                            "512x512")
-                        s = Lio.File.new_for_uri(url)
-                        (status, image, tag) = s.load_contents()
+                        (status, image) = helper.load_uri_content_sync(uri,
+                                                                       None)
                         break
         except Exception as e:
             print("Downloader::_get_album_art_itunes: %s [%s/%s]" %
@@ -286,11 +280,11 @@ class Downloader:
         image = None
         if Lp().lastfm is not None:
             try:
+                helper = TaskHelper()
                 last_album = Lp().lastfm.get_album(artist, album)
-                url = last_album.get_cover_image(4)
-                if url is not None:
-                    s = Lio.File.new_for_uri(url)
-                    (status, image, tag) = s.load_contents()
+                uri = last_album.get_cover_image(4)
+                if uri is not None:
+                    (status, image) = helper.load_uri_content_sync(uri, None)
             except Exception as e:
                 print("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
                       (e, artist, album))
@@ -318,15 +312,15 @@ class Downloader:
                     continue
                 try:
                     method = getattr(self, helper)
-                    (url, content) = method(artist)
-                    if url is not None:
-                        s = Lio.File.new_for_uri(url)
-                        (status, data, tag) = s.load_contents()
+                    (uri, content) = method(artist)
+                    if uri is not None:
+                        (status, data) = helper.load_uri_content_sync(uri,
+                                                                      None)
                         if status:
                             artwork_set = True
                             InfoCache.add(artist, content, data, api)
                             debug("Downloader::__cache_artists_info(): %s"
-                                  % url)
+                                  % uri)
                         else:
                             InfoCache.add(artist, None, None, api)
                 except Exception as e:
