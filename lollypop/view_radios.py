@@ -183,15 +183,16 @@ class RadiosView(LazyLoadingView):
             Lp().player.set_next()  # We force next update
             Lp().player.set_prev()  # We force prev update
 
-    def __on_logo_changed(self, player, name):
+    def __show_stack(self, radios):
         """
-            Update radio logo
-            @param player as Plyaer
-            @param name as string
+            Switch empty/radios view based on radios
+            @param [radio names as string]
         """
-        for child in self._box.get_children():
-            if child.title == name:
-                child.update_cover()
+        if radios:
+            self.__stack.set_visible_child(self._scrolled)
+            self.__add_radios(radios, True)
+        else:
+            self.__stack.set_visible_child(self.__empty)
 
     def __add_radios(self, radios, first=False):
         """
@@ -219,6 +220,16 @@ class RadiosView(LazyLoadingView):
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._box)
+
+    def __on_logo_changed(self, player, name):
+        """
+            Update radio logo
+            @param player as Plyaer
+            @param name as string
+        """
+        for child in self._box.get_children():
+            if child.title == name:
+                child.update_cover()
 
     def __on_get_radios(self, radios):
         """
