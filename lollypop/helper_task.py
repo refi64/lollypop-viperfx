@@ -102,7 +102,7 @@ class TaskHelper:
                     stream.close()
                 return (True, bytes)
             except Exception as e:
-                print("Lio.load_contents():",  e)
+                print("TaskHelper::load_uri_content_sync():",  e)
                 return (False, b"")
 
 #######################
