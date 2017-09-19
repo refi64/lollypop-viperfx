@@ -349,22 +349,18 @@ class SearchPopover(Gtk.Popover):
         self.__calculate_score(row2)
         return row1.score < row2.score
 
-    def __clear(self, rows):
+    def __clear(self):
         """
-            Clear search view row by row
-            @param items as [SearchRow]
+            Clear view
         """
-        if rows:
-            row = rows.pop(0)
-            self.__view.remove(row)
-            row.destroy()
-            GLib.idle_add(self.__clear, rows)
+        self.__view.forall(lambda x: self.__view.remove(x))
 
     def __populate(self):
         """
             Populate searching items
             in db based on text entry current text
         """
+        self.__clear()
         self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
@@ -372,7 +368,6 @@ class SearchPopover(Gtk.Popover):
         for item in self.__current_search.split():
             if len(item) >= 3 and item not in search_items:
                 search_items.append(item)
-        self.__clear(self.__view.get_children())
         search = Search()
         search.get(search_items,
                    self.__cancellable,
