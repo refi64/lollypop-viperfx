@@ -10,12 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Soup
 
 import json
+from base64 import b64encode
 
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, GOOGLE_API_ID, Type
+from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 from lollypop.utils import debug, get_network_available
 from lollypop.helper_task import TaskHelper
 
@@ -146,12 +148,11 @@ class Downloader:
             @return (url as str/None, content as None)
         """
         try:
-            from lollypop.search_spotify import SpotifySearch
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
             uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
                   "&type=artist"
-            token = "Bearer %s" % SpotifySearch.get_token(None)
+            token = "Bearer %s" % self.__get_spotify_token(None)
             helper = TaskHelper()
             helper.add_header("Authorization", token)
             (status, data) = helper.load_uri_content_sync(uri, None)
@@ -204,13 +205,12 @@ class Downloader:
         image = None
         artists_spotify_ids = []
         try:
-            from lollypop.search_spotify import SpotifySearch
-            token = SpotifySearch.get_token(None)
+            token = self.__get_spotify_token(None)
             artist_formated = GLib.uri_escape_string(
                                 artist, None, True).replace(" ", "+")
             uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
                   "&type=artist"
-            token = "Bearer %s" % SpotifySearch.get_token(None)
+            token = "Bearer %s" % token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
             (status, data) = helper.load_uri_content_sync(uri, None)
@@ -293,6 +293,31 @@ class Downloader:
 #######################
 # PRIVATE             #
 #######################
+    def __get_spotify_token(self, cancellable):
+        """
+            Get a new auth token
+            @param cancellable as Gio.Cancellable
+            @return str
+        """
+        try:
+            token_uri = "https://accounts.spotify.com/api/token"
+            credentials = "%s:%s" % (SPOTIFY_CLIENT_ID, SPOTIFY_SECRET)
+            encoded = b64encode(credentials.encode("utf-8"))
+            credentials = encoded.decode("utf-8")
+            session = Soup.Session.new()
+            data = {"grant_type": "client_credentials"}
+            msg = Soup.form_request_new_from_hash("POST", token_uri, data)
+            msg.request_headers.append("Authorization",
+                                       "Basic %s" % credentials)
+            status = session.send_message(msg)
+            if status == 200:
+                body = msg.get_property("response-body")
+                data = body.flatten().get_data()
+                decode = json.loads(data.decode("utf-8"))
+                return decode["access_token"]
+        except:
+            return ""
+
     def __cache_artists_info(self):
         """
             Cache info for all artists
