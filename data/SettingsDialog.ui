@@ -498,7 +498,6 @@
                 <property name="events">GDK_ENTER_NOTIFY_MASK | GDK_STRUCTURE_MASK</property>
                 <property name="tooltip_text" translatable="yes">Show desktop notifications at song changes</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_update_song_notifications_setting" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
