@@ -213,7 +213,7 @@
             <summary>Disable all notifications</summary>
         </key>
         <key type="b" name="disable-song-notifications">
-            <default>false</default>
+            <default>true</default>
             <summary>Disable notifications at song changes</summary>
         </key>
         <key type="b" name="show-tag-tracknumber">
