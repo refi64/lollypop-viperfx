@@ -479,31 +479,6 @@
                 <property name="top_attach">6</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkLabel" id="notifications">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">Desktop notifications at song changes</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSwitch" id="switch_song_notifications">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="events">GDK_ENTER_NOTIFY_MASK | GDK_STRUCTURE_MASK</property>
-                <property name="tooltip_text" translatable="yes">Show desktop notifications at song changes</property>
-                <property name="halign">end</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
           </object>
           <packing>
             <property name="position">1</property>
