@@ -26,12 +26,12 @@ function generate_pot()
     echo '[encoding: UTF-8]'
     for file in data/*.xml data/*.in lollypop/*.py
     do
-        echo  $file
+        echo ../$file
     done
-    for file in data/*.ui AboutDialog.ui
+    for file in data/*.ui data/AboutDialog.ui.in
     do
         echo -n '[type: gettext/glade]'
-        echo $file
+        echo ../$file
     done
 }
 
