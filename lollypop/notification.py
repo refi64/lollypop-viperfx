@@ -28,7 +28,6 @@ class NotificationManager:
         """
             Init notification object with lollypop infos
         """
-        self.__inhibitor = False
         self.__supports_actions = False
         self.__disable_all_notifications = True
         self.__is_gnome = is_gnome()
@@ -58,12 +57,6 @@ class NotificationManager:
 
         if self.__supports_actions:
             self.__set_actions()
-
-    def inhibit(self):
-        """
-            Inhibit notifications for one shot
-        """
-        self.__inhibitor = True
 
 #######################
 # PRIVATE             #
@@ -142,9 +135,6 @@ class NotificationManager:
             Send notification with track_id infos
             @param player Player
         """
-        if player.current_track.title == "" or self.__inhibitor:
-            self.__inhibitor = False
-            return
         state = Lp().window.get_window().get_state()
         if player.current_track.id is None or\
                 state & Gdk.WindowState.FOCUSED or\
