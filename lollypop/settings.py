@@ -126,23 +126,6 @@ class SettingsDialog:
         switch_mix = builder.get_object("switch_mix")
         switch_mix.set_state(Lp().settings.get_value("mix"))
 
-        self._switch_song_notifications = builder.get_object(
-            "switch_song_notifications",
-        )
-
-        self._switch_song_notifications.set_state(
-            not Lp().settings.get_value("disable-song-notifications"),
-        )
-
-        self._switch_song_notifications.set_sensitive(
-            not Lp().settings.get_value("disable-notifications"),
-        )
-
-        Lp().settings.connect(
-            "changed::disable-notifications",
-            self._on_notifications_setting_changed,
-        )
-
         self.__helper = TouchHelper(switch_mix, None, None)
         self.__helper.set_long_func(self.__mix_long_func, switch_mix)
         self.__helper.set_short_func(self.__mix_short_func, switch_mix)
@@ -337,25 +320,6 @@ class SettingsDialog:
             self.__popover.show_all()
         elif self.__popover is not None:
             self.__popover.hide()
-
-    def _update_song_notifications_setting(self, widget, state):
-        """
-            Update notifications setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        Lp().settings.set_value(
-            "disable-song-notifications",
-            GLib.Variant("b", not state),
-        )
-
-    def _on_notifications_setting_changed(self, *ignore):
-        """
-            Update switch_song_notifications
-        """
-        self._switch_song_notifications.set_sensitive(
-            not Lp().settings.get_value("disable-notifications"),
-        )
 
     def _update_party_mix_setting(self, widget, state):
         """
