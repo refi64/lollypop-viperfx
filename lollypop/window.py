@@ -33,8 +33,6 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__signal1 = None
         self.__signal2 = None
         self.__timeout = None
-        self.__mediakeys = None
-        self.__media_keys_busnames = []
         self.__was_maximized = False
         Gtk.ApplicationWindow.__init__(self,
                                        application=Lp(),
@@ -62,7 +60,6 @@ class Window(Gtk.ApplicationWindow, Container):
 
         self.__setup_content()
         self.setup_window()
-        self.__setup_media_keys()
         self.__enabled_shortcuts = False
         self.enable_global_shortcuts(True)
 
@@ -274,77 +271,6 @@ class Window(Gtk.ApplicationWindow, Container):
            isinstance(position_setting[1], int):
             self.move(position_setting[0], position_setting[1])
 
-    def __setup_media_keys(self):
-        """
-            Setup media player keys
-        """
-        self.__media_keys_busnames = [
-            "org.gnome.SettingDaemon.MediaKeys",
-            "org.gnome.SettingsDaemon",
-        ]
-
-        self.__get_media_keys_proxy()
-
-    def __get_media_keys_proxy(self):
-        if self.__media_keys_busnames:
-            bus_name = self.__media_keys_busnames.pop(0)
-            try:
-                bus = Lp().get_dbus_connection()
-                Gio.DBusProxy.new(
-                    bus,
-                    Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
-                    None,
-                    bus_name,
-                    "/org/gnome/SettingsDaemon/MediaKeys",
-                    "org.gnome.SettingsDaemon.MediaKeys",
-                    None,
-                    self.__on_get_proxy,
-                )
-
-            except Exception as e:
-                print("Window::__setup_media_keys():", e)
-
-    def __on_get_proxy(self, source, result):
-        try:
-            self.__mediakeys = source.new_finish(result)
-        except Exception as e:
-            self.__mediakeys = None
-            print("Window::__on_get_proxy():", e)
-        else:
-            if self.__mediakeys.get_name_owner():
-                self.__grab_media_keys()
-                self.__mediakeys.connect('g-signal', self.__mediakey_signal)
-            else:
-                self.__mediakeys = None
-                self.__get_media_keys_proxy()
-
-    def __grab_media_keys(self):
-        if not self.__mediakeys:
-            return
-        self.__mediakeys.call(
-            "GrabMediaPlayerKeys",
-            GLib.Variant("(su)", ("org.gnome.Lollypop", 0)),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            None,
-            None,
-        )
-
-    def __mediakey_signal(self, proxy, sender, signal, param, userdata=None):
-        if signal != "MediaPlayerKeyPressed":
-            return
-
-        app, action = param.unpack()
-        if app == "org.gnome.Lollypop":
-            if action == "Play":
-                Lp().player.play_pause()
-            elif action == "Next":
-                Lp().player.next()
-            elif action == "Stop":
-                Lp().player.stop()
-            elif action == "Previous":
-                Lp().player.prev()
-
     def __setup_content(self):
         """
             Setup window content
@@ -471,10 +397,6 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp().settings.set_boolean("window-maximized",
                                   "GDK_WINDOW_STATE_MAXIMIZED" in
                                   event.new_window_state.value_names)
-
-        if event.changed_mask & Gdk.WindowState.FOCUSED and \
-           event.new_window_state & Gdk.WindowState.FOCUSED:
-            self.__grab_media_keys()
 
     def __on_destroyed_window(self, widget):
         """
