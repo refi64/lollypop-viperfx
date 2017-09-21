@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/Lollypop">
-    <file preprocess="xml-stripblanks">AboutDialog.ui</file>
-    <file preprocess="xml-stripblanks">Appmenu.ui</file>
-    <file preprocess="xml-stripblanks">LastfmPopover.ui</file>
-    <file preprocess="xml-stripblanks">InternalSearchRow.ui</file>
-    <file preprocess="xml-stripblanks">ExternalSearchRow.ui</file>
-    <file preprocess="xml-stripblanks">SearchPopover.ui</file>
-    <file preprocess="xml-stripblanks">QueuePopover.ui</file>
-    <file preprocess="xml-stripblanks">RatingWidget.ui</file>
-    <file preprocess="xml-stripblanks">LovedWidget.ui</file>
-    <file preprocess="xml-stripblanks">RadiosView.ui</file>
-    <file preprocess="xml-stripblanks">RadioPopover.ui</file>
-    <file preprocess="xml-stripblanks">MiniPlayer.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistView.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistEditView.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
-    <file preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
-    <file preprocess="xml-stripblanks">DeviceManagerView.ui</file>
-    <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
-    <file preprocess="xml-stripblanks">CoverBox.ui</file>
-    <file preprocess="xml-stripblanks">FirstRunView.ui</file>
-    <file preprocess="xml-stripblanks">ArtworkSearch.ui</file>
-    <file preprocess="xml-stripblanks">FullScreen.ui</file>
-    <file preprocess="xml-stripblanks">SelectionList.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistsManagerView.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistsManagerWidget.ui</file>
-    <file>application.css</file>
-    <file preprocess="xml-stripblanks">ArtistView.ui</file>
-    <file preprocess="xml-stripblanks">ArtistInfo.ui</file>
-    <file preprocess="xml-stripblanks">InfoContent.ui</file>
-    <file preprocess="xml-stripblanks">TuneinPopover.ui</file>
-    <file preprocess="xml-stripblanks">ExternalsPopover.ui</file>
-    <file preprocess="xml-stripblanks">ToolbarPlayback.ui</file>
-    <file preprocess="xml-stripblanks">ToolbarInfo.ui</file>
-    <file preprocess="xml-stripblanks">ToolbarEnd.ui</file>
-    <file preprocess="xml-stripblanks">ToolbarTitle.ui</file>
-    <file preprocess="xml-stripblanks">NextPopover.ui</file>
-    <file preprocess="xml-stripblanks">SettingsDialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Shortcuts.ui</file>
+    <file compressed="true">application.css</file>
+     <file compressed="true" preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">Appmenu.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ArtistInfo.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ArtistView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ArtworkSearch.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">CoverBox.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">DeviceManagerView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ExternalSearchRow.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ExternalsPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">FirstRunView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">FullScreen.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">InfoContent.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">InternalSearchRow.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">LastfmPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">LovedWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">MiniPlayer.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">NextPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">PlaylistEditView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">PlaylistsManagerView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">PlaylistsManagerWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">PlaylistView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">QueuePopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">RadioPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">RadiosView.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">RatingWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">SearchPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">SelectionList.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">SettingsDialog.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">Shortcuts.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ToolbarEnd.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ToolbarInfo.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ToolbarPlayback.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ToolbarTitle.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">TuneinPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">AboutDialog.ui</file>
   </gresource>
 </gresources>
