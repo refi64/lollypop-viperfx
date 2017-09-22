@@ -93,6 +93,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             helper = PasswordsHelper()
             helper.get(self.__name,
                        self.__on_get_password,
+                       full_sync,
                        callback,
                        *args)
 
@@ -323,33 +324,33 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                 self.__connect()
                 self.__now_playing(artist, album, title, duration, False)
 
-    def __populate_loved_tracks(self, force=False):
+    def __populate_loved_tracks(self):
         """
             Populate loved tracks playlist
-            @param bool as force
         """
         if not self.__is_auth:
             return
         try:
-            if force or len(Lp().playlists.get_tracks(Type.LOVED)) == 0:
-                tracks = []
-                user = self.get_user(self.__login)
-                for loved in user.get_loved_tracks():
-                    track_id = Lp().tracks.search_track(
-                                                      str(loved.track.artist),
-                                                      str(loved.track.title))
-                    if track_id is not None:
-                        tracks.append(Track(track_id))
-                Lp().playlists.add_tracks(Type.LOVED, tracks)
+            tracks = []
+            user = self.get_user(self.__login)
+            for loved in user.get_loved_tracks():
+                track_id = Lp().tracks.search_track(
+                                                  str(loved.track.artist),
+                                                  str(loved.track.title))
+                if track_id is not None:
+                    tracks.append(Track(track_id))
+            Lp().playlists.add_tracks(Type.LOVED, tracks)
         except Exception as e:
                 print("LastFM::__populate_loved_tracks: %s" % e)
 
-    def __on_get_password(self, attributes, password, name, callback, *args):
+    def __on_get_password(self, attributes, password,
+                          name, full_sync, callback, *args):
         """
              Set password label
              @param attributes as {}
              @param password as str
              @param name as str
+             @param full_sync as bool
              @param callback as function
         """
         if attributes is None:
@@ -358,4 +359,4 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.__password = password
         if get_network_available():
             helper = TaskHelper()
-            helper.run(self.__connect, False, callback=(callback, *args))
+            helper.run(self.__connect, full_sync, callback=(callback, *args))

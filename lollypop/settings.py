@@ -400,7 +400,6 @@ class SettingsDialog:
                              password,
                              self.__on_password_store,
                              fm,
-                             False,
                              callback)
         except Exception as e:
             print("Settings::_update_fm_settings(): %s" % e)
@@ -637,15 +636,15 @@ class SettingsDialog:
                           "computer-fail-symbolic",
                           Gtk.IconSize.MENU)
 
-    def __on_password_store(self, source, result, fm, full_sync, callback):
+    def __on_password_store(self, source, result, fm, callback):
         """
             Connect service
             @param source as GObject.Object
             @param result as Gio.AsyncResult
             @param fm as LastFM
-            @param full_sync as bool
+            @param callback as function
         """
-        fm.connect(full_sync, callback)
+        fm.connect(True, callback)
 
     def __on_pa_list_sinks(self, source, result, combo):
         """
