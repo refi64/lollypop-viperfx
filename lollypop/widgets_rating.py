@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
+from gettext import gettext as _
+
 from lollypop.objects import Track
 from lollypop.define import Lp, Type
 from lollypop.helper_dbus import DBusHelper
@@ -42,6 +44,9 @@ class RatingWidget(Gtk.Bin):
         self._stars.append(builder.get_object("star4"))
         self._on_leave_notify(None, None)
         self.add(builder.get_object("widget"))
+        if isinstance(object, Track):
+            play_count = object.popularity
+            self.set_tooltip_text(_("Song played %s times" % play_count))
 
 #######################
 # PROTECTED           #
