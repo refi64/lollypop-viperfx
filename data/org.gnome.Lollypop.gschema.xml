@@ -175,7 +175,7 @@
         </key>
         <key type="b" name="dark-ui">
             <default>false</default>
-            <summary>Use dark gtk theme</summary>
+            <summary>Use dark GTK theme</summary>
             <description></description>
         </key>
          <key type="b" name="disable-csd">
@@ -274,7 +274,7 @@
         <key enum="org.gnome.Lollypop.PowerManagement" name="power-management">
             <default>'none'</default>
             <summary>Possibilities for powermanagement options</summary>
-            <description>This option is to inhibit screensaver or suspend while lollypop is playing.</description>
+            <description>This option inhibits screensaver and suspend during Lollypop playback.</description>
         </key>
         <key enum="org.gnome.Lollypop.Playback" name="playback">
             <default>'none'</default>
