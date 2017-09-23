@@ -261,7 +261,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                           username=self.__login,
                                           password_hash=md5(self.__password))
             if full_sync:
-                self.__populate_loved_tracks()
+                helper = TaskHelper()
+                helper.run(self.__populate_loved_tracks)
         except Exception as e:
             debug("LastFM::__connect(): %s" % e)
             self.__is_auth = False
