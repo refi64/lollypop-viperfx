@@ -135,12 +135,12 @@
         </key>
          <key type="b" name="convert-mp3">
             <default>false</default>
-            <summary>Convert to MP3(MTP)</summary>
+            <summary>Encode to MP3(MTP)</summary>
             <description></description>
         </key>
         <key type="i" name="mp3-quality">
             <default>4</default>
-            <summary>Quality for converting MP3</summary>
+            <summary>Quality of MP3 encoding</summary>
             <description></description>
         </key>
          <key type="b" name="normalize-mp3">
@@ -160,7 +160,7 @@
         </key>
          <key type="b" name="show-genres">
             <default>false</default>
-            <summary>Show genres list</summary>
+            <summary>Show list of genres</summary>
             <description></description>
         </key>
          <key type="b" name="show-navigation-list">
@@ -196,7 +196,7 @@
         <key type="b" name="smart-artist-sort">
             <default>true</default>
             <summary>Smart sort for artist</summary>
-            <description>Ex: The Beatles sorted as Beatles. Resetting database needed.</description>
+            <description>Ex: The Beatles sorted as Beatles. Reset of database required.</description>
         </key>
         <key type="b" name="save-state">
             <default>false</default>
@@ -214,7 +214,7 @@
         </key>
         <key type="b" name="disable-song-notifications">
             <default>true</default>
-            <summary>Disable notifications at song changes</summary>
+            <summary>Disable notifications upon change of song</summary>
         </key>
         <key type="b" name="show-tag-tracknumber">
             <default>false</default>
