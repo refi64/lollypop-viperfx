@@ -163,7 +163,7 @@ class SearchLollypopService(Server, Gio.Application):
                                     GLib.SpawnFlags.SEARCH_PATH |
                                     GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
         except Exception as e:
-            print(e)
+            print("SearchLollypopService::ActivateResult():", e)
 
     def GetInitialResultSet(self, terms):
         return self.__search(terms)
@@ -194,7 +194,7 @@ class SearchLollypopService(Server, Gio.Application):
                       'gicon': GLib.Variant('s', gicon) }
                 results.append(d)
         except Exception as e:
-            print(e)
+            print("SearchLollypopService::GetResultMetas():", e)
             return []
         return results
 
@@ -224,7 +224,7 @@ class SearchLollypopService(Server, Gio.Application):
             for (track_id, name) in self.tracks.search(search):
                 ids.append("t:"+str(track_id))
         except Exception as e:
-            print(e)
+            print("SearchLollypopService::__search():", e)
         return ids
 
 def main():

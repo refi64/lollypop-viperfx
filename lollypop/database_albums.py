@@ -920,7 +920,7 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             if limit is None:
-                filters = ("%" + noaccents(string) + "%")
+                filters = ("%" + noaccents(string) + "%",)
             else:
                 filters = ("%" + noaccents(string) + "%", limit)
             request = ("SELECT albums.rowid\
