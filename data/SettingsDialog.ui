@@ -479,6 +479,12 @@
                 <property name="top_attach">6</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
             <property name="position">1</property>
@@ -1039,7 +1045,7 @@
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">&lt;b&gt;Google Web Services require an API key.&lt;/b&gt;
 &lt;small&gt;Otherwise you will soon reach the default quota…
-Lollypop needs this to search for artwork and music.&lt;/small&gt;</property>
+Lollypop needs this to search for artwork.&lt;/small&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                   <packing>
@@ -1081,8 +1087,7 @@ Lollypop needs this to search for artwork and music.&lt;/small&gt;</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">&lt;small&gt;You need to enable "Custom Search API" 
-and "YouTube Data API" for your project.&lt;/small&gt;</property>
+                    <property name="label" translatable="yes">&lt;small&gt;You need to enable "Custom Search API"  for your project.&lt;/small&gt;</property>
                     <property name="use_markup">True</property>
                     <style>
                       <class name="dim-label"/>
