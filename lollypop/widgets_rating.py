@@ -46,7 +46,7 @@ class RatingWidget(Gtk.Bin):
         self.add(builder.get_object("widget"))
         if isinstance(object, Track):
             play_count = object.popularity
-            self.set_tooltip_text(_("Song played %s times" % play_count))
+            self.set_tooltip_text(_("Song played %s times") % play_count)
 
 #######################
 # PROTECTED           #
