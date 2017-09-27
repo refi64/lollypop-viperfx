@@ -151,9 +151,6 @@ class SettingsDialog:
         switch_artwork = builder.get_object("switch_artwork")
         switch_artwork.set_state(Lp().settings.get_value("artist-artwork"))
 
-        if GLib.find_program_in_path("youtube-dl") is None:
-            builder.get_object("yt-dl").show()
-
         combo_orderby = builder.get_object("combo_orderby")
         combo_orderby.set_active(Lp().settings.get_enum(("orderby")))
 
