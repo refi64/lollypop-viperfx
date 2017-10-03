@@ -58,7 +58,7 @@ class FullScreen(Gtk.Window, InfoController,
         else:
             artsize = int(ArtSize.FULLSCREEN*geometry.height/1920)
         InfoController.__init__(self, artsize)
-
+        widget = builder.get_object("widget")
         self._play_btn = builder.get_object("play_btn")
         self._next_btn = builder.get_object("next_btn")
         self._prev_btn = builder.get_object("prev_btn")
@@ -67,7 +67,14 @@ class FullScreen(Gtk.Window, InfoController,
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
         close_btn = builder.get_object("close_btn")
-        close_btn.connect("clicked", self.__destroy)
+        preferences = Gio.Settings.new("org.gnome.desktop.wm.preferences")
+        layout = preferences.get_value("button-layout").get_string()
+        if layout.split(":")[0] == "close":
+            widget.attach(close_btn, 0, 0, 1, 1)
+            close_btn.set_property("halign", Gtk.Align.START)
+        else:
+            widget.attach(close_btn, 2, 0, 1, 1)
+            close_btn.set_property("halign", Gtk.Align.END)
         self._cover = builder.get_object("cover")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
@@ -79,7 +86,7 @@ class FullScreen(Gtk.Window, InfoController,
         self._timelabel = builder.get_object("playback")
         self._total_time_label = builder.get_object("duration")
         self.connect("key-release-event", self.__on_key_release_event)
-        self.add(builder.get_object("widget"))
+        self.add(widget)
 
     def do_show(self):
         """
@@ -168,6 +175,16 @@ class FullScreen(Gtk.Window, InfoController,
             self._next_popover.hide()
 
 #######################
+# PROTECTED           #
+#######################
+    def _on_close_button_clicked(self, widget):
+        """
+            Destroy self
+            @param widget as Gtk.Button
+        """
+        self.destroy()
+
+#######################
 # PRIVATE             #
 #######################
     def __update_datetime(self, show_seconds=False):
@@ -184,13 +201,6 @@ class FullScreen(Gtk.Window, InfoController,
             self.__timeout2 = GLib.timeout_add(60000, self.__update_datetime)
             return False
         return True
-
-    def __destroy(self, widget):
-        """
-            Destroy self
-            @param widget as Gtk.Button
-        """
-        self.destroy()
 
     def __on_key_release_event(self, widget, event):
         """
