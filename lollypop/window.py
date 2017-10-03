@@ -62,6 +62,7 @@ class Window(Gtk.ApplicationWindow, Container):
 
         self.__setup_content()
         self.setup_window()
+        # FIXME Remove this, handled by MPRIS in GNOME 3.26
         self.__setup_media_keys()
         self.__enabled_shortcuts = False
         self.enable_global_shortcuts(True)
@@ -274,6 +275,7 @@ class Window(Gtk.ApplicationWindow, Container):
            isinstance(position_setting[1], int):
             self.move(position_setting[0], position_setting[1])
 
+    # FIXME Remove this, handled by MPRIS in GNOME 3.26
     def __setup_media_keys(self):
         """
             Setup media player keys
@@ -285,6 +287,7 @@ class Window(Gtk.ApplicationWindow, Container):
 
         self.__get_media_keys_proxy()
 
+    # FIXME Remove this, handled by MPRIS in GNOME 3.26
     def __get_media_keys_proxy(self):
         if self.__media_keys_busnames:
             bus_name = self.__media_keys_busnames.pop(0)
@@ -304,6 +307,7 @@ class Window(Gtk.ApplicationWindow, Container):
             except Exception as e:
                 print("Window::__setup_media_keys():", e)
 
+    # FIXME Remove this, handled by MPRIS in GNOME 3.26
     def __on_get_proxy(self, source, result):
         try:
             self.__mediakeys = source.new_finish(result)
@@ -318,6 +322,7 @@ class Window(Gtk.ApplicationWindow, Container):
                 self.__mediakeys = None
                 self.__get_media_keys_proxy()
 
+    # FIXME Remove this, handled by MPRIS in GNOME 3.26
     def __grab_media_keys(self):
         if not self.__mediakeys:
             return
@@ -471,7 +476,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp().settings.set_boolean("window-maximized",
                                   "GDK_WINDOW_STATE_MAXIMIZED" in
                                   event.new_window_state.value_names)
-
+        # FIXME Remove this, handled by MPRIS in GNOME 3.26
         if event.changed_mask & Gdk.WindowState.FOCUSED and \
            event.new_window_state & Gdk.WindowState.FOCUSED:
             self.__grab_media_keys()
