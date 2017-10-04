@@ -32,7 +32,7 @@ class AlbumArt(BaseArt, TagReader):
 
     def __init__(self):
         """
-            Init radio art
+            Init album art
         """
         BaseArt.__init__(self)
         TagReader.__init__(self)
