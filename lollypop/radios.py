@@ -21,8 +21,11 @@ class Radios(GObject.GObject):
     """
         Playlists manager
     """
-    LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
-    DB_PATH = "%s/radios.db" % LOCAL_PATH
+    if GLib.getenv("XDG_DATA_HOME") is None:
+        __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
+    else:
+        __LOCAL_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop"
+    DB_PATH = "%s/radios.db" % __LOCAL_PATH
 
     create_radios = """CREATE TABLE radios (
                             id INTEGER PRIMARY KEY,
