@@ -69,7 +69,7 @@ class TaskHelper:
                                *args)
         except Exception as e:
             print("HelperTask::load_uri_content():",  e)
-            callback(None, False, b"", *args)
+            callback(uri, False, b"", *args)
 
     def load_uri_content_sync(self, uri, cancellable=None):
             """
@@ -149,7 +149,7 @@ class TaskHelper:
                 callback(uri, True, bytes(content), *args)
         except Exception as e:
             print("TaskHelper::__on_read_bytes_async():", e)
-            callback(None, False, b"", *args)
+            callback(uri, False, b"", *args)
 
     def __on_request_send_async(self, source, result, callback,
                                 cancellable, uri, *args):
@@ -170,4 +170,4 @@ class TaskHelper:
                                     *args)
         except Exception as e:
             print("TaskHelper::__on_soup_msg_finished():",  e)
-            callback(None, False, b"", *args)
+            callback(uri, False, b"", *args)

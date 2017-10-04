@@ -286,7 +286,7 @@ class TuneinPopover(Gtk.Popover):
             @param content as bytes
             @param name as str
         """
-        if status:
+        if status and content:
             uri = content.decode("utf-8").split("\n")[0]
         self.__radios_manager.add(name.replace("/", "-"), uri)
 
