@@ -106,13 +106,14 @@ class RadioArt(BaseArt):
                                          size,
                                          scale)
 
-    def copy_uri_to_cache(self, params):
+    def copy_uri_to_cache(self, uri, name, size):
         """
             Copy uri to cache at size
-            @param params as (str, str, int)
+            @param uri as str
+            @param name as str
+            @param size as int
             @thread safe
         """
-        uri, name, size = params
         filename = self.__get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         s = Gio.File.new_for_uri(uri)

@@ -253,7 +253,7 @@ class TuneinPopover(Gtk.Popover):
                                       (cache, item.TEXT.replace("/", "-")))
             s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
-            print("TuneinPopover::_add_radio: %s" % e)
+            print("TuneinPopover::__add_radio: %s" % e)
         # Tunein in embbed uri in ashx files, so get content if possible
         helper = TaskHelper()
         helper.load_uri_content(item.URL, self.__cancellable,
