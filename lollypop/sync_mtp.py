@@ -88,20 +88,18 @@ class MtpSyncDb:
             Loads the metadata db from the MTP device
         """
         debug("MtpSyncDb::__load_db()")
-        dbfile = Gio.File.new_for_uri(self.__db_uri)
-        ok, jsonraw, _ = dbfile.load_contents(None)
-        if not ok:
-            debug("MtpSyncDb::__load_db() sync db is absent")
-            return
         try:
-            jsondb = json.loads(jsonraw.decode("utf-8"))
-            if "version" in jsondb and jsondb["version"] == 1:
-                for m in jsondb["tracks_metadata"]:
-                    self.__metadata[m["uri"]] = m["metadata"]
-            else:
-                print("MtpSyncDb::__load_db() unknown sync db version")
+            dbfile = Gio.File.new_for_uri(self.__db_uri)
+            (status, jsonraw, tags) = dbfile.load_contents(None)
+            if status:
+                jsondb = json.loads(jsonraw.decode("utf-8"))
+                if "version" in jsondb and jsondb["version"] == 1:
+                    for m in jsondb["tracks_metadata"]:
+                        self.__metadata[m["uri"]] = m["metadata"]
+                else:
+                    print("MtpSyncDb::__load_db() unknown sync db version")
         except Exception as e:
-            print("MtpSyncDb::__load_db() sync db is invalid : %s" % e)
+            print("MtpSyncDb::__load_db():", e)
 
     def __save_db(self):
         """

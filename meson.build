@@ -1,5 +1,5 @@
 project('lollypop',
-  version: '0.9.301',
+  version: '0.9.303',
   meson_version: '>= 0.40.0'
 )
 i18n = import('i18n')
