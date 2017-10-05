@@ -247,17 +247,35 @@ class TuneinPopover(Gtk.Popover):
         """
         # Get cover art
         try:
-            cache = Art._RADIOS_PATH
-            s = Gio.File.new_for_uri(item.LOGO)
-            d = Gio.File.new_for_path("%s/%s.png" %
-                                      (cache, item.TEXT.replace("/", "-")))
-            s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
+            helper = TaskHelper()
+            helper.load_uri_content(item.LOGO,
+                                    None,
+                                    self.__on_logo_uri_content,
+                                    item.TEXT)
         except Exception as e:
             print("TuneinPopover::__add_radio: %s" % e)
         # Tunein in embbed uri in ashx files, so get content if possible
         helper = TaskHelper()
         helper.load_uri_content(item.URL, self.__cancellable,
                                 self.__on_item_content, item.TEXT)
+
+    def __on_logo_uri_content(self, uri, status, content, name):
+        """
+            Save image
+            @param uri as str
+            @param status as bool
+            @param content as bytes  # The image
+            @param name as str
+        """
+        if status:
+            cache_path_png = "%s/%s.png" % (Art._RADIOS_PATH, name)
+            bytes = GLib.Bytes(content)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+            bytes.unref()
+            stream.close()
+            pixbuf.savev(cache_path_png, "png", [None], [None])
+            Lp().art.emit("radio-artwork-changed", name)
 
     def __on_map(self, widget):
         """
@@ -361,7 +379,7 @@ class TuneinPopover(Gtk.Popover):
                         try:
                             item = TuneItem()
                             item.URL = child.attrib["URL"]
-                            item.TEXT = child.attrib["text"]
+                            item.TEXT = child.attrib["text"].replace("/", "-")
                             try:
                                 item.LOGO = child.attrib["image"]
                             except:

@@ -15,6 +15,7 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 import re
 
 from lollypop.art_base import BaseArt
+from lollypop.helper_task import TaskHelper
 
 
 class RadioArt(BaseArt):
@@ -114,12 +115,12 @@ class RadioArt(BaseArt):
             @param size as int
             @thread safe
         """
-        filename = self.__get_radio_cache_name(name)
-        cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
-        s = Gio.File.new_for_uri(uri)
-        d = Gio.File.new_for_path(cache_path_png)
-        s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
-        GLib.idle_add(self.emit, "radio-artwork-changed", name)
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                None,
+                                self.__on_uri_content,
+                                name,
+                                size)
 
     def rename_radio(self, old_name, new_name):
         """
@@ -201,3 +202,25 @@ class RadioArt(BaseArt):
             @param sql as sqlite cursor
         """
         return "@@"+name.replace("/", "-")+"@@radio@@"
+
+    def __on_uri_content(self, uri, status, content, name, size):
+        """
+            Save image
+            @param uri as str
+            @param status as bool
+            @param content as bytes  # The image
+            @param name as str
+            @param size as int
+        """
+        if status:
+            filename = self.__get_radio_cache_name(name)
+            cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
+                                               filename,
+                                               size)
+            bytes = GLib.Bytes(content)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+            bytes.unref()
+            stream.close()
+            pixbuf.savev(cache_path_png, "png", [None], [None])
+            self.emit("radio-artwork-changed", name)
