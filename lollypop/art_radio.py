@@ -22,10 +22,7 @@ class RadioArt(BaseArt):
     """
         Manage radio artwork
     """
-    if GLib.getenv("XDG_DATA_HOME") is None:
-        _RADIOS_PATH = GLib.get_home_dir() + "/.local/share/lollypop/radios"
-    else:
-        _RADIOS_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop/radios"
+    _RADIOS_PATH = GLib.get_user_data_dir() + "/lollypop/radios"
 
     def __init__(self):
         """

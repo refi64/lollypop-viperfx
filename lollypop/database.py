@@ -26,10 +26,7 @@ class Database:
     """
         Base database object
     """
-    if GLib.getenv("XDG_DATA_HOME") is None:
-        __LOCAL_PATH = GLib.get_home_dir() + "/.local/share/lollypop"
-    else:
-        __LOCAL_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop"
+    __LOCAL_PATH = GLib.get_user_data_dir() + "/lollypop"
     DB_PATH = "%s/lollypop.db" % __LOCAL_PATH
 
     # SQLite documentation:

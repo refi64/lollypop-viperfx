@@ -22,14 +22,8 @@ class InfoCache:
     """
         Generic class to cache text and images
     """
-    if GLib.getenv("XDG_DATA_HOME") is None:
-        _INFO_PATH = GLib.get_home_dir() + "/.local/share/lollypop/info"
-    else:
-        _INFO_PATH = GLib.getenv("XDG_DATA_HOME") + "/lollypop/info"
-    if GLib.getenv("XDG_CACHE_HOME") is None:
-        _CACHE_PATH = GLib.get_home_dir() + "/.cache/lollypop_info"
-    else:
-        _CACHE_PATH = GLib.getenv("XDG_CACHE_HOME") + "/lollypop_info"
+    _INFO_PATH = GLib.get_user_data_dir() + "/lollypop/info"
+    _CACHE_PATH = GLib.get_user_cache_dir() + "/lollypop_info"
 
     WEBSERVICES = [("lastfm", "_get_lastfm_artist_info",
                     "_get_lastfm_album_artwork"),
