@@ -24,7 +24,7 @@ from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track, Album
-from lollypop.define import Lp, Type, NextContext, DataPath, Shuffle
+from lollypop.define import Lp, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -362,10 +362,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         try:
             if Lp().settings.get_value("save-state"):
-                track_id = load(open(DataPath + "/track_id.bin", "rb"))
-                playlist_ids = load(open(DataPath + "/playlist_ids.bin",
-                                    "rb"))
-                (is_playing, was_party) = load(open(DataPath + "/player.bin",
+                track_id = load(open(LOLLYPOP_DATA_PATH +
+                                     "/track_id.bin",
+                                     "rb"))
+                playlist_ids = load(open(LOLLYPOP_DATA_PATH +
+                                         "/playlist_ids.bin",
+                                         "rb"))
+                (is_playing, was_party) = load(open(LOLLYPOP_DATA_PATH +
+                                                    "/player.bin",
                                                     "rb"))
                 if playlist_ids and playlist_ids[0] == Type.RADIOS:
                     radios = Radios()
@@ -409,14 +413,17 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                             self.emit("party-changed", True)
                         else:
                             self._albums = load(open(
-                                                DataPath + "/albums.bin",
+                                                LOLLYPOP_DATA_PATH +
+                                                "/albums.bin",
                                                 "rb"))
                             self.shuffle_albums(True)
                             self._context.genre_ids = load(open(
-                                                DataPath + "/genre_ids.bin",
+                                                LOLLYPOP_DATA_PATH +
+                                                "/genre_ids.bin",
                                                 "rb"))
                             self._context.artist_ids = load(open(
-                                                DataPath + "/artist_ids.bin",
+                                                LOLLYPOP_DATA_PATH +
+                                                "/artist_ids.bin",
                                                 "rb"))
                     self.set_next()
                     self.set_prev()

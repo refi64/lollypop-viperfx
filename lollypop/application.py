@@ -34,7 +34,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity
-from lollypop.define import Type, DataPath
+from lollypop.define import Type, LOLLYPOP_DATA_PATH
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -284,17 +284,17 @@ class Application(Gtk.Application):
                 # Save albums context
                 try:
                     dump(self.player.context.genre_ids,
-                         open(DataPath + "/genre_ids.bin", "wb"))
+                         open(LOLLYPOP_DATA_PATH + "/genre_ids.bin", "wb"))
                     dump(self.player.context.artist_ids,
-                         open(DataPath + "/artist_ids.bin", "wb"))
+                         open(LOLLYPOP_DATA_PATH + "/artist_ids.bin", "wb"))
                     self.player.shuffle_albums(False)
                     dump(self.player.get_albums(),
-                         open(DataPath + "/albums.bin", "wb"))
+                         open(LOLLYPOP_DATA_PATH + "/albums.bin", "wb"))
                 except Exception as e:
                     print("Application::__save_state()", e)
-            dump(track_id, open(DataPath + "/track_id.bin", "wb"))
+            dump(track_id, open(LOLLYPOP_DATA_PATH + "/track_id.bin", "wb"))
             dump([self.player.is_playing, self.player.is_party],
-                 open(DataPath + "/player.bin", "wb"))
+                 open(LOLLYPOP_DATA_PATH + "/player.bin", "wb"))
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]
@@ -303,12 +303,12 @@ class Application(Gtk.Application):
             else:
                 playlist_ids = self.player.get_user_playlist_ids()
             dump(playlist_ids,
-                 open(DataPath + "/playlist_ids.bin", "wb"))
+                 open(LOLLYPOP_DATA_PATH + "/playlist_ids.bin", "wb"))
         if self.player.current_track.id is not None:
             position = self.player.position
         else:
             position = 0
-        dump(position, open(DataPath + "/position.bin", "wb"))
+        dump(position, open(LOLLYPOP_DATA_PATH + "/position.bin", "wb"))
         self.player.stop_all()
         self.window.stop_all()
 

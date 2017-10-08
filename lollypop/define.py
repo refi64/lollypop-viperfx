@@ -13,11 +13,9 @@
 # This is global object initialised at lollypop start
 # member init order is important!
 
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
-from os import path
-
-DataPath = path.expanduser("~") + "/.local/share/lollypop"
+LOLLYPOP_DATA_PATH = GLib.get_user_data_dir() + "/lollypop"
 
 Lp = Gio.Application.get_default
 

@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gst
 
-from lollypop.define import Lp, WindowSize, DataPath
+from lollypop.define import Lp, WindowSize, LOLLYPOP_DATA_PATH
 from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
@@ -122,7 +122,8 @@ class Toolbar(Gtk.HeaderBar):
         try:
             if Lp().settings.get_value("save-state"):
                 from pickle import load
-                position = load(open(DataPath + "/position.bin", "rb"))
+                position = load(open(LOLLYPOP_DATA_PATH + "/position.bin",
+                                "rb"))
                 self.__toolbar_title.add_mark(position / Gst.SECOND)
         except Exception as e:
             print("Toolbar::restore_state():", e)
