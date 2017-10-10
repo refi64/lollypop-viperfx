@@ -16,21 +16,17 @@ from gettext import gettext as _
 import unicodedata
 
 from lollypop.helper_task import TaskHelper
-from lollypop.define import Lp, Type, ENCODING
+from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
-def decode_all(bytes):
+def debug(str):
     """
-        Decode bytes trying all encodings
-        @param bytes as bytes
-        @return str
+        Print debug
+        @param debug as str
     """
-    for encoding in ENCODING:
-        try:
-            return bytes.decode(encoding)
-        except Exception as e:
-            print("decode_all():", e)
+    if Lp().debug is True:
+        print(str)
 
 
 def get_network_available():
@@ -61,15 +57,6 @@ def escape(str, ignore=["_", "-", " ", "."]):
     return "".join([c for c in str if
                     c.isalpha() or
                     c.isdigit() or c in ignore]).rstrip()
-
-
-def debug(str):
-    """
-        Print debug
-        @param debug as str
-    """
-    if Lp().debug is True:
-        print(str)
 
 
 def is_unity():

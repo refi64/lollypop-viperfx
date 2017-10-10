@@ -16,8 +16,8 @@ from re import match
 
 from gettext import gettext as _
 
-from lollypop.define import Lp
-from lollypop.utils import format_artist_name, decode_all
+from lollypop.define import Lp, ENCODING
+from lollypop.utils import format_artist_name
 
 
 class Discoverer:
@@ -325,6 +325,27 @@ class TagReader(Discoverer):
             @parma tags as Gst.TagList
             @return lyrics as str
         """
+        def decode_lyrics(bytes):
+            try:
+                lyrics = b""
+                if bytes[0:4] == b"TXXX":
+                    if bytes[13:24] == b"L\x00y\x00r\x00i\x00c\x00s":
+                        lyrics = bytes[29:].replace(b"\x00", b"")
+                    else:
+                        return None
+                elif bytes[0:4] == b"USLT":
+                    lyrics = bytes.split(b"\xff\xfe")[2].replace(b"\x00", b"")
+                else:
+                    return None
+                for encoding in ENCODING:
+                    try:
+                        return lyrics.decode(encoding)
+                    except:
+                        pass
+            except:
+                pass
+            return None
+
         def get_mp4():
             try:
                 (exists, sample) = tags.get_string_index("lyrics", 0)
@@ -346,10 +367,9 @@ class TagReader(Discoverer):
                     (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
                     if not exists:
                         continue
-                    string = decode_all(m.data)
-                    if string.startswith("USLT"):
-                        split = string.split("\x00")
-                        return "".join(split[5:-1])
+                    string = decode_lyrics(m.data)
+                    if string is not None:
+                        return string
             except Exception as e:
                 print("TagReader::get_id3()", e)
             return ""
