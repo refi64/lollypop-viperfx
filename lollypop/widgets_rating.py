@@ -162,12 +162,25 @@ class RatingWidget(Gtk.Bin):
         else:
             self.__object.set_popularity(pop)
         # Save to tags if needed
-        # FIXME We really need a radio object
-        # FIXME We look to kid3-cli here!
         if Lp().settings.get_value("save-to-tags") and\
-                GLib.find_program_in_path("kid3-cli") is not None and\
                 isinstance(self.__object, Track) and\
                 self.__object.id >= 0:
+            dbus_helper = DBusHelper()
+            dbus_helper.call("CanSetCover", None, self.__on_can_set_cover, pop)
+        return True
+
+    def __on_can_set_cover(self, source, result, pop):
+        """
+            Remove album image from tags
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param pop as int
+        """
+        try:
+            can_set_cover = source.call_finish(result)
+        except:
+            can_set_cover = False
+        if can_set_cover:
             if pop == 0:
                 value = 0
             elif pop == 1:
