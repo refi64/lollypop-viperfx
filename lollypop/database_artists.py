@@ -78,9 +78,15 @@ class ArtistsDatabase:
             @param Artist name as string
             @return Artist id as int
         """
+        # Special case, id name is fully uppercase, do not use NOCASE
+        # We want to have a different artist
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid from artists\
-                                  WHERE name=? COLLATE NOCASE", (name,))
+            if name.isupper():
+                result = sql.execute("SELECT rowid from artists\
+                                      WHERE name=?", (name,))
+            else:
+                result = sql.execute("SELECT rowid from artists\
+                                      WHERE name=? COLLATE NOCASE", (name,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
