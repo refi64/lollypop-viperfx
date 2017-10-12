@@ -155,9 +155,9 @@ class TagReader(Discoverer):
                 sortnames.append(read)
         return "; ".join(sortnames)
 
-    def get_album_artist(self, tags):
+    def get_album_artists(self, tags):
         """
-            Return album artist for tags
+            Return album artists for tags
             @param tags as Gst.TagList
             @return album artist as string or None
         """

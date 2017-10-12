@@ -249,7 +249,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         performers = self.get_performers(tags)
         a_sortnames = self.get_artist_sortnames(tags)
         aa_sortnames = self.get_album_artist_sortnames(tags)
-        album_artists = self.get_album_artist(tags)
+        album_artists = self.get_album_artists(tags)
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
