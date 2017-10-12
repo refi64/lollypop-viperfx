@@ -80,61 +80,29 @@ class RatingWidget(Gtk.Bin):
             @param event as Gdk.Event (can be None)
         """
         user_rating = True
-        stars = self.__object.get_rate()
+        rate = self.__object.get_rate()
         # -1 for compatiblity with previous release
-        if stars in [0, -1]:
-            stars = self.__object.get_popularity()
+        if rate in [0, -1]:
+            rate = self.__object.get_popularity()
             user_rating = False
-        if stars < 1:
+        if rate < 1:
             for i in range(5):
                 self._stars[i].set_opacity(0.2)
                 self._stars[i].get_style_context().remove_class("selected")
         else:
-            if stars >= 1:
+            star = self.__star_from_rate(rate)
+            # Select wanted star
+            for idx in range(0, star):
+                widget = self._stars[idx]
                 if user_rating:
-                    self._stars[0].get_style_context().add_class("selected")
+                    widget.get_style_context().add_class("selected")
                 else:
-                    self._stars[0].get_style_context().remove_class("selected")
-                self._stars[0].set_opacity(0.8)
-            else:
-                self._stars[0].set_opacity(0.2)
-                self._stars[0].get_style_context().remove_class("selected")
-            if stars >= 2:
-                if user_rating:
-                    self._stars[1].get_style_context().add_class("selected")
-                else:
-                    self._stars[1].get_style_context().remove_class("selected")
-                self._stars[1].set_opacity(0.8)
-            else:
-                self._stars[1].set_opacity(0.2)
-                self._stars[1].get_style_context().remove_class("selected")
-            if stars >= 3:
-                if user_rating:
-                    self._stars[2].get_style_context().add_class("selected")
-                else:
-                    self._stars[2].get_style_context().remove_class("selected")
-                self._stars[2].set_opacity(0.8)
-            else:
-                self._stars[2].set_opacity(0.2)
-                self._stars[2].get_style_context().remove_class("selected")
-            if stars >= 4:
-                if user_rating:
-                    self._stars[3].get_style_context().add_class("selected")
-                else:
-                    self._stars[3].get_style_context().remove_class("selected")
-                self._stars[3].set_opacity(0.8)
-            else:
-                self._stars[3].set_opacity(0.2)
-                self._stars[3].get_style_context().remove_class("selected")
-            if stars >= 4.75:
-                if user_rating:
-                    self._stars[4].get_style_context().add_class("selected")
-                else:
-                    self._stars[4].get_style_context().remove_class("selected")
-                self._stars[4].set_opacity(0.8)
-            else:
-                self._stars[4].set_opacity(0.2)
-                self._stars[4].get_style_context().remove_class("selected")
+                    widget.get_style_context().remove_class("selected")
+                widget.set_opacity(0.8)
+            # Unselect others
+            for idx in range(star, 5):
+                self._stars[idx].set_opacity(0.2)
+                self._stars[idx].get_style_context().remove_class("selected")
 
     def _on_button_press(self, widget, event):
         """
@@ -144,19 +112,25 @@ class RatingWidget(Gtk.Bin):
         """
         if Lp().scanner.is_locked():
             return
+        user_rating = True
+        rate = self.__object.get_rate()
         # -1 for compatiblity with previous release
-        user_rating = self.__object.get_rate() not in [0, -1]
+        if rate in [0, -1]:
+            rate = self.__object.get_popularity()
+            user_rating = False
+        max_star = self.__star_from_rate(rate)
         event_star = widget.get_children()[0]
         if event_star in self._stars:
             position = self._stars.index(event_star)
         else:
             position = -1
         pop = position + 1
-        if pop == 0:
+        if pop == 0 or pop == max_star:
             if user_rating:
                 self.__object.set_rate(Type.NONE)
             else:
                 self.__object.set_popularity(0)
+            self._on_leave_notify(None, None)
         elif event.button == 1:
             self.__object.set_rate(pop)
         else:
@@ -168,6 +142,18 @@ class RatingWidget(Gtk.Bin):
             dbus_helper = DBusHelper()
             dbus_helper.call("CanSetCover", None, self.__on_can_set_cover, pop)
         return True
+
+#######################
+# PRIVATE             #
+#######################
+    def __star_from_rate(self, rate):
+        """
+            Calculate stars from rate
+            @param rate as double
+            @return int
+        """
+        star = min(5, int(rate))
+        return star
 
     def __on_can_set_cover(self, source, result, pop):
         """
