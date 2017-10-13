@@ -103,6 +103,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     None)
             except Exception as e:
                 print("CollectionScanner::__get_objects_for_uris():", e)
+                ignore_dirs.append(uri)
                 continue
             for info in infos:
                 f = infos.get_child(info)
