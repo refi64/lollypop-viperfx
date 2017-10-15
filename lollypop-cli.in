@@ -32,7 +32,7 @@ from lollypop.database import Database
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.settings import Settings
-from lollypop.define import Type, DbPersistent
+from lollypop.define import Type
 from lollypop.playlists import Playlists
 
 import xml.etree.ElementTree as etree
@@ -71,47 +71,11 @@ class Application(Gtk.Application):
         """
             Show usage
         """
-        print("usage: lollypop-cli youtube artist album track uri")
-        print("Allow user to add youtube tracks not available in search")
-        print("")
         print("usage: lollypop-cli export-playlists")
         print("Export playlists to m3u format in current directory")
         print("")
         print("usage: lollypop-cli import-rhythmbox")
         print("Import Rhythmbox stats")
-
-    def add_youtube(self, argv):
-        """
-            Add youtube track
-            @param argv as [app, artist, album, title, url]
-        """
-        artists = album_artist = sys.argv[2]
-        album = sys.argv[3]
-        title = sys.argv[4]
-        uri = sys.argv[5]
-
-        t = TagReader()
-        with SqlCursor(self.db) as sql:
-            (artist_ids, new_artist_ids) = t.add_artists(artists,
-                                                         album_artist,
-                                                         "")
-            (album_artist_ids, new_album_artist_ids) = t.add_album_artists(
-                                                               album_artist,
-                                                               "")
-            (album_id, new_album) = t.add_album(album,
-                                                album_artist_ids,
-                                                "", 0, int(time()))
-            if new_album:
-                self.albums.set_synced(album_id, Type.NONE)
-
-            (genre_ids, new_genre_ids) = t.add_genres("Youtube", album_id)
-
-            track_id = self.tracks.add(title, uri, 0,
-                                       0, 0, "", album_id,
-                                       None, 0, 0, 0, DbPersistent.EXTERNAL)
-            t.update_track(track_id, artist_ids, genre_ids)
-            t.update_album(album_id, album_artist_ids, genre_ids, None)
-            sql.commit()
 
     def import_rhythmbox(self):
         """
