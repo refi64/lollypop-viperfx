@@ -380,8 +380,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self.load(track)
                 elif Lp().tracks.get_uri(track_id) != "":
                     track = Track(track_id)
-                    if Lp().notify is not None:
-                        Lp().notify.inhibit()
                     self._load_track(track)
                     # We set this initial state
                     # because seek while failed otherwise
