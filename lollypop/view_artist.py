@@ -165,16 +165,25 @@ class ArtistView(ArtistAlbumsView):
         try:
             if Lp().player.is_party:
                 Lp().player.set_party(False)
-            album_id = Lp().albums.get_ids(self._artist_ids,
-                                           self._genre_ids)[0]
-            if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
-                track = choice(Album(album_id).tracks)
-            else:
-                track = Album(album_id).tracks[0]
-            Lp().player.load(track)
-            Lp().player.set_albums(track.id, self._artist_ids,
-                                   self._genre_ids)
-            self.__set_add_icon()
+            album_ids = Lp().albums.get_ids(self._artist_ids,
+                                            self._genre_ids)
+            if album_ids:
+                track = None
+                if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
+                    album_id = choice(album_ids)
+                    album_tracks = Album(album_id).tracks
+                    if album_tracks:
+                        track = choice(album_tracks)
+                else:
+                    album_id = choice(album_ids)
+                    album_tracks = Album(album_id).tracks
+                    if album_tracks:
+                        track = album_tracks[0]
+                if track is not None:
+                    Lp().player.load(track)
+                    Lp().player.set_albums(track.id, self._artist_ids,
+                                           self._genre_ids)
+                    self.__set_add_icon()
         except:
             pass  # Artist not available anymore for this context
 
