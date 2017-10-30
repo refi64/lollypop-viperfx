@@ -155,6 +155,20 @@ class Radios(GObject.GObject):
                         (current, name))
             sql.commit()
 
+    def get_higher_popularity(self):
+        """
+            Get higher available popularity
+            @return int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT popularity\
+                                  FROM radios\
+                                  ORDER BY POPULARITY DESC LIMIT 1")
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_avg_popularity(self):
         """
             Return avarage popularity

@@ -125,16 +125,17 @@ class RatingWidget(Gtk.Bin):
         else:
             position = -1
         pop = position + 1
-        if pop == 0 or pop == max_star:
+        if event.button != 1:
+            self.__object.set_popularity(pop)
+        elif pop == 0 or pop == max_star:
             if user_rating:
                 self.__object.set_rate(Type.NONE)
             else:
                 self.__object.set_popularity(0)
             self._on_leave_notify(None, None)
-        elif event.button == 1:
-            self.__object.set_rate(pop)
         else:
-            self.__object.set_popularity(pop)
+            self.__object.set_rate(pop)
+
         # Save to tags if needed
         if Lp().settings.get_value("save-to-tags") and\
                 isinstance(self.__object, Track) and\

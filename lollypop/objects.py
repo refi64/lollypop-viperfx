@@ -69,22 +69,28 @@ class Base:
                 popularity = radios.get_popularity(self._album_artists[0])
         return popularity * 5 / avg_popularity + 0.5
 
-    def set_popularity(self, popularity):
+    def set_popularity(self, new_rate):
         """
             Set popularity
-            @param popularity as int between 0 and 5
+            @param new_rate as int between 0 and 5
         """
         if self.id is None or self.id == Type.EXTERNALS:
             return
         try:
             if self.id >= 0:
                 avg_popularity = self.db.get_avg_popularity()
-                popularity = int((popularity * avg_popularity / 5) + 0.5)
+                popularity = int((new_rate * avg_popularity / 5) + 0.5)
+                best_popularity = self.db.get_higher_popularity()
+                if new_rate == 5:
+                    popularity = (popularity + best_popularity) / 2
                 self.db.set_popularity(self.id, popularity, True)
             elif self.id == Type.RADIOS:
                 radios = Radios()
                 avg_popularity = radios.get_avg_popularity()
-                popularity = int((popularity * avg_popularity / 5) + 0.5)
+                popularity = int((new_rate * avg_popularity / 5) + 0.5)
+                best_popularity = self.db.get_higher_popularity()
+                if new_rate == 5:
+                    popularity = (popularity + best_popularity) / 2
                 radios.set_popularity(self._album_artists[0], popularity)
         except Exception as e:
             print("Base::set_popularity(): %s" % e)
