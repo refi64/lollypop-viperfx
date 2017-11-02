@@ -12,7 +12,7 @@
 
 import gi
 gi.require_version("Secret", "1")
-from gi.repository import GLib, Gio
+from gi.repository import Gio
 
 from gettext import gettext as _
 
@@ -29,7 +29,7 @@ try:
 except:
     pass
 
-from pylast import LastFMNetwork, LibreFMNetwork, md5, BadAuthenticationError
+from pylast import LastFMNetwork, LibreFMNetwork, md5, WSError
 from pylast import SessionKeyGenerator
 from gettext import gettext as _
 from locale import getdefaultlocale
@@ -287,7 +287,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                           album=album,
                           title=title,
                           timestamp=timestamp)
-        except BadAuthenticationError as e:
+        except WSError:
             pass
         except Exception as e:
             print("LastFM::__scrobble():", e)
@@ -315,9 +315,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                                                album,
                                                                title,
                                                                duration))
-        except BadAuthenticationError:
-            if Lp().notify is not None:
-                GLib.idle_add(Lp().notify.send, _("Wrong Last.fm credentials"))
+        except WSError:
+            pass
         except Exception as e:
             print("LastFM::__now_playing():", e)
             # now playing sometimes fails
