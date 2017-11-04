@@ -376,7 +376,7 @@ class Application(Gtk.Application):
         """
         if options.contains("version"):
             print("Lollypop %s" % self.__version)
-            return 0
+            exit(0)
         return -1
 
     def __on_command_line(self, app, app_cmd_line):
