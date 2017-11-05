@@ -470,8 +470,6 @@ class TrackMenuPopover(Gtk.Popover):
             year = Gtk.Label()
             year.set_text(track_year)
             year.set_margin_end(5)
-            year.set_margin_top(5)
-            year.set_margin_bottom(5)
             year.get_style_context().add_class("dim-label")
             year.set_property("halign", Gtk.Align.END)
             year.set_property("hexpand", True)
@@ -492,17 +490,14 @@ class TrackMenuPopover(Gtk.Popover):
             grid.add(menu_widget)
 
         hgrid = Gtk.Grid()
+        hgrid.get_style_context().add_class("popover-rating-loved-grid")
         rating = RatingWidget(track)
-        rating.set_margin_top(5)
-        rating.set_margin_bottom(5)
         rating.set_property("halign", Gtk.Align.START)
         rating.set_property("hexpand", True)
         rating.show()
 
         loved = LovedWidget(track)
         loved.set_margin_end(5)
-        loved.set_margin_top(5)
-        loved.set_margin_bottom(5)
         if track_year == "":
             loved.set_property("halign", Gtk.Align.END)
         else:
