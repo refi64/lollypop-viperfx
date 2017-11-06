@@ -478,7 +478,6 @@ class TrackMenuPopover(Gtk.Popover):
             year.show()
 
         # Hack to add two widgets in popover
-        # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
 
