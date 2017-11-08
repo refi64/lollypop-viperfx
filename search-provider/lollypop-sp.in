@@ -174,14 +174,14 @@ class SearchLollypopService(Server, Gio.Application):
             for search_id in ids:
                 if search_id[0:2] == "a:":
                     album = Album(int(search_id[2:]))
-                    name = " ".join(album.artists)
+                    name = " ".join(album.artists) or " "
                     description = album.name
                     surface = self.art.get_album_artwork(album, ArtSize.BIG, 1)
                     gicon = self.art.get_album_cache_path(album, ArtSize.BIG)
                 else:
                     track = Track(int(search_id[2:]))
                     name = "♫ " + track.name
-                    description = " ".join(track.artists)
+                    description = " ".join(track.artists) or " "
                     surface = self.art.get_album_artwork(track.album,
                                                          ArtSize.BIG, 1)
                     gicon = self.art.get_album_cache_path(track.album,
