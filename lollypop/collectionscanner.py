@@ -291,6 +291,13 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         new_artist_ids = list(set(album_artist_ids) | set(artist_ids))
 
+        missing_artist_ids = list(set(album_artist_ids) - set(artist_ids))
+        # https://github.com/gnumdk/lollypop/issues/507#issuecomment-200526942
+        # Special case for broken tags
+        # Can't do more because don't want to break split album behaviour
+        if len(missing_artist_ids) == len(album_artist_ids):
+            artist_ids += missing_artist_ids
+
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,

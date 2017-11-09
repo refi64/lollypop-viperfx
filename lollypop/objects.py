@@ -338,8 +338,8 @@ class Track(Base):
                     self.album.artist_ids[0] == Type.COMPILATIONS:
                 self._non_album_artists = self.artists
             else:
-                lower_album_artists = map(lambda x: x.lower(),
-                                          self.album_artists)
+                lower_album_artists = list(map(lambda x: x.lower(),
+                                           self.album_artists))
                 for artist in self.artists:
                     if artist.lower() not in lower_album_artists:
                         self._non_album_artists.append(artist)
