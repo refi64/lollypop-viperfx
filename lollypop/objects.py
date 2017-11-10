@@ -29,14 +29,15 @@ class Base:
         """
             Concatenate base class"s fields with child class"s fields
         """
-        return super(Base, self).__dir__(*args, **kwargs) + self.FIELDS
+        return super(Base, self).__dir__(*args, **kwargs) +\
+            list(self.DEFAULTS.keys())
 
     def __getattr__(self, attr):
         # Lazy DB calls of attributes referenced
         # in self.FIELDS
-        if attr in self.FIELDS:
+        if attr in list(self.DEFAULTS.keys()):
             if self.id is None or self.id < 0:
-                return self.DEFAULTS[self.FIELDS.index(attr)]
+                return self.DEFAULTS[attr]
             # Actual value of "attr_name" is stored in "_attr_name"
             attr_name = "_" + attr
             attr_value = getattr(self, attr_name)
@@ -45,7 +46,7 @@ class Base:
                 setattr(self, attr_name, attr_value)
             # Return default value if None
             if attr_value is None:
-                return self.DEFAULTS[self.FIELDS.index(attr)]
+                return self.DEFAULTS[attr]
             else:
                 return attr_value
 
@@ -177,9 +178,15 @@ class Album(Base):
     """
         Represent an album
     """
-    FIELDS = ["name", "artists", "artist_ids",
-              "year", "uri", "duration", "mtime", "synced", "loved"]
-    DEFAULTS = ["", "", [], "", "", 0, 0, False, False]
+    DEFAULTS = {"name": "",
+                "artists": "",
+                "artist_ids": [],
+                "year": "",  # FIXME => None/int
+                "uri": "",
+                "duration": 0,
+                "mtime": 0,
+                "synced": False,
+                "loved": False}
 
     def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
         """
@@ -293,10 +300,20 @@ class Track(Base):
     """
         Represent a track
     """
-    FIELDS = ["name", "album_id", "album_artist_ids", "artist_ids",
-              "featuring", "genre_ids", "popularity", "album_name", "artists",
-              "genres", "duration", "number", "year", "persistent", "mtime"]
-    DEFAULTS = ["", None, [], [], [], [], 0, "", "", "", 0.0, 0, None, 1, 0]
+    DEFAULTS = {"name": "",
+                "album_id": None,
+                "album_artist_ids": [],
+                "artist_ids": [],
+                "featuring": [],
+                "genre_ids": [],
+                "popularity": 0,
+                "album_name": "",
+                "artists": "",
+                "genres": "",
+                "duration": 0,
+                "number": 0,
+                "year": None,
+                "mtime": 0}
 
     def __init__(self, track_id=None):
         """
