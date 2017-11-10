@@ -134,8 +134,7 @@ popover.background separator {
 }
 
 .toolbar-cover-frame {
-    border-left: 1px solid shade(@theme_bg_color, 0.7);
-    border-right: 1px solid shade(@theme_bg_color, 0.7);
+    border: none;
 }
 
 .small-cover-frame {
