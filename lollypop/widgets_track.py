@@ -57,9 +57,12 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property("hexpand", True)
         self._title_label.set_property("halign", Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        if self._track.non_album_artists:
+        if self._track.featuring:
+            artists = []
+            for artist_id in self._track.featuring:
+                artists.append(Lp().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
-                                     ", ".join(self._track.non_album_artists)))
+                                                           ", ".join(artists)))
             self._artists_label.set_use_markup(True)
             self._artists_label.set_property("has-tooltip", True)
             self._artists_label.connect("query-tooltip",

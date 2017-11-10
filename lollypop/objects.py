@@ -294,9 +294,9 @@ class Track(Base):
         Represent a track
     """
     FIELDS = ["name", "album_id", "album_artist_ids", "artist_ids",
-              "genre_ids", "popularity", "album_name", "artists", "genres",
-              "duration", "number", "year", "persistent", "mtime"]
-    DEFAULTS = ["", None, [], [], [], 0, "", "", "", 0.0, 0, None, 1, 0]
+              "featuring", "genre_ids", "popularity", "album_name", "artists",
+              "genres", "duration", "number", "year", "persistent", "mtime"]
+    DEFAULTS = ["", None, [], [], [], [], 0, "", "", "", 0.0, 0, None, 1, 0]
 
     def __init__(self, track_id=None):
         """
@@ -306,26 +306,6 @@ class Track(Base):
         Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
-        self._non_album_artists = []
-
-    @property
-    def non_album_artists(self):
-        """
-            Return non album artists
-            @return str
-        """
-        if not self._non_album_artists:
-            # Show all artists for compilations
-            if self.album.artist_ids and\
-                    self.album.artist_ids[0] == Type.COMPILATIONS:
-                self._non_album_artists = self.artists
-            else:
-                lower_album_artists = list(map(lambda x: x.lower(),
-                                           self.album_artists))
-                for artist in self.artists:
-                    if artist.lower() not in lower_album_artists:
-                        self._non_album_artists.append(artist)
-        return self._non_album_artists
 
     @property
     def title(self):

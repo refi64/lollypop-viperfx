@@ -284,6 +284,16 @@ class TracksDatabase:
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
 
+    def get_featuring(self, track_id):
+        """
+            Get featuring artists
+            @return artist ids as [int]
+        """
+        artist_ids = self.get_artist_ids(track_id)
+        album_id = self.get_album_id(track_id)
+        album_artist_ids = Lp().albums.get_artist_ids(album_id)
+        return list(set(artist_ids) - set(album_artist_ids))
+
     def get_artists(self, track_id):
         """
             Get artist names
@@ -633,7 +643,7 @@ Nous traitons le problème dès que possible (salle très occupée).
 
     def count(self):
         """
-            Count albums
+            Count tracks
             @return int
         """
         with SqlCursor(Lp().db) as sql:
