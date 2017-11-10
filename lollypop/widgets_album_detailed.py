@@ -90,8 +90,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
             artist_label.set_text(", ".join(self._album.artists))
             artist_label.show()
-            if self._album.year:
-                year_label.set_label(self._album.year)
+            if self._album.year is not None:
+                year_label.set_label(str(self._album.year))
                 year_label.show()
         else:
             self.__duration_label.set_hexpand(True)
@@ -108,8 +108,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if art_size == ArtSize.BIG:
                 self._cover.get_style_context().add_class("cover-frame")
                 self._artwork_button = builder.get_object("artwork-button")
-                if self._album.year:
-                    year_label.set_label(self._album.year)
+                if self._album.year is not None:
+                    year_label.set_label(str(self._album.year))
                     year_label.show()
                 grid = Gtk.Grid()
                 grid.set_column_spacing(10)

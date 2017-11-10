@@ -190,6 +190,25 @@ class TracksDatabase:
                 return str(v[0])
             return ""
 
+    def get_year_for_album(self, album_id):
+        """
+            Get album year based on tracks
+            Use most used year by tracks
+            @param album id as int
+            @return int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT year, COUNT(year) AS occurrence\
+                                  FROM tracks\
+                                  WHERE tracks.album_id=?\
+                                  GROUP BY year\
+                                  ORDER BY occurrence DESC\
+                                  LIMIT 1", (album_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
     def get_rate(self, track_id):
         """
             Get track rate

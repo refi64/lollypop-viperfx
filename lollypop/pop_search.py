@@ -322,7 +322,7 @@ class SearchPopover(Gtk.Popover):
         for item in self.__current_search.split():
             try:
                 year = int(item)
-                if year == int(row.year):
+                if year == row.year:
                     score += 2
             except:
                 pass

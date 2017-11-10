@@ -342,24 +342,6 @@ class AlbumsDatabase:
                 return v[0]
             return None
 
-    def get_year_from_tracks(self, album_id):
-        """
-            Get album year based on tracks
-            Use most used year by tracks
-            @param album id as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT year, COUNT(year) AS occurrence\
-                                  FROM tracks\
-                                  WHERE tracks.album_id=?\
-                                  GROUP BY year\
-                                  ORDER BY occurrence DESC\
-                                  LIMIT 1", (album_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return None
-
     def get_genre_ids(self, album_id):
         """
             Get genre ids
@@ -417,15 +399,15 @@ class AlbumsDatabase:
         """
             Get album year
             @param album id as int
-            @return album year as string
+            @return album year as int
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT year FROM albums where rowid=?",
                                  (album_id,))
             v = result.fetchone()
             if v and v[0]:
-                return str(v[0])
-            return ""
+                return v[0]
+            return None
 
     def get_uri(self, album_id):
         """

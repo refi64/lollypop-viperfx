@@ -181,7 +181,7 @@ class Album(Base):
     DEFAULTS = {"name": "",
                 "artists": "",
                 "artist_ids": [],
-                "year": "",  # FIXME => None/int
+                "year": None,
                 "uri": "",
                 "duration": 0,
                 "mtime": 0,

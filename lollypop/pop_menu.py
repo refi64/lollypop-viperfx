@@ -460,7 +460,7 @@ class TrackMenuPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         if menu is not None:
             self.bind_model(menu, None)
-
+        # FIXME Does it works? => year in popover
         if track.year != track.album.year:
             track_year = str(track.year)
         else:

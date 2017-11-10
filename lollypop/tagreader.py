@@ -531,7 +531,7 @@ class TagReader(Discoverer):
             Lp().albums.add_genre(album_id, genre_id)
 
         # Update year based on tracks
-        year = Lp().albums.get_year_from_tracks(album_id)
+        year = Lp().tracks.get_year_for_album(album_id)
         Lp().albums.set_year(album_id, year)
 
     def update_track(self, track_id, artist_ids, genre_ids):

@@ -374,8 +374,9 @@ class AlbumArt(BaseArt, TagReader):
             Get a uniq string for album
             @param album as Album
         """
-        name = "_".join(album.artists)[:100] +\
-            "_" + album.name[:100] + "_" + album.year
+        name = "%s_%s_%s" % (" ".join(album.artists)[:100],
+                             album.name[:100],
+                             album.year)
         return escape(name)
 
 #######################
