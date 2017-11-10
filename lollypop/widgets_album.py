@@ -318,7 +318,7 @@ class AlbumWidget(BaseWidget):
             Init Album widget
         """
         BaseWidget.__init__(self)
-        self._album = Album(album_id, genre_ids)
+        self._album = Album(album_id, genre_ids, artist_ids)
         self._filter_ids = artist_ids
         self._art_size = art_size
         self.connect("destroy", self.__on_destroy)

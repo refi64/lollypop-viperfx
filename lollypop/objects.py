@@ -195,24 +195,6 @@ class Album(Base):
         if artist_ids:
             self.artist_ids = artist_ids
 
-    def set_genres(self, genre_ids):
-        """
-            Set album genres
-            @param genre_ids as [int]
-            @return None
-        """
-        self.genre_ids = genre_ids
-        self._track_ids = None
-        self._tracks = None
-
-    def set_artists(self, artist_ids):
-        """
-            Set album artists
-        """
-        self.artist_ids = artist_ids
-        self._track_ids = None
-        self._tracks = None
-
     @property
     def title(self):
         """
