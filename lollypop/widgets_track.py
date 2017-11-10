@@ -57,9 +57,9 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property("hexpand", True)
         self._title_label.set_property("halign", Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        if self._track.featuring:
+        if self._track.featuring_ids:
             artists = []
-            for artist_id in self._track.featuring:
+            for artist_id in self._track.featuring_ids:
                 artists.append(Lp().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
                                                            ", ".join(artists)))

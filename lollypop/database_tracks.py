@@ -303,9 +303,9 @@ class TracksDatabase:
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
 
-    def get_featuring(self, track_id):
+    def get_featuring_ids(self, track_id):
         """
-            Get featuring artists
+            Get featuring artist ids
             @return artist ids as [int]
         """
         artist_ids = self.get_artist_ids(track_id)

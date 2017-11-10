@@ -33,8 +33,7 @@ class Base:
             list(self.DEFAULTS.keys())
 
     def __getattr__(self, attr):
-        # Lazy DB calls of attributes referenced
-        # in self.FIELDS
+        # Lazy DB calls of attributes
         if attr in list(self.DEFAULTS.keys()):
             if self.id is None or self.id < 0:
                 return self.DEFAULTS[attr]
@@ -304,7 +303,7 @@ class Track(Base):
                 "album_id": None,
                 "album_artist_ids": [],
                 "artist_ids": [],
-                "featuring": [],
+                "featuring_ids": [],
                 "genre_ids": [],
                 "popularity": 0,
                 "album_name": "",
