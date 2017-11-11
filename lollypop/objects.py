@@ -303,7 +303,6 @@ class Track(Base):
                 "album_id": None,
                 "album_artist_ids": [],
                 "artist_ids": [],
-                "featuring_ids": [],
                 "genre_ids": [],
                 "popularity": 0,
                 "album_name": "",
@@ -322,6 +321,18 @@ class Track(Base):
         Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
+
+    def get_featuring_ids(self, album_artist_ids):
+        """
+            Get featuring artist ids
+            @param artist ids as [int]
+            @return featuring artist ids as [int]
+        """
+        artist_ids = self.db.get_artist_ids(self.id)
+        album_id = self.db.get_album_id(self.id)
+        if not album_artist_ids:
+            album_artist_ids = Lp().albums.get_artist_ids(album_id)
+        return list(set(artist_ids) - set(album_artist_ids))
 
     @property
     def title(self):

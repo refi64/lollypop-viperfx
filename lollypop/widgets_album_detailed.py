@@ -451,7 +451,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             track_number = track.number
 
-        row = TrackRow(track.id, track_number)
+        row = TrackRow(track.id, track_number, self._artist_ids)
         row.show()
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
@@ -579,9 +579,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if not Lp().player.is_party and not\
                     Lp().settings.get_enum("playback") == NextContext.STOP:
                 # If in artist view, reset album list
-                if self._filter_ids:
+                if self._artist_ids:
                     Lp().player.set_albums(track_id,
-                                           self._filter_ids,
+                                           self._artist_ids,
                                            self._album.genre_ids)
                 # Else, add album if missing
                 elif not Lp().player.has_album(self._album):

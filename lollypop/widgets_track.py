@@ -25,12 +25,13 @@ class Row(Gtk.ListBoxRow):
     """
         A row
     """
-    def __init__(self, rowid, num):
+    def __init__(self, rowid, num, artist_ids=[]):
         """
             Init row widgets
             @param rowid as int
             @param num as int
-            @param show loved as bool
+            @param artist_ids as [int]: Allow to tell Row that artist_ids
+                   should not be displayed
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
@@ -57,9 +58,10 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property("hexpand", True)
         self._title_label.set_property("halign", Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        if self._track.featuring_ids:
+        featuring_ids = self._track.get_featuring_ids(artist_ids)
+        if featuring_ids:
             artists = []
-            for artist_id in self._track.featuring_ids:
+            for artist_id in featuring_ids:
                 artists.append(Lp().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
                                                            ", ".join(artists)))
@@ -596,13 +598,15 @@ class TrackRow(Row):
             height = menu_height
         return height
 
-    def __init__(self, rowid, num):
+    def __init__(self, rowid, num, artist_ids):
         """
             Init row widget and show it
             @param rowid as int
             @param num as int
+            @param artist_ids as [int]: Allow to tell Row that artist_ids
+                   should not be displayed
         """
-        Row.__init__(self, rowid, num)
+        Row.__init__(self, rowid, num, artist_ids)
         self.__parent_filter = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
