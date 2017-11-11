@@ -331,7 +331,9 @@ class Track(Base):
         artist_ids = self.db.get_artist_ids(self.id)
         album_id = self.db.get_album_id(self.id)
         if not album_artist_ids:
-            album_artist_ids = Lp().albums.get_artist_ids(album_id)
+            db_album_artist_ids = Lp().albums.get_artist_ids(album_id)
+            if len(db_album_artist_ids) == 1:
+                artist_ids = list(set(artist_ids) - set(db_album_artist_ids))
         return list(set(artist_ids) - set(album_artist_ids))
 
     @property
