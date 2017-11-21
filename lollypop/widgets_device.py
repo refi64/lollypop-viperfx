@@ -295,7 +295,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @thread safe
         """
         def load():
-            artists = Lp().artists.get_local()
+            artists = Lp().artists.get()
             compilations = Lp().albums.get_compilation_ids()
             return (artists, compilations)
 

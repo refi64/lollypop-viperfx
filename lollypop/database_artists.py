@@ -176,25 +176,6 @@ class ArtistsDatabase:
                 result = sql.execute(request, genres)
             return [(row[0], row[1], row[2]) for row in result]
 
-    def get_local(self):
-        """
-            Get all available local artists
-            @return Array of (artist id as int, artist name as string)
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = []
-            result = sql.execute(
-                             "SELECT DISTINCT artists.rowid,\
-                              artists.name, artists.sortname\
-                              FROM artists, albums, album_artists\
-                              WHERE album_artists.artist_id=artists.rowid\
-                              AND album_artists.album_id=albums.rowid\
-                              AND albums.synced!=?\
-                              ORDER BY artists.sortname\
-                              COLLATE NOCASE COLLATE LOCALIZED",
-                             (Type.NONE,))
-            return [(row[0], row[1], row[2]) for row in result]
-
     def get_ids(self, genre_ids=[]):
         """
             Get all available album artists
