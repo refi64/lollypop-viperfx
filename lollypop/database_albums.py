@@ -736,7 +736,7 @@ class AlbumsDatabase:
         """
         genre_ids = remove_static_genres(genre_ids)
         orderby = Lp().settings.get_enum("orderby")
-        if orderby == OrderBy.ARTIST:
+        if artist_ids or orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
                      albums.year,\
