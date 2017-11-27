@@ -382,15 +382,18 @@ class Container:
             Get save view state
             @return (list one id, list two id)
         """
-        list_one_ids = [Type.POPULARS]
+        # Get list one ids (always)
+        list_one_ids = []
+        ids = Lp().settings.get_value("list-one-ids")
+        for i in ids:
+            if isinstance(i, int):
+                list_one_ids.append(i)
+        if not list_one_ids:
+            list_one_ids = [Type.POPULARS]
         list_two_ids = [Type.NONE]
+        # Get list two ids (only on save state)
         if Lp().settings.get_value("save-state"):
-            list_one_ids = []
             list_two_ids = []
-            ids = Lp().settings.get_value("list-one-ids")
-            for i in ids:
-                if isinstance(i, int):
-                    list_one_ids.append(i)
             ids = Lp().settings.get_value("list-two-ids")
             for i in ids:
                 if isinstance(i, int):

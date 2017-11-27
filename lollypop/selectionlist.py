@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GObject, Pango
+from gi.repository import Gtk, Gdk, Gio, GLib, GObject, Pango
 
 from gettext import gettext as _
 from locale import strcoll
@@ -18,6 +18,36 @@ from locale import strcoll
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, Lp, ArtSize
+
+
+class DefaultStartupMenu(Gio.Menu):
+    """
+        Mark entry as default on startup
+    """
+
+    def __init__(self, rowid):
+        """
+            Init menu
+        """
+        Gio.Menu.__init__(self)
+        self.__rowid = rowid
+        action = Gio.SimpleAction(name="default_selection_id")
+        Lp().add_action(action)
+        action.connect('activate',
+                       self.__on_action_clicked,
+                       rowid)
+        item = Gio.MenuItem.new(_("Default on startup"),
+                                "app.default_selection_id")
+        self.append_item(item)
+
+    def __on_action_clicked(self, action, variant, rowid):
+        """
+            Add to playlists
+            @param Gio.SimpleAction
+            @param GVariant
+            @param rowid as int
+        """
+        Lp().settings.set_value("list-one-ids", GLib.Variant("ai", [rowid]))
 
 
 class SelectionList(Gtk.Overlay):
@@ -329,11 +359,27 @@ class SelectionList(Gtk.Overlay):
             @param view as Gtk.TreeView
             @param event as Gdk.Event
         """
-        view.grab_focus()
-        state = event.get_state()
-        if state & Gdk.ModifierType.CONTROL_MASK or\
-           state & Gdk.ModifierType.SHIFT_MASK:
-            self.__modifier = True
+        if event.button == 1:
+            view.grab_focus()
+            state = event.get_state()
+            if state & Gdk.ModifierType.CONTROL_MASK or\
+               state & Gdk.ModifierType.SHIFT_MASK:
+                self.__modifier = True
+        else:
+            info = view.get_dest_row_at_pos(event.x, event.y)
+            if info is not None:
+                (path, position) = info
+                iterator = self.__model.get_iter(path)
+                rowid = self.__model.get_value(iterator, 0)
+                menu = DefaultStartupMenu(rowid)
+                popover = Gtk.Popover.new_from_model(view, menu)
+                rect = Gdk.Rectangle()
+                rect.x = event.x
+                rect.y = event.y
+                rect.width = rect.height = 1
+                popover.set_pointing_to(rect)
+                popover.popup()
+                return True
 
     def _on_button_release_event(self, view, event):
         """
