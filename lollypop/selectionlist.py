@@ -371,14 +371,18 @@ class SelectionList(Gtk.Overlay):
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
-                menu = DefaultStartupMenu(rowid)
-                popover = Gtk.Popover.new_from_model(view, menu)
-                rect = Gdk.Rectangle()
-                rect.x = event.x
-                rect.y = event.y
-                rect.width = rect.height = 1
-                popover.set_pointing_to(rect)
-                popover.popup()
+                if rowid in [Type.POPULARS, Type.RADIOS,
+                             Type.ALL, Type.RECENTS,
+                             Type.RANDOMS, Type.NEVER,
+                             Type.PLAYLISTS]:
+                    menu = DefaultStartupMenu(rowid)
+                    popover = Gtk.Popover.new_from_model(view, menu)
+                    rect = Gdk.Rectangle()
+                    rect.x = event.x
+                    rect.y = event.y
+                    rect.width = rect.height = 1
+                    popover.set_pointing_to(rect)
+                    popover.popup()
                 return True
 
     def _on_button_release_event(self, view, event):
