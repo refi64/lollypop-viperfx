@@ -426,7 +426,7 @@ class PlaylistRow(Row):
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
-                           [], Gdk.DragAction.MOVE)
+                           [('text/plain', 0, 0)], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-begin", self.__on_drag_begin)
         self.connect("drag-data-get", self.__on_drag_data_get)
