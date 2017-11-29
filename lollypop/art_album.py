@@ -38,6 +38,9 @@ class AlbumArt(BaseArt, TagReader):
         TagReader.__init__(self)
         self.__favorite = Lp().settings.get_value(
                                                 "favorite-cover").get_string()
+        if not self.__favorite:
+            self.__favorite = Lp().settings.get_default_value(
+                                                "favorite-cover").get_string()
 
     def get_album_cache_path(self, album, size):
         """
