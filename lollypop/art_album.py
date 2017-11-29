@@ -92,8 +92,8 @@ class AlbumArt(BaseArt, TagReader):
                 f = Gio.File.new_for_uri(uri)
                 if f.query_exists():
                     return uri
-        except:
-            pass
+        except Exception as e:
+            print("AlbumArt::get_album_artwork_uri():", e)
         return None
 
     def get_first_album_artwork(self, album):
@@ -308,8 +308,12 @@ class AlbumArt(BaseArt, TagReader):
             f = Gio.File.new_for_uri(uri)
             try:
                 f.trash()
-            except:
-                f.delete(None)
+            except Exception as e:
+                print("AlbumArt::remove_album_artwork():", e)
+                try:
+                    f.delete(None)
+                except Exception as e:
+                    print("AlbumArt::remove_album_artwork():", e)
         dbus_helper = DBusHelper()
         dbus_helper.call("CanSetCover", None,
                          self.__on_remove_album_artwork, album.id)
