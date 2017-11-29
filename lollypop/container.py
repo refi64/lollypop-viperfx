@@ -704,7 +704,9 @@ class Container:
         if uri is None:
             return
         parsed = urlparse(uri)
-        is_removable = parsed.scheme == "file" and mount.can_eject()
+        is_removable = parsed.scheme == "file" and\
+            mount.can_eject() and\
+            Lp().settings.get_value("sync-to-usb-disks")
         if is_removable or parsed.scheme == "mtp":
             self.__devices_index -= 1
             dev = Device()

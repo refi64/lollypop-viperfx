@@ -128,6 +128,11 @@
             <summary>Replay gain value in dB</summary>
             <description>Between -15 and 15</description>
         </key>
+        <key type="b" name="sync-to-usb-disks">
+            <default>false</default>
+            <summary>Allow MTP syncing to usb disks</summary>
+            <description></description>
+        </key>
          <key type="b" name="sync-albums">
             <default>false</default>
             <summary>Sync all albums(MTP)</summary>
