@@ -50,7 +50,7 @@ class FullScreen(Gtk.Window, InfoController,
 
         # Calculate cover size
         screen = Gdk.Screen.get_default()
-        monitor = screen.get_primary_monitor()
+        monitor = screen.get_monitor_at_window(parent.get_window())
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
@@ -117,7 +117,9 @@ class FullScreen(Gtk.Window, InfoController,
                                                self.__update_datetime,
                                                show_seconds)
         self._update_position(Lp().player.position/Gst.SECOND)
-        self.fullscreen()
+        screen = Gdk.Screen.get_default()
+        monitor = screen.get_monitor_at_window(self.__parent.get_window())
+        self.fullscreen_on_monitor(screen, monitor)
         self._next_popover.set_relative_to(self._album_label)
         if Lp().player.next_track.id != Type.RADIOS:
             self._next_popover.show()

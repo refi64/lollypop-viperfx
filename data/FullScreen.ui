@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.20.2 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="close_image">
@@ -11,6 +11,7 @@
     <property name="visible">True</property>
     <property name="can_focus">True</property>
     <property name="receives_default">True</property>
+    <property name="valign">start</property>
     <property name="margin_left">3</property>
     <property name="margin_right">3</property>
     <property name="margin_end">5</property>
@@ -51,7 +52,8 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
-        <property name="valign">center</property>
+        <property name="valign">start</property>
+        <property name="margin_top">20</property>
         <property name="orientation">vertical</property>
         <property name="homogeneous">True</property>
         <child>
@@ -110,9 +112,9 @@
         </child>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">1</property>
-        <property name="width">2</property>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="width">3</property>
       </packing>
     </child>
     <child>
@@ -120,8 +122,8 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">end</property>
-        <property name="margin_top">48</property>
-        <property name="margin_bottom">48</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">10</property>
         <property name="homogeneous">True</property>
         <property name="baseline_position">bottom</property>
         <child>
@@ -175,13 +177,14 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="top_attach">3</property>
+        <property name="top_attach">4</property>
       </packing>
     </child>
     <child>
       <object class="GtkGrid" id="title-box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_top">20</property>
         <child>
           <object class="GtkLabel" id="playback">
             <property name="visible">True</property>
@@ -230,13 +233,15 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="top_attach">2</property>
+        <property name="top_attach">3</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="datetime">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="valign">start</property>
+        <property name="vexpand">True</property>
         <attributes>
           <attribute name="weight" value="bold"/>
         </attributes>
@@ -262,6 +267,7 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
+        <property name="width">3</property>
       </packing>
     </child>
     <child>
