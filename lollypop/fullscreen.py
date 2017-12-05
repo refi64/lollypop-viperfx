@@ -54,16 +54,16 @@ class FullScreen(Gtk.Window, InfoController,
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
-            artsize = int(ArtSize.FULLSCREEN*geometry.width/1920)
+            artsize = int(ArtSize.FULLSCREEN*geometry.height/1080)
         else:
-            artsize = int(ArtSize.FULLSCREEN*geometry.height/1920)
+            artsize = int(ArtSize.FULLSCREEN*geometry.width/1920)
         InfoController.__init__(self, artsize)
         widget = builder.get_object("widget")
         self._play_btn = builder.get_object("play_btn")
         self._next_btn = builder.get_object("next_btn")
         self._prev_btn = builder.get_object("prev_btn")
         self._next_popover = NextPopover()
-        self._next_popover.set_position(Gtk.PositionType.BOTTOM)
+        self._next_popover.set_position(Gtk.PositionType.RIGHT)
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
         close_btn = builder.get_object("close_btn")
@@ -120,7 +120,7 @@ class FullScreen(Gtk.Window, InfoController,
         screen = Gdk.Screen.get_default()
         monitor = screen.get_monitor_at_window(self.__parent.get_window())
         self.fullscreen_on_monitor(screen, monitor)
-        self._next_popover.set_relative_to(self._album_label)
+        self._next_popover.set_relative_to(self._next_btn)
         if Lp().player.next_track.id != Type.RADIOS:
             self._next_popover.show()
 
