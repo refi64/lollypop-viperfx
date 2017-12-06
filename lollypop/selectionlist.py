@@ -153,6 +153,7 @@ class SelectionList(Gtk.Overlay):
         """
         if self.__populating:
             return
+        self.clear()
         self.__populating = True
         if len(self.__model) > 0:
             self.__updating = True

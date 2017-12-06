@@ -162,8 +162,6 @@ class Container:
             @param bool
         """
         self.__show_genres = show
-        self.__list_one.clear()
-        self.__list_two.clear()
         self.__list_two.hide()
         self.__update_list_one(None)
         self.__list_one.select_ids([Type.POPULARS])
@@ -219,12 +217,10 @@ class Container:
         if not values_one:
             values_one = [Type.POPULARS]
         self.__list_one.select_ids([])
-        self.__list_one.clear()
         self.__update_list_one(None)
         self.__list_one.select_ids(values_one)
         if self.__list_two.is_visible():
             self.__list_two.select_ids([])
-            self.__list_two.clear()
             self.__update_list_two(None)
             self.__list_two.select_ids(values_two)
 
@@ -740,7 +736,6 @@ class Container:
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
-        self.__list_two.clear()
         if selected_ids[0] == Type.PLAYLISTS:
             if Lp().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
