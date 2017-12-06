@@ -36,7 +36,7 @@ class SearchRow(Gtk.ListBoxRow):
         self.__item = item
         self.__score = None
         builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/InternalSearchRow.ui")
+        builder.add_from_resource("/org/gnome/Lollypop/SearchRow.ui")
         self.__stack = builder.get_object("stack")
         builder.connect_signals(self)
         self.set_property("has-tooltip", True)
@@ -143,6 +143,23 @@ class SearchRow(Gtk.ListBoxRow):
 #######################
 # PROTECTED           #
 #######################
+    def _on_artist_label_realize(self, eventbox):
+        """
+            Change cursor on label
+            @param eventbox as Gtk.EventBox
+        """
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+
+    def _on_artist_label_button_press_event(self, eventbox, event):
+        """
+            Jump to artist
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        Lp().window.show_artists_albums(self.__item.artist_ids)
+        self.get_ancestor(Gtk.Popover).popdown()
+        return True
+
     def _on_playlist_clicked(self, button):
         """
             Prepend track to queue

@@ -16,7 +16,7 @@
      <file compressed="true" preprocess="xml-stripblanks">FirstRunView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">FullScreen.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">InfoContent.ui</file>
-     <file compressed="true" preprocess="xml-stripblanks">InternalSearchRow.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">SearchRow.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LastfmPopover.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LovedWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">MiniPlayer.ui</file>
