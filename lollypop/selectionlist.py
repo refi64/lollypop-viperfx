@@ -471,6 +471,10 @@ class SelectionList(Gtk.Overlay):
         if value[0] in self.__to_select_ids:
             self.__to_select_ids.remove(value[0])
             self.__selection.select_iter(i)
+            self.__view.scroll_to_cell(self.__model.get_path(i),
+                                       None,
+                                       True,
+                                       0, 0)
 
     def __add_values(self, values):
         """
