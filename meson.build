@@ -34,7 +34,6 @@ conf.set('PYTHON', python_bin.path())
 
 subdir('data')
 subproject('po')
-subproject('help')
 subdir('search-provider')
 
 install_subdir(

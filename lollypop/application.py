@@ -570,28 +570,14 @@ class Application(Gtk.Application):
 
     def __shortcuts(self, action, param):
         """
-            Show help in yelp
+            Show shorctus
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        try:
-            builder = Gtk.Builder()
-            builder.add_from_resource("/org/gnome/Lollypop/Shortcuts.ui")
-            builder.get_object("shortcuts").set_transient_for(self.window)
-            builder.get_object("shortcuts").show()
-        except:  # GTK < 3.20
-            self.__help(action, param)
-
-    def __help(self, action, param):
-        """
-            Show help in yelp
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        try:
-            Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
-        except:
-            print(_("Lollypop: You need to install yelp."))
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/Shortcuts.ui")
+        builder.get_object("shortcuts").set_transient_for(self.window)
+        builder.get_object("shortcuts").show()
 
     def __about_response(self, dialog, response_id):
         """
@@ -640,10 +626,6 @@ class Application(Gtk.Application):
         shortcutsAction = Gio.SimpleAction.new("shortcuts", None)
         shortcutsAction.connect("activate", self.__shortcuts)
         self.add_action(shortcutsAction)
-
-        helpAction = Gio.SimpleAction.new("help", None)
-        helpAction.connect("activate", self.__help)
-        self.add_action(helpAction)
 
         quitAction = Gio.SimpleAction.new("quit", None)
         quitAction.connect("activate", lambda x, y: self.quit(True))
