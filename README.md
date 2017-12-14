@@ -44,7 +44,6 @@ It provides:
 - `ninja`
 - `totem-plparser`
 - `python-cairo`
-- `python-dbus`
 - `python-gobject`
 - `python-sqlite`
 - `python-pylast >= 1.0`
