@@ -35,7 +35,7 @@ It provides:
 
 ## Depends on
 
-- `gtk3 >= 3.14`
+- `gtk3 >= 3.20`
 - `gobject-introspection`
 - `appstream-glib`
 - `gir1.2-gstreamer-1.0 (Debian)`
