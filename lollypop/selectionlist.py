@@ -383,7 +383,7 @@ class SelectionList(Gtk.Overlay):
                     rect.y = event.y
                     rect.width = rect.height = 1
                     popover.set_pointing_to(rect)
-                    popover.popup()
+                    popover.show()
                 return True
 
     def _on_button_release_event(self, view, event):
