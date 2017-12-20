@@ -12,7 +12,7 @@ Lollypop is a new GNOME music playing application.
 
 - FAQ: https://github.com/gnumdk/lollypop/wiki
 
-For translators: https://www.transifex.com/projects/p/lollypop/
+For translators: https://hosted.weblate.org/projects/gnumdk/
 
 It provides:
 
