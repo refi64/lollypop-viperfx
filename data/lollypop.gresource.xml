@@ -16,7 +16,6 @@
      <file compressed="true" preprocess="xml-stripblanks">FirstRunView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">FullScreen.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">InfoContent.ui</file>
-     <file compressed="true" preprocess="xml-stripblanks">SearchRow.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LastfmPopover.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LovedWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">MiniPlayer.ui</file>
@@ -31,6 +30,7 @@
      <file compressed="true" preprocess="xml-stripblanks">RadiosView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">RatingWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SearchPopover.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">SearchRow.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SelectionList.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SettingsDialog.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">Shortcuts.ui</file>

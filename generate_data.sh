@@ -36,4 +36,4 @@ function generate_pot()
 }
 
 generate_resource > data/lollypop.gresource.xml
-generate_pot > subprojects/po/POTFILES.in
+generate_pot > po/POTFILES.in
