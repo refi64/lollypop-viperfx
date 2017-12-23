@@ -130,7 +130,7 @@
         </key>
         <key type="b" name="sync-to-usb-disks">
             <default>false</default>
-            <summary>Allow MTP syncing to usb disks</summary>
+            <summary>Allow MTP syncing to USB disks</summary>
             <description></description>
         </key>
          <key type="b" name="sync-albums">
