@@ -356,14 +356,18 @@ class InfoController:
             self._spinner.hide()
             self._spinner.stop()
 
-        self._artist_label.set_text(", ".join(player.current_track.artists))
+        if player.current_track.id == Type.RADIOS:
+            self._artist_label.set_text(player.current_track.album_artists[0])
+        else:
+            self._artist_label.set_text(
+                                       ", ".join(player.current_track.artists))
         self._artist_label.show()
         self._title_label.set_text(player.current_track.title)
         self._title_label.show()
 
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
-                                   ", ".join(player.current_track.artists),
+                                   player.current_track.album_artists[0],
                                    self._artsize,
                                    self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:

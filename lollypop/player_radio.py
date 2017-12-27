@@ -35,10 +35,11 @@ class RadioPlayer(BasePlayer):
         self.__current = None
         self.__radios = []
 
-    def load(self, track):
+    def load(self, track, play=True):
         """
             Load radio at uri
             @param track as Track
+            @param play as bool
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
             try:
@@ -46,9 +47,11 @@ class RadioPlayer(BasePlayer):
                     Lp().window.pulse(True)
                 self.__current = track
                 parser = TotemPlParser.Parser.new()
-                parser.connect("entry-parsed", self.__on_entry_parsed, track)
+                parser.connect("entry-parsed", self.__on_entry_parsed,
+                               track, play)
                 parser.parse_async(track.uri, True,
-                                   None, self.__on_parse_finished, track)
+                                   None, self.__on_parse_finished,
+                                   track, play)
             except Exception as e:
                 print("RadioPlayer::load(): ", e)
             if self.is_party:
@@ -139,10 +142,11 @@ class RadioPlayer(BasePlayer):
         else:
             return True
 
-    def __start_playback(self, track):
+    def __start_playback(self, track, play):
         """
             Start playing track
-            @param track as Track:
+            @param track as Track
+            @param play as bool
         """
         self._plugins.volume.props.volume = 1.0
         self._playbin.set_state(Gst.State.NULL)
@@ -150,12 +154,16 @@ class RadioPlayer(BasePlayer):
         Radios().set_more_popular(track.album_artists[0])
         self._current_track = track
         self.__current = None
-        self._playbin.set_state(Gst.State.PLAYING)
+        if play:
+            self._playbin.set_state(Gst.State.PLAYING)
+            self.emit("status-changed")
+        else:
+            self.emit("current-changed")
+            Lp().window.pulse(False)
         if not self.__radios:
             self.__radios = Radios().get()
-        self.emit("status-changed")
 
-    def __on_parse_finished(self, parser, result, track):
+    def __on_parse_finished(self, parser, result, track, play):
         """
             Sometimes, TotemPlparse fails to add
             the playlist URI to the end of the playlist on parse failure
@@ -163,21 +171,23 @@ class RadioPlayer(BasePlayer):
             @param parser as TotemPlParser.Parser
             @param result as Gio.AsyncResult
             @param track as Track
+            @param play as bool
         """
         # Only start playing if context always True
         if self.__current == track:
-            self.__start_playback(track)
+            self.__start_playback(track, play)
             Lp().window.pulse(False)
 
-    def __on_entry_parsed(self, parser, uri, metadata, track):
+    def __on_entry_parsed(self, parser, uri, metadata, track, play):
         """
             Play stream
             @param parser as TotemPlParser.Parser
             @param track uri as str
             @param metadata as GLib.HastTable
             @param track as Track
+            @param play as bool
         """
         # Only start playing if context always True
         if self.__current == track:
             track.set_radio(track.album_artists[0], uri)
-            self.__start_playback(track)
+            self.__start_playback(track, play)

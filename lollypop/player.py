@@ -103,7 +103,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param play as bool, ignored for radios
         """
         if track.id == Type.RADIOS:
-            RadioPlayer.load(self, track)
+            RadioPlayer.load(self, track, play)
         else:
             if play:
                 # Do not update next if user clicked on a track
@@ -377,7 +377,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     name = radios.get_name(track_id)
                     url = radios.get_url(name)
                     track.set_radio(name, url)
-                    self.load(track)
+                    self.load(track, is_playing)
                 elif Lp().tracks.get_uri(track_id) != "":
                     track = Track(track_id)
                     self._load_track(track)
