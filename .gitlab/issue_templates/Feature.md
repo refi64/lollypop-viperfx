@@ -1,6 +1,6 @@
--### Environment
--- Lollypop version: 
--- GTK+ version:
--- Operating system:
--
--### Feature
+### Environment
+- Lollypop version: 
+- GTK+ version: 
+- Operating system: 
+
+### Feature
