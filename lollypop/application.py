@@ -125,10 +125,10 @@ class Application(Gtk.Application):
         self.connect("command-line", self.__on_command_line)
         self.connect("handle-local-options", self.__on_handle_local_options)
         self.connect("activate", self.__on_activate)
+        self.connect("shutdown", lambda a: self.__save_state())
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
-        self.__listen_to_gnome_sm()
 
     def init(self):
         """
@@ -229,8 +229,6 @@ class Application(Gtk.Application):
             Quit Lollypop
             @param vacuum as bool
         """
-        # First save state
-        self.__save_state()
         # Then vacuum db
         if vacuum:
             self.__vacuum()
@@ -267,8 +265,6 @@ class Application(Gtk.Application):
         """
             Save window position and view
         """
-        if self.is_fullscreen():
-            return
         if self.settings.get_value("save-state"):
             self.window.save_view_state()
             # Save current track
@@ -529,22 +525,6 @@ class Application(Gtk.Application):
             @param application as Gio.Application
         """
         self.window.present()
-
-    def __listen_to_gnome_sm(self):
-        """
-            Save state on EndSession signal
-        """
-        try:
-            bus = self.get_dbus_connection()
-            bus.signal_subscribe(None,
-                                 "org.gnome.SessionManager.EndSessionDialog",
-                                 "ConfirmedLogout",
-                                 "/org/gnome/SessionManager/EndSessionDialog",
-                                 None,
-                                 Gio.DBusSignalFlags.NONE,
-                                 lambda a, b, c, d, e, f: self.__save_state())
-        except Exception as e:
-            print("Application::__listen_to_gnome_sm():", e)
 
     def __settings_dialog(self, action=None, param=None):
         """
