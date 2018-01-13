@@ -64,6 +64,16 @@ http://www.onlinewebfonts.com/icon (Last.fm icon)
               </object>
             </child>
             <child>
+              <object class="GtkLinkButton" id="liberapay">
+                <property name="label" translatable="yes">Liberapay</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="relief">none</property>
+                <property name="uri">https://liberapay.com/gnumdk</property>
+              </object>
+            </child>
+            <child>
               <object class="GtkLinkButton" id="paypal">
                 <property name="label" translatable="yes">PayPal</property>
                 <property name="visible">True</property>
