@@ -53,7 +53,12 @@ class Inotify:
 #######################
     def __on_dir_changed(self, monitor, changed_file, other_file, event):
         """
-            Prepare thread to handle changes
+            Stop collection scanner if running
+            Delayed update by default
+            @param monitor as Gio.FileMonitor
+            @param changed_file as Gio.File/None
+            @param other_file as Gio.File/None
+            @param event as Gio.FileMonitorEvent
         """
         update = False
         # Stop collection scanner and wait
