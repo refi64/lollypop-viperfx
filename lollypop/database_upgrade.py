@@ -27,15 +27,13 @@ class DatabaseUpgrade:
         Manage database schema upgrades
     """
 
-    def __init__(self, version):
+    def __init__(self):
         """
             Init object
-            @param version as int
         """
-        self._version = version
         # Here are schema upgrade, key is database version,
         # value is sql request
-        self._UPGRADES = {
+        self.__UPGRADES = {
             1: "UPDATE tracks SET duration=CAST(duration as INTEGER);",
             2: "UPDATE albums SET artist_id=-2001 where artist_id=-999;",
             3: self.__upgrade_3,
@@ -59,31 +57,47 @@ class DatabaseUpgrade:
             21: self.__upgrade_21,
             22: self.__upgrade_22,
             23: self.__upgrade_23,
-                         }
+            24: "ALTER TABLE albums ADD album_id TEXT",
+        }
 
-    """
-        Return upgrade count
-        @return int
-    """
-    def count(self):
-        return len(self._UPGRADES)
+    def upgrade(self, db):
+        """
+            Upgrade db
+            @param db as Database
+        """
+        # Migration from gsettings
+        gsettings_version = Lp().settings.get_value("db-version").get_int32()
+        if gsettings_version != -1:
+            with SqlCursor(db) as sql:
+                sql.execute("PRAGMA user_version=%s" % gsettings_version)
+                sql.commit()
+                Lp().settings.set_value("db-version",
+                                        GLib.Variant("i", -1))
+        version = 0
+        with SqlCursor(db) as sql:
+            result = sql.execute("PRAGMA user_version")
+            v = result.fetchone()
+            if v is not None:
+                version = v[0]
+            if version < self.version:
+                for i in range(version+1, self.version + 1):
+                    try:
+                        if isinstance(self.__UPGRADES[i], str):
+                            sql.execute(self.__UPGRADES[i])
+                            sql.commit()
+                        else:
+                            self.__UPGRADES[i]()
+                    except:
+                        print("History DB upgrade %s failed" % i)
+                sql.execute("PRAGMA user_version=%s" % self.version)
+                sql.commit()
 
-    """
-        Upgrade database based on version
-        @return new db version as int
-    """
-    def do_db_upgrade(self):
-        with SqlCursor(Lp().db) as sql:
-            for i in range(self._version+1, len(self._UPGRADES)+1):
-                try:
-                    if isinstance(self._UPGRADES[i], str):
-                        sql.execute(self._UPGRADES[i])
-                        sql.commit()
-                    else:
-                        self._UPGRADES[i]()
-                except Exception as e:
-                    print("Database upgrade failed: ", e)
-            return len(self._UPGRADES)
+    @property
+    def version(self):
+        """
+            Current wanted version
+        """
+        return len(self.__UPGRADES)
 
 #######################
 # PRIVATE             #

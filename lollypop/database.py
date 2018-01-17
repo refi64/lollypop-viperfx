@@ -89,9 +89,8 @@ class Database:
             Create database tables or manage update if needed
         """
         f = Gio.File.new_for_path(self.DB_PATH)
+        upgrade = DatabaseUpgrade()
         if not f.query_exists():
-            db_version = Lp().settings.get_value("db-version").get_int32()
-            upgrade = DatabaseUpgrade(db_version)
             try:
                 d = Gio.File.new_for_path(self.__LOCAL_PATH)
                 if not d.query_exists():
@@ -110,23 +109,12 @@ class Database:
                     sql.execute(self.__create_track_artists_idx)
                     sql.execute(self.__create_album_genres_idx)
                     sql.execute(self.__create_track_genres_idx)
+                    sql.execute("PRAGMA user_version=%s" % upgrade.version)
                     sql.commit()
-                    Lp().settings.set_value("db-version",
-                                            GLib.Variant("i", upgrade.count()))
             except Exception as e:
                 print("Database::__init__(): %s" % e)
-
-    def upgrade(self):
-        """
-            Upgrade database
-        """
-        db_version = Lp().settings.get_value("db-version").get_int32()
-        upgrade = DatabaseUpgrade(db_version)
-        f = Gio.File.new_for_path(self.DB_PATH)
-        if f.query_exists():
-            upgrade.do_db_upgrade()
-            Lp().settings.set_value("db-version",
-                                    GLib.Variant("i", upgrade.count()))
+        else:
+            upgrade.upgrade(self)
 
     def get_cursor(self):
         """

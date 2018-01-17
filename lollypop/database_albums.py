@@ -30,12 +30,14 @@ class AlbumsDatabase:
         self.__max_count = 1
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, uri, loved, popularity, rate, mtime):
+    def add(self, album_name, album_id, artist_ids,
+            uri, loved, popularity, rate, mtime):
         """
             Add a new album to database
-            @param Album name as string
-            @param artist ids as int
-            @param uri as string
+            @param album_name as str
+            @param album_id as str
+            @param artist_ids as int
+            @param uri as str
             @param loved as bool
             @param popularity as int
             @param rate as int
@@ -45,10 +47,10 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
-                                  (name, no_album_artist,\
+                                  (name, album_id, no_album_artist,\
                                   uri, loved, popularity, rate, mtime, synced)\
-                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                 (name, artist_ids == [],
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                 (album_name, album_id, artist_ids == [],
                                   uri, loved, popularity, rate, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
@@ -314,19 +316,21 @@ class AlbumsDatabase:
                 return v[0]
             return 5
 
-    def get_id(self, album_name, artist_ids):
+    def get_id(self, album_name, album_id, artist_ids):
         """
             Get non compilation album id
-            @param Album name as string,
-            @param artist ids as [int]
-            @return Album id as int
+            @param album_name as str
+            @param album_id as str
+            @param artist_ids as [int]
+            @return int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (album_name,)
+            filters = (album_name, album_id)
             if artist_ids:
                 filters += tuple(artist_ids)
                 request = "SELECT albums.rowid FROM albums, album_artists\
                            WHERE name=? COLLATE NOCASE AND\
+                           albums.album_id=? AND\
                            no_album_artist=0 AND\
                            album_artists.album_id=albums.rowid AND (1=0 "
                 for artist_id in artist_ids:

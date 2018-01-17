@@ -196,8 +196,6 @@ class Application(Gtk.Application):
         self.add_action(self.settings.create_action("playback"))
         self.add_action(self.settings.create_action("shuffle"))
 
-        self.db.upgrade()
-
     def do_startup(self):
         """
             Init application

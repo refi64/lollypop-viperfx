@@ -252,6 +252,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         aa_sortnames = self.get_album_artist_sortnames(tags)
         album_artists = self.get_album_artists(tags)
         album_name = self.get_album_name(tags)
+        album_id = self.get_album_id(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
@@ -300,7 +301,8 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s" % (album_name, album_artist_ids))
-        (album_id, new_album) = self.add_album(album_name, album_artist_ids,
+        (album_id, new_album) = self.add_album(album_name, album_id,
+                                               album_artist_ids,
                                                uri, loved, album_pop,
                                                album_rate, mtime)
 

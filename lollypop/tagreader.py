@@ -107,6 +107,17 @@ class TagReader(Discoverer):
                 composers.append(read)
         return "; ".join(composers)
 
+    def get_album_id(self, tags):
+        """
+            Get album id (musicbrainz)
+            @param tags as Gst.TagList
+            @return str
+        """
+        if tags is None:
+            return ""
+        (exists, album_id) = tags.get_string_index('musicbrainz-albumid', 0)
+        return album_id or ""
+
     def get_performers(self, tags):
         """
             Return performers for tags
@@ -479,7 +490,7 @@ class TagReader(Discoverer):
                 genre_ids.append(genre_id)
         return genre_ids
 
-    def add_album(self, album_name, artist_ids,
+    def add_album(self, album_name, album_id, artist_ids,
                   uri, loved, popularity, rate, mtime):
         """
             Add album to db
@@ -501,15 +512,15 @@ class TagReader(Discoverer):
         else:
             parent_uri = ""
         new = False
-        album_id = Lp().albums.get_id(album_name, artist_ids)
+        album_id = Lp().albums.get_id(album_name, album_id, artist_ids)
         if album_id is None:
             new = True
-            album_id = Lp().albums.add(album_name, artist_ids, parent_uri,
-                                       loved, popularity, rate, mtime)
+            album_id = Lp().albums.add(album_name, album_id, artist_ids,
+                                       parent_uri, loved, popularity,
+                                       rate, mtime)
         # Now we have our album id, check if path doesn"t change
         if Lp().albums.get_uri(album_id) != parent_uri:
             Lp().albums.set_uri(album_id, parent_uri)
-
         return (album_id, new)
 
     def update_album(self, album_id, artist_ids, genre_ids, year):
