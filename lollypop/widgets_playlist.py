@@ -197,6 +197,8 @@ class PlaylistsWidget(Gtk.Grid):
         if pos > children_len / 2:
             widget = self.__tracks_widget_right
             pos -= len(self.__tracks_widget_left.get_children())
+        elif pos == -1:
+            widget = self.__tracks_widget_right
         else:
             widget = self.__tracks_widget_left
         self.__add_tracks([track_id], widget, pos)
