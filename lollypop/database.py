@@ -36,6 +36,7 @@ class Database:
     # this make VACUUM not destroy rowids...
     __create_albums = """CREATE TABLE albums (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
+                                              album_id TEXT,
                                               no_album_artist BOOLEAN NOT NULL,
                                               year INT,
                                               uri TEXT NOT NULL,
