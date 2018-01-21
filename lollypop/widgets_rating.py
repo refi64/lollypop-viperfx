@@ -141,7 +141,8 @@ class RatingWidget(Gtk.Bin):
                 isinstance(self.__object, Track) and\
                 self.__object.id >= 0:
             dbus_helper = DBusHelper()
-            dbus_helper.call("CanSetCover", None, self.__on_can_set_cover, pop)
+            dbus_helper.call("CanSetCover", None,
+                             self.__on_can_set_popularity, pop)
         return True
 
 #######################
@@ -156,33 +157,32 @@ class RatingWidget(Gtk.Bin):
         star = min(5, int(rate))
         return star
 
-    def __on_can_set_cover(self, source, result, pop):
+    def __on_can_set_popularity(self, source, result, pop):
         """
-            Remove album image from tags
+            Set popularity as kid3 is installed
             @param source as GObject.Object
             @param result as Gio.AsyncResult
             @param pop as int
         """
         try:
             can_set_cover = source.call_finish(result)
-        except:
-            can_set_cover = False
-        if can_set_cover:
-            if pop == 0:
-                value = 0
-            elif pop == 1:
-                value = 1
-            elif pop == 2:
-                value = 64
-            elif pop == 3:
-                value = 128
-            elif pop == 4:
-                value = 196
-            else:
-                value = 255
-            path = GLib.filename_from_uri(self.__object.uri)[0]
-            dbus_helper = DBusHelper()
-            dbus_helper.call("SetPopularity",
-                             GLib.Variant("(is)", (value, path)),
-                             None, None)
-        return True
+            if can_set_cover:
+                if pop == 0:
+                    value = 0
+                elif pop == 1:
+                    value = 1
+                elif pop == 2:
+                    value = 64
+                elif pop == 3:
+                    value = 128
+                elif pop == 4:
+                    value = 196
+                else:
+                    value = 255
+                path = GLib.filename_from_uri(self.__object.uri)[0]
+                dbus_helper = DBusHelper()
+                dbus_helper.call("SetPopularity",
+                                 GLib.Variant("(is)", (value, path)),
+                                 None, None)
+        except Exception as e:
+            print("RatingWidget::__on_can_set_popularity():", e)
