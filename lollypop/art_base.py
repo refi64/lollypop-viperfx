@@ -125,12 +125,14 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
-    def _respect_ratio(self, uri):
+    def _preserve_ratio(self, uri):
         """
-            Check for aspect ratio based on size
+            Preserve the cover’s aspect ratio
             @param uri as str
             @return respect aspect ratio as bool
         """
+        if Lp().settings.get_value("preserve-aspect-ratio"):
+            return True
         f = Gio.File.new_for_uri(uri)
         (status, data, tag) = f.load_contents(None)
         bytes = GLib.Bytes(data)

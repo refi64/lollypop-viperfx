@@ -172,7 +172,7 @@ class AlbumArt(BaseArt, TagReader):
                     if uri is not None:
                         f = Gio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
-                        ratio = self._respect_ratio(uri)
+                        ratio = self._preserve_ratio(uri)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
@@ -198,7 +198,7 @@ class AlbumArt(BaseArt, TagReader):
                     if uri is not None:
                         f = Gio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
-                        ratio = self._respect_ratio(uri)
+                        ratio = self._preserve_ratio(uri)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()

@@ -53,6 +53,11 @@
             <summary>Save artwork/popularity in tags</summary>
             <description></description>
         </key>
+        <key type="b" name="preserve-aspect-ratio">
+            <default>false</default>
+            <summary>Preserve the cover’s aspect ratio</summary>
+            <description></description>
+        </key>
         <key type="b" name="window-maximized">
             <default>true</default>
             <summary>Window maximized</summary>
