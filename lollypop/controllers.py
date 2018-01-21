@@ -330,13 +330,16 @@ class InfoController:
         Infos controller (for toolbars)
     """
 
-    def __init__(self, artsize):
+    def __init__(self, art_size, font_size=None):
         """
             Init controller
+            @param art_size as int
+            @param font_size
         """
         self._infobox = None
         self._spinner = None
-        self._artsize = artsize
+        self.__font_size = font_size
+        self.__art_size = art_size
 
     def on_current_changed(self, player):
         """
@@ -357,28 +360,42 @@ class InfoController:
             self._spinner.stop()
 
         if player.current_track.id == Type.RADIOS:
-            self._artist_label.set_text(player.current_track.album_artists[0])
+            artist_text = player.current_track.album_artists[0]
         else:
-            self._artist_label.set_text(
-                                       ", ".join(player.current_track.artists))
+            artist_text = ", ".join(player.current_track.artists)
+        if self.__font_size is None:
+            self._artist_label.set_text(artist_text)
+        else:
+            self._artist_label.set_markup(
+                                        "<span font='%s'>%s</span>" %
+                                        (self.__font_size - 2,
+                                         GLib.markup_escape_text(artist_text)))
         self._artist_label.show()
-        self._title_label.set_text(player.current_track.title)
+
+        title_text = player.current_track.title
+        if self.__font_size is None:
+            self._title_label.set_text(title_text)
+        else:
+            self._title_label.set_markup(
+                                        "<span font='%s'>%s</span>" %
+                                        (self.__font_size,
+                                         GLib.markup_escape_text(title_text)))
         self._title_label.show()
 
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
                                    player.current_track.album_artists[0],
-                                   self._artsize,
+                                   self.__art_size,
                                    self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
-                    self._artsize,
+                    self.__art_size,
                     self.get_scale_factor())
         elif player.current_track.id is not None:
             art = Lp().art.get_album_artwork(
                                    player.current_track.album,
-                                   self._artsize,
+                                   self.__art_size,
                                    self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
@@ -391,8 +408,8 @@ class InfoController:
             self._infobox.show()
 
     @property
-    def artsize(self):
+    def art_size(self):
         """
             Art size as int
         """
-        return self._artsize
+        return self.__art_size

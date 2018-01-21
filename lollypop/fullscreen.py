@@ -57,7 +57,8 @@ class FullScreen(Gtk.Window, InfoController,
             artsize = int(ArtSize.FULLSCREEN*geometry.height/1080)
         else:
             artsize = int(ArtSize.FULLSCREEN*geometry.width/1920)
-        InfoController.__init__(self, artsize)
+        self.__font_size = int(14 * geometry.height / 1080)
+        InfoController.__init__(self, artsize, self.__font_size)
         widget = builder.get_object("widget")
         self._play_btn = builder.get_object("play_btn")
         self._next_btn = builder.get_object("next_btn")
@@ -167,7 +168,10 @@ class FullScreen(Gtk.Window, InfoController,
             album_name = player.current_track.album.name
             if player.current_track.year:
                 album_name += " (%s)" % player.current_track.year
-            self._album_label.set_text(album_name)
+            self._album_label.set_markup(
+                                        "<span font='%s'>%s</span>" %
+                                        (self.__font_size - 1,
+                                         GLib.markup_escape_text(album_name)))
         # Do not show next popover non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id is not None and player.next_track.id >= 0:
