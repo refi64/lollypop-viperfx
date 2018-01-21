@@ -492,12 +492,13 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 pos = 1
             for disc in self._album.discs:
                 show_label = len(self._album.discs) > 1
-                if show_label:
+                disc_names = self._album.disc_names(disc.number)
+                if show_label or disc_names:
                     label = Gtk.Label()
-                    disc_text = _("Disc %s") % disc.number
-                    disc_names = self._album.disc_names(disc.number)
                     if disc_names:
-                        disc_text += ": " + ", ".join(disc_names)
+                        disc_text = ", ".join(disc_names)
+                    elif show_label:
+                        disc_text = _("Disc %s") % disc.number
                     label.set_text(disc_text)
                     label.set_property("halign", Gtk.Align.START)
                     label.get_style_context().add_class("dim-label")
