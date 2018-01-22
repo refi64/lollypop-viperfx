@@ -10,7 +10,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from locale import strcoll
+from locale import getlocale, strcoll
+from importlib import import_module
+
+# Ugly magic to dynamically adapt to the current locale...
+try:
+    # Try loading 'index_of' function of the current locale
+    _module = import_module('lollypop.locales.%s' % getlocale()[0].lower())
+    index_of = _module.index_of
+except:
+    # In case the locale doesn't need special care, fall back to a naive
+    # implementation
+    def index_of(string):
+        """
+            Get index of a string in a locale-aware manner.
+            This is the fallback, which simply returns the first character.
+            @param string as str
+            @return str
+        """
+        return string[0]
 
 
 class LocalizedCollation(object):
