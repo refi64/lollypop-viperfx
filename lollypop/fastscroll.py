@@ -16,6 +16,8 @@ from locale import strxfrm
 
 from lollypop.utils import noaccents
 
+from lollypop.localized import index_of
+
 
 class FastScroll(Gtk.ScrolledWindow):
     """
@@ -73,7 +75,7 @@ class FastScroll(Gtk.ScrolledWindow):
             Add a char to widget, will not be shown
             @param c as char
         """
-        to_add = noaccents(c.upper())
+        to_add = noaccents(index_of(c).upper())
         if to_add not in self.__chars:
             self.__chars.append(to_add)
 
@@ -146,8 +148,8 @@ class FastScroll(Gtk.ScrolledWindow):
                 start_value = self.__get_value_for_path(start, 3)
                 end_value = self.__get_value_for_path(end, 3)
                 if start_value is not None and end_value is not None:
-                    start_value = noaccents(start_value[0]).upper()
-                    end_value = noaccents(end_value[0]).upper()
+                    start_value = noaccents(index_of(start_value[0])).upper()
+                    end_value = noaccents(index_of(end_value[0])).upper()
                     self.__mark_values(start_value, end_value)
         except:
             pass  # get_visible_range() == None
@@ -202,7 +204,7 @@ class FastScroll(Gtk.ScrolledWindow):
             for row in self.__model:
                 if row[0] < 0:
                     continue
-                if noaccents(row[3])[0].upper() == char:
+                if noaccents(index_of(row[3]))[0].upper() == char:
                     self.__view.scroll_to_cell(self.__model.get_path(row.iter),
                                                None, True, 0, 0)
                     break
