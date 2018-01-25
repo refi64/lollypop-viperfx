@@ -41,4 +41,9 @@ class LocalizedCollation(object):
         pass
 
     def __call__(self, v1, v2):
-        return strcoll(v1, v2)
+        i1 = index_of(v1).upper()
+        i2 = index_of(v2).upper()
+        if strcoll(i1, i2) < 0: return -1
+        elif strcoll(i1, i2) == 0: return strcoll(v1, v2)
+        else: return 1
+
