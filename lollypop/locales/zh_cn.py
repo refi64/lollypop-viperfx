@@ -32,4 +32,4 @@ def index_of(string):
         if strcoll(char, head) <= 0 and strcoll(head, next_char) <= 0:
             return letter
 
-    return '…'
+    return '?'
