@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.pop_next import NextPopover
 from lollypop.touch_helper import TouchHelper
 from lollypop.define import Lp, Shuffle, Type, NextContext
+from lollypop.view import View
 
 
 class PartyPopover(Gtk.Popover):
@@ -291,7 +292,7 @@ class ToolbarEnd(Gtk.Bin):
             Show current track menu
             @param args as []
         """
-        if Lp().window.view is not None:
+        if Lp().window.view is not None and isinstance(Lp().window.view, View):
             Lp().window.view.set_search_mode()
 
     def __on_search_short(self, args):
