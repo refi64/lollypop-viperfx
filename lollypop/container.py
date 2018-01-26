@@ -320,10 +320,12 @@ class Container:
                     break
         elif visible_child == self.__list_two:
             self.__stack.set_visible_child(self.__list_one)
+            self.toolbar.playback.show_back(True)
         elif self.__list_two.is_visible():
             self.__stack.set_visible_child(self.__list_two)
         else:
             self.__stack.set_visible_child(self.__list_one)
+            self.toolbar.playback.show_back(True)
 
     @property
     def paned_stack(self):
@@ -804,6 +806,9 @@ class Container:
             if not self.__list_two.will_be_selected():
                 view = self.__get_view_albums(selected_ids, [])
         if view is not None:
+            if self.paned_stack:
+                # Just to make it sensitive
+                self.toolbar.playback.show_back(True, True)
             self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
             if self.paned_stack and\

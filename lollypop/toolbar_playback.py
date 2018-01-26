@@ -42,13 +42,14 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
 
         Lp().player.connect("lock-changed", self.__on_lock_changed)
 
-    def show_back(self, b):
+    def show_back(self, b, sensitive=False):
         """
             Show/hide back button
             @param b as bool
         """
         if b:
             self.__back_btn.show()
+            self.__back_btn.set_sensitive(sensitive)
         else:
             self.__back_btn.hide()
 

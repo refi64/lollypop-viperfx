@@ -152,7 +152,9 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__main_stack.show()
             if self.__miniplayer is not None:
                 self.__miniplayer.set_vexpand(False)
-            self.__toolbar.playback.show_back(True)
+            self.__toolbar.playback.show_back(
+                                     True,
+                                     Lp().player.current_track.id is not None)
             self.__toolbar.title.show_progress(False)
         else:
             self._paned_stack(False)
