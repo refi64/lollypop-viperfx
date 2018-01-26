@@ -52,7 +52,7 @@ class InfoPopover(Gtk.Popover):
             InfoPopover.Wikipedia is not None or\
             InfoPopover.WebView is not None
 
-    def __init__(self, artist_ids=[], view_type=Type.ALBUMS):
+    def __init__(self, artist_ids=[]):
         """
             Init artist infos
             @param artist_ids as int
@@ -92,8 +92,7 @@ class InfoPopover(Gtk.Popover):
             self.__stack.get_child_by_name("wikipedia").show()
         else:
             self.__stack.get_child_by_name("wikipedia").hide()
-        if Lp().lastfm is not None and\
-                not Lp().settings.get_value("use-librefm") and show_bio:
+        if Lp().lastfm is not None and show_bio:
             self.__stack.get_child_by_name("lastfm").show()
         else:
             self.__stack.get_child_by_name("lastfm").hide()

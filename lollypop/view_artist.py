@@ -143,7 +143,8 @@ class ArtistView(ArtistAlbumsView):
             @param event as Gdk.Event
         """
         if InfoPopover.should_be_shown() and self._artist_ids:
-            pop = InfoPopover(self._artist_ids, Type.NONE)
+            pop = InfoPopover(self._artist_ids)
+            pop.set_view_type(Type.NONE)
             pop.set_relative_to(eventbox)
             pop.show()
 
