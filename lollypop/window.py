@@ -33,6 +33,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__signal1 = None
         self.__signal2 = None
         self.__timeout = None
+        self.__miniplayer = None
         self.__mediakeys = None
         self.__media_keys_busnames = []
         self.__was_maximized = False
@@ -141,9 +142,24 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         size = self.get_size()
         self.__toolbar.set_content_width(size[0])
-        self.__show_miniplayer(size[0] < WindowSize.MEDIUM)
-        self.__show_subtoolbar(size[0] < WindowSize.MONSTER and
-                               size[0] > WindowSize.MEDIUM)
+        if size[1] < WindowSize.MEDIUM:
+            self.__main_stack.hide()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(True)
+        elif size[0] < WindowSize.BIG:
+            self.__show_miniplayer(True)
+            self._paned_stack(True)
+            self.__main_stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+            self.__toolbar.playback.show_back(True)
+            self.__toolbar.title.show_progress(False)
+        else:
+            self._paned_stack(False)
+            self.__main_stack.show()
+            self.__show_miniplayer(False)
+            self.__toolbar.playback.show_back(False)
+            self.__toolbar.title.show_progress(True)
 
     def set_mini(self):
         """
@@ -178,7 +194,8 @@ class Window(Gtk.ApplicationWindow, Container):
             @param event as Gdk.event
         """
         if event.type == Gdk.EventType.FOCUS_CHANGE and self.view is not None:
-            self.view.disable_overlay()
+            if hasattr(self.view, "disable_overlay"):
+                self.view.disable_overlay()
             Lp().player.preview.set_state(Gst.State.NULL)
         Gtk.ApplicationWindow.do_event(self, event)
 
@@ -194,7 +211,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
         Lp().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
         Lp().set_accels_for_action("app.shortcut::show_genres", ["<Control>g"])
-        Lp().set_accels_for_action("app.shortcut::hide_pane", ["<Control>h"])
+        Lp().set_accels_for_action("app.shortcut::hide_paned", ["<Control>h"])
         Lp().set_accels_for_action("app.update_db", ["<Control>u"])
         Lp().set_accels_for_action("app.settings", ["<Control>s"])
         Lp().set_accels_for_action("app.fullscreen", ["F11", "F7"])
@@ -204,48 +221,18 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp().set_accels_for_action("app.help", ["F1"])
         Lp().set_accels_for_action("app.quit", ["<Control>q"])
 
-    def __show_subtoolbar(self, show):
+    def __show_miniplayer(self, show):
         """
             Show/hide subtoolbar
             @param show as bool
         """
-        is_visible = self.__subtoolbar.is_visible()
-        if show and not is_visible:
+        if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
-            mini = MiniPlayer()
-            mini.show()
-            self.__subtoolbar.add(mini)
-            self.__subtoolbar.show()
-        elif not show and is_visible:
-            children = self.__subtoolbar.get_children()
-            if children:
-                children[0].destroy()
-            self.__subtoolbar.hide()
-
-    def __show_miniplayer(self, show):
-        """
-            Show/hide miniplayer
-            @param show as bool
-        """
-        mini = self.__main_stack.get_child_by_name("mini")
-        if show:
-            if mini is not None:
-                if self.__timeout is not None:
-                    GLib.source_remove(self.__timeout)
-            else:
-                from lollypop.miniplayer import MiniPlayer
-                mini = MiniPlayer()
-                self.__main_stack.add_named(mini, "mini")
-            self.__timeout = None
-            mini.show()
-            self.__main_stack.set_visible_child_name("mini")
-            self.__toolbar.set_show_close_button(False)
-        elif mini is not None and not show and self.__timeout is None:
-            self.__main_stack.set_visible_child_name("main")
-            self.__toolbar.set_show_close_button(
-                                not Lp().settings.get_value("disable-csd") and
-                                not is_unity())
-            self.__timeout = GLib.timeout_add(1000, mini.destroy)
+            self.__miniplayer = MiniPlayer()
+            self.__vgrid.add(self.__miniplayer)
+        elif not show and self.__miniplayer is not None:
+            self.__miniplayer.destroy()
+            self.__miniplayer = None
 
     def __setup_pos_size(self, name):
         """
@@ -354,21 +341,19 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup window content
         """
-        vgrid = Gtk.Grid()
-        vgrid.set_orientation(Gtk.Orientation.VERTICAL)
-        vgrid.show()
+        self.__vgrid = Gtk.Grid()
+        self.__vgrid.set_orientation(Gtk.Orientation.VERTICAL)
+        self.__vgrid.show()
         self.__toolbar = Toolbar()
         self.__toolbar.show()
-        self.__subtoolbar = Gtk.Grid()
         if Lp().settings.get_value("disable-csd") or is_unity():
-            vgrid.add(self.__toolbar)
+            self.__vgrid.add(self.__toolbar)
         else:
             self.set_titlebar(self.__toolbar)
             self.__toolbar.set_show_close_button(
                                     not Lp().settings.get_value("disable-csd"))
-        vgrid.add(self.__main_stack)
-        vgrid.add(self.__subtoolbar)
-        self.add(vgrid)
+        self.__vgrid.add(self.__main_stack)
+        self.add(self.__vgrid)
         self.__main_stack.add_named(self._paned_main_list, "main")
         self.__main_stack.set_visible_child_name("main")
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
@@ -457,7 +442,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self.__timeout_configure = None
         size = widget.get_size()
-        if size[0] > WindowSize.MEDIUM:
+        if size[1] > WindowSize.MEDIUM:
             name = "window"
         else:
             name = "mini"
@@ -537,13 +522,13 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.prev()
         elif string == "locked":
             Lp().player.lock()
-        elif string == "hide_pane":
-            self._hide_pane()
+        elif string == "hide_paned":
+            self._hide_paned()
         elif string == "filter":
             if self.view is not None:
                 self.view.set_search_mode()
         elif string == "volume":
-            self.__toolbar.show_hide_volume_control()
+            self.__toolbar.title.show_hide_volume_control()
         elif string == "show_genres":
             state = not Lp().settings.get_value("show-genres")
             Lp().settings.set_value("show-genres",
@@ -574,6 +559,7 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, self.update_db)
+        GLib.idle_add(self.restore_view_state)
 
     def __on_current_changed(self, player):
         """

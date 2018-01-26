@@ -82,6 +82,10 @@ popover.background separator {
     border-radius: 4px;
 }
 
+.mini-scale {
+    padding: 1px;
+}
+
 .black {
     background-color: black;
 }

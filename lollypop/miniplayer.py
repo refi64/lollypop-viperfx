@@ -12,11 +12,11 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.controllers import InfoController
+from lollypop.controllers import InfoController, ProgressController
 from lollypop.define import Lp, WindowSize
 
 
-class MiniPlayer(Gtk.Bin, InfoController):
+class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
     """
         Toolbar end
     """
@@ -27,16 +27,29 @@ class MiniPlayer(Gtk.Bin, InfoController):
         """
         Gtk.Bin.__init__(self)
         InfoController.__init__(self, WindowSize.SMALL)
+        ProgressController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
         builder.connect_signals(self)
+
+        self._progress = builder.get_object("progress_scale")
+        self._progress.set_sensitive(False)
+        self._progress.set_hexpand(True)
+        self._timelabel = builder.get_object("playback")
+        self._total_time_label = builder.get_object("duration")
+
         self.__grid = builder.get_object("grid")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._cover = builder.get_object("cover")
-        self._signal_id = Lp().player.connect("current-changed",
-                                              self.on_current_changed)
-        self.on_current_changed(Lp().player)
+        self.__signal_id1 = Lp().player.connect("current-changed",
+                                                self.__on_current_changed)
+        self.__signal_id2 = Lp().player.connect("status-changed",
+                                                self.__on_status_changed)
+        self.__on_current_changed(Lp().player)
+        if Lp().player.current_track.id is not None:
+            self._update_position()
+            self.__on_status_changed(Lp().player)
         self.add(builder.get_object("widget"))
 
     def do_get_preferred_height(self):
@@ -45,12 +58,14 @@ class MiniPlayer(Gtk.Bin, InfoController):
         """
         return self.__grid.get_preferred_height()
 
-    def do_hide(self):
+    def do_destroy(self):
         """
             Remove signal
         """
-        Gtk.Bin.do_hide(self)
-        Lp().player.disconnect(self._signal_id)
+        Gtk.Bin.do_destroy(self)
+        ProgressController.do_destroy(self)
+        Lp().player.disconnect(self.__signal_id1)
+        Lp().player.disconnect(self.__signal_id2)
 
 #######################
 # PROTECTED           #
@@ -75,3 +90,23 @@ class MiniPlayer(Gtk.Bin, InfoController):
                 popover.set_pointing_to(press_rect)
                 popover.show()
         return True
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_current_changed(self, player):
+        """
+            Update controllers
+            @param player as Player
+        """
+        if Lp().player.current_track.id is not None:
+            self.show()
+        InfoController.on_current_changed(self, player)
+        ProgressController.on_current_changed(self, player)
+
+    def __on_status_changed(self, player):
+        """
+            Update controllers
+            @param player as Player
+        """
+        ProgressController.on_status_changed(self, player)

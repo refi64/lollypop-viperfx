@@ -129,7 +129,7 @@ class ArtistView(ArtistAlbumsView):
         if InfoPopover.should_be_shown() and self._artist_ids:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
-    def _on_artwork_realize(self, eventbox):
+    def _on_artwork_box_realize(self, eventbox):
         """
             Change cursor on image
             @param eventbox as Gtk.EventBox
@@ -235,9 +235,13 @@ class ArtistView(ArtistAlbumsView):
             @param image as Gtk.Image
             @param ctx as cairo.Context
         """
+        internal_scale_factor = 1
+        scale_factor = image.get_scale_factor()
+        if not Lp().window.paned_stack:
+            internal_scale_factor = 2
+        scale_factor = scale_factor * internal_scale_factor
         # Update image if scale factor changed
-        if self.__scale_factor != image.get_scale_factor():
-            self.__scale_factor = image.get_scale_factor()
+        if self.__scale_factor != scale_factor:
             self.__set_artwork()
         if not image.is_drawable():
             return
@@ -247,14 +251,14 @@ class ArtistView(ArtistAlbumsView):
             if pixbuf is None:
                 return
             surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                         pixbuf,
-                                                         self.__scale_factor,
-                                                         None)
+                                             pixbuf,
+                                             self.__artwork.get_scale_factor(),
+                                             None)
         else:
             surface = image.props.surface
 
         ctx.translate(2, 2)
-        size = ArtSize.ARTIST_SMALL * 2 - 4
+        size = ArtSize.ARTIST_SMALL * internal_scale_factor - 4
         ctx.new_sub_path()
         radius = size / 2
         ctx.arc(size/2, size/2, radius, 0, 2 * pi)
@@ -294,11 +298,16 @@ class ArtistView(ArtistAlbumsView):
             Set artist artwork
         """
         artwork_height = 0
+        internal_scale_factor = 1
+        self.__scale_factor = self.__artwork.get_scale_factor()
+        if not Lp().window.paned_stack:
+            internal_scale_factor = 2
+        self.__scale_factor *= internal_scale_factor
         if Lp().settings.get_value("artist-artwork"):
             if len(self._artist_ids) == 1 and\
                     Lp().settings.get_value("artist-artwork"):
                 artist = Lp().artists.get_name(self._artist_ids[0])
-                size = ArtSize.ARTIST_SMALL * 2 * self.__scale_factor
+                size = ArtSize.ARTIST_SMALL * self.__scale_factor
                 for suffix in ["lastfm", "spotify", "wikipedia"]:
                     uri = InfoCache.get_artwork(artist, suffix, size)
                     if uri is not None:
@@ -317,9 +326,12 @@ class ArtistView(ArtistAlbumsView):
                                                                        None)
                         stream.close()
                         surface = Gdk.cairo_surface_create_from_pixbuf(
-                                            pixbuf, self.__scale_factor, None)
+                                            pixbuf,
+                                            self.__artwork.get_scale_factor(),
+                                            None)
                         self.__artwork.set_from_surface(surface)
-                        artwork_height = ArtSize.ARTIST_SMALL * 2
+                        artwork_height = ArtSize.ARTIST_SMALL *\
+                            internal_scale_factor
                         self.__artwork.get_style_context().remove_class(
                                                                 "artwork-icon")
                         self.__artwork.show()
@@ -330,7 +342,7 @@ class ArtistView(ArtistAlbumsView):
                 self.__artwork.set_from_icon_name(
                                             "avatar-default-symbolic",
                                             Gtk.IconSize.DND)
-                artwork_height = 32
+                artwork_height = 16 * internal_scale_factor
                 self.__artwork.get_style_context().add_class("artwork-icon")
                 self.__artwork.show()
                 self.__artwork_box.show()

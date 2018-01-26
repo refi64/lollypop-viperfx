@@ -36,10 +36,31 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self._prev_btn = builder.get_object("previous_button")
         self._play_btn = builder.get_object("play_button")
         self._next_btn = builder.get_object("next_button")
+        self.__back_btn = builder.get_object("back_button")
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
 
         Lp().player.connect("lock-changed", self.__on_lock_changed)
+
+    def show_back(self, b):
+        """
+            Show/hide back button
+            @param b as bool
+        """
+        if b:
+            self.__back_btn.show()
+        else:
+            self.__back_btn.hide()
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_back_btn_clicked(self, button):
+        """
+            Go back in container stack
+            @param button as Gtk.Button
+        """
+        Lp().window.go_back()
 
 #######################
 # PRIVATE             #

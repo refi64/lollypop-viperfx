@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view_device import DeviceView
+from lollypop.view import View
 from lollypop.utils import debug
 
 
@@ -38,7 +39,9 @@ class ViewContainer(Gtk.Stack):
             @param view as new View
         """
         for child in self.get_children():
-            if child != view and not isinstance(child, DeviceView):
+            if child != view\
+                    and not isinstance(child, DeviceView)\
+                    and isinstance(child, View):
                 # Delayed destroy as we may have an animation running
                 # Gtk.StackTransitionType.CROSSFADE
                 GLib.timeout_add(self.__duration*5,

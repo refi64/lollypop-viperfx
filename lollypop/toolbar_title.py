@@ -46,6 +46,20 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         """
         self.set_property("width_request", width)
 
+    def show_progress(self, b):
+        """
+            Show/hide progress bar
+            @param b as bool
+        """
+        if b:
+            self._progress.show()
+            self._timelabel.show()
+            self._total_time_label.show()
+        else:
+            self._progress.hide()
+            self._timelabel.hide()
+            self._total_time_label.hide()
+
     def show_hide_volume_control(self):
         """
             Show/Hide volume control

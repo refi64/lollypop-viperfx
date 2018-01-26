@@ -13,6 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.view import View
 
 
 class NextPopover(Gtk.Popover):
@@ -72,7 +73,8 @@ class NextPopover(Gtk.Popover):
                 Lp().player.is_party or
                 Lp().settings.get_enum("shuffle") == Shuffle.TRACKS) and\
             Lp().player.next_track.id is not None and\
-            Lp().player.next_track.id >= 0
+            Lp().player.next_track.id >= 0 and\
+            not Lp().window.paned_stack
 
     def inhibit(self, i):
         """
@@ -150,5 +152,5 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if Lp().window.view is not None:
+        if Lp().window.view is not None and isinstance(Lp().window.view, View):
             Lp().window.view.disable_overlay()

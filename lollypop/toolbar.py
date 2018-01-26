@@ -78,15 +78,11 @@ class Toolbar(Gtk.HeaderBar):
             @param window width as int
         """
         width = self.__toolbar_playback.get_preferred_width()[1]
+        width += self.__toolbar_end.get_preferred_width()[1]
         if window_width < WindowSize.MONSTER:
             self.__toolbar_info.hide()
         else:
             self.__toolbar_info.show()
-        if window_width < WindowSize.BIG:
-            self.__toolbar_end.hide()
-        else:
-            width += self.__toolbar_end.get_preferred_width()[1]
-            self.__toolbar_end.show()
         window = self.get_window()
         if window is not None:
             available = window.get_width() - width
@@ -135,18 +131,28 @@ class Toolbar(Gtk.HeaderBar):
         """
         self.__toolbar_end.search(search)
 
-    def show_hide_volume_control(self):
-        """
-            Show/Hide volume control
-        """
-        self.__toolbar_title.show_hide_volume_control()
-
     @property
     def artsize(self):
         """
             Art size as int
         """
         return self.__toolbar_info.artsize
+
+    @property
+    def title(self):
+        """
+            Return title toolbar
+            @return ToolbarTitle
+        """
+        return self.__toolbar_title
+
+    @property
+    def playback(self):
+        """
+            Return playback toolbar
+            @return ToolbarPlayback
+        """
+        return self.__toolbar_playback
 
 #######################
 # PRIVATE             #

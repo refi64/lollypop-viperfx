@@ -48,12 +48,6 @@ class Container:
         self.__setup_view()
         self.__setup_scanner()
 
-        (list_one_ids, list_two_ids) = self.__get_saved_view_state()
-        if list_one_ids and list_one_ids[0] != Type.NONE:
-            self.__list_one.select_ids(list_one_ids)
-        if list_two_ids and list_two_ids[0] != Type.NONE:
-            self.__list_two.select_ids(list_two_ids)
-
         # Volume manager
         self.__vm = Gio.VolumeMonitor.get()
         self.__vm.connect("mount-added", self.__on_mount_added)
@@ -93,6 +87,33 @@ class Container:
             Init list one
         """
         self.__update_list_one(None)
+
+    def restore_view_state(self):
+        """
+            Restore view state
+        """
+        # Get list one ids (always)
+        list_one_ids = []
+        if not self.paned_stack:
+            ids = Lp().settings.get_value("list-one-ids")
+            for i in ids:
+                if isinstance(i, int):
+                    list_one_ids.append(i)
+            if not list_one_ids:
+                list_one_ids = [Type.POPULARS]
+
+        # Get list two ids (only on save state)
+        list_two_ids = [Type.NONE]
+        if Lp().settings.get_value("save-state"):
+            list_two_ids = []
+            ids = Lp().settings.get_value("list-two-ids")
+            for i in ids:
+                if isinstance(i, int):
+                    list_two_ids.append(i)
+        if list_one_ids and list_one_ids[0] != Type.NONE:
+            self.__list_one.select_ids(list_one_ids)
+        if list_two_ids and list_two_ids[0] != Type.NONE:
+            self.__list_two.select_ids(list_two_ids)
 
     def save_view_state(self):
         """
@@ -287,12 +308,53 @@ class Container:
             # Select artists on list one
             GLib.idle_add(self.__list_one.select_ids, artist_ids)
 
+    def go_back(self):
+        """
+            Go back in stack
+        """
+        visible_child = self.__stack.get_visible_child()
+        if visible_child == self.__list_one:
+            for child in self.__stack.get_children():
+                if not isinstance(child, SelectionList):
+                    self.__stack.set_visible_child(child)
+                    break
+        elif visible_child == self.__list_two:
+            self.__stack.set_visible_child(self.__list_one)
+        elif self.__list_two.is_visible():
+            self.__stack.set_visible_child(self.__list_two)
+        else:
+            self.__stack.set_visible_child(self.__list_one)
+
+    @property
+    def paned_stack(self):
+        """
+            Return True if stack contains paned
+            return True
+        """
+        return self.__list_one in self.__stack.get_children()
+
 ##############
 # PROTECTED  #
 ##############
-    def _hide_pane(self):
+    def _paned_stack(self, b):
         """
-            Hide navigation pane
+            Enable paned stack
+            @param bool as b
+        """
+        if b and not self.paned_stack:
+            self._paned_list_view.remove(self.__list_two)
+            self._paned_main_list.remove(self.__list_one)
+            self.__stack.add(self.__list_one)
+            self.__stack.add(self.__list_two)
+        elif not b and self.paned_stack:
+            self.__stack.remove(self.__list_two)
+            self.__stack.remove(self.__list_one)
+            self._paned_list_view.add1(self.__list_two)
+            self._paned_main_list.add1(self.__list_one)
+
+    def _hide_paned(self):
+        """
+            Hide navigation paned
             Internally hide list one and list two
         """
         if self.__list_one.is_visible():
@@ -372,29 +434,6 @@ class Container:
             Lp().settings.get_value("paned-listview-width").get_int32())
         self._paned_main_list.show()
         self._paned_list_view.show()
-
-    def __get_saved_view_state(self):
-        """
-            Get save view state
-            @return (list one id, list two id)
-        """
-        # Get list one ids (always)
-        list_one_ids = []
-        ids = Lp().settings.get_value("list-one-ids")
-        for i in ids:
-            if isinstance(i, int):
-                list_one_ids.append(i)
-        if not list_one_ids:
-            list_one_ids = [Type.POPULARS]
-        list_two_ids = [Type.NONE]
-        # Get list two ids (only on save state)
-        if Lp().settings.get_value("save-state"):
-            list_two_ids = []
-            ids = Lp().settings.get_value("list-two-ids")
-            for i in ids:
-                if isinstance(i, int):
-                    list_two_ids.append(i)
-        return (list_one_ids, list_two_ids)
 
     def __setup_scanner(self):
         """
@@ -536,11 +575,12 @@ class Container:
             if hasattr(child, "stop"):
                 child.stop()
 
-    def __update_view_device(self, device_id):
+    def __get_view_device(self, device_id):
         """
-            Update current view with device view,
+            Get device view for id
             Use existing view if available
             @param device id as int
+            @return View
         """
         from lollypop.view_device import DeviceView, DeviceLocked
         self.__stop_current_view()
@@ -557,12 +597,11 @@ class Container:
                 self.__stack.add(child)
             child.show()
         child.populate()
-        self.__stack.set_visible_child(child)
-        self.__stack.clean_old_views(child)
+        return child
 
-    def __update_view_artists(self, genre_ids, artist_ids):
+    def __get_view_artists(self, genre_ids, artist_ids):
         """
-            Update current view with artists view
+            Get artists view for genres/artists
             @param genre ids as [int]
             @param artist ids as [int]
         """
@@ -581,13 +620,11 @@ class Container:
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        return view
 
-    def __update_view_albums(self, genre_ids, artist_ids):
+    def __get_view_albums(self, genre_ids, artist_ids):
         """
-            Update current view with albums view
+            Get albums view for genres/artists
             @param genre ids as [int]
             @param is compilation as bool
         """
@@ -628,14 +665,13 @@ class Container:
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        return view
 
-    def __update_view_playlists(self, playlist_ids=[]):
+    def __get_view_playlists(self, playlist_ids=[]):
         """
-            Update current view with playlist view
+            Get playlits view for playlists
             @param playlist ids as [int]
+            @return View
         """
         def load():
             track_ids = []
@@ -671,22 +707,18 @@ class Container:
             view = PlaylistsManageView(Type.NONE, [], [], False)
             view.populate()
         view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        return view
 
-    def __update_view_radios(self):
+    def __get_view_radios(self):
         """
-            Update current view with radios view
+            Get radios view
         """
         from lollypop.view_radios import RadiosView
         self.__stop_current_view()
         view = RadiosView()
         view.populate()
         view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        return view
 
     def __add_device(self, mount, show=False):
         """
@@ -733,6 +765,7 @@ class Container:
             Update view based on selected object
             @param list as SelectionList
         """
+        view = None
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
@@ -740,36 +773,46 @@ class Container:
             if Lp().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
-                self.__update_view_playlists()
+                view = self.__get_view_playlists()
             self.__update_list_playlists(False)
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self.__list_two.hide()
             if not self.__list_two.will_be_selected():
-                self.__update_view_device(selected_ids[0])
+                view = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
                                  Type.NEVER,
                                  Type.RANDOMS]:
             self.__list_two.hide()
-            self.__update_view_albums(selected_ids, [])
+            view = self.__get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
             self.__list_two.hide()
-            self.__update_view_radios()
+            view = self.__get_view_radios()
         elif selection_list.is_marked_as_artists():
             self.__list_two.hide()
             if selected_ids[0] == Type.ALL:
-                self.__update_view_albums(selected_ids, [])
+                view = self.__get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:
-                self.__update_view_albums([], selected_ids)
+                view = self.__get_view_albums([], selected_ids)
             else:
-                self.__update_view_artists([], selected_ids)
+                view = self.__get_view_artists([], selected_ids)
         else:
             self.__update_list_artists(self.__list_two, selected_ids, False)
             if Lp().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
-                self.__update_view_albums(selected_ids, [])
+                view = self.__get_view_albums(selected_ids, [])
+        if view is not None:
+            self.__stack.add(view)
+            # If we are in paned stack mode, show list two if wanted
+            if self.paned_stack and\
+                    self.__list_two.is_visible() and (
+                    selected_ids[0] >= 0 or selected_ids[0] == Type.PLAYLISTS):
+                self.__stack.set_visible_child(self.__list_two)
+            else:
+                self.__stack.set_visible_child(view)
+            self.__stack.clean_old_views(view)
 
     def __on_list_populated(self, selection_list):
         """
@@ -789,11 +832,14 @@ class Container:
         if not selected_ids or not genre_ids:
             return
         if genre_ids[0] == Type.PLAYLISTS:
-            self.__update_view_playlists(selected_ids)
+            view = self.__get_view_playlists(selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
-            self.__update_view_albums(genre_ids, selected_ids)
+            view = self.__get_view_albums(genre_ids, selected_ids)
         else:
-            self.__update_view_artists(genre_ids, selected_ids)
+            view = self.__get_view_artists(genre_ids, selected_ids)
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        self.__stack.clean_old_views(view)
 
     def __on_pass_focus(self, selection_list):
         """

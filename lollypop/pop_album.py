@@ -37,6 +37,9 @@ class AlbumPopover(Gtk.Popover):
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
         view.populate([album_id])
+        if Lp().window.paned_stack:
+            for child in view.children:
+                child.hide_header_labels()
 
         # Get width/height from main window if None
         if height is None:
@@ -56,7 +59,7 @@ class AlbumPopover(Gtk.Popover):
         """
             Set maximum width
         """
-        width = min(900, self.__width * 0.8)
+        width = min(900, self.__width)
         return (width, width)
 
 #######################

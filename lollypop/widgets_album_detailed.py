@@ -64,11 +64,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder.connect_signals(self)
         self._widget = builder.get_object("widget")
         album_info = builder.get_object("albuminfo")
-        title_label = builder.get_object("title")
-        title_label.set_property("has-tooltip", True)
-        artist_label = builder.get_object("artist")
-        artist_label.set_property("has-tooltip", True)
-        year_label = builder.get_object("year")
+        self.__title_label = builder.get_object("title")
+        self.__title_label.set_property("has-tooltip", True)
+        self.__artist_label = builder.get_object("artist")
+        self.__artist_label.set_property("has-tooltip", True)
+        self.__year_label = builder.get_object("year")
         self.__header = builder.get_object("header")
         self.__overlay = builder.get_object("overlay")
         self.__duration_label = builder.get_object("duration")
@@ -80,19 +80,21 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             rating.set_hexpand(True)
             rating.set_property("halign", Gtk.Align.END)
             rating.set_property("valign", Gtk.Align.CENTER)
+            rating.set_margin_end(10)
             rating.show()
             self.__header.attach(rating, 4, 0, 1, 1)
             loved = LovedWidget(self._album)
             loved.set_property("halign", Gtk.Align.END)
             loved.set_property("valign", Gtk.Align.CENTER)
+            loved.set_margin_end(10)
             loved.show()
             self.__header.attach(loved, 5, 0, 1, 1)
 
-            artist_label.set_text(", ".join(self._album.artists))
-            artist_label.show()
+            self.__artist_label.set_text(", ".join(self._album.artists))
+            self.__artist_label.show()
             if self._album.year is not None:
-                year_label.set_label(str(self._album.year))
-                year_label.show()
+                self.__year_label.set_label(str(self._album.year))
+                self.__year_label.show()
         else:
             self.__duration_label.set_hexpand(True)
             builder = Gtk.Builder()
@@ -109,8 +111,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 self._cover.get_style_context().add_class("cover-frame")
                 self._artwork_button = builder.get_object("artwork-button")
                 if self._album.year is not None:
-                    year_label.set_label(str(self._album.year))
-                    year_label.show()
+                    self.__year_label.set_label(str(self._album.year))
+                    self.__year_label.show()
                 grid = Gtk.Grid()
                 grid.set_column_spacing(10)
                 grid.set_property("halign", Gtk.Align.CENTER)
@@ -126,8 +128,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 if Lp().window.get_view_width() < WindowSize.MEDIUM:
                     self.__coverbox.hide()
                 if len(artist_ids) > 1:
-                    artist_label.set_text(", ".join(self._album.artists))
-                    artist_label.show()
+                    self.__artist_label.set_text(
+                                                ", ".join(self._album.artists))
+                    self.__artist_label.show()
             elif art_size == ArtSize.HEADER:
                 # Here we are working around default CoverBox ui
                 # Do we really need to have another ui file?
@@ -141,8 +144,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 play_event.set_margin_start(2)
                 play_event.set_margin_bottom(2)
                 album_info.attach(self.__coverbox, 0, 0, 1, 1)
-                artist_label.set_text(", ".join(self._album.artists))
-                artist_label.show()
+                self.__artist_label.set_text(", ".join(self._album.artists))
+                self.__artist_label.show()
 
         self.__set_duration()
 
@@ -158,7 +161,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.set_cover()
         self.update_state()
 
-        title_label.set_label(self._album.name)
+        self.__title_label.set_label(self._album.name)
 
         for disc in self.__discs:
             self.__add_disc_container(disc.number)
@@ -264,6 +267,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             widget.set_filter_func(func)
         for widget in self._tracks_right.values():
             widget.set_filter_func(func)
+
+    def hide_header_labels(self):
+        """
+            Hide header labels
+        """
+        self.__title_label.hide()
+        self.__artist_label.hide()
+        self.__year_label.hide()
 
     @property
     def boxes(self):

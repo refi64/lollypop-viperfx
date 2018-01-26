@@ -185,6 +185,14 @@ class ProgressController:
                 GLib.source_remove(self.__timeout_id)
                 self.__timeout_id = None
 
+    def do_destroy(self):
+        """
+            Remove timeout
+        """
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
+
 #######################
 # PROTECTED           #
 #######################
