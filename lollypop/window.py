@@ -155,13 +155,15 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__toolbar.playback.show_back(
                                      True,
                                      Lp().player.current_track.id is not None)
-            self.__toolbar.title.show_progress(False)
+            self.__toolbar.title.hide()
+            self.__toolbar.info.hide()
         else:
             self._paned_stack(False)
             self.__main_stack.show()
             self.__show_miniplayer(False)
             self.__toolbar.playback.show_back(False)
-            self.__toolbar.title.show_progress(True)
+            self.__toolbar.title.show()
+            self.__toolbar.info.show()
 
     def set_mini(self):
         """

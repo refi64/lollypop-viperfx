@@ -79,21 +79,16 @@ class Toolbar(Gtk.HeaderBar):
         """
         width = self.__toolbar_playback.get_preferred_width()[1]
         width += self.__toolbar_end.get_preferred_width()[1]
-        if window_width < WindowSize.MONSTER:
-            self.__toolbar_info.hide()
-        else:
-            self.__toolbar_info.show()
         window = self.get_window()
         if window is not None:
             available = window.get_width() - width
             if available > 0:
-                if window_width >= WindowSize.MONSTER:
-                    title = available/2
+                if window_width >= WindowSize.MEDIUM:
+                    title = available / 2
                 else:
                     title = available
                 self.__toolbar_title.set_width(title)
-                if window_width >= WindowSize.MEDIUM:
-                    self.__toolbar_info.set_width((available-title)/2)
+                self.__toolbar_info.set_width((available-title)/2)
             self.__width = window.get_width()
 
     def update_position(self, value=None):
@@ -132,11 +127,12 @@ class Toolbar(Gtk.HeaderBar):
         self.__toolbar_end.search(search)
 
     @property
-    def artsize(self):
+    def info(self):
         """
-            Art size as int
+            Return info toolbar
+            @return ToolbarInfo
         """
-        return self.__toolbar_info.artsize
+        return self.__toolbar_info
 
     @property
     def title(self):
