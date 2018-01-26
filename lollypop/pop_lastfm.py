@@ -87,4 +87,4 @@ class LastfmPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        Lp().window.toolbar.search(row.get_child().get_text())
+        Lp().window.toolbar.end.search(row.get_child().get_text())

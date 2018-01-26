@@ -119,12 +119,13 @@ class Toolbar(Gtk.HeaderBar):
         except Exception as e:
             print("Toolbar::restore_state():", e)
 
-    def search(self, search):
+    @property
+    def end(self):
         """
-            Search item
-            @param search as str
+            Return end toolbar
+            @return ToolbarEnd
         """
-        self.__toolbar_end.search(search)
+        return self.__toolbar_end
 
     @property
     def info(self):
