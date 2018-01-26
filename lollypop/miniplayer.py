@@ -77,7 +77,9 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             @param event as Gdk.Event
         """
         if Lp().player.current_track.id is not None:
-            if event.button != 1 and Lp().player.current_track.id >= 0:
+            if event.button == 1:
+                Lp().window.toolbar.end.show_list_popover(button)
+            elif Lp().player.current_track.id >= 0:
                 from lollypop.pop_menu import TrackMenuPopover, PlaylistsMenu
                 popover = TrackMenuPopover(
                             Lp().player.current_track,

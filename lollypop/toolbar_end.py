@@ -159,6 +159,16 @@ class ToolbarEnd(Gtk.Bin):
         Lp().player.connect("party-changed", self.__on_party_changed)
         Lp().player.connect("lock-changed", self.__on_lock_changed)
 
+    def show_list_button(self, b):
+        """
+            Show/hide list button
+            @param b as bool
+        """
+        if b:
+            self.__list_button.show()
+        else:
+            self.__list_button.hide()
+
     def setup_menu(self, menu):
         """
             Add an application menu to menu button
@@ -204,6 +214,27 @@ class ToolbarEnd(Gtk.Bin):
         """
         self.__on_search_short([])
         self.__search.set_text(search)
+
+    def show_list_popover(self, button):
+        """
+            Show a popover with current playlist
+            @param button as Gtk.Button
+        """
+        if Lp().player.current_track.id == Type.EXTERNALS:
+            from lollypop.pop_externals import ExternalsPopover
+            popover = ExternalsPopover()
+        elif Lp().player.queue:
+            from lollypop.pop_queue import QueuePopover
+            popover = QueuePopover()
+        elif Lp().player.get_user_playlist_ids():
+            from lollypop.pop_playlists import PlaylistsPopover
+            popover = PlaylistsPopover()
+        else:
+            from lollypop.pop_albums import AlbumsPopover
+            popover = AlbumsPopover()
+        popover.set_relative_to(button)
+        popover.show()
+        return popover
 
 #######################
 # PROTECTED           #
@@ -260,27 +291,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_was_inhibited = self.__next_popover.inhibited
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
-        if Lp().player.current_track.id == Type.EXTERNALS:
-            from lollypop.pop_externals import ExternalsPopover
-            self.__list_popover = ExternalsPopover()
-            self.__list_popover.set_relative_to(self.__list_button)
-            self.__list_popover.populate()
-            self.__list_popover.show()
-        elif Lp().player.queue:
-            from lollypop.pop_queue import QueuePopover
-            self.__list_popover = QueuePopover()
-            self.__list_popover.set_relative_to(self.__list_button)
-            self.__list_popover.show()
-        elif Lp().player.get_user_playlist_ids():
-            from lollypop.pop_playlists import PlaylistsPopover
-            self.__list_popover = PlaylistsPopover()
-            self.__list_popover.set_relative_to(self.__list_button)
-            self.__list_popover.show()
-        else:
-            from lollypop.pop_albums import AlbumsPopover
-            self.__list_popover = AlbumsPopover()
-            self.__list_popover.set_relative_to(self.__list_button)
-            self.__list_popover.show()
+        self.__list_popover = self.show_list_popover(widget)
         self.__list_popover.connect("closed", self.__on_list_popover_closed)
         return True
 

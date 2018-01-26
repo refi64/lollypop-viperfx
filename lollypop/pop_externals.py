@@ -65,12 +65,6 @@ class ExternalsPopover(Gtk.Popover):
                                                self.__on_current_changed)
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
-
-    def populate(self):
-        """
-            Populate popover
-        """
-        self.__model.clear()
         self.__populate(Lp().player.get_externals())
 
 #######################

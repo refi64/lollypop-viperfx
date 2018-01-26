@@ -157,6 +157,7 @@ class Window(Gtk.ApplicationWindow, Container):
                                      Lp().player.current_track.id is not None)
             self.__toolbar.title.hide()
             self.__toolbar.info.hide()
+            self.__toolbar.end.show_list_button(False)
         else:
             self._paned_stack(False)
             self.__main_stack.show()
@@ -164,6 +165,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__toolbar.playback.show_back(False)
             self.__toolbar.title.show()
             self.__toolbar.info.show()
+            self.__toolbar.end.show_list_button(True)
 
     def set_mini(self):
         """
