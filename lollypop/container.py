@@ -94,7 +94,7 @@ class Container:
         """
         # Get list one ids (always)
         list_one_ids = []
-        if not self.paned_stack:
+        if not self.paned_stack or Lp().settings.get_value("window-maximized"):
             ids = Lp().settings.get_value("list-one-ids")
             for i in ids:
                 if isinstance(i, int):
