@@ -781,7 +781,7 @@ class Container(Gtk.Bin):
             if not self.__list_two.will_be_selected():
                 view = self.__get_view_albums(selected_ids, [])
         if view is not None:
-            if self.paned_stack:
+            if self.is_paned_stack:
                 # Just to make it sensitive
                 Lp().window.toolbar.playback.show_back(True, True)
             self.__stack.add(view)
