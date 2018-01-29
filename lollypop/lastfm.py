@@ -115,7 +115,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         url = last_artist.get_cover_image(3)
         return (url, content.encode(encoding="UTF-8"))
 
-    def do_scrobble(self, artist, album, title, timestamp):
+    def do_scrobble(self, artist, album, title, timestamp, mb_track_id):
         """
             Scrobble track
             @param artist as str
@@ -123,24 +123,28 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param album as str
             @param timestamp as int
             @param duration as int
+            @param mb_track_id as str
         """
         if get_network_available() and\
            self.__is_auth and Secret is not None:
             helper = TaskHelper()
-            helper.run(self.__scrobble, artist, album, title, timestamp)
+            helper.run(self.__scrobble, artist, album,
+                       title, timestamp, mb_track_id)
 
-    def now_playing(self, artist, album, title, duration):
+    def now_playing(self, artist, album, title, duration, mb_track_id):
         """
             Now playing track
             @param artist as str
             @param title as str
             @param album as str
             @param duration as int
+            @param mb_track_id as str
         """
         if get_network_available() and\
            self.__is_auth and Secret is not None:
             helper = TaskHelper()
-            helper.run(self.__now_playing, artist, album, title, duration)
+            helper.run(self.__now_playing, artist, album,
+                       title, duration, mb_track_id)
 
     def love(self, artist, title):
         """
@@ -267,7 +271,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             debug("LastFM::__connect(): %s" % e)
             self.__is_auth = False
 
-    def __scrobble(self, artist, album, title, timestamp, first=True):
+    def __scrobble(self, artist, album, title, timestamp, mb_track_id,
+                   first=True):
         """
             Scrobble track
             @param artist as str
@@ -275,18 +280,21 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param album_title as str
             @param timestamp as int
             @param duration as int
+            @param mb_track_id as str
             @param first is internal
             @thread safe
         """
-        debug("LastFM::__scrobble(): %s, %s, %s, %s" % (artist,
-                                                        album,
-                                                        title,
-                                                        timestamp))
+        debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (artist,
+                                                            album,
+                                                            title,
+                                                            timestamp,
+                                                            mb_track_id))
         try:
             self.scrobble(artist=artist,
                           album=album,
                           title=title,
-                          timestamp=timestamp)
+                          timestamp=timestamp,
+                          mbid=mb_track_id)
         except WSError:
             pass
         except Exception as e:
@@ -294,9 +302,11 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             # Scrobble sometimes fails
             if first:
                 self.__connect()
-                self.__scrobble(artist, album, title, timestamp, False)
+                self.__scrobble(artist, album, title, timestamp,
+                                mb_track_id, False)
 
-    def __now_playing(self, artist, album, title, duration, first=True):
+    def __now_playing(self, artist, album, title, duration, mb_track_id,
+                      first=True):
         """
             Now playing track
             @param artist as str
@@ -310,11 +320,10 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             self.update_now_playing(artist=artist,
                                     album=album,
                                     title=title,
-                                    duration=duration)
-            debug("LastFM::__now_playing(): %s, %s, %s, %s" % (artist,
-                                                               album,
-                                                               title,
-                                                               duration))
+                                    duration=duration,
+                                    mbid=mb_track_id)
+            debug("LastFM::__now_playing(): %s, %s, %s, %s, %s" % (
+                   artist, album, title, duration, mb_track_id))
         except WSError:
             pass
         except Exception as e:
@@ -322,7 +331,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             # now playing sometimes fails
             if first:
                 self.__connect()
-                self.__now_playing(artist, album, title, duration, False)
+                self.__now_playing(artist, album, title, duration,
+                                   mb_track_id, False)
 
     def __populate_loved_tracks(self):
         """

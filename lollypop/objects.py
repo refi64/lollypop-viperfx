@@ -311,7 +311,8 @@ class Track(Base):
                 "duration": 0,
                 "number": 0,
                 "year": None,
-                "mtime": 0}
+                "mtime": 0,
+                "mb_track_id": None}
 
     def __init__(self, track_id=None):
         """
