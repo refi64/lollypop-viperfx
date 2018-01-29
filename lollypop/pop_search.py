@@ -343,17 +343,18 @@ class SearchPopover(Gtk.Popover):
                     score += 2
             except:
                 pass
+            lower_item = noaccents(item).lower()
             for artist in artists:
-                if noaccents(artist.lower()).find(
-                                                noaccents(item).lower()) != -1:
+                lower_artist = noaccents(artist).lower()
+                if lower_artist == lower_item:
                     score += 2
-                    if not row.is_track:
-                        score += 1
-            if noaccents(row.name).lower().find(
-                                                noaccents(item).lower()) != -1:
-                score += 1
-                if row.is_track:
+                elif lower_artist.find(lower_item) != -1:
                     score += 1
+            lower_name = noaccents(row.name).lower()
+            if lower_name == lower_item:
+                score += 2
+            elif lower_name.find(lower_item) != -1:
+                score += 1
         row.set_score(score)
 
     def __sort_func(self, row1, row2):
@@ -416,7 +417,7 @@ class SearchPopover(Gtk.Popover):
             Add rows for internal results
             @param items as [SearchItem]
         """
-        if items:
+        if items and not self.__cancellable.is_cancelled():
             item = items.pop(0)
             search_row = SearchRow(item)
             search_row.show()
