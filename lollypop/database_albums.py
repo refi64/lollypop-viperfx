@@ -50,7 +50,7 @@ class AlbumsDatabase:
                                   (name, album_id, no_album_artist,\
                                   uri, loved, popularity, rate, mtime, synced)\
                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                 (album_name, album_id, artist_ids == [],
+                                 (album_name, album_id or None, artist_ids == [],
                                   uri, loved, popularity, rate, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
@@ -325,14 +325,18 @@ class AlbumsDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            filters = (album_name, album_id)
+            filters = (album_name,)
             if artist_ids:
-                filters += tuple(artist_ids)
                 request = "SELECT albums.rowid FROM albums, album_artists\
-                           WHERE name=? COLLATE NOCASE AND\
-                           albums.album_id=? AND\
-                           no_album_artist=0 AND\
-                           album_artists.album_id=albums.rowid AND (1=0 "
+                           WHERE name=? COLLATE NOCASE "
+                if album_id:
+                    request += "AND albums.album_id=? "
+                    filters += (album_id,)
+                else:
+                    request += "AND albums.album_id IS NULL "
+                request += "AND no_album_artist=0 AND\
+                            album_artists.album_id=albums.rowid AND (1=0 "
+                filters += tuple(artist_ids)
                 for artist_id in artist_ids:
                     request += "OR artist_id=? "
                 request += ")"
