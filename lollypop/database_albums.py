@@ -30,12 +30,12 @@ class AlbumsDatabase:
         self.__max_count = 1
         self._cached_randoms = []
 
-    def add(self, album_name, album_id, artist_ids,
+    def add(self, album_name, mb_album_id, artist_ids,
             uri, loved, popularity, rate, mtime):
         """
             Add a new album to database
             @param album_name as str
-            @param album_id as str
+            @param mb_album_id as str
             @param artist_ids as int
             @param uri as str
             @param loved as bool
@@ -50,8 +50,9 @@ class AlbumsDatabase:
                                   (name, album_id, no_album_artist,\
                                   uri, loved, popularity, rate, mtime, synced)\
                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                 (album_name, album_id or None, artist_ids == [],
-                                  uri, loved, popularity, rate, mtime, 0))
+                                 (album_name, mb_album_id or None,
+                                  artist_ids == [], uri, loved, popularity,
+                                  rate, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -316,11 +317,11 @@ class AlbumsDatabase:
                 return v[0]
             return 5
 
-    def get_id(self, album_name, album_id, artist_ids):
+    def get_id(self, album_name, mb_album_id, artist_ids):
         """
             Get non compilation album id
             @param album_name as str
-            @param album_id as str
+            @param mb_album_id as str
             @param artist_ids as [int]
             @return int
         """
@@ -329,11 +330,11 @@ class AlbumsDatabase:
             if artist_ids:
                 request = "SELECT albums.rowid FROM albums, album_artists\
                            WHERE name=? COLLATE NOCASE "
-                if album_id:
-                    request += "AND albums.album_id=? "
-                    filters += (album_id,)
+                if mb_album_id:
+                    request += "AND albums.mb_album_id=? "
+                    filters += (mb_album_id,)
                 else:
-                    request += "AND albums.album_id IS NULL "
+                    request += "AND albums.mb_album_id IS NULL "
                 request += "AND no_album_artist=0 AND\
                             album_artists.album_id=albums.rowid AND (1=0 "
                 filters += tuple(artist_ids)

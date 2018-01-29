@@ -58,6 +58,7 @@ class DatabaseUpgrade:
             22: self.__upgrade_22,
             23: self.__upgrade_23,
             24: "ALTER TABLE albums ADD album_id TEXT",
+            25: self.__upgrade_25,
         }
 
     def upgrade(self, db):
@@ -534,4 +535,31 @@ class DatabaseUpgrade:
                                    genre_id FROM track_genres")
             sql.execute("DROP TABLE track_genres")
             sql.execute("ALTER TABLE track_genres2 RENAME TO track_genres")
+            sql.commit()
+
+    def __upgrade_25(self, db):
+        """
+            Rename album_id to mb_album_id in albums
+        """
+        with SqlCursor(db) as sql:
+            sql.execute("ALTER TABLE albums RENAME TO tmp_albums")
+            sql.execute("""CREATE TABLE albums (
+                               id INTEGER PRIMARY KEY,
+                               name TEXT NOT NULL,
+                               mb_album_id TEXT,
+                               no_album_artist BOOLEAN NOT NULL,
+                               year INT,
+                               uri TEXT NOT NULL,
+                               popularity INT NOT NULL,
+                               rate INT NOT NULL,
+                               loved INT NOT NULL,
+                               mtime INT NOT NULL,
+                               synced INT NOT NULL)""")
+
+            sql.execute("""INSERT INTO albums (id, name, mb_album_id,
+                            no_album_artist, year, uri, popularity, rate,
+                            loved, mtime, synced) SELECT id, name, album_id,
+                            no_album_artist, year, uri, popularity, rate,
+                            loved, mtime, synced FROM tmp_albums""")
+            sql.execute("DROP TABLE tmp_albums")
             sql.commit()
