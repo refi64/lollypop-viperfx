@@ -238,7 +238,7 @@ class ArtistView(ArtistAlbumsView):
         """
         internal_scale_factor = 1
         scale_factor = image.get_scale_factor()
-        if not Lp().window.paned_stack:
+        if not Lp().window.container.is_paned_stack:
             internal_scale_factor = 2
         scale_factor = scale_factor * internal_scale_factor
         # Update image if scale factor changed
@@ -301,7 +301,7 @@ class ArtistView(ArtistAlbumsView):
         artwork_height = 0
         internal_scale_factor = 1
         self.__scale_factor = self.__artwork.get_scale_factor()
-        if not Lp().window.paned_stack:
+        if not Lp().window.container.is_paned_stack:
             internal_scale_factor = 2
         self.__scale_factor *= internal_scale_factor
         if Lp().settings.get_value("artist-artwork"):

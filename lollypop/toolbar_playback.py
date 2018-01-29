@@ -61,7 +61,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
             Go back in container stack
             @param button as Gtk.Button
         """
-        Lp().window.go_back()
+        Lp().window.container.go_back()
 
 #######################
 # PRIVATE             #

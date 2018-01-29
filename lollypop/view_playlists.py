@@ -178,7 +178,7 @@ class PlaylistsView(View):
             Edit playlist
             @param button as Gtk.Button
         """
-        Lp().window.show_playlist_editor(self.__playlist_ids[0])
+        Lp().window.container.show_playlist_editor(self.__playlist_ids[0])
 
     def _on_current_changed(self, player):
         """
@@ -297,7 +297,7 @@ class PlaylistsManageView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp().window.destroy_current_view()
+        Lp().window.container.destroy_current_view()
 
 
 class PlaylistEditView(View):
@@ -339,4 +339,4 @@ class PlaylistEditView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp().window.reload_view()
+        Lp().window.container.reload_view()

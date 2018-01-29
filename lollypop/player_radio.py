@@ -44,7 +44,7 @@ class RadioPlayer(BasePlayer):
         if Gio.NetworkMonitor.get_default().get_network_available():
             try:
                 if not Lp().scanner.is_locked():
-                    Lp().window.pulse(True)
+                    Lp().window.container.pulse(True)
                 self.__current = track
                 parser = TotemPlParser.Parser.new()
                 parser.connect("entry-parsed", self.__on_entry_parsed,
@@ -159,7 +159,7 @@ class RadioPlayer(BasePlayer):
             self.emit("status-changed")
         else:
             self.emit("current-changed")
-            Lp().window.pulse(False)
+            Lp().window.container.pulse(False)
         if not self.__radios:
             self.__radios = Radios().get()
 
@@ -176,7 +176,7 @@ class RadioPlayer(BasePlayer):
         # Only start playing if context always True
         if self.__current == track:
             self.__start_playback(track, play)
-            Lp().window.pulse(False)
+            Lp().window.container.pulse(False)
 
     def __on_entry_parsed(self, parser, uri, metadata, track, play):
         """

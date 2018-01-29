@@ -166,7 +166,8 @@ class ContextWidget(Gtk.Grid):
             Show playlist manager
             @param args as []
         """
-        Lp().window.show_playlist_manager(self.__object.id,
+        Lp().window.container.show_playlist_manager(
+                                          self.__object.id,
                                           self.__object.genre_ids,
                                           self.__object.artist_ids,
                                           isinstance(self.__object, Album))

@@ -156,7 +156,7 @@ class SearchRow(Gtk.ListBoxRow):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        Lp().window.show_artists_albums(self.__item.artist_ids)
+        Lp().window.container.show_artists_albums(self.__item.artist_ids)
         self.get_ancestor(Gtk.Popover).popdown()
         return True
 
@@ -165,8 +165,8 @@ class SearchRow(Gtk.ListBoxRow):
             Prepend track to queue
             @param button as Gtk.Button
         """
-        Lp().window.show_playlist_manager(self.__item.id, [], [],
-                                          not self.__item.is_track)
+        Lp().window.container.show_playlist_manager(self.__item.id, [], [],
+                                                    not self.__item.is_track)
 
     def _on_queue_clicked(self, button):
         """

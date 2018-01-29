@@ -244,7 +244,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             track = choice(self._album.tracks)
         else:
             track = self._album.tracks[0]
-        if Lp().window.view.filtered:
+        if Lp().window.container.view.filtered:
             # Here we need to get ids from parent as view may be filtered
             for child in self.get_parent().get_children():
                 if not child.filtered:
@@ -304,7 +304,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
-        Lp().window.show_artists_albums(self._album.artist_ids)
+        Lp().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
     def __on_album_popover_closed(self, popover):

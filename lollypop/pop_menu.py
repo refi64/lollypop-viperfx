@@ -69,7 +69,7 @@ class ArtistMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().window.show_artists_albums(self._object.artist_ids)
+        Lp().window.container.show_artists_albums(self._object.artist_ids)
 
 
 class QueueMenu(BaseMenu):
@@ -264,7 +264,8 @@ class PlaylistsMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().window.show_playlist_manager(self._object.id,
+        Lp().window.container.show_playlist_manager(
+                                          self._object.id,
                                           self._object.genre_ids,
                                           self._object.artist_ids,
                                           isinstance(self._object, Album))

@@ -29,7 +29,6 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Init window
         """
-        Container.__init__(self)
         self.__signal1 = None
         self.__signal2 = None
         self.__timeout = None
@@ -149,7 +148,7 @@ class Window(Gtk.ApplicationWindow, Container):
                 self.__miniplayer.set_vexpand(True)
         elif size[0] < WindowSize.BIG:
             self.__show_miniplayer(True)
-            self._paned_stack(True)
+            self.__container.paned_stack(True)
             self.__main_stack.show()
             if self.__miniplayer is not None:
                 self.__miniplayer.set_vexpand(False)
@@ -157,7 +156,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__toolbar.info.hide()
             self.__toolbar.end.show_list_button(False)
         else:
-            self._paned_stack(False)
+            self.__container.paned_stack(False)
             self.__main_stack.show()
             self.__show_miniplayer(False)
             self.__toolbar.title.show()
@@ -196,11 +195,20 @@ class Window(Gtk.ApplicationWindow, Container):
             @param widget as Gtk.Widget
             @param event as Gdk.event
         """
-        if event.type == Gdk.EventType.FOCUS_CHANGE and self.view is not None:
-            if hasattr(self.view, "disable_overlay"):
-                self.view.disable_overlay()
+        if event.type == Gdk.EventType.FOCUS_CHANGE and\
+                self.__container.view is not None:
+            if hasattr(self.__container.view, "disable_overlay"):
+                self.__container.view.disable_overlay()
             Lp().player.preview.set_state(Gst.State.NULL)
         Gtk.ApplicationWindow.do_event(self, event)
+
+    @property
+    def container(self):
+        """
+            Get container
+            @return Container
+        """
+        return self.__container
 
 ############
 # Private  #
@@ -344,6 +352,8 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup window content
         """
+        self.__container = Container()
+        self.__container.show()
         self.__vgrid = Gtk.Grid()
         self.__vgrid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__vgrid.show()
@@ -357,7 +367,7 @@ class Window(Gtk.ApplicationWindow, Container):
                                     not Lp().settings.get_value("disable-csd"))
         self.__vgrid.add(self.__main_stack)
         self.add(self.__vgrid)
-        self.__main_stack.add_named(self._paned_main_list, "main")
+        self.__main_stack.add_named(self.__container, "main")
         self.__main_stack.set_visible_child_name("main")
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
@@ -478,15 +488,7 @@ class Window(Gtk.ApplicationWindow, Container):
         if self.__was_maximized and\
            self.__main_stack.get_visible_child_name() == "mini":
             Lp().settings.set_boolean("window-maximized", True)
-        main_pos = self._paned_main_list.get_position()
-        listview_pos = self._paned_list_view.get_position()
-        listview_pos = listview_pos if listview_pos > 100 else 100
-        Lp().settings.set_value("paned-mainlist-width",
-                                GLib.Variant("i",
-                                             main_pos))
-        Lp().settings.set_value("paned-listview-width",
-                                GLib.Variant("i",
-                                             listview_pos))
+        self.__container.save_internals()
 
     def __on_seek_action(self, action, param):
         """
@@ -527,7 +529,7 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "locked":
             Lp().player.lock()
         elif string == "hide_paned":
-            self._hide_paned()
+            self.__container.hide_paned()
         elif string == "filter":
             if self.view is not None:
                 self.view.set_search_mode()
@@ -537,7 +539,7 @@ class Window(Gtk.ApplicationWindow, Container):
             state = not Lp().settings.get_value("show-genres")
             Lp().settings.set_value("show-genres",
                                     GLib.Variant("b", state))
-            Lp().window.show_genres(state)
+            self.__container.show_genres(state)
         elif string == "loved":
             if Lp().player.current_track.id is not None and\
                     Lp().player.current_track.id >= 0:
@@ -563,7 +565,7 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, Lp().scanner.update)
-        GLib.idle_add(self.restore_view_state)
+        GLib.idle_add(self.__container.restore_view_state)
 
     def __on_current_changed(self, player):
         """

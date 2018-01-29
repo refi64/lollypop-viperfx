@@ -214,7 +214,7 @@ class Application(Gtk.Application):
             if not is_gnome() and not is_unity():
                 self.window.setup_menu(menu)
             self.window.connect("delete-event", self.__hide_on_delete)
-            self.window.init_list_one()
+            self.window.container.init_list_one()
             self.window.show()
             self.player.restore_state()
             # We add to mainloop as we want to run
@@ -264,7 +264,7 @@ class Application(Gtk.Application):
             Save window position and view
         """
         if self.settings.get_value("save-state"):
-            self.window.save_view_state()
+            self.window.container.save_view_state()
             # Save current track
             if self.player.current_track.id is None:
                 track_id = -1
@@ -304,7 +304,7 @@ class Application(Gtk.Application):
             position = 0
         dump(position, open(LOLLYPOP_DATA_PATH + "/position.bin", "wb"))
         self.player.stop_all()
-        self.window.stop_all()
+        self.window.container.stop_all()
 
     def __vacuum(self):
         """
@@ -418,7 +418,7 @@ class Application(Gtk.Application):
         elif options.contains("prev"):
             self.player.prev()
         elif options.contains("emulate-phone"):
-            self.window.add_fake_phone()
+            self.window.container.add_fake_phone()
         elif len(args) > 1:
             self.player.clear_externals()
             for uri in args[1:]:
@@ -435,7 +435,7 @@ class Application(Gtk.Application):
             # self.window.setup_window()
             # self.window.present()
             # Horrible HACK: https://bugzilla.gnome.org/show_bug.cgi?id=774130
-            self.window.save_view_state()
+            self.window.container.save_view_state()
             self.window.destroy()
             self.window = Window()
             # If not GNOME/Unity add menu to toolbar
@@ -443,7 +443,7 @@ class Application(Gtk.Application):
                 menu = self.__setup_app_menu()
                 self.window.setup_menu(menu)
             self.window.connect("delete-event", self.__hide_on_delete)
-            self.window.init_list_one()
+            self.window.container.init_list_one()
             self.window.show()
             self.player.emit("status-changed")
             self.player.emit("current-changed")

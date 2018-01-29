@@ -37,7 +37,7 @@ class AlbumPopover(Gtk.Popover):
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
         view.populate([album_id])
-        if Lp().window.paned_stack:
+        if Lp().window.container.is_paned_stack:
             for child in view.children:
                 child.hide_header_labels()
 

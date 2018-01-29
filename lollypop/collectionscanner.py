@@ -63,8 +63,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             if not uris:
                 return
 
-            Lp().window.progress.add(self)
-            Lp().window.progress.set_fraction(0.0, self)
+            Lp().window.container.progress.add(self)
+            Lp().window.container.progress.set_fraction(0.0, self)
 
             self.__thread = Thread(target=self.__scan, args=(uris,))
             self.__thread.daemon = True
@@ -142,13 +142,13 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        Lp().window.progress.set_fraction(current / total, self)
+        Lp().window.container.progress.set_fraction(current / total, self)
 
     def __finish(self):
         """
             Notify from main thread when scan finished
         """
-        Lp().window.progress.set_fraction(1.0, self)
+        Lp().window.container.progress.set_fraction(1.0, self)
         self.stop()
         self.emit("scan-finished")
         # Update max count value

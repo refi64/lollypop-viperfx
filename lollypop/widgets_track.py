@@ -201,7 +201,7 @@ class Row(Gtk.ListBoxRow):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
-        Lp().window.show_artists_albums(self._album.artist_ids)
+        Lp().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
     def __on_enter_notify(self, widget, event):
@@ -490,7 +490,7 @@ class PlaylistRow(Row):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
-        Lp().window.show_artists_albums(self._track.album.artist_ids)
+        Lp().window.container.show_artists_albums(self._track.album.artist_ids)
         return True
 
     def __on_eventbox_realize(self, eventbox):
@@ -544,9 +544,10 @@ class PlaylistRow(Row):
                 return
             self.emit("track-moved", self._track.id, src, up)
         except:
-            if len(Lp().window.view.get_ids()) == 1:
-                Lp().playlists.import_uri(Lp().window.view.get_ids()[0],
-                                          data.get_text(), self._track.id, up)
+            if len(Lp().window.container.view.get_ids()) == 1:
+                Lp().playlists.import_uri(
+                                    Lp().window.container.view.get_ids()[0],
+                                    data.get_text(), self._track.id, up)
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
@@ -739,9 +740,10 @@ class TracksWidget(Gtk.ListBox):
             bottom_row = self.get_children()[-1]
             bottom_row.emit("track-moved", bottom_row.id, value, False)
         except:
-            if len(Lp().window.view.get_ids()) == 1:
-                Lp().playlists.import_uri(Lp().window.view.get_ids()[0],
-                                          data.get_text())
+            if len(Lp().window.container.view.get_ids()) == 1:
+                Lp().playlists.import_uri(
+                                       Lp().window.container.view.get_ids()[0],
+                                       data.get_text())
 
     def __on_queue_changed(self, unused):
         """

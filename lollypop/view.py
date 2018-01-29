@@ -94,9 +94,9 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self.__update_widgets, self._get_children())
 
-    def set_search_mode(self):
+    def enable_filter(self):
         """
-           Set search mode
+           Filter the view
         """
         if self._filter is not None:
             enable = not self.__search_bar.get_search_mode()

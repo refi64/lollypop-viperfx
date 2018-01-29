@@ -125,7 +125,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 grid.add(loved)
                 self.__coverbox.add(grid)
                 self._widget.attach(self.__coverbox, 0, 0, 1, 1)
-                if Lp().window.get_view_width() < WindowSize.MEDIUM:
+                if Lp().window.container.get_view_width() < WindowSize.MEDIUM:
                     self.__coverbox.hide()
                 if len(artist_ids) > 1:
                     self.__artist_label.set_text(
@@ -429,7 +429,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                                              AlbumMenu(self._album,
                                                        ancestor is not None))
         if ancestor is not None:
-            Lp().window.view.show_popover(popover)
+            Lp().window.container.view.show_popover(popover)
         else:
             popover.connect("closed", self.__on_pop_menu_closed)
             self.get_style_context().add_class("album-menu-selected")

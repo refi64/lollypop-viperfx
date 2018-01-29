@@ -297,7 +297,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().window.show_genres(state)
+        Lp().window.container.show_genres(state)
         Lp().settings.set_value("show-genres",
                                 GLib.Variant("b", state))
 
@@ -359,7 +359,7 @@ class SettingsDialog:
         """
         Lp().settings.set_value("artist-artwork",
                                 GLib.Variant("b", state))
-        Lp().window.reload_view()
+        Lp().window.container.reload_view()
         if state:
             Lp().art.cache_artists_info()
 
@@ -571,7 +571,7 @@ class SettingsDialog:
                 InfoCache.uncache_artwork(artist[1], suffix,
                                           widget.get_scale_factor())
                 Lp().art.emit("artist-artwork-changed", artist[1])
-        Lp().window.reload_view()
+        Lp().window.container.reload_view()
 
     def __edit_settings_close(self, widget):
         """
@@ -602,8 +602,8 @@ class SettingsDialog:
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
             Lp().scanner.update()
-        if Lp().window.view is not None:
-            Lp().window.view.update_children()
+        if Lp().window.container.view is not None:
+            Lp().window.container.view.update_children()
 
     def __test_lastfm_connection(self, result):
         """
@@ -738,7 +738,8 @@ class SettingsDialog:
             Lp().player.stop()
             Lp().db.drop_db()
             Lp().db = Database()
-            Lp().window.show_genres(Lp().settings.get_value("show-genres"))
+            Lp().window.container.show_genres(
+                                        Lp().settings.get_value("show-genres"))
             Lp().scanner.update()
             self.__progress.get_toplevel().set_deletable(True)
 

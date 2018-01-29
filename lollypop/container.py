@@ -19,6 +19,7 @@ from lollypop.define import Lp, Type
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
+from lollypop.view import View
 from lollypop.progressbar import ProgressBar
 
 
@@ -29,7 +30,7 @@ class Device:
     uri = None
 
 
-class Container:
+class Container(Gtk.Bin):
     """
         Container for main view
     """
@@ -37,6 +38,7 @@ class Container:
         """
             Init container
         """
+        Gtk.Bin.__init__(self)
         self.__pulse_timeout = None
         # Index will start at -VOLUMES
         self.__devices = {}
@@ -61,15 +63,7 @@ class Container:
         if Lp().tracks.count() == 0:
             self.__show_first_run()
 
-    def get_genre_id(self):
-        """
-            Return current selected genre
-            @return genre id as int
-        """
-        if self.__show_genres:
-            return self.__list_one.get_selected_id()
-        else:
-            return None
+        self.add(self.__paned_main_list)
 
     def init_list_one(self):
         """
@@ -186,37 +180,6 @@ class Container:
                 self.__stack.clean_old_views(child)
                 break
 
-    @property
-    def view(self):
-        """
-            Disable overlays
-        """
-        return self.__stack.get_visible_child()
-
-    @property
-    def progress(self):
-        """
-            Progress bar
-            @return ProgressBar
-        """
-        return self.__progress
-
-    def add_remove_from(self, value, list_one, add):
-        """
-            Add or remove value to list
-            @param value as (int, str)
-            @param list one as bool
-            @param add as bool
-        """
-        if list_one:
-            l = self.__list_one
-        else:
-            l = self.__list_two
-        if add:
-            l.add_value(value)
-        else:
-            l.remove_value(value[0])
-
     def reload_view(self):
         """
             Reload current view
@@ -247,13 +210,6 @@ class Container:
                 GLib.source_remove(self.__pulse_timeout)
                 self.__pulse_timeout = None
                 self.__progress.hide()
-
-    def on_scan_finished(self, scanner):
-        """
-            Mark force scan as False, update lists
-            @param scanner as CollectionScanner
-        """
-        self.__update_lists(scanner)
 
     def add_fake_phone(self):
         """
@@ -303,44 +259,47 @@ class Container:
         visible_child = self.__stack.get_visible_child()
         if visible_child == self.__list_two:
             self.__stack.set_visible_child(self.__list_one)
-            self.toolbar.playback.show_back(True)
+            Lp().window.toolbar.playback.show_back(True)
         elif self.__list_two.is_visible():
             self.__stack.set_visible_child(self.__list_two)
         else:
             self.__stack.set_visible_child(self.__list_one)
-            self.toolbar.playback.show_back(True)
+            Lp().window.toolbar.playback.show_back(True)
 
-    @property
-    def paned_stack(self):
+    def save_internals(self):
         """
-            Return True if stack contains paned
-            return True
+            Save paned position
         """
-        return self.__list_one in self.__stack.get_children()
+        main_pos = self.__paned_main_list.get_position()
+        listview_pos = self.__paned_list_view.get_position()
+        listview_pos = listview_pos if listview_pos > 100 else 100
+        Lp().settings.set_value("paned-mainlist-width",
+                                GLib.Variant("i",
+                                             main_pos))
+        Lp().settings.set_value("paned-listview-width",
+                                GLib.Variant("i",
+                                             listview_pos))
 
-##############
-# PROTECTED  #
-##############
-    def _paned_stack(self, b):
+    def paned_stack(self, b):
         """
             Enable paned stack
             @param bool as b
         """
-        if b and not self.paned_stack:
-            self._paned_list_view.remove(self.__list_two)
-            self._paned_main_list.remove(self.__list_one)
+        if b and not self.is_paned_stack:
+            self.__paned_list_view.remove(self.__list_two)
+            self.__paned_main_list.remove(self.__list_one)
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
-            self.toolbar.playback.show_back(True)
+            Lp().window.toolbar.playback.show_back(True)
             self.__stack.set_visible_child(self.__list_one)
-        elif not b and self.paned_stack:
+        elif not b and self.is_paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
-            self._paned_list_view.add1(self.__list_two)
-            self._paned_main_list.add1(self.__list_one)
-            self.toolbar.playback.show_back(False)
+            self.__paned_list_view.add1(self.__list_two)
+            self.__paned_main_list.add1(self.__list_one)
+            Lp().window.toolbar.playback.show_back(False)
 
-    def _hide_paned(self):
+    def hide_paned(self):
         """
             Hide navigation paned
             Internally hide list one and list two
@@ -355,6 +314,35 @@ class Container:
         Lp().settings.set_value("show-navigation-list",
                                 GLib.Variant("b",
                                              self.__list_one.is_visible()))
+
+    @property
+    def view(self):
+        """
+            Disable overlays
+        """
+        view = self.__stack.get_visible_child()
+        if view is not None and not isinstance(view, View):
+            for child in self.__stack.get_children():
+                if isinstance(child, View):
+                    view = child
+                    break
+        return view
+
+    @property
+    def progress(self):
+        """
+            Progress bar
+            @return ProgressBar
+        """
+        return self.__progress
+
+    @property
+    def is_paned_stack(self):
+        """
+            Return True if stack contains paned
+            return True
+        """
+        return self.__list_one in self.__stack.get_children()
 
 ############
 # PRIVATE  #
@@ -390,8 +378,8 @@ class Container:
                 - artist list
                 - main view as artist view or album view
         """
-        self._paned_main_list = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
-        self._paned_list_view = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+        self.__paned_main_list = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+        self.__paned_list_view = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
@@ -412,23 +400,24 @@ class Container:
         vgrid.add(self.__progress)
         vgrid.show()
 
-        self._paned_list_view.add1(self.__list_two)
-        self._paned_list_view.add2(vgrid)
-        self._paned_main_list.add1(self.__list_one)
-        self._paned_main_list.add2(self._paned_list_view)
-        self._paned_main_list.set_position(
+        self.__paned_list_view.add1(self.__list_two)
+        self.__paned_list_view.add2(vgrid)
+        self.__paned_main_list.add1(self.__list_one)
+        self.__paned_main_list.add2(self.__paned_list_view)
+        self.__paned_main_list.set_position(
             Lp().settings.get_value("paned-mainlist-width").get_int32())
-        self._paned_list_view.set_position(
+        self.__paned_list_view.set_position(
             Lp().settings.get_value("paned-listview-width").get_int32())
-        self._paned_main_list.show()
-        self._paned_list_view.show()
+        self.__paned_main_list.show()
+        self.__paned_list_view.show()
 
     def __setup_scanner(self):
         """
             Run collection update if needed
             @return True if hard scan is running
         """
-        Lp().scanner.connect("scan-finished", self.on_scan_finished)
+        Lp().scanner.connect("scan-finished",
+                             lambda x: self.__update_lists(Lp().scanner))
         Lp().scanner.connect("genre-updated", self.__on_genre_updated)
         Lp().scanner.connect("artist-updated", self.__on_artist_updated)
 
@@ -794,7 +783,7 @@ class Container:
         if view is not None:
             if self.paned_stack:
                 # Just to make it sensitive
-                self.toolbar.playback.show_back(True, True)
+                Lp().window.toolbar.playback.show_back(True, True)
             self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
             if self.paned_stack and\
