@@ -57,20 +57,9 @@ class Container:
 
         Lp().playlists.connect("playlists-changed",
                                self.__update_playlists)
-
-    def update_db(self, *ignore):
-        """
-            Update db at startup only if needed
-        """
-        # Stop previous scan
-        if Lp().scanner.is_locked():
-            Lp().scanner.stop()
-            GLib.timeout_add(250, self.update_db)
-        else:
-            # Allow user to disable network access before first load
-            if Lp().tracks.count() == 0:
-                self.__show_first_run()
-            Lp().scanner.update()
+        # Allow user to disable network access
+        if Lp().tracks.count() == 0:
+            self.__show_first_run()
 
     def get_genre_id(self):
         """

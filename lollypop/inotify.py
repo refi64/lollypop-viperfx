@@ -97,4 +97,4 @@ class Inotify:
             Run a collection update
         """
         self.__timeout = None
-        Lp().window.update_db()
+        Lp().scanner.update()

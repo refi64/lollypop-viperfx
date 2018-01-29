@@ -601,7 +601,7 @@ class SettingsDialog:
         self.__settings_dialog.hide()
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
-            Lp().window.update_db()
+            Lp().scanner.update()
         if Lp().window.view is not None:
             Lp().window.view.update_children()
 
@@ -739,7 +739,7 @@ class SettingsDialog:
             Lp().db.drop_db()
             Lp().db = Database()
             Lp().window.show_genres(Lp().settings.get_value("show-genres"))
-            Lp().window.update_db()
+            Lp().scanner.update()
             self.__progress.get_toplevel().set_deletable(True)
 
 

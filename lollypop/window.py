@@ -381,7 +381,7 @@ class Window(Gtk.ApplicationWindow, Container):
         importer = CollectionImporter()
         uris = data.get_text().strip("\n").split("\r")
         task_helper = TaskHelper()
-        task_helper.run(importer.add, uris, callback=(self.update_db,))
+        task_helper.run(importer.add, uris, callback=(Lp().scanner.update,))
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
@@ -562,7 +562,7 @@ class Window(Gtk.ApplicationWindow, Container):
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
-            GLib.timeout_add(2000, self.update_db)
+            GLib.timeout_add(2000, Lp().scanner.update)
         GLib.idle_add(self.restore_view_state)
 
     def __on_current_changed(self, player):

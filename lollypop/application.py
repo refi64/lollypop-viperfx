@@ -483,7 +483,7 @@ class Application(Gtk.Application):
         if self.window:
             helper = TaskHelper()
             helper.run(self.art.clean_all_cache)
-            self.window.update_db()
+            self.scanner.update()
 
     def __set_network(self, action, param):
         """

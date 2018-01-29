@@ -54,7 +54,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Update database
         """
-        if not self.is_locked():
+        # Stop previous scan
+        if self.is_locked():
+            self.stop()
+            GLib.timeout_add(250, self.update)
+        else:
             uris = Lp().settings.get_music_uris()
             if not uris:
                 return
