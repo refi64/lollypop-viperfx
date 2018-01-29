@@ -10,10 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from lollypop.controllers import InfoController, ProgressController
-from lollypop.define import Lp
+from lollypop.define import Lp, WindowSize
 
 
 class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
@@ -95,7 +95,9 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        if Lp().player.current_track.id is not None:
+        height = Lp().window.get_size()[1]
+        if Lp().player.current_track.id is not None and\
+                height > WindowSize.MEDIUM:
             if event.button == 1:
                 Lp().window.toolbar.end.show_list_popover(button)
             elif Lp().player.current_track.id >= 0:
@@ -104,11 +106,6 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
                             Lp().player.current_track,
                             PlaylistsMenu(Lp().player.current_track))
                 popover.set_relative_to(self)
-                press_rect = Gdk.Rectangle()
-                press_rect.x = event.x
-                press_rect.y = event.y
-                press_rect.width = press_rect.height = 1
-                popover.set_pointing_to(press_rect)
                 popover.show()
         return True
 
