@@ -123,6 +123,10 @@ class SettingsDialog:
         switch_state = builder.get_object("switch_state")
         switch_state.set_state(Lp().settings.get_value("save-state"))
 
+        switch_network_access = builder.get_object("switch_network_access")
+        network_access = Lp().settings.get_value("network-access")
+        switch_network_access.set_state(network_access)
+
         switch_mix = builder.get_object("switch_mix")
         switch_mix.set_state(Lp().settings.get_value("mix"))
 
@@ -241,6 +245,15 @@ class SettingsDialog:
 #######################
 # PROTECTED           #
 #######################
+    def _on_enable_network_access_state_set(self, widget, state):
+        """
+            Save network access state
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value("network-access",
+                                GLib.Variant("b", state))
+
     def _update_coversize(self, widget):
         """
             Delayed update cover size
