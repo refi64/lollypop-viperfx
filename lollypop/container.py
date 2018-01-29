@@ -313,12 +313,7 @@ class Container:
             Go back in stack
         """
         visible_child = self.__stack.get_visible_child()
-        if visible_child == self.__list_one:
-            for child in self.__stack.get_children():
-                if not isinstance(child, SelectionList):
-                    self.__stack.set_visible_child(child)
-                    break
-        elif visible_child == self.__list_two:
+        if visible_child == self.__list_two:
             self.__stack.set_visible_child(self.__list_one)
             self.toolbar.playback.show_back(True)
         elif self.__list_two.is_visible():
@@ -348,11 +343,15 @@ class Container:
             self._paned_main_list.remove(self.__list_one)
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
+            self.toolbar.playback.show_back(
+                         True,
+                         self.__list_one != self.__stack.get_visible_child())
         elif not b and self.paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
             self._paned_list_view.add1(self.__list_two)
             self._paned_main_list.add1(self.__list_one)
+            self.toolbar.playback.show_back(False)
 
     def _hide_paned(self):
         """
@@ -806,7 +805,7 @@ class Container:
             if not self.__list_two.will_be_selected():
                 view = self.__get_view_albums(selected_ids, [])
         if view is not None:
-            if self.paned_stack:
+            if self.paned_stack or Lp().settings.get_value("window-maximized"):
                 # Just to make it sensitive
                 self.toolbar.playback.show_back(True, True)
             self.__stack.add(view)
