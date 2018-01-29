@@ -143,8 +143,9 @@ class Window(Gtk.ApplicationWindow, Container):
         size = self.get_size()
         self.__toolbar.set_content_width(size[0])
         if size[1] < WindowSize.MEDIUM:
-            self.__main_stack.hide()
-            if self.__miniplayer is not None:
+            if self.__miniplayer is not None and\
+                    self.__miniplayer.is_visible():
+                self.__main_stack.hide()
                 self.__miniplayer.set_vexpand(True)
         elif size[0] < WindowSize.BIG:
             self.__show_miniplayer(True)
