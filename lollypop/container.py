@@ -94,13 +94,12 @@ class Container:
         """
         # Get list one ids (always)
         list_one_ids = []
-        if not self.paned_stack or Lp().settings.get_value("window-maximized"):
-            ids = Lp().settings.get_value("list-one-ids")
-            for i in ids:
-                if isinstance(i, int):
-                    list_one_ids.append(i)
-            if not list_one_ids:
-                list_one_ids = [Type.POPULARS]
+        ids = Lp().settings.get_value("list-one-ids")
+        for i in ids:
+            if isinstance(i, int):
+                list_one_ids.append(i)
+        if not list_one_ids:
+            list_one_ids = [Type.POPULARS]
 
         # Get list two ids (only on save state)
         list_two_ids = [Type.NONE]
@@ -343,9 +342,8 @@ class Container:
             self._paned_main_list.remove(self.__list_one)
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
-            self.toolbar.playback.show_back(
-                         True,
-                         self.__list_one != self.__stack.get_visible_child())
+            self.toolbar.playback.show_back(True)
+            self.__stack.set_visible_child(self.__list_one)
         elif not b and self.paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
@@ -805,7 +803,7 @@ class Container:
             if not self.__list_two.will_be_selected():
                 view = self.__get_view_albums(selected_ids, [])
         if view is not None:
-            if self.paned_stack or Lp().settings.get_value("window-maximized"):
+            if self.paned_stack:
                 # Just to make it sensitive
                 self.toolbar.playback.show_back(True, True)
             self.__stack.add(view)

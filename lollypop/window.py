@@ -464,9 +464,9 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp().settings.set_boolean("window-maximized",
                                   "GDK_WINDOW_STATE_MAXIMIZED" in
                                   event.new_window_state.value_names)
-        # FIXME Remove this, handled by MPRIS in GNOME 3.26
         if event.changed_mask & Gdk.WindowState.FOCUSED and \
            event.new_window_state & Gdk.WindowState.FOCUSED:
+            # FIXME Remove this, handled by MPRIS in GNOME 3.26
             self.__grab_media_keys()
 
     def __on_destroyed_window(self, widget):
