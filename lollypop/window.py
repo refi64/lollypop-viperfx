@@ -231,7 +231,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
-            self.__miniplayer = MiniPlayer()
+            self.__miniplayer = MiniPlayer(self.get_size()[0])
             self.__vgrid.add(self.__miniplayer)
         elif not show and self.__miniplayer is not None:
             self.__miniplayer.destroy()
@@ -445,10 +445,11 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self.__timeout_configure = None
         size = widget.get_size()
-        if size[1] > WindowSize.MEDIUM:
+        if self.__miniplayer is None:
             name = "window"
         else:
             name = "mini"
+            self.__miniplayer.update_cover(size[0])
         Lp().settings.set_value("%s-size" % name,
                                 GLib.Variant("ai", [size[0], size[1]]))
 

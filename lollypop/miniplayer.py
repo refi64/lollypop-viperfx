@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gdk
 
 from lollypop.controllers import InfoController, ProgressController
-from lollypop.define import Lp, WindowSize
+from lollypop.define import Lp
 
 
 class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
@@ -21,12 +21,14 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         Toolbar end
     """
 
-    def __init__(self):
+    def __init__(self, width):
         """
             Init toolbar
+            @param width as int
         """
+        self.__width = width
         Gtk.Bin.__init__(self)
-        InfoController.__init__(self, WindowSize.SMALL)
+        InfoController.__init__(self, width)
         ProgressController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
@@ -52,9 +54,26 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             self.__on_status_changed(Lp().player)
         self.add(builder.get_object("widget"))
 
+    def update_cover(self, width):
+        """
+            Update cover for width
+            @param width as int
+        """
+        self.__width = width
+        InfoController.__init__(self, width)
+        self.__on_current_changed(Lp().player)
+
+    def do_get_preferred_width(self):
+        """
+            Force preferred width
+        """
+        (min, nat) = Gtk.Bin.do_get_preferred_width(self)
+        # Allow resizing
+        return (0, 0)
+
     def do_get_preferred_height(self):
         """
-            Grid height
+            Force preferred height
         """
         return self.__grid.get_preferred_height()
 
