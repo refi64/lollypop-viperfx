@@ -61,7 +61,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
         self.__width = width
         InfoController.__init__(self, width)
-        self.__on_current_changed(Lp().player)
+        InfoController.on_current_changed(self, Lp().player)
 
     def do_get_preferred_width(self):
         """
