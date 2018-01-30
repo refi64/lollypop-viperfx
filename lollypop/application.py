@@ -51,6 +51,7 @@ from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
 from lollypop.helper_task import TaskHelper
 from lollypop.collectionscanner import CollectionScanner
+from lollypop.listenbrainz import ListenBrainz
 
 
 class Application(Gtk.Application):
@@ -92,6 +93,7 @@ class Application(Gtk.Application):
         self.notify = None
         self.lastfm = None
         self.librefm = None
+        self.listenbrainz = None
         self.debug = False
         self.__fs = None
         self.__externals_count = 0
@@ -181,6 +183,9 @@ class Application(Gtk.Application):
         if LastFM is not None:
             self.lastfm = LastFM("lastfm")
             self.librefm = LastFM("librefm")
+        self.listenbrainz = ListenBrainz()
+        self.settings.bind("listenbrainz-user-token", self.listenbrainz,
+                           "user_token", 0)
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)

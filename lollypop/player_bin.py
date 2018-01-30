@@ -262,13 +262,21 @@ class BinPlayer(BasePlayer):
             @param finished as Track
             @param finished_start_time as int
         """
+        played = time() - finished_start_time
+
+        # Listen on ListenBrainz
+        if Lp().listenbrainz is not None and Lp().listenbrainz.user_token:
+            # We can listen if the track has been played
+            # for at least half its duration, or for 4 minutes
+            if played >= finished.duration / 2 or played >= 240:
+                Lp().listenbrainz.listen(int(finished_start_time), finished)
+
         # Last.fm policy
         if finished.duration < 30:
             return
         # Scrobble on lastfm
         if Lp().lastfm is not None and Lp().lastfm.session_key:
             artists = ", ".join(finished.artists)
-            played = time() - finished_start_time
             # We can scrobble if the track has been played
             # for at least half its duration, or for 4 minutes
             if played >= finished.duration / 2 or played >= 240:
@@ -280,7 +288,6 @@ class BinPlayer(BasePlayer):
         # Scrobble on librefm
         if Lp().librefm is not None and Lp().librefm.session_key:
             artists = ", ".join(finished.artists)
-            played = time() - finished_start_time
             # We can scrobble if the track has been played
             # for at least half its duration, or for 4 minutes
             if played >= finished.duration / 2 or played >= 240:
@@ -300,6 +307,11 @@ class BinPlayer(BasePlayer):
         self._start_time = time()
         debug("Player::_on_stream_start(): %s" % self._current_track.uri)
         self.emit("current-changed")
+
+        # Update now playing on ListenBrainz
+        if Lp().listenbrainz is not None and Lp().listenbrainz.user_token:
+            Lp().listenbrainz.playing_now(self._current_track)
+
         # Update now playing on lastfm
         # Not supported by librefm
         if Lp().lastfm is not None and\
