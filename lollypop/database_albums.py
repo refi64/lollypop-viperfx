@@ -47,7 +47,7 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
-                                  (name, album_id, no_album_artist,\
+                                  (name, mb_album_id, no_album_artist,\
                                   uri, loved, popularity, rate, mtime, synced)\
                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                  (album_name, mb_album_id or None,
