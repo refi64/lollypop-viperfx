@@ -63,14 +63,15 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.__is_auth = False
         self.__password = None
         self.__goa = None
+        self.__goa_auth = None
         self.__check_for_proxy()
         if name == "librefm":
             LibreFMNetwork.__init__(self)
         else:
-            self.__goa = self.__get_goa_oauth()
+            (self.__goa, self.__goa_auth) = self.__get_goa()
             if self.__goa is not None:
-                self.__API_KEY = self.__goa.props.client_id
-                self.__API_SECRET = self.__goa.props.client_secret
+                self.__API_KEY = self.__goa_auth.props.client_id
+                self.__API_SECRET = self.__goa_auth.props.client_secret
             else:
                 self.__API_KEY = "7a9619a850ccf7377c46cf233c51e3c6"
                 self.__API_SECRET = "9254319364d73bec6c59ace485a95c98"
@@ -78,6 +79,19 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                    api_key=self.__API_KEY,
                                    api_secret=self.__API_SECRET)
         self.connect()
+
+    @property
+    def available(self):
+        """
+            Return True if Last.fm/Libre.fm submission is available
+            @return bool
+        """
+        if not self.session_key:
+            return False
+        if self.__goa is not None:
+            debug("Last.fm GOA disabled: %s" % self.__goa.props.music_disabled)
+            return not self.__goa.props.music_disabled
+        return True
 
     def connect(self, full_sync=False, callback=None, *args):
         """
@@ -210,7 +224,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
 #######################
 # PRIVATE             #
 #######################
-    def __get_goa_oauth(self):
+    def __get_goa(self):
         """
             Init Gnome Online Account
             @return get_oauth2_based()/None
@@ -218,11 +232,12 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         try:
             c = Goa.Client.new_sync()
             for proxy in c.get_accounts():
-                if proxy.get_account().props.provider_name == "Last.fm":
-                    return proxy.get_oauth2_based()
+                account = proxy.get_account()
+                if account.props.provider_name == "Last.fm":
+                    return (account, proxy.get_oauth2_based())
         except:
             pass
-        return None
+        return (None, None)
 
     def __check_for_proxy(self):
         """
@@ -257,7 +272,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             self.session_key = ""
             self.__check_for_proxy()
             if self.__goa is not None:
-                self.session_key = self.__goa.call_get_access_token_sync(
+                self.session_key = self.__goa_auth.call_get_access_token_sync(
                                                                       None)[0]
             else:
                 skg = SessionKeyGenerator(self)
