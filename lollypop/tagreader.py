@@ -107,7 +107,7 @@ class TagReader(Discoverer):
                 composers.append(read)
         return "; ".join(composers)
 
-    def get_album_id(self, tags):
+    def get_mb_album_id(self, tags):
         """
             Get album id (musicbrainz)
             @param tags as Gst.TagList
@@ -117,6 +117,18 @@ class TagReader(Discoverer):
             return ""
         (exists, album_id) = tags.get_string_index('musicbrainz-albumid', 0)
         return album_id or ""
+
+    def get_mb_track_id(self, tags):
+        """
+            Get recording id (musicbrainz)
+            @param tags as Gst.TagList
+            @return str
+        """
+        if tags is None:
+            return ""
+        (exists, recording_id) = tags.get_string_index('musicbrainz-trackid',
+                                                       0)
+        return recording_id or ""
 
     def get_performers(self, tags):
         """

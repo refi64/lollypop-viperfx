@@ -68,7 +68,8 @@ class Database:
                                               popularity INT NOT NULL,
                                               rate INT NOT NULL,
                                               ltime INT NOT NULL,
-                                              mtime INT NOT NULL
+                                              mtime INT NOT NULL,
+                                              mb_track_id TEXT
                                               )"""
     __create_track_artists = """CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,

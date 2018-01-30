@@ -58,6 +58,7 @@ class DatabaseUpgrade:
             22: self.__upgrade_22,
             23: self.__upgrade_23,
             24: "ALTER TABLE albums ADD album_id TEXT",
+            25: "ALTER TABLE tracks ADD mb_track_id TEXT",
         }
 
     def upgrade(self, db):

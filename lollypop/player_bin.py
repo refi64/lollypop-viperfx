@@ -275,7 +275,8 @@ class BinPlayer(BasePlayer):
                 Lp().lastfm.do_scrobble(artists,
                                         finished.album_name,
                                         finished.title,
-                                        int(finished_start_time))
+                                        int(finished_start_time),
+                                        finished.mb_track_id)
         # Scrobble on librefm
         if Lp().librefm is not None and Lp().librefm.session_key:
             artists = ", ".join(finished.artists)
@@ -286,7 +287,8 @@ class BinPlayer(BasePlayer):
                 Lp().librefm.do_scrobble(artists,
                                          finished.album_name,
                                          finished.title,
-                                         int(finished_start_time))
+                                         int(finished_start_time),
+                                         finished.mb_track_id)
 
     def _on_stream_start(self, bus, message):
         """
@@ -307,7 +309,8 @@ class BinPlayer(BasePlayer):
             Lp().lastfm.now_playing(artists,
                                     self._current_track.album_name,
                                     self._current_track.title,
-                                    int(self._current_track.duration))
+                                    int(self._current_track.duration),
+                                    self._current_track.mb_track_id)
         try:
             if not Lp().scanner.is_locked():
                 Lp().tracks.set_listened_at(self._current_track.id,
