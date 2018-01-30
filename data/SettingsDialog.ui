@@ -1050,6 +1050,76 @@
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">20</property>
+                <property name="margin_right">20</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
+                <property name="row_spacing">10</property>
+                <property name="column_spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">&lt;b&gt;ListenBrainz user token&lt;/b&gt;
+&lt;small&gt;To submit your listens to ListenBrainz, enter your ListenBrainz user token below. You can see your user token in your &lt;a href="https://listenbrainz.org/profile/"&gt;user profile&lt;/a&gt;.&lt;/small&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="wrap">True</property>
+                    <property name="max_width_chars">40</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="listenbrainz-user-token">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="halign">start</property>
+                    <property name="width_chars">34</property>
+                    <property name="placeholder_text">00000000-0000-0000-0000-000000000000</property>
+                    <signal name="changed" handler="_on_listenbrainz_token_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">User token</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">ListenBrainz</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
                 <property name="margin_left">10</property>
                 <property name="margin_right">10</property>
                 <property name="margin_top">10</property>
@@ -1119,7 +1189,7 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
                 </child>
               </object>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child type="tab">
@@ -1129,15 +1199,9 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
                 <property name="label" translatable="yes">Search</property>
               </object>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
                 <property name="tab_fill">False</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child type="action-start">
               <placeholder/>

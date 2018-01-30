@@ -10,22 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import gi
-gi.require_version("Secret", "1")
-# from gi.repository import Gio
-
-from gettext import gettext as _
-
-try:
-    from gi.repository import Secret
-except Exception as e:
-    print(e)
-    print(_("Last.fm authentication disabled"))
-    Secret = None
-
 import json
-import os
 import ssl
+from gi.repository import GObject
 from http.client import HTTPSConnection
 
 from lollypop.utils import debug
@@ -33,22 +20,18 @@ from lollypop.utils import debug
 HOST_NAME = "api.listenbrainz.org"
 SSL_CONTEXT = ssl.create_default_context()
 
-# TODO: Configure token
-# TODO: Honor rate limiting
 
-
-class ListenBrainz:
+class ListenBrainz(GObject.GObject):
     """
     Submit listens to ListenBrainz.org.
 
     See https://listenbrainz.readthedocs.io/en/latest/dev/api.html
     """
 
+    user_token = GObject.Property(type=str, default=None)
+
     def __init__(self):
-        # self.user_token = None
-        # FIXME: Configure token
-        self.user_token = os.environ["LISTENBRAINZ_USER_TOKEN"]
-        debug("ListenBrainz token: %s" % self.user_token)
+        GObject.GObject.__init__(self)
 
     def listen(self, time, track):
         payload = self.__get_payload(track)

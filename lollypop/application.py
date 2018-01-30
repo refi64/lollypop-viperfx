@@ -184,6 +184,8 @@ class Application(Gtk.Application):
             self.lastfm = LastFM("lastfm")
             self.librefm = LastFM("librefm")
         self.listenbrainz = ListenBrainz()
+        self.settings.bind("listenbrainz-user-token", self.listenbrainz,
+                           "user_token", 0)
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)

@@ -210,6 +210,12 @@ class SettingsDialog:
             Lp().settings.get_default_value("cs-api-key").get_string()
         builder.get_object("cs-entry").set_text(key)
 
+        #
+        # ListenBrainz tab
+        #
+        token = Lp().settings.get_value("listenbrainz-user-token").get_string()
+        builder.get_object("listenbrainz-user-token").set_text(token)
+
         from lollypop.helper_passwords import PasswordsHelper
         helper = PasswordsHelper()
         #
@@ -421,6 +427,15 @@ class SettingsDialog:
         """
         value = entry.get_text().strip()
         Lp().settings.set_value("cs-api-key", GLib.Variant("s", value))
+
+    def _on_listenbrainz_token_changed(self, entry):
+        """
+            Save listenbrainz token
+            @param entry as Gtk.Entry
+        """
+        value = entry.get_text().strip()
+        Lp().settings.set_value("listenbrainz-user-token",
+                                GLib.Variant("s", value))
 
     def _on_preview_changed(self, combo):
         """

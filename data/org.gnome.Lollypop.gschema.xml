@@ -88,6 +88,11 @@
             <summary>Last.fm login</summary>
             <description></description>
         </key>
+        <key type="s" name="listenbrainz-user-token">
+            <default>""</default>
+            <summary>ListenBrainz user token</summary>
+            <description></description>
+        </key>
         <key type="s" name="cs-api-key">
             <default>"AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"</default>
             <summary>Google Custom Search API key</summary>
