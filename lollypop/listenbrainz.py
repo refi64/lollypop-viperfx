@@ -12,10 +12,12 @@
 
 import json
 import ssl
+import time
 from gi.repository import GObject
 from http.client import HTTPSConnection
 
-from lollypop.utils import debug
+from lollypop.helper_task import TaskHelper
+from lollypop.utils import debug, get_network_available
 
 HOST_NAME = "api.listenbrainz.org"
 SSL_CONTEXT = ssl.create_default_context()
@@ -32,17 +34,33 @@ class ListenBrainz(GObject.GObject):
 
     def __init__(self):
         GObject.GObject.__init__(self)
+        self.__next_request_time = 0
 
     def listen(self, time, track):
+        """
+            Submit a listen for a track
+            @param time as int
+            @param track as Track
+        """
         payload = self.__get_payload(track)
         payload[0]["listened_at"] = time
         self.__submit("single", payload)
 
     def playing_now(self, track):
+        """
+            Submit a playing now notification for a track
+            @param track as Track
+        """
         payload = self.__get_payload(track)
         self.__submit("playing_now", payload)
 
     def __submit(self, listen_type, payload):
+        if get_network_available():
+            helper = TaskHelper()
+            helper.run(self.__request, listen_type, payload)
+
+    def __request(self, listen_type, payload, retry=0):
+        self.__wait_for_ratelimit()
         debug("ListenBrainz %s: %r" % (listen_type, payload))
         data = {
             "listen_type": listen_type,
@@ -60,8 +78,27 @@ class ListenBrainz(GObject.GObject):
             response_data = json.loads(response.read())
             debug("ListenBrainz response %s: %r" % (response.status,
                                                     response_data))
+            self.__handle_ratelimit(response)
+            # Too Many Requests
+            if response.status == 429 and retry < 5:
+                self.__request(listen_type, payload, retry + 1)
         except Exception as e:
             print("ListenBrainz::__submit():", e)
+
+    def __wait_for_ratelimit(self):
+        now = time.time()
+        if self.__next_request_time > now:
+            delay = self.__next_request_time - now
+            debug("ListenBrainz rate limit applies, delay %d" % delay)
+            time.sleep(delay)
+
+    def __handle_ratelimit(self, response):
+        remaining = int(response.getheader("X-RateLimit-Remaining", 0))
+        reset_in = int(response.getheader("X-RateLimit-Reset-In", 0))
+        debug("ListenBrainz X-RateLimit-Remaining: %i" % remaining)
+        debug("ListenBrainz X-RateLimit-Reset-In: %i" % reset_in)
+        if (remaining == 0):
+            self.__next_request_time = time.time() + reset_in
 
     def __get_payload(self, track):
         artists = ", ".join(track.artists)
