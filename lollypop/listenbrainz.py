@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gio
+
 import json
 import ssl
 import time
@@ -20,6 +22,7 @@ from lollypop.helper_task import TaskHelper
 from lollypop.utils import debug, get_network_available
 
 HOST_NAME = "api.listenbrainz.org"
+PATH_SUBMIT = "/1/submit-listens"
 SSL_CONTEXT = ssl.create_default_context()
 
 
@@ -35,6 +38,8 @@ class ListenBrainz(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
         self.__next_request_time = 0
+        self.__proxy = None
+        self.__check_for_proxy()
 
     def listen(self, time, track):
         """
@@ -71,9 +76,10 @@ class ListenBrainz(GObject.GObject):
             "Content-Type": "application/json"
         }
         body = json.dumps(data)
-        conn = HTTPSConnection(HOST_NAME, context=SSL_CONTEXT)
+        (host, port, url) = self.__get_connection_params()
+        conn = HTTPSConnection(host, port, context=SSL_CONTEXT)
         try:
-            conn.request("POST", "/1/submit-listens", body, headers)
+            conn.request("POST", url, body, headers)
             response = conn.getresponse()
             response_data = json.loads(response.read())
             debug("ListenBrainz response %s: %r" % (response.status,
@@ -84,6 +90,13 @@ class ListenBrainz(GObject.GObject):
                 self.__request(listen_type, payload, retry + 1)
         except Exception as e:
             print("ListenBrainz::__submit():", e)
+
+    def __get_connection_params(self):
+        if self.__proxy is not None:
+            return (self.__proxy["host"], self.__proxy["port"],
+                    "https://%s%s" % (HOST_NAME, PATH_SUBMIT))
+        else:
+            return (HOST_NAME, None, PATH_SUBMIT)
 
     def __wait_for_ratelimit(self):
         now = time.time()
@@ -99,6 +112,28 @@ class ListenBrainz(GObject.GObject):
         debug("ListenBrainz X-RateLimit-Reset-In: %i" % reset_in)
         if (remaining == 0):
             self.__next_request_time = time.time() + reset_in
+
+    def __check_for_proxy(self):
+        """
+            Enable proxy if needed
+        """
+        try:
+            proxy = Gio.Settings.new("org.gnome.system.proxy")
+            https = Gio.Settings.new("org.gnome.system.proxy.https")
+            mode = proxy.get_value("mode").get_string()
+            if mode != "none":
+                host = https.get_value("host").get_string()
+                port = https.get_value("port").get_int32()
+                if host != "" and port != 0:
+                    self.__proxy = {
+                        "host": host,
+                        "port": port
+                    }
+            else:
+                self.__proxy = None
+        except Exception as e:
+            print("ListenBrainz::__check_for_proxy():", e)
+            pass
 
     def __get_payload(self, track):
         artists = ", ".join(track.artists)
