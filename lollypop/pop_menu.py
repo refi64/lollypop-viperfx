@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, TAG_EDITORS
 from lollypop.objects import Track, Album
 from lollypop.utils import set_loved
 from lollypop.helper_dbus import DBusHelper
@@ -349,6 +349,13 @@ class EditMenu(BaseMenu):
             Init edit menu
             @param object as Album/Track
         """
+        # Search for available tag editors
+        self.__editor = Lp().settings.get_value("tag-editor").get_string()
+        if not self.__editor:
+            for tag_editor in TAG_EDITORS:
+                if GLib.find_program_in_path(tag_editor) is not None:
+                    self.__editor = tag_editor
+                    break
         # Ignore genre_ids/artist_ids
         if isinstance(object, Album):
             obj = Album(object.id)
@@ -357,7 +364,8 @@ class EditMenu(BaseMenu):
         BaseMenu.__init__(self, obj)
 
         dbus_helper = DBusHelper()
-        dbus_helper.call("CanLaunchTagEditor", None,
+        dbus_helper.call("CanLaunchTagEditor",
+                         GLib.Variant("(s)", (self.__editor,)),
                          self.__on_can_launch_tag_editor, None)
 
 #######################
@@ -388,7 +396,8 @@ class EditMenu(BaseMenu):
         """
         path = GLib.filename_from_uri(self._object.uri)[0]
         dbus_helper = DBusHelper()
-        dbus_helper.call("LaunchTagEditor", GLib.Variant("(s)", (path,)),
+        dbus_helper.call("LaunchTagEditor",
+                         GLib.Variant("(ss)", (self.__editor, path)),
                          None, None)
 
     def __on_can_launch_tag_editor(self, source, result, data):
@@ -399,7 +408,8 @@ class EditMenu(BaseMenu):
             @param data as object
         """
         try:
-            if source.call_finish(result)[0]:
+            source_result = source.call_finish(result)
+            if source_result is not None and source_result[0]:
                 self.__set_edit_actions()
         except Exception as e:
             print("EditMenu::__on_can_launch_tag_editor():", e)

@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album
-from lollypop.define import Lp
+from lollypop.define import Lp, TAG_EDITORS
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -88,9 +88,18 @@ class ContextWidget(Gtk.Grid):
         self.__object = object
         self.__button = button
 
+        # Search for available tag editors
+        self.__editor = Lp().settings.get_value("tag-editor").get_string()
+        if not self.__editor:
+            for tag_editor in TAG_EDITORS:
+                if GLib.find_program_in_path(tag_editor) is not None:
+                    self.__editor = tag_editor
+                    break
+
         # Check portal for tag editor
         dbus_helper = DBusHelper()
-        dbus_helper.call("CanLaunchTagEditor", None,
+        dbus_helper.call("CanLaunchTagEditor",
+                         GLib.Variant("(s)", (self.__editor,)),
                          self.__on_can_launch_tag_editor, None)
         self.__edit = HoverWidget("document-properties-symbolic",
                                   self.__edit_tags)
@@ -143,7 +152,8 @@ class ContextWidget(Gtk.Grid):
         """
         path = GLib.filename_from_uri(self.__object.uri)[0]
         dbus_helper = DBusHelper()
-        dbus_helper.call("LaunchTagEditor", GLib.Variant("(s)", (path,)),
+        dbus_helper.call("LaunchTagEditor",
+                         GLib.Variant("(ss)", (self.__editor, path)),
                          None, None)
         self.__button.emit("clicked")
 
@@ -181,7 +191,8 @@ class ContextWidget(Gtk.Grid):
             @param data as object
         """
         try:
-            if source.call_finish(result)[0]:
+            source_result = source.call_finish(result)
+            if source_result is not None and source_result[0]:
                 self.__edit.show()
         except Exception as e:
             print("EditMenu::__on_can_launch_tag_editor():", e)
