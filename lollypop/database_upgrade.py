@@ -60,6 +60,7 @@ class DatabaseUpgrade:
             24: "ALTER TABLE albums ADD album_id TEXT",
             25: "ALTER TABLE tracks ADD mb_track_id TEXT",
             26: self.__upgrade_26,
+            27: "UPDATE tracks SET duration=CAST(duration AS INT)"
         }
 
     def upgrade(self, db):

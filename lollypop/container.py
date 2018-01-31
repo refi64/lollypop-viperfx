@@ -856,13 +856,11 @@ class Container(Gtk.Bin):
                 genre_name = Lp().genres.get_name(genre_id)
                 self.__list_one.add_value((genre_id, genre_name))
             else:
-                genre_ids = Lp().genres.get_ids()
-                if genre_id not in genre_ids:
-                    self.__list_one.remove_value(genre_id)
+                self.__list_one.remove_value(genre_id)
 
     def __on_artist_updated(self, scanner, artist_id, add):
         """
-            Add artist to artist list
+            Add/remove artist to/from list
             @param scanner as CollectionScanner
             @param artist id as int
             @param add as bool

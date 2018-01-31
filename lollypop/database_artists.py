@@ -254,9 +254,11 @@ class ArtistsDatabase:
         """
             Clean database for artist id
             @param artist id as int
+            @return cleaned as bool
             @warning commit needed
         """
         with SqlCursor(Lp().db) as sql:
+            cleaned = False
             result = sql.execute("SELECT album_id from album_artists\
                                   WHERE artist_id=?\
                                   LIMIT 1", (artist_id,))
@@ -269,5 +271,7 @@ class ArtistsDatabase:
                 v = result.fetchone()
                 # Artist with no relation, remove
                 if not v:
+                    cleaned = True
                     sql.execute("DELETE FROM artists WHERE rowid=?",
                                 (artist_id,))
+            return cleaned
