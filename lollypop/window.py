@@ -455,7 +455,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self.__timeout_configure = None
         size = widget.get_size()
-        if self.__miniplayer is None:
+        if self.__main_stack.is_visible():
             name = "window"
         else:
             name = "mini"
