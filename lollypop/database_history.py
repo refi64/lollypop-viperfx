@@ -19,7 +19,7 @@ from lollypop.sqlcursor import SqlCursor
 
 class History:
     """
-        Playlists manager
+        History manager, allow Lollypop to restore stats when a file is moved
     """
     __LOCAL_PATH = GLib.get_user_data_dir() + "/lollypop"
     __DB_PATH = "%s/history.db" % __LOCAL_PATH
@@ -63,7 +63,7 @@ class History:
     def add(self, name, duration, popularity, rate,
             ltime, mtime, loved_album, album_popularity, album_rate):
         """
-            Add a radio, update url if radio already exists in db
+            Add an item to history
             @param name as str
             @param duration as int
             @param popularity as int
