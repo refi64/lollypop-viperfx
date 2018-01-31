@@ -869,27 +869,20 @@ class PlaylistEditWidget(Gtk.Bin):
             self.__view.grab_focus()
             self.__view.get_selection().unselect_all()
 
-    def _on_row_activated(self, view, path, column):
-        """
-            Delete playlist
-            @param TreeView, TreePath, TreeViewColumn
-        """
-        iterator = self.__model.get_iter(path)
-        if iterator:
-            if column.get_title() == "delete":
-                self.__show_infobar(path)
-            else:
-                self.__infobar.hide()
-
     def _on_selection_changed(self, selection):
         """
             On selection changed, show infobar
             @param selection as Gtk.TreeSelection
         """
+        (model, paths) = selection.get_selected_rows()
+        for item in self.__model:
+            if item.path in paths:
+                item[2] = "checkbox-checked-symbolic"
+            else:
+                item[2] = "checkbox-symbolic"
         count = selection.count_selected_rows()
         if count == 1:
-            (model, path) = selection.get_selected_rows()
-            iterator = model.get_iter(path)
+            iterator = model.get_iter(paths[0])
             self.__infobar_label.set_markup(_("Remove \"%s\"?") %
                                             model.get_value(iterator,
                                                             1).replace("\n",
@@ -964,7 +957,7 @@ class PlaylistEditWidget(Gtk.Bin):
                                 "<b>%s</b>\n%s" % (
                                    GLib.markup_escape_text(artists),
                                    GLib.markup_escape_text(track.name)),
-                                 "user-trash-symbolic", track.id])
+                                 "checkbox-symbolic", track.id])
             GLib.idle_add(self.__append_track, track_ids)
         else:
             self.__in_thread = False
