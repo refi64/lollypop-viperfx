@@ -141,12 +141,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         size = self.get_size()
         self.__toolbar.set_content_width(size[0])
-        if size[1] < WindowSize.MEDIUM:
-            if self.__miniplayer is not None and\
-                    self.__miniplayer.is_visible():
-                self.__main_stack.hide()
-                self.__miniplayer.set_vexpand(True)
-        elif size[0] < WindowSize.BIG:
+        if size[0] < WindowSize.BIG:
             self.__show_miniplayer(True)
             self.__container.paned_stack(True)
             self.__main_stack.show()
@@ -154,14 +149,19 @@ class Window(Gtk.ApplicationWindow, Container):
                 self.__miniplayer.set_vexpand(False)
             self.__toolbar.title.hide()
             self.__toolbar.info.hide()
-            self.__toolbar.end.show_list_button(False)
+            self.__toolbar.end.set_minimal(True)
         else:
             self.__container.paned_stack(False)
             self.__main_stack.show()
             self.__show_miniplayer(False)
             self.__toolbar.title.show()
             self.__toolbar.info.show()
-            self.__toolbar.end.show_list_button(True)
+            self.__toolbar.end.set_minimal(False)
+        if size[1] < WindowSize.MEDIUM:
+            if self.__miniplayer is not None and\
+                    self.__miniplayer.is_visible():
+                self.__main_stack.hide()
+                self.__miniplayer.set_vexpand(True)
 
     def set_mini(self):
         """

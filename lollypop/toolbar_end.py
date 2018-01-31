@@ -158,15 +158,18 @@ class ToolbarEnd(Gtk.Bin):
         Lp().player.connect("party-changed", self.__on_party_changed)
         Lp().player.connect("lock-changed", self.__on_lock_changed)
 
-    def show_list_button(self, b):
+    def set_minimal(self, b):
         """
-            Show/hide list button
+            Set minimal, hide some widget for minimal player
             @param b as bool
         """
         if b:
-            self.__list_button.show()
-        else:
             self.__list_button.hide()
+            self.__next_popover.hide()
+        else:
+            self.__list_button.show()
+            if self.__next_popover.should_be_shown():
+                self.__next_popover.show()
 
     def setup_menu(self, menu):
         """
