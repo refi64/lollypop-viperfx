@@ -122,6 +122,14 @@ class DeviceView(View):
         """
         return self.__device_widget.is_syncing()
 
+    @property
+    def device(self):
+        """
+            Get device for view
+            @return Device
+        """
+        return self.__device
+
 #######################
 # PROTECTED           #
 #######################

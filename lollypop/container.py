@@ -562,19 +562,30 @@ class Container(Gtk.Bin):
         from lollypop.view_device import DeviceView, DeviceLocked
         self.__stop_current_view()
         device = self.__devices[device_id]
-        child = self.__stack.get_child_by_name(device.uri)
-        if child is None:
+        device_view = None
+
+        # Search a device child with uri
+        for child in self.__stack.get_children():
+            if isinstance(child, DeviceView):
+                if child.device.uri == device.uri:
+                    device_view = child
+                    break
+            elif isinstance(child, DeviceLocked):
+                device_view = child
+                break
+
+        # If no view available, get a new one
+        if device_view is None:
             files = DeviceView.get_files(device.uri)
             if files:
-                if child is None:
-                    child = DeviceView(device)
-                    self.__stack.add_named(child, device.uri)
+                device_view = DeviceView(device)
+                device_view.populate()
+                self.__stack.add_named(child, device.uri)
             else:
-                child = DeviceLocked()
+                device_view = DeviceLocked()
                 self.__stack.add(child)
-            child.show()
-        child.populate()
-        return child
+            device_view.show()
+        return device_view
 
     def __get_view_artists(self, genre_ids, artist_ids):
         """
