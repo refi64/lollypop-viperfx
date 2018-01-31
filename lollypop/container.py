@@ -818,11 +818,11 @@ class Container(Gtk.Bin):
         if not selected_ids or not genre_ids:
             return
         if genre_ids[0] == Type.PLAYLISTS:
-            view = self.__get_view_playlists(selected_ids)
+            (view, name) = self.__get_view_playlists(selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
-            view = self.__get_view_albums(genre_ids, selected_ids)
+            (view, name) = self.__get_view_albums(genre_ids, selected_ids)
         else:
-            view = self.__get_view_artists(genre_ids, selected_ids)
+            (view, name) = self.__get_view_artists(genre_ids, selected_ids)
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
         self.__stack.clean_old_views(view)
