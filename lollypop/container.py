@@ -557,30 +557,31 @@ class Container(Gtk.Bin):
             Get device view for id
             Use existing view if available
             @param device id as int
-            @return View
+            @return (View, str/None)
         """
         from lollypop.view_device import DeviceView, DeviceLocked
         self.__stop_current_view()
         device = self.__devices[device_id]
         child = self.__stack.get_child_by_name(device.uri)
+        name = None
         if child is None:
             files = DeviceView.get_files(device.uri)
             if files:
                 if child is None:
                     child = DeviceView(device)
-                    self.__stack.add_named(child, device.uri)
+                    name = device.uri
             else:
                 child = DeviceLocked()
-                self.__stack.add(child)
             child.show()
         child.populate()
-        return child
+        return (child, name)
 
     def __get_view_artists(self, genre_ids, artist_ids):
         """
             Get artists view for genres/artists
             @param genre ids as [int]
             @param artist ids as [int]
+            @return (View, None)
         """
         def load():
             if genre_ids and genre_ids[0] == Type.ALL:
@@ -597,13 +598,14 @@ class Container(Gtk.Bin):
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
-        return view
+        return (view, None)
 
     def __get_view_albums(self, genre_ids, artist_ids):
         """
             Get albums view for genres/artists
             @param genre ids as [int]
             @param is compilation as bool
+            @return (View, None)
         """
         def load():
             items = []
@@ -642,13 +644,13 @@ class Container(Gtk.Bin):
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
-        return view
+        return (view, None)
 
     def __get_view_playlists(self, playlist_ids=[]):
         """
             Get playlits view for playlists
             @param playlist ids as [int]
-            @return View
+            @return (View, None)
         """
         def load():
             track_ids = []
@@ -684,18 +686,19 @@ class Container(Gtk.Bin):
             view = PlaylistsManageView(Type.NONE, [], [], False)
             view.populate()
         view.show()
-        return view
+        return (view, None)
 
     def __get_view_radios(self):
         """
             Get radios view
+            @return (View, None)
         """
         from lollypop.view_radios import RadiosView
         self.__stop_current_view()
         view = RadiosView()
         view.populate()
         view.show()
-        return view
+        return (view, None)
 
     def __add_device(self, mount, show=False):
         """
@@ -750,41 +753,44 @@ class Container(Gtk.Bin):
             if Lp().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
-                view = self.__get_view_playlists()
+                (view, name) = self.__get_view_playlists()
             self.__update_list_playlists(False)
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self.__list_two.hide()
             if not self.__list_two.will_be_selected():
-                view = self.__get_view_device(selected_ids[0])
+                (view, name) = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
                                  Type.NEVER,
                                  Type.RANDOMS]:
             self.__list_two.hide()
-            view = self.__get_view_albums(selected_ids, [])
+            (view, name) = self.__get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
             self.__list_two.hide()
-            view = self.__get_view_radios()
+            (view, name) = self.__get_view_radios()
         elif selection_list.is_marked_as_artists():
             self.__list_two.hide()
             if selected_ids[0] == Type.ALL:
-                view = self.__get_view_albums(selected_ids, [])
+                (view, name) = self.__get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:
-                view = self.__get_view_albums([], selected_ids)
+                (view, name) = self.__get_view_albums([], selected_ids)
             else:
-                view = self.__get_view_artists([], selected_ids)
+                (view, name) = self.__get_view_artists([], selected_ids)
         else:
             self.__update_list_artists(self.__list_two, selected_ids, False)
             if Lp().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
-                view = self.__get_view_albums(selected_ids, [])
+                (view, name) = self.__get_view_albums(selected_ids, [])
         if view is not None:
             if self.is_paned_stack:
                 # Just to make it sensitive
                 Lp().window.toolbar.playback.show_back(True, True)
-            self.__stack.add(view)
+            if name is not None:
+                self.__stack.add_named(view, name)
+            else:
+                self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
             if self.paned_stack and\
                     self.__list_two.is_visible() and (
