@@ -459,6 +459,7 @@ class Window(Gtk.ApplicationWindow, Container):
             name = "window"
         else:
             name = "mini"
+        if self.__miniplayer is not None:
             self.__miniplayer.update_cover(size[0])
         Lp().settings.set_value("%s-size" % name,
                                 GLib.Variant("ai", [size[0], size[1]]))
