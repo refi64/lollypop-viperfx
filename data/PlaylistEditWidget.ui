@@ -99,6 +99,7 @@
           <object class="GtkTreeView" id="view">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">You can select tracks with mouse or Ctrl key</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <property name="headers_visible">False</property>
