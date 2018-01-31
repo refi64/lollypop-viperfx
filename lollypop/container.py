@@ -784,9 +784,10 @@ class Container(Gtk.Bin):
             if self.is_paned_stack:
                 # Just to make it sensitive
                 Lp().window.toolbar.playback.show_back(True, True)
-            self.__stack.add(view)
+            if view not in self.__stack.get_children():
+                self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
-            if self.paned_stack and\
+            if self.is_paned_stack and\
                     self.__list_two.is_visible() and (
                     selected_ids[0] >= 0 or selected_ids[0] == Type.PLAYLISTS):
                 self.__stack.set_visible_child(self.__list_two)
