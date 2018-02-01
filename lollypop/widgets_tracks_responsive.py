@@ -78,11 +78,12 @@ class TracksResponsiveWidget:
         """
         if self.__discs:
             disc = self.__discs.pop(0)
-            mid_tracks = int(0.5 + len(disc.tracks) / 2)
-            self.populate_list_left(disc.tracks[:mid_tracks],
+            tracks = disc.tracks
+            mid_tracks = int(0.5 + len(tracks) / 2)
+            self.populate_list_left(tracks[:mid_tracks],
                                     disc,
                                     1)
-            self.populate_list_right(disc.tracks[mid_tracks:],
+            self.populate_list_right(tracks[mid_tracks:],
                                      disc,
                                      mid_tracks + 1)
 
@@ -272,7 +273,8 @@ class TracksResponsiveWidget:
             Set disc widget height
             @param disc as Disc
         """
-        count_tracks = len(disc.tracks)
+        tracks = disc.tracks
+        count_tracks = len(tracks)
         mid_tracks = int(0.5 + count_tracks / 2)
         left_height = self.__child_height * mid_tracks
         right_height = self.__child_height * (count_tracks - mid_tracks)
@@ -369,6 +371,9 @@ class TracksResponsiveWidget:
                 break
         if not contain_children:
             self.destroy()
+        self.__discs = self._album.discs
+        for disc in self.__discs:
+            GLib.idle_add(self.__set_disc_height, disc)
 
     def __on_activated(self, widget, track):
         """

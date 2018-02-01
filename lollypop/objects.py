@@ -132,7 +132,6 @@ class Disc:
         self.db = Lp().albums
         self.album = album
         self.number = disc_number
-        self._track_ids = []
 
     @property
     def name(self):
@@ -147,22 +146,24 @@ class Disc:
             Get all tracks ids of the disc
             @return list of int
         """
-        if not self._track_ids:
+        track_ids = []
+        for track_id in self.db.get_disc_tracks(self.album.id,
+                                                self.album.genre_ids,
+                                                self.album.artist_ids,
+                                                self.number):
+            if track_id in self.album.track_ids:
+                track_ids.append(track_id)
+        # If user tagged track with an artist not present in album
+        if not track_ids:
+            print("%s missing an album artist in artists" %
+                  self.album.name)
             for track_id in self.db.get_disc_tracks(self.album.id,
                                                     self.album.genre_ids,
-                                                    self.album.artist_ids,
+                                                    [],
                                                     self.number):
                 if track_id in self.album.track_ids:
-                    self._track_ids.append(track_id)
-            # If user tagged track with an artist not present in album
-            if not self._track_ids:
-                print("%s missing an album artist in artists" %
-                      self.album.name)
-                self._track_ids = self.db.get_disc_tracks(self.album.id,
-                                                          self.album.genre_ids,
-                                                          [],
-                                                          self.number)
-        return self._track_ids
+                    track_ids.append(track_id)
+        return track_ids
 
     @property
     def tracks(self):
