@@ -10,14 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject
-
-from gettext import gettext as _
+from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
-from lollypop.view_artist_albums import ArtistAlbumsView
 from lollypop.define import ArtSize
 
 
@@ -157,45 +154,3 @@ class AlbumsView(LazyLoadingView):
         """
         album_widget.lock_overlay(False)
         album_widget.get_cover().set_opacity(1)
-
-
-class AlbumBackView(Gtk.Grid):
-    """
-        Show an album view with a back button (destroying AlbumView)
-    """
-    __gsignals__ = {
-        "back-clicked": (GObject.SignalFlags.RUN_FIRST, None, ()),
-    }
-
-    def __init__(self, album_id, genre_ids, artist_ids):
-        """
-            Init view
-            @param album id as int
-            @param genre ids as [int]
-            @param artist ids as [int]
-        """
-        Gtk.Grid.__init__(self)
-        self.set_orientation(Gtk.Orientation.VERTICAL)
-        back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic",
-                                                    Gtk.IconSize.MENU)
-        back_button.set_tooltip_text(_("Go back"))
-        back_button.connect("clicked", self.__on_back_button_clicked)
-        back_button.set_property("halign", Gtk.Align.START)
-        back_button.set_relief(Gtk.ReliefStyle.NONE)
-        back_button.show()
-        self.add(back_button)
-        view = ArtistAlbumsView(artist_ids, genre_ids, ArtSize.HEADER)
-        view.populate([album_id])
-        view.show()
-        self.add(view)
-        self.show()
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_back_button_clicked(self, button):
-        """
-            Destroy self
-            @param button as Gtk.Button
-        """
-        self.emit("back-clicked")

@@ -16,7 +16,6 @@ from gettext import gettext as _
 
 from lollypop.view import LazyLoadingView
 from lollypop.define import Lp, ArtSize
-from lollypop.view_albums import AlbumBackView
 
 
 class AlbumRow(Gtk.ListBoxRow):
@@ -431,7 +430,7 @@ class AlbumsView(LazyLoadingView):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        self.emit("album-activated", row.id)
+        # self.emit("album-activated", row.id)
 
     def __on_jump_clicked(self, widget):
         """
@@ -517,18 +516,13 @@ class AlbumsPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
-        self.__stack = Gtk.Stack()
-        self.__stack.set_transition_duration(250)
-        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self.__stack.show()
         view = AlbumsView()
         view.connect("album-activated", self.__on_album_activated)
         view.populate(Lp().player.albums)
         view.show()
-        self.__stack.add_named(view, "albums_view")
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
-        self.add(self.__stack)
+        self.add(view)
 
 #######################
 # PRIVATE             #
@@ -539,13 +533,7 @@ class AlbumsPopover(Gtk.Popover):
             @param view as AlbumsView
             @param album id as int
         """
-        genre_ids = Lp().player.get_genre_ids(album_id)
-        artist_ids = Lp().player.get_artist_ids(album_id)
-        album_view = AlbumBackView(album_id, genre_ids, artist_ids)
-        album_view.connect("back-clicked", self.__on_back_clicked)
-        album_view.show()
-        self.__stack.add(album_view)
-        self.__stack.set_visible_child(album_view)
+        pass
 
     def __on_back_clicked(self, view):
         """
