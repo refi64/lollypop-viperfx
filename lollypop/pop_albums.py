@@ -98,23 +98,24 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         self.__play_indicator = Gtk.Image.new_from_icon_name(
                                                "media-playback-start-symbolic",
                                                Gtk.IconSize.MENU)
-        delete_button = Gtk.Button.new_from_icon_name("user-trash-symbolic",
+        self.__delete_button = Gtk.Button.new_from_icon_name(
+                                                      "user-trash-symbolic",
                                                       Gtk.IconSize.MENU)
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px
-        delete_button.set_property("height-request", 26)
-        delete_button.get_image().set_opacity(0.2)
-        delete_button.set_relief(Gtk.ReliefStyle.NONE)
-        delete_button.get_style_context().add_class("menu-button")
-        delete_button.get_style_context().add_class("track-menu-button")
-        delete_button.set_property("valign", Gtk.Align.CENTER)
-        delete_button.connect("clicked", self.__on_delete_clicked)
+        self.__delete_button.set_property("height-request", 26)
+        self.__delete_button.get_image().set_opacity(0.2)
+        self.__delete_button.set_relief(Gtk.ReliefStyle.NONE)
+        self.__delete_button.get_style_context().add_class("menu-button")
+        self.__delete_button.get_style_context().add_class("track-menu-button")
+        self.__delete_button.set_property("valign", Gtk.Align.CENTER)
+        self.__delete_button.connect("clicked", self.__on_delete_clicked)
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
         vgrid.add(self.__play_indicator)
         vgrid.add(self.__title_label)
         grid.attach(self.__artist_label, 1, 0, 1, 1)
-        grid.attach(delete_button, 2, 0, 1, 2)
+        grid.attach(self.__delete_button, 2, 0, 1, 2)
         grid.attach(cover, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
@@ -171,6 +172,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         if self.__revealer.get_reveal_child():
             self.__revealer.set_reveal_child(False)
             self.get_style_context().add_class("trackrow")
+            self.__delete_button.set_opacity(1)
+            self.__delete_button.set_sensitive(True)
         else:
             if self._responsive_widget is None:
                 TracksResponsiveWidget.__init__(self)
@@ -179,6 +182,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
             TracksResponsiveWidget.populate(self)
             self.__revealer.set_reveal_child(True)
             self.get_style_context().remove_class("trackrow")
+            self.__delete_button.set_opacity(0)
+            self.__delete_button.set_sensitive(False)
 
     def __on_drag_begin(self, widget, context):
         """
