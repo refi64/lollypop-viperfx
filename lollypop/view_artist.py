@@ -379,8 +379,7 @@ class ArtistView(ArtistAlbumsView):
             Set add icon based on player albums
         """
         albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
-        player_albums = Lp().player.get_albums()
-        if len(set(albums) & set(player_albums)) == len(albums):
+        if len(set(albums) & set(Lp().player.albums)) == len(albums):
             # Translators: artist context
             self.__add_button.set_tooltip_text(_("Remove"))
             self.__add_button.get_image().set_from_icon_name(
