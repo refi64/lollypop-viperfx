@@ -51,9 +51,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
             @param album as Album
             @param height as int
         """
+        self._responsive_widget = None
         self._album = album
         Gtk.ListBoxRow.__init__(self)
-        TracksResponsiveWidget.__init__(self)
         self.__play_indicator = None
         self.set_sensitive(False)
         self.get_style_context().add_class("loading")
@@ -118,7 +118,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         grid.attach(cover, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
-        self.__revealer.add(self._responsive_widget)
         self.__revealer.show()
         grid.attach(self.__revealer, 0, 2, 3, 1)
         row_widget.add(grid)
@@ -138,7 +137,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         self.connect("drag-motion", self.__on_drag_motion)
         self.connect("drag-leave", self.__on_drag_leave)
         self.connect("button-press-event", self.__on_button_press_event)
-        self.connect("size-allocate", self._on_size_allocate)
 
     @property
     def album(self):
@@ -174,6 +172,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
             self.__revealer.set_reveal_child(False)
             self.get_style_context().add_class("trackrow")
         else:
+            if self._responsive_widget is None:
+                TracksResponsiveWidget.__init__(self)
+                self.__revealer.add(self._responsive_widget)
+                self.connect("size-allocate", self._on_size_allocate)
             TracksResponsiveWidget.populate(self)
             self.__revealer.set_reveal_child(True)
             self.get_style_context().remove_class("trackrow")
