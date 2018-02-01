@@ -236,7 +236,7 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         if Lp().player.current_track.album.id == self.__album.id:
             # If not last album, skip it
-            if len(Lp().player.get_albums()) > 1:
+            if len(Lp().player.albums) > 1:
                 Lp().player.skip_album()
                 Lp().player.remove_album(self.__album)
             # remove it and stop playback by going to next track
@@ -421,7 +421,7 @@ class AlbumsView(LazyLoadingView):
             Check clear button aspect
             @param row as AlbumRow
         """
-        if row.id != Lp().player.current_track.album.id:
+        if row.album != Lp().player.current_track.album:
             self.__jump_button.set_sensitive(False)
         self.__clear_button.set_sensitive(len(self.__view.get_children()) != 0)
 
