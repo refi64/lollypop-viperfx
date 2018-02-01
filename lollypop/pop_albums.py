@@ -270,9 +270,6 @@ class AlbumsView(LazyLoadingView):
     """
         View showing albums
     """
-    __gsignals__ = {
-        "album-activated": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-    }
 
     def __init__(self):
         """
@@ -315,7 +312,6 @@ class AlbumsView(LazyLoadingView):
         self.__view.set_vexpand(True)
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
-        self.__view.connect("row-activated", self.__on_row_activated)
         self.__view.show()
         self.add(grid)
         self._scrolled.set_property("expand", True)
@@ -424,14 +420,6 @@ class AlbumsView(LazyLoadingView):
             self.__jump_button.set_sensitive(False)
         self.__clear_button.set_sensitive(len(self.__view.get_children()) != 0)
 
-    def __on_row_activated(self, widget, row):
-        """
-            Play searched item when selected
-            @param widget as Gtk.ListBox
-            @param row as AlbumRow
-        """
-        # self.emit("album-activated", row.id)
-
     def __on_jump_clicked(self, widget):
         """
             Scroll to album
@@ -517,7 +505,6 @@ class AlbumsPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         view = AlbumsView()
-        view.connect("album-activated", self.__on_album_activated)
         view.populate(Lp().player.albums)
         view.show()
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -527,23 +514,6 @@ class AlbumsPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __on_album_activated(self, view, album_id):
-        """
-            Show album tracks
-            @param view as AlbumsView
-            @param album id as int
-        """
-        pass
-
-    def __on_back_clicked(self, view):
-        """
-            Update album view for current track
-        """
-        albums_view = self.__stack.get_child_by_name("albums_view")
-        albums_view.on_current_changed(Lp().player)
-        self.__stack.set_visible_child(albums_view)
-        GLib.timeout_add(5000, view.destroy)
-
     def __on_map(self, widget):
         """
             Resize
