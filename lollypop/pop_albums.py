@@ -16,7 +16,6 @@ from gettext import gettext as _
 
 from lollypop.view import LazyLoadingView
 from lollypop.define import Lp, ArtSize
-from lollypop.objects import Album
 from lollypop.view_albums import AlbumBackView
 
 
@@ -25,7 +24,7 @@ class AlbumRow(Gtk.ListBoxRow):
         Album row
     """
     __gsignals__ = {
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
+        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
     }
 
     __MARGIN = 2
@@ -46,13 +45,13 @@ class AlbumRow(Gtk.ListBoxRow):
         else:
             return cover_height + 2
 
-    def __init__(self, album_id, height):
+    def __init__(self, album, height):
         """
             Init row widgets
             @param album id as int
         """
         Gtk.ListBoxRow.__init__(self)
-        self.__album = Album(album_id)
+        self.__album = album
         self.__play_indicator = None
         self.set_sensitive(False)
         self.get_style_context().add_class("loading")
@@ -142,12 +141,12 @@ class AlbumRow(Gtk.ListBoxRow):
         return (self.__height, self.__height)
 
     @property
-    def id(self):
+    def album(self):
         """
-            Get row id
+            Get album
             @return row id as int
         """
-        return self.__album.id
+        return self.__album
 
     def show_play_indicator(self, show):
         """
@@ -184,8 +183,8 @@ class AlbumRow(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        track_id = str(self.__album.id)
-        data.set_text(track_id, len(track_id))
+        album_str = str(self.__album)
+        data.set_text(album_str, len(album_str))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
@@ -199,7 +198,7 @@ class AlbumRow(Gtk.ListBoxRow):
             @param time as int
         """
         try:
-            self.emit("track-moved", int(data.get_text()), x, y)
+            self.emit("album-moved", data.get_text(), x, y)
         except:
             pass
 
@@ -327,16 +326,16 @@ class AlbumsView(LazyLoadingView):
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
 
-    def populate(self):
+    def populate(self, albums):
         """
             Populate widget with album rows
+            @param albums as [Album]
         """
         self._stop = False
-        albums = list(Lp().player.get_albums())
         self.__jump_button.set_sensitive(False)
         if albums:
             self.__clear_button.set_sensitive(True)
-        self.__add_items(albums)
+        self.__add_albums(list(albums))
 
     def on_current_changed(self, player):
         """
@@ -360,33 +359,33 @@ class AlbumsView(LazyLoadingView):
             Lp().player.clear_albums()
         self.__clear_button.set_sensitive(False)
 
-    def __add_items(self, items, prev_album_id=None):
+    def __add_albums(self, albums):
         """
             Add items to the view
-            @param item ids as [int]
+            @param albums ids as [Album]
         """
-        if items and not self._stop:
-            album_id = items.pop(0)
-            row = self.__row_for_album_id(album_id)
+        if albums and not self._stop:
+            album = albums.pop(0)
+            row = self.__row_for_album(album)
             row.show()
             self.__view.add(row)
             self._lazy_queue.append(row)
-            GLib.idle_add(self.__add_items, items, album_id)
+            GLib.idle_add(self.__add_albums, albums)
         else:
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self.__view)
-            if Lp().player.current_track.album.id in Lp().player.get_albums():
+            if Lp().player.current_track.album in Lp().player.get_albums():
                 self.__jump_button.set_sensitive(True)
 
-    def __row_for_album_id(self, album_id):
+    def __row_for_album(self, album):
         """
             Get a row for track id
-            @param album id as int
+            @param album as Album
         """
-        row = AlbumRow(album_id, self.__height)
+        row = AlbumRow(album, self.__height)
         row.connect("destroy", self.__on_child_destroyed)
-        row.connect("track-moved", self.__on_track_moved)
+        row.connect("album-moved", self.__on_album_moved)
         return row
 
     def __get_current_ordinate(self):
@@ -450,30 +449,30 @@ class AlbumsView(LazyLoadingView):
         self._stop = True
         GLib.idle_add(self.__clear, True)
 
-    def __on_track_moved(self, row, src, x, y):
+    def __on_album_moved(self, row, album, x, y):
         """
             Pass signal
             @param row as PlaylistRow
-            @param src as int
+            @param album as album
             @param x as int
             @param y as int
         """
-        if row.id == src:
+        if row.album == album:
             return
         height = row.get_allocated_height()
         if y > height/2:
             up = False
         else:
             up = True
-        src_row = self.__row_for_album_id(src)
-        src_row.populate()
-        # Destroy current src row
+        album_row = self.__row_for_album(album)
+        album_row.populate()
+        # Destroy current album row
         i = 0
         row_index = -1
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if child.id == src:
+            if child == album:
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()
             else:
@@ -483,12 +482,12 @@ class AlbumsView(LazyLoadingView):
         if row_index != -1:
             if not up:
                 row_index += 1
-            self.__view.insert(src_row, row_index)
-            Lp().player.move_album(src, row_index)
+            self.__view.insert(album_row, row_index)
+            Lp().player.move_album(album, row_index)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
-            Move track
+            Move album
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
             @param x as int
@@ -498,8 +497,8 @@ class AlbumsView(LazyLoadingView):
             @param time as int
         """
         try:
-            self.__on_track_moved(self.__view.get_children()[-1],
-                                  int(data.get_text()), x, y)
+            self.__on_album_moved(self.__view.get_children()[-1],
+                                  data.get_text(), x, y)
         except:
             pass
 
@@ -520,7 +519,7 @@ class AlbumsPopover(Gtk.Popover):
         self.__stack.show()
         view = AlbumsView()
         view.connect("album-activated", self.__on_album_activated)
-        view.populate()
+        view.populate(Lp().player.albums)
         view.show()
         self.__stack.add_named(view, "albums_view")
         self.set_position(Gtk.PositionType.BOTTOM)

@@ -153,7 +153,7 @@ class BaseWidget:
                                                            self._squared_class)
                 self._artwork_button.show()
             if self._action_button is not None:
-                self._show_append(not Lp().player.has_album(self._album))
+                self._show_append(self._album not in Lp().player.albums)
                 self._action_button.set_opacity(opacity)
                 self._action_button.get_style_context().add_class(
                                                        self._squared_class)
@@ -391,7 +391,7 @@ class AlbumWidget(BaseWidget):
         """
         if self._cover is None or self._art_size != ArtSize.BIG:
             return
-        selected = self._album.id == Lp().player.current_track.album.id
+        selected = self._album == Lp().player.current_track.album
         if selected != self._selected:
             if selected:
                 self._cover.get_style_context().add_class(

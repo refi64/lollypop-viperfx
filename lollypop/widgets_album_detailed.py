@@ -574,25 +574,25 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         self.get_style_context().remove_class("album-menu-selected")
 
-    def __on_activated(self, widget, track_id):
+    def __on_activated(self, widget, track):
         """
             On track activation, play track
             @param widget as TracksWidget
-            @param track id as int
+            @param track as Track
         """
         # Add to queue by default
         if Lp().player.locked:
-            if track_id in Lp().player.queue:
-                Lp().player.del_from_queue(track_id)
+            if track.id in Lp().player.queue:
+                Lp().player.del_from_queue(track.id)
             else:
-                Lp().player.append_to_queue(track_id)
+                Lp().player.append_to_queue(track.id)
         else:
             # Do not update album list
             if not Lp().player.is_party and not\
                     Lp().settings.get_enum("playback") == NextContext.STOP:
                 # If in artist view, reset album list
                 if self._artist_ids:
-                    Lp().player.set_albums(track_id,
+                    Lp().player.set_albums(track,
                                            self._artist_ids,
                                            self._album.genre_ids)
                 # Else, add album if missing
@@ -602,5 +602,4 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             elif Lp().settings.get_enum("playback") == NextContext.STOP:
                 if not Lp().player.has_album(self._album):
                     Lp().player.clear_albums()
-            track = Track(track_id)
             Lp().player.load(track)

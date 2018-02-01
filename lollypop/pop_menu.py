@@ -380,14 +380,6 @@ class EditMenu(BaseMenu):
         edit_tag_action.connect("activate", self.__edit_tag)
         self.append(_("Modify information"), "app.edit_tag_action")
 
-    def __remove_object(self, action, variant):
-        """
-            Remove album
-            @param SimpleAction
-            @param GVariant
-        """
-        self._object.remove()
-
     def __edit_tag(self, action, variant):
         """
             Run tag editor

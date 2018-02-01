@@ -182,7 +182,7 @@ class ArtistView(ArtistAlbumsView):
                         track = album_tracks[0]
                 if track is not None:
                     Lp().player.load(track)
-                    Lp().player.set_albums(track.id, self._artist_ids,
+                    Lp().player.set_albums(track, self._artist_ids,
                                            self._genre_ids)
                     self.__set_add_icon()
         except:

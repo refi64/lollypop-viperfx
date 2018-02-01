@@ -281,10 +281,6 @@ class Application(Gtk.Application):
                 track_id = self.player.current_track.id
                 # Save albums context
                 try:
-                    dump(self.player.context.genre_ids,
-                         open(LOLLYPOP_DATA_PATH + "/genre_ids.bin", "wb"))
-                    dump(self.player.context.artist_ids,
-                         open(LOLLYPOP_DATA_PATH + "/artist_ids.bin", "wb"))
                     self.player.shuffle_albums(False)
                     dump(self.player.get_albums(),
                          open(LOLLYPOP_DATA_PATH + "/albums.bin", "wb"))

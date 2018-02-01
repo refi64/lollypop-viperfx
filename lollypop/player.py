@@ -123,20 +123,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._user_playlist = []
         self._user_playlist_ids = []
         self.shuffle_albums(False)
-        # If album already exists, merge genres/artists
-        if album.id in self._albums:
-            genre_ids = self._context.genre_ids[album.id]
-            for genre_id in album.genre_ids:
-                if genre_id >= 0 and genre_id not in genre_ids:
-                    self._context.genre_ids[album.id].append(genre_id)
-            artist_ids = self._context.artist_ids[album.id]
-            for artist_id in album.artist_ids:
-                if artist_id >= 0 and artist_id not in artist_ids:
-                    self._context.artist_ids[album.id].append(artist_id)
-        else:
-            self._albums.append(album.id)
-            self._context.genre_ids[album.id] = list(album.genre_ids)
-            self._context.artist_ids[album.id] = list(album.artist_ids)
+        self._albums.append(album)
         self.shuffle_albums(True)
         if self._current_track.id is not None and self._current_track.id > 0:
             if not self.is_party:
@@ -144,13 +131,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.set_prev()
         self.emit("album-added", album.id)
 
-    def move_album(self, album_id, position):
+    def move_album(self, album, position):
         """
             Move album to position
-            @param album id as int
+            @param album as Album
             @param position as int
         """
-        index = self._albums.index(album_id)
+        index = self._albums.index(album)
         self._albums.insert(position, self._albums.pop(index))
 
     def remove_album(self, album):
@@ -159,74 +146,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         try:
-            # Remove genre ids from context
-            genre_ids = self._context.genre_ids[album.id]
-            for genre_id in album.genre_ids:
-                if genre_id in genre_ids:
-                    genre_ids.remove(genre_id)
-            artist_ids = self._context.artist_ids[album.id]
-            # Remove artist ids from context
-            for artist_id in album.artist_ids:
-                if artist_id in artist_ids:
-                    artist_ids.remove(artist_id)
-            if not genre_ids or not artist_ids:
-                self._context.genre_ids.pop(album.id, None)
-                self._context.artist_ids.pop(album.id, None)
-                self._albums.remove(album.id)
-                if album.id in self._albums_backup:
-                    self._albums_backup.remove(album.id)
+            self._albums.remove(album)
+            if album in self._albums_backup:
+                self._albums_backup.remove(album)
             if not self.is_party or self._next_track.album_id == album.id:
                 self.set_next()
             self.set_prev()
             self.emit("album-added", album.id)
         except Exception as e:
             print("Player::remove_album():", e)
-
-    def get_genre_ids(self, album_id):
-        """
-            Return genre ids for album
-            @param album id as int
-            @return genre ids as [int]
-        """
-        if album_id in self._context.genre_ids.keys():
-            return self._context.genre_ids[album_id]
-        else:
-            return []
-
-    def get_artist_ids(self, album_id):
-        """
-            Return artist ids for album
-            @param album id as int
-            @return artist ids as [int]
-        """
-        if album_id in self._context.artist_ids.keys():
-            return self._context.artist_ids[album_id]
-        else:
-            return []
-
-    def has_album(self, album):
-        """
-            Check if player has album
-            @param album as Album
-            @return bool
-        """
-        is_genres = True
-        is_artists = True
-        if album.id in self._albums:
-            for genre_id in album.genre_ids:
-                if album.id in self._context.genre_ids.keys() and\
-                   self._context.genre_ids[album.id] and\
-                   genre_id not in self._context.genre_ids[album.id]:
-                    is_genres = False
-            for artist_id in album.artist_ids:
-                if album.id in self._context.artist_ids.keys() and\
-                   self._context.artist_ids[album.id] and\
-                   artist_id not in self._context.artist_ids[album.id]:
-                    is_artists = False
-        else:
-            is_genres = False
-            is_artists = False
-        return is_genres and is_artists
 
     def play_album(self, album):
         """
@@ -239,36 +167,25 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_ids = []
-        self._context.genre_ids = {}
-        self._context.artist_ids = {}
-        self._context.genre_ids[album.id] = []
-        self._context.artist_ids[album.id] = []
-        for genre_id in album.genre_ids:
-            if genre_id >= 0:
-                self._context.genre_ids[album.id].append(genre_id)
-        for artist_id in album.artist_ids:
-            if artist_id >= 0:
-                self._context.artist_ids[album.id].append(artist_id)
         if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(album.tracks)
         else:
             track = album.tracks[0]
         self.load(track)
-        self._albums = [album.id]
+        self._albums = [album]
 
-    def set_albums(self, track_id, artist_ids, genre_ids):
+    def set_albums(self, track, artist_ids, genre_ids):
         """
             Set album list (for next/prev)
-            @param track id as int
+            @param track as Track
             @param artist id as int
             @param genre id as int
         """
         # Invalid track
-        if track_id is None:
+        if track.id is None:
             return
         self._albums = []
-        self._context.genre_ids = {}
-        self._context.aritst_ids = {}
+        album_ids = []
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
@@ -279,64 +196,44 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
            (artist_ids and artist_ids[0] == Type.ALL):
             # Genres: all, Artists: compilations
             if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                self._albums += Lp().albums.get_compilation_ids()
+                album_ids = Lp().albums.get_compilation_ids()
             # Genres: all, Artists: ids
             elif artist_ids and artist_ids[0] != Type.ALL:
-                self._albums += Lp().albums.get_ids(artist_ids)
+                album_ids += Lp().albums.get_ids(artist_ids)
             # Genres: all, Artists: all
             else:
                 if Lp().settings.get_value("show-compilations"):
-                    self._albums += Lp().albums.get_compilation_ids()
-                self._albums += Lp().albums.get_ids()
+                    album_ids += Lp().albums.get_compilation_ids()
+                album_ids += Lp().albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_ids and genre_ids[0] == Type.POPULARS:
-            self._albums = Lp().albums.get_populars()
+            album_ids = Lp().albums.get_populars()
         # We are in loved view, add loved albums
         elif genre_ids and genre_ids[0] == Type.LOVED:
-            self._albums = Lp().albums.get_loves()
+            album_ids = Lp().albums.get_loves()
         # We are in recents view, add recent albums
         elif genre_ids and genre_ids[0] == Type.RECENTS:
-            self._albums = Lp().albums.get_recents()
+            album_ids = Lp().albums.get_recents()
         # We are in randoms view, add random albums
         elif genre_ids and genre_ids[0] == Type.RANDOMS:
-            self._albums = Lp().albums.get_cached_randoms()
+            album_ids = Lp().albums.get_cached_randoms()
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
-            self._albums = Lp().albums.get_compilation_ids()
+            album_ids = Lp().albums.get_compilation_ids()
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
             # add compilations
             if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                self._albums += Lp().albums.get_compilation_ids(genre_ids)
+                album_ids += Lp().albums.get_compilation_ids(genre_ids)
             else:
                 if not artist_ids and\
                         Lp().settings.get_value("show-compilations"):
-                    self._albums += Lp().albums.get_compilation_ids(genre_ids)
-                self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
-
-        # We do not store genre_ids for ALL/POPULARS/...
-        if genre_ids and genre_ids[0] < 0:
-            genre_ids = []
-        # Set context for each album
-        for album_id in self._albums:
-            self._context.genre_ids[album_id] = []
-            self._context.artist_ids[album_id] = []
-            for genre_id in genre_ids:
-                if genre_id >= 0:
-                    self._context.genre_ids[album_id].append(genre_id)
-            for artist_id in artist_ids:
-                if artist_id >= 0:
-                    self._context.artist_ids[album_id].append(artist_id)
+                    album_ids += Lp().albums.get_compilation_ids(genre_ids)
+                album_ids += Lp().albums.get_ids(artist_ids, genre_ids)
+        self._albums = [Album(album_id) for album_id in album_ids]
         # Shuffle album list if needed
         self.shuffle_albums(True)
-
-    def get_albums(self):
-        """
-            Return albums
-            @return albums as [int]
-        """
-        return self._albums
 
     def clear_albums(self):
         """
@@ -413,15 +310,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                             self._albums = load(open(
                                                 LOLLYPOP_DATA_PATH +
                                                 "/albums.bin",
-                                                "rb"))
-                            self.shuffle_albums(True)
-                            self._context.genre_ids = load(open(
-                                                LOLLYPOP_DATA_PATH +
-                                                "/genre_ids.bin",
-                                                "rb"))
-                            self._context.artist_ids = load(open(
-                                                LOLLYPOP_DATA_PATH +
-                                                "/artist_ids.bin",
                                                 "rb"))
                     self.set_next()
                     self.set_prev()
@@ -526,12 +414,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # We send this signal to update next popover
             self.emit("queue-changed")
         elif self._current_track.id is not None:
-            pos = self._albums.index(self._current_track.album.id)
+            pos = self._albums.index(self._current_track.album)
             if pos + 1 >= len(self._albums):
                 next_album = self._albums[0]
             else:
                 next_album = self._albums[pos + 1]
-            self.load(Album(next_album).tracks[0])
+            self.load(next_album.tracks[0])
 
     def update_crossfading(self):
         """
@@ -541,6 +429,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         party_mix = Lp().settings.get_value("party-mix")
         self._crossfading = (mix and not party_mix) or\
                             (mix and party_mix and self.is_party)
+
+    @property
+    def albums(self):
+        """
+            Return albums
+            @return albums as [Album]
+        """
+        return self._albums
 
 #######################
 # PROTECTED           #

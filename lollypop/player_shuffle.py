@@ -75,28 +75,28 @@ class ShufflePlayer(BasePlayer):
             Next shuffle track
             @return Track
         """
-        track_id = None
+        track = None
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_next:
-                track_id = self.__history.next.value
+                track = self.__history.next.value
             elif self._albums:
-                track_id = self.__shuffle_next()
+                track = self.__shuffle_next()
             else:
-                track_id = self._current_track.id
-        return Track(track_id)
+                track = self._current_track
+        return track or Track()
 
     def prev(self):
         """
             Prev track based on history
             @return Track
         """
-        track_id = None
+        track = None
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_prev:
-                track_id = self.__history.prev.value
+                track = self.__history.prev.value
             else:
-                track_id = self._current_track.id
-        return Track(track_id)
+                track = self._current_track
+        return track or Track()
 
     def get_party_ids(self):
         """
@@ -136,20 +136,19 @@ class ShufflePlayer(BasePlayer):
         if party:
             self._albums_backup = self._albums
             self._external_tracks = []
-            self._context.genre_ids = {}
             self.set_party_ids()
             # Start a new song if not playing
             if (self._current_track.id in [None, Type.RADIOS])\
                     and self._albums:
-                track_id = self.__get_random()
-                self.load(Track(track_id))
+                track = self.__get_random()
+                self.load(track)
             elif not self.is_playing:
                 self.play()
         else:
             self._albums = albums_backup
             # We want current album to continue playback
-            if self._current_track.album.id not in self._albums:
-                self._albums.insert(0, self._current_track.album.id)
+            if self._current_track.album not in self._albums:
+                self._albums.insert(0, self._current_track.album)
             self.set_next()
             self.set_prev()
         self.emit("party-changed", party)
@@ -172,9 +171,9 @@ class ShufflePlayer(BasePlayer):
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
                 # In album shuffle, keep current album on top
-                if self._current_track.album.id in self._albums:
-                    self._albums.remove(self._current_track.album.id)
-                    self._albums.insert(0, self._current_track.album.id)
+                if self._current_track.album in self._albums:
+                    self._albums.remove(self._current_track.album)
+                    self._albums.insert(0, self._current_track.album)
         elif self._albums_backup:
             self._albums = self._albums_backup
             self._albums_backup = []
@@ -185,18 +184,10 @@ class ShufflePlayer(BasePlayer):
         """
         party_ids = self.get_party_ids()
         if party_ids:
-            self._albums = Lp().albums.get_party_ids(party_ids)
+            album_ids = Lp().albums.get_party_ids(party_ids)
         else:
-            self._albums = Lp().albums.get_ids()
-        # We do not store genre_ids for ALL/POPULARS/...
-        genre_ids = []
-        for genre_id in party_ids:
-            if genre_id > 0:
-                genre_ids.append(genre_id)
-        # Set context for each album
-        for album_id in self._albums:
-            self._context.genre_ids[album_id] = genre_ids
-            self._context.artist_ids[album_id] = []
+            album_ids = Lp().albums.get_ids()
+        self._albums = [Album(album_id) for album_id in album_ids]
 
 #######################
 # PROTECTED           #
@@ -212,24 +203,24 @@ class ShufflePlayer(BasePlayer):
                 prev = self.__history.prev
                 # Next track
                 if next is not None and\
-                        self._current_track.id == next.value:
+                        self._current_track == next.value:
                     next = self.__history.next
                     next.set_prev(self.__history)
                     self.__history = next
                 # Previous track
                 elif prev is not None and\
-                        self._current_track.id == prev.value:
+                        self._current_track == prev.value:
                     prev = self.__history.prev
                     prev.set_next(self.__history)
                     self.__history = prev
                 # New track
-                elif self.__history.value != self._current_track.id:
-                    new_list = LinkedList(self._current_track.id,
+                elif self.__history.value != self._current_track:
+                    new_list = LinkedList(self._current_track,
                                           None,
                                           self.__history)
                     self.__history = new_list
             else:
-                new_list = LinkedList(self._current_track.id)
+                new_list = LinkedList(self._current_track)
                 self.__history = new_list
             self.__add_to_shuffle_history(self._current_track)
 
@@ -264,55 +255,47 @@ class ShufflePlayer(BasePlayer):
     def __shuffle_next(self):
         """
             Next track in shuffle mode
-            @return track id as int
+            @return track as Track
         """
         try:
-            track_id = self.__get_random()
+            track = self.__get_random()
             # Need to clear history
-            if track_id is None:
+            if track.id is None:
                 self._albums = self.__already_played_albums
                 self.reset_history()
                 return self.__shuffle_next()
-            return track_id
+            return track
         except:  # Recursion error
             return None
 
     def __get_random(self):
         """
             Return a random track and make sure it has never been played
+            @return Track
         """
-        for album_id in sorted(self._albums,
-                               key=lambda *args: random.random()):
-            # We need to check this as in party mode, some items do not
-            # have a valid genre (Populars, ...)
-            if album_id in self._context.genre_ids.keys():
-                genre_ids = self._context.genre_ids[album_id]
-            else:
-                genre_ids = []
-            tracks = Album(album_id, genre_ids).track_ids
+        for album in sorted(self._albums, key=lambda *args: random.random()):
+            tracks = album.tracks
             for track in sorted(tracks, key=lambda *args: random.random()):
-                if album_id not in self.__already_played_tracks.keys() or\
-                   track not in self.__already_played_tracks[album_id]:
+                if album not in self.__already_played_tracks.keys() or\
+                   track not in self.__already_played_tracks[album]:
                     return track
-            # No new tracks for this album, remove it
-            # If albums not in shuffle history, it"s not present
-            # in db anymore (update since shuffle set)
-            if album_id in self.__already_played_tracks.keys():
-                self.__already_played_tracks.pop(album_id)
-                self.__already_played_albums.append(album_id)
-            self._albums.remove(album_id)
+            # Remove album from current albums
+            self._albums.remove(album)
+            if album in self.__already_played_tracks.keys():
+                self.__already_played_tracks.pop(album)
+                self.__already_played_albums.append(album)
         self._next_context = NextContext.STOP
-        return None
+        return Track()
 
     def __add_to_shuffle_history(self, track):
         """
             Add a track to shuffle history
             @param track as Track
         """
-        if track.album_id not in self.__already_played_tracks.keys():
-            self.__already_played_tracks[track.album_id] = []
-        if track.id not in self.__already_played_tracks[track.album_id]:
-            self.__already_played_tracks[track.album_id].append(track.id)
+        if track.album not in self.__already_played_tracks.keys():
+            self.__already_played_tracks[track.album] = []
+        if track not in self.__already_played_tracks[track.album]:
+            self.__already_played_tracks[track.album].append(track)
 
     def __init_party_blacklist(self):
         """

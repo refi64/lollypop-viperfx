@@ -37,12 +37,6 @@ class OpenLink:
     NEW = 2
 
 
-# Represent playback context
-class PlayContext:
-    genre_ids = {}
-    artist_ids = {}
-
-
 class GstPlayFlags:
     GST_PLAY_FLAG_VIDEO = 1 << 0  # We want video output
     GST_PLAY_FLAG_AUDIO = 1 << 1  # We want audio output

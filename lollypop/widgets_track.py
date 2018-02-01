@@ -161,12 +161,12 @@ class Row(Gtk.ListBoxRow):
             self._num_label.set_text("")
 
     @property
-    def id(self):
+    def track(self):
         """
-            Get object id
-            @return Current id as int
+            Get row track
+            @return Track
         """
-        return self._track.id
+        return self._track
 
 #######################
 # PRIVATE             #
@@ -790,4 +790,4 @@ class TracksWidget(Gtk.ListBox):
             @param widget as TracksWidget
             @param row as TrackRow
         """
-        self.emit("activated", row.id)
+        self.emit("activated", row.track)

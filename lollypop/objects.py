@@ -15,7 +15,6 @@ from gi.repository import GLib
 
 from lollypop.radios import Radios
 from lollypop.define import Lp, Type
-from lollypop.sqlcursor import SqlCursor
 
 
 class Base:
@@ -234,7 +233,8 @@ class Album(Base):
             @return list of Track
         """
         if not self._tracks and self.track_ids:
-            self._tracks = [Track(track_id) for track_id in self.track_ids]
+            self._tracks = [Track(track_id, self)
+                            for track_id in self.track_ids]
         return self._tracks
 
     def disc_names(self, disc):
@@ -263,37 +263,6 @@ class Album(Base):
         if self.id >= 0:
             Lp().albums.set_loved(self.id, loved)
 
-    def remove(self):
-        """
-            Remove album
-        """
-        artist_ids = []
-        # We want all tracks
-        album = Album(self.id)
-        for track_id in self.track_ids:
-            artist_ids += Lp().tracks.get_artist_ids(track_id)
-            uri = Lp().tracks.get_uri(track_id)
-            Lp().playlists.remove(uri)
-            Lp().tracks.remove(track_id)
-            Lp().tracks.clean(track_id)
-            art_file = Lp().art.get_album_cache_name(self)
-            Lp().art.clean_store(art_file)
-        artist_ids += album.artist_ids
-        genre_ids = Lp().albums.get_genre_ids(album.id)
-        deleted = Lp().albums.clean(self.id)
-        for artist_id in list(set(artist_ids)):
-            Lp().artists.clean(artist_id)
-            # Do not check clean return
-            GLib.idle_add(Lp().scanner.emit, "artist-updated",
-                          artist_id, False)
-        for genre_id in genre_ids:
-            Lp().genres.clean(genre_id)
-            GLib.idle_add(Lp().scanner.emit, "genre-updated",
-                          genre_id, False)
-        with SqlCursor(Lp().db) as sql:
-            sql.commit()
-        GLib.idle_add(Lp().scanner.emit, "album-updated", self.id, deleted)
-
 
 class Track(Base):
     """
@@ -314,14 +283,16 @@ class Track(Base):
                 "mtime": 0,
                 "mb_track_id": None}
 
-    def __init__(self, track_id=None):
+    def __init__(self, track_id=None, album=None):
         """
             Init track
             @param track_id as int
+            @param album as Album
         """
         Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
+        self.__album = album or Album(self.album_id)
 
     def get_featuring_ids(self, album_artist_ids):
         """
@@ -336,6 +307,68 @@ class Track(Base):
             if len(db_album_artist_ids) == 1:
                 artist_ids = list(set(artist_ids) - set(db_album_artist_ids))
         return list(set(artist_ids) - set(album_artist_ids))
+
+    def set_duration(self, duration):
+        """
+            Set duration
+            @param duration as in
+        """
+        self._duration = duration
+
+    def set_album_artists(self, artists):
+        """
+            Set album artist
+            @param artists as [int]
+        """
+        self._album_artists = artists
+
+    def set_uri(self, uri):
+        """
+            Set uri
+            @param uri as string
+        """
+        self._uri = uri
+
+    def set_radio(self, name, uri):
+        """
+            Set radio
+            @param name as string
+            @param uri as string
+        """
+        self.id = Type.RADIOS
+        self._album_artists = [name]
+        self._uri = uri
+
+    @property
+    def position(self):
+        """
+            Get track position for album
+            @return int
+        """
+        i = 0
+        for track_id in self.__album.track_ids:
+            if track_id == self.id:
+                break
+            i += 1
+        return i
+
+    @property
+    def first(self):
+        """
+            Is track first for album
+            @return bool
+        """
+        tracks = self.__album.tracks
+        return tracks and self.id == tracks[0].id
+
+    @property
+    def last(self):
+        """
+            Is track last for album
+            @return bool
+        """
+        tracks = self.__album.tracks
+        return tracks and self.id == tracks[-1].id
 
     @property
     def title(self):
@@ -370,7 +403,7 @@ class Track(Base):
             Get track"s album
             @return Album
         """
-        return Album(self.album_id)
+        return self.__album
 
     @property
     def album_artists(self):
@@ -382,60 +415,3 @@ class Track(Base):
         if getattr(self, "_album_artists") is None:
             self._album_artists = self.album.artists
         return self._album_artists
-
-    def set_duration(self, duration):
-        """
-            Set duration
-            @param duration as in
-        """
-        self._duration = duration
-
-    def set_album_artists(self, artists):
-        """
-            Set album artist
-            @param artists as [int]
-        """
-        self._album_artists = artists
-
-    def set_uri(self, uri):
-        """
-            Set uri
-            @param uri as string
-        """
-        self._uri = uri
-
-    def set_radio(self, name, uri):
-        """
-            Set radio
-            @param name as string
-            @param uri as string
-        """
-        self.id = Type.RADIOS
-        self._album_artists = [name]
-        self._uri = uri
-
-    def remove(self):
-        """
-            Remove track
-        """
-        artist_ids = []
-        album = self.album
-        artist_ids = Lp().tracks.get_artist_ids(self.id)
-        Lp().playlists.remove(self.uri)
-        Lp().tracks.remove(self.id)
-        Lp().tracks.clean(self.id)
-        artist_ids += album.artist_ids
-        genre_ids = Lp().tracks.get_genre_ids(self.id)
-        deleted = Lp().albums.clean(album.id)
-        for artist_id in list(set(artist_ids)):
-            Lp().artists.clean(artist_id)
-            # Do not check clean return
-            GLib.idle_add(Lp().scanner.emit, "artist-updated",
-                          artist_id, False)
-        for genre_id in genre_ids:
-            Lp().genres.clean(genre_id)
-            GLib.idle_add(Lp().scanner.emit, "genre-updated",
-                          genre_id, False)
-        with SqlCursor(Lp().db) as sql:
-            sql.commit()
-        GLib.idle_add(Lp().scanner.emit, "album-updated", album.id, deleted)
