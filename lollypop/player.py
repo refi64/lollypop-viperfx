@@ -174,16 +174,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.load(track)
         self._albums = [album]
 
-    def set_albums(self, track, artist_ids, genre_ids):
+    def set_albums(self, genre_ids, artist_ids):
         """
             Set album list (for next/prev)
-            @param track as Track
-            @param artist id as int
-            @param genre id as int
+            @param genre_ids as [int]
+            @param artist_ids as [int]
         """
-        # Invalid track
-        if track.id is None:
-            return
         self._albums = []
         album_ids = []
         ShufflePlayer.reset_history(self)
@@ -231,7 +227,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         Lp().settings.get_value("show-compilations"):
                     album_ids += Lp().albums.get_compilation_ids(genre_ids)
                 album_ids += Lp().albums.get_ids(artist_ids, genre_ids)
-        self._albums = [Album(album_id) for album_id in album_ids]
+        for album_id in album_ids:
+            album = Album(album_id, genre_ids, artist_ids)
+            self._albums.append(album)
         # Shuffle album list if needed
         self.shuffle_albums(True)
 

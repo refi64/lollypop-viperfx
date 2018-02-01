@@ -250,8 +250,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                 if not child.filtered:
                     Lp().player.add_album(child.album)
         else:
-            Lp().player.set_albums(track, self._artist_ids,
-                                   self._album.genre_ids)
+            Lp().player.set_albums(self._album.genre_ids,
+                                   self._artist_ids)
         Lp().player.load(track)
         return True
 
