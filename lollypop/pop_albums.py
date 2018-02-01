@@ -395,7 +395,7 @@ class AlbumsView(LazyLoadingView):
         """
         y = None
         for child in self.__view.get_children():
-            if child.id == Lp().player.current_track.album.id:
+            if child.album == Lp().player.current_track.album:
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
 
