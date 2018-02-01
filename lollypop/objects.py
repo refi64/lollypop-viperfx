@@ -148,10 +148,12 @@ class Disc:
             @return list of int
         """
         if not self._track_ids:
-            self._track_ids = self.db.get_disc_tracks(self.album.id,
-                                                      self.album.genre_ids,
-                                                      self.album.artist_ids,
-                                                      self.number)
+            for track_id in self.db.get_disc_tracks(self.album.id,
+                                                    self.album.genre_ids,
+                                                    self.album.artist_ids,
+                                                    self.number):
+                if track_id in self.album.track_ids:
+                    self._track_ids.append(track_id)
             # If user tagged track with an artist not present in album
             if not self._track_ids:
                 print("%s missing an album artist in artists" %
@@ -199,6 +201,36 @@ class Album(Base):
         # Use artist ids from db else
         if artist_ids:
             self.artist_ids = artist_ids
+
+    def set_tracks(self, tracks):
+        """
+            Set album tracks
+            @param tracks as [Track]
+        """
+        self._tracks = tracks
+        self._track_ids = [track.id for track in self.tracks]
+        Lp().player.set_next()
+
+    def add_track(self, track):
+        """
+            Add track to album
+            @param track as Track
+        """
+        self._tracks.append(track)
+        self._track_ids.append(track.id)
+        Lp().player.set_next()
+
+    def remove_track(self, track_id):
+        """
+            Remove track from album
+            @param track_id as int
+        """
+        for track in self._tracks:
+            if track.id == track_id:
+                self._tracks.remove(track)
+                break
+        self._track_ids.remove(track.id)
+        Lp().player.set_next()
 
     def update_track(self, up_track):
         """
@@ -435,6 +467,8 @@ class Track(Base):
             Get track"s album
             @return Album
         """
+        if self.__album is None:
+            self.__album = Album(self._album_id)
         return self.__album
 
     @property

@@ -325,6 +325,7 @@ class TracksResponsiveWidget:
             track.set_number(i)
         track.set_featuring_ids(self._album.artist_ids)
         row = TrackRow(track)
+        row.connect("destroy", self.__on_row_destroy)
         row.show()
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
@@ -356,6 +357,18 @@ class TracksResponsiveWidget:
             else:
                 Lp().player.append_to_queue(track.id, False)
         Lp().player.emit("queue-changed")
+
+    def __on_row_destroy(self, widget):
+        """
+            Destroy self if no more row
+        """
+        contain_children = False
+        for box in self.boxes:
+            if box.get_children():
+                contain_children = True
+                break
+        if not contain_children:
+            self.destroy()
 
     def __on_activated(self, widget, track):
         """

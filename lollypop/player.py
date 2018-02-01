@@ -48,27 +48,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.__do_not_update_next = False
         Lp().settings.connect("changed::playback", self.__on_playback_changed)
 
-    @property
-    def next_track(self):
-        """
-            Current track
-        """
-        return self._next_track
-
-    @property
-    def prev_track(self):
-        """
-            Current track
-        """
-        return self._prev_track
-
-    @property
-    def context(self):
-        """
-            Current track
-        """
-        return self._context
-
     def prev(self):
         """
             Play previous track
@@ -433,6 +412,20 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         party_mix = Lp().settings.get_value("party-mix")
         self._crossfading = (mix and not party_mix) or\
                             (mix and party_mix and self.is_party)
+
+    @property
+    def next_track(self):
+        """
+            Current track
+        """
+        return self._next_track
+
+    @property
+    def prev_track(self):
+        """
+            Current track
+        """
+        return self._prev_track
 
     @property
     def albums(self):

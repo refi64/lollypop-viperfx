@@ -23,19 +23,19 @@ class IndicatorWidget(Gtk.EventBox):
         Show play/loved indicator
     """
 
-    def __init__(self, track_id):
+    def __init__(self, track, parent):
         """
             Init indicator widget, ui will be set when needed
-            @param track id as int
+            @param track as Track
+            @param parent as Gtk.Widget
         """
         Gtk.EventBox.__init__(self)
-        self.__id = track_id
+        self.__track = track
+        self.__parent = parent
         self.__pass = 1
         self.__timeout_id = None
         self.__button = None
         self.__stack = None
-        self.__signal_id = Lp().player.connect("queue-changed",
-                                               self.__on_queue_changed)
         self.connect("destroy", self.__on_destroy)
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px, we set directly on stack
@@ -103,18 +103,29 @@ class IndicatorWidget(Gtk.EventBox):
             Update button based on queue status
         """
         self.__init()
-        if self.__id in Lp().player.queue:
-            self.__button.set_tooltip_text(_("Remove from queue"))
+        if self.__is_in_current_playlist():
+            self.__button.set_tooltip_text(
+                                       _("Remove track from current playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
         else:
-            self.__button.set_tooltip_text(_("Add to queue"))
+            self.__button.set_tooltip_text(_("Add track to current playlist"))
             self.__image.set_from_icon_name("list-add-symbolic",
                                             Gtk.IconSize.MENU)
 
 #######################
 # PRIVATE             #
 #######################
+    def __is_in_current_playlist(self):
+        """
+            Check if track_id in Player current playlist
+            @return bool
+        """
+        for album in Lp().player.albums:
+            if self.__track.id in album.track_ids:
+                return True
+        return False
+
     def __clear_spinner(self):
         """
             Clear spinner
@@ -167,34 +178,48 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__id == Lp().player.current_track.id:
+        if self.__track.id == Lp().player.current_track.id:
             self.play()
-        elif is_loved(self.__id):
+        elif is_loved(self.__track.id):
             self.loved()
-
-    def __on_queue_changed(self, unused):
-        """
-            Update button widget
-        """
-        self.update_button()
 
     def __on_button_clicked(self, widget):
         """
-            Popup menu for track relative to button
-            @param widget as Gtk.Button
+            Add or remove track to player
+            @param widget as Gtk.Widget
         """
-        if self.__id in Lp().player.queue:
-            Lp().player.del_from_queue(self.__id)
+        if self.__is_in_current_playlist():
+            # We want track from player, not from current widget
+            albums = Lp().player.albums
+            for album in albums:
+                if album.id == self.__track.album.id:
+                    for track in album.tracks:
+                        if track.id == self.__track.id:
+                            album.remove_track(track.id)
+                            break
+                    break
+            # if track album in Player albums, destroy parent
+            # Safe as this can only happen if we are editing Player albums
+            self.__parent.destroy()
         else:
-            Lp().player.append_to_queue(self.__id)
+            albums = Lp().player.albums
+            # If album last in list, merge
+            if albums and albums[-1].id == self.__track.album.id:
+                albums[-1].add_track(self.__track)
+            # Add album with only track
+            else:
+                album = self.__track.album
+                album.set_tracks([self.__track])
+                if Lp().player.is_playing:
+                    Lp().player.add_album(album)
+                else:
+                    Lp().player.play_album(album)
 
     def __on_destroy(self, widget):
         """
             Clear timeout
             @param widget as Gtk.Widget
         """
-        if self.__signal_id is not None:
-            Lp().player.disconnect(self.__signal_id)
         self.clear()
 
     def __play_loved(self):
