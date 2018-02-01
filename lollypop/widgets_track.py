@@ -662,12 +662,11 @@ class TracksWidget(Gtk.ListBox):
             @param previous album id as int
         """
         for child in self.get_children():
-            track = Track(child.id)
-            if track.album.id == prev_album_id:
+            if child.track.album.id == prev_album_id:
                 child.show_headers(False)
             else:
                 child.show_headers(True)
-            prev_album_id = track.album.id
+            prev_album_id = child.track.album.id
 
     def update_indexes(self, start):
         """

@@ -214,6 +214,7 @@ class IndicatorWidget(Gtk.EventBox):
                     Lp().player.add_album(album)
                 else:
                     Lp().player.play_album(album)
+        self.update_button()
 
     def __on_destroy(self, widget):
         """
