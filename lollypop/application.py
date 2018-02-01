@@ -97,7 +97,6 @@ class Application(Gtk.Application):
         self.debug = False
         self.__fs = None
         self.__externals_count = 0
-        self.__init_proxy()
         GLib.set_application_name("Lollypop")
         GLib.set_prgname("lollypop")
         self.add_main_option("play-ids", b"a", GLib.OptionFlags.NONE,
@@ -350,22 +349,6 @@ class Application(Gtk.Application):
             print("You are missing lollypop-portal: "
                   "https://github.com/gnumdk/lollypop-portal")
             print("Application::__preload_portal():", e)
-
-    def __init_proxy(self):
-        """
-            Init proxy setting env
-        """
-        try:
-            proxy = Gio.Settings.new("org.gnome.system.proxy")
-            https = Gio.Settings.new("org.gnome.system.proxy.https")
-            mode = proxy.get_value("mode").get_string()
-            if mode != "none":
-                h = https.get_value("host").get_string()
-                p = https.get_value("port").get_int32()
-                GLib.setenv("http_proxy", "http://%s:%s" % (h, p), True)
-                GLib.setenv("https_proxy", "http://%s:%s" % (h, p), True)
-        except Exception as e:
-            print("Application::__init_proxy()", e)
 
     def __on_handle_local_options(self, app, options):
         """
