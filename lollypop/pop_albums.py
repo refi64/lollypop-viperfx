@@ -24,7 +24,7 @@ class AlbumRow(Gtk.ListBoxRow):
         Album row
     """
     __gsignals__ = {
-        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
+        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, int, int))
     }
 
     __MARGIN = 2
@@ -199,8 +199,8 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         try:
             self.emit("album-moved", data.get_text(), x, y)
-        except:
-            pass
+        except Exception as e:
+            print("AlbumsPopover::__on_drag_data_received()", e)
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
@@ -449,41 +449,45 @@ class AlbumsView(LazyLoadingView):
         self._stop = True
         GLib.idle_add(self.__clear, True)
 
-    def __on_album_moved(self, row, album, x, y):
+    def __on_album_moved(self, row, album_str, x, y):
         """
             Pass signal
             @param row as PlaylistRow
-            @param album as album
+            @param album_str as str
             @param x as int
             @param y as int
         """
-        if row.album == album:
+        if str(row.album) == album_str:
             return
-        height = row.get_allocated_height()
-        if y > height/2:
-            up = False
-        else:
-            up = True
-        album_row = self.__row_for_album(album)
-        album_row.populate()
-        # Destroy current album row
+        # Destroy current album row and search for album row
         i = 0
         row_index = -1
+        album = None
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if child == album:
+            if str(child.album) == album_str:
+                album = child.album
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()
             else:
                 i += 1
+        # Create new row
+        if album is not None:
+            height = row.get_allocated_height()
+            if y > height/2:
+                up = False
+            else:
+                up = True
+            album_row = self.__row_for_album(album)
+            album_row.populate()
 
-        # Add new row
-        if row_index != -1:
-            if not up:
-                row_index += 1
-            self.__view.insert(album_row, row_index)
-            Lp().player.move_album(album, row_index)
+            # Add new row
+            if row_index != -1:
+                if not up:
+                    row_index += 1
+                self.__view.insert(album_row, row_index)
+                Lp().player.move_album(album, row_index)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
