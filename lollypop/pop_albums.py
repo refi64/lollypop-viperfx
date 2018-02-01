@@ -15,10 +15,11 @@ from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 from gettext import gettext as _
 
 from lollypop.view import LazyLoadingView
+from lollypop.widgets_tracks_responsive import TracksResponsiveWidget
 from lollypop.define import Lp, ArtSize
 
 
-class AlbumRow(Gtk.ListBoxRow):
+class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
     """
         Album row
     """
@@ -26,11 +27,11 @@ class AlbumRow(Gtk.ListBoxRow):
         "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, int, int))
     }
 
-    __MARGIN = 2
+    __MARGIN = 4
 
     def get_best_height(widget):
         """
-            Helper to pass object it"s preferred height
+            Helper to pass object it's height request
             @param widget as Gtk.Widget
         """
         ctx = widget.get_pango_context()
@@ -47,14 +48,15 @@ class AlbumRow(Gtk.ListBoxRow):
     def __init__(self, album, height):
         """
             Init row widgets
-            @param album id as int
+            @param album as Album
+            @param height as int
         """
+        self._album = album
         Gtk.ListBoxRow.__init__(self)
-        self.__album = album
+        TracksResponsiveWidget.__init__(self)
         self.__play_indicator = None
         self.set_sensitive(False)
         self.get_style_context().add_class("loading")
-        self.__height = height
         self.set_property("height-request", height)
         self.set_margin_start(5)
         self.set_margin_end(5)
@@ -64,6 +66,7 @@ class AlbumRow(Gtk.ListBoxRow):
             Populate widget content
         """
         self.get_style_context().remove_class("loading")
+        self.get_style_context().add_class("trackrow")
         self.set_sensitive(True)
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.__on_query_tooltip)
@@ -73,8 +76,8 @@ class AlbumRow(Gtk.ListBoxRow):
         row_widget.set_margin_end(self.__MARGIN)
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
-        if self.__album.artists:
-            artists = GLib.markup_escape_text(", ".join(self.__album.artists))
+        if self._album.artists:
+            artists = GLib.markup_escape_text(", ".join(self._album.artists))
         else:
             artists = _("Compilation")
         self.__artist_label = Gtk.Label.new("<b>%s</b>" % artists)
@@ -82,12 +85,12 @@ class AlbumRow(Gtk.ListBoxRow):
         self.__artist_label.set_hexpand(True)
         self.__artist_label.set_property("halign", Gtk.Align.START)
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__title_label = Gtk.Label.new(self.__album.name)
+        self.__title_label = Gtk.Label.new(self._album.name)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         cover = Gtk.Image()
         cover.get_style_context().add_class("small-cover-frame")
         surface = Lp().art.get_album_artwork(
-                                        self.__album,
+                                        self._album,
                                         ArtSize.MEDIUM,
                                         self.get_scale_factor())
         cover.set_from_surface(surface)
@@ -114,11 +117,14 @@ class AlbumRow(Gtk.ListBoxRow):
         grid.attach(delete_button, 2, 0, 1, 2)
         grid.attach(cover, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
+        self.__revealer = Gtk.Revealer.new()
+        self.__revealer.add(self._responsive_widget)
+        self.__revealer.show()
+        grid.attach(self.__revealer, 0, 2, 3, 1)
         row_widget.add(grid)
         self.add(row_widget)
-        self.get_style_context().add_class("trackrow")
-        self.show_play_indicator(self.__album.id ==
-                                 Lp().player.current_track.album.id)
+        self.update_playing_indicator(self._album ==
+                                      Lp().player.current_track.album)
         self.show_all()
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
@@ -131,13 +137,8 @@ class AlbumRow(Gtk.ListBoxRow):
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-motion", self.__on_drag_motion)
         self.connect("drag-leave", self.__on_drag_leave)
-
-    def do_get_preferred_height(self):
-        """
-            Return preferred height
-            @return (int, int)
-        """
-        return (self.__height, self.__height)
+        self.connect("button-press-event", self.__on_button_press_event)
+        self.connect("size-allocate", self._on_size_allocate)
 
     @property
     def album(self):
@@ -145,9 +146,9 @@ class AlbumRow(Gtk.ListBoxRow):
             Get album
             @return row id as int
         """
-        return self.__album
+        return self._album
 
-    def show_play_indicator(self, show):
+    def update_playing_indicator(self, show):
         """
             Show play indicator
         """
@@ -155,16 +156,28 @@ class AlbumRow(Gtk.ListBoxRow):
             return
         if show:
             self.__play_indicator.set_opacity(1)
-            self.get_style_context().remove_class("trackrow")
-            self.get_style_context().add_class("trackrowplaying")
         else:
             self.__play_indicator.set_opacity(0)
-            self.get_style_context().add_class("trackrow")
-            self.get_style_context().remove_class("trackrowplaying")
+        if self.__revealer.get_reveal_child():
+            TracksResponsiveWidget.update_playing_indicator(self)
 
 #######################
 # PRIVATE             #
 #######################
+    def __on_button_press_event(self, widget, event):
+        """
+            Show revealer with tracks
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if self.__revealer.get_reveal_child():
+            self.__revealer.set_reveal_child(False)
+            self.get_style_context().add_class("trackrow")
+        else:
+            TracksResponsiveWidget.populate(self)
+            self.__revealer.set_reveal_child(True)
+            self.get_style_context().remove_class("trackrow")
+
     def __on_drag_begin(self, widget, context):
         """
             Set icon
@@ -182,7 +195,7 @@ class AlbumRow(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        album_str = str(self.__album)
+        album_str = str(self._album)
         data.set_text(album_str, len(album_str))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -233,18 +246,18 @@ class AlbumRow(Gtk.ListBoxRow):
             Delete album
             @param button as Gtk.Button
         """
-        if Lp().player.current_track.album.id == self.__album.id:
+        if Lp().player.current_track.album.id == self._album.id:
             # If not last album, skip it
             if len(Lp().player.albums) > 1:
                 Lp().player.skip_album()
-                Lp().player.remove_album(self.__album)
+                Lp().player.remove_album(self._album)
             # remove it and stop playback by going to next track
             else:
-                Lp().player.remove_album(self.__album)
+                Lp().player.remove_album(self._album)
                 Lp().player.set_next()
                 Lp().player.next()
         else:
-            Lp().player.remove_album(self.__album)
+            Lp().player.remove_album(self._album)
         self.destroy()
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
@@ -338,8 +351,8 @@ class AlbumsView(LazyLoadingView):
             @param player object
         """
         for child in self.__view.get_children():
-            child.show_play_indicator(child.id ==
-                                      Lp().player.current_track.album.id)
+            child.update_playing_indicator(child.album ==
+                                           Lp().player.current_track.album)
 
 #######################
 # PRIVATE             #

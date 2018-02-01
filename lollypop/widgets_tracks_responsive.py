@@ -23,21 +23,21 @@ from lollypop.define import Lp, NextContext, ArtSize, Type
 class TracksResponsiveWidget:
     """
         Widget with two TracksWidget with responsive orientation
+        @member _album as Album needed
     """
 
-    def __init__(self, album):
+    def __init__(self):
         """
             Init widget
-            @param album as Album
         """
-        self.__album = album
+        self._loading = Loading.NONE
         self.__width = None
         self.__orientation = None
         self.__child_height = TrackRow.get_best_height(self)
         # Header + separator + spacing + margin
         self.__height = self.__child_height + 6
         # Discs to load, will be emptied
-        self.__discs = self.__album.discs
+        self.__discs = self._album.discs
         self.__locked_widget_right = True
 
         self._responsive_widget = Gtk.Grid()
@@ -56,7 +56,7 @@ class TracksResponsiveWidget:
         """
             Update playing indicator
         """
-        for disc in self.__album.discs:
+        for disc in self._album.discs:
             self._tracks_left[disc.number].update_playing(
                 Lp().player.current_track.id)
             self._tracks_right[disc.number].update_playing(
@@ -67,7 +67,7 @@ class TracksResponsiveWidget:
             Update duration for current track
             @param track id as int
         """
-        for disc in self.__album.discs:
+        for disc in self._album.discs:
             self._tracks_left[disc.number].update_duration(track_id)
             self._tracks_right[disc.number].update_duration(track_id)
 
@@ -174,7 +174,7 @@ class TracksResponsiveWidget:
             @param album id as int
             @param destroy as bool
         """
-        if self.__album.id != album_id:
+        if self._album.id != album_id:
             return
         removed = False
         for dic in [self._tracks_left, self._tracks_right]:
@@ -188,7 +188,7 @@ class TracksResponsiveWidget:
                 for widget in dic.values():
                     for child in widget.get_children():
                         child.destroy()
-            self.__discs = self.__album.discs
+            self.__discs = self._album.discs
             self.__set_duration()
             self.populate()
 
@@ -226,9 +226,9 @@ class TracksResponsiveWidget:
             else:
                 width = 2
                 pos = 1
-            for disc in self.__album.discs:
-                show_label = len(self.__album.discs) > 1
-                disc_names = self.__album.disc_names(disc.number)
+            for disc in self._album.discs:
+                show_label = len(self._album.discs) > 1
+                disc_names = self._album.disc_names(disc.number)
                 if show_label or disc_names:
                     label = Gtk.Label()
                     if disc_names:
@@ -323,7 +323,7 @@ class TracksResponsiveWidget:
         track = tracks.pop(0)
         if not Lp().settings.get_value("show-tag-tracknumber"):
             track.set_number(i)
-        track.set_featuring_ids(self._artist_ids)
+        track.set_featuring_ids(self._album.artist_ids)
         row = TrackRow(track)
         row.show()
         widget[disc_number].add(row)
@@ -344,7 +344,7 @@ class TracksResponsiveWidget:
             @param idx as int
         """
         disc = None
-        for d in self.__album.discs:
+        for d in self._album.discs:
             if d.number == idx:
                 disc = d
                 break
@@ -374,15 +374,15 @@ class TracksResponsiveWidget:
             if not Lp().player.is_party and not\
                     Lp().settings.get_enum("playback") == NextContext.STOP:
                 # If in artist view, reset album list
-                if self._artist_ids:
+                if self._album.artist_ids:
                     Lp().player.play_albums(track,
-                                            self.__album.genre_ids,
-                                            self._artist_ids)
+                                            self._album.genre_ids,
+                                            self._album.artist_ids)
                 # Else, add album if missing
-                elif self.__album not in Lp().player.albums:
-                    Lp().player.add_album(self.__album)
+                elif self._album not in Lp().player.albums:
+                    Lp().player.add_album(self._album)
                     Lp().player.load(track)
             # Clear albums if user clicked on a track from a new album
             elif Lp().settings.get_enum("playback") == NextContext.STOP:
-                if not Lp().player.has_album(self.__album):
+                if not Lp().player.has_album(self._album):
                     Lp().player.clear_albums()

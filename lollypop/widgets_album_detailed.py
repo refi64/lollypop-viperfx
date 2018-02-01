@@ -44,7 +44,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
-        TracksResponsiveWidget.__init__(self, self._album)
+        TracksResponsiveWidget.__init__(self)
         self._rounded_class = "rounded-icon-small"
         self.__context = None
         # Cover + rating + spacing
@@ -173,6 +173,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
             widget.set_filter_func(func)
         for widget in self._tracks_right.values():
             widget.set_filter_func(func)
+
+    def update_playing_indicator(self):
+        """
+            Update playing indicator
+        """
+        TracksResponsiveWidget.update_playing_indicator(self)
 
     @property
     def requested_height(self):

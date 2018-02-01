@@ -252,7 +252,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         else:
             Lp().player.play_albums(track,
                                     self._album.genre_ids,
-                                    self._artist_ids)
+                                    self._album.artist_ids)
         return True
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):

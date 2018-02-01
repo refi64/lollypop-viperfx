@@ -248,21 +248,19 @@ class Row(Gtk.ListBoxRow):
         if self.__context is not None:
             self.__on_button_clicked(self.__menu_button)
         if event.button == 3:
-            if GLib.getenv("WAYLAND_DISPLAY") != "" and\
-                    self.get_ancestor(Gtk.Popover) is not None:
-                print("https://bugzilla.gnome.org/show_bug.cgi?id=774148")
             window = widget.get_window()
             if window == event.window:
                 self.__popup_menu(widget, event.x, event.y)
             # Happens when pressing button over menu btn
             else:
                 self.__on_button_clicked(self.__menu_button)
-            return True
         elif event.button == 2:
             if self._track.id in Lp().player.queue:
                 Lp().player.del_from_queue(self._track.id)
             else:
                 Lp().player.append_to_queue(self._track.id)
+        self.activate()
+        return True
 
     def __on_button_clicked(self, button):
         """
