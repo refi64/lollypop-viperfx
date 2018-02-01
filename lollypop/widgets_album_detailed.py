@@ -596,6 +596,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 # Else, add album if missing
                 elif self._album not in Lp().player.albums:
                     Lp().player.add_album(self._album)
+                    Lp().player.load(track)
             # Clear albums if user clicked on a track from a new album
             elif Lp().settings.get_enum("playback") == NextContext.STOP:
                 if not Lp().player.has_album(self._album):
