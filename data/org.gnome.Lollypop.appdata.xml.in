@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
   <id>org.gnome.Lollypop.desktop</id>
-  <licence>CC0</licence>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
   <name>Lollypop</name>
   <summary>Play and organize your music collection</summary>
   <description>
-    <p>
-      Lollypop is a new GNOME music playing application.
-    </p>
-    <p>
-      It provides:
-    </p>
+    <p>Lollypop is a modern music player for GNOME.</p>
+    <p>Features:</p>
     <ul>
-      <li>MP3, Ogg and FLAC playback</li>
+      <li>Play many audio formats: mp3, mp4, ogg, and flac</li>
       <li>Web playback</li>
-      <li>Genre/Cover browsing</li>
-      <li>Genre/Artist/Cover browsing</li>
-      <li>Search</li>
-      <li>Queue</li>
-      <li>Party mode</li>
-      <li>Replay gain</li>
-      <li>Cover art downloader</li>
+      <li>Intuitive browsing: Walk through your collection by genres/artists and through albums artwork</li>
+      <li>Search in your collection by artist, album and title</li>
+      <li>Queue: Arrange your songs the way you want to hear them</li>
+      <li>Artist bio, lyrics Artist bio, lyrics: Get artists and tracks information from the web</li>
+      <li>Party mode: No awkward silences, let Lollypop choose music for you</li>
+      <li>ReplayGain (RG): Automatically select the best audio level</li>
+      <li>Cover art downloader: Automatic artwork downloader from Last.fm, Itunes and Spotify</li>
       <li>Context artist view</li>
-      <li>MTP sync</li>
-      <li>Fullscreen view</li>
+      <li>MTP devices: Sync your music with Android phones and any mtp devices</li>
+      <li>Fullscreen view: Visual access from your couch</li>
       <li>Radios support</li>
-      <li>Last.fm support</li>
+      <li>Last.fm, Libre.fm and ListenBrainz support</li>
       <li>Auto install codecs</li>
       <li>HiDPI support</li>
       <li>TuneIn support</li>
     </ul>
   </description>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Audio</category>
+  </categories>
   <screenshots>
-    <screenshot type="default" width="800" height="439">http://gnumdk.github.io/lollypop-web/images/screenshot.jpg</screenshot>
+    <screenshot type="default">
+      <image type="source" width="800" height="439">http://gnumdk.github.io/lollypop-web/images/screenshot.jpg</image>
+    </screenshot>
   </screenshots>
   <url type="homepage">https://gnumdk.github.io/lollypop-web/</url>
-  <url type="bugtracker">https://github.com/gnumdk/lollypop/issues</url>
-  <updatecontact>cedric.bellegarde@adishatz.org</updatecontact>
+  <url type="bugtracker">https://gitlab.gnome.org/gnumdk/lollypop/issues</url>
+  <url type="donation">https://flattr.com/@lollypop</url>
+  <url type="translate">https://hosted.weblate.org/projects/gnumdk/</url>
+  <update_contact>cedric.bellegarde@adishatz.org</update_contact>
 </component>
