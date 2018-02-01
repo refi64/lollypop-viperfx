@@ -438,7 +438,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     def __add_tracks(self, tracks, widget, disc_number, i):
         """
             Add tracks for to tracks widget
-            @param tracks as [int]
+            @param tracks as [Track]
             @param widget as TracksWidget
             @param disc number as int
             @param i as int
@@ -458,11 +458,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         track = tracks.pop(0)
         if not Lp().settings.get_value("show-tag-tracknumber"):
-            track_number = i
-        else:
-            track_number = track.number
-
-        row = TrackRow(track.id, track_number, self._artist_ids)
+            track.set_number(i)
+        track.set_featuring_ids(self._artist_ids)
+        row = TrackRow(track)
         row.show()
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
@@ -596,7 +594,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                                            self._artist_ids,
                                            self._album.genre_ids)
                 # Else, add album if missing
-                elif not Lp().player.has_album(self._album):
+                elif self._album not in Lp().player.albums:
                     Lp().player.add_album(self._album)
             # Clear albums if user clicked on a track from a new album
             elif Lp().settings.get_enum("playback") == NextContext.STOP:

@@ -258,8 +258,8 @@ class PlaylistsWidget(Gtk.Grid):
             return
 
         track = Track(tracks.pop(0))
-        row = PlaylistRow(track.id, pos,
-                          track.album.id != previous_album_id)
+        track.set_number(pos)
+        row = PlaylistRow(track, track.album.id != previous_album_id)
         row.connect("track-moved", self.__on_track_moved)
         row.show()
         widget.insert(row, pos)
@@ -368,9 +368,8 @@ class PlaylistsWidget(Gtk.Grid):
                          GLib.markup_escape_text(", ".join(src_track.artists)),
                          name)
             self.__tracks_left.insert(index, src_track.id)
-        row = PlaylistRow(src_track.id,
-                          index,
-                          index == 0 or
+        src_track.set_number(index)
+        row = PlaylistRow(src_track, index == 0 or
                           src_track.album.id != prev_track.album.id)
         row.connect("track-moved", self.__on_track_moved)
         row.show()

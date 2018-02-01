@@ -292,11 +292,13 @@ class Track(Base):
         Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
+        self._number = 0
         self.__album = album or Album(self.album_id)
+        self.__featuring_ids = []
 
-    def get_featuring_ids(self, album_artist_ids):
+    def set_featuring_ids(self, album_artist_ids):
         """
-            Get featuring artist ids
+            Set featuring artist ids
             @param artist ids as [int]
             @return featuring artist ids as [int]
         """
@@ -306,14 +308,7 @@ class Track(Base):
             db_album_artist_ids = Lp().albums.get_artist_ids(album_id)
             if len(db_album_artist_ids) == 1:
                 artist_ids = list(set(artist_ids) - set(db_album_artist_ids))
-        return list(set(artist_ids) - set(album_artist_ids))
-
-    def set_duration(self, duration):
-        """
-            Set duration
-            @param duration as in
-        """
-        self._duration = duration
+        self.__featuring_ids = list(set(artist_ids) - set(album_artist_ids))
 
     def set_album_artists(self, artists):
         """
@@ -338,6 +333,21 @@ class Track(Base):
         self.id = Type.RADIOS
         self._album_artists = [name]
         self._uri = uri
+
+    def set_number(self, number):
+        """
+            Set number
+            @param number as int
+        """
+        self._number = number
+
+    @property
+    def featuring_artist_ids(self):
+        """
+            Get featuring artist ids
+            @return [int]
+        """
+        return self.__featuring_ids
 
     @property
     def position(self):

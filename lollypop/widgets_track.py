@@ -25,19 +25,15 @@ class Row(Gtk.ListBoxRow):
     """
         A row
     """
-    def __init__(self, rowid, num, artist_ids=[]):
+    def __init__(self, track):
         """
             Init row widgets
-            @param rowid as int
-            @param num as int
-            @param artist_ids as [int]: Allow to tell Row that artist_ids
-                   should not be displayed
+            @param track as Track
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
         self._artists_label = None
-        self._track = Track(rowid)
-        self.__number = num
+        self._track = track
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
@@ -58,10 +54,10 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property("hexpand", True)
         self._title_label.set_property("halign", Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        featuring_ids = self._track.get_featuring_ids(artist_ids)
-        if featuring_ids:
+        featuring_artist_ids = track.featuring_artist_ids
+        if featuring_artist_ids:
             artists = []
-            for artist_id in featuring_ids:
+            for artist_id in featuring_artist_ids:
                 artists.append(Lp().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
                                                            ", ".join(artists)))
@@ -130,13 +126,6 @@ class Row(Gtk.ListBoxRow):
             else:
                 self._indicator.empty()
 
-    def set_number(self, num):
-        """
-            Set number
-            @param number as int
-        """
-        self.__number = num
-
     def update_duration(self):
         """
             Update duration for row
@@ -153,9 +142,9 @@ class Row(Gtk.ListBoxRow):
             self._num_label.get_style_context().add_class("queued")
             pos = Lp().player.get_track_position(self._track.id)
             self._num_label.set_text(str(pos))
-        elif self.__number > 0:
+        elif self._track.number > 0:
             self._num_label.get_style_context().remove_class("queued")
-            self._num_label.set_text(str(self.__number))
+            self._num_label.set_text(str(self._track.number))
         else:
             self._num_label.get_style_context().remove_class("queued")
             self._num_label.set_text("")
@@ -354,14 +343,13 @@ class PlaylistRow(Row):
         "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, bool))
     }
 
-    def __init__(self, rowid, num, show_headers):
+    def __init__(self, track, show_headers):
         """
             Init row widget
-            @param rowid as int
-            @param num as int
+            @param track as Track
             @param show headers as bool
         """
-        Row.__init__(self, rowid, num)
+        Row.__init__(self, track)
         self.__parent_filter = False
         self.__show_headers = show_headers
         self._indicator.set_margin_start(5)
@@ -599,15 +587,12 @@ class TrackRow(Row):
             height = menu_height
         return height
 
-    def __init__(self, rowid, num, artist_ids):
+    def __init__(self, track):
         """
             Init row widget and show it
-            @param rowid as int
-            @param num as int
-            @param artist_ids as [int]: Allow to tell Row that artist_ids
-                   should not be displayed
+            @param track as Track
         """
-        Row.__init__(self, rowid, num, artist_ids)
+        Row.__init__(self, track)
         self.__parent_filter = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
@@ -643,7 +628,8 @@ class TracksWidget(Gtk.ListBox):
     """
 
     __gsignals__ = {
-        "activated": (GObject.SignalFlags.RUN_FIRST, None, (int,))
+        "activated": (GObject.SignalFlags.RUN_FIRST,
+                      None, (GObject.TYPE_PYOBJECT,))
     }
 
     def __init__(self, dnd=False):
@@ -690,7 +676,7 @@ class TracksWidget(Gtk.ListBox):
             @param start index as int
         """
         for row in self.get_children():
-            row.set_number(start)
+            row.track.set_number(start)
             row.update_num_label()
             start += 1
 
@@ -700,8 +686,8 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            row.set_indicator(row.id == track_id,
-                              utils.is_loved(row.id))
+            row.set_indicator(row.track.id == track_id,
+                              utils.is_loved(row.track.id))
 
     def update_duration(self, track_id):
         """
@@ -765,7 +751,7 @@ class TracksWidget(Gtk.ListBox):
             return
 
         for row in self.get_children():
-            if track_id == row.id:
+            if track_id == row.track.id:
                 row.set_indicator(track_id == Lp().player.current_track.id,
                                   utils.is_loved(track_id))
 
