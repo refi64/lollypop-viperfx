@@ -259,8 +259,9 @@ class Row(Gtk.ListBoxRow):
                 Lp().player.del_from_queue(self._track.id)
             else:
                 Lp().player.append_to_queue(self._track.id)
-        self.activate()
-        return True
+        else:
+            self.activate()
+            return True
 
     def __on_button_clicked(self, button):
         """
