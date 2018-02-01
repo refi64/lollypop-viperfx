@@ -590,8 +590,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     Lp().settings.get_enum("playback") == NextContext.STOP:
                 # If in artist view, reset album list
                 if self._artist_ids:
-                    Lp().player.set_albums(self._album.genre_ids,
-                                           self._artist_ids)
+                    Lp().player.play_albums(track,
+                                            self._album.genre_ids,
+                                            self._artist_ids)
                 # Else, add album if missing
                 elif self._album not in Lp().player.albums:
                     Lp().player.add_album(self._album)
@@ -599,4 +600,3 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             elif Lp().settings.get_enum("playback") == NextContext.STOP:
                 if not Lp().player.has_album(self._album):
                     Lp().player.clear_albums()
-            Lp().player.load(track)

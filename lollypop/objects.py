@@ -169,7 +169,7 @@ class Disc:
 
             @return list of Track
         """
-        return [Track(id) for id in self.track_ids]
+        return [Track(id, self.album) for id in self.track_ids]
 
 
 class Album(Base):
@@ -200,6 +200,22 @@ class Album(Base):
         if artist_ids:
             self.artist_ids = artist_ids
 
+    def update_track(self, up_track):
+        """
+            Search for track id in album and replace it with current track
+            @param up_track as Track
+        """
+        # Force attribute update
+        if self._tracks is None:
+            if self.tracks is None:
+                return
+        for track in self._tracks:
+            if track.id == up_track.id:
+                pos = self._tracks.index(track)
+                self._track.remove(track)
+                self._track.insert(pos, up_track)
+                break
+
     @property
     def title(self):
         """
@@ -212,9 +228,9 @@ class Album(Base):
     def track_ids(self):
         """
             Get album track ids
-            @return list of int
+            @return [int]
         """
-        if self._track_ids is None:
+        if self._track_ids is None and self.id is not None:
             self._track_ids = self.db.get_track_ids(self.id,
                                                     self.genre_ids,
                                                     self.artist_ids)
@@ -230,9 +246,9 @@ class Album(Base):
     def tracks(self):
         """
             Get album tracks
-            @return list of Track
+            @return [Track]
         """
-        if not self._tracks and self.track_ids:
+        if not self._tracks and self.id is not None and self.track_ids:
             self._tracks = [Track(track_id, self)
                             for track_id in self.track_ids]
         return self._tracks
@@ -293,7 +309,13 @@ class Track(Base):
         self.id = track_id
         self._uri = None
         self._number = 0
-        self.__album = album or Album(self.album_id)
+
+        # We want our album to use this object as track
+        if album is None:
+            self.__album = Album(self.album_id)
+            self.__album.update_track(self)
+        else:
+            self.__album = album
         self.__featuring_ids = []
 
     def set_featuring_ids(self, album_artist_ids):
