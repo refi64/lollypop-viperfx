@@ -212,8 +212,8 @@ class Album(Base):
         for track in self._tracks:
             if track.id == up_track.id:
                 pos = self._tracks.index(track)
-                self._track.remove(track)
-                self._track.insert(pos, up_track)
+                self._tracks.remove(track)
+                self._tracks.insert(pos, up_track)
                 break
 
     @property
