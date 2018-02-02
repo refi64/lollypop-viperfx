@@ -198,7 +198,7 @@ class Album(Base):
         Base.__init__(self, Lp().albums)
         self.id = album_id
         self.genre_ids = genre_ids
-        self._track_ids = None
+        self._tracks = []
         # Use artist ids from db else
         if artist_ids:
             self.artist_ids = artist_ids
@@ -235,7 +235,7 @@ class Album(Base):
             Remove track from album
             @param track_id as int
         """
-        for track in self._tracks:
+        for track in self.tracks:
             if track.id == track_id:
                 self._tracks.remove(track)
                 break
@@ -247,11 +247,7 @@ class Album(Base):
             Search for track id in album and replace it with current track
             @param up_track as Track
         """
-        # Force attribute update
-        if self._tracks is None:
-            if self.tracks is None:
-                return
-        for track in self._tracks:
+        for track in self.tracks:
             if track.id == up_track.id:
                 pos = self._tracks.index(track)
                 self._tracks.remove(track)
@@ -272,7 +268,7 @@ class Album(Base):
             Get album track ids
             @return [int]
         """
-        return [track.id for track in self._tracks]
+        return [track.id for track in self.tracks]
 
     @property
     def tracks(self):
