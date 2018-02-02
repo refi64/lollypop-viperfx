@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib, Gio, Gdk
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
-from lollypop.view_albums import AlbumBackView
 from lollypop.utils import noaccents
 from lollypop.helper_task import TaskHelper
 from lollypop.search import Search
@@ -471,6 +470,7 @@ class SearchPopover(Gtk.Popover):
                 Lp().player.insert_in_queue(row.id, 0, False)
             Lp().player.load(Track(row.id))
         else:
+            from lollypop.view_albums import AlbumBackView
             album_view = AlbumBackView(row.id, [], [])
             album_view.connect("back-clicked", self.__on_back_clicked)
             album_view.show()
