@@ -25,10 +25,15 @@ class Row(Gtk.ListBoxRow):
     """
         A row
     """
-    def __init__(self, track):
+    __gsignals__ = {
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, bool))
+    }
+
+    def __init__(self, track, dnd):
         """
             Init row widgets
             @param track as Track
+            @param dnd as bool
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
@@ -41,9 +46,12 @@ class Row(Gtk.ListBoxRow):
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self._row_widget = Gtk.EventBox()
-        self._row_widget.connect("button-press-event", self.__on_button_press)
-        self._row_widget.connect("enter-notify-event", self.__on_enter_notify)
-        self._row_widget.connect("leave-notify-event", self.__on_leave_notify)
+        self._row_widget.connect("button-release-event",
+                                 self.__on_button_release_event)
+        self._row_widget.connect("enter-notify-event",
+                                 self.__on_enter_notify_event)
+        self._row_widget.connect("leave-notify-event",
+                                 self.__on_leave_notify_event)
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
@@ -96,6 +104,18 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
+        if dnd:
+            self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
+                                 Gdk.DragAction.MOVE)
+            self.drag_source_add_text_targets()
+            self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                               [], Gdk.DragAction.MOVE)
+            self.drag_dest_add_text_targets()
+            self.connect("drag-begin", self.__on_drag_begin)
+            self.connect("drag-data-get", self.__on_drag_data_get)
+            self.connect("drag-data-received", self.__on_drag_data_received)
+            self.connect("drag-motion", self.__on_drag_motion)
+            self.connect("drag-leave", self.__on_drag_leave)
 
     def show_spinner(self):
         """
@@ -170,6 +190,25 @@ class Row(Gtk.ListBoxRow):
         self.set_indicator(True, False)
         self.__preview_timeout_id = None
 
+    def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
+        """
+            Popup menu for track
+            @param widget as Gtk.Button
+            @param xcoordinate as int (or None)
+            @param ycoordinate as int (or None)
+        """
+        popover = TrackMenuPopover(self._track, TrackMenu(self._track))
+        if xcoordinate is not None and ycoordinate is not None:
+            rect = widget.get_allocation()
+            rect.x = xcoordinate
+            rect.y = ycoordinate
+            rect.width = rect.height = 1
+        popover.set_relative_to(widget)
+        popover.set_pointing_to(rect)
+        popover.connect("closed", self.__on_closed)
+        self.get_style_context().add_class("track-menu-selected")
+        popover.show()
+
     def __on_map(self, widget):
         """
             Fix for Gtk < 3.18,
@@ -193,7 +232,7 @@ class Row(Gtk.ListBoxRow):
         Lp().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
-    def __on_enter_notify(self, widget, event):
+    def __on_enter_notify_event(self, widget, event):
         """
             Set image on buttons now, speed reason
             @param widget as Gtk.Widget
@@ -213,7 +252,7 @@ class Row(Gtk.ListBoxRow):
             self.__menu_button.connect("clicked", self.__on_button_clicked)
             self._indicator.update_button()
 
-    def __on_leave_notify(self, widget, event):
+    def __on_leave_notify_event(self, widget, event):
         """
             Stop preview
             @param widget as Gtk.Widget
@@ -239,9 +278,12 @@ class Row(Gtk.ListBoxRow):
                                 utils.is_loved(self._track.id))
                 Lp().player.preview.set_state(Gst.State.NULL)
 
-    def __on_button_press(self, widget, event):
+    def __on_button_release_event(self, widget, event):
         """
-            Popup menu for track relative to track row
+            Handle button release event:
+                |_ 1 => activate
+                |_ 2 => queue
+                |_ 3 => menu
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
@@ -261,7 +303,6 @@ class Row(Gtk.ListBoxRow):
                 Lp().player.append_to_queue(self._track.id)
         else:
             self.activate()
-        return True
 
     def __on_button_clicked(self, button):
         """
@@ -291,25 +332,6 @@ class Row(Gtk.ListBoxRow):
             self.set_indicator(Lp().player.current_track.id == self._track.id,
                                utils.is_loved(self._track.id))
 
-    def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
-        """
-            Popup menu for track
-            @param widget as Gtk.Button
-            @param xcoordinate as int (or None)
-            @param ycoordinate as int (or None)
-        """
-        popover = TrackMenuPopover(self._track, TrackMenu(self._track))
-        if xcoordinate is not None and ycoordinate is not None:
-            rect = widget.get_allocation()
-            rect.x = xcoordinate
-            rect.y = ycoordinate
-            rect.width = rect.height = 1
-        popover.set_relative_to(widget)
-        popover.set_pointing_to(rect)
-        popover.connect("closed", self.__on_closed)
-        self.get_style_context().add_class("track-menu-selected")
-        popover.show()
-
     def __on_closed(self, widget):
         """
             Remove selected style
@@ -333,14 +355,82 @@ class Row(Gtk.ListBoxRow):
             text = "%s" % (GLib.markup_escape_text(label))
         widget.set_tooltip_markup(text)
 
+    def __on_drag_begin(self, widget, context):
+        """
+            Set icon
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        widget.drag_source_set_icon_name("emblem-music-symbolic")
+
+    def __on_drag_data_get(self, widget, context, data, info, time):
+        """
+            Send track id
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        track_id = str(self._track.id)
+        data.set_text(track_id, len(track_id))
+
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        height = self.get_allocated_height()
+        if y > height/2:
+            up = False
+        else:
+            up = True
+        try:
+            src = int(data.get_text())
+            if self._track.id == src:
+                return
+            self.emit("track-moved", self._track.id, src, up)
+        except Exception as e:
+            print("Row::__on_drag_data_received():", e)
+
+    def __on_drag_motion(self, widget, context, x, y, time):
+        """
+            Add style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param time as int
+        """
+        height = self.get_allocated_height()
+        if y > height/2:
+            self.get_style_context().add_class("drag-up")
+            self.get_style_context().remove_class("drag-down")
+        else:
+            self.get_style_context().remove_class("drag-up")
+            self.get_style_context().add_class("drag-down")
+
+    def __on_drag_leave(self, widget, context, time):
+        """
+            Remove style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param time as int
+        """
+        self.get_style_context().remove_class("drag-up")
+        self.get_style_context().remove_class("drag-down")
+
 
 class PlaylistRow(Row):
     """
         A track row with album cover
     """
-    __gsignals__ = {
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, bool))
-    }
 
     def __init__(self, track, show_headers):
         """
@@ -348,7 +438,7 @@ class PlaylistRow(Row):
             @param track as Track
             @param show headers as bool
         """
-        Row.__init__(self, track)
+        Row.__init__(self, track, True)
         self.__parent_filter = False
         self.__show_headers = show_headers
         self._indicator.set_margin_start(5)
@@ -409,17 +499,6 @@ class PlaylistRow(Row):
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self.show_headers(self.__show_headers)
-        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
-                             Gdk.DragAction.MOVE)
-        self.drag_source_add_text_targets()
-        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
-                           [], Gdk.DragAction.MOVE)
-        self.drag_dest_add_text_targets()
-        self.connect("drag-begin", self.__on_drag_begin)
-        self.connect("drag-data-get", self.__on_drag_data_get)
-        self.connect("drag-data-received", self.__on_drag_data_received)
-        self.connect("drag-motion", self.__on_drag_motion)
-        self.connect("drag-leave", self.__on_drag_leave)
 
     @property
     def filter(self):
@@ -489,80 +568,6 @@ class PlaylistRow(Row):
         if window is not None:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
-    def __on_drag_begin(self, widget, context):
-        """
-            Set icon
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-        """
-        widget.drag_source_set_icon_name("emblem-music-symbolic")
-
-    def __on_drag_data_get(self, widget, context, data, info, time):
-        """
-            Send track id
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        track_id = str(self._track.id)
-        data.set_text(track_id, len(track_id))
-
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move track
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        height = self.get_allocated_height()
-        if y > height/2:
-            up = False
-        else:
-            up = True
-        try:
-            src = int(data.get_text())
-            if self._track.id == src:
-                return
-            self.emit("track-moved", self._track.id, src, up)
-        except:
-            if len(Lp().window.container.view.get_ids()) == 1:
-                Lp().playlists.import_uri(
-                                    Lp().window.container.view.get_ids()[0],
-                                    data.get_text(), self._track.id, up)
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        height = self.get_allocated_height()
-        if y > height/2:
-            self.get_style_context().add_class("drag-up")
-            self.get_style_context().remove_class("drag-down")
-        else:
-            self.get_style_context().remove_class("drag-up")
-            self.get_style_context().add_class("drag-down")
-
-    def __on_drag_leave(self, widget, context, time):
-        """
-            Remove style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param time as int
-        """
-        self.get_style_context().remove_class("drag-up")
-        self.get_style_context().remove_class("drag-down")
-
 
 class TrackRow(Row):
     """
@@ -586,12 +591,13 @@ class TrackRow(Row):
             height = menu_height
         return height
 
-    def __init__(self, track):
+    def __init__(self, track, dnd):
         """
             Init row widget and show it
             @param track as Track
+            @param dnd as bool
         """
-        Row.__init__(self, track)
+        Row.__init__(self, track, dnd)
         self.__parent_filter = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)

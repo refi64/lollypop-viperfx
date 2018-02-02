@@ -203,13 +203,22 @@ class Album(Base):
         if artist_ids:
             self.artist_ids = artist_ids
 
+    def move_track(self, track, index):
+        """
+            Move track to index
+            @param track as Track
+            @param index
+        """
+        if track in self._tracks:
+            self._tracks.remove(track)
+            self._tracks.insert(index, track)
+
     def set_tracks(self, tracks):
         """
             Set album tracks
             @param tracks as [Track]
         """
         self._tracks = tracks
-        self._track_ids = [track.id for track in self.tracks]
         Lp().player.set_next()
 
     def add_track(self, track):
@@ -218,9 +227,9 @@ class Album(Base):
             @param track as Track
         """
         self._tracks.append(track)
-        self._track_ids.append(track.id)
         Lp().player.set_next()
 
+    # FIXME Try to get a track here
     def remove_track(self, track_id):
         """
             Remove track from album
@@ -230,9 +239,9 @@ class Album(Base):
             if track.id == track_id:
                 self._tracks.remove(track)
                 break
-        self._track_ids.remove(track.id)
         Lp().player.set_next()
 
+    # FIXME Try to get a track here
     def update_track(self, up_track):
         """
             Search for track id in album and replace it with current track
@@ -263,17 +272,7 @@ class Album(Base):
             Get album track ids
             @return [int]
         """
-        if self._track_ids is None and self.id is not None:
-            self._track_ids = self.db.get_track_ids(self.id,
-                                                    self.genre_ids,
-                                                    self.artist_ids)
-            # If user tagged track with an artist not present in album
-            if not self._track_ids:
-                print("%s missing an album artist in artists" % self.name)
-                self._track_ids = self.db.get_track_ids(self.id,
-                                                        self.genre_ids,
-                                                        [])
-        return self._track_ids
+        return [track.id for track in self._tracks]
 
     @property
     def tracks(self):
@@ -281,9 +280,18 @@ class Album(Base):
             Get album tracks
             @return [Track]
         """
-        if not self._tracks and self.id is not None and self.track_ids:
+        if not self._tracks and self.id is not None:
             self._tracks = [Track(track_id, self)
-                            for track_id in self.track_ids]
+                            for track_id in self.db.get_track_ids(
+                                                              self.id,
+                                                              self.genre_ids,
+                                                              self.artist_ids)]
+            if not self._tracks:
+                self._tracks = [Track(track_id, self)
+                                for track_id in self.db.get_track_ids(
+                                                              self.id,
+                                                              self.genre_ids,
+                                                              [])]
         return self._tracks
 
     def disc_names(self, disc):

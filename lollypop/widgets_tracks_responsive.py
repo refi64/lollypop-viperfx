@@ -26,10 +26,14 @@ class TracksResponsiveWidget:
         @member _album as Album needed
     """
 
-    def __init__(self):
+    def __init__(self, dnd):
         """
             Init widget
+            @param dnd as bool
         """
+        self.__dnd = dnd
+        self.__tracks_left = []
+        self.__tracks_right = []
         self._loading = Loading.NONE
         self.__width = None
         self.__orientation = None
@@ -45,21 +49,24 @@ class TracksResponsiveWidget:
         self._responsive_widget.set_property("valign", Gtk.Align.START)
         self._responsive_widget.show()
 
-        self._tracks_left = {}
-        self._tracks_right = {}
-
-        for disc in self.__discs:
-            self.__add_disc_container(disc.number)
-            self.__set_disc_height(disc)
+        self._tracks_widget_left = {}
+        self._tracks_widget_right = {}
+        if self.__dnd:
+            self.__add_disc_container(0)
+            self.__set_disc_height(0, self._album.tracks)
+        else:
+            for disc in self.__discs:
+                self.__add_disc_container(disc.number)
+                self.__set_disc_height(disc.number, disc.tracks)
 
     def update_playing_indicator(self):
         """
             Update playing indicator
         """
         for disc in self._album.discs:
-            self._tracks_left[disc.number].update_playing(
+            self._tracks_widget_left[disc.number].update_playing(
                 Lp().player.current_track.id)
-            self._tracks_right[disc.number].update_playing(
+            self._tracks_widget_right[disc.number].update_playing(
                 Lp().player.current_track.id)
 
     def update_duration(self, track_id):
@@ -68,24 +75,30 @@ class TracksResponsiveWidget:
             @param track id as int
         """
         for disc in self._album.discs:
-            self._tracks_left[disc.number].update_duration(track_id)
-            self._tracks_right[disc.number].update_duration(track_id)
+            self._tracks_widget_left[disc.number].update_duration(track_id)
+            self._tracks_widget_right[disc.number].update_duration(track_id)
 
     def populate(self):
         """
             Populate tracks
             @thread safe
         """
-        if self.__discs:
+        # If drag & drop active, do not show disc, we are in editable mode
+        if self.__dnd:
+            disc_number = 0
+            self.__discs = []
+            tracks = self._album.tracks
+        elif self.__discs:
             disc = self.__discs.pop(0)
+            disc_number = disc.number
             tracks = disc.tracks
-            mid_tracks = int(0.5 + len(tracks) / 2)
-            self.populate_list_left(tracks[:mid_tracks],
-                                    disc,
-                                    1)
-            self.populate_list_right(tracks[mid_tracks:],
-                                     disc,
-                                     mid_tracks + 1)
+        mid_tracks = int(0.5 + len(tracks) / 2)
+        self.populate_list_left(tracks[:mid_tracks],
+                                disc_number,
+                                1)
+        self.populate_list_right(tracks[mid_tracks:],
+                                 disc_number,
+                                 mid_tracks + 1)
 
     def is_populated(self):
         """
@@ -94,35 +107,38 @@ class TracksResponsiveWidget:
         """
         return len(self.__discs) == 0
 
-    def populate_list_left(self, tracks, disc, pos):
+    def populate_list_left(self, tracks, disc_number, pos):
         """
             Populate left list, thread safe
             @param tracks as [Track]
-            @param disc as Disc
+            @param disc_number as int
             @param pos as int
         """
+        self.__tracks_left = [track.id for track in tracks]
         GLib.idle_add(self.__add_tracks,
                       tracks,
-                      self._tracks_left,
-                      disc.number,
+                      self._tracks_widget_left,
+                      disc_number,
                       pos)
 
-    def populate_list_right(self, tracks, disc, pos):
+    def populate_list_right(self, tracks, disc_number, pos):
         """
             Populate right list, thread safe
             @param tracks as [Track]
-            @param disc as Disc
+            @param disc_number as int
             @param pos as int
         """
         # If we are showing only one column, wait for widget1
         if self.__orientation == Gtk.Orientation.VERTICAL and\
            self.__locked_widget_right:
-            GLib.timeout_add(100, self.populate_list_right, tracks, disc, pos)
+            GLib.timeout_add(100, self.populate_list_right,
+                             tracks, disc_number, pos)
         else:
+            self.__tracks_right = [track.id for track in tracks]
             GLib.idle_add(self.__add_tracks,
                           tracks,
-                          self._tracks_right,
-                          disc.number,
+                          self._tracks_widget_right,
+                          disc_number,
                           pos)
 
     def get_current_ordinate(self, parent):
@@ -131,7 +147,7 @@ class TracksResponsiveWidget:
             @param parent widget as Gtk.Widget
             @return y as int
         """
-        for dic in [self._tracks_left, self._tracks_right]:
+        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
                 for child in widget.get_children():
                     if child.id == Lp().player.current_track.id:
@@ -142,9 +158,9 @@ class TracksResponsiveWidget:
         """
             Set filter function
         """
-        for widget in self._tracks_left.values():
+        for widget in self._tracks_widget_left.values():
             widget.set_filter_func(func)
-        for widget in self._tracks_right.values():
+        for widget in self._tracks_widget_right.values():
             widget.set_filter_func(func)
 
     def height(self):
@@ -159,9 +175,9 @@ class TracksResponsiveWidget:
             @return [Gtk.ListBox]
         """
         boxes = []
-        for widget in self._tracks_left.values():
+        for widget in self._tracks_widget_left.values():
             boxes.append(widget)
-        for widget in self._tracks_right.values():
+        for widget in self._tracks_widget_right.values():
             boxes.append(widget)
         return boxes
 
@@ -178,14 +194,14 @@ class TracksResponsiveWidget:
         if self._album.id != album_id:
             return
         removed = False
-        for dic in [self._tracks_left, self._tracks_right]:
+        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
                 for child in widget.get_children():
                     track = Track(child.id)
                     if track.album.id == Type.NONE:
                         removed = True
         if removed:
-            for dic in [self._tracks_left, self._tracks_right]:
+            for dic in [self._tracks_widget_left, self._tracks_widget_right]:
                 for widget in dic.values():
                     for child in widget.get_children():
                         child.destroy()
@@ -250,12 +266,12 @@ class TracksResponsiveWidget:
                     self._responsive_widget.attach(eventbox, 0, idx, width, 1)
                     idx += 1
                 GLib.idle_add(self._responsive_widget.attach,
-                              self._tracks_left[disc.number],
+                              self._tracks_widget_left[disc.number],
                               0, idx, 1, 1)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
                 GLib.idle_add(self._responsive_widget.attach,
-                              self._tracks_right[disc.number],
+                              self._tracks_widget_right[disc.number],
                               pos, idx, 1, 1)
                 idx += 1
 
@@ -268,12 +284,13 @@ class TracksResponsiveWidget:
 #######################
 # PRIVATE             #
 #######################
-    def __set_disc_height(self, disc):
+    def __set_disc_height(self, disc_number, tracks):
         """
             Set disc widget height
-            @param disc as Disc
+            @param disc_number as int
+            @param tracks as [Track]
         """
-        tracks = disc.tracks
+        tracks = tracks
         count_tracks = len(tracks)
         mid_tracks = int(0.5 + count_tracks / 2)
         left_height = self.__child_height * mid_tracks
@@ -282,24 +299,24 @@ class TracksResponsiveWidget:
             self.__height += left_height
         else:
             self.__height += right_height
-        self._tracks_left[disc.number].set_property("height-request",
-                                                    left_height)
-        self._tracks_right[disc.number].set_property("height-request",
-                                                     right_height)
+        self._tracks_widget_left[disc_number].set_property("height-request",
+                                                           left_height)
+        self._tracks_widget_right[disc_number].set_property("height-request",
+                                                            right_height)
 
     def __add_disc_container(self, disc_number):
         """
             Add disc container to box
             @param disc_number as int
         """
-        self._tracks_left[disc_number] = TracksWidget()
-        self._tracks_right[disc_number] = TracksWidget()
-        self._tracks_left[disc_number].connect("activated",
-                                               self.__on_activated)
-        self._tracks_right[disc_number].connect("activated",
-                                                self.__on_activated)
-        self._tracks_left[disc_number].show()
-        self._tracks_right[disc_number].show()
+        self._tracks_widget_left[disc_number] = TracksWidget(self.__dnd)
+        self._tracks_widget_right[disc_number] = TracksWidget(self.__dnd)
+        self._tracks_widget_left[disc_number].connect("activated",
+                                                      self.__on_activated)
+        self._tracks_widget_right[disc_number].connect("activated",
+                                                       self.__on_activated)
+        self._tracks_widget_left[disc_number].show()
+        self._tracks_widget_right[disc_number].show()
 
     def __add_tracks(self, tracks, widget, disc_number, i):
         """
@@ -313,9 +330,9 @@ class TracksResponsiveWidget:
             self._loading = Loading.NONE
             return
         if not tracks:
-            if widget == self._tracks_right:
+            if widget == self._tracks_widget_right:
                 self._loading |= Loading.RIGHT
-            elif widget == self._tracks_left:
+            elif widget == self._tracks_widget_left:
                 self._loading |= Loading.LEFT
             if self._loading == Loading.ALL:
                 self._on_populated()
@@ -326,11 +343,70 @@ class TracksResponsiveWidget:
         if not Lp().settings.get_value("show-tag-tracknumber"):
             track.set_number(i)
         track.set_featuring_ids(self._album.artist_ids)
-        row = TrackRow(track)
+        row = TrackRow(track, self.__dnd)
         row.connect("destroy", self.__on_row_destroy)
+        row.connect("track-moved", self.__on_track_moved)
         row.show()
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
+
+    def __on_track_moved(self, widget, dst, src, up):
+        """
+            Move track from src to row
+            Recalculate track position
+            @param widget as TracksWidget
+            @param dst as int
+            @param src as int
+            @param up as bool
+        """
+        tracks1_len = len(self.__tracks_left)
+        tracks2_len = len(self.__tracks_right)
+        # Drag & drop is always about disc 0 as we are editable
+        if src in self.__tracks_left:
+            src_widget = self._tracks_widget_left[0]
+        else:
+            src_widget = self._tracks_widget_right[0]
+        if tracks1_len == 0 or dst in self.__tracks_left:
+            dst_widget = self._tracks_widget_left[0]
+            dst_tracks = self.__tracks_left
+        elif tracks2_len == 0 or dst in self.__tracks_right:
+            dst_widget = self._tracks_widget_right[0]
+            dst_tracks = self.__tracks_right
+        else:
+            return
+
+        src_track = None
+        # Search for source track
+        # Remove source track row
+        for child in src_widget.get_children():
+            if child.track.id == src:
+                src_track = child.track
+                child.destroy()
+                break
+        if src_track is None:
+            return
+
+        index = 0
+        # Get previous track
+        if dst != -1:
+            for child in dst_widget.get_children():
+                if child.track.id == dst:
+                    break
+                index += 1
+            if not up:
+                index += 1
+            # Get previous track (in dst context)
+            prev_index = dst_tracks.index(dst)
+            if up:
+                prev_index -= 1
+            self.__tracks_left.insert(index, src_track.id)
+        src_track.set_number(index)
+        row = TrackRow(src_track, True)
+        row.connect("track-moved", self.__on_track_moved)
+        row.show()
+        dst_widget.insert(row, index)
+        self._album.move_track(src_track, index)
+        Lp().player.set_next()
 
     def __on_disc_label_realize(self, eventbox):
         """
@@ -373,10 +449,11 @@ class TracksResponsiveWidget:
             self.destroy()
         # Remove height allocation, not needed as view is populated
         # This allow us to resize without complex calculation
-        self.__discs = self._album.discs
-        for disc in self.__discs:
-            self._tracks_left[disc.number].set_property("height-request", -1)
-            self._tracks_right[disc.number].set_property("height-request", -1)
+        for disc in self._album.discs:
+            self._tracks_widget_left[disc.number].set_property(
+                                                          "height-request", -1)
+            self._tracks_widget_right[disc.number].set_property(
+                                                          "height-request", -1)
 
     def __on_activated(self, widget, track):
         """

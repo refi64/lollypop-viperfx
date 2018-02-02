@@ -137,7 +137,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-motion", self.__on_drag_motion)
         self.connect("drag-leave", self.__on_drag_leave)
-        self.connect("button-press-event", self.__on_button_press_event)
+        self.connect("button-release-event", self.__on_button_release_event)
 
     @property
     def album(self):
@@ -163,7 +163,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
 #######################
 # PRIVATE             #
 #######################
-    def __on_button_press_event(self, widget, event):
+    def __on_button_release_event(self, widget, event):
         """
             Show revealer with tracks
             @param widget as Gtk.Widget
@@ -176,7 +176,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
             self.__delete_button.set_sensitive(True)
         else:
             if self._responsive_widget is None:
-                TracksResponsiveWidget.__init__(self)
+                TracksResponsiveWidget.__init__(self, True)
                 self.__revealer.add(self._responsive_widget)
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksResponsiveWidget.populate(self)

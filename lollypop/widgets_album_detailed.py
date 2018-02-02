@@ -44,7 +44,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
-        TracksResponsiveWidget.__init__(self)
+        TracksResponsiveWidget.__init__(self, False)
         self._rounded_class = "rounded-icon-small"
         self.__context = None
         # Cover + rating + spacing
@@ -158,7 +158,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
             @param parent widget as Gtk.Widget
             @return y as int
         """
-        for dic in [self._tracks_left, self._tracks_right]:
+        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
                 for child in widget.get_children():
                     if child.id == Lp().player.current_track.id:
@@ -169,9 +169,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
             Set filter function
         """
-        for widget in self._tracks_left.values():
+        for widget in self._tracks_widget_left.values():
             widget.set_filter_func(func)
-        for widget in self._tracks_right.values():
+        for widget in self._tracks_widget_right.values():
             widget.set_filter_func(func)
 
     def update_playing_indicator(self):

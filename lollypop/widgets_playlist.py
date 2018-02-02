@@ -152,12 +152,12 @@ class PlaylistsWidget(Gtk.Grid):
             @param track position as int
             @thread safe
         """
-        self.__tracks_right = list(tracks)
         # If we are showing only one column, wait for widget1
         if self.__orientation == Gtk.Orientation.VERTICAL and\
            self.__locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right, tracks, pos)
         else:
+            self.__tracks_right = list(tracks)
             # We reset width here to allow size allocation code to run
             self.__width = None
             GLib.idle_add(self.__add_tracks,
