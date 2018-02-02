@@ -282,7 +282,7 @@ class Application(Gtk.Application):
                 # Save albums context
                 try:
                     self.player.shuffle_albums(False)
-                    dump(self.player.get_albums(),
+                    dump(self.player.albums,
                          open(LOLLYPOP_DATA_PATH + "/albums.bin", "wb"))
                 except Exception as e:
                     print("Application::__save_state()", e)
