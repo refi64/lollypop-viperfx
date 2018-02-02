@@ -237,19 +237,6 @@ class Album(Base):
         if track in self.tracks:
             self._tracks.remove(track)
 
-    # FIXME Try to get a track here
-    def update_track(self, up_track):
-        """
-            Search for track id in album and replace it with current track
-            @param up_track as Track
-        """
-        for track in self.tracks:
-            if track.id == up_track.id:
-                pos = self._tracks.index(track)
-                self._tracks.remove(track)
-                self._tracks.insert(pos, up_track)
-                break
-
     @property
     def title(self):
         """
@@ -343,11 +330,8 @@ class Track(Base):
         self._uri = None
         self._number = 0
 
-        # We want our album to use this object as track
         if album is None:
             self.__album = Album(self.album_id)
-            # FIXME Is this really needed
-            self.__album.update_track(self)
         else:
             self.__album = album
         self.__featuring_ids = []
