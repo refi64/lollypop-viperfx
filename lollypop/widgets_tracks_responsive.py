@@ -40,8 +40,6 @@ class TracksResponsiveWidget:
         self.__child_height = TrackRow.get_best_height(self)
         # Header + separator + spacing + margin
         self.__height = self.__child_height + 6
-        # Discs to load, will be emptied
-        self.__discs = list(self._album.discs)
         self.__locked_widget_right = True
 
         self._responsive_widget = Gtk.Grid()
@@ -52,12 +50,12 @@ class TracksResponsiveWidget:
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}
         if self.__dnd:
-            self.__add_disc_container(0)
-            self.__set_disc_height(0, self._album.tracks)
-        else:
-            for disc in self.__discs:
-                self.__add_disc_container(disc.number)
-                self.__set_disc_height(disc.number, disc.tracks)
+            self._album.merge_discs()
+        # Discs to load, will be emptied
+        self.__discs = list(self._album.discs)
+        for disc in self.__discs:
+            self.__add_disc_container(disc.number)
+            self.__set_disc_height(disc.number, disc.tracks)
 
     def update_playing_indicator(self):
         """
@@ -83,22 +81,17 @@ class TracksResponsiveWidget:
             Populate tracks
             @thread safe
         """
-        # If drag & drop active, do not show disc, we are in editable mode
-        if self.__dnd:
-            disc_number = 0
-            self.__discs = []
-            tracks = self._album.tracks
-        elif self.__discs:
+        if self.__discs:
             disc = self.__discs.pop(0)
             disc_number = disc.number
             tracks = disc.tracks
-        mid_tracks = int(0.5 + len(tracks) / 2)
-        self.populate_list_left(tracks[:mid_tracks],
-                                disc_number,
-                                1)
-        self.populate_list_right(tracks[mid_tracks:],
-                                 disc_number,
-                                 mid_tracks + 1)
+            mid_tracks = int(0.5 + len(tracks) / 2)
+            self.populate_list_left(tracks[:mid_tracks],
+                                    disc_number,
+                                    1)
+            self.populate_list_right(tracks[mid_tracks:],
+                                     disc_number,
+                                     mid_tracks + 1)
 
     def is_populated(self):
         """

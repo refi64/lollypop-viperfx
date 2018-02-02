@@ -134,6 +134,13 @@ class Disc:
         self.__album = album
         self.__number = disc_number
 
+    def set_tracks(self, tracks):
+        """
+            Set disc tracks
+            @param tracks as [Track]
+        """
+        self.__tracks = tracks
+
     @property
     def number(self):
         """
@@ -209,6 +216,14 @@ class Album(Base):
         if artist_ids:
             self.artist_ids = artist_ids
 
+    def merge_discs(self):
+        """
+            Merge discs into one
+        """
+        tracks = self.tracks
+        self._discs = [Disc(self, -1)]
+        self._discs[0].set_tracks(tracks)
+
     def move_track(self, track, index):
         """
             Move track to index
@@ -243,6 +258,14 @@ class Album(Base):
         if track in self.tracks:
             self._tracks.remove(track)
 
+    def disc_names(self, disc):
+        """
+            Disc names
+            @param disc as int
+            @return disc names as [str]
+        """
+        return self.db.get_disc_names(self.id, disc)
+
     @property
     def title(self):
         """
@@ -269,14 +292,6 @@ class Album(Base):
             for disc in self.discs:
                 self._tracks += disc.tracks
         return self._tracks
-
-    def disc_names(self, disc):
-        """
-            Disc names
-            @param disc as int
-            @return disc names as [str]
-        """
-        return self.db.get_disc_names(self.id, disc)
 
     @property
     def discs(self):

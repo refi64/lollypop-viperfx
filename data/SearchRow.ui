@@ -60,15 +60,15 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="queue">
+      <object class="GtkButton" id="add_button">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Add to queue</property>
+        <property name="tooltip_text" translatable="yes">Add track to current playlist</property>
         <property name="halign">end</property>
         <property name="image">image2</property>
         <property name="relief">none</property>
-        <signal name="clicked" handler="_on_queue_clicked" swapped="no"/>
+        <signal name="clicked" handler="_on_add_button_clicked" swapped="no"/>
         <style>
           <class name="menu-button"/>
           <class name="track-menu-button"/>
