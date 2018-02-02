@@ -179,7 +179,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
                 TracksResponsiveWidget.__init__(self)
                 self.__revealer.add(self._responsive_widget)
                 self.connect("size-allocate", self._on_size_allocate)
-            TracksResponsiveWidget.populate(self)
+                TracksResponsiveWidget.populate(self)
             self.__revealer.set_reveal_child(True)
             self.get_style_context().remove_class("trackrow")
             self.__delete_button.set_opacity(0)
