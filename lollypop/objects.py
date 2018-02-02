@@ -239,7 +239,6 @@ class Album(Base):
             if track.id == track_id:
                 self._tracks.remove(track)
                 break
-        Lp().player.set_next()
 
     # FIXME Try to get a track here
     def update_track(self, up_track):
