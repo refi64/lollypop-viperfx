@@ -439,14 +439,14 @@ class TracksDatabase:
                 return v[0] == 0
             return True
 
-    def get_as_non_album_artist(self, artist_id):
+    def get_for_artist(self, artist_id):
         """
-            Get tracks for artist_id where artist_id isn"t main artist
+            Get tracks for artist_id where artist_id isn't main artist
             @param artist id as int
             @return list of [tracks id as int, track name as string]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT tracks.rowid, tracks.name\
+            result = sql.execute("SELECT tracks.rowid\
                                  FROM tracks, track_artists, album_artists\
                                  WHERE album_artists.album_id=tracks.album_id\
                                  AND track_artists.artist_id=?\
@@ -457,7 +457,7 @@ class TracksDatabase:
                                   WHERE artist_id=track_artists.artist_id\
                                   AND album_id=tracks.album_id)",
                                  (artist_id,))
-            return list(result)
+            return list(itertools.chain(*result))
 
     def get_rated(self, limit=100):
         """
@@ -697,11 +697,11 @@ Nous traitons le problème dès que possible (salle très occupée).
             return: list of [id as int, name as string]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT tracks.rowid, tracks.name\
+            result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
                                   WHERE noaccents(name) LIKE ? LIMIT 25",
                                  ("%" + noaccents(searched) + "%",))
-            return list(result)
+            return list(itertools.chain(*result))
 
     def search_track(self, artist, title):
         """

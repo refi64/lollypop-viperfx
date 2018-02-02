@@ -209,6 +209,7 @@ class Album(Base):
         """
         Base.__init__(self, Lp().albums)
         self.id = album_id
+        self.__score = 0
         self.genre_ids = genre_ids
         self._tracks = []
         self._discs = []
@@ -265,6 +266,21 @@ class Album(Base):
             @return disc names as [str]
         """
         return self.db.get_disc_names(self.id, disc)
+
+    def inc_score(self, score=1):
+        """
+            Set row score
+            @param score as int
+        """
+        self.__score += score
+
+    @property
+    def score(self):
+        """
+            Get row score
+            @return int
+        """
+        return self.__score
 
     @property
     def title(self):

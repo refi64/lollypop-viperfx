@@ -647,9 +647,9 @@ class Container(Gtk.Bin):
                     items += Lp().albums.get_ids([], genre_ids)
             return items
 
-        from lollypop.view_albums import AlbumsView
+        from lollypop.view_albums_box import AlbumsBoxView
         self.__stop_current_view()
-        view = AlbumsView(genre_ids, artist_ids)
+        view = AlbumsBoxView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
