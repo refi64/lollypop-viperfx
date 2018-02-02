@@ -26,23 +26,26 @@ class Search:
         """
         pass
 
-    def get(self, search_items, cancellable, callback):
+    def get(self, search_items, current_search, cancellable, callback):
         """
             Get track for name
             @param search_items as [str]
+            @param current_search as str
             @param cancellable as Gio.Cancellable
             @param callback as callback
         """
         helper = TaskHelper()
-        helper.run(self.__get, search_items, cancellable, callback=callback)
+        helper.run(self.__get, search_items, current_search,
+                   cancellable, callback=callback)
 
 #######################
 # PRIVATE             #
 #######################
-    def __get(self, search_items, cancellable):
+    def __get(self, search_items, current_search, cancellable):
         """
             Get track for name
             @param search_items as [str]
+            @param current_search as str
             @param cancellable as Gio.Cancellable
             @return items as [SearchItem]
         """
@@ -74,11 +77,11 @@ class Search:
         for album_id in list(set(album_ids)):
             album = Album(album_id)
             score = 0
-            if album.name.lower() in search_items:
+            if current_search.find(album.name.lower()) != -1:
                 score += 1
             for artist in album.artists:
-                if artist.lower() in search_items:
-                    score += 1
+                if current_search.find(artist.lower()) != -1:
+                    score += 3
             albums.append((score, album))
         # Create albums for tracks
         album_tracks = {}
@@ -87,7 +90,7 @@ class Search:
             if track.album.id not in album_ids:
                 album = track.album
                 score = 0
-                if track.name.lower() in search_items:
+                if current_search.find(track.name.lower()) != -1:
                     score += 2
                 else:
                     score += 1
