@@ -274,9 +274,9 @@ class PlaylistsWidget(Gtk.Grid):
         self.__tracks_left = []
         self.__tracks_right = []
         for child in self.__tracks_widget_left.get_children():
-            self.__tracks_left.append(child.id)
+            self.__tracks_left.append(child.track.id)
         for child in self.__tracks_widget_right.get_children():
-            self.__tracks_right.append(child.id)
+            self.__tracks_right.append(child.track.id)
 
     def __update_position(self):
         """
@@ -340,7 +340,7 @@ class PlaylistsWidget(Gtk.Grid):
             return
         # Remove src from src_widget
         for child in src_widget.get_children():
-            if child.id == src:
+            if child.track.id == src:
                 child.destroy()
                 break
         src_track = Track(src)
@@ -350,7 +350,7 @@ class PlaylistsWidget(Gtk.Grid):
         # Get previous track
         if dst != -1:
             for child in dst_widget.get_children():
-                if child.id == dst:
+                if child.track.id == dst:
                     break
                 index += 1
             if not up:
