@@ -151,7 +151,8 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.get_style_context().add_class("track-menu-button")
         self.__image.set_opacity(0.2)
         self.__button.show()
-        self.__button.connect("clicked", self.__on_button_clicked)
+        self.__button.connect("button-release-event",
+                              self.__on_button_release_event)
         play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
                                             Gtk.IconSize.MENU)
         loved = Gtk.Image.new_from_icon_name("emblem-favorite-symbolic",
@@ -183,10 +184,11 @@ class IndicatorWidget(Gtk.EventBox):
         elif is_loved(self.__track.id):
             self.loved()
 
-    def __on_button_clicked(self, widget):
+    def __on_button_release_event(self, widget, event):
         """
             Add or remove track to player
             @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
         if self.__is_in_current_playlist():
             # We want track from player, not from current widget
@@ -199,8 +201,8 @@ class IndicatorWidget(Gtk.EventBox):
                             break
                     break
             # if track album in Player albums, destroy parent
-            # Safe as this can only happen if we are editing Player albums
-            self.__parent.destroy()
+            if self.__parent is not None:
+                self.__parent.destroy()
         else:
             albums = Lp().player.albums
             # If album last in list, merge
@@ -215,6 +217,7 @@ class IndicatorWidget(Gtk.EventBox):
                 else:
                     Lp().player.play_album(album)
         self.update_button()
+        return True
 
     def __on_destroy(self, widget):
         """

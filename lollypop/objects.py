@@ -350,6 +350,7 @@ class Track(Base):
         # We want our album to use this object as track
         if album is None:
             self.__album = Album(self.album_id)
+            # FIXME Is this really needed
             self.__album.update_track(self)
         else:
             self.__album = album

@@ -42,7 +42,7 @@ class Row(Gtk.ListBoxRow):
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
-        self._indicator = IndicatorWidget(self._track, self)
+        self._indicator = IndicatorWidget(self._track, self if dnd else None)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self._row_widget = Gtk.EventBox()
