@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
-from lollypop.define import Lp, NextContext, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type
 
 
 class TracksResponsiveWidget:
@@ -389,18 +389,6 @@ class TracksResponsiveWidget:
                 Lp().player.append_to_queue(track.id)
         else:
             # Do not update album list
-            if not Lp().player.is_party and not\
-                    Lp().settings.get_enum("playback") == NextContext.STOP:
-                # If in artist view, reset album list
-                if self._album.artist_ids:
-                    Lp().player.play_albums(track,
-                                            self._album.genre_ids,
-                                            self._album.artist_ids)
-                # Else, add album if missing
-                elif self._album not in Lp().player.albums:
-                    Lp().player.add_album(self._album)
-                    Lp().player.load(track)
-            # Clear albums if user clicked on a track from a new album
-            elif Lp().settings.get_enum("playback") == NextContext.STOP:
-                if not Lp().player.has_album(self._album):
-                    Lp().player.clear_albums()
+            if not Lp().player.is_party:
+                Lp().player.add_album(self._album)
+            Lp().player.load(track)
