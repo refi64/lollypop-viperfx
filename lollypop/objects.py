@@ -229,16 +229,13 @@ class Album(Base):
         self._tracks.append(track)
         Lp().player.set_next()
 
-    # FIXME Try to get a track here
-    def remove_track(self, track_id):
+    def remove_track(self, track):
         """
             Remove track from album
             @param track_id as int
         """
-        for track in self.tracks:
-            if track.id == track_id:
-                self._tracks.remove(track)
-                break
+        if track in self.tracks:
+            self._tracks.remove(track)
 
     # FIXME Try to get a track here
     def update_track(self, up_track):
