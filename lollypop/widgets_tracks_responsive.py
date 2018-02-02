@@ -388,7 +388,8 @@ class TracksResponsiveWidget:
             else:
                 Lp().player.append_to_queue(track.id)
         else:
-            # Do not update album list
-            if not Lp().player.is_party:
+            # Do not update album list if in party or album already available
+            if not Lp().player.is_party and\
+                    not Lp().player.track_in_playback(track):
                 Lp().player.add_album(self._album)
             Lp().player.load(track)

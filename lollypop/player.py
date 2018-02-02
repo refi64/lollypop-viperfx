@@ -413,6 +413,19 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._crossfading = (mix and not party_mix) or\
                             (mix and party_mix and self.is_party)
 
+    def track_in_playback(self, track):
+        """
+            True if track present in current playback
+            @param track as Track
+            @return bool
+        """
+        for album in self._albums:
+            if album.id == track.album.id:
+                for track_id in album.track_ids:
+                    if track.id == track_id:
+                        return True
+        return False
+
     @property
     def next_track(self):
         """
