@@ -41,7 +41,7 @@ class TracksResponsiveWidget:
         # Header + separator + spacing + margin
         self.__height = self.__child_height + 6
         # Discs to load, will be emptied
-        self.__discs = self._album.discs
+        self.__discs = list(self._album.discs)
         self.__locked_widget_right = True
 
         self._responsive_widget = Gtk.Grid()
@@ -205,7 +205,7 @@ class TracksResponsiveWidget:
                 for widget in dic.values():
                     for child in widget.get_children():
                         child.destroy()
-            self.__discs = self._album.discs
+            self.__discs = list(self._album.discs)
             self.__set_duration()
             self.populate()
 

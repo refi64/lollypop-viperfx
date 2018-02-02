@@ -185,8 +185,8 @@ class ArtistView(ArtistAlbumsView):
                                             self._genre_ids,
                                             self._artist_ids)
                     self.__set_add_icon()
-        except:
-            pass  # Artist not available anymore for this context
+        except Exception as e:
+            print("ArtistView::_on_play_clicked:", e)
 
     def _on_add_clicked(self, widget):
         """

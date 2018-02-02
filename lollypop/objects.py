@@ -130,49 +130,54 @@ class Disc:
 
     def __init__(self, album, disc_number):
         self.db = Lp().albums
-        self.album = album
-        self.number = disc_number
+        self.__tracks = []
+        self.__album = album
+        self.__number = disc_number
 
     @property
-    def name(self):
+    def number(self):
         """
-            Disc name
-            @return disc name as str
+            Get disc number
         """
+        return self.__number
+
+    @property
+    def album(self):
+        """
+            Get disc album
+            @return Album
+        """
+        return self.__album
 
     @property
     def track_ids(self):
         """
-            Get all tracks ids of the disc
-            @return list of int
+            Get disc track ids
+            @return [int]
         """
-        track_ids = []
-        for track_id in self.db.get_disc_tracks(self.album.id,
-                                                self.album.genre_ids,
-                                                self.album.artist_ids,
-                                                self.number):
-            if track_id in self.album.track_ids:
-                track_ids.append(track_id)
-        # If user tagged track with an artist not present in album
-        if not track_ids:
-            print("%s missing an album artist in artists" %
-                  self.album.name)
-            for track_id in self.db.get_disc_tracks(self.album.id,
-                                                    self.album.genre_ids,
-                                                    [],
-                                                    self.number):
-                if track_id in self.album.track_ids:
-                    track_ids.append(track_id)
-        return track_ids
+        return [track.id for track in self.tracks]
 
     @property
     def tracks(self):
         """
-            Get all tracks of the disc
-
-            @return list of Track
+            Get disc tracks
+            @return [Track]
         """
-        return [Track(id, self.album) for id in self.track_ids]
+        if not self.__tracks and self.album.id is not None:
+            self.__tracks = [Track(track_id, self.album)
+                             for track_id in self.db.get_disc_track_ids(
+                                                      self.album.id,
+                                                      self.album.genre_ids,
+                                                      self.album.artist_ids,
+                                                      self.number)]
+            if not self.__tracks:
+                self.__tracks = [Track(track_id, self.album)
+                                 for track_id in self.db.get_disc_track_ids(
+                                                          self.album.id,
+                                                          self.album.genre_ids,
+                                                          [],
+                                                          self.number)]
+        return self.__tracks
 
 
 class Album(Base):
@@ -199,6 +204,7 @@ class Album(Base):
         self.id = album_id
         self.genre_ids = genre_ids
         self._tracks = []
+        self._discs = []
         # Use artist ids from db else
         if artist_ids:
             self.artist_ids = artist_ids
@@ -260,17 +266,8 @@ class Album(Base):
             @return [Track]
         """
         if not self._tracks and self.id is not None:
-            self._tracks = [Track(track_id, self)
-                            for track_id in self.db.get_track_ids(
-                                                              self.id,
-                                                              self.genre_ids,
-                                                              self.artist_ids)]
-            if not self._tracks:
-                self._tracks = [Track(track_id, self)
-                                for track_id in self.db.get_track_ids(
-                                                              self.id,
-                                                              self.genre_ids,
-                                                              [])]
+            for disc in self.discs:
+                self._tracks += disc.tracks
         return self._tracks
 
     def disc_names(self, disc):
@@ -288,8 +285,9 @@ class Album(Base):
             @return [Disc]
         """
         if not self._discs:
-            self._discs = self.db.get_discs(self.id, self.genre_ids)
-        return [Disc(self, number) for number in self._discs]
+            disc_numbers = self.db.get_discs(self.id, self.genre_ids)
+            self._discs = [Disc(self, number) for number in disc_numbers]
+        return self._discs
 
     def set_loved(self, loved):
         """

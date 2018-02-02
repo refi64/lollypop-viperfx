@@ -207,13 +207,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         Lp().settings.get_value("show-compilations"):
                     album_ids += Lp().albums.get_compilation_ids(genre_ids)
                 album_ids += Lp().albums.get_ids(artist_ids, genre_ids)
+        # Create album objects
         for album_id in album_ids:
-            # We want current track album object, not a new one
-            if album_id == track.album.id:
-                album = track.album
-            else:
-                album = Album(album_id, genre_ids, artist_ids)
+            album = Album(album_id, genre_ids, artist_ids)
             self._albums.append(album)
+            # Get track from album
+            # to make Player.current_track present in Player.albums
+            if album.id == track.album.id:
+                index = album.track_ids.index(track.id)
+                track = album.tracks[index]
         # Shuffle album list if needed
         self.shuffle_albums(True)
         self.load(track)

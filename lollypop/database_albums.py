@@ -678,7 +678,7 @@ class AlbumsDatabase:
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_disc_tracks(self, album_id, genre_ids, artist_ids, disc):
+    def get_disc_track_ids(self, album_id, genre_ids, artist_ids, disc):
         """
             Get tracks ids for album id disc
 
