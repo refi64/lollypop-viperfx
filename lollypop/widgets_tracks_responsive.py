@@ -371,9 +371,12 @@ class TracksResponsiveWidget:
                 break
         if not contain_children:
             self.destroy()
+        # Remove height allocation, not needed as view is populated
+        # This allow us to resize without complex calculation
         self.__discs = self._album.discs
         for disc in self.__discs:
-            GLib.idle_add(self.__set_disc_height, disc)
+            self._tracks_left[disc.number].set_property("height-request", -1)
+            self._tracks_right[disc.number].set_property("height-request", -1)
 
     def __on_activated(self, widget, track):
         """
