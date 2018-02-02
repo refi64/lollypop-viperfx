@@ -50,7 +50,6 @@ class SearchPopover(Gtk.Popover):
         builder.connect_signals(self)
 
         self.__view = AlbumsListView()
-        self.__view.set_sort_func(self.__sort_func)
         self.__view.show()
         self.__widget.attach(self.__view, 0, 1, 2, 1)
 
@@ -98,14 +97,6 @@ class SearchPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __sort_func(self, row1, row2):
-        """
-            Sort rows
-            @param row as SearchRow
-            @param row as SearchRow
-        """
-        return row1.album.score < row2.album.score
-
     def __populate(self):
         """
             Populate searching items

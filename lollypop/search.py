@@ -73,29 +73,33 @@ class Search:
         # Create albums for album_ids
         for album_id in list(set(album_ids)):
             album = Album(album_id)
+            score = 0
             if album.name.lower() in search_items:
-                album.inc_score(1)
+                score += 1
             for artist in album.artists:
                 if artist.lower() in search_items:
-                    album.inc_score(1)
-            albums.append(album)
+                    score += 1
+            albums.append((score, album))
         # Create albums for tracks
         album_tracks = {}
         for track_id in list(set(track_ids)):
             track = Track(track_id)
             if track.album.id not in album_ids:
                 album = track.album
-                if album.id in album_tracks.keys():
-                    (album, tracks) = album_tracks[album.id]
-                    tracks.append(track)
-                else:
-                    album_tracks[track.album.id] = (album, [track])
+                score = 0
                 if track.name.lower() in search_items:
-                    album.inc_score(2)
+                    score += 2
                 else:
-                    album.inc_score(1)
+                    score += 1
+                if album.id in album_tracks.keys():
+                    (album, tracks, score) = album_tracks[album.id]
+                    tracks.append(track)
+                    album_tracks[track.album.id] = (album, tracks, score)
+                else:
+                    album_tracks[track.album.id] = (album, [track], score)
         for key in album_tracks.keys():
-            (album, tracks) = album_tracks[key]
+            (album, tracks, score) = album_tracks[key]
             album.set_tracks(tracks)
-            albums.append(album)
-        return albums
+            albums.append((score, album))
+        albums.sort(key=lambda tup: tup[0], reverse=True)
+        return [album for (score, album) in albums]
