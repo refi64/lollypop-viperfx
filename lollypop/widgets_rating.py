@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.objects import Track
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -110,7 +110,7 @@ class RatingWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if Lp().scanner.is_locked():
+        if App().scanner.is_locked():
             return
         user_rating = True
         rate = self.__object.get_rate()
@@ -137,7 +137,7 @@ class RatingWidget(Gtk.Bin):
             self.__object.set_rate(pop)
 
         # Save to tags if needed
-        if Lp().settings.get_value("save-to-tags") and\
+        if App().settings.get_value("save-to-tags") and\
                 isinstance(self.__object, Track) and\
                 self.__object.id >= 0:
             dbus_helper = DBusHelper()

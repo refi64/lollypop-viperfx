@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gst
 
-from lollypop.define import Lp, WindowSize, LOLLYPOP_DATA_PATH
+from lollypop.define import App, WindowSize, LOLLYPOP_DATA_PATH
 from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
@@ -45,10 +45,10 @@ class Toolbar(Gtk.HeaderBar):
         self.set_custom_title(self.__toolbar_title)
         self.pack_end(self.__toolbar_end)
 
-        Lp().player.connect("status-changed", self.__on_status_changed)
-        Lp().player.connect("current-changed", self.__on_current_changed)
-        Lp().player.connect("next-changed", self.__on_next_changed)
-        Lp().player.connect("prev-changed", self.__on_prev_changed)
+        App().player.connect("status-changed", self.__on_status_changed)
+        App().player.connect("current-changed", self.__on_current_changed)
+        App().player.connect("next-changed", self.__on_next_changed)
+        App().player.connect("prev-changed", self.__on_prev_changed)
 
     def do_get_preferred_height(self):
         """
@@ -111,7 +111,7 @@ class Toolbar(Gtk.HeaderBar):
             Mark toolbar with previously saved position
         """
         try:
-            if Lp().settings.get_value("save-state"):
+            if App().settings.get_value("save-state"):
                 from pickle import load
                 position = load(open(LOLLYPOP_DATA_PATH + "/position.bin",
                                 "rb"))

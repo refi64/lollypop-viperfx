@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.art_widgets import ArtworkSearch
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class CommonPopover(Gtk.Popover):
@@ -38,8 +38,8 @@ class CommonPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(False)
-        size = Lp().window.get_size()
+        App().window.enable_global_shortcuts(False)
+        size = App().window.get_size()
         self.set_size_request(size[0]*0.4,
                               size[1]*0.5)
 
@@ -49,7 +49,7 @@ class CommonPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(True)
+        App().window.enable_global_shortcuts(True)
         if self._widget is not None:
             self._widget.stop()
 

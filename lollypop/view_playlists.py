@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.objects import Track
 
 
@@ -35,22 +35,22 @@ class PlaylistsView(View):
         View.__init__(self, True)
         self.__tracks = []
         self.__playlist_ids = playlist_ids
-        self.__signal_id1 = Lp().playlists.connect("playlist-add",
-                                                   self.__on_playlist_add)
-        self.__signal_id2 = Lp().playlists.connect("playlist-del",
-                                                   self.__on_playlist_del)
+        self.__signal_id1 = App().playlists.connect("playlist-add",
+                                                    self.__on_playlist_add)
+        self.__signal_id2 = App().playlists.connect("playlist-del",
+                                                    self.__on_playlist_del)
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
         self.__duration_label = builder.get_object("duration")
         builder.get_object("title").set_label(
-                             ", ".join(Lp().playlists.get_names(playlist_ids)))
+                            ", ".join(App().playlists.get_names(playlist_ids)))
 
         self.__edit_button = builder.get_object("edit-button")
         self.__jump_button = builder.get_object("jump-button")
         split_button = builder.get_object("split-button")
         if editable:
-            split_button.set_active(not Lp().settings.get_value("split-view"))
+            split_button.set_active(not App().settings.get_value("split-view"))
         else:
             split_button.hide()
 
@@ -150,18 +150,18 @@ class PlaylistsView(View):
         """
         View._on_destroy(self, widget)
         if self.__signal_id1:
-            Lp().playlists.disconnect(self.__signal_id1)
+            App().playlists.disconnect(self.__signal_id1)
             self.__signal_id1 = None
         if self.__signal_id2:
-            Lp().playlists.disconnect(self.__signal_id2)
+            App().playlists.disconnect(self.__signal_id2)
             self.__signal_id2 = None
 
     def _on_split_button_toggled(self, button):
         """
             Split/Unsplit view
         """
-        Lp().settings.set_value("split-view",
-                                GLib.Variant("b", not button.get_active()))
+        App().settings.set_value("split-view",
+                                 GLib.Variant("b", not button.get_active()))
         self.__playlists_widget.update_allocation()
 
     def _on_jump_button_clicked(self, button):
@@ -178,7 +178,7 @@ class PlaylistsView(View):
             Edit playlist
             @param button as Gtk.Button
         """
-        Lp().window.container.show_playlist_editor(self.__playlist_ids[0])
+        App().window.container.show_playlist_editor(self.__playlist_ids[0])
 
     def _on_current_changed(self, player):
         """
@@ -197,7 +197,7 @@ class PlaylistsView(View):
         """
         duration = 0
         for playlist_id in self.__playlist_ids:
-            duration += Lp().playlists.get_duration(playlist_id)
+            duration += App().playlists.get_duration(playlist_id)
 
         hours = int(duration / 3600)
         mins = int(duration / 60)
@@ -214,13 +214,13 @@ class PlaylistsView(View):
         """
             Update jump button status
         """
-        if Lp().player.current_track.id in self.__tracks:
+        if App().player.current_track.id in self.__tracks:
             self.__jump_button.set_sensitive(True)
-            artists = ", ".join(Lp().player.current_track.artists)
+            artists = ", ".join(App().player.current_track.artists)
             self.__jump_button.set_tooltip_markup(
              "<b>%s</b>\n%s" % (GLib.markup_escape_text(artists),
                                 GLib.markup_escape_text(
-                                              Lp().player.current_track.name)))
+                                             App().player.current_track.name)))
         else:
             self.__jump_button.set_sensitive(False)
             self.__jump_button.set_tooltip_text("")
@@ -297,7 +297,7 @@ class PlaylistsManageView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp().window.container.destroy_current_view()
+        App().window.container.destroy_current_view()
 
 
 class PlaylistEditView(View):
@@ -316,7 +316,7 @@ class PlaylistEditView(View):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistEditView.ui")
         builder.get_object("title").set_label(
-                                          Lp().playlists.get_name(playlist_id))
+                                         App().playlists.get_name(playlist_id))
         builder.connect_signals(self)
         grid = builder.get_object("widget")
         self.add(grid)
@@ -339,4 +339,4 @@ class PlaylistEditView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp().window.container.reload_view()
+        App().window.container.reload_view()

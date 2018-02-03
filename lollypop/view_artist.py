@@ -16,7 +16,7 @@ from gettext import gettext as _
 from math import pi
 from random import choice
 
-from lollypop.define import Lp, ArtSize, Shuffle, Type
+from lollypop.define import App, ArtSize, Shuffle, Type
 from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_info import InfoPopover
@@ -52,7 +52,7 @@ class ArtistView(ArtistAlbumsView):
         self.__add_button = builder.get_object("add-button")
         self.__play_button = builder.get_object("play-button")
         self.__grid = builder.get_object("header")
-        if Lp().lastfm is None:
+        if App().lastfm is None:
             builder.get_object("lastfm-button").hide()
         elif not get_network_available():
             builder.get_object("lastfm-button").set_sensitive(False)
@@ -67,12 +67,12 @@ class ArtistView(ArtistAlbumsView):
         self.__scale_factor = self.__artwork.get_scale_factor()
         self.__set_artwork()
         self.__set_add_icon()
-        self.__on_lock_changed(Lp().player)
+        self.__on_lock_changed(App().player)
 
         artists = []
         for artist_id in artist_ids:
-            artists.append(Lp().artists.get_name(artist_id))
-        if Lp().settings.get_value("artist-artwork"):
+            artists.append(App().artists.get_name(artist_id))
+        if App().settings.get_value("artist-artwork"):
             self.__label.set_markup(
                                 '<span size="x-large" weight="bold">' +
                                 GLib.markup_escape_text(", ".join(artists)) +
@@ -89,7 +89,7 @@ class ArtistView(ArtistAlbumsView):
         """
         widget = None
         for child in self._albumbox.get_children():
-            if child.id == Lp().player.current_track.album.id:
+            if child.id == App().player.current_track.album.id:
                 widget = child
                 break
         if widget is not None:
@@ -164,13 +164,13 @@ class ArtistView(ArtistAlbumsView):
             Play artist albums
         """
         try:
-            if Lp().player.is_party:
-                Lp().player.set_party(False)
-            album_ids = Lp().albums.get_ids(self._artist_ids,
-                                            self._genre_ids)
+            if App().player.is_party:
+                App().player.set_party(False)
+            album_ids = App().albums.get_ids(self._artist_ids,
+                                             self._genre_ids)
             if album_ids:
                 track = None
-                if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
+                if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
                     album_id = choice(album_ids)
                     album_tracks = Album(album_id).tracks
                     if album_tracks:
@@ -181,9 +181,9 @@ class ArtistView(ArtistAlbumsView):
                     if album_tracks:
                         track = album_tracks[0]
                 if track.id is not None:
-                    Lp().player.play_albums(track,
-                                            self._genre_ids,
-                                            self._artist_ids)
+                    App().player.play_albums(track,
+                                             self._genre_ids,
+                                             self._artist_ids)
                     self.__set_add_icon()
         except Exception as e:
             print("ArtistView::_on_play_clicked:", e)
@@ -193,23 +193,23 @@ class ArtistView(ArtistAlbumsView):
             Add artist albums
         """
         try:
-            albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
+            albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
             if self.__add_button.get_image().get_icon_name(
                                                    )[0] == "list-add-symbolic":
                 for album_id in albums:
                     album = Album(album_id)
                     # If playing and no albums, play it
-                    if not Lp().player.has_album(album):
-                        if Lp().player.is_playing and\
-                                not Lp().player.get_albums():
-                            Lp().player.play_album(album)
+                    if not App().player.has_album(album):
+                        if App().player.is_playing and\
+                                not App().player.get_albums():
+                            App().player.play_album(album)
                         else:
-                            Lp().player.add_album(album)
+                            App().player.add_album(album)
             else:
                 for album_id in albums:
                     album = Album(album_id)
-                    if Lp().player.has_album(album):
-                        Lp().player.remove_album(album)
+                    if App().player.has_album(album):
+                        App().player.remove_album(album)
             self.__set_add_icon()
         except:
             pass  # Artist not available anymore for this context
@@ -238,7 +238,7 @@ class ArtistView(ArtistAlbumsView):
         """
         internal_scale_factor = 1
         scale_factor = image.get_scale_factor()
-        if not Lp().window.container.is_paned_stack:
+        if not App().window.container.is_paned_stack:
             internal_scale_factor = 2
         scale_factor = scale_factor * internal_scale_factor
         # Update image if scale factor changed
@@ -301,13 +301,13 @@ class ArtistView(ArtistAlbumsView):
         artwork_height = 0
         internal_scale_factor = 1
         self.__scale_factor = self.__artwork.get_scale_factor()
-        if not Lp().window.container.is_paned_stack:
+        if not App().window.container.is_paned_stack:
             internal_scale_factor = 2
         self.__scale_factor *= internal_scale_factor
-        if Lp().settings.get_value("artist-artwork"):
+        if App().settings.get_value("artist-artwork"):
             if len(self._artist_ids) == 1 and\
-                    Lp().settings.get_value("artist-artwork"):
-                artist = Lp().artists.get_name(self._artist_ids[0])
+                    App().settings.get_value("artist-artwork"):
+                artist = App().artists.get_name(self._artist_ids[0])
                 size = ArtSize.ARTIST_SMALL * self.__scale_factor
                 for suffix in ["lastfm", "spotify", "wikipedia"]:
                     uri = InfoCache.get_artwork(artist, suffix, size)
@@ -366,7 +366,7 @@ class ArtistView(ArtistAlbumsView):
         """
         found = False
         for child in self._get_children():
-            if child.id == Lp().player.current_track.album.id:
+            if child.id == App().player.current_track.album.id:
                 found = True
                 break
         if found:
@@ -378,8 +378,8 @@ class ArtistView(ArtistAlbumsView):
         """
             Set add icon based on player albums
         """
-        albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
-        if len(set(albums) & set(Lp().player.albums)) == len(albums):
+        albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
+        if len(set(albums) & set(App().player.albums)) == len(albums):
             # Translators: artist context
             self.__add_button.set_tooltip_text(_("Remove"))
             self.__add_button.get_image().set_from_icon_name(
@@ -397,17 +397,18 @@ class ArtistView(ArtistAlbumsView):
             Connect signal
             @param widget as Gtk.Widget
         """
-        self.__art_signal_id = Lp().art.connect(
-                                              "artist-artwork-changed",
-                                              self.__on_artist_artwork_changed)
-        self.__party_signal_id = Lp().player.connect("party-changed",
-                                                     self.__on_album_changed)
-        self.__added_signal_id = Lp().player.connect("album-added",
-                                                     self.__on_album_changed)
-        self.__removed_signal_id = Lp().player.connect("album-removed",
-                                                       self.__on_album_changed)
-        self.__lock_signal_id = Lp().player.connect("lock-changed",
-                                                    self.__on_lock_changed)
+        player = App().player
+        art = App().player.art
+        self.__art_signal_id = art.connect("artist-artwork-changed",
+                                           self.__on_artist_artwork_changed)
+        self.__party_signal_id = player.connect("party-changed",
+                                                self.__on_album_changed)
+        self.__added_signal_id = player.connect("album-added",
+                                                self.__on_album_changed)
+        self.__removed_signal_id = player.connect("album-removed",
+                                                  self.__on_album_changed)
+        self.__lock_signal_id = player.connect("lock-changed",
+                                               self.__on_lock_changed)
 
     def __on_unrealize(self, widget):
         """
@@ -415,19 +416,19 @@ class ArtistView(ArtistAlbumsView):
             @param widget as Gtk.Widget
         """
         if self.__art_signal_id is not None:
-            Lp().art.disconnect(self.__art_signal_id)
+            App().art.disconnect(self.__art_signal_id)
             self.__art_signal_id = None
         if self.__party_signal_id is not None:
-            Lp().player.disconnect(self.__party_signal_id)
+            App().player.disconnect(self.__party_signal_id)
             self.__party_signal_id = None
         if self.__added_signal_id is not None:
-            Lp().player.disconnect(self.__added_signal_id)
+            App().player.disconnect(self.__added_signal_id)
             self.__added_signal_id = None
         if self.__removed_signal_id is not None:
-            Lp().player.disconnect(self.__removed_signal_id)
+            App().player.disconnect(self.__removed_signal_id)
             self.__removed_signal_id = None
         if self.__lock_signal_id is not None:
-            Lp().player.disconnect(self.__lock_signal_id)
+            App().player.disconnect(self.__lock_signal_id)
             self.__lock_signal_id = None
 
     def __on_album_changed(self, player, unused):
@@ -452,7 +453,7 @@ class ArtistView(ArtistAlbumsView):
             @param art as Art
             @param prefix as str
         """
-        artist = Lp().artists.get_name(self._artist_ids[0])
+        artist = App().artists.get_name(self._artist_ids[0])
         if prefix == artist:
             self.__artwork.clear()
             self.__set_artwork()

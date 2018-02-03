@@ -14,7 +14,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.utils import get_network_available
 
 
@@ -36,7 +36,7 @@ class GenresDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("INSERT INTO genres (name) VALUES (?)",
                                  (name,))
             return result.lastrowid
@@ -47,7 +47,7 @@ class GenresDatabase:
             @param name as string
             @return genre id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM genres\
                                   WHERE name=?", (name,))
             v = result.fetchone()
@@ -61,7 +61,7 @@ class GenresDatabase:
             @param string
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name FROM genres\
                                   WHERE rowid=?", (genre_id,))
             v = result.fetchone()
@@ -74,7 +74,7 @@ class GenresDatabase:
             Get genre name for genre id
             @return genres as [str]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name\
                                  FROM genres\
                                  ORDER BY name\
@@ -86,7 +86,7 @@ class GenresDatabase:
             Get all availables albums  for genres
             @return Array of id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (genre_id, )
             request = "SELECT albums.rowid\
                        FROM albums, album_genres\
@@ -102,7 +102,7 @@ class GenresDatabase:
             Get all availables genres
             @return [(id as int, name as string)]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT DISTINCT genres.rowid, genres.name\
                                   FROM genres\
                                   ORDER BY genres.name\
@@ -114,7 +114,7 @@ class GenresDatabase:
             Get all availables genres ids
             @return [id as int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT DISTINCT genres.rowid\
                                   FROM genres\
                                   ORDER BY genres.name\
@@ -128,7 +128,7 @@ class GenresDatabase:
             @return cleaned as bool
             @warning commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             cleaned = False
             result = sql.execute("SELECT track_id from track_genres\
                                  WHERE genre_id=?\

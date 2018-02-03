@@ -15,7 +15,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.utils import noaccents
 
 
@@ -52,7 +52,7 @@ class TracksDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
@@ -80,7 +80,7 @@ class TracksDatabase:
             @param artist id as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             artists = self.get_artist_ids(track_id)
             if artist_id not in artists:
                 sql.execute("INSERT INTO "
@@ -94,7 +94,7 @@ class TracksDatabase:
             @param genre id as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             genres = self.get_genre_ids(track_id)
             if genre_id not in genres:
                 sql.execute("INSERT INTO\
@@ -107,7 +107,7 @@ class TracksDatabase:
             Return all internal track ids
             @return track ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks")
             return list(itertools.chain(*result))
 
@@ -117,7 +117,7 @@ class TracksDatabase:
             @param name as str
             @return track id as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid\
                                   FROM tracks WHERE name=?\
                                   COLLATE NOCASE COLLATE LOCALIZED",
@@ -130,7 +130,7 @@ class TracksDatabase:
             @param uri as str
             @return track id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks WHERE uri=?",
                                  (uri,))
             v = result.fetchone()
@@ -145,7 +145,7 @@ class TracksDatabase:
             @param album id as int
             @return track id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (name, album_id) + tuple(artist_ids)
             request = "SELECT tracks.rowid FROM tracks\
                        WHERE name = ? COLLATE NOCASE\
@@ -170,7 +170,7 @@ class TracksDatabase:
             @param Track id as int
             @return Name as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
@@ -184,7 +184,7 @@ class TracksDatabase:
             @param track id as int
             @return track year as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT year FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
@@ -199,7 +199,7 @@ class TracksDatabase:
             @param album id as int
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT year, COUNT(year) AS occurrence\
                                   FROM tracks\
                                   WHERE tracks.album_id=?\
@@ -217,7 +217,7 @@ class TracksDatabase:
             @param track id as int
             @return rate as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rate FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
@@ -231,7 +231,7 @@ class TracksDatabase:
             @param Track id as int
             @return uri as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT uri FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
@@ -245,7 +245,7 @@ class TracksDatabase:
             @param Track id as int
             @param uri as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE tracks SET uri=?\
                          WHERE rowid=?",
                         (uri, track_id))
@@ -259,7 +259,7 @@ class TracksDatabase:
             @param Track id as int
             @param rate as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE tracks SET rate=?\
                          WHERE rowid=?",
                         (rate, track_id))
@@ -271,7 +271,7 @@ class TracksDatabase:
             @param track id as int
             @return album id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT album_id FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
@@ -285,7 +285,7 @@ class TracksDatabase:
             @param track id as int
             @return recording id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT mb_track_id FROM tracks\
                                   WHERE rowid=?", (track_id,))
             v = result.fetchone()
@@ -299,7 +299,7 @@ class TracksDatabase:
             @param track id as int
             @return album name as str
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT albums.name from albums,tracks\
                                   WHERE tracks.rowid=? AND\
                                   tracks.album_id=albums.rowid", (track_id,))
@@ -314,7 +314,7 @@ class TracksDatabase:
             @param track id as int
             @return artist ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT artist_id FROM track_artists\
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
@@ -325,7 +325,7 @@ class TracksDatabase:
             @param track id as int
             @return artists as [str]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name FROM artists, track_artists\
                                   WHERE track_artists.track_id=?\
                                   AND track_artists.artist_id=artists.rowid",
@@ -338,7 +338,7 @@ class TracksDatabase:
             @param track id as int
             @return genre ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT genre_id FROM track_genres\
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
@@ -349,7 +349,7 @@ class TracksDatabase:
             @param track id as int
             @return [str]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name FROM genres, track_genres\
                                   WHERE track_genres.track_id=?\
                                   AND track_genres.genre_id=genres.rowid",
@@ -363,7 +363,7 @@ class TracksDatabase:
             @param None
             @return dict of {uri as string: mtime as int}
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             mtimes = {}
             result = sql.execute("SELECT DISTINCT uri, mtime\
                                   FROM tracks")
@@ -377,7 +377,7 @@ class TracksDatabase:
             @param exclude as [str]
             @return Array of uri as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = ()
             for e in exclude:
                 filters += ("%" + e + "%",)
@@ -394,7 +394,7 @@ class TracksDatabase:
             @param track id as int
             @return position as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracknumber FROM tracks\
                                   WHERE rowid=?", (track_id,))
             v = result.fetchone()
@@ -408,7 +408,7 @@ class TracksDatabase:
             @param Track id as int
             @return duration as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT duration FROM tracks\
                                   WHERE rowid=?", (track_id,))
             v = result.fetchone()
@@ -422,7 +422,7 @@ class TracksDatabase:
             @param Track id as int
             @param duration as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE tracks\
                          SET duration=?\
                          WHERE rowid=?", (duration, track_id,))
@@ -432,7 +432,7 @@ class TracksDatabase:
         """
             Return True if no tracks in db
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(1) FROM tracks  LIMIT 1")
             v = result.fetchone()
             if v is not None:
@@ -445,7 +445,7 @@ class TracksDatabase:
             @param artist id as int
             @return list of [tracks id as int, track name as string]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                  FROM tracks, track_artists, album_artists\
                                  WHERE album_artists.album_id=tracks.album_id\
@@ -465,7 +465,7 @@ class TracksDatabase:
             @param limit as int
             @return tracks as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE rate >= 4\
                                   ORDER BY popularity DESC LIMIT ?",
@@ -478,7 +478,7 @@ class TracksDatabase:
             @param limit as int
             @return tracks as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE popularity!=0\
                                   ORDER BY popularity DESC LIMIT ?",
@@ -490,7 +490,7 @@ class TracksDatabase:
             Get higher available popularity
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity\
                                   FROM tracks\
                                   ORDER BY POPULARITY DESC LIMIT 1")
@@ -504,7 +504,7 @@ class TracksDatabase:
             Return avarage popularity
             @return avarage popularity as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT AVG(popularity)\
                                   FROM (SELECT popularity\
                                         FROM tracks\
@@ -520,7 +520,7 @@ class TracksDatabase:
             @param track id as int
             @raise sqlite3.OperationalError on db update
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity from tracks WHERE rowid=?",
                                  (track_id,))
             pop = result.fetchone()
@@ -539,7 +539,7 @@ class TracksDatabase:
             @param track id as int
             @param time as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
                         (time, track_id))
             sql.commit()
@@ -549,7 +549,7 @@ class TracksDatabase:
             Return random tracks never listened to
             @return tracks as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
                                   WHERE ltime=0\
@@ -561,7 +561,7 @@ class TracksDatabase:
             Return tracks listened recently
             @return tracks as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
                                   WHERE ltime!=0\
@@ -574,7 +574,7 @@ class TracksDatabase:
             @param track id as int
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE persistent=?", (track_id,))
             v = result.fetchone()
@@ -588,7 +588,7 @@ class TracksDatabase:
             @param track id as int
             @param persistent as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE tracks\
                          SET persistent=?\
                          WHERE rowid=?", (persistent, track_id,))
@@ -599,7 +599,7 @@ class TracksDatabase:
             Return random tracks
             @return array of track ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
                                   ORDER BY random() LIMIT 100")
@@ -612,7 +612,7 @@ class TracksDatabase:
             @param popularity as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             try:
                 sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
                             (popularity, track_id))
@@ -629,7 +629,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             @param track id  as int
             @return popularity as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity FROM tracks WHERE\
                                  rowid=?", (track_id,))
             v = result.fetchone()
@@ -643,7 +643,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             @param track id  as int
             @return listen time as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT ltime FROM tracks WHERE\
                                  rowid=?", (track_id,))
             v = result.fetchone()
@@ -657,7 +657,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             @param track_id as int
             @return modification time as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT mtime FROM tracks\
                        WHERE tracks.rowid=?"
             result = sql.execute(request, (track_id,))
@@ -671,7 +671,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             Count tracks
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(1) FROM tracks")
             v = result.fetchone()
             if v is not None:
@@ -684,7 +684,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             @param track_id as int
             @warning commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("DELETE FROM track_artists\
                          WHERE track_id = ?", (track_id,))
             sql.execute("DELETE FROM track_genres\
@@ -696,7 +696,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             @param searched as string
             return: list of [id as int, name as string]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
                                   WHERE noaccents(name) LIKE ? LIMIT 25",
@@ -714,13 +714,13 @@ Nous traitons le problème dès que possible (salle très occupée).
         """
         track_ids = self.get_ids_for_name(title)
         for track_id in track_ids:
-            album_id = Lp().tracks.get_album_id(track_id)
-            artist_ids = set(Lp().albums.get_artist_ids(album_id)) &\
-                set(Lp().tracks.get_artist_ids(track_id))
+            album_id = App().tracks.get_album_id(track_id)
+            artist_ids = set(App().albums.get_artist_ids(album_id)) &\
+                set(App().tracks.get_artist_ids(track_id))
             for artist_id in artist_ids:
-                if artist == Lp().artists.get_name(artist_id):
+                if artist == App().artists.get_name(artist_id):
                     return track_id
-            if ", ".join(Lp().tracks.get_artists(track_id)) == artist:
+            if ", ".join(App().tracks.get_artists(track_id)) == artist:
                 return track_id
         return None
 
@@ -729,7 +729,7 @@ Nous traitons le problème dès que possible (salle très occupée).
             Remove track
             @param track id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("DELETE FROM track_genres\
                          WHERE track_id=?", (track_id,))
             sql.execute("DELETE FROM track_artists\

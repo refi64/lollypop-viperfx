@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.utils import is_loved
 
 
@@ -121,7 +121,7 @@ class IndicatorWidget(Gtk.EventBox):
             Check if track_id in Player current playlist
             @return bool
         """
-        for album in Lp().player.albums:
+        for album in App().player.albums:
             if self.__track.id in album.track_ids:
                 return True
         return False
@@ -179,7 +179,7 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__track.id == Lp().player.current_track.id:
+        if self.__track.id == App().player.current_track.id:
             self.play()
         elif is_loved(self.__track.id):
             self.loved()
@@ -192,21 +192,21 @@ class IndicatorWidget(Gtk.EventBox):
         """
         if self.__is_in_current_playlist():
             # We want track from player, not from current widget
-            albums = Lp().player.albums
+            albums = App().player.albums
             for album in albums:
                 if album.id == self.__track.album.id:
                     for track in album.tracks:
                         if track.id == self.__track.id:
                             album.remove_track(track)
-                            if Lp().player.next_track.id == track.id:
-                                Lp().player.set_next()
+                            if App().player.next_track.id == track.id:
+                                App().player.set_next()
                             break
                     break
             # if track album in Player albums, destroy parent
             if self.__parent is not None:
                 self.__parent.destroy()
         else:
-            albums = Lp().player.albums
+            albums = App().player.albums
             # If album last in list, merge
             if albums and albums[-1].id == self.__track.album.id:
                 albums[-1].add_track(self.__track)
@@ -214,10 +214,10 @@ class IndicatorWidget(Gtk.EventBox):
             else:
                 album = self.__track.album
                 album.set_tracks([self.__track])
-                if Lp().player.is_playing:
-                    Lp().player.add_album(album)
+                if App().player.is_playing:
+                    App().player.add_album(album)
                 else:
-                    Lp().player.play_album(album)
+                    App().player.play_album(album)
         self.update_button()
         return True
 

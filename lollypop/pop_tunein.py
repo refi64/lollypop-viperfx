@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk, Pango
 from gettext import gettext as _
 
 from lollypop.radios import Radios
-from lollypop.define import Lp, ArtSize, WindowSize
+from lollypop.define import App, ArtSize, WindowSize
 from lollypop.art import Art
 from lollypop.utils import get_network_available
 from lollypop.list import LinkedList
@@ -275,7 +275,7 @@ class TuneinPopover(Gtk.Popover):
             bytes.unref()
             stream.close()
             pixbuf.savev(cache_path_png, "png", [None], [None])
-            Lp().art.emit("radio-artwork-changed", name)
+            App().art.emit("radio-artwork-changed", name)
 
     def __on_map(self, widget):
         """
@@ -283,8 +283,8 @@ class TuneinPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(False)
-        size = Lp().window.get_size()
+        App().window.enable_global_shortcuts(False)
+        size = App().window.get_size()
         self.set_size_request(size[0]*0.5, size[1]*0.7)
 
     def __on_unmap(self, widget):
@@ -294,7 +294,7 @@ class TuneinPopover(Gtk.Popover):
         """
         self.__cancellable.cancel()
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(True)
+        App().window.enable_global_shortcuts(True)
 
     def __on_item_content(self, uri, status, content, name):
         """
@@ -347,17 +347,17 @@ class TuneinPopover(Gtk.Popover):
             if get_network_available():
                 helper = TaskHelper()
                 # Cache for toolbar
-                helper.run(Lp().art.copy_uri_to_cache,
+                helper.run(App().art.copy_uri_to_cache,
                            item.LOGO, item.TEXT,
-                           Lp().window.toolbar.info.artsize)
+                           App().window.toolbar.info.artsize)
                 # Cache for MPRIS
-                helper.run(Lp().art.copy_uri_to_cache,
+                helper.run(App().art.copy_uri_to_cache,
                            item.LOGO, item.TEXT, ArtSize.BIG)
                 # Cache for miniplayer
-                helper.run(Lp().art.copy_uri_to_cache,
+                helper.run(App().art.copy_uri_to_cache,
                            item.LOGO, item.TEXT, WindowSize.SMALL)
-            Lp().player.load_external(item.URL, item.TEXT)
-            Lp().player.play_this_external(item.URL)
+            App().player.load_external(item.URL, item.TEXT)
+            App().player.play_this_external(item.URL)
         return True
 
     def __on_uri_content(self, uri, status, content):

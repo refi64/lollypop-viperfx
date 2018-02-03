@@ -17,7 +17,7 @@ from time import time
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import TagReader
 from lollypop.player_plugins import PluginsPlayer
-from lollypop.define import GstPlayFlags, NextContext, Lp
+from lollypop.define import GstPlayFlags, NextContext, App
 from lollypop.codecs import Codecs
 from lollypop.define import Type
 from lollypop.utils import debug
@@ -75,7 +75,7 @@ class BinPlayer(BasePlayer):
             Set preview output
         """
         if self.__preview is not None:
-            output = Lp().settings.get_value("preview-output").get_string()
+            output = App().settings.get_value("preview-output").get_string()
             pulse = Gst.ElementFactory.make("pulsesink", "output")
             if pulse is None:
                 pulse = Gst.ElementFactory.make("alsasink", "output")
@@ -104,7 +104,7 @@ class BinPlayer(BasePlayer):
            self._current_track.id is not None and\
            self.is_playing and\
            self._current_track.id != Type.RADIOS:
-            duration = Lp().settings.get_value("mix-duration").get_int32()
+            duration = App().settings.get_value("mix-duration").get_int32()
             self.__do_crossfade(duration, track, False)
         else:
             self.__load(track)
@@ -199,7 +199,7 @@ class BinPlayer(BasePlayer):
         position = self._playbin.query_position(Gst.Format.TIME)[1]
         if self._crossfading and self._current_track.duration > 0:
             duration = self._current_track.duration - position / Gst.SECOND
-            if duration < Lp().settings.get_value("mix-duration").get_int32():
+            if duration < App().settings.get_value("mix-duration").get_int32():
                 self.__do_crossfade(duration)
         return position
 
@@ -265,37 +265,37 @@ class BinPlayer(BasePlayer):
         played = time() - finished_start_time
 
         # Listen on ListenBrainz
-        if Lp().listenbrainz is not None and Lp().listenbrainz.user_token:
+        if App().listenbrainz is not None and App().listenbrainz.user_token:
             # We can listen if the track has been played
             # for at least half its duration, or for 4 minutes
             if played >= finished.duration / 2 or played >= 240:
-                Lp().listenbrainz.listen(int(finished_start_time), finished)
+                App().listenbrainz.listen(int(finished_start_time), finished)
 
         # Last.fm policy
         if finished.duration < 30:
             return
         # Scrobble on lastfm
-        if Lp().lastfm is not None and Lp().lastfm.session_key:
+        if App().lastfm is not None and App().lastfm.session_key:
             artists = ", ".join(finished.artists)
             # We can scrobble if the track has been played
             # for at least half its duration, or for 4 minutes
             if played >= finished.duration / 2 or played >= 240:
-                Lp().lastfm.do_scrobble(artists,
-                                        finished.album_name,
-                                        finished.title,
-                                        int(finished_start_time),
-                                        finished.mb_track_id)
-        # Scrobble on librefm
-        if Lp().librefm is not None and Lp().librefm.session_key:
-            artists = ", ".join(finished.artists)
-            # We can scrobble if the track has been played
-            # for at least half its duration, or for 4 minutes
-            if played >= finished.duration / 2 or played >= 240:
-                Lp().librefm.do_scrobble(artists,
+                App().lastfm.do_scrobble(artists,
                                          finished.album_name,
                                          finished.title,
                                          int(finished_start_time),
                                          finished.mb_track_id)
+        # Scrobble on librefm
+        if App().librefm is not None and App().librefm.session_key:
+            artists = ", ".join(finished.artists)
+            # We can scrobble if the track has been played
+            # for at least half its duration, or for 4 minutes
+            if played >= finished.duration / 2 or played >= 240:
+                App().librefm.do_scrobble(artists,
+                                          finished.album_name,
+                                          finished.title,
+                                          int(finished_start_time),
+                                          finished.mb_track_id)
 
     def _on_stream_start(self, bus, message):
         """
@@ -309,24 +309,24 @@ class BinPlayer(BasePlayer):
         self.emit("current-changed")
 
         # Update now playing on ListenBrainz
-        if Lp().listenbrainz is not None and Lp().listenbrainz.user_token:
-            Lp().listenbrainz.playing_now(self._current_track)
+        if App().listenbrainz is not None and App().listenbrainz.user_token:
+            App().listenbrainz.playing_now(self._current_track)
 
         # Update now playing on lastfm
         # Not supported by librefm
-        if Lp().lastfm is not None and\
-                Lp().lastfm.session_key and\
+        if App().lastfm is not None and\
+                App().lastfm.session_key and\
                 self._current_track.id >= 0:
             artists = ", ".join(self._current_track.artists)
-            Lp().lastfm.now_playing(artists,
-                                    self._current_track.album_name,
-                                    self._current_track.title,
-                                    int(self._current_track.duration),
-                                    self._current_track.mb_track_id)
+            App().lastfm.now_playing(artists,
+                                     self._current_track.album_name,
+                                     self._current_track.title,
+                                     int(self._current_track.duration),
+                                     self._current_track.mb_track_id)
         try:
-            if not Lp().scanner.is_locked():
-                Lp().tracks.set_listened_at(self._current_track.id,
-                                            int(time()))
+            if not App().scanner.is_locked():
+                App().tracks.set_listened_at(self._current_track.id,
+                                             int(time()))
         except:  # Locked database
             pass
 
@@ -388,12 +388,12 @@ class BinPlayer(BasePlayer):
             @param message as Gst.Message
         """
         debug("Error playing: %s" % self._current_track.uri)
-        Lp().window.container.pulse(False)
+        App().window.container.pulse(False)
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
-            Lp().scanner.stop()
-        elif Lp().notify is not None:
-            Lp().notify.send(message.parse_error()[0].message)
+            App().scanner.stop()
+        elif App().notify is not None:
+            App().notify.send(message.parse_error()[0].message)
         self.stop()
 
     def _on_bus_eos(self, bus, message):
@@ -422,8 +422,8 @@ class BinPlayer(BasePlayer):
             return
         self._scrobble(self._current_track, self._start_time)
         # Increment popularity
-        if not Lp().scanner.is_locked() and self._current_track.id >= 0:
-            Lp().tracks.set_more_popular(self._current_track.id)
+        if not App().scanner.is_locked() and self._current_track.id >= 0:
+            App().tracks.set_more_popular(self._current_track.id)
             # In party mode, linear popularity
             if self.is_party:
                 pop_to_add = 1
@@ -432,14 +432,14 @@ class BinPlayer(BasePlayer):
                 # Some users report an issue where get_tracks_count() return 0
                 # See issue #886
                 # Don"t understand how this can happen!
-                count = Lp().albums.get_tracks_count(
+                count = App().albums.get_tracks_count(
                                                  self._current_track.album_id)
                 if count:
-                    pop_to_add = int(Lp().albums.max_count / count)
+                    pop_to_add = int(App().albums.max_count / count)
                 else:
                     pop_to_add = 1
-            Lp().albums.set_more_popular(self._current_track.album_id,
-                                         pop_to_add)
+            App().albums.set_more_popular(self._current_track.album_id,
+                                          pop_to_add)
         if self._next_track.id is not None:
             self._load_track(self._next_track)
 
@@ -525,22 +525,22 @@ class BinPlayer(BasePlayer):
         if track is None:
             self._scrobble(self._current_track, self._start_time)
             # Increment popularity
-            if not Lp().scanner.is_locked():
-                Lp().tracks.set_more_popular(self._current_track.id)
+            if not App().scanner.is_locked():
+                App().tracks.set_more_popular(self._current_track.id)
                 # In party mode, linear popularity
                 if self.is_party:
                     pop_to_add = 1
                 # In normal mode, based on tracks count
                 else:
-                    count = Lp().albums.get_tracks_count(
+                    count = App().albums.get_tracks_count(
                                                  self._current_track.album_id)
                     if count:
-                        pop_to_add = int(Lp().albums.max_count / count)
+                        pop_to_add = int(App().albums.max_count / count)
                     else:
                         pop_to_add = 0
                 if pop_to_add > 0:
-                    Lp().albums.set_more_popular(self._current_track.album_id,
-                                                 pop_to_add)
+                    App().albums.set_more_popular(self._current_track.album_id,
+                                                  pop_to_add)
 
         GLib.idle_add(self.__volume_down, self._playbin,
                       self._plugins, duration)
@@ -573,7 +573,7 @@ class BinPlayer(BasePlayer):
             @return bool
         """
         stop = False
-        playback = Lp().settings.get_enum("playback")
+        playback = App().settings.get_enum("playback")
         if playback == NextContext.STOP:
             if (not self._albums and
                 not self.queue and

@@ -15,7 +15,7 @@ from gettext import gettext as _
 
 from lollypop.thirdparty.GioNotify import GioNotify
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.utils import is_gnome
 
 
@@ -103,12 +103,12 @@ class NotificationManager:
 
         self.__on_notifications_settings_changed()
 
-        Lp().settings.connect(
+        App().settings.connect(
             "changed::disable-song-notifications",
             self.__on_notifications_settings_changed,
         )
 
-        Lp().settings.connect(
+        App().settings.connect(
             "changed::disable-notifications",
             self.__on_notifications_settings_changed,
         )
@@ -121,13 +121,13 @@ class NotificationManager:
         self.__notification.add_action(
             "media-skip-backward",
             _("Previous"),
-            Lp().player.prev,
+            App().player.prev,
         )
 
         self.__notification.add_action(
             "media-skip-forward",
             _("Next"),
-            Lp().player.next,
+            App().player.next,
         )
 
     def __on_current_changed(self, player):
@@ -135,20 +135,20 @@ class NotificationManager:
             Send notification with track_id infos
             @param player Player
         """
-        state = Lp().window.get_window().get_state()
+        state = App().window.get_window().get_state()
         if player.current_track.id is None or\
                 state & Gdk.WindowState.FOCUSED or\
-                Lp().is_fullscreen():
+                App().is_fullscreen():
             return
         # Since GNOME 3.24, using album cover looks bad
         if self.__is_gnome:
             cover_path = "org.gnome.Lollypop-symbolic"
         else:
             if player.current_track.id == Type.RADIOS:
-                cover_path = Lp().art.get_radio_cache_path(
+                cover_path = App().art.get_radio_cache_path(
                     player.current_track.album_artists[0], ArtSize.BIG)
             else:
-                cover_path = Lp().art.get_album_cache_path(
+                cover_path = App().art.get_album_cache_path(
                     player.current_track.album, ArtSize.BIG)
             if cover_path is None:
                 cover_path = "org.gnome.Lollypop-symbolic"
@@ -171,21 +171,21 @@ class NotificationManager:
                 cover_path)
 
     def __on_notifications_settings_changed(self, *ignore):
-        self.__disable_all_notifications = Lp().settings.get_value(
+        self.__disable_all_notifications = App().settings.get_value(
             "disable-notifications",
         )
 
-        disable_song_notifications = Lp().settings.get_value(
+        disable_song_notifications = App().settings.get_value(
             "disable-song-notifications",
         )
 
         if self.__notification_handler_id:
-            Lp().player.disconnect(self.__notification_handler_id)
+            App().player.disconnect(self.__notification_handler_id)
             self.__notification_handler_id = None
 
         if (not self.__disable_all_notifications and not
                 disable_song_notifications):
-            self.__notification_handler_id = Lp().player.connect(
+            self.__notification_handler_id = App().player.connect(
                 "current-changed",
                 self.__on_current_changed,
             )

@@ -14,7 +14,7 @@ from gi.repository import GLib, Gst
 
 from gettext import gettext as _
 
-from lollypop.define import Type, Lp
+from lollypop.define import Type, App
 from lollypop.utils import seconds_to_string
 
 
@@ -35,8 +35,8 @@ class PlaybackController:
             @param player as Player
         """
         self._play_btn.set_sensitive(True)
-        self._prev_btn.set_sensitive(not Lp().player.locked)
-        self._next_btn.set_sensitive(not Lp().player.locked)
+        self._prev_btn.set_sensitive(not App().player.locked)
+        self._next_btn.set_sensitive(not App().player.locked)
 
     def on_prev_changed(self, player):
         """
@@ -94,18 +94,18 @@ class PlaybackController:
             Previous track on prev button clicked
             @param button as Gtk.Button
         """
-        Lp().player.prev()
+        App().player.prev()
 
     def _on_play_btn_clicked(self, button):
         """
             Play/Pause on play button clicked
             @param button as Gtk.Button
         """
-        if Lp().player.is_playing:
-            Lp().player.pause()
+        if App().player.is_playing:
+            App().player.pause()
             self.__change_play_btn_status(self._play_image, _("Play"))
         else:
-            Lp().player.play()
+            App().player.play()
             self.__change_play_btn_status(self._pause_image, _("Pause"))
 
     def _on_next_btn_clicked(self, button):
@@ -113,7 +113,7 @@ class PlaybackController:
             Next track on next button clicked
             @param button as Gtk.Button
         """
-        Lp().player.next()
+        App().player.next()
 
 #######################
 # PRIVATE             #
@@ -143,7 +143,7 @@ class ProgressController:
         self.__timeout_id = None
         # Show volume control
         self._show_volume_control = False
-        Lp().player.connect("duration-changed", self.__on_duration_changed)
+        App().player.connect("duration-changed", self.__on_duration_changed)
 
     def on_current_changed(self, player):
         """
@@ -209,8 +209,8 @@ class ProgressController:
             self._progress.set_sensitive(True)
             self._update_position()
         else:
-            self.on_current_changed(Lp().player)
-            if Lp().player.current_track.id is None:
+            self.on_current_changed(App().player)
+            if App().player.current_track.id is None:
                 self._timelabel.set_text("")
                 self._progress.set_value(0.0)
                 self._progress.set_range(0.0, 0.0)
@@ -224,7 +224,7 @@ class ProgressController:
         """
         if not self._show_volume_control:
             return
-        Lp().player.set_volume(scale.get_value())
+        App().player.set_volume(scale.get_value())
         self._update_position(scale.get_value())
 
     def _on_title_press_button(self, widget, event):
@@ -248,7 +248,7 @@ class ProgressController:
             return True
         if self._show_volume_control:
             return
-        if Lp().player.locked:
+        if App().player.locked:
             return True
         self.__seeking = True
 
@@ -262,7 +262,7 @@ class ProgressController:
         if self._show_volume_control or event.button != 1:
             return
         value = scale.get_value()
-        Lp().player.seek(value)
+        App().player.seek(value)
         self.__seeking = False
         self._update_position(value)
 
@@ -275,7 +275,7 @@ class ProgressController:
         (smooth, x, y) = event.get_scroll_deltas()
         if smooth:
             if self._show_volume_control:
-                volume = Lp().player.volume
+                volume = App().player.volume
                 if y > 0:
                     volume -= 0.1
                 else:
@@ -284,19 +284,19 @@ class ProgressController:
                     volume = 0.0
                 elif volume > 1:
                     volume = 1.0
-                Lp().player.set_volume(volume)
+                App().player.set_volume(volume)
                 self._update_position(volume)
-            elif Lp().player.is_playing:
-                position = Lp().player.position
+            elif App().player.is_playing:
+                position = App().player.position
                 if y > 0:
                     seek = position - 5 * Gst.SECOND
                 else:
                     seek = position + 5 * Gst.SECOND
                 if seek < 0:
                     seek = 0
-                if seek > Lp().player.current_track.duration:
-                    seek = Lp().player.current_track.duration - 2
-                Lp().player.seek(seek)
+                if seek > App().player.current_track.duration:
+                    seek = App().player.current_track.duration - 2
+                App().player.seek(seek)
                 self._update_position(seek)
 
     def _update_position(self, value=None):
@@ -306,13 +306,13 @@ class ProgressController:
         """
         if self._show_volume_control:
             if value is None:
-                value = Lp().player.volume
+                value = App().player.volume
             self._progress.set_value(value)
             volume = str(int(value * 100)) + " %"
             self._total_time_label.set_text(volume)
         elif not self.__seeking:
-            if value is None and Lp().player.get_status() != Gst.State.PAUSED:
-                value = Lp().player.position / Gst.SECOND
+            if value is None and App().player.get_status() != Gst.State.PAUSED:
+                value = App().player.position / Gst.SECOND
             if value is not None:
                 self._progress.set_value(value)
                 self._timelabel.set_text(seconds_to_string(value))
@@ -391,17 +391,17 @@ class InfoController:
         self._title_label.show()
 
         if player.current_track.id == Type.RADIOS:
-            art = Lp().art.get_radio_artwork(
+            art = App().art.get_radio_artwork(
                                    player.current_track.album_artists[0],
                                    self.__art_size,
                                    self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
-            art = Lp().art.get_album_artwork2(
+            art = App().art.get_album_artwork2(
                     player.current_track.uri,
                     self.__art_size,
                     self.get_scale_factor())
         elif player.current_track.id is not None:
-            art = Lp().art.get_album_artwork(
+            art = App().art.get_album_artwork(
                                    player.current_track.album,
                                    self.__art_size,
                                    self.get_scale_factor())

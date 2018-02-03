@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
 from math import pi
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.cache import InfoCache
 from lollypop.objects import Album
 
@@ -28,9 +28,9 @@ class CellRendererAlbum(Gtk.CellRenderer):
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         if self.album == Type.NONE:
             return
-        surface = Lp().art.get_album_artwork(Album(self.album),
-                                             ArtSize.MEDIUM,
-                                             widget.get_scale_factor())
+        surface = App().art.get_album_artwork(Album(self.album),
+                                              ArtSize.MEDIUM,
+                                              widget.get_scale_factor())
         width = surface.get_width()
         height = surface.get_height()
         # If cover smaller than wanted size, translate
@@ -91,7 +91,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         size = ArtSize.ARTIST_SMALL * self.__scale_factor
         draw_artwork = self.__is_artists and\
             self.rowid >= 0 and\
-            Lp().settings.get_value("artist-artwork")
+            App().settings.get_value("artist-artwork")
         if draw_artwork:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = ArtSize.ARTIST_SMALL + self.xshift * 2
@@ -150,7 +150,7 @@ class CellRendererArtist(Gtk.CellRendererText):
     def do_get_preferred_height_for_width(self, widget, width):
         draw_artwork = self.__is_artists and\
                        self.rowid >= 0 and\
-                       Lp().settings.get_value("artist-artwork")
+                       App().settings.get_value("artist-artwork")
         if draw_artwork:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
@@ -158,6 +158,6 @@ class CellRendererArtist(Gtk.CellRendererText):
                                                            self, widget, width)
 
     def on_artist_artwork_changed(self, artist):
-        artist_id = Lp().artists.get_id(artist)
+        artist_id = App().artists.get_id(artist)
         if artist_id in self.__surfaces.keys():
             self.__surfaces.pop(artist_id)

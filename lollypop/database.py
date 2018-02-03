@@ -14,7 +14,7 @@ from gi.repository import GLib, Gio
 
 import sqlite3
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.objects import Album
 from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
@@ -145,33 +145,33 @@ class Database:
             Delete tracks from db
             @param track_ids as [int]
         """
-        SqlCursor.add(Lp().playlists)
+        SqlCursor.add(App().playlists)
         with SqlCursor(self) as sql:
             all_album_ids = []
             all_artist_ids = []
             all_genre_ids = []
             for track_id in track_ids:
-                album_id = Lp().tracks.get_album_id(track_id)
-                art_file = Lp().art.get_album_cache_name(Album(album_id))
-                genre_ids = Lp().tracks.get_genre_ids(track_id)
-                album_artist_ids = Lp().albums.get_artist_ids(album_id)
-                artist_ids = Lp().tracks.get_artist_ids(track_id)
-                uri = Lp().tracks.get_uri(track_id)
-                Lp().playlists.remove(uri)
-                Lp().tracks.remove(track_id)
-                Lp().tracks.clean(track_id)
+                album_id = App().tracks.get_album_id(track_id)
+                art_file = App().art.get_album_cache_name(Album(album_id))
+                genre_ids = App().tracks.get_genre_ids(track_id)
+                album_artist_ids = App().albums.get_artist_ids(album_id)
+                artist_ids = App().tracks.get_artist_ids(track_id)
+                uri = App().tracks.get_uri(track_id)
+                App().playlists.remove(uri)
+                App().tracks.remove(track_id)
+                App().tracks.clean(track_id)
                 all_album_ids.append(album_id)
                 all_artist_ids += album_artist_ids + artist_ids
                 all_genre_ids += genre_ids
             for album_id in list(set(all_album_ids)):
-                if Lp().albums.clean(album_id):
-                    Lp().art.clean_store(art_file)
+                if App().albums.clean(album_id):
+                    App().art.clean_store(art_file)
             for artist_id in list(set(all_artist_ids)):
-                Lp().artists.clean(artist_id)
+                App().artists.clean(artist_id)
             for genre_id in list(set(all_genre_ids)):
-                Lp().genres.clean(genre_id)
+                App().genres.clean(genre_id)
             sql.commit()
-        SqlCursor.remove(Lp().playlists)
+        SqlCursor.remove(App().playlists)
 
 #######################
 # PRIVATE             #

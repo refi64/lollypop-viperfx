@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
 from gettext import gettext as _
 from lollypop.container import Container
-from lollypop.define import Lp, WindowSize
+from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
 from lollypop.utils import is_unity, set_loved, is_loved
@@ -37,20 +37,20 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__media_keys_busnames = []
         self.__was_maximized = False
         Gtk.ApplicationWindow.__init__(self,
-                                       application=Lp(),
+                                       application=App(),
                                        title="Lollypop",
                                        icon_name="org.gnome.Lollypop")
         self.connect("hide", self.__on_hide)
-        Lp().player.connect("current-changed", self.__on_current_changed)
+        App().player.connect("current-changed", self.__on_current_changed)
         self.__timeout_configure = None
         seek_action = Gio.SimpleAction.new("seek",
                                            GLib.VariantType.new("i"))
         seek_action.connect("activate", self.__on_seek_action)
-        Lp().add_action(seek_action)
+        App().add_action(seek_action)
         player_action = Gio.SimpleAction.new("shortcut",
                                              GLib.VariantType.new("s"))
         player_action.connect("activate", self.__on_player_action)
-        Lp().add_action(player_action)
+        App().add_action(player_action)
 
         self.__setup_global_shortcuts()
 
@@ -87,45 +87,46 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__enabled_shortcuts = enable
         if enable:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                Lp().set_accels_for_action("app.seek(10)", ["Left"])
-                Lp().set_accels_for_action("app.seek(20)", ["<Control>Left"])
-                Lp().set_accels_for_action("app.seek(-10)", ["Right"])
-                Lp().set_accels_for_action("app.seek(-20)", ["<Control>Right"])
+                App().set_accels_for_action("app.seek(10)", ["Left"])
+                App().set_accels_for_action("app.seek(20)", ["<Control>Left"])
+                App().set_accels_for_action("app.seek(-10)", ["Right"])
+                App().set_accels_for_action("app.seek(-20)",
+                                            ["<Control>Right"])
             else:
-                Lp().set_accels_for_action("app.seek(10)", ["Right"])
-                Lp().set_accels_for_action("app.seek(20)", ["<Control>Right"])
-                Lp().set_accels_for_action("app.seek(-10)", ["Left"])
-                Lp().set_accels_for_action("app.seek(-20)", ["<Control>Left"])
+                App().set_accels_for_action("app.seek(10)", ["Right"])
+                App().set_accels_for_action("app.seek(20)", ["<Control>Right"])
+                App().set_accels_for_action("app.seek(-10)", ["Left"])
+                App().set_accels_for_action("app.seek(-20)", ["<Control>Left"])
 
-            Lp().set_accels_for_action("app.shortcut::play_pause",
-                                       ["space", "c"])
-            Lp().set_accels_for_action("app.shortcut::play", ["x"])
-            Lp().set_accels_for_action("app.shortcut::stop", ["v"])
-            Lp().set_accels_for_action("app.shortcut::next", ["n"])
-            Lp().set_accels_for_action("app.shortcut::prev", ["p"])
-            Lp().set_accels_for_action("app.shortcut::loved", ["l"])
+            App().set_accels_for_action("app.shortcut::play_pause",
+                                        ["space", "c"])
+            App().set_accels_for_action("app.shortcut::play", ["x"])
+            App().set_accels_for_action("app.shortcut::stop", ["v"])
+            App().set_accels_for_action("app.shortcut::next", ["n"])
+            App().set_accels_for_action("app.shortcut::prev", ["p"])
+            App().set_accels_for_action("app.shortcut::loved", ["l"])
         else:
-            Lp().set_accels_for_action("app.seek(10)", [None])
-            Lp().set_accels_for_action("app.seek(20)", [None])
-            Lp().set_accels_for_action("app.seek(-10)", [None])
-            Lp().set_accels_for_action("app.seek(-20)", [None])
-            Lp().set_accels_for_action("app.shortcut::play_pause", [None])
-            Lp().set_accels_for_action("app.shortcut::play", [None])
-            Lp().set_accels_for_action("app.shortcut::stop", [None])
-            Lp().set_accels_for_action("app.shortcut::play_pause", [None])
-            Lp().set_accels_for_action("app.shortcut::play", [None])
-            Lp().set_accels_for_action("app.shortcut::stop", [None])
-            Lp().set_accels_for_action("app.shortcut::next", [None])
-            Lp().set_accels_for_action("app.shortcut::next_album", [None])
-            Lp().set_accels_for_action("app.shortcut::prev", [None])
-            Lp().set_accels_for_action("app.shortcut::loved", [None])
+            App().set_accels_for_action("app.seek(10)", [None])
+            App().set_accels_for_action("app.seek(20)", [None])
+            App().set_accels_for_action("app.seek(-10)", [None])
+            App().set_accels_for_action("app.seek(-20)", [None])
+            App().set_accels_for_action("app.shortcut::play_pause", [None])
+            App().set_accels_for_action("app.shortcut::play", [None])
+            App().set_accels_for_action("app.shortcut::stop", [None])
+            App().set_accels_for_action("app.shortcut::play_pause", [None])
+            App().set_accels_for_action("app.shortcut::play", [None])
+            App().set_accels_for_action("app.shortcut::stop", [None])
+            App().set_accels_for_action("app.shortcut::next", [None])
+            App().set_accels_for_action("app.shortcut::next_album", [None])
+            App().set_accels_for_action("app.shortcut::prev", [None])
+            App().set_accels_for_action("app.shortcut::loved", [None])
 
     def setup_window(self):
         """
             Setup window position and size, callbacks
         """
         self.__setup_pos_size("window")
-        if Lp().settings.get_value("window-maximized"):
+        if App().settings.get_value("window-maximized"):
             self.maximize()
 
         if self.__signal1 is None:
@@ -167,7 +168,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Set mini player on/off
         """
-        if Lp().player.current_track.id is None:
+        if App().player.current_track.id is None:
             return
         was_maximized = self.is_maximized()
         if self.__main_stack.get_visible_child_name() == "main":
@@ -199,7 +200,7 @@ class Window(Gtk.ApplicationWindow, Container):
                 self.__container.view is not None:
             if hasattr(self.__container.view, "disable_overlay"):
                 self.__container.view.disable_overlay()
-            Lp().player.preview.set_state(Gst.State.NULL)
+            App().player.preview.set_state(Gst.State.NULL)
         Gtk.ApplicationWindow.do_event(self, event)
 
     @property
@@ -217,20 +218,21 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup global shortcuts
         """
-        Lp().set_accels_for_action("app.shortcut::locked", ["<Control>l"])
-        Lp().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
-        Lp().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
-        Lp().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
-        Lp().set_accels_for_action("app.shortcut::show_genres", ["<Control>g"])
-        Lp().set_accels_for_action("app.shortcut::hide_paned", ["<Control>h"])
-        Lp().set_accels_for_action("app.update_db", ["<Control>u"])
-        Lp().set_accels_for_action("app.settings", ["<Control>s"])
-        Lp().set_accels_for_action("app.fullscreen", ["F11", "F7"])
-        Lp().set_accels_for_action("app.mini", ["<Control>m"])
-        Lp().set_accels_for_action("app.about", ["F3"])
-        Lp().set_accels_for_action("app.shortcuts", ["F2"])
-        Lp().set_accels_for_action("app.help", ["F1"])
-        Lp().set_accels_for_action("app.quit", ["<Control>q"])
+        App().set_accels_for_action("app.shortcut::locked", ["<Control>l"])
+        App().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
+        App().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
+        App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
+        App().set_accels_for_action("app.shortcut::show_genres",
+                                    ["<Control>g"])
+        App().set_accels_for_action("app.shortcut::hide_paned", ["<Control>h"])
+        App().set_accels_for_action("app.update_db", ["<Control>u"])
+        App().set_accels_for_action("app.settings", ["<Control>s"])
+        App().set_accels_for_action("app.fullscreen", ["F11", "F7"])
+        App().set_accels_for_action("app.mini", ["<Control>m"])
+        App().set_accels_for_action("app.about", ["F3"])
+        App().set_accels_for_action("app.shortcuts", ["F2"])
+        App().set_accels_for_action("app.help", ["F1"])
+        App().set_accels_for_action("app.quit", ["<Control>q"])
 
     def __show_miniplayer(self, show):
         """
@@ -250,7 +252,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Set window pos and size based on name
             @param name as str
         """
-        size_setting = Lp().settings.get_value("%s-size" % name)
+        size_setting = App().settings.get_value("%s-size" % name)
         if len(size_setting) == 2 and\
            isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
@@ -267,7 +269,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Set window position
             @param name as str
         """
-        position_setting = Lp().settings.get_value("%s-position" % name)
+        position_setting = App().settings.get_value("%s-position" % name)
         if len(position_setting) == 2 and\
            isinstance(position_setting[0], int) and\
            isinstance(position_setting[1], int):
@@ -290,7 +292,7 @@ class Window(Gtk.ApplicationWindow, Container):
         if self.__media_keys_busnames:
             bus_name = self.__media_keys_busnames.pop(0)
             try:
-                bus = Lp().get_dbus_connection()
+                bus = App().get_dbus_connection()
                 Gio.DBusProxy.new(
                     bus,
                     Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
@@ -340,13 +342,13 @@ class Window(Gtk.ApplicationWindow, Container):
         app, action = param.unpack()
         if app == "org.gnome.Lollypop":
             if action == "Play":
-                Lp().player.play_pause()
+                App().player.play_pause()
             elif action == "Next":
-                Lp().player.next()
+                App().player.next()
             elif action == "Stop":
-                Lp().player.stop()
+                App().player.stop()
             elif action == "Previous":
-                Lp().player.prev()
+                App().player.prev()
 
     def __setup_content(self):
         """
@@ -359,12 +361,12 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__vgrid.show()
         self.__toolbar = Toolbar()
         self.__toolbar.show()
-        if Lp().settings.get_value("disable-csd") or is_unity():
+        if App().settings.get_value("disable-csd") or is_unity():
             self.__vgrid.add(self.__toolbar)
         else:
             self.set_titlebar(self.__toolbar)
             self.__toolbar.set_show_close_button(
-                                    not Lp().settings.get_value("disable-csd"))
+                                   not App().settings.get_value("disable-csd"))
         self.__vgrid.add(self.__main_stack)
         self.add(self.__vgrid)
         self.__main_stack.add_named(self.__container, "main")
@@ -391,7 +393,7 @@ class Window(Gtk.ApplicationWindow, Container):
         importer = CollectionImporter()
         uris = data.get_text().strip("\n").split("\r")
         task_helper = TaskHelper()
-        task_helper.run(importer.add, uris, callback=(Lp().scanner.update,))
+        task_helper.run(importer.add, uris, callback=(App().scanner.update,))
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
@@ -461,21 +463,21 @@ class Window(Gtk.ApplicationWindow, Container):
             name = "mini"
         if self.__miniplayer is not None:
             self.__miniplayer.update_cover(size[0])
-        Lp().settings.set_value("%s-size" % name,
-                                GLib.Variant("ai", [size[0], size[1]]))
+        App().settings.set_value("%s-size" % name,
+                                 GLib.Variant("ai", [size[0], size[1]]))
 
         position = widget.get_position()
-        Lp().settings.set_value("%s-position" % name,
-                                GLib.Variant("ai",
-                                             [position[0], position[1]]))
+        App().settings.set_value("%s-position" % name,
+                                 GLib.Variant("ai",
+                                              [position[0], position[1]]))
 
     def __on_window_state_event(self, widget, event):
         """
             Save maximised state
         """
-        Lp().settings.set_boolean("window-maximized",
-                                  "GDK_WINDOW_STATE_MAXIMIZED" in
-                                  event.new_window_state.value_names)
+        App().settings.set_boolean("window-maximized",
+                                   "GDK_WINDOW_STATE_MAXIMIZED" in
+                                   event.new_window_state.value_names)
         if event.changed_mask & Gdk.WindowState.FOCUSED and \
            event.new_window_state & Gdk.WindowState.FOCUSED:
             # FIXME Remove this, handled by MPRIS in GNOME 3.26
@@ -488,7 +490,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         if self.__was_maximized and\
            self.__main_stack.get_visible_child_name() == "mini":
-            Lp().settings.set_boolean("window-maximized", True)
+            App().settings.set_boolean("window-maximized", True)
         self.__container.save_internals()
 
     def __on_seek_action(self, action, param):
@@ -498,14 +500,14 @@ class Window(Gtk.ApplicationWindow, Container):
             @param param as GLib.Variant
         """
         seconds = param.get_int32()
-        position = Lp().player.position
+        position = App().player.position
         seek = position / Gst.SECOND + seconds
         if seek < 0:
             seek = 0
-        if seek > Lp().player.current_track.duration:
-            seek = Lp().player.current_track.duration - 2
-        Lp().player.seek(seek)
-        if Lp().player.current_track.id is not None:
+        if seek > App().player.current_track.duration:
+            seek = App().player.current_track.duration - 2
+        App().player.seek(seek)
+        if App().player.current_track.id is not None:
             self.__toolbar.update_position(seek)
 
     def __on_player_action(self, action, param):
@@ -516,19 +518,19 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         string = param.get_string()
         if string == "play_pause":
-            Lp().player.play_pause()
+            App().player.play_pause()
         elif string == "play":
-            Lp().player.play()
+            App().player.play()
         elif string == "stop":
-            Lp().player.stop()
+            App().player.stop()
         elif string == "next":
-            Lp().player.next()
+            App().player.next()
         elif string == "next_album":
-            Lp().player.skip_album()
+            App().player.skip_album()
         elif string == "prev":
-            Lp().player.prev()
+            App().player.prev()
         elif string == "locked":
-            Lp().player.lock()
+            App().player.lock()
         elif string == "hide_paned":
             self.__container.hide_paned()
         elif string == "filter":
@@ -537,23 +539,23 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "volume":
             self.__toolbar.title.show_hide_volume_control()
         elif string == "show_genres":
-            state = not Lp().settings.get_value("show-genres")
-            Lp().settings.set_value("show-genres",
-                                    GLib.Variant("b", state))
+            state = not App().settings.get_value("show-genres")
+            App().settings.set_value("show-genres",
+                                     GLib.Variant("b", state))
             self.__container.show_genres(state)
         elif string == "loved":
-            if Lp().player.current_track.id is not None and\
-                    Lp().player.current_track.id >= 0:
-                isloved = is_loved(Lp().player.current_track.id)
-                set_loved(Lp().player.current_track.id, not isloved)
-                if Lp().notify is not None:
+            if App().player.current_track.id is not None and\
+                    App().player.current_track.id >= 0:
+                isloved = is_loved(App().player.current_track.id)
+                set_loved(App().player.current_track.id, not isloved)
+                if App().notify is not None:
                     if isloved:
                         heart = "♡"
                     else:
                         heart = "❤"
-                    Lp().notify.send("%s - %s: %s" % (
-                                ", ".join(Lp().player.current_track.artists),
-                                Lp().player.current_track.name,
+                    App().notify.send("%s - %s: %s" % (
+                                ", ".join(App().player.current_track.artists),
+                                App().player.current_track.name,
                                 heart))
 
     def __on_realize(self, widget):
@@ -561,11 +563,11 @@ class Window(Gtk.ApplicationWindow, Container):
             Run scanner on realize
             @param widget as Gtk.Widget
         """
-        if Lp().settings.get_value("auto-update") or Lp().tracks.is_empty():
+        if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
-            GLib.timeout_add(2000, Lp().scanner.update)
+            GLib.timeout_add(2000, App().scanner.update)
         GLib.idle_add(self.__container.restore_view_state)
 
     def __on_current_changed(self, player):
@@ -573,7 +575,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Update toolbar
             @param player as Player
         """
-        if Lp().player.current_track.id is None:
+        if App().player.current_track.id is None:
             self.set_title("Lollypop")
         else:
             self.set_title(", ".join(player.current_track.artists) + " - " +

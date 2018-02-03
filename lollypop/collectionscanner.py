@@ -17,7 +17,7 @@ from threading import Thread
 from time import time
 
 from lollypop.inotify import Inotify
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.database_history import History
@@ -44,11 +44,11 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         self.__thread = None
         self.__history = None
-        if Lp().settings.get_value("auto-update"):
+        if App().settings.get_value("auto-update"):
             self.__inotify = Inotify()
         else:
             self.__inotify = None
-        Lp().albums.update_max_count()
+        App().albums.update_max_count()
 
     def update(self):
         """
@@ -59,12 +59,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.stop()
             GLib.timeout_add(250, self.update)
         else:
-            uris = Lp().settings.get_music_uris()
+            uris = App().settings.get_music_uris()
             if not uris:
                 return
 
-            Lp().window.container.progress.add(self)
-            Lp().window.container.progress.set_fraction(0.0, self)
+            App().window.container.progress.add(self)
+            App().window.container.progress.set_fraction(0.0, self)
 
             self.__thread = Thread(target=self.__scan, args=(uris,))
             self.__thread.daemon = True
@@ -142,19 +142,19 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        Lp().window.container.progress.set_fraction(current / total, self)
+        App().window.container.progress.set_fraction(current / total, self)
 
     def __finish(self):
         """
             Notify from main thread when scan finished
         """
-        Lp().window.container.progress.set_fraction(1.0, self)
+        App().window.container.progress.set_fraction(1.0, self)
         self.stop()
         self.emit("scan-finished")
         # Update max count value
-        Lp().albums.update_max_count()
-        if Lp().settings.get_value("artist-artwork"):
-            Lp().art.cache_artists_info()
+        App().albums.update_max_count()
+        if App().settings.get_value("artist-artwork"):
+            App().art.cache_artists_info()
 
     def __scan(self, uris):
         """
@@ -164,16 +164,16 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         if self.__history is None:
             self.__history = History()
-        mtimes = Lp().tracks.get_mtimes()
+        mtimes = App().tracks.get_mtimes()
         (new_tracks, new_dirs, ignore_dirs) = self.__get_objects_for_uris(
                                                                          uris)
-        orig_tracks = Lp().tracks.get_uris(ignore_dirs)
+        orig_tracks = App().tracks.get_uris(ignore_dirs)
         was_empty = len(orig_tracks) == 0
 
         if ignore_dirs:
-            if Lp().notify is not None:
-                Lp().notify.send(_("Lollypop is detecting an empty folder."),
-                                 _("Check your music settings."))
+            if App().notify is not None:
+                App().notify.send(_("Lollypop is detecting an empty folder."),
+                                  _("Check your music settings."))
         count = len(new_tracks) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:
@@ -181,7 +181,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 if d.startswith("file://"):
                     self.__inotify.add_monitor(d)
 
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             i = 0
             # Look for new files/modified files
             try:
@@ -317,17 +317,17 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         # Add track to db
         debug("CollectionScanner::add2db(): Add track")
-        track_id = Lp().tracks.add(title, uri, duration,
-                                   tracknumber, discnumber, discname,
-                                   album_id, year, track_pop, track_rate,
-                                   track_ltime, mtime, mb_track_id)
+        track_id = App().tracks.add(title, uri, duration,
+                                    tracknumber, discnumber, discname,
+                                    album_id, year, track_pop, track_rate,
+                                    track_ltime, mtime, mb_track_id)
 
         debug("CollectionScanner::add2db(): Update track")
         self.update_track(track_id, artist_ids, genre_ids)
         debug("CollectionScanner::add2db(): Update album")
         self.update_album(album_id, album_artist_ids, genre_ids, year)
         if new_album:
-            with SqlCursor(Lp().db) as sql:
+            with SqlCursor(App().db) as sql:
                 sql.commit()
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
@@ -343,44 +343,44 @@ class CollectionScanner(GObject.GObject, TagReader):
         try:
             f = Gio.File.new_for_uri(uri)
             name = f.get_basename()
-            track_id = Lp().tracks.get_id_by_uri(uri)
-            album_id = Lp().tracks.get_album_id(track_id)
-            genre_ids = Lp().tracks.get_genre_ids(track_id)
-            album_artist_ids = Lp().albums.get_artist_ids(album_id)
-            artist_ids = Lp().tracks.get_artist_ids(track_id)
-            popularity = Lp().tracks.get_popularity(track_id)
-            rate = Lp().tracks.get_rate(track_id)
-            ltime = Lp().tracks.get_ltime(track_id)
-            mtime = Lp().tracks.get_mtime(track_id)
-            duration = Lp().tracks.get_duration(track_id)
-            album_popularity = Lp().albums.get_popularity(album_id)
-            album_rate = Lp().albums.get_rate(album_id)
-            loved = Lp().albums.get_loved(album_id)
-            uri = Lp().tracks.get_uri(track_id)
+            track_id = App().tracks.get_id_by_uri(uri)
+            album_id = App().tracks.get_album_id(track_id)
+            genre_ids = App().tracks.get_genre_ids(track_id)
+            album_artist_ids = App().albums.get_artist_ids(album_id)
+            artist_ids = App().tracks.get_artist_ids(track_id)
+            popularity = App().tracks.get_popularity(track_id)
+            rate = App().tracks.get_rate(track_id)
+            ltime = App().tracks.get_ltime(track_id)
+            mtime = App().tracks.get_mtime(track_id)
+            duration = App().tracks.get_duration(track_id)
+            album_popularity = App().albums.get_popularity(album_id)
+            album_rate = App().albums.get_rate(album_id)
+            loved = App().albums.get_loved(album_id)
+            uri = App().tracks.get_uri(track_id)
             self.__history.add(name, duration, popularity, rate,
                                ltime, mtime, loved, album_popularity,
                                album_rate)
-            Lp().tracks.remove(track_id)
-            Lp().tracks.clean(track_id)
-            cleaned = Lp().albums.clean(album_id)
+            App().tracks.remove(track_id)
+            App().tracks.clean(track_id)
+            cleaned = App().albums.clean(album_id)
             if cleaned:
-                with SqlCursor(Lp().db) as sql:
+                with SqlCursor(App().db) as sql:
                     sql.commit()
                 GLib.idle_add(self.emit, "album-updated",
                               album_id, True)
             for artist_id in album_artist_ids + artist_ids:
-                cleaned = Lp().artists.clean(artist_id)
+                cleaned = App().artists.clean(artist_id)
                 if cleaned:
-                    with SqlCursor(Lp().db) as sql:
+                    with SqlCursor(App().db) as sql:
                         sql.commit()
                 # Force update even if not cleaned as artist may
                 # have been removed from a selected genre
                 GLib.idle_add(self.emit, "artist-updated",
                               artist_id, False)
             for genre_id in genre_ids:
-                cleaned = Lp().genres.clean(genre_id)
+                cleaned = App().genres.clean(genre_id)
                 if cleaned:
-                    with SqlCursor(Lp().db) as sql:
+                    with SqlCursor(App().db) as sql:
                         sql.commit()
                     GLib.idle_add(self.emit, "genre-updated",
                                   genre_id, False)

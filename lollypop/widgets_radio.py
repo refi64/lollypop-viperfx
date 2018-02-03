@@ -14,7 +14,7 @@ from gi.repository import Gtk, Pango, GObject
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
 from lollypop.widgets_album import BaseWidget
 from lollypop.pop_radio import RadioPopover
@@ -131,7 +131,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
         if self._cover is None:
             return
-        surface = Lp().art.get_radio_artwork(
+        surface = App().art.get_radio_artwork(
                     self.__name,
                     ArtSize.BIG,
                     self._cover.get_scale_factor())
@@ -143,7 +143,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
         if self._cover is None:
             return
-        surface = Lp().art.get_radio_artwork(
+        surface = App().art.get_radio_artwork(
                     self.__name,
                     ArtSize.BIG,
                     self._cover.get_scale_factor())
@@ -155,8 +155,8 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
         if self._cover is None:
             return
-        selected = Lp().player.current_track.id == Type.RADIOS and\
-            self.__name == Lp().player.current_track.album_artists[0]
+        selected = App().player.current_track.id == Type.RADIOS and\
+            self.__name == App().player.current_track.album_artists[0]
         if selected:
             self._overlay.get_style_context().add_class(
                                                     "cover-frame-selected")
@@ -261,13 +261,13 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if Lp().player.locked:
+        if App().player.locked:
             return True
         url = self.__radios_manager.get_url(self.__name)
         if url:
             track = Track()
             track.set_radio(self.__name, url)
-            Lp().player.load(track)
+            App().player.load(track)
 
     def _on_edit_press_event(self, widget, event):
         """

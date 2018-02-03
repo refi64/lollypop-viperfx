@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view import View
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class FirstRunView(View):
@@ -39,7 +39,7 @@ class FirstRunView(View):
             @param switch as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("network-access", GLib.Variant("b", state))
+        App().settings.set_value("network-access", GLib.Variant("b", state))
 
 #######################
 # PRIVATE             #

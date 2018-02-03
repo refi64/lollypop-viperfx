@@ -18,7 +18,7 @@ import sqlite3
 from datetime import datetime
 
 from lollypop.database import Database
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.objects import Track
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
@@ -370,12 +370,12 @@ class Playlists(GObject.GObject):
                             if info.get_file_type() == Gio.FileType.DIRECTORY:
                                 walk_uris.append(f.get_uri())
                             else:
-                                track_id = Lp().tracks.get_id_by_uri(
+                                track_id = App().tracks.get_id_by_uri(
                                                                    f.get_uri())
                                 if track_id is not None:
                                     track_ids.append(track_id)
                 else:
-                    track_id = Lp().tracks.get_id_by_uri(uri)
+                    track_id = App().tracks.get_id_by_uri(uri)
                     track_ids = [track_id]
                 tracks = []
                 if start is None:
@@ -447,9 +447,9 @@ class Playlists(GObject.GObject):
         """
         # We do not use Album object for performance reasons
         playlist_uris = self.get_tracks(playlist_id)
-        track_uris = Lp().albums.get_track_uris(album_id,
-                                                genre_ids,
-                                                artist_ids)
+        track_uris = App().albums.get_track_uris(album_id,
+                                                 genre_ids,
+                                                 artist_ids)
         return len(set(playlist_uris) & set(track_uris)) == len(track_uris)
 
     def get_cursor(self):

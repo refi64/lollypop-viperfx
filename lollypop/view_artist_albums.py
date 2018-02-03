@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
-from lollypop.define import Lp, Type, ArtSize
+from lollypop.define import App, Type, ArtSize
 from lollypop.objects import Track
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
 
@@ -90,7 +90,7 @@ class ArtistAlbumsView(LazyLoadingView):
         """
         widget = None
         for child in self._albumbox.get_children():
-            if child.id == Lp().player.current_track.album.id:
+            if child.id == App().player.current_track.album.id:
                 widget = child
                 break
         if widget is not None:
@@ -289,10 +289,10 @@ class CurrentArtistAlbumsView(ViewContainer):
         albums = []
         if self.__track.album.artist_ids[0] == Type.COMPILATIONS:
             albums += [self.__track.album.id]
-        albums += Lp().artists.get_albums(self.__get_artist_ids())
+        albums += App().artists.get_albums(self.__get_artist_ids())
         # Charts album playing
-        if Lp().player.current_track.album.id not in albums:
-            albums.append(Lp().player.current_track.album.id)
+        if App().player.current_track.album.id not in albums:
+            albums.append(App().player.current_track.album.id)
         return albums
 
     def __on_populated(self, view, spinner):

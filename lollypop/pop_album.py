@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.view_artist_albums import ArtistAlbumsView
-from lollypop.define import Lp, ArtSize
+from lollypop.define import App, ArtSize
 
 
 class AlbumPopover(Gtk.Popover):
@@ -37,15 +37,15 @@ class AlbumPopover(Gtk.Popover):
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
         view.populate([album_id])
-        if Lp().window.container.is_paned_stack:
+        if App().window.container.is_paned_stack:
             for child in view.children:
                 child.hide_header_labels()
 
         # Get width/height from main window if None
         if height is None:
-            height = Lp().window.get_size()[1] * 0.8
+            height = App().window.get_size()[1] * 0.8
         if width is None:
-            self.__width = Lp().window.get_size()[0] * 0.8
+            self.__width = App().window.get_size()[0] * 0.8
         else:
             self.__width = width
         # Get height requested by child

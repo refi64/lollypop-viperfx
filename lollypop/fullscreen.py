@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 
 from datetime import datetime
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.pop_next import NextPopover
 from lollypop.controllers import InfoController, PlaybackController
 from lollypop.controllers import ProgressController
@@ -93,15 +93,15 @@ class FullScreen(Gtk.Window, InfoController,
         """
             Init signals, set color and go party mode if nothing is playing
         """
-        self.__signal1_id = Lp().player.connect("current-changed",
-                                                self.on_current_changed)
-        self.__signal2_id = Lp().player.connect("status-changed",
-                                                self.on_status_changed)
-        if Lp().player.current_track.id is None:
-            Lp().player.set_party(True)
+        self.__signal1_id = App().player.connect("current-changed",
+                                                 self.on_current_changed)
+        self.__signal2_id = App().player.connect("status-changed",
+                                                 self.on_status_changed)
+        if App().player.current_track.id is None:
+            App().player.set_party(True)
         else:
-            self.on_status_changed(Lp().player)
-            self.on_current_changed(Lp().player)
+            self.on_status_changed(App().player)
+            self.on_current_changed(App().player)
         if self.__timeout1 is None:
             self.__timeout1 = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
@@ -117,16 +117,16 @@ class FullScreen(Gtk.Window, InfoController,
             self.__timeout2 = GLib.timeout_add(1000,
                                                self.__update_datetime,
                                                show_seconds)
-        self._update_position(Lp().player.position/Gst.SECOND)
+        self._update_position(App().player.position/Gst.SECOND)
         screen = Gdk.Screen.get_default()
         monitor = screen.get_monitor_at_window(self.__parent.get_window())
         self.fullscreen_on_monitor(screen, monitor)
         self._next_popover.set_relative_to(self._next_btn)
-        if Lp().player.next_track.id != Type.RADIOS:
+        if App().player.next_track.id != Type.RADIOS:
             self._next_popover.show()
 
         # Disable screensaver (idle)
-        Lp().inhibitor.manual_inhibit(suspend=False, idle=True)
+        App().inhibitor.manual_inhibit(suspend=False, idle=True)
 
     def do_hide(self):
         """
@@ -136,10 +136,10 @@ class FullScreen(Gtk.Window, InfoController,
         self.__parent.set_skip_taskbar_hint(False)
         Gtk.Window.do_hide(self)
         if self.__signal1_id is not None:
-            Lp().player.disconnect(self.__signal1_id)
+            App().player.disconnect(self.__signal1_id)
             self.__signal1_id = None
         if self.__signal2_id is not None:
-            Lp().player.disconnect(self.__signal2_id)
+            App().player.disconnect(self.__signal2_id)
             self.__signal2_id = None
         if self.__timeout1 is not None:
             GLib.source_remove(self.__timeout1)
@@ -148,7 +148,7 @@ class FullScreen(Gtk.Window, InfoController,
             GLib.source_remove(self.__timeout2)
         self._next_popover.set_relative_to(None)
         self._next_popover.hide()
-        Lp().inhibitor.manual_uninhibit()
+        App().inhibitor.manual_uninhibit()
 
     def show_hide_volume_control(self):
         """

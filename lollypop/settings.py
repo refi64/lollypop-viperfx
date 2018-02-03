@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Pango
 from gettext import gettext as _
 from gettext import ngettext as ngettext
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.touch_helper import TouchHelper
@@ -79,13 +79,13 @@ class SettingsDialog:
         self.__progress = builder.get_object("progress")
         self.__infobar = builder.get_object("infobar")
         self.__reset_button = builder.get_object("reset_button")
-        if Lp().lastfm is None or Lp().lastfm.is_goa:
+        if App().lastfm is None or App().lastfm.is_goa:
             builder.get_object("lastfm_grid").hide()
-        if Lp().scanner.is_locked():
+        if App().scanner.is_locked():
             builder.get_object("reset_button").set_sensitive(False)
-        artists = Lp().artists.count()
-        albums = Lp().albums.count()
-        tracks = Lp().tracks.count()
+        artists = App().artists.count()
+        albums = App().albums.count()
+        tracks = App().tracks.count()
         builder.get_object("artists").set_text(
                         ngettext("%d artist", "%d artists", artists) % artists)
         builder.get_object("albums").set_text(
@@ -96,12 +96,13 @@ class SettingsDialog:
         self.__popover_content = builder.get_object("popover")
         duration = builder.get_object("duration")
         duration.set_range(1, 20)
-        duration.set_value(Lp().settings.get_value("mix-duration").get_int32())
+        duration.set_value(
+                          App().settings.get_value("mix-duration").get_int32())
 
         self.__settings_dialog = builder.get_object("settings_dialog")
-        self.__settings_dialog.set_transient_for(Lp().window)
+        self.__settings_dialog.set_transient_for(App().window)
 
-        if Lp().settings.get_value("disable-csd"):
+        if App().settings.get_value("disable-csd"):
             self.__settings_dialog.set_title(_("Preferences"))
         else:
             headerbar = builder.get_object("header_bar")
@@ -109,33 +110,34 @@ class SettingsDialog:
             self.__settings_dialog.set_titlebar(headerbar)
 
         switch_scan = builder.get_object("switch_scan")
-        switch_scan.set_state(Lp().settings.get_value("auto-update"))
+        switch_scan.set_state(App().settings.get_value("auto-update"))
 
         switch_view = builder.get_object("switch_dark")
-        if Lp().gtk_application_prefer_dark_theme:
+        if App().gtk_application_prefer_dark_theme:
             switch_view.set_sensitive(False)
         else:
-            switch_view.set_state(Lp().settings.get_value("dark-ui"))
+            switch_view.set_state(App().settings.get_value("dark-ui"))
 
         switch_background = builder.get_object("switch_background")
-        switch_background.set_state(Lp().settings.get_value("background-mode"))
+        switch_background.set_state(
+                                   App().settings.get_value("background-mode"))
 
         switch_state = builder.get_object("switch_state")
-        switch_state.set_state(Lp().settings.get_value("save-state"))
+        switch_state.set_state(App().settings.get_value("save-state"))
 
         switch_network_access = builder.get_object("switch_network_access")
-        network_access = Lp().settings.get_value("network-access")
+        network_access = App().settings.get_value("network-access")
         switch_network_access.set_state(network_access)
 
         switch_mix = builder.get_object("switch_mix")
-        switch_mix.set_state(Lp().settings.get_value("mix"))
+        switch_mix.set_state(App().settings.get_value("mix"))
 
         self.__helper = TouchHelper(switch_mix, None, None)
         self.__helper.set_long_func(self.__mix_long_func, switch_mix)
         self.__helper.set_short_func(self.__mix_short_func, switch_mix)
 
         switch_mix_party = builder.get_object("switch_mix_party")
-        switch_mix_party.set_state(Lp().settings.get_value("party-mix"))
+        switch_mix_party.set_state(App().settings.get_value("party-mix"))
 
         switch_artwork_tags = builder.get_object("switch_artwork_tags")
         grid_behaviour = builder.get_object("grid_behaviour")
@@ -146,24 +148,24 @@ class SettingsDialog:
                          (switch_artwork_tags, grid_behaviour))
 
         switch_genres = builder.get_object("switch_genres")
-        switch_genres.set_state(Lp().settings.get_value("show-genres"))
+        switch_genres.set_state(App().settings.get_value("show-genres"))
 
         switch_compilations = builder.get_object("switch_compilations")
         switch_compilations.set_state(
-            Lp().settings.get_value("show-compilations"))
+            App().settings.get_value("show-compilations"))
 
         switch_artwork = builder.get_object("switch_artwork")
-        switch_artwork.set_state(Lp().settings.get_value("artist-artwork"))
+        switch_artwork.set_state(App().settings.get_value("artist-artwork"))
 
         combo_orderby = builder.get_object("combo_orderby")
-        combo_orderby.set_active(Lp().settings.get_enum(("orderby")))
+        combo_orderby.set_active(App().settings.get_enum(("orderby")))
 
         combo_preview = builder.get_object("combo_preview")
 
         scale_coversize = builder.get_object("scale_coversize")
         scale_coversize.set_range(150, 300)
         scale_coversize.set_value(
-                            Lp().settings.get_value("cover-size").get_int32())
+                            App().settings.get_value("cover-size").get_int32())
         self.__settings_dialog.connect("destroy", self.__edit_settings_close)
 
         builder.connect_signals(self)
@@ -177,7 +179,7 @@ class SettingsDialog:
         # Music tab
         #
         dirs = []
-        for directory in Lp().settings.get_value("music-uris"):
+        for directory in App().settings.get_value("music-uris"):
             dirs.append(directory)
 
         # Main chooser
@@ -206,14 +208,15 @@ class SettingsDialog:
         #
         # Google tab
         #
-        key = Lp().settings.get_value("cs-api-key").get_string() or\
-            Lp().settings.get_default_value("cs-api-key").get_string()
+        key = App().settings.get_value("cs-api-key").get_string() or\
+            App().settings.get_default_value("cs-api-key").get_string()
         builder.get_object("cs-entry").set_text(key)
 
         #
         # ListenBrainz tab
         #
-        token = Lp().settings.get_value("listenbrainz-user-token").get_string()
+        token = App().settings.get_value(
+                                        "listenbrainz-user-token").get_string()
         builder.get_object("listenbrainz-user-token").set_text(token)
 
         from lollypop.helper_passwords import PasswordsHelper
@@ -221,7 +224,7 @@ class SettingsDialog:
         #
         # Last.fm tab
         #
-        if Lp().lastfm is not None:
+        if App().lastfm is not None:
             self.__lastfm_test_image = builder.get_object("lastfm_test_image")
             self.__lastfm_login = builder.get_object("lastfm_login")
             self.__lastfm_password = builder.get_object("lastfm_password")
@@ -232,7 +235,7 @@ class SettingsDialog:
         #
         # Libre.fm tab
         #
-        if Lp().librefm is not None:
+        if App().librefm is not None:
             self.__librefm_test_image = builder.get_object(
                                                           "librefm_test_image")
             self.__librefm_login = builder.get_object("librefm_login")
@@ -257,8 +260,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("network-access",
-                                GLib.Variant("b", state))
+        App().settings.set_value("network-access",
+                                 GLib.Variant("b", state))
 
     def _update_coversize(self, widget):
         """
@@ -278,8 +281,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("dark-ui", GLib.Variant("b", state))
-        if not Lp().player.is_party:
+        App().settings.set_value("dark-ui", GLib.Variant("b", state))
+        if not App().player.is_party:
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
 
@@ -289,8 +292,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("auto-update",
-                                GLib.Variant("b", state))
+        App().settings.set_value("auto-update",
+                                 GLib.Variant("b", state))
 
     def _update_background_setting(self, widget, state):
         """
@@ -298,8 +301,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("background-mode",
-                                GLib.Variant("b", state))
+        App().settings.set_value("background-mode",
+                                 GLib.Variant("b", state))
 
     def _update_state_setting(self, widget, state):
         """
@@ -307,8 +310,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("save-state",
-                                GLib.Variant("b", state))
+        App().settings.set_value("save-state",
+                                 GLib.Variant("b", state))
 
     def _update_genres_setting(self, widget, state):
         """
@@ -316,9 +319,9 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().window.container.show_genres(state)
-        Lp().settings.set_value("show-genres",
-                                GLib.Variant("b", state))
+        App().window.container.show_genres(state)
+        App().settings.set_value("show-genres",
+                                 GLib.Variant("b", state))
 
     def _update_mix_setting(self, widget, state):
         """
@@ -326,8 +329,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("mix", GLib.Variant("b", state))
-        Lp().player.update_crossfading()
+        App().settings.set_value("mix", GLib.Variant("b", state))
+        App().player.update_crossfading()
         if state:
             if self.__popover is None:
                 self.__popover = Gtk.Popover.new(widget)
@@ -342,8 +345,8 @@ class SettingsDialog:
             Update party mix setting
             @param widget as Gtk.Range
         """
-        Lp().settings.set_value("party-mix", GLib.Variant("b", state))
-        Lp().player.update_crossfading()
+        App().settings.set_value("party-mix", GLib.Variant("b", state))
+        App().player.update_crossfading()
 
     def _update_mix_duration_setting(self, widget):
         """
@@ -351,7 +354,7 @@ class SettingsDialog:
             @param widget as Gtk.Range
         """
         value = widget.get_value()
-        Lp().settings.set_value("mix-duration", GLib.Variant("i", value))
+        App().settings.set_value("mix-duration", GLib.Variant("i", value))
 
     def _update_artwork_tags_setting(self, widget, state):
         """
@@ -359,7 +362,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("save-to-tags", GLib.Variant("b", state))
+        App().settings.set_value("save-to-tags", GLib.Variant("b", state))
 
     def _update_compilations_setting(self, widget, state):
         """
@@ -367,8 +370,8 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("show-compilations",
-                                GLib.Variant("b", state))
+        App().settings.set_value("show-compilations",
+                                 GLib.Variant("b", state))
 
     def _update_artwork_setting(self, widget, state):
         """
@@ -376,18 +379,18 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("artist-artwork",
-                                GLib.Variant("b", state))
-        Lp().window.container.reload_view()
+        App().settings.set_value("artist-artwork",
+                                 GLib.Variant("b", state))
+        App().window.container.reload_view()
         if state:
-            Lp().art.cache_artists_info()
+            App().art.cache_artists_info()
 
     def _update_orderby_setting(self, widget):
         """
             Update orderby setting
             @param widget as Gtk.ComboBoxText
         """
-        Lp().settings.set_enum("orderby", widget.get_active())
+        App().settings.set_enum("orderby", widget.get_active())
 
     def _update_fm_settings(self, name):
         """
@@ -395,13 +398,13 @@ class SettingsDialog:
             @param name as str (librefm/lastfm)
         """
         fm = None
-        if name == "librefm" and Lp().librefm is not None:
-            fm = Lp().librefm
+        if name == "librefm" and App().librefm is not None:
+            fm = App().librefm
             callback = self.__test_librefm_connection
             login = self.__librefm_login.get_text()
             password = self.__librefm_password.get_text()
-        elif Lp().lastfm is not None:
-            fm = Lp().lastfm
+        elif App().lastfm is not None:
+            fm = App().lastfm
             callback = self.__test_lastfm_connection
             login = self.__lastfm_login.get_text()
             password = self.__lastfm_password.get_text()
@@ -426,7 +429,7 @@ class SettingsDialog:
             @param entry as Gtk.Entry
         """
         value = entry.get_text().strip()
-        Lp().settings.set_value("cs-api-key", GLib.Variant("s", value))
+        App().settings.set_value("cs-api-key", GLib.Variant("s", value))
 
     def _on_listenbrainz_token_changed(self, entry):
         """
@@ -434,17 +437,17 @@ class SettingsDialog:
             @param entry as Gtk.Entry
         """
         value = entry.get_text().strip()
-        Lp().settings.set_value("listenbrainz-user-token",
-                                GLib.Variant("s", value))
+        App().settings.set_value("listenbrainz-user-token",
+                                 GLib.Variant("s", value))
 
     def _on_preview_changed(self, combo):
         """
             Update preview setting
             @param combo as Gtk.ComboBoxText
         """
-        Lp().settings.set_value("preview-output",
-                                GLib.Variant("s", combo.get_active_id()))
-        Lp().player.set_preview_output()
+        App().settings.set_value("preview-output",
+                                 GLib.Variant("s", combo.get_active_id()))
+        App().player.set_preview_output()
 
     def _on_preview_query_tooltip(self, combo, x, y, keyboard, tooltip):
         """
@@ -512,13 +515,13 @@ class SettingsDialog:
             @param button as Gtk.Button
         """
         try:
-            Lp().player.stop()
-            Lp().player.reset_pcn()
-            Lp().player.emit("current-changed")
-            Lp().player.emit("prev-changed")
-            Lp().player.emit("next-changed")
-            Lp().cursors = {}
-            track_ids = Lp().tracks.get_ids()
+            App().player.stop()
+            App().player.reset_pcn()
+            App().player.emit("current-changed")
+            App().player.emit("prev-changed")
+            App().player.emit("next-changed")
+            App().cursors = {}
+            track_ids = App().tracks.get_ids()
             self.__progress.show()
             history = History()
             self.__reset_button.get_toplevel().set_deletable(False)
@@ -545,7 +548,7 @@ class SettingsDialog:
             Show popover
             @param args as []
         """
-        if Lp().settings.get_value("mix"):
+        if App().settings.get_value("mix"):
             if self.__popover is None:
                 self.__popover = Gtk.Popover.new(args[0])
                 self.__popover.set_modal(False)
@@ -592,14 +595,14 @@ class SettingsDialog:
         """
         self.__cover_tid = None
         value = widget.get_value()
-        Lp().settings.set_value("cover-size", GLib.Variant("i", value))
-        Lp().art.update_art_size()
+        App().settings.set_value("cover-size", GLib.Variant("i", value))
+        App().art.update_art_size()
         for suffix in ["lastfm", "wikipedia", "spotify"]:
-            for artist in Lp().artists.get([]):
+            for artist in App().artists.get([]):
                 InfoCache.uncache_artwork(artist[1], suffix,
                                           widget.get_scale_factor())
-                Lp().art.emit("artist-artwork-changed", artist[1])
-        Lp().window.container.reload_view()
+                App().art.emit("artist-artwork-changed", artist[1])
+        App().window.container.reload_view()
 
     def __edit_settings_close(self, widget):
         """
@@ -623,22 +626,22 @@ class SettingsDialog:
                 if uri is not None and uri not in uris:
                     uris.append(uri)
 
-        previous = Lp().settings.get_value("music-uris")
-        Lp().settings.set_value("music-uris", GLib.Variant("as", uris))
+        previous = App().settings.get_value("music-uris")
+        App().settings.set_value("music-uris", GLib.Variant("as", uris))
 
         self.__settings_dialog.hide()
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
-            Lp().scanner.update()
-        if Lp().window.container.view is not None:
-            Lp().window.container.view.update_children()
+            App().scanner.update()
+        if App().window.container.view is not None:
+            App().window.container.view.update_children()
 
     def __test_lastfm_connection(self, result):
         """
             Test lastfm connection
             @param result as None
         """
-        if Lp().lastfm.session_key:
+        if App().lastfm.session_key:
             self.__lastfm_test_image.set_from_icon_name(
                           "object-select-symbolic",
                           Gtk.IconSize.MENU)
@@ -652,7 +655,7 @@ class SettingsDialog:
             Test librefm connection
             @param result as None
         """
-        if Lp().librefm.session_key:
+        if App().librefm.session_key:
             self.__librefm_test_image.set_from_icon_name(
                           "object-select-symbolic",
                           Gtk.IconSize.MENU)
@@ -678,7 +681,7 @@ class SettingsDialog:
             @param result as Gio.AsyncResult
             @param combo as Gtk.ComboBoxText
         """
-        current = Lp().settings.get_value("preview-output").get_string()
+        current = App().settings.get_value("preview-output").get_string()
         try:
             outputs = source.call_finish(result)[0]
         except:
@@ -717,7 +720,7 @@ class SettingsDialog:
             grid.attach(label, l, t, w, h)
         else:
             switch_artwork_tags.set_state(
-                                       Lp().settings.get_value("save-to-tags"))
+                                      App().settings.get_value("save-to-tags"))
 
     def __on_get_password(self, attributes, password, name):
         """
@@ -744,18 +747,18 @@ class SettingsDialog:
         """
         if track_ids:
             track_id = track_ids.pop(0)
-            uri = Lp().tracks.get_uri(track_id)
+            uri = App().tracks.get_uri(track_id)
             f = Gio.File.new_for_uri(uri)
             name = f.get_basename()
-            album_id = Lp().tracks.get_album_id(track_id)
-            popularity = Lp().tracks.get_popularity(track_id)
-            rate = Lp().tracks.get_rate(track_id)
-            ltime = Lp().tracks.get_ltime(track_id)
-            mtime = Lp().tracks.get_mtime(track_id)
-            duration = Lp().tracks.get_duration(track_id)
-            loved = Lp().albums.get_loved(album_id)
-            album_popularity = Lp().albums.get_popularity(album_id)
-            album_rate = Lp().albums.get_rate(album_id)
+            album_id = App().tracks.get_album_id(track_id)
+            popularity = App().tracks.get_popularity(track_id)
+            rate = App().tracks.get_rate(track_id)
+            ltime = App().tracks.get_ltime(track_id)
+            mtime = App().tracks.get_mtime(track_id)
+            duration = App().tracks.get_duration(track_id)
+            loved = App().albums.get_loved(album_id)
+            album_popularity = App().albums.get_popularity(album_id)
+            album_rate = App().albums.get_rate(album_id)
             history.add(name, duration, popularity, rate,
                         ltime, mtime, loved, album_popularity, album_rate)
             self.__progress.set_fraction((count - len(track_ids))/count)
@@ -763,12 +766,12 @@ class SettingsDialog:
                           count, history)
         else:
             self.__progress.hide()
-            Lp().player.stop()
-            Lp().db.drop_db()
-            Lp().db = Database()
-            Lp().window.container.show_genres(
-                                        Lp().settings.get_value("show-genres"))
-            Lp().scanner.update()
+            App().player.stop()
+            App().db.drop_db()
+            App().db = Database()
+            App().window.container.show_genres(
+                                       App().settings.get_value("show-genres"))
+            App().scanner.update()
             self.__progress.get_toplevel().set_deletable(True)
 
 

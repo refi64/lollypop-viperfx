@@ -12,7 +12,7 @@
 
 from gi.repository import GObject
 
-from lollypop.define import Lp, NextContext
+from lollypop.define import App, NextContext
 from lollypop.objects import Track
 
 
@@ -65,7 +65,7 @@ class BasePlayer(GObject.GObject):
             # Albums in current playlist
             self._albums = []
             # Current shuffle mode
-            self._shuffle = Lp().settings.get_enum("shuffle")
+            self._shuffle = App().settings.get_enum("shuffle")
             # For tracks from the cmd line
             self._external_tracks = []
 

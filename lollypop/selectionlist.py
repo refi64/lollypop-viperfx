@@ -17,7 +17,7 @@ from locale import strcoll
 
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
-from lollypop.define import Type, Lp, ArtSize
+from lollypop.define import Type, App, ArtSize
 
 
 class DefaultStartupMenu(Gio.Menu):
@@ -32,7 +32,7 @@ class DefaultStartupMenu(Gio.Menu):
         Gio.Menu.__init__(self)
         self.__rowid = rowid
         action = Gio.SimpleAction(name="default_selection_id")
-        Lp().add_action(action)
+        App().add_action(action)
         action.connect('activate',
                        self.__on_action_clicked,
                        rowid)
@@ -47,7 +47,7 @@ class DefaultStartupMenu(Gio.Menu):
             @param GVariant
             @param rowid as int
         """
-        Lp().settings.set_value("list-one-ids", GLib.Variant("ai", [rowid]))
+        App().settings.set_value("list-one-ids", GLib.Variant("ai", [rowid]))
 
 
 class SelectionList(Gtk.Overlay):
@@ -114,8 +114,8 @@ class SelectionList(Gtk.Overlay):
         self.__scrolled.connect("enter-notify-event", self.__on_enter_notify)
         self.__scrolled.connect("leave-notify-event", self.__on_leave_notify)
 
-        Lp().art.connect("artist-artwork-changed",
-                         self.__on_artist_artwork_changed)
+        App().art.connect("artist-artwork-changed",
+                          self.__on_artist_artwork_changed)
 
     def hide(self):
         """
@@ -314,7 +314,7 @@ class SelectionList(Gtk.Overlay):
         """
         items = []
         items.append((Type.POPULARS, _("Popular albums")))
-        if Lp().albums.has_loves():
+        if App().albums.has_loves():
             items.append((Type.LOVED, _("Loved albums")))
         items.append((Type.RECENTS, _("Recently added albums")))
         items.append((Type.RANDOMS, _("Random albums")))
@@ -334,7 +334,7 @@ class SelectionList(Gtk.Overlay):
         """
         items = []
         items.append((Type.POPULARS, _("Popular tracks")))
-        items.append((Type.LOVED, Lp().playlists.LOVED))
+        items.append((Type.LOVED, App().playlists.LOVED))
         items.append((Type.RECENTS, _("Recently played")))
         items.append((Type.NEVER, _("Never played")))
         items.append((Type.RANDOMS, _("Random tracks")))
@@ -418,7 +418,7 @@ class SelectionList(Gtk.Overlay):
                 text = self.__model.get_value(iterator, 1)
                 column = self.__view.get_column(0)
                 (position, width) = column.cell_get_position(self.__renderer0)
-                if Lp().settings.get_value("artist-artwork") and\
+                if App().settings.get_value("artist-artwork") and\
                         self.__is_artists:
                     width -= ArtSize.ARTIST_SMALL +\
                              CellRendererArtist.xshift * 2
@@ -544,8 +544,8 @@ class SelectionList(Gtk.Overlay):
         # String comparaison for non static
         else:
             if self.__is_artists:
-                a = Lp().artists.get_sortname(a_index)
-                b = Lp().artists.get_sortname(b_index)
+                a = App().artists.get_sortname(a_index)
+                b = App().artists.get_sortname(b_index)
             else:
                 a = model.get_value(itera, 1)
                 b = model.get_value(iterb, 1)
@@ -601,7 +601,7 @@ class SelectionList(Gtk.Overlay):
                 self.__fast_scroll is not None:
             self.__fast_scroll.show()
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(False)
+        App().window.enable_global_shortcuts(False)
 
     def __on_leave_notify(self, widget, event):
         """
@@ -617,7 +617,7 @@ class SelectionList(Gtk.Overlay):
             if self.__is_artists and self.__fast_scroll is not None:
                 self.__fast_scroll.hide()
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(True)
+        App().window.enable_global_shortcuts(True)
 
     def __on_artist_artwork_changed(self, art, artist):
         """

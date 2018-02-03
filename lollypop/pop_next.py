@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.define import App, ArtSize, Shuffle
 
 
 class NextPopover(Gtk.Popover):
@@ -45,19 +45,20 @@ class NextPopover(Gtk.Popover):
         """
             Update widget with next track
         """
-        self.__artist_label.set_text(", ".join(Lp().player.next_track.artists))
-        self.__title_label.set_text(Lp().player.next_track.title)
-        art = Lp().art.get_album_artwork(
-                               Lp().player.next_track.album,
+        self.__artist_label.set_text(
+                                    ", ".join(App().player.next_track.artists))
+        self.__title_label.set_text(App().player.next_track.title)
+        art = App().art.get_album_artwork(
+                               App().player.next_track.album,
                                ArtSize.MEDIUM,
                                self.get_scale_factor())
         if art is not None:
             self.__cover.set_from_surface(art)
             del art
-            self.__cover.set_tooltip_text(Lp().player.next_track.album.name)
+            self.__cover.set_tooltip_text(App().player.next_track.album.name)
             self.__cover.show()
-            queue = Lp().player.queue
-            if queue and queue[0] == Lp().player.next_track.id:
+            queue = App().player.queue
+            if queue and queue[0] == App().player.next_track.id:
                 self.__skip_btn.hide()
             else:
                 self.__skip_btn.show()
@@ -69,11 +70,11 @@ class NextPopover(Gtk.Popover):
             Return True if widget should be shown, not already closed by user
         """
         return not self.__inhibited and (
-                Lp().player.is_party or
-                Lp().settings.get_enum("shuffle") == Shuffle.TRACKS) and\
-            Lp().player.next_track.id is not None and\
-            Lp().player.next_track.id >= 0 and\
-            not Lp().window.container.is_paned_stack
+                App().player.is_party or
+                App().settings.get_enum("shuffle") == Shuffle.TRACKS) and\
+            App().player.next_track.id is not None and\
+            App().player.next_track.id >= 0 and\
+            not App().window.container.is_paned_stack
 
     def inhibit(self, i):
         """
@@ -121,8 +122,8 @@ class NextPopover(Gtk.Popover):
             Skip next track
             @param btn as Gtk.Button
         """
-        Lp().player.set_next(True)
-        Lp().player.emit("queue-changed")
+        App().player.set_next(True)
+        App().player.emit("queue-changed")
 
 #######################
 # PRIVATE             #
@@ -134,7 +135,7 @@ class NextPopover(Gtk.Popover):
         """
         self.__inhibited = False
         self.update()
-        self._signal_id = Lp().player.connect("queue-changed", self.update)
+        self._signal_id = App().player.connect("queue-changed", self.update)
 
     def __on_unmap(self, widget):
         """
@@ -142,7 +143,7 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         if self._signal_id is not None:
-            Lp().player.disconnect(self._signal_id)
+            App().player.disconnect(self._signal_id)
             self._signal_id = None
 
     def __on_enter_notify(self, widget, event):
@@ -151,5 +152,5 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if Lp().window.container.view is not None:
-            Lp().window.container.view.disable_overlay()
+        if App().window.container.view is not None:
+            App().window.container.view.disable_overlay()

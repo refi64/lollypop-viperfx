@@ -16,7 +16,7 @@ from gettext import gettext as _
 import unicodedata
 
 from lollypop.helper_task import TaskHelper
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.objects import Track
 
 
@@ -25,7 +25,7 @@ def debug(str):
         Print debug
         @param debug as str
     """
-    if Lp().debug is True:
+    if App().debug is True:
         print(str)
 
 
@@ -35,7 +35,7 @@ def get_network_available():
         @return bool
     """
     return Gio.NetworkMonitor.get_default().get_network_available() and\
-        Lp().settings.get_value("network-access")
+        App().settings.get_value("network-access")
 
 
 def noaccents(string):
@@ -125,7 +125,7 @@ def format_artist_name(name):
         Return formated artist name
         @param str
     """
-    if not Lp().settings.get_value("smart-artist-sort"):
+    if not App().settings.get_value("smart-artist-sort"):
         return name
     # Handle language ordering
     # Translators: Add here words that shoud be ignored for artist sort order
@@ -176,8 +176,8 @@ def is_loved(track_id):
         Check if object is in loved playlist
         @return bool
     """
-    return Lp().playlists.exists_track(Type.LOVED,
-                                       track_id)
+    return App().playlists.exists_track(Type.LOVED,
+                                        track_id)
 
 
 def remove_static_genres(genre_ids):
@@ -196,16 +196,16 @@ def set_loved(track_id, loved):
     """
     if not is_loved(track_id):
         if loved:
-            Lp().playlists.add_tracks(Type.LOVED,
-                                      [Track(track_id)])
-            if Lp().lastfm is not None:
+            App().playlists.add_tracks(Type.LOVED,
+                                       [Track(track_id)])
+            if App().lastfm is not None:
                 helper = TaskHelper()
                 helper.run(_set_loved_on_lastfm, track_id, True)
     else:
         if not loved:
-            Lp().playlists.remove_tracks(Type.LOVED,
-                                         [Track(track_id)])
-            if Lp().lastfm is not None:
+            App().playlists.remove_tracks(Type.LOVED,
+                                          [Track(track_id)])
+            if App().lastfm is not None:
                 helper = TaskHelper()
                 helper.run(_set_loved_on_lastfm, track_id, False)
 
@@ -218,10 +218,10 @@ def _set_loved_on_lastfm(track_id, loved):
     """
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
-            Lp().lastfm.is_auth:
-        title = Lp().tracks.get_name(track_id)
-        artists = ", ".join(Lp().tracks.get_artists(track_id))
+            App().lastfm.is_auth:
+        title = App().tracks.get_name(track_id)
+        artists = ", ".join(App().tracks.get_artists(track_id))
         if loved:
-            Lp().lastfm.love(artists, title)
+            App().lastfm.love(artists, title)
         else:
-            Lp().lastfm.unlove(artists, title)
+            App().lastfm.unlove(artists, title)

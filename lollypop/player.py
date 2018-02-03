@@ -24,7 +24,7 @@ from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track, Album
-from lollypop.define import Lp, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
+from lollypop.define import App, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -46,7 +46,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ExternalsPlayer.__init__(self)
         self.update_crossfading()
         self.__do_not_update_next = False
-        Lp().settings.connect("changed::playback", self.__on_playback_changed)
+        App().settings.connect("changed::playback", self.__on_playback_changed)
 
     def prev(self):
         """
@@ -54,7 +54,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if self._locked:
             return
-        smart_prev = Lp().settings.get_value("smart-previous")
+        smart_prev = App().settings.get_value("smart-previous")
         if self._prev_track.id is not None:
             if smart_prev and self.position / Gst.SECOND > 2:
                 self.seek(0)
@@ -146,7 +146,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_ids = []
-        if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
+        if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(album.tracks)
         else:
             track = album.tracks[0]
@@ -172,41 +172,41 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
            (artist_ids and artist_ids[0] == Type.ALL):
             # Genres: all, Artists: compilations
             if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                album_ids = Lp().albums.get_compilation_ids()
+                album_ids = App().albums.get_compilation_ids()
             # Genres: all, Artists: ids
             elif artist_ids and artist_ids[0] != Type.ALL:
-                album_ids += Lp().albums.get_ids(artist_ids)
+                album_ids += App().albums.get_ids(artist_ids)
             # Genres: all, Artists: all
             else:
-                if Lp().settings.get_value("show-compilations"):
-                    album_ids += Lp().albums.get_compilation_ids()
-                album_ids += Lp().albums.get_ids()
+                if App().settings.get_value("show-compilations"):
+                    album_ids += App().albums.get_compilation_ids()
+                album_ids += App().albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_ids and genre_ids[0] == Type.POPULARS:
-            album_ids = Lp().albums.get_populars()
+            album_ids = App().albums.get_populars()
         # We are in loved view, add loved albums
         elif genre_ids and genre_ids[0] == Type.LOVED:
-            album_ids = Lp().albums.get_loves()
+            album_ids = App().albums.get_loves()
         # We are in recents view, add recent albums
         elif genre_ids and genre_ids[0] == Type.RECENTS:
-            album_ids = Lp().albums.get_recents()
+            album_ids = App().albums.get_recents()
         # We are in randoms view, add random albums
         elif genre_ids and genre_ids[0] == Type.RANDOMS:
-            album_ids = Lp().albums.get_cached_randoms()
+            album_ids = App().albums.get_cached_randoms()
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
-            album_ids = Lp().albums.get_compilation_ids()
+            album_ids = App().albums.get_compilation_ids()
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
             # add compilations
             if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                album_ids += Lp().albums.get_compilation_ids(genre_ids)
+                album_ids += App().albums.get_compilation_ids(genre_ids)
             else:
                 if not artist_ids and\
-                        Lp().settings.get_value("show-compilations"):
-                    album_ids += Lp().albums.get_compilation_ids(genre_ids)
-                album_ids += Lp().albums.get_ids(artist_ids, genre_ids)
+                        App().settings.get_value("show-compilations"):
+                    album_ids += App().albums.get_compilation_ids(genre_ids)
+                album_ids += App().albums.get_ids(artist_ids, genre_ids)
         # Create album objects
         for album_id in album_ids:
             album = Album(album_id, genre_ids, artist_ids)
@@ -243,7 +243,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Restore player state
         """
         try:
-            if Lp().settings.get_value("save-state"):
+            if App().settings.get_value("save-state"):
                 track_id = load(open(LOLLYPOP_DATA_PATH +
                                      "/track_id.bin",
                                      "rb"))
@@ -260,7 +260,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     url = radios.get_url(name)
                     track.set_radio(name, url)
                     self.load(track, is_playing)
-                elif Lp().tracks.get_uri(track_id) != "":
+                elif App().tracks.get_uri(track_id) != "":
                     track = Track(track_id)
                     self._load_track(track)
                     # We set this initial state
@@ -273,15 +273,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         track_ids = []
                         for playlist_id in playlist_ids:
                             if playlist_id == Type.POPULARS:
-                                tracks = Lp().tracks.get_populars()
+                                tracks = App().tracks.get_populars()
                             elif playlist_id == Type.RECENTS:
-                                tracks = Lp().tracks.get_recently_listened_to()
+                                tracks = App().tracks.get_recently_listened_to(
+                                                                              )
                             elif playlist_id == Type.NEVER:
-                                tracks = Lp().tracks.get_never_listened_to()
+                                tracks = App().tracks.get_never_listened_to()
                             elif playlist_id == Type.RANDOMS:
-                                tracks = Lp().tracks.get_randoms()
+                                tracks = App().tracks.get_randoms()
                             else:
-                                tracks = Lp().playlists.get_track_ids(
+                                tracks = App().playlists.get_track_ids(
                                                                    playlist_id)
                             for track_id in tracks:
                                 if track_id not in track_ids:
@@ -323,7 +324,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Set previous track
         """
         try:
-            if Lp().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
+            if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 self._prev_track = self._current_track
             else:
                 # Look at externals
@@ -358,7 +359,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # Reset finished context
             self._next_context = NextContext.NONE
 
-            if Lp().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
+            if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 next_track = self._current_track
             else:
                 # Look at externals
@@ -394,7 +395,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         # In party or shuffle, just update next track
         if self.is_party or\
-                Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
+                App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             self.set_next()
             # We send this signal to update next popover
             self.emit("queue-changed")
@@ -410,8 +411,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Calculate if crossfading is needed
         """
-        mix = Lp().settings.get_value("mix")
-        party_mix = Lp().settings.get_value("party-mix")
+        mix = App().settings.get_value("mix")
+        party_mix = App().settings.get_value("party-mix")
         self._crossfading = (mix and not party_mix) or\
                             (mix and party_mix and self.is_party)
 
@@ -466,8 +467,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             On stream start, set next and previous track
         """
-        if not Lp().scanner.is_locked():
-            Lp().window.container.pulse(False)
+        if not App().scanner.is_locked():
+            App().window.container.pulse(False)
         if self._current_track.id is not None and self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
         if self.track_in_queue(self._current_track):

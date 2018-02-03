@@ -15,7 +15,7 @@ from gi.repository import Gio, GLib, GdkPixbuf
 from os import mkdir, path  # FIXME Use Gio
 
 from lollypop.utils import escape
-from lollypop.define import ArtSize, Lp
+from lollypop.define import ArtSize, App
 
 
 class InfoCache:
@@ -125,7 +125,7 @@ class InfoCache:
                                              extract,
                                              0, 0)
                     extract.savev(filepath_at_size, "jpeg",
-                                  ["quality"], [str(Lp().settings.get_value(
+                                  ["quality"], [str(App().settings.get_value(
                                                 "cover-quality").get_int32())])
                 return filepath_at_size
         except Exception as e:
@@ -191,7 +191,7 @@ class InfoCache:
                                                                None)
             stream.close()
             pixbuf.savev(filepath + ".jpg",
-                         "jpeg", ["quality"], [str(Lp().settings.get_value(
+                         "jpeg", ["quality"], [str(App().settings.get_value(
                                                "cover-quality").get_int32())])
 
     def remove(prefix, suffix):

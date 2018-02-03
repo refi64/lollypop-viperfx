@@ -16,7 +16,7 @@ from re import match
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, ENCODING
+from lollypop.define import App, ENCODING
 from lollypop.utils import format_artist_name
 
 
@@ -437,7 +437,7 @@ class TagReader(Discoverer):
             artist = artist.strip()
             if artist != "":
                 # Get artist id, add it if missing
-                artist_id = Lp().artists.get_id(artist)
+                artist_id = App().artists.get_id(artist)
                 if i >= sortlen or sortsplit[i] == "":
                     sortname = None
                 else:
@@ -445,9 +445,9 @@ class TagReader(Discoverer):
                 if artist_id is None:
                     if sortname is None:
                         sortname = format_artist_name(artist)
-                    artist_id = Lp().artists.add(artist, sortname)
+                    artist_id = App().artists.add(artist, sortname)
                 elif sortname is not None:
-                    Lp().artists.set_sortname(artist_id, sortname)
+                    App().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
         return artist_ids
@@ -468,7 +468,7 @@ class TagReader(Discoverer):
             artist = artist.strip()
             if artist != "":
                 # Get album artist id, add it if missing
-                artist_id = Lp().artists.get_id(artist)
+                artist_id = App().artists.get_id(artist)
                 if i >= sortlen or sortsplit[i] == "":
                     sortname = None
                 else:
@@ -476,9 +476,9 @@ class TagReader(Discoverer):
                 if artist_id is None:
                     if sortname is None:
                         sortname = format_artist_name(artist)
-                    artist_id = Lp().artists.add(artist, sortname)
+                    artist_id = App().artists.add(artist, sortname)
                 elif sortname is not None:
-                    Lp().artists.set_sortname(artist_id, sortname)
+                    App().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
         return artist_ids
@@ -496,9 +496,9 @@ class TagReader(Discoverer):
             genre = genre.strip()
             if genre != "":
                 # Get genre id, add genre if missing
-                genre_id = Lp().genres.get_id(genre)
+                genre_id = App().genres.get_id(genre)
                 if genre_id is None:
-                    genre_id = Lp().genres.add(genre)
+                    genre_id = App().genres.add(genre)
                 genre_ids.append(genre_id)
         return genre_ids
 
@@ -524,15 +524,15 @@ class TagReader(Discoverer):
         else:
             parent_uri = ""
         new = False
-        album_id = Lp().albums.get_id(album_name, mb_album_id, artist_ids)
+        album_id = App().albums.get_id(album_name, mb_album_id, artist_ids)
         if album_id is None:
             new = True
-            album_id = Lp().albums.add(album_name, mb_album_id, artist_ids,
-                                       parent_uri, loved, popularity,
-                                       rate, mtime)
+            album_id = App().albums.add(album_name, mb_album_id, artist_ids,
+                                        parent_uri, loved, popularity,
+                                        rate, mtime)
         # Now we have our album id, check if path doesn"t change
-        if Lp().albums.get_uri(album_id) != parent_uri:
-            Lp().albums.set_uri(album_id, parent_uri)
+        if App().albums.get_uri(album_id) != parent_uri:
+            App().albums.set_uri(album_id, parent_uri)
         return (album_id, new)
 
     def update_album(self, album_id, artist_ids, genre_ids, year):
@@ -546,16 +546,16 @@ class TagReader(Discoverer):
         """
         # Set artist ids based on content
         if not artist_ids:
-            Lp().albums.set_artist_ids(
-                                    album_id,
-                                    Lp().albums.calculate_artist_ids(album_id))
+            App().albums.set_artist_ids(
+                                   album_id,
+                                   App().albums.calculate_artist_ids(album_id))
         # Update album genres
         for genre_id in genre_ids:
-            Lp().albums.add_genre(album_id, genre_id)
+            App().albums.add_genre(album_id, genre_id)
 
         # Update year based on tracks
-        year = Lp().tracks.get_year_for_album(album_id)
-        Lp().albums.set_year(album_id, year)
+        year = App().tracks.get_year_for_album(album_id)
+        App().albums.set_year(album_id, year)
 
     def update_track(self, track_id, artist_ids, genre_ids):
         """
@@ -569,6 +569,6 @@ class TagReader(Discoverer):
         """
         # Set artists/genres for track
         for artist_id in artist_ids:
-            Lp().tracks.add_artist(track_id, artist_id)
+            App().tracks.add_artist(track_id, artist_id)
         for genre_id in genre_ids:
-            Lp().tracks.add_genre(track_id, genre_id)
+            App().tracks.add_genre(track_id, genre_id)

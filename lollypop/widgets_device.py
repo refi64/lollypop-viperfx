@@ -18,7 +18,7 @@ from lollypop.sync_mtp import MtpSync
 from lollypop.sqlcursor import SqlCursor
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.selectionlist import SelectionList
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.helper_task import TaskHelper
@@ -51,7 +51,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         widget = builder.get_object("widget")
         self.__error_label = builder.get_object("error-label")
         self.__switch_albums = builder.get_object("switch_albums")
-        self.__switch_albums.set_state(Lp().settings.get_value("sync-albums"))
+        self.__switch_albums.set_state(App().settings.get_value("sync-albums"))
         self.__switch_mp3 = builder.get_object("switch_mp3")
         self.__switch_normalize = builder.get_object("switch_normalize")
         if not self._check_encoder_status():
@@ -60,7 +60,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             self.__switch_mp3.set_tooltip_text(_("You need to install " +
                                                "gstreamer-plugins-ugly"))
         else:
-            self.__switch_mp3.set_state(Lp().settings.get_value("convert-mp3"))
+            convert_mp3 = App().settings.get_value("convert-mp3")
+            self.__switch_mp3.set_state(convert_mp3)
         self.__menu_items = builder.get_object("menu-items")
         self.__menu = builder.get_object("menu")
 
@@ -109,7 +110,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         self.__model.clear()
         self.__stop = False
-        if Lp().settings.get_value("sync-albums"):
+        if App().settings.get_value("sync-albums"):
             self.__selection_list.clear()
             self.__setup_list_artists(self.__selection_list)
             self.__column1.set_visible(True)
@@ -117,8 +118,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             self.__selection_list.show()
             self.__selection_list.select_ids([Type.ALL])
         else:
-            playlists = [(Type.LOVED, Lp().playlists.LOVED)]
-            playlists += Lp().playlists.get()
+            playlists = [(Type.LOVED, App().playlists.LOVED)]
+            playlists += App().playlists.get()
             self.__append_playlists(playlists)
             self.__column1.set_visible(False)
             self.__column2.set_title(_("Playlists"))
@@ -148,10 +149,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Start synchronisation
         """
         self._syncing = True
-        Lp().window.container.progress.add(self)
+        App().window.container.progress.add(self)
         self.__menu.set_sensitive(False)
         playlists = []
-        if not Lp().settings.get_value("sync-albums"):
+        if not App().settings.get_value("sync-albums"):
             self.__view.set_sensitive(False)
             for item in self.__model:
                 if item[0]:
@@ -183,13 +184,14 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
             Update progress bar smoothly
         """
-        current = Lp().window.container.progress.get_fraction()
+        current = App().window.container.progress.get_fraction()
         if self._syncing:
             progress = (self._fraction-current)/10
         else:
             progress = 0.01
         if current < self._fraction:
-            Lp().window.container.progress.set_fraction(current+progress, self)
+            App().window.container.progress.set_fraction(current + progress,
+                                                         self)
         if current < 1.0:
             if progress < 0.0002:
                 GLib.timeout_add(500, self._update_progress)
@@ -217,7 +219,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Emit finished signal
         """
         MtpSync._on_finished(self)
-        Lp().window.container.progress.set_fraction(1.0, self)
+        App().window.container.progress.set_fraction(1.0, self)
         if not self.__switch_albums.get_state():
             self.__view.set_sensitive(True)
         self.__menu.set_sensitive(True)
@@ -250,7 +252,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param state as bool
         """
         self.__stop = True
-        Lp().settings.set_value("sync-albums", GLib.Variant("b", state))
+        App().settings.set_value("sync-albums", GLib.Variant("b", state))
         GLib.idle_add(self.populate)
 
     def _on_mp3_state_set(self, widget, state):
@@ -259,11 +261,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("convert-mp3", GLib.Variant("b", state))
+        App().settings.set_value("convert-mp3", GLib.Variant("b", state))
         if not state:
             self.__switch_normalize.set_active(False)
-            Lp().settings.set_value("normalize-mp3",
-                                    GLib.Variant("b", False))
+            App().settings.set_value("normalize-mp3",
+                                     GLib.Variant("b", False))
 
     def _on_normalize_state_set(self, widget, state):
         """
@@ -271,10 +273,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value("normalize-mp3", GLib.Variant("b", state))
+        App().settings.set_value("normalize-mp3", GLib.Variant("b", state))
         if state:
             self.__switch_mp3.set_active(True)
-            Lp().settings.set_value("convert-mp3", GLib.Variant("b", True))
+            App().settings.set_value("convert-mp3", GLib.Variant("b", True))
 
     def _on_response(self, infobar, response_id):
         """
@@ -295,8 +297,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @thread safe
         """
         def load():
-            artists = Lp().artists.get()
-            compilations = Lp().albums.get_compilation_ids()
+            artists = App().artists.get()
+            compilations = App().albums.get_compilation_ids()
             return (artists, compilations)
 
         def setup(artists, compilations):
@@ -347,7 +349,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         if albums and not self.__stop:
             album = Album(albums.pop(0))
-            synced = Lp().albums.get_synced(album.id)
+            synced = App().albums.get_synced(album.id)
             # Do not sync youtube albums
             if synced != Type.NONE:
                 if album.artist_ids[0] == Type.COMPILATIONS:
@@ -367,8 +369,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param toggle as bool
             @warning commit on default sql cursor needed
         """
-        if Lp().settings.get_value("sync-albums"):
-            Lp().albums.set_synced(album_id, toggle)
+        if App().settings.get_value("sync-albums"):
+            App().albums.set_synced(album_id, toggle)
 
     def __on_item_selected(self, selection_list):
         """
@@ -378,11 +380,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if not selection_list.selected_ids:
             return
         if selection_list.selected_ids[0] == Type.COMPILATIONS:
-            albums = Lp().albums.get_compilation_ids()
+            albums = App().albums.get_compilation_ids()
         elif selection_list.selected_ids[0] == Type.ALL:
-            albums = Lp().albums.get_synced_ids()
+            albums = App().albums.get_synced_ids()
         else:
-            albums = Lp().albums.get_ids(selection_list.selected_ids)
+            albums = App().albums.get_ids(selection_list.selected_ids)
         self.__model.clear()
         self.__append_albums(albums)
 
@@ -398,7 +400,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         for item in self.__model:
             item[0] = not selected
             self.__populate_albums_playlist(item[2], item[0])
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.commit()
 
     def __on_item_toggled(self, view, path):
@@ -412,5 +414,5 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self.__model.set_value(iterator, 0, toggle)
         album_id = self.__model.get_value(iterator, 2)
         self.__populate_albums_playlist(album_id, toggle)
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.commit()

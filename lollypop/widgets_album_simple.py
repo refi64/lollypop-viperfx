@@ -17,7 +17,7 @@ from random import choice
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
-from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.define import App, ArtSize, Shuffle
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
@@ -234,25 +234,25 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if Lp().player.locked:
+        if App().player.locked:
             return True
         self._show_append(False)
-        if Lp().player.is_party:
-            Lp().player.set_party(False)
-        Lp().player.clear_albums()
-        if Lp().settings.get_enum("shuffle") == Shuffle.TRACKS:
+        if App().player.is_party:
+            App().player.set_party(False)
+        App().player.clear_albums()
+        if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(self._album.tracks)
         else:
             track = self._album.tracks[0]
-        if Lp().window.container.view.filtered:
+        if App().window.container.view.filtered:
             # Here we need to get ids from parent as view may be filtered
             for child in self.get_parent().get_children():
                 if not child.filtered:
-                    Lp().player.add_album(child.album)
+                    App().player.add_album(child.album)
         else:
-            Lp().player.play_albums(track,
-                                    self._album.genre_ids,
-                                    [])
+            App().player.play_albums(track,
+                                     self._album.genre_ids,
+                                     [])
         return True
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
@@ -304,7 +304,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
-        Lp().window.container.show_artists_albums(self._album.artist_ids)
+        App().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
     def __on_album_popover_closed(self, popover):

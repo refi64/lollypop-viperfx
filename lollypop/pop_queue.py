@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track, Album
 
 
@@ -217,7 +217,7 @@ class QueueRow(Gtk.ListBoxRow):
             Delete track from queue
             @param button as Gtk.Button
         """
-        Lp().player.del_from_queue(self.__id)
+        App().player.del_from_queue(self.__id)
         self.destroy()
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
@@ -278,9 +278,9 @@ class QueuePopover(Gtk.Popover):
         """
             Populate widget with queue rows
         """
-        if Lp().player.queue:
+        if App().player.queue:
             self.__clear_button.set_sensitive(True)
-        self.__add_items(list(Lp().player.queue))
+        self.__add_items(list(App().player.queue))
 
 #######################
 # PROTECTED           #
@@ -304,7 +304,7 @@ class QueuePopover(Gtk.Popover):
         for child in self.__view.get_children():
             child.destroy()
         if clear_queue:
-            Lp().player.clear_queue()
+            App().player.clear_queue()
 
     def __add_items(self, items, prev_album_id=None):
         """
@@ -313,10 +313,10 @@ class QueuePopover(Gtk.Popover):
         """
         if items and not self._stop:
             track_id = items.pop(0)
-            album_id = Lp().tracks.get_album_id(track_id)
+            album_id = App().tracks.get_album_id(track_id)
             row = self.__row_for_track_id(track_id)
             if album_id != prev_album_id:
-                surface = Lp().art.get_album_artwork(
+                surface = App().art.get_album_artwork(
                                         Album(album_id),
                                         ArtSize.MEDIUM,
                                         self.get_scale_factor())
@@ -342,11 +342,11 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._stop = False
-        height = Lp().window.get_size()[1]
+        height = App().window.get_size()[1]
         self.set_size_request(400, height*0.7)
         self.populate()
-        self._signal_id1 = Lp().player.connect("current-changed",
-                                               self.__on_current_changed)
+        self._signal_id1 = App().player.connect("current-changed",
+                                                self.__on_current_changed)
 
     def __on_unmap(self, widget):
         """
@@ -356,7 +356,7 @@ class QueuePopover(Gtk.Popover):
         self.__clear()
         self._stop = True
         if self._signal_id1 is not None:
-            Lp().player.disconnect(self._signal_id1)
+            App().player.disconnect(self._signal_id1)
             self._signal_id1 = None
 
     def __on_current_changed(self, player):
@@ -380,7 +380,7 @@ class QueuePopover(Gtk.Popover):
                 child.set_cover(None)
                 child.show_header(False)
             else:
-                surface = Lp().art.get_album_artwork(
+                surface = App().art.get_album_artwork(
                                         Album(track.album.id),
                                         ArtSize.MEDIUM,
                                         self.get_scale_factor())
@@ -402,8 +402,8 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as QueueRow
         """
-        if not Lp().player.locked:
-            Lp().player.load(Track(row.id))
+        if not App().player.locked:
+            App().player.load(Track(row.id))
             GLib.idle_add(row.destroy)
 
     def __on_track_moved(self, row, src, x, y):
@@ -429,7 +429,7 @@ class QueuePopover(Gtk.Popover):
             if child == row:
                 row_index = i
             if child.id == src:
-                Lp().player.del_from_queue(src, False)
+                App().player.del_from_queue(src, False)
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()
             else:
@@ -440,7 +440,7 @@ class QueuePopover(Gtk.Popover):
             if not up:
                 row_index += 1
             self.__view.insert(src_row, row_index)
-            Lp().player.insert_in_queue(src, row_index)
+            App().player.insert_in_queue(src, row_index)
         self.__update_headers()
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):

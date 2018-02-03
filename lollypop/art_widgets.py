@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 from gettext import gettext as _
 
 from lollypop.cache import InfoCache
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.utils import get_network_available
 from lollypop.helper_task import TaskHelper
 
@@ -45,7 +45,7 @@ class ArtworkSearch(Gtk.Bin):
         if is_compilation:
             self.__artist = ""
         else:
-            self.__artist = Lp().artists.get_name(artist_id)
+            self.__artist = App().artists.get_name(artist_id)
         self.__contents = {}
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtworkSearch.ui")
@@ -75,8 +75,8 @@ class ArtworkSearch(Gtk.Bin):
         self._stack.add_named(builder.get_object("scrolled"), "main")
         self._stack.set_visible_child_name("main")
         self.add(widget)
-        key = Lp().settings.get_value("cs-api-key").get_string() or\
-            Lp().settings.get_default_value("cs-api-key").get_string()
+        key = App().settings.get_value("cs-api-key").get_string() or\
+            App().settings.get_default_value("cs-api-key").get_string()
         self._api_entry.set_text(key)
         self.set_size_request(700, 400)
 
@@ -85,9 +85,9 @@ class ArtworkSearch(Gtk.Bin):
             Populate view
         """
         image = Gtk.Image()
-        surface = Lp().art.get_default_icon("edit-clear-all-symbolic",
-                                            ArtSize.BIG,
-                                            self.get_scale_factor())
+        surface = App().art.get_default_icon("edit-clear-all-symbolic",
+                                             ArtSize.BIG,
+                                             self.get_scale_factor())
         image.set_from_surface(surface)
         image.set_property("valign", Gtk.Align.CENTER)
         image.set_property("halign", Gtk.Align.CENTER)
@@ -97,7 +97,7 @@ class ArtworkSearch(Gtk.Bin):
 
         # First load local files
         if self.__album is not None:
-            uris = Lp().art.get_album_artworks(self.__album)
+            uris = App().art.get_album_artworks(self.__album)
             for uri in uris:
                 try:
                     f = Gio.File.new_for_uri(uri)
@@ -106,7 +106,7 @@ class ArtworkSearch(Gtk.Bin):
                 except Exception as e:
                     print("ArtworkSearch::populate()", e)
         # Then google
-        uri = Lp().art.get_google_search_uri(self.__get_current_search())
+        uri = App().art.get_google_search_uri(self.__get_current_search())
         helper = TaskHelper()
         helper.load_uri_content(uri,
                                 self.__cancellable,
@@ -140,7 +140,7 @@ class ArtworkSearch(Gtk.Bin):
         dialog = Gtk.FileChooserDialog()
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-        dialog.set_transient_for(Lp().window)
+        dialog.set_transient_for(App().window)
         self.__close_popover()
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -150,13 +150,13 @@ class ArtworkSearch(Gtk.Bin):
                 if not status:
                     raise
                 if self.__album is not None:
-                    Lp().art.save_album_artwork(data, self.__album.id)
+                    App().art.save_album_artwork(data, self.__album.id)
                 else:
                     for suffix in ["lastfm", "wikipedia", "spotify"]:
                         InfoCache.uncache_artwork(self.__artist, suffix,
                                                   button.get_scale_factor())
                         InfoCache.add(self.__artist, None, data, suffix)
-                    Lp().art.emit("artist-artwork-changed", self.__artist)
+                    App().art.emit("artist-artwork-changed", self.__artist)
                 self._streams = {}
             except Exception as e:
                 print("ArtworkSearch::_on_button_clicked():", e)
@@ -169,15 +169,15 @@ class ArtworkSearch(Gtk.Bin):
         """
         self._infobar.hide()
         if self.__album is not None:
-            Lp().art.remove_album_artwork(self.__album)
-            Lp().art.clean_album_cache(self.__album)
-            Lp().art.emit("album-artwork-changed", self.__album.id)
+            App().art.remove_album_artwork(self.__album)
+            App().art.clean_album_cache(self.__album)
+            App().art.emit("album-artwork-changed", self.__album.id)
         else:
             for suffix in ["lastfm", "wikipedia", "spotify", "deezer"]:
                 InfoCache.uncache_artwork(self.__artist, suffix,
                                           button.get_scale_factor())
                 InfoCache.add(self.__artist, None, None, suffix)
-                Lp().art.emit("artist-artwork-changed", self.__artist)
+                App().art.emit("artist-artwork-changed", self.__artist)
         self.__close_popover()
 
     def _on_info_response(self, infobar, response_id):
@@ -197,7 +197,7 @@ class ArtworkSearch(Gtk.Bin):
         """
         self._popover.show()
         self._api_entry.set_text(
-                            Lp().settings.get_value("cs-api-key").get_string())
+                           App().settings.get_value("cs-api-key").get_string())
 
     def _on_api_entry_changed(self, entry):
         """
@@ -205,7 +205,7 @@ class ArtworkSearch(Gtk.Bin):
             @param entry as Gtk.Entry
         """
         value = entry.get_text().strip()
-        Lp().settings.set_value("cs-api-key", GLib.Variant("s", value))
+        App().settings.set_value("cs-api-key", GLib.Variant("s", value))
 
 #######################
 # PRIVATE             #
@@ -337,7 +337,7 @@ class ArtworkSearch(Gtk.Bin):
             @param content as bytes
         """
         if loaded:
-            uris = Lp().art.get_google_artwork(content)
+            uris = App().art.get_google_artwork(content)
             self.__populate(uris)
 
     def __on_activate(self, flowbox, child):
@@ -349,13 +349,13 @@ class ArtworkSearch(Gtk.Bin):
             data = self.__contents[child.get_child()]
             self.__close_popover()
             if self.__album is not None:
-                Lp().art.save_album_artwork(data, self.__album.id)
+                App().art.save_album_artwork(data, self.__album.id)
             else:
                 for suffix in ["lastfm", "wikipedia", "spotify"]:
                     InfoCache.uncache_artwork(self.__artist, suffix,
                                               flowbox.get_scale_factor())
                     InfoCache.add(self.__artist, None, data, suffix)
-                Lp().art.emit("artist-artwork-changed", self.__artist)
+                App().art.emit("artist-artwork-changed", self.__artist)
             self._streams = {}
         except:
             self._infobar_label.set_text(_("Reset artwork?"))
@@ -377,7 +377,7 @@ class ArtworkSearch(Gtk.Bin):
         self.__loading = True
         self.__cancellable.reset()
         if get_network_available():
-            uri = Lp().art.get_google_search_uri(string)
+            uri = App().art.get_google_search_uri(string)
             helper = TaskHelper()
             helper.load_uri_content(uri,
                                     self.__cancellable,

@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gio, GLib
 
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 
 
 class TouchHelper(GObject.GObject):
@@ -35,8 +35,8 @@ class TouchHelper(GObject.GObject):
         if action is not None:
             new_action = Gio.SimpleAction.new(action, None)
             new_action.connect("activate", self.__on_action_activate)
-            Lp().add_action(new_action)
-            Lp().set_accels_for_action("app.%s" % action, [shortcut])
+            App().add_action(new_action)
+            App().set_accels_for_action("app.%s" % action, [shortcut])
 
     def set_short_func(self, short_func, *args):
         """

@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
-from lollypop.define import Lp, ArtSize
+from lollypop.define import App, ArtSize
 from lollypop.helper_task import TaskHelper
 from lollypop.art import Art
 
@@ -106,12 +106,12 @@ class RadioPopover(Gtk.Popover):
             self.__stack.get_visible_child().hide()
             if rename:
                 self.__radios_manager.rename(self.__name, new_name)
-                Lp().art.rename_radio(self.__name, new_name)
+                App().art.rename_radio(self.__name, new_name)
             else:
                 self.__radios_manager.add(new_name, uri.lstrip().rstrip())
             self.__stack.set_visible_child_name("spinner")
             self.__name = new_name
-            uri = Lp().art.get_google_search_uri(self.__name + "+logo+radio")
+            uri = App().art.get_google_search_uri(self.__name + "+logo+radio")
             helper = TaskHelper()
             helper.load_uri_content(uri,
                                     self.__cancellable,
@@ -127,7 +127,7 @@ class RadioPopover(Gtk.Popover):
         if self.__name != "":
             store = Art._RADIOS_PATH
             self.__radios_manager.delete(self.__name)
-            Lp().art.clean_radio_cache(self.__name)
+            App().art.clean_radio_cache(self.__name)
             f = Gio.File.new_for_path(store + "/%s.png" % self.__name)
             if f.query_exists():
                 f.delete()
@@ -152,15 +152,15 @@ class RadioPopover(Gtk.Popover):
         dialog = Gtk.FileChooserDialog()
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-        dialog.set_transient_for(Lp().window)
+        dialog.set_transient_for(App().window)
         self.hide()
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(dialog.get_filename())
-                Lp().art.save_radio_artwork(pixbuf, self.__name)
-                Lp().art.clean_radio_cache(self.__name)
-                Lp().art.radio_artwork_update(self.__name)
+                App().art.save_radio_artwork(pixbuf, self.__name)
+                App().art.clean_radio_cache(self.__name)
+                App().art.radio_artwork_update(self.__name)
                 self._streams = {}
             except Exception as e:
                 print("RadioPopover::_on_button_clicked():", e)
@@ -242,7 +242,7 @@ class RadioPopover(Gtk.Popover):
         """
         GLib.idle_add(self.__name_entry.grab_focus)
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(False)
+        App().window.enable_global_shortcuts(False)
 
     def __on_unmap(self, widget):
         """
@@ -251,7 +251,7 @@ class RadioPopover(Gtk.Popover):
         """
         self._thread = False
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(True)
+        App().window.enable_global_shortcuts(True)
         GLib.idle_add(self.destroy)
 
     def __on_google_content_loaded(self, uri, loaded, content):
@@ -262,7 +262,7 @@ class RadioPopover(Gtk.Popover):
             @param content as bytes
         """
         if loaded:
-            uris = Lp().art.get_google_artwork(content)
+            uris = App().art.get_google_artwork(content)
             self.__populate(uris)
 
     def __on_activate(self, flowbox, child):
@@ -272,8 +272,8 @@ class RadioPopover(Gtk.Popover):
         """
         self.__cancellable.cancel()
         pixbuf = self.__orig_pixbufs[child.get_child()]
-        Lp().art.save_radio_artwork(pixbuf, self.__name)
-        Lp().art.clean_radio_cache(self.__name)
-        Lp().art.radio_artwork_update(self.__name)
+        App().art.save_radio_artwork(pixbuf, self.__name)
+        App().art.clean_radio_cache(self.__name)
+        App().art.radio_artwork_update(self.__name)
         self.hide()
         self._streams = {}

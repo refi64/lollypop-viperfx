@@ -36,7 +36,7 @@ from locale import getdefaultlocale
 import re
 
 from lollypop.helper_task import TaskHelper
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.objects import Track
 from lollypop.utils import debug, get_network_available
 
@@ -344,12 +344,12 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             tracks = []
             user = self.get_user(self.__login)
             for loved in user.get_loved_tracks():
-                track_id = Lp().tracks.search_track(
+                track_id = App().tracks.search_track(
                                                   str(loved.track.artist),
                                                   str(loved.track.title))
                 if track_id is not None:
                     tracks.append(Track(track_id))
-            Lp().playlists.add_tracks(Type.LOVED, tracks)
+            App().playlists.add_tracks(Type.LOVED, tracks)
         except Exception as e:
                 print("LastFM::__populate_loved_tracks: %s" % e)
 

@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gio
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
@@ -125,8 +125,8 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(False)
-        height = Lp().window.get_size()[1]
+        App().window.enable_global_shortcuts(False)
+        height = App().window.get_size()[1]
         self.set_size_request(450, height*0.7)
 
     def __on_unmap(self, widget):
@@ -135,7 +135,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         # FIXME Not needed with GTK >= 3.18
-        Lp().window.enable_global_shortcuts(True)
+        App().window.enable_global_shortcuts(True)
         self.__cancellable.cancel()
         self.__header_stack.set_visible_child(self.__new_btn)
         self.__spinner.stop()

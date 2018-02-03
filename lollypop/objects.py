@@ -14,7 +14,7 @@
 from gi.repository import GLib
 
 from lollypop.radios import Radios
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 
 
 class Base:
@@ -120,7 +120,7 @@ class Base:
             radios.set_rate(self._album_artists[0], rate)
         else:
             self.db.set_rate(self.id, rate)
-            Lp().player.emit("rate-changed", (self.id, rate))
+            App().player.emit("rate-changed", (self.id, rate))
 
 
 class Disc:
@@ -129,7 +129,7 @@ class Disc:
     """
 
     def __init__(self, album, disc_number):
-        self.db = Lp().albums
+        self.db = App().albums
         self.__tracks = []
         self.__album = album
         self.__number = disc_number
@@ -208,7 +208,7 @@ class Album(Base):
             @param album_id as int
             @param genre_ids as [int]
         """
-        Base.__init__(self, Lp().albums)
+        Base.__init__(self, App().albums)
         self.id = album_id
         self.genre_ids = genre_ids
         self._tracks = []
@@ -241,7 +241,7 @@ class Album(Base):
             @param tracks as [Track]
         """
         self._tracks = tracks
-        Lp().player.set_next()
+        App().player.set_next()
 
     def add_track(self, track):
         """
@@ -249,7 +249,7 @@ class Album(Base):
             @param track as Track
         """
         self._tracks.append(track)
-        Lp().player.set_next()
+        App().player.set_next()
 
     def remove_track(self, track):
         """
@@ -311,7 +311,7 @@ class Album(Base):
             @param loved as bool
         """
         if self.id >= 0:
-            Lp().albums.set_loved(self.id, loved)
+            App().albums.set_loved(self.id, loved)
 
 
 class Track(Base):
@@ -339,7 +339,7 @@ class Track(Base):
             @param track_id as int
             @param album as Album
         """
-        Base.__init__(self, Lp().tracks)
+        Base.__init__(self, App().tracks)
         self.id = track_id
         self._uri = None
         self._number = 0
@@ -359,7 +359,7 @@ class Track(Base):
         artist_ids = self.db.get_artist_ids(self.id)
         album_id = self.db.get_album_id(self.id)
         if not album_artist_ids:
-            db_album_artist_ids = Lp().albums.get_artist_ids(album_id)
+            db_album_artist_ids = App().albums.get_artist_ids(album_id)
             if len(db_album_artist_ids) == 1:
                 artist_ids = list(set(artist_ids) - set(db_album_artist_ids))
         self.__featuring_ids = list(set(artist_ids) - set(album_artist_ids))
@@ -449,7 +449,7 @@ class Track(Base):
             @return str
         """
         if self._uri is None:
-            self._uri = Lp().tracks.get_uri(self.id)
+            self._uri = App().tracks.get_uri(self.id)
         return self._uri
 
     @property

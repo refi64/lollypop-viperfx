@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.utils import get_network_available
 
 
@@ -50,7 +50,7 @@ class LastfmPopover(Gtk.Popover):
         if get_network_available():
             artists = []
             for artist_id in artist_ids:
-                artists.append(Lp().artists.get_name(artist_id))
+                artists.append(App().artists.get_name(artist_id))
             GLib.idle_add(self.__populate, artists)
 
 #######################
@@ -70,7 +70,7 @@ class LastfmPopover(Gtk.Popover):
         """
         if artists:
             artist = artists.pop(0)
-            similars = Lp().lastfm.get_similars(artist)
+            similars = App().lastfm.get_similars(artist)
             for similar in similars:
                 label = Gtk.Label.new(similar)
                 label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -87,4 +87,4 @@ class LastfmPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        Lp().window.toolbar.end.search(row.get_child().get_text())
+        App().window.toolbar.end.search(row.get_child().get_text())

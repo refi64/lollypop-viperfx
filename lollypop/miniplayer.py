@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.controllers import InfoController, ProgressController
-from lollypop.define import Lp, WindowSize
+from lollypop.define import App, WindowSize
 
 
 class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
@@ -44,14 +44,14 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._cover = builder.get_object("cover")
-        self.__signal_id1 = Lp().player.connect("current-changed",
-                                                self.__on_current_changed)
-        self.__signal_id2 = Lp().player.connect("status-changed",
-                                                self.__on_status_changed)
-        self.__on_current_changed(Lp().player)
-        if Lp().player.current_track.id is not None:
+        self.__signal_id1 = App().player.connect("current-changed",
+                                                 self.__on_current_changed)
+        self.__signal_id2 = App().player.connect("status-changed",
+                                                 self.__on_status_changed)
+        self.__on_current_changed(App().player)
+        if App().player.current_track.id is not None:
             self._update_position()
-            self.__on_status_changed(Lp().player)
+            self.__on_status_changed(App().player)
         self.add(builder.get_object("widget"))
 
     def update_cover(self, width):
@@ -61,7 +61,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
         self.__width = width
         InfoController.__init__(self, width)
-        InfoController.on_current_changed(self, Lp().player)
+        InfoController.on_current_changed(self, App().player)
 
     def do_get_preferred_width(self):
         """
@@ -83,8 +83,8 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
         Gtk.Bin.do_destroy(self)
         ProgressController.do_destroy(self)
-        Lp().player.disconnect(self.__signal_id1)
-        Lp().player.disconnect(self.__signal_id2)
+        App().player.disconnect(self.__signal_id1)
+        App().player.disconnect(self.__signal_id2)
 
 #######################
 # PROTECTED           #
@@ -95,16 +95,16 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        height = Lp().window.get_size()[1]
-        if Lp().player.current_track.id is not None and\
+        height = App().window.get_size()[1]
+        if App().player.current_track.id is not None and\
                 height > WindowSize.MEDIUM:
             if event.button == 1:
-                Lp().window.toolbar.end.show_list_popover(button)
-            elif Lp().player.current_track.id >= 0:
+                App().window.toolbar.end.show_list_popover(button)
+            elif App().player.current_track.id >= 0:
                 from lollypop.pop_menu import TrackMenuPopover, PlaylistsMenu
                 popover = TrackMenuPopover(
-                            Lp().player.current_track,
-                            PlaylistsMenu(Lp().player.current_track))
+                            App().player.current_track,
+                            PlaylistsMenu(App().player.current_track))
                 popover.set_relative_to(self)
                 popover.show()
         return True
@@ -117,7 +117,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             Update controllers
             @param player as Player
         """
-        if Lp().player.current_track.id is not None:
+        if App().player.current_track.id is not None:
             self.show()
         InfoController.on_current_changed(self, player)
         ProgressController.on_current_changed(self, player)

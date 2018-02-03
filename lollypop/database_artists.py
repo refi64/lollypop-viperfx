@@ -14,7 +14,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.utils import format_artist_name, noaccents
 
 
@@ -39,7 +39,7 @@ class ArtistsDatabase:
         """
         if sortname == "":
             sortname = format_artist_name(name)
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("INSERT INTO artists (name, sortname)\
                                   VALUES (?, ?)",
                                  (name, sortname))
@@ -52,7 +52,7 @@ class ArtistsDatabase:
             @param sort name a str
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE artists\
                          SET sortname=?\
                          WHERE rowid=?",
@@ -64,7 +64,7 @@ class ArtistsDatabase:
             @param artist id as int
             @return sortname as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT sortname from artists\
                                   WHERE rowid=?", (artist_id,))
             v = result.fetchone()
@@ -80,7 +80,7 @@ class ArtistsDatabase:
         """
         # Special case, id name is fully uppercase, do not use NOCASE
         # We want to have a different artist
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             if name.isupper():
                 result = sql.execute("SELECT rowid from artists\
                                       WHERE name=?", (name,))
@@ -98,7 +98,7 @@ class ArtistsDatabase:
             @param Artist id as int
             @return Artist name as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             if artist_id == Type.COMPILATIONS:
                 return _("Many artists")
 
@@ -114,7 +114,7 @@ class ArtistsDatabase:
             Get all availables albums for artists
             @return Array of id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM album_artists, albums\
                        WHERE albums.rowid=album_artists.album_id AND(1=0 "
@@ -129,7 +129,7 @@ class ArtistsDatabase:
             Get all availables compilations for artist
             @return Array of id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid FROM albums,\
                        tracks, track_artists, album_artists\
                        WHERE track_artists.track_id=tracks.rowid\
@@ -149,7 +149,7 @@ class ArtistsDatabase:
             @param genre ids as [int]
             @return Array of (artist id as int, artist name as string)
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = []
             if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
@@ -182,7 +182,7 @@ class ArtistsDatabase:
             @param genre ids as [int]
             @return artist ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = []
             if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
@@ -212,7 +212,7 @@ class ArtistsDatabase:
             Return True if artist exist
             @param artist id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(1) FROM artists WHERE rowid=?",
                                  (artist_id,))
             v = result.fetchone()
@@ -226,7 +226,7 @@ class ArtistsDatabase:
             @param string
             @return Array of id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT artists.rowid FROM artists, albums,\
                                   album_artists\
                                   WHERE noaccents(artists.name) LIKE ?\
@@ -240,7 +240,7 @@ class ArtistsDatabase:
             Count artists
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(DISTINCT artists.rowid)\
                                   FROM artists, album_artists, albums\
                                   WHERE album_artists.album_id=albums.rowid\
@@ -257,7 +257,7 @@ class ArtistsDatabase:
             @return cleaned as bool
             @warning commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             cleaned = False
             result = sql.execute("SELECT album_id from album_artists\
                                   WHERE artist_id=?\

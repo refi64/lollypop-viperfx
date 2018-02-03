@@ -18,7 +18,7 @@ from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 
 
 class RadiosView(LazyLoadingView):
@@ -31,8 +31,8 @@ class RadiosView(LazyLoadingView):
             Init view
         """
         LazyLoadingView.__init__(self, True)
-        self.__signal = Lp().art.connect("radio-artwork-changed",
-                                         self.__on_logo_changed)
+        self.__signal = App().art.connect("radio-artwork-changed",
+                                          self.__on_logo_changed)
 
         self.__radios_manager = Radios()
         self.__radios_manager.connect("radios-changed",
@@ -72,10 +72,10 @@ class RadiosView(LazyLoadingView):
         """
             Populate view with tracks from playlist
         """
-        Lp().player.set_radios(self.__radios_manager.get())
-        if Lp().player.current_track.id == Type.RADIOS:
-            Lp().player.set_next()  # We force next update
-            Lp().player.set_prev()  # We force prev update
+        App().player.set_radios(self.__radios_manager.get())
+        if App().player.current_track.id == Type.RADIOS:
+            App().player.set_next()  # We force next update
+            App().player.set_prev()  # We force prev update
         helper = TaskHelper()
         helper.run(self.__get_radios, callback=(self.__on_get_radios,))
 
@@ -99,7 +99,7 @@ class RadiosView(LazyLoadingView):
         """
         LazyLoadingView._on_destroy(self, widget)
         if self.__signal is not None:
-            Lp().art.disconnect(self.__signal)
+            App().art.disconnect(self.__signal)
 
     def _on_new_clicked(self, widget):
         """
@@ -178,10 +178,10 @@ class RadiosView(LazyLoadingView):
             name = child.title
             url = manager.get_url(name)
             radios.append((name, url))
-        Lp().player.set_radios(radios)
-        if Lp().player.current_track.id == Type.RADIOS:
-            Lp().player.set_next()  # We force next update
-            Lp().player.set_prev()  # We force prev update
+        App().player.set_radios(radios)
+        if App().player.current_track.id == Type.RADIOS:
+            App().player.set_next()  # We force next update
+            App().player.set_prev()  # We force prev update
 
     def __show_stack(self, radios):
         """

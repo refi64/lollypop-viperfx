@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import App, ArtSize
 from lollypop.define import Shuffle, Loading
 from lollypop.objects import Album
 from lollypop.pop_artwork import CoversPopover
@@ -112,7 +112,7 @@ class BaseWidget:
         """
             Set play all image based on current shuffle status
         """
-        if Lp().settings.get_enum("shuffle") == Shuffle.NONE:
+        if App().settings.get_enum("shuffle") == Shuffle.NONE:
             self._play_all_button.set_from_icon_name(
                                         "media-playlist-consecutive-symbolic",
                                         Gtk.IconSize.BUTTON)
@@ -132,7 +132,7 @@ class BaseWidget:
         self._show_overlay = set
         self.emit("overlayed", set)
         if set:
-            if Lp().player.locked:
+            if App().player.locked:
                 opacity = 0.2
             else:
                 opacity = 1
@@ -153,7 +153,7 @@ class BaseWidget:
                                                            self._squared_class)
                 self._artwork_button.show()
             if self._action_button is not None:
-                self._show_append(self._album not in Lp().player.albums)
+                self._show_append(self._album not in App().player.albums)
                 self._action_button.set_opacity(opacity)
                 self._action_button.get_style_context().add_class(
                                                        self._squared_class)
@@ -225,9 +225,9 @@ class BaseWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if Lp().player.locked:
+        if App().player.locked:
             return True
-        Lp().player.play_album(self._album)
+        App().player.play_album(self._album)
         self._show_append(False)
         return True
 
@@ -251,27 +251,27 @@ class BaseWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if Lp().player.locked:
+        if App().player.locked:
             return True
-        if self._album in Lp().player.albums:
-            if Lp().player.current_track.album.id == self._album.id:
+        if self._album in App().player.albums:
+            if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
-                if len(Lp().player.albums) > 1:
-                    Lp().player.skip_album()
-                    Lp().player.remove_album(self._album)
+                if len(App().player.albums) > 1:
+                    App().player.skip_album()
+                    App().player.remove_album(self._album)
                 # remove it and stop playback by going to next track
                 else:
-                    Lp().player.remove_album(self._album)
-                    Lp().player.set_next()
-                    Lp().player.next()
+                    App().player.remove_album(self._album)
+                    App().player.set_next()
+                    App().player.next()
             else:
-                Lp().player.remove_album(self._album)
+                App().player.remove_album(self._album)
             self._show_append(True)
         else:
-            if Lp().player.is_playing and not Lp().player.albums:
-                Lp().player.play_album(self._album)
+            if App().player.is_playing and not App().player.albums:
+                App().player.play_album(self._album)
             else:
-                Lp().player.add_album(self._album)
+                App().player.add_album(self._album)
             self._show_append(False)
         return True
 
@@ -321,8 +321,8 @@ class AlbumWidget(BaseWidget):
         self._album = Album(album_id, genre_ids, artist_ids)
         self._art_size = art_size
         self.connect("destroy", self.__on_destroy)
-        self._scan_signal = Lp().scanner.connect("album-updated",
-                                                 self._on_album_updated)
+        self._scan_signal = App().scanner.connect("album-updated",
+                                                  self._on_album_updated)
 
     @property
     def album(self):
@@ -358,7 +358,7 @@ class AlbumWidget(BaseWidget):
         """
         if self._cover is None:
             return
-        surface = Lp().art.get_album_artwork(
+        surface = App().art.get_album_artwork(
                             self._album,
                             self._art_size,
                             self._cover.get_scale_factor())
@@ -374,7 +374,7 @@ class AlbumWidget(BaseWidget):
         """
         if self._cover is None:
             return
-        surface = Lp().art.get_album_artwork(
+        surface = App().art.get_album_artwork(
                             self._album,
                             self._art_size,
                             self._cover.get_scale_factor())
@@ -390,7 +390,7 @@ class AlbumWidget(BaseWidget):
         """
         if self._cover is None or self._art_size != ArtSize.BIG:
             return
-        selected = self._album == Lp().player.current_track.album
+        selected = self._album == App().player.current_track.album
         if selected != self._selected:
             if selected:
                 self._cover.get_style_context().add_class(
@@ -414,4 +414,4 @@ class AlbumWidget(BaseWidget):
             @param widget as Gtk.Widget
         """
         if self._scan_signal is not None:
-            Lp().scanner.disconnect(self._scan_signal)
+            App().scanner.disconnect(self._scan_signal)

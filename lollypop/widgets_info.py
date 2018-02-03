@@ -18,7 +18,7 @@ try:
     from lollypop.wikipedia import Wikipedia
 except:
     pass
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.utils import get_network_available
 from lollypop.cache import InfoCache
 from lollypop.helper_task import TaskHelper
@@ -145,7 +145,7 @@ class InfoContent(Gtk.Stack):
                 try:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                stream,
-                               Lp().settings.get_value(
+                               App().settings.get_value(
                                         "cover-size").get_int32() + 50 * scale,
                                -1,
                                True,
@@ -337,7 +337,7 @@ class LastfmContent(InfoContent):
             @param artist as str
         """
         try:
-            (url, content) = Lp().lastfm.get_artist_info(artist)
+            (url, content) = App().lastfm.get_artist_info(artist)
         except Exception as e:
             print("LastfmContent::__load_page_content():", e)
             url = content = None

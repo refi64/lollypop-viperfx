@@ -19,7 +19,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
 from lollypop.database_history import History
 from lollypop.radios import Radios
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class DatabaseUpgrade:
@@ -69,13 +69,13 @@ class DatabaseUpgrade:
             @param db as Database
         """
         # Migration from gsettings
-        gsettings_version = Lp().settings.get_value("db-version").get_int32()
+        gsettings_version = App().settings.get_value("db-version").get_int32()
         if gsettings_version != -1:
             with SqlCursor(db) as sql:
                 sql.execute("PRAGMA user_version=%s" % gsettings_version)
                 sql.commit()
-                Lp().settings.set_value("db-version",
-                                        GLib.Variant("i", -1))
+                App().settings.set_value("db-version",
+                                         GLib.Variant("i", -1))
         version = 0
         with SqlCursor(db) as sql:
             result = sql.execute("PRAGMA user_version")
@@ -218,7 +218,7 @@ class DatabaseUpgrade:
                         sql.execute("UPDATE tracks set uri=? WHERE rowid=?",
                                     (uri, track_id))
             sql.commit()
-        with SqlCursor(Lp().playlists) as sql:
+        with SqlCursor(App().playlists) as sql:
             sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
             sql.execute("""CREATE TABLE tracks (playlist_id INT NOT NULL,
                                                 uri TEXT NOT NULL)""")
@@ -237,25 +237,25 @@ class DatabaseUpgrade:
         """
             Fix broken 0.9.208 release
         """
-        if Lp().notify:
-            Lp().notify.send("Please wait while upgrading db...")
+        if App().notify:
+            App().notify.send("Please wait while upgrading db...")
         with SqlCursor(db) as sql:
             result = sql.execute("SELECT tracks.rowid FROM tracks\
                                   WHERE NOT EXISTS (\
                                                  SELECT track_id\
                                                  FROM track_genres\
                                                  WHERE track_id=tracks.rowid)")
-            Lp().db.del_tracks(list(itertools.chain(*result)))
+            App().db.del_tracks(list(itertools.chain(*result)))
 
     def __upgrade_16(self, db):
         """
             Get ride of paths
         """
-        paths = Lp().settings.get_value("music-path")
+        paths = App().settings.get_value("music-path")
         uris = []
         for path in paths:
             uris.append(GLib.filename_to_uri(path))
-        Lp().settings.set_value("music-uris", GLib.Variant("as", uris))
+        App().settings.set_value("music-uris", GLib.Variant("as", uris))
         with SqlCursor(db) as sql:
             sql.execute("ALTER TABLE albums RENAME TO tmp_albums")
             sql.execute("""CREATE TABLE albums (
@@ -444,7 +444,7 @@ class DatabaseUpgrade:
                                   persistent=2 OR\
                                   persistent=3")
             track_ids = list(itertools.chain(*result))
-            Lp().db.del_tracks(track_ids)
+            App().db.del_tracks(track_ids)
             # Remove persistent from tracks table
             sql.execute("CREATE TEMPORARY TABLE backup(\
                                           id INTEGER PRIMARY KEY,\

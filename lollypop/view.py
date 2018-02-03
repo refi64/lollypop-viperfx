@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class View(Gtk.Grid):
@@ -30,12 +30,13 @@ class View(Gtk.Grid):
         self.__overlayed = None
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        self.__current_signal = Lp().player.connect("current-changed",
-                                                    self._on_current_changed)
-        self.__duration_signal = Lp().player.connect("duration-changed",
-                                                     self._on_duration_changed)
-        self.__cover_signal = Lp().art.connect("album-artwork-changed",
-                                               self.__on_cover_changed)
+        player = App().player
+        self.__current_signal = player.connect("current-changed",
+                                               self._on_current_changed)
+        self.__duration_signal = player.connect("duration-changed",
+                                                self._on_duration_changed)
+        self.__cover_signal = App().art.connect("album-artwork-changed",
+                                                self.__on_cover_changed)
 
         # Stop populate thread
         self._stop = False
@@ -100,7 +101,7 @@ class View(Gtk.Grid):
         """
         if self._filter is not None:
             enable = not self.__search_bar.get_search_mode()
-            Lp().window.enable_global_shortcuts(not enable)
+            App().window.enable_global_shortcuts(not enable)
             self.__search_bar.show() if enable else self.__search_bar.hide()
             self.__search_bar.set_search_mode(enable)
             if enable:
@@ -182,12 +183,12 @@ class View(Gtk.Grid):
             @param widget as Gtk.Widget
         """
         if self.__duration_signal is not None:
-            Lp().player.disconnect(self.__duration_signal)
+            App().player.disconnect(self.__duration_signal)
         if self.__current_signal is not None:
-            Lp().player.disconnect(self.__current_signal)
+            App().player.disconnect(self.__current_signal)
             self.__current_signal = None
         if self.__cover_signal is not None:
-            Lp().art.disconnect(self.__cover_signal)
+            App().art.disconnect(self.__cover_signal)
             self.__cover_signal = None
 
 #######################

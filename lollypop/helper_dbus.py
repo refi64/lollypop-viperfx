@@ -12,7 +12,7 @@
 
 from gi.repository import Gio
 
-from lollypop.define import PROXY_BUS, PROXY_PATH, PROXY_INTERFACE, Lp
+from lollypop.define import PROXY_BUS, PROXY_PATH, PROXY_INTERFACE, App
 
 
 class DBusHelper:
@@ -32,7 +32,7 @@ class DBusHelper:
             @param data
         """
         try:
-            bus = Lp().get_dbus_connection()
+            bus = App().get_dbus_connection()
             Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
                               PROXY_BUS,
                               PROXY_PATH,

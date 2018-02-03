@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.controllers import PlaybackController
 
 
@@ -40,7 +40,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
 
-        Lp().player.connect("lock-changed", self.__on_lock_changed)
+        App().player.connect("lock-changed", self.__on_lock_changed)
 
     def show_back(self, b, sensitive=False):
         """
@@ -61,7 +61,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
             Go back in container stack
             @param button as Gtk.Button
         """
-        Lp().window.container.go_back()
+        App().window.container.go_back()
 
 #######################
 # PRIVATE             #

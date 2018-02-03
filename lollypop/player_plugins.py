@@ -13,7 +13,7 @@
 
 from gi.repository import Gst
 
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class PluginsPlayer:
@@ -53,7 +53,7 @@ class PluginsPlayer:
 
         if self.rgvolume is not None:
             self.rgvolume.props.album_mode = 1
-            self.rgvolume.props.pre_amp = Lp().settings.get_value(
+            self.rgvolume.props.pre_amp = App().settings.get_value(
                 "replaygain").get_double()
 
         bin.add(self.volume)

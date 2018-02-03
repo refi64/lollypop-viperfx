@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.tagreader import TagReader
 from lollypop.utils import seconds_to_string
 
@@ -61,11 +61,11 @@ class ExternalsPopover(Gtk.Popover):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         self.__view.append_column(column)
         self.add(self.__view)
-        self.__signal_id = Lp().player.connect("current-changed",
-                                               self.__on_current_changed)
-        height = Lp().window.get_size()[1]
+        self.__signal_id = App().player.connect("current-changed",
+                                                self.__on_current_changed)
+        height = App().window.get_size()[1]
         self.set_size_request(400, height*0.7)
-        self.__populate(Lp().player.get_externals())
+        self.__populate(App().player.get_externals())
 
 #######################
 # PROTECTED           #
@@ -81,7 +81,7 @@ class ExternalsPopover(Gtk.Popover):
             iterator = self.__model.get_iter(path)
             if iterator is not None:
                 uri = self.__model.get_value(iterator, 0)
-                Lp().player.play_this_external(uri)
+                App().player.play_this_external(uri)
 
 #######################
 # PRIVATE             #
@@ -117,7 +117,7 @@ class ExternalsPopover(Gtk.Popover):
             @param track as Track
             @param filepath as string
         """
-        if track.uri == Lp().player.current_track.uri:
+        if track.uri == App().player.current_track.uri:
             self.__model.append((track.uri, "media-playback-start-symbolic",
                                 track.artist, track.title,
                                 seconds_to_string(track.duration)))
@@ -131,7 +131,7 @@ class ExternalsPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         if self.__signal_id is not None:
-            Lp().player.disconnect(self.__signal_id)
+            App().player.disconnect(self.__signal_id)
         GLib.idle_add(self.destroy)
 
     def __on_current_changed(self, player):

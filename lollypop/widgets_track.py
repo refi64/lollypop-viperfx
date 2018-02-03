@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Gdk, Pango, GLib, Gst
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
@@ -43,7 +43,7 @@ class Row(Gtk.ListBoxRow):
         self.__context_timeout_id = None
         self.__context = None
         self._indicator = IndicatorWidget(self._track, self if dnd else None)
-        self.set_indicator(Lp().player.current_track.id == self._track.id,
+        self.set_indicator(App().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("button-release-event",
@@ -66,7 +66,7 @@ class Row(Gtk.ListBoxRow):
         if featuring_artist_ids:
             artists = []
             for artist_id in featuring_artist_ids:
-                artists.append(Lp().artists.get_name(artist_id))
+                artists.append(App().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
                                                            ", ".join(artists)))
             self._artists_label.set_use_markup(True)
@@ -158,9 +158,9 @@ class Row(Gtk.ListBoxRow):
         """
             Update position label for row
         """
-        if Lp().player.track_in_queue(self._track):
+        if App().player.track_in_queue(self._track):
             self._num_label.get_style_context().add_class("queued")
-            pos = Lp().player.get_track_position(self._track.id)
+            pos = App().player.get_track_position(self._track.id)
             self._num_label.set_text(str(pos))
         elif self._track.number > 0:
             self._num_label.get_style_context().remove_class("queued")
@@ -185,8 +185,8 @@ class Row(Gtk.ListBoxRow):
             Play track
             @param widget as Gtk.Widget
         """
-        Lp().player.preview.set_property("uri", self._track.uri)
-        Lp().player.preview.set_state(Gst.State.PLAYING)
+        App().player.preview.set_property("uri", self._track.uri)
+        App().player.preview.set_state(Gst.State.PLAYING)
         self.set_indicator(True, False)
         self.__preview_timeout_id = None
 
@@ -229,7 +229,7 @@ class Row(Gtk.ListBoxRow):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
-        Lp().window.container.show_artists_albums(self._album.artist_ids)
+        App().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
     def __on_enter_notify_event(self, widget, event):
@@ -241,7 +241,7 @@ class Row(Gtk.ListBoxRow):
         if self.__context_timeout_id is not None:
             GLib.source_remove(self.__context_timeout_id)
             self.__context_timeout_id = None
-        if Lp().settings.get_value("preview-output").get_string() != "":
+        if App().settings.get_value("preview-output").get_string() != "":
             self.__preview_timeout_id = GLib.timeout_add(500,
                                                          self.__play_preview)
         if self.__menu_button.get_image() is None:
@@ -269,14 +269,14 @@ class Row(Gtk.ListBoxRow):
                                                       1000,
                                                       self.__on_button_clicked,
                                                       self.__menu_button)
-            if Lp().settings.get_value("preview-output").get_string() != "":
+            if App().settings.get_value("preview-output").get_string() != "":
                 if self.__preview_timeout_id is not None:
                     GLib.source_remove(self.__preview_timeout_id)
                     self.__preview_timeout_id = None
                 self.set_indicator(
-                                Lp().player.current_track.id == self._track.id,
-                                utils.is_loved(self._track.id))
-                Lp().player.preview.set_state(Gst.State.NULL)
+                               App().player.current_track.id == self._track.id,
+                               utils.is_loved(self._track.id))
+                App().player.preview.set_state(Gst.State.NULL)
 
     def __on_button_release_event(self, widget, event):
         """
@@ -297,10 +297,10 @@ class Row(Gtk.ListBoxRow):
             else:
                 self.__on_button_clicked(self.__menu_button)
         elif event.button == 2:
-            if self._track.id in Lp().player.queue:
-                Lp().player.del_from_queue(self._track.id)
+            if self._track.id in App().player.queue:
+                App().player.del_from_queue(self._track.id)
             else:
-                Lp().player.append_to_queue(self._track.id)
+                App().player.append_to_queue(self._track.id)
         else:
             self.activate()
 
@@ -321,7 +321,7 @@ class Row(Gtk.ListBoxRow):
             self._grid.insert_next_to(button, Gtk.PositionType.LEFT)
             self._grid.attach_next_to(self.__context, button,
                                       Gtk.PositionType.LEFT, 1, 1)
-            self.set_indicator(Lp().player.current_track.id == self._track.id,
+            self.set_indicator(App().player.current_track.id == self._track.id,
                                False)
         else:
             image.set_from_icon_name("go-previous-symbolic",
@@ -329,7 +329,7 @@ class Row(Gtk.ListBoxRow):
             self.__context.destroy()
             self._duration_label.show()
             self.__context = None
-            self.set_indicator(Lp().player.current_track.id == self._track.id,
+            self.set_indicator(App().player.current_track.id == self._track.id,
                                utils.is_loved(self._track.id))
 
     def __on_closed(self, widget):
@@ -496,7 +496,7 @@ class PlaylistRow(Row):
             self._grid.attach(self.__header, 1, 0, 5, 1)
         else:
             self._grid.attach(self.__header, 1, 0, 4, 1)
-        self.set_indicator(Lp().player.current_track.id == self._track.id,
+        self.set_indicator(App().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self.show_headers(self.__show_headers)
 
@@ -534,7 +534,7 @@ class PlaylistRow(Row):
         self.__show_headers = show
         if show:
             self.__cover.set_tooltip_text(self._track.album.name)
-            surface = Lp().art.get_album_artwork(
+            surface = App().art.get_album_artwork(
                                         self._track.album,
                                         ArtSize.MEDIUM,
                                         self.get_scale_factor())
@@ -556,7 +556,8 @@ class PlaylistRow(Row):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
-        Lp().window.container.show_artists_albums(self._track.album.artist_ids)
+        App().window.container.show_artists_albums(
+                                                  self._track.album.artist_ids)
         return True
 
     def __on_eventbox_realize(self, eventbox):
@@ -644,12 +645,12 @@ class TracksWidget(Gtk.ListBox):
         """
         Gtk.ListBox.__init__(self)
         self.connect("destroy", self.__on_destroy)
-        self.__queue_signal_id = Lp().player.connect("queue-changed",
-                                                     self.__on_queue_changed)
-        self.__loved_signal_id1 = Lp().playlists.connect(
+        self.__queue_signal_id = App().player.connect("queue-changed",
+                                                      self.__on_queue_changed)
+        self.__loved_signal_id1 = App().playlists.connect(
                                               "playlist-add",
                                               self.__on_loved_playlist_changed)
-        self.__loved_signal_id2 = Lp().playlists.connect(
+        self.__loved_signal_id2 = App().playlists.connect(
                                               "playlist-del",
                                               self.__on_loved_playlist_changed)
         self.connect("row-activated", self.__on_activate)
@@ -730,10 +731,10 @@ class TracksWidget(Gtk.ListBox):
             bottom_row = self.get_children()[-1]
             bottom_row.emit("track-moved", bottom_row.id, value, False)
         except:
-            if len(Lp().window.container.view.get_ids()) == 1:
-                Lp().playlists.import_uri(
-                                       Lp().window.container.view.get_ids()[0],
-                                       data.get_text())
+            if len(App().window.container.view.get_ids()) == 1:
+                App().playlists.import_uri(
+                                      App().window.container.view.get_ids()[0],
+                                      data.get_text())
 
     def __on_queue_changed(self, unused):
         """
@@ -756,7 +757,7 @@ class TracksWidget(Gtk.ListBox):
 
         for row in self.get_children():
             if track_id == row.track.id:
-                row.set_indicator(track_id == Lp().player.current_track.id,
+                row.set_indicator(track_id == App().player.current_track.id,
                                   utils.is_loved(track_id))
 
     def __on_destroy(self, widget):
@@ -765,13 +766,13 @@ class TracksWidget(Gtk.ListBox):
             @param widget as Gtk.Widget
         """
         if self.__queue_signal_id is not None:
-            Lp().player.disconnect(self.__queue_signal_id)
+            App().player.disconnect(self.__queue_signal_id)
             self.__queue_signal_id = None
         if self.__loved_signal_id1 is not None:
-            Lp().playlists.disconnect(self.__loved_signal_id1)
+            App().playlists.disconnect(self.__loved_signal_id1)
             self.__loved_signal_id1 = None
         if self.__loved_signal_id2 is not None:
-            Lp().playlists.disconnect(self.__loved_signal_id2)
+            App().playlists.disconnect(self.__loved_signal_id2)
             self.__loved_signal_id2 = None
 
     def __on_activate(self, widget, row):

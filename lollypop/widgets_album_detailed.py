@@ -21,7 +21,7 @@ from lollypop.pop_menu import AlbumMenu
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
 from lollypop.widgets_tracks_responsive import TracksResponsiveWidget
-from lollypop.define import Lp, ArtSize
+from lollypop.define import App, ArtSize
 
 
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
@@ -117,7 +117,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
                 grid.add(loved)
                 self.__coverbox.add(grid)
                 self._widget.attach(self.__coverbox, 0, 0, 1, 1)
-                if Lp().window.container.get_view_width() < WindowSize.MEDIUM:
+                if App().window.container.get_view_width() < WindowSize.MEDIUM:
                     self.__coverbox.hide()
                 if len(artist_ids) > 1:
                     self.__artist_label.set_text(
@@ -161,7 +161,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
                 for child in widget.get_children():
-                    if child.id == Lp().player.current_track.id:
+                    if child.id == App().player.current_track.id:
                         return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
@@ -269,8 +269,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
             Set album duration
         """
-        duration = Lp().albums.get_duration(self._album.id,
-                                            self._album.genre_ids)
+        duration = App().albums.get_duration(self._album.id,
+                                             self._album.genre_ids)
         hours = int(duration / 3600)
         mins = int(duration / 60)
         if hours > 0:
@@ -294,7 +294,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
                                              AlbumMenu(self._album,
                                                        ancestor is not None))
         if ancestor is not None:
-            Lp().window.container.view.show_popover(popover)
+            App().window.container.view.show_popover(popover)
         else:
             popover.connect("closed", self.__on_pop_menu_closed)
             self.get_style_context().add_class("album-menu-selected")

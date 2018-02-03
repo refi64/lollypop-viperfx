@@ -16,7 +16,7 @@ import re
 
 from lollypop.art_base import BaseArt
 from lollypop.tagreader import TagReader
-from lollypop.define import Lp, ArtSize
+from lollypop.define import App, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import escape, is_readonly
 from lollypop.helper_dbus import DBusHelper
@@ -36,10 +36,10 @@ class AlbumArt(BaseArt, TagReader):
         """
         BaseArt.__init__(self)
         TagReader.__init__(self)
-        self.__favorite = Lp().settings.get_value(
+        self.__favorite = App().settings.get_value(
                                                 "favorite-cover").get_string()
         if not self.__favorite:
-            self.__favorite = Lp().settings.get_default_value(
+            self.__favorite = App().settings.get_default_value(
                                                 "favorite-cover").get_string()
 
     def get_album_cache_path(self, album, size):
@@ -106,7 +106,7 @@ class AlbumArt(BaseArt, TagReader):
             @return path or None
         """
         # Folders with many albums, get_album_artwork_uri()
-        if Lp().albums.get_uri_count(album.uri) > 1:
+        if App().albums.get_uri_count(album.uri) > 1:
             return None
         f = Gio.File.new_for_uri(album.uri)
         infos = f.enumerate_children("standard::name",
@@ -217,7 +217,7 @@ class AlbumArt(BaseArt, TagReader):
                                                  scale)
                 else:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
-                                 [str(Lp().settings.get_value(
+                                 [str(App().settings.get_value(
                                                 "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             return surface
@@ -252,8 +252,8 @@ class AlbumArt(BaseArt, TagReader):
         try:
             album = Album(album_id)
             arturi = None
-            save_to_tags = Lp().settings.get_value("save-to-tags")
-            uri_count = Lp().albums.get_uri_count(album.uri)
+            save_to_tags = App().settings.get_value("save-to-tags")
+            uri_count = App().albums.get_uri_count(album.uri)
             filename = self.get_album_cache_name(album) + ".jpg"
             if save_to_tags:
                 helper = TaskHelper()
@@ -285,7 +285,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                None)
                 stream.close()
                 pixbuf.savev(store_path, "jpeg", ["quality"],
-                             [str(Lp().settings.get_value(
+                             [str(App().settings.get_value(
                                                 "cover-quality").get_int32())])
                 dst = Gio.File.new_for_uri(arturi)
                 src = Gio.File.new_for_path(store_path)
@@ -406,7 +406,7 @@ class AlbumArt(BaseArt, TagReader):
                                                            None)
         stream.close()
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
-                     "jpeg", ["quality"], [str(Lp().settings.get_value(
+                     "jpeg", ["quality"], [str(App().settings.get_value(
                                            "cover-quality").get_int32())])
         f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
                                   self._CACHE_PATH)
@@ -428,7 +428,7 @@ class AlbumArt(BaseArt, TagReader):
             can_set_cover = False
         if can_set_cover:
             dbus_helper = DBusHelper()
-            for uri in Lp().albums.get_track_uris(album_id, [], []):
+            for uri in App().albums.get_track_uris(album_id, [], []):
                 path = GLib.filename_from_uri(uri)[0]
                 dbus_helper.call("SetCover",
                                  GLib.Variant(
@@ -442,7 +442,7 @@ class AlbumArt(BaseArt, TagReader):
             GLib.timeout_add(2000, self.album_artwork_update, album_id)
         else:
             # Lollypop-portal or kid3-cli removed?
-            Lp().settings.set_value("save-to-tags", GLib.Variant("b", False))
+            App().settings.set_value("save-to-tags", GLib.Variant("b", False))
 
     def __on_remove_album_artwork(self, source, result, album_id):
         """
@@ -457,7 +457,7 @@ class AlbumArt(BaseArt, TagReader):
             can_set_cover = False
         if can_set_cover:
             dbus_helper = DBusHelper()
-            for uri in Lp().albums.get_track_uris(album_id, [], []):
+            for uri in App().albums.get_track_uris(album_id, [], []):
                 try:
                     path = GLib.filename_from_uri(uri)[0]
                     dbus_helper.call("SetCover",
@@ -467,4 +467,4 @@ class AlbumArt(BaseArt, TagReader):
                     print("AlbumArt::__on_remove_album_artwork():", e)
         else:
             # Lollypop-portal or kid3-cli removed?
-            Lp().settings.set_value("save-to-tags", GLib.Variant("b", False))
+            App().settings.set_value("save-to-tags", GLib.Variant("b", False))

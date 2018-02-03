@@ -15,7 +15,7 @@
 
 from gi.repository import Gtk, Gst
 
-from lollypop.define import Lp, PowerManagement
+from lollypop.define import App, PowerManagement
 
 
 class Inhibitor:
@@ -27,9 +27,9 @@ class Inhibitor:
         self.__manual_inhibit = False
 
         # Load and apply the inhibit settings
-        self.__on_powermanagement_setting_changed(Lp().settings)
+        self.__on_powermanagement_setting_changed(App().settings)
         # Register to settings changes
-        Lp().settings.connect(
+        App().settings.connect(
             "changed::power-management",
             self.__on_powermanagement_setting_changed,
         )
@@ -49,12 +49,12 @@ class Inhibitor:
 
     def __disable_react_to_playback(self):
         if self.__status_handler_id is not None:
-            Lp().player.disconnect(self.__status_handler_id)
+            App().player.disconnect(self.__status_handler_id)
 
     def __enable_react_to_playback(self):
-        self.__on_status_changed(Lp().player)
+        self.__on_status_changed(App().player)
         if self.__status_handler_id is None:
-            self.__status_handler_id = Lp().player.connect(
+            self.__status_handler_id = App().player.connect(
                 "status-changed",
                 self.__on_status_changed,
             )
@@ -75,7 +75,7 @@ class Inhibitor:
         """
             Update the inhibit flags according to the settings in dconf
         """
-        power_management = Lp().settings.get_enum("power-management")
+        power_management = App().settings.get_enum("power-management")
 
         if power_management in [PowerManagement.SUSPEND, PowerManagement.BOTH]:
             self.__inhibit_suspend()
@@ -90,8 +90,8 @@ class Inhibitor:
             # temporary blocked inhibit changes
             return
         if not self.__cookie_suspend:
-            self.__cookie_suspend = Lp().inhibit(
-                Lp().window,
+            self.__cookie_suspend = App().inhibit(
+                App().window,
                 Gtk.ApplicationInhibitFlags.SUSPEND,
                 "Playing music")
 
@@ -103,8 +103,8 @@ class Inhibitor:
             # temporary blocked inhibit changes
             return
         if not self.__cookie_idle:
-            self.__cookie_idle = Lp().inhibit(
-                Lp().window,
+            self.__cookie_idle = App().inhibit(
+                App().window,
                 Gtk.ApplicationInhibitFlags.IDLE,
                 "Playing music")
 
@@ -116,10 +116,10 @@ class Inhibitor:
             # temporary blocked inhibit changes
             return
         if self.__cookie_suspend and self.__cookie_suspend != 0:
-            Lp().uninhibit(self.__cookie_suspend)
+            App().uninhibit(self.__cookie_suspend)
             self.__cookie_suspend = 0
         if self.__cookie_idle and self.__cookie_idle != 0:
-            Lp().uninhibit(self.__cookie_idle)
+            App().uninhibit(self.__cookie_idle)
             self.__cookie_idle = 0
 
         self.__current_player_state = None

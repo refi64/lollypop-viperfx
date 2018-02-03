@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
 from lollypop.touch_helper import TouchHelper
-from lollypop.define import Lp, Shuffle, Type, NextContext
+from lollypop.define import App, Shuffle, Type, NextContext
 
 
 class PartyPopover(Gtk.Popover):
@@ -43,14 +43,14 @@ class PartyPopover(Gtk.Popover):
         scrolled.add(party_grid)
         scrolled.show()
         self.add(scrolled)
-        size = Lp().window.get_size()
+        size = App().window.get_size()
         self.set_size_request(-1,
                               size[1]*0.6)
 
-        genres = Lp().genres.get()
+        genres = App().genres.get()
         genres.insert(0, (Type.POPULARS, _("Populars")))
         genres.insert(1, (Type.RECENTS, _("Recently added")))
-        ids = Lp().player.get_party_ids()
+        ids = App().player.get_party_ids()
         i = 0
         x = 0
         for genre_id, genre in genres:
@@ -86,7 +86,7 @@ class PartyPopover(Gtk.Popover):
             @param widget as Gtk.Switch
             @param state as bool, genre id as int
         """
-        ids = Lp().player.get_party_ids()
+        ids = App().player.get_party_ids()
         if state:
             try:
                 ids.append(genre_id)
@@ -97,9 +97,9 @@ class PartyPopover(Gtk.Popover):
                 ids.remove(genre_id)
             except:
                 pass
-        Lp().settings.set_value("party-ids",  GLib.Variant("ai", ids))
-        Lp().player.set_party_ids()
-        Lp().player.set_next()
+        App().settings.set_value("party-ids",  GLib.Variant("ai", ids))
+        App().player.set_party_ids()
+        App().player.set_next()
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -131,16 +131,16 @@ class ToolbarEnd(Gtk.Bin):
         self.__shuffle_image = builder.get_object("shuffle-button-image")
         shuffleAction = Gio.SimpleAction.new("shuffle-button", None)
         shuffleAction.connect("activate", self.__activate_shuffle_button)
-        Lp().add_action(shuffleAction)
-        Lp().set_accels_for_action("app.shuffle-button", ["<Control>r"])
-        Lp().settings.connect("changed::shuffle", self.__on_playback_changed)
-        Lp().settings.connect("changed::playback", self.__on_playback_changed)
+        App().add_action(shuffleAction)
+        App().set_accels_for_action("app.shuffle-button", ["<Control>r"])
+        App().settings.connect("changed::shuffle", self.__on_playback_changed)
+        App().settings.connect("changed::playback", self.__on_playback_changed)
 
         self.__party_button = builder.get_object("party-button")
         party_action = Gio.SimpleAction.new("party", None)
         party_action.connect("activate", self.__activate_party_button)
-        Lp().add_action(party_action)
-        Lp().set_accels_for_action("app.party", ["<Control>p"])
+        App().add_action(party_action)
+        App().set_accels_for_action("app.party", ["<Control>p"])
 
         self.__search_button = builder.get_object("search-button")
         self.__helper = TouchHelper(self.__search_button,
@@ -155,8 +155,8 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_button.connect("query-tooltip",
                                    self.__on_list_button_query_tooltip)
         self.__list_popover = None
-        Lp().player.connect("party-changed", self.__on_party_changed)
-        Lp().player.connect("lock-changed", self.__on_lock_changed)
+        App().player.connect("party-changed", self.__on_party_changed)
+        App().player.connect("lock-changed", self.__on_lock_changed)
 
     def set_minimal(self, b):
         """
@@ -222,13 +222,13 @@ class ToolbarEnd(Gtk.Bin):
             Show a popover with current playlist
             @param button as Gtk.Button
         """
-        if Lp().player.current_track.id == Type.EXTERNALS:
+        if App().player.current_track.id == Type.EXTERNALS:
             from lollypop.pop_externals import ExternalsPopover
             popover = ExternalsPopover()
-        elif Lp().player.queue:
+        elif App().player.queue:
             from lollypop.pop_queue import QueuePopover
             popover = QueuePopover()
-        elif Lp().player.get_user_playlist_ids():
+        elif App().player.get_user_playlist_ids():
             from lollypop.pop_playlists import PlaylistsPopover
             popover = PlaylistsPopover()
         else:
@@ -261,12 +261,12 @@ class ToolbarEnd(Gtk.Bin):
         """
         active = self.__party_button.get_active()
         self.__shuffle_button.set_sensitive(not active)
-        if not Lp().gtk_application_prefer_dark_theme and\
-                not Lp().settings.get_value("dark-ui"):
+        if not App().gtk_application_prefer_dark_theme and\
+                not App().settings.get_value("dark-ui"):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
-        Lp().player.set_party(active)
-        self.on_next_changed(Lp().player)
+        App().player.set_party(active)
+        self.on_next_changed(App().player)
 
     def _on_party_press_event(self, eventbox, event):
         """
@@ -305,8 +305,8 @@ class ToolbarEnd(Gtk.Bin):
             Filter view
             @param args as []
         """
-        if Lp().window.container.view is not None:
-            Lp().window.container.view.enable_filter()
+        if App().window.container.view is not None:
+            App().window.container.view.enable_filter()
 
     def __on_search_short(self, args):
         """
@@ -327,8 +327,8 @@ class ToolbarEnd(Gtk.Bin):
         """
             Set shuffle icon
         """
-        shuffle = Lp().settings.get_enum("shuffle")
-        repeat = Lp().settings.get_enum("playback")
+        shuffle = App().settings.get_enum("shuffle")
+        repeat = App().settings.get_enum("playback")
         if repeat == NextContext.REPEAT_TRACK:
             self.__shuffle_image.get_style_context().remove_class("selected")
             self.__shuffle_image.set_from_icon_name(
@@ -361,7 +361,7 @@ class ToolbarEnd(Gtk.Bin):
             @param param as GLib.Variant
         """
         self.__party_button.set_active(not self.__party_button.get_active())
-        Lp().window.responsive_design()
+        App().window.responsive_design()
 
     def __activate_shuffle_button(self, action=None, param=None):
         """
@@ -440,11 +440,11 @@ class ToolbarEnd(Gtk.Bin):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        if Lp().player.current_track.id == Type.EXTERNALS:
+        if App().player.current_track.id == Type.EXTERNALS:
             widget.set_tooltip_text(_("External tracks"))
-        elif Lp().player.queue:
+        elif App().player.queue:
             widget.set_tooltip_text(_("Queue"))
-        elif Lp().player.get_user_playlist_ids():
+        elif App().player.get_user_playlist_ids():
             widget.set_tooltip_text(_("Playing playlists"))
         else:
             widget.set_tooltip_text(_("Playing albums"))

@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib
 
 from lollypop.controllers import InfoController
 from lollypop.touch_helper import TouchHelper
-from lollypop.define import Lp, Type, ArtSize
+from lollypop.define import App, Type, ArtSize
 
 
 class ToolbarInfo(Gtk.Bin, InfoController):
@@ -60,9 +60,9 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             self._cover.get_style_context().add_class("small-cover-frame")
 
         self.connect("realize", self.__on_realize)
-        Lp().player.connect("loading-changed", self.__on_loading_changed)
-        Lp().art.connect("album-artwork-changed", self.__update_cover)
-        Lp().art.connect("radio-artwork-changed", self.__update_logo)
+        App().player.connect("loading-changed", self.__on_loading_changed)
+        App().art.connect("album-artwork-changed", self.__update_cover)
+        App().art.connect("radio-artwork-changed", self.__update_logo)
 
     def do_get_preferred_width(self):
         """
@@ -104,9 +104,9 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             @param art as Art
             @param album id as int
         """
-        if Lp().player.current_track.album.id == album_id:
-            surface = Lp().art.get_album_artwork(
-                                       Lp().player.current_track.album,
+        if App().player.current_track.album.id == album_id:
+            surface = App().art.get_album_artwork(
+                                       App().player.current_track.album,
                                        self._artsize,
                                        self._cover.get_scale_factor())
             self._cover.set_from_surface(surface)
@@ -117,8 +117,8 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             @param art as Art
             @param name as str
         """
-        if Lp().player.current_track.album_artist == name:
-            pixbuf = Lp().art.get_radio_artwork(name, self._artsize)
+        if App().player.current_track.album_artist == name:
+            pixbuf = App().art.get_radio_artwork(name, self._artsize)
             self._cover.set_from_surface(pixbuf)
 
     def __on_info_long(self, args):
@@ -126,12 +126,12 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Show current track menu
             @param args as []
         """
-        if Lp().player.current_track.id >= 0:
+        if App().player.current_track.id >= 0:
             from lollypop.pop_menu import PlaylistsMenu
             from lollypop.pop_menu import TrackMenuPopover
             popover = TrackMenuPopover(
-                        Lp().player.current_track,
-                        PlaylistsMenu(Lp().player.current_track))
+                        App().player.current_track,
+                        PlaylistsMenu(App().player.current_track))
             popover.set_relative_to(self._infobox)
             popover.show()
 
@@ -140,18 +140,18 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Show track information popover
             @param args as []
         """
-        if Lp().player.current_track.id == Type.EXTERNALS:
+        if App().player.current_track.id == Type.EXTERNALS:
             from lollypop.pop_externals import ExternalsPopover
             expopover = ExternalsPopover()
             expopover.set_relative_to(self._infobox)
             expopover.populate()
             expopover.show()
-        elif Lp().player.current_track.id is not None:
+        elif App().player.current_track.id is not None:
             if self.__pop_info is None:
                 from lollypop.pop_info import InfoPopover
                 self.__pop_info = InfoPopover([])
                 self.__pop_info.set_relative_to(self._infobox)
-            if Lp().player.current_track.id == Type.RADIOS:
+            if App().player.current_track.id == Type.RADIOS:
                 view_type = Type.RADIOS
             else:
                 view_type = Type.ALBUMS

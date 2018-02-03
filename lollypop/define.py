@@ -17,7 +17,7 @@ from gi.repository import Gio, GLib
 
 LOLLYPOP_DATA_PATH = GLib.get_user_data_dir() + "/lollypop"
 
-Lp = Gio.Application.get_default
+App = Gio.Application.get_default
 
 GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 

@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.loader import Loader
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.view_playlists import PlaylistsView
 
 
@@ -31,7 +31,7 @@ class PlaylistsPopover(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
-        self._widget = PlaylistsView(Lp().player.get_user_playlist_ids(),
+        self._widget = PlaylistsView(App().player.get_user_playlist_ids(),
                                      False)
         self._widget.show()
         self.add(self._widget)
@@ -41,7 +41,7 @@ class PlaylistsPopover(Gtk.Popover):
             Populate view
         """
         def load():
-            return Lp().player.get_user_playlist()
+            return App().player.get_user_playlist()
         loader = Loader(target=load, view=self._widget)
         loader.start()
 
@@ -55,7 +55,7 @@ class PlaylistsPopover(Gtk.Popover):
         """
         self._stop = False
         self.populate()
-        height = Lp().window.get_size()[1]
+        height = App().window.get_size()[1]
         self.set_size_request(400, height*0.7)
 
     def __on_unmap(self, widget):

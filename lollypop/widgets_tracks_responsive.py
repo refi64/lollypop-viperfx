@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import App, ArtSize, Type
 
 
 class TracksResponsiveWidget:
@@ -63,9 +63,9 @@ class TracksResponsiveWidget:
         """
         for disc in self._album.discs:
             self._tracks_widget_left[disc.number].update_playing(
-                Lp().player.current_track.id)
+                App().player.current_track.id)
             self._tracks_widget_right[disc.number].update_playing(
-                Lp().player.current_track.id)
+                App().player.current_track.id)
 
     def update_duration(self, track_id):
         """
@@ -143,7 +143,7 @@ class TracksResponsiveWidget:
         for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
                 for child in widget.get_children():
-                    if child.id == Lp().player.current_track.id:
+                    if child.id == App().player.current_track.id:
                         return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
@@ -333,7 +333,7 @@ class TracksResponsiveWidget:
             return
 
         track = tracks.pop(0)
-        if not Lp().settings.get_value("show-tag-tracknumber"):
+        if not App().settings.get_value("show-tag-tracknumber"):
             track.set_number(i)
         track.set_featuring_ids(self._album.artist_ids)
         row = TrackRow(track, self.__dnd)
@@ -399,7 +399,7 @@ class TracksResponsiveWidget:
         row.show()
         dst_widget.insert(row, index)
         self._album.move_track(src_track, index)
-        Lp().player.set_next()
+        App().player.set_next()
 
     def __on_disc_label_realize(self, eventbox):
         """
@@ -423,11 +423,11 @@ class TracksResponsiveWidget:
         if disc is None:
             return
         for track in disc.tracks:
-            if Lp().player.track_in_queue(track):
-                Lp().player.del_from_queue(track.id, False)
+            if App().player.track_in_queue(track):
+                App().player.del_from_queue(track.id, False)
             else:
-                Lp().player.append_to_queue(track.id, False)
-        Lp().player.emit("queue-changed")
+                App().player.append_to_queue(track.id, False)
+        App().player.emit("queue-changed")
 
     def __on_row_destroy(self, widget):
         """
@@ -455,14 +455,14 @@ class TracksResponsiveWidget:
             @param track as Track
         """
         # Add to queue by default
-        if Lp().player.locked:
-            if track.id in Lp().player.queue:
-                Lp().player.del_from_queue(track.id)
+        if App().player.locked:
+            if track.id in App().player.queue:
+                App().player.del_from_queue(track.id)
             else:
-                Lp().player.append_to_queue(track.id)
+                App().player.append_to_queue(track.id)
         else:
             # Do not update album list if in party or album already available
-            if not Lp().player.is_party and\
-                    not Lp().player.track_in_playback(track):
-                Lp().player.add_album(self._album)
-            Lp().player.load(track)
+            if not App().player.is_party and\
+                    not App().player.track_in_playback(track):
+                App().player.add_album(self._album)
+            App().player.load(track)

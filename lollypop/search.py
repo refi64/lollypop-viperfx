@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.helper_task import TaskHelper
 from lollypop.objects import Album, Track
 
@@ -69,21 +69,21 @@ class Search:
             if cancellable.is_cancelled():
                 return
             # Get all albums for all artists and non album_artist tracks
-            for artist_id in Lp().artists.search(item):
+            for artist_id in App().artists.search(item):
                 if cancellable.is_cancelled():
                     return
-                for album_id in Lp().albums.get_ids([artist_id], []):
+                for album_id in App().albums.get_ids([artist_id], []):
                     if (album_id, artist_id) not in albums:
                         album_ids.append(album_id)
-                for track_id in Lp().tracks.get_for_artist(artist_id):
+                for track_id in App().tracks.get_for_artist(artist_id):
                     track_ids.append(track_id)
             try:
                 year = int(item)
-                album_ids += Lp().albums.get_by_year(year)
+                album_ids += App().albums.get_by_year(year)
             except:
                 pass
-            album_ids += Lp().albums.search(item)
-            for track_id in Lp().tracks.search(item):
+            album_ids += App().albums.search(item)
+            for track_id in App().tracks.search(item):
                 track_ids.append(track_id)
 
         # Create albums for tracks

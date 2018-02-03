@@ -13,7 +13,7 @@
 
 from threading import current_thread
 
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class SqlCursor:
@@ -26,7 +26,7 @@ class SqlCursor:
             Raise an exception if cursor already exists
         """
         name = current_thread().getName() + obj.__class__.__name__
-        Lp().cursors[name] = obj.get_cursor()
+        App().cursors[name] = obj.get_cursor()
 
     def remove(obj):
         """
@@ -34,7 +34,7 @@ class SqlCursor:
             Raise an exception if cursor already exists
         """
         name = current_thread().getName() + obj.__class__.__name__
-        del Lp().cursors[name]
+        del App().cursors[name]
 
     def __init__(self, obj):
         """
@@ -48,10 +48,10 @@ class SqlCursor:
             Return cursor for thread, create a new one if needed
         """
         name = current_thread().getName() + self._obj.__class__.__name__
-        if name not in Lp().cursors:
+        if name not in App().cursors:
             self._creator = True
-            Lp().cursors[name] = self._obj.get_cursor()
-        return Lp().cursors[name]
+            App().cursors[name] = self._obj.get_cursor()
+        return App().cursors[name]
 
     def __exit__(self, type, value, traceback):
         """
@@ -59,5 +59,5 @@ class SqlCursor:
         """
         if self._creator:
             name = current_thread().getName() + self._obj.__class__.__name__
-            Lp().cursors[name].close()
-            del Lp().cursors[name]
+            App().cursors[name].close()
+            del App().cursors[name]

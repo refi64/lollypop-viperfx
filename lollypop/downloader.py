@@ -16,7 +16,7 @@ import json
 from base64 import b64encode
 
 from lollypop.cache import InfoCache
-from lollypop.define import Lp, GOOGLE_API_ID, Type
+from lollypop.define import App, GOOGLE_API_ID, Type
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 from lollypop.utils import debug, get_network_available
 from lollypop.helper_task import TaskHelper
@@ -68,8 +68,8 @@ class Downloader:
             Get google uri for search
             @param search as str
         """
-        key = Lp().settings.get_value("cs-api-key").get_string() or\
-            Lp().settings.get_default_value("cs-api-key").get_string()
+        key = App().settings.get_value("cs-api-key").get_string() or\
+            App().settings.get_default_value("cs-api-key").get_string()
         uri = "https://www.googleapis.com/" +\
               "customsearch/v1?key=%s&cx=%s" % (key, GOOGLE_API_ID) +\
               "&q=%s&searchType=image" % GLib.uri_escape_string(search,
@@ -103,8 +103,8 @@ class Downloader:
             @param artist as str
             @return (url as str/None, content as str)
         """
-        if Lp().lastfm is not None:
-            return Lp().lastfm.get_artist_info(artist)
+        if App().lastfm is not None:
+            return App().lastfm.get_artist_info(artist)
         else:
             return (None, None)
 
@@ -278,10 +278,10 @@ class Downloader:
             @tread safe
         """
         image = None
-        if Lp().lastfm is not None:
+        if App().lastfm is not None:
             try:
                 helper = TaskHelper()
-                last_album = Lp().lastfm.get_album(artist, album)
+                last_album = App().lastfm.get_album(artist, album)
                 uri = last_album.get_cover_image(4)
                 if uri is not None:
                     (status, image) = helper.load_uri_content_sync(uri, None)
@@ -325,7 +325,7 @@ class Downloader:
         # We create cache if needed
         InfoCache.init()
         # Then cache for lastfm/wikipedia/spotify/deezer/...
-        for (artist_id, artist, sort) in Lp().artists.get([]):
+        for (artist_id, artist, sort) in App().artists.get([]):
             if not get_network_available() or\
                     InfoCache.exists(artist):
                 continue
@@ -353,7 +353,7 @@ class Downloader:
                     print("Downloader::__cache_artists_info():", e, artist)
                     InfoCache.add(artist, None, None, api)
             if artwork_set:
-                GLib.idle_add(Lp().art.emit, "artist-artwork-changed", artist)
+                GLib.idle_add(App().art.emit, "artist-artwork-changed", artist)
         self.__cache_artists_running = False
 
     def __cache_albums_art(self):
@@ -365,14 +365,14 @@ class Downloader:
         try:
             while self.__albums_queue:
                 album_id = self.__albums_queue.pop()
-                album = Lp().albums.get_name(album_id)
-                artist_ids = Lp().albums.get_artist_ids(album_id)
+                album = App().albums.get_name(album_id)
+                artist_ids = App().albums.get_artist_ids(album_id)
                 is_compilation = artist_ids and\
                     artist_ids[0] == Type.COMPILATIONS
                 if is_compilation:
                     artist = ""
                 else:
-                    artist = ", ".join(Lp().albums.get_artists(album_id))
+                    artist = ", ".join(App().albums.get_artists(album_id))
                 for (api, unused, helper) in InfoCache.WEBSERVICES:
                     if helper is None:
                         continue
@@ -380,7 +380,7 @@ class Downloader:
                     data = method(artist, album)
                     if data is not None:
                         self.__albums_history.append(album_id)
-                        Lp().art.save_album_artwork(data, album_id)
+                        App().art.save_album_artwork(data, album_id)
                         break
         except Exception as e:
             print("Downloader::__cache_albums_art: %s" % e)

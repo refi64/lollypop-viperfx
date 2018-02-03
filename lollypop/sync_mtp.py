@@ -17,7 +17,7 @@ from re import match
 import json
 
 from lollypop.utils import escape, debug
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.objects import Track
 
 
@@ -190,7 +190,7 @@ class MtpSync:
         try:
             self.__in_thread = True
             self.__convert = convert
-            self.__quality = Lp().settings.get_value("mp3-quality")
+            self.__quality = App().settings.get_value("mp3-quality")
             self.__normalize = normalize
             self.__errors = False
             self.__errors_count = 0
@@ -201,18 +201,19 @@ class MtpSync:
             self._fraction = 0.0
             plnames = []
 
-            GLib.idle_add(Lp().window.container.progress.set_fraction, 0, self)
+            GLib.idle_add(App().window.container.progress.set_fraction,
+                          0, self)
 
             if playlists and playlists[0] == Type.NONE:
                 # New tracks for synced albums
-                album_ids = Lp().albums.get_synced_ids()
+                album_ids = App().albums.get_synced_ids()
                 for album_id in album_ids:
-                    self.__total += len(Lp().albums.get_track_ids(album_id))
+                    self.__total += len(App().albums.get_track_ids(album_id))
             else:
                 # New tracks for playlists
                 for playlist in playlists:
-                    plnames.append(Lp().playlists.get_name(playlist))
-                    self.__total += len(Lp().playlists.get_tracks(playlist))
+                    plnames.append(App().playlists.get_name(playlist))
+                    self.__total += len(App().playlists.get_tracks(playlist))
 
             # Old tracks
             try:
@@ -371,7 +372,7 @@ class MtpSync:
             stream = None
             if playlist != Type.NONE:
                 try:
-                    playlist_name = Lp().playlists.get_name(playlist)
+                    playlist_name = App().playlists.get_name(playlist)
                     # Create playlist
                     m3u = Gio.File.new_for_path(
                         "/tmp/lollypop_%s.m3u" % (playlist_name,))
@@ -385,11 +386,11 @@ class MtpSync:
             # Get tracks
             if playlist == Type.NONE:
                 track_ids = []
-                album_ids = Lp().albums.get_synced_ids()
+                album_ids = App().albums.get_synced_ids()
                 for album_id in album_ids:
-                    track_ids += Lp().albums.get_track_ids(album_id)
+                    track_ids += App().albums.get_track_ids(album_id)
             else:
-                track_ids = Lp().playlists.get_track_ids(playlist)
+                track_ids = App().playlists.get_track_ids(playlist)
             # Start copying
             for track_id in track_ids:
                 if track_id is None:
@@ -419,7 +420,7 @@ class MtpSync:
                 if not d.query_exists():
                     self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
-                art = Lp().art.get_album_artwork_uri(track.album)
+                art = App().art.get_album_artwork_uri(track.album)
                 debug("MtpSync::__copy_to_device(): %s" % art)
                 if art is not None:
                     src_art = Gio.File.new_for_uri(art)
@@ -518,12 +519,12 @@ class MtpSync:
         # Get tracks
         if playlists and playlists[0] == Type.NONE:
             track_ids = []
-            album_ids = Lp().albums.get_synced_ids()
+            album_ids = App().albums.get_synced_ids()
             for album_id in album_ids:
-                track_ids += Lp().albums.get_track_ids(album_id)
+                track_ids += App().albums.get_track_ids(album_id)
         else:
             for playlist in playlists:
-                track_ids += Lp().playlists.get_track_ids(playlist)
+                track_ids += App().playlists.get_track_ids(playlist)
 
         # Get tracks uris
         for track_id in track_ids:

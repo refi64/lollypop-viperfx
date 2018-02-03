@@ -15,7 +15,7 @@ from gi.repository import GLib, Gio
 from gettext import gettext as _
 
 
-from lollypop.define import Lp
+from lollypop.define import App
 from lollypop.tagreader import TagReader
 from lollypop.utils import is_audio
 
@@ -34,7 +34,7 @@ class CollectionImporter:
         """
             Add uris to collection
         """
-        GLib.idle_add(Lp().window.container.pulse, True)
+        GLib.idle_add(App().window.container.pulse, True)
         walk_uris = list(uris)
         while walk_uris:
             uri = walk_uris.pop(0)
@@ -65,7 +65,7 @@ class CollectionImporter:
                     print("CollectionImporter: not an audio file", uri)
             except Exception as e:
                 print("CollectionImporter::add():", e)
-        GLib.idle_add(Lp().window.container.pulse, False)
+        GLib.idle_add(App().window.container.pulse, False)
 
 #######################
 # PRIVATE             #
@@ -77,7 +77,7 @@ class CollectionImporter:
         """
         try:
             # We only import to primary collection
-            music_uris = Lp().settings.get_music_uris()
+            music_uris = App().settings.get_music_uris()
             if music_uris:
                 music_uri = music_uris[0]
             else:

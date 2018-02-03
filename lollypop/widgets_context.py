@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album, Track
-from lollypop.define import Lp, TAG_EDITORS
+from lollypop.define import App, TAG_EDITORS
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -89,7 +89,7 @@ class ContextWidget(Gtk.Grid):
         self.__button = button
 
         # Search for available tag editors
-        self.__editor = Lp().settings.get_value("tag-editor").get_string()
+        self.__editor = App().settings.get_value("tag-editor").get_string()
         if not self.__editor:
             for tag_editor in TAG_EDITORS:
                 if GLib.find_program_in_path(tag_editor) is not None:
@@ -111,12 +111,12 @@ class ContextWidget(Gtk.Grid):
         string = _("Add to queue")
         icon = "list-add-symbolic"
         if isinstance(self.__object, Album):
-            if Lp().player.album_in_queue(self.__object):
+            if App().player.album_in_queue(self.__object):
                 add_to_queue = False
                 string = _("Remove from queue")
                 icon = "list-remove-symbolic"
         elif isinstance(self.__object, Track):
-            if Lp().player.track_in_queue(self.__object):
+            if App().player.track_in_queue(self.__object):
                 add_to_queue = False
                 string = _("Remove from queue")
                 icon = "list-remove-symbolic"
@@ -165,15 +165,15 @@ class ContextWidget(Gtk.Grid):
         if isinstance(self.__object, Album):
             for track_id in self.__object.track_ids:
                 if add_to_queue:
-                    Lp().player.append_to_queue(track_id, False)
+                    App().player.append_to_queue(track_id, False)
                 else:
-                    Lp().player.del_from_queue(track_id, False)
+                    App().player.del_from_queue(track_id, False)
         elif isinstance(self.__object, Track):
             if add_to_queue:
-                Lp().player.append_to_queue(self.__object.id, False)
+                App().player.append_to_queue(self.__object.id, False)
             else:
-                Lp().player.del_from_queue(self.__object.id, False)
-        Lp().player.emit("queue-changed")
+                App().player.del_from_queue(self.__object.id, False)
+        App().player.emit("queue-changed")
         self.__button.emit("clicked")
 
     def __edit_tags(self, hover_widget):
@@ -193,7 +193,7 @@ class ContextWidget(Gtk.Grid):
             Show playlist manager
             @param hover_widget as HoverWidget
         """
-        Lp().window.container.show_playlist_manager(
+        App().window.container.show_playlist_manager(
                                           self.__object.id,
                                           self.__object.genre_ids,
                                           self.__object.artist_ids,

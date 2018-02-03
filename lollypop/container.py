@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 from urllib.parse import urlparse
 
-from lollypop.define import Lp, Type
+from lollypop.define import App, Type
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
@@ -43,7 +43,7 @@ class Container(Gtk.Bin):
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
-        self.__show_genres = Lp().settings.get_value("show-genres")
+        self.__show_genres = App().settings.get_value("show-genres")
         self.__stack = ViewContainer(500)
         self.__stack.show()
 
@@ -57,10 +57,10 @@ class Container(Gtk.Bin):
         for mount in self.__vm.get_mounts():
             self.__add_device(mount, False)
 
-        Lp().playlists.connect("playlists-changed",
-                               self.__update_playlists)
+        App().playlists.connect("playlists-changed",
+                                self.__update_playlists)
         # Allow user to disable network access
-        if Lp().tracks.count() == 0:
+        if App().tracks.count() == 0:
             self.__show_first_run()
 
         self.add(self.__paned_main_list)
@@ -77,7 +77,7 @@ class Container(Gtk.Bin):
         """
         # Get list one ids (always)
         list_one_ids = []
-        ids = Lp().settings.get_value("list-one-ids")
+        ids = App().settings.get_value("list-one-ids")
         for i in ids:
             if isinstance(i, int):
                 list_one_ids.append(i)
@@ -86,9 +86,9 @@ class Container(Gtk.Bin):
 
         # Get list two ids (only on save state)
         list_two_ids = [Type.NONE]
-        if Lp().settings.get_value("save-state"):
+        if App().settings.get_value("save-state"):
             list_two_ids = []
-            ids = Lp().settings.get_value("list-two-ids")
+            ids = App().settings.get_value("list-two-ids")
             for i in ids:
                 if isinstance(i, int):
                     list_two_ids.append(i)
@@ -101,11 +101,11 @@ class Container(Gtk.Bin):
         """
             Save view state
         """
-        Lp().settings.set_value(
+        App().settings.set_value(
                             "list-one-ids",
                             GLib.Variant("ai",
                                          self.__list_one.selected_ids))
-        Lp().settings.set_value(
+        App().settings.set_value(
                             "list-two-ids",
                             GLib.Variant("ai",
                                          self.__list_two.selected_ids))
@@ -239,9 +239,9 @@ class Container(Gtk.Bin):
             # Get artist genres
             genre_ids = []
             for artist_id in artist_ids:
-                album_ids = Lp().artists.get_albums(artist_ids)
+                album_ids = App().artists.get_albums(artist_ids)
                 for album_id in album_ids:
-                    for genre_id in Lp().albums.get_genre_ids(album_id):
+                    for genre_id in App().albums.get_genre_ids(album_id):
                         if genre_id not in genre_ids:
                             genre_ids.append(genre_id)
             # Select genres on list one
@@ -259,12 +259,12 @@ class Container(Gtk.Bin):
         visible_child = self.__stack.get_visible_child()
         if visible_child == self.__list_two:
             self.__stack.set_visible_child(self.__list_one)
-            Lp().window.toolbar.playback.show_back(True)
+            App().window.toolbar.playback.show_back(True)
         elif self.__list_two.is_visible():
             self.__stack.set_visible_child(self.__list_two)
         else:
             self.__stack.set_visible_child(self.__list_one)
-            Lp().window.toolbar.playback.show_back(True)
+            App().window.toolbar.playback.show_back(True)
 
     def save_internals(self):
         """
@@ -273,12 +273,12 @@ class Container(Gtk.Bin):
         main_pos = self.__paned_main_list.get_position()
         listview_pos = self.__paned_list_view.get_position()
         listview_pos = listview_pos if listview_pos > 100 else 100
-        Lp().settings.set_value("paned-mainlist-width",
-                                GLib.Variant("i",
-                                             main_pos))
-        Lp().settings.set_value("paned-listview-width",
-                                GLib.Variant("i",
-                                             listview_pos))
+        App().settings.set_value("paned-mainlist-width",
+                                 GLib.Variant("i",
+                                              main_pos))
+        App().settings.set_value("paned-listview-width",
+                                 GLib.Variant("i",
+                                              listview_pos))
 
     def paned_stack(self, b):
         """
@@ -290,14 +290,14 @@ class Container(Gtk.Bin):
             self.__paned_main_list.remove(self.__list_one)
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
-            Lp().window.toolbar.playback.show_back(True)
+            App().window.toolbar.playback.show_back(True)
             self.__stack.set_visible_child(self.__list_one)
         elif not b and self.is_paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
             self.__paned_list_view.add1(self.__list_two)
             self.__paned_main_list.add1(self.__list_one)
-            Lp().window.toolbar.playback.show_back(False)
+            App().window.toolbar.playback.show_back(False)
 
     def hide_paned(self):
         """
@@ -311,9 +311,9 @@ class Container(Gtk.Bin):
             self.__list_one.show()
             if self.__list_two.was_visible:
                 self.__list_two.show()
-        Lp().settings.set_value("show-navigation-list",
-                                GLib.Variant("b",
-                                             self.__list_one.is_visible()))
+        App().settings.set_value("show-navigation-list",
+                                 GLib.Variant("b",
+                                              self.__list_one.is_visible()))
 
     @property
     def view(self):
@@ -352,7 +352,7 @@ class Container(Gtk.Bin):
             Make progress bar pulse while visible
             @param pulse as bool
         """
-        if self.__progress.is_visible() and not Lp().scanner.is_locked():
+        if self.__progress.is_visible() and not App().scanner.is_locked():
             self.__progress.pulse()
             return True
         else:
@@ -384,7 +384,7 @@ class Container(Gtk.Bin):
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__list_one = SelectionList()
-        if Lp().settings.get_value("show-navigation-list"):
+        if App().settings.get_value("show-navigation-list"):
             self.__list_one.show()
         self.__list_two = SelectionList()
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
@@ -405,9 +405,9 @@ class Container(Gtk.Bin):
         self.__paned_main_list.add1(self.__list_one)
         self.__paned_main_list.add2(self.__paned_list_view)
         self.__paned_main_list.set_position(
-            Lp().settings.get_value("paned-mainlist-width").get_int32())
+            App().settings.get_value("paned-mainlist-width").get_int32())
         self.__paned_list_view.set_position(
-            Lp().settings.get_value("paned-listview-width").get_int32())
+            App().settings.get_value("paned-listview-width").get_int32())
         self.__paned_main_list.show()
         self.__paned_list_view.show()
 
@@ -416,10 +416,10 @@ class Container(Gtk.Bin):
             Run collection update if needed
             @return True if hard scan is running
         """
-        Lp().scanner.connect("scan-finished",
-                             lambda x: self.__update_lists(Lp().scanner))
-        Lp().scanner.connect("genre-updated", self.__on_genre_updated)
-        Lp().scanner.connect("artist-updated", self.__on_artist_updated)
+        App().scanner.connect("scan-finished",
+                              lambda x: self.__update_lists(App().scanner))
+        App().scanner.connect("genre-updated", self.__on_genre_updated)
+        App().scanner.connect("artist-updated", self.__on_artist_updated)
 
     def __update_playlists(self, playlists, playlist_id):
         """
@@ -429,9 +429,9 @@ class Container(Gtk.Bin):
         """
         ids = self.__list_one.selected_ids
         if ids and ids[0] == Type.PLAYLISTS:
-            if Lp().playlists.exists(playlist_id):
+            if App().playlists.exists(playlist_id):
                 self.__list_two.update_value(playlist_id,
-                                             Lp().playlists.get_name(
+                                             App().playlists.get_name(
                                                                   playlist_id))
             else:
                 self.__list_two.remove_value(playlist_id)
@@ -475,7 +475,7 @@ class Container(Gtk.Bin):
             @thread safe
         """
         def load():
-            genres = Lp().genres.get()
+            genres = App().genres.get()
             return genres
 
         def setup(genres):
@@ -500,8 +500,8 @@ class Container(Gtk.Bin):
             @thread safe
         """
         def load():
-            artists = Lp().artists.get(genre_ids)
-            compilations = Lp().albums.get_compilation_ids(genre_ids)
+            artists = App().artists.get(genre_ids)
+            compilations = App().albums.get_compilation_ids(genre_ids)
             return (artists, compilations)
 
         def setup(artists, compilations):
@@ -536,7 +536,7 @@ class Container(Gtk.Bin):
             @thread safe
         """
         items = self.__list_two.get_pl_headers()
-        items += Lp().playlists.get()
+        items += App().playlists.get()
         if update:
             self.__list_two.update_values(items)
         else:
@@ -595,12 +595,12 @@ class Container(Gtk.Bin):
         """
         def load():
             if genre_ids and genre_ids[0] == Type.ALL:
-                albums = Lp().albums.get_ids(artist_ids, [])
+                albums = App().albums.get_ids(artist_ids, [])
             else:
                 albums = []
                 if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                    albums += Lp().albums.get_compilation_ids(genre_ids)
-                albums += Lp().albums.get_ids(artist_ids, genre_ids)
+                    albums += App().albums.get_compilation_ids(genre_ids)
+                albums += App().albums.get_ids(artist_ids, genre_ids)
             return albums
         from lollypop.view_artist import ArtistView
         self.__stop_current_view()
@@ -621,30 +621,30 @@ class Container(Gtk.Bin):
             is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
             if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation or\
-                        Lp().settings.get_value("show-compilations"):
-                    items = Lp().albums.get_compilation_ids()
+                        App().settings.get_value("show-compilations"):
+                    items = App().albums.get_compilation_ids()
                 if not is_compilation:
-                    items += Lp().albums.get_ids()
+                    items += App().albums.get_ids()
             elif genre_ids and genre_ids[0] == Type.POPULARS:
-                items = Lp().albums.get_rated()
+                items = App().albums.get_rated()
                 count = 100 - len(items)
-                for album in Lp().albums.get_populars(count):
+                for album in App().albums.get_populars(count):
                     if album not in items:
                         items.append(album)
             elif genre_ids and genre_ids[0] == Type.LOVED:
-                items = Lp().albums.get_loves()
+                items = App().albums.get_loves()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
-                items = Lp().albums.get_recents()
+                items = App().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.NEVER:
-                items = Lp().albums.get_never_listened_to()
+                items = App().albums.get_never_listened_to()
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
-                items = Lp().albums.get_randoms()
+                items = App().albums.get_randoms()
             else:
                 if is_compilation or\
-                        Lp().settings.get_value("show-compilations"):
-                    items = Lp().albums.get_compilation_ids(genre_ids)
+                        App().settings.get_value("show-compilations"):
+                    items = App().albums.get_compilation_ids(genre_ids)
                 if not is_compilation:
-                    items += Lp().albums.get_ids([], genre_ids)
+                    items += App().albums.get_ids([], genre_ids)
             return items
 
         from lollypop.view_albums_box import AlbumsBoxView
@@ -665,19 +665,19 @@ class Container(Gtk.Bin):
             track_ids = []
             for playlist_id in playlist_ids:
                 if playlist_id == Type.POPULARS:
-                    tracks = Lp().tracks.get_rated()
-                    for track in Lp().tracks.get_populars():
+                    tracks = App().tracks.get_rated()
+                    for track in App().tracks.get_populars():
                         tracks.append(track)
                 elif playlist_id == Type.RECENTS:
-                    tracks = Lp().tracks.get_recently_listened_to()
+                    tracks = App().tracks.get_recently_listened_to()
                 elif playlist_id == Type.NEVER:
-                    tracks = Lp().tracks.get_never_listened_to()
+                    tracks = App().tracks.get_never_listened_to()
                 elif playlist_id == Type.RANDOMS:
-                    tracks = Lp().tracks.get_randoms()
+                    tracks = App().tracks.get_randoms()
                 elif playlist_id == Type.LOVED:
-                    tracks = Lp().playlists.get_track_ids_sorted(playlist_id)
+                    tracks = App().playlists.get_track_ids_sorted(playlist_id)
                 else:
-                    tracks = Lp().playlists.get_track_ids(playlist_id)
+                    tracks = App().playlists.get_track_ids(playlist_id)
                 for track_id in tracks:
                     if track_id not in track_ids:
                         track_ids.append(track_id)
@@ -722,7 +722,7 @@ class Container(Gtk.Bin):
         parsed = urlparse(uri)
         is_removable = parsed.scheme == "file" and\
             mount.can_eject() and\
-            Lp().settings.get_value("sync-to-usb-disks")
+            App().settings.get_value("sync-to-usb-disks")
         if is_removable or parsed.scheme == "mtp":
             self.__devices_index -= 1
             dev = Device()
@@ -758,7 +758,7 @@ class Container(Gtk.Bin):
         if not selected_ids:
             return
         if selected_ids[0] == Type.PLAYLISTS:
-            if Lp().settings.get_value("show-navigation-list"):
+            if App().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
                 view = self.__get_view_playlists()
@@ -787,14 +787,14 @@ class Container(Gtk.Bin):
                 view = self.__get_view_artists([], selected_ids)
         else:
             self.__update_list_artists(self.__list_two, selected_ids, False)
-            if Lp().settings.get_value("show-navigation-list"):
+            if App().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
             if not self.__list_two.will_be_selected():
                 view = self.__get_view_albums(selected_ids, [])
         if view is not None:
             if self.is_paned_stack:
                 # Just to make it sensitive
-                Lp().window.toolbar.playback.show_back(True, True)
+                App().window.toolbar.playback.show_back(True, True)
             if view not in self.__stack.get_children():
                 self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
@@ -853,7 +853,7 @@ class Container(Gtk.Bin):
         """
         if self.__show_genres:
             if add:
-                genre_name = Lp().genres.get_name(genre_id)
+                genre_name = App().genres.get_name(genre_id)
                 self.__list_one.add_value((genre_id, genre_name))
             else:
                 self.__list_one.remove_value(genre_id)
@@ -865,14 +865,14 @@ class Container(Gtk.Bin):
             @param artist id as int
             @param add as bool
         """
-        artist_name = Lp().artists.get_name(artist_id)
-        sortname = Lp().artists.get_sortname(artist_id)
+        artist_name = App().artists.get_name(artist_id)
+        sortname = App().artists.get_sortname(artist_id)
         if self.__show_genres:
             l = self.__list_two
-            artist_ids = Lp().artists.get_ids(self.__list_one.selected_ids)
+            artist_ids = App().artists.get_ids(self.__list_one.selected_ids)
         else:
             l = self.__list_one
-            artist_ids = Lp().artists.get_ids()
+            artist_ids = App().artists.get_ids()
         if add:
             if artist_id in artist_ids:
                 l.add_value((artist_id, artist_name, sortname))

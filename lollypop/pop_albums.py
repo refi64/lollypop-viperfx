@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.view_albums_list import AlbumsListView
-from lollypop.define import Lp
+from lollypop.define import App
 
 
 class AlbumsPopover(Gtk.Popover):
@@ -48,7 +48,7 @@ class AlbumsPopover(Gtk.Popover):
         label.get_style_context().add_class("dim-label")
         label.set_property("halign", Gtk.Align.START)
         self.__view = AlbumsListView()
-        self.__view.populate(Lp().player.albums)
+        self.__view.populate(App().player.albums)
         self.__view.show()
         grid = Gtk.Grid()
         grid.set_column_spacing(5)
@@ -85,5 +85,5 @@ class AlbumsPopover(Gtk.Popover):
             Resize
             @param widget as Gtk.Widget
         """
-        height = Lp().window.get_size()[1]
+        height = App().window.get_size()[1]
         self.set_size_request(400, height*0.7)

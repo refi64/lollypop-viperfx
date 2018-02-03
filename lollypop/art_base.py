@@ -18,7 +18,7 @@
 
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, GLib
 
-from lollypop.define import ArtSize, Lp
+from lollypop.define import ArtSize, App
 
 
 class BaseArt(GObject.GObject):
@@ -45,7 +45,7 @@ class BaseArt(GObject.GObject):
         """
             Update value with some check
         """
-        value = Lp().settings.get_value("cover-size").get_int32()
+        value = App().settings.get_value("cover-size").get_int32()
         # Check value as user can enter bad value via dconf
         if value < ArtSize.SMALL or value > ArtSize.MAX:
             value = 200
@@ -109,11 +109,11 @@ class BaseArt(GObject.GObject):
                 # > 3.15 is missing savev method
                 try:
                     pixbuf.save(cache_path_jpg, "jpeg",
-                                ["quality"], [str(Lp().settings.get_value(
+                                ["quality"], [str(App().settings.get_value(
                                               "cover-quality").get_int32())])
                 except:
                     pixbuf.savev(cache_path_jpg, "jpeg",
-                                 ["quality"], [str(Lp().settings.get_value(
+                                 ["quality"], [str(App().settings.get_value(
                                               "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             return surface
@@ -131,7 +131,7 @@ class BaseArt(GObject.GObject):
             @param uri as str
             @return respect aspect ratio as bool
         """
-        if Lp().settings.get_value("preserve-aspect-ratio"):
+        if App().settings.get_value("preserve-aspect-ratio"):
             return True
         f = Gio.File.new_for_uri(uri)
         (status, data, tag) = f.load_contents(None)

@@ -13,7 +13,7 @@
 import random
 
 from lollypop.helper_task import TaskHelper
-from lollypop.define import Shuffle, NextContext, Lp, Type
+from lollypop.define import Shuffle, NextContext, App, Type
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
 from lollypop.list import LinkedList
@@ -33,7 +33,7 @@ class ShufflePlayer(BasePlayer):
         # Party mode
         self.__is_party = False
         self.reset_history()
-        Lp().settings.connect("changed::shuffle", self.__set_shuffle)
+        App().settings.connect("changed::shuffle", self.__set_shuffle)
 
     def reset_history(self):
         """
@@ -103,9 +103,9 @@ class ShufflePlayer(BasePlayer):
             Return party ids
             @return [ids as int]
         """
-        party_settings = Lp().settings.get_value("party-ids")
+        party_settings = App().settings.get_value("party-ids")
         ids = []
-        genre_ids = Lp().genres.get_ids()
+        genre_ids = App().genres.get_ids()
         genre_ids.append(Type.POPULARS)
         genre_ids.append(Type.RECENTS)
         for setting in party_settings:
@@ -184,9 +184,9 @@ class ShufflePlayer(BasePlayer):
         """
         party_ids = self.get_party_ids()
         if party_ids:
-            album_ids = Lp().albums.get_party_ids(party_ids)
+            album_ids = App().albums.get_party_ids(party_ids)
         else:
-            album_ids = Lp().albums.get_ids()
+            album_ids = App().albums.get_ids()
         self._albums = [Album(album_id) for album_id in album_ids]
 
 #######################
@@ -232,7 +232,7 @@ class ShufflePlayer(BasePlayer):
             Set shuffle mode to gettings value
             @param settings as Gio.Settings, value as str
         """
-        self._shuffle = Lp().settings.get_enum("shuffle")
+        self._shuffle = App().settings.get_enum("shuffle")
 
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
@@ -302,6 +302,6 @@ class ShufflePlayer(BasePlayer):
             Add party mode blacklist to already played tracks
         """
         if self.__is_party:
-            for track_id in Lp().playlists.get_track_ids(Type.NOPARTY):
+            for track_id in App().playlists.get_track_ids(Type.NOPARTY):
                 track = Track(track_id)
                 self.__add_to_shuffle_history(track)

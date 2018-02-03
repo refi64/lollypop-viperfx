@@ -18,7 +18,7 @@ from gi.repository import Gio, Gst, GLib, Gtk
 
 from random import randint
 
-from lollypop.define import Lp, ArtSize, Type, Shuffle, NextContext
+from lollypop.define import App, ArtSize, Type, Shuffle, NextContext
 
 
 class Server:
@@ -177,7 +177,7 @@ class MPRIS(Server):
         # Get the shuffle state for our shuffle toggle setting so we can
         # remember the last non-NONE suffle state if we start with Shuffle.NONE
         # then our "on" setting starts with Shuffle.TRACKS.
-        shuffle_state = Lp().settings.get_enum("shuffle")
+        shuffle_state = App().settings.get_enum("shuffle")
         if shuffle_state != Shuffle.NONE:
             self.__shuffle_state = shuffle_state
         else:
@@ -190,13 +190,13 @@ class MPRIS(Server):
                                        None,
                                        None)
         Server.__init__(self, self.__bus, self.__MPRIS_PATH)
-        Lp().player.connect("current-changed", self.__on_current_changed)
-        Lp().player.connect("seeked", self.__on_seeked)
-        Lp().player.connect("status-changed", self.__on_status_changed)
-        Lp().player.connect("volume-changed", self.__on_volume_changed)
-        Lp().player.connect("rate-changed", self.__on_rate_changed)
-        Lp().settings.connect("changed::shuffle", self.__on_shuffle_changed)
-        Lp().settings.connect("changed::playback", self.__on_playback_changed)
+        App().player.connect("current-changed", self.__on_current_changed)
+        App().player.connect("seeked", self.__on_seeked)
+        App().player.connect("status-changed", self.__on_status_changed)
+        App().player.connect("volume-changed", self.__on_volume_changed)
+        App().player.connect("rate-changed", self.__on_rate_changed)
+        App().settings.connect("changed::shuffle", self.__on_shuffle_changed)
+        App().settings.connect("changed::playback", self.__on_playback_changed)
 
     def Raise(self):
         self.__app.window.setup_window()
@@ -206,36 +206,36 @@ class MPRIS(Server):
         self.__app.quit()
 
     def Next(self):
-        Lp().player.next()
+        App().player.next()
 
     def Previous(self):
-        Lp().player.prev()
+        App().player.prev()
 
     def Pause(self):
-        Lp().player.pause()
+        App().player.pause()
 
     def PlayPause(self):
-        Lp().player.play_pause()
+        App().player.play_pause()
 
     def Stop(self):
-        Lp().player.stop()
+        App().player.stop()
 
     def Play(self):
-        if Lp().player.current_track.id is None:
-            Lp().player.set_party(True)
+        if App().player.current_track.id is None:
+            App().player.set_party(True)
         else:
-            Lp().player.play()
+            App().player.play()
 
     def SetPosition(self, track_id, position):
-        Lp().player.seek(position / (1000 * 1000))
+        App().player.seek(position / (1000 * 1000))
 
     def OpenUri(self, uri):
         pass
 
     def Seek(self, offset):
         # Convert position in seconds
-        position = Lp().player.position / Gst.SECOND
-        Lp().player.seek(position + offset / (1000 * 1000))
+        position = App().player.position / Gst.SECOND
+        App().player.seek(position + offset / (1000 * 1000))
 
     def Seeked(self, position):
         self.__bus.emit_signal(
@@ -248,7 +248,7 @@ class MPRIS(Server):
     def SetRating(self, track_id, rating):
         # We don't currently care about the trackId since
         # we have not yet implemented the TrackList interface.
-        Lp().player.current_track.set_rate(int(rating * 5))
+        App().player.current_track.set_rate(int(rating * 5))
 
     def Get(self, interface, property_name):
         if property_name in ["CanQuit", "CanRaise", "CanSeek",
@@ -259,7 +259,7 @@ class MPRIS(Server):
         elif property_name == "Shuffle":
             return GLib.Variant(
                            "b",
-                           Lp().settings.get_enum("shuffle") != Shuffle.NONE)
+                           App().settings.get_enum("shuffle") != Shuffle.NONE)
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
         elif property_name == "Identity":
@@ -276,7 +276,7 @@ class MPRIS(Server):
         elif property_name == "PlaybackStatus":
             return GLib.Variant("s", self.__get_status())
         elif property_name == "LoopStatus":
-            repeat = Lp().settings.get_enum("playback")
+            repeat = App().settings.get_enum("playback")
             if repeat == NextContext.NONE:
                 value = "Playlist"
             elif repeat == NextContext.REPEAT_TRACK:
@@ -287,14 +287,14 @@ class MPRIS(Server):
         elif property_name == "Metadata":
             return GLib.Variant("a{sv}", self.__metadata)
         elif property_name == "Volume":
-            return GLib.Variant("d", Lp().player.volume)
+            return GLib.Variant("d", App().player.volume)
         elif property_name == "Position":
             return GLib.Variant(
-                               "x",
-                               Lp().player.position / Gst.SECOND * 1000 * 1000)
+                              "x",
+                              App().player.position / Gst.SECOND * 1000 * 1000)
         elif property_name in ["CanGoNext", "CanGoPrevious",
                                "CanPlay", "CanPause"]:
-            return GLib.Variant("b", Lp().player.current_track.id is not None)
+            return GLib.Variant("b", App().player.current_track.id is not None)
 
     def GetAll(self, interface):
         ret = {}
@@ -330,12 +330,12 @@ class MPRIS(Server):
 
     def Set(self, interface, property_name, new_value):
         if property_name == "Volume":
-            Lp().player.set_volume(new_value)
+            App().player.set_volume(new_value)
         elif property_name == "Shuffle":
             if new_value is True:
-                Lp().settings.set_enum("shuffle", self.__shuffle_state)
+                App().settings.set_enum("shuffle", self.__shuffle_state)
             else:
-                Lp().settings.set_enum("shuffle", Shuffle.NONE)
+                App().settings.set_enum("shuffle", Shuffle.NONE)
         elif property_name == "LoopStatus":
             if new_value == "Playlist":
                 value = NextContext.NONE
@@ -343,7 +343,7 @@ class MPRIS(Server):
                 value = NextContext.REPEAT_TRACK
             else:
                 value = NextContext.STOP
-            Lp().settings.set_enum("playback", value)
+            App().settings.set_enum("playback", value)
 
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
@@ -373,7 +373,7 @@ class MPRIS(Server):
         return GLib.Variant("o", "/org/gnome/Lollypop/TrackId/%s" % track_id)
 
     def __get_status(self):
-        state = Lp().player.get_status()
+        state = App().player.get_status()
         if state == Gst.State.PLAYING:
             return "Playing"
         elif state == Gst.State.PAUSED:
@@ -388,52 +388,52 @@ class MPRIS(Server):
                                   "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
         else:
             self.__metadata["mpris:trackid"] = self.__track_id
-            track_number = Lp().player.current_track.number
+            track_number = App().player.current_track.number
             if track_number is None:
                 track_number = 1
             self.__metadata["xesam:trackNumber"] = GLib.Variant("i",
                                                                 track_number)
             self.__metadata["xesam:title"] = GLib.Variant(
-                                                "s",
-                                                Lp().player.current_track.name)
+                                               "s",
+                                               App().player.current_track.name)
             self.__metadata["xesam:album"] = GLib.Variant(
-                                          "s",
-                                          Lp().player.current_track.album.name)
+                                         "s",
+                                         App().player.current_track.album.name)
             self.__metadata["xesam:artist"] = GLib.Variant(
-                                             "as",
-                                             Lp().player.current_track.artists)
+                                            "as",
+                                            App().player.current_track.artists)
             self.__metadata["xesam:albumArtist"] = GLib.Variant(
-                                       "as",
-                                       Lp().player.current_track.album_artists)
+                                      "as",
+                                      App().player.current_track.album_artists)
             self.__metadata["mpris:length"] = GLib.Variant(
-                              "x",
-                              Lp().player.current_track.duration * 1000 * 1000)
+                             "x",
+                             App().player.current_track.duration * 1000 * 1000)
             self.__metadata["xesam:genre"] = GLib.Variant(
-                                              "as",
-                                              Lp().player.current_track.genres)
+                                             "as",
+                                             App().player.current_track.genres)
             self.__metadata["xesam:url"] = GLib.Variant(
-                                                 "s",
-                                                 Lp().player.current_track.uri)
+                                                "s",
+                                                App().player.current_track.uri)
             if self.__rating is None:
-                self.__rating = Lp().player.current_track.get_rate()
+                self.__rating = App().player.current_track.get_rate()
             self.__metadata["xesam:userRating"] = GLib.Variant(
                                                              "d",
                                                              self.__rating / 5)
-            if Lp().player.current_track.id == Type.RADIOS:
-                cover_path = Lp().art.get_radio_cache_path(
-                     ", ".join(Lp().player.current_track.artists),
+            if App().player.current_track.id == Type.RADIOS:
+                cover_path = App().art.get_radio_cache_path(
+                     ", ".join(App().player.current_track.artists),
                      ArtSize.MONSTER)
-            elif Lp().player.current_track.id == Type.EXTERNALS:
+            elif App().player.current_track.id == Type.EXTERNALS:
                 cover_path = "/tmp/lollypop_mpris.jpg"
-                pixbuf = Lp().art.pixbuf_from_tags(
-                    GLib.filename_from_uri(Lp().player.current_track.uri)[0],
+                pixbuf = App().art.pixbuf_from_tags(
+                    GLib.filename_from_uri(App().player.current_track.uri)[0],
                     ArtSize.MONSTER)
                 if pixbuf is not None:
                     pixbuf.savev(cover_path, "jpeg",
                                  ["quality"], ["90"])
             else:
-                cover_path = Lp().art.get_album_cache_path(
-                    Lp().player.current_track.album, ArtSize.MONSTER)
+                cover_path = App().art.get_album_cache_path(
+                    App().player.current_track.album, ArtSize.MONSTER)
             if cover_path is not None:
                 self.__metadata["mpris:artUrl"] = GLib.Variant(
                                                         "s",
@@ -445,11 +445,11 @@ class MPRIS(Server):
     def __on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE,
                                {"Volume": GLib.Variant("d",
-                                Lp().player.volume), },
+                                App().player.volume), },
                                [])
 
     def __on_shuffle_changed(self, settings, value):
-        shuffle_state = Lp().settings.get_enum("shuffle")
+        shuffle_state = App().settings.get_enum("shuffle")
         # We only want to remember the last non-NONE shuffle state.
         if shuffle_state != Shuffle.NONE:
             self.__shuffle_state = shuffle_state
@@ -460,7 +460,7 @@ class MPRIS(Server):
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_playback_changed(self, settings, value):
-        value = Lp().settings.get_enum("playback")
+        value = App().settings.get_enum("playback")
         if value == NextContext.NONE:
             mpris_value = "Playlist"
         elif value == NextContext.REPEAT_TRACK:
@@ -480,7 +480,7 @@ class MPRIS(Server):
             self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
-        current_track_id = Lp().player.current_track.id
+        current_track_id = App().player.current_track.id
         if current_track_id and current_track_id >= 0:
             self.__lollypop_id = current_track_id
         else:

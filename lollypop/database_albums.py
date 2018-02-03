@@ -14,7 +14,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type, OrderBy
+from lollypop.define import App, Type, OrderBy
 from lollypop.utils import remove_static_genres, noaccents
 
 
@@ -45,7 +45,7 @@ class AlbumsDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, mb_album_id, no_album_artist,\
                                   uri, loved, popularity, rate, mtime, synced)\
@@ -66,7 +66,7 @@ class AlbumsDatabase:
             @param artist id as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             artist_ids = self.get_artist_ids(album_id)
             if artist_id not in artist_ids:
                 sql.execute("INSERT INTO "
@@ -80,7 +80,7 @@ class AlbumsDatabase:
             @param genre id as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             genres = self.get_genre_ids(album_id)
             if genre_id not in genres:
                 sql.execute("INSERT INTO\
@@ -95,7 +95,7 @@ class AlbumsDatabase:
             @param artist_ids as [int]
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             currents = self.get_artist_ids(album_id)
             if not currents or set(currents) - set(artist_ids):
                 sql.execute("DELETE FROM album_artists\
@@ -112,7 +112,7 @@ class AlbumsDatabase:
             @param synced as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET synced=? WHERE rowid=?",
                         (synced, album_id))
 
@@ -123,7 +123,7 @@ class AlbumsDatabase:
             @param loved as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET loved=? WHERE rowid=?",
                         (loved, album_id))
             sql.commit()
@@ -133,7 +133,7 @@ class AlbumsDatabase:
             Set album rate
             @param rate as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET rate=? WHERE rowid=?",
                         (rate, album_id))
             sql.commit()
@@ -145,7 +145,7 @@ class AlbumsDatabase:
             @param year as int
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET year=? WHERE rowid=?",
                         (year, album_id))
 
@@ -155,7 +155,7 @@ class AlbumsDatabase:
             @param Album id as int, uri as string
             @warning: commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET uri=? WHERE rowid=?",
                         (uri, album_id))
 
@@ -166,7 +166,7 @@ class AlbumsDatabase:
             @param popularity as int
             @param commit as bool
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             try:
                 sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                             (popularity, album_id))
@@ -179,7 +179,7 @@ class AlbumsDatabase:
         """
             Get synced album ids
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums, artists, album_artists\
                        WHERE album_artists.album_id = albums.rowid\
@@ -201,7 +201,7 @@ class AlbumsDatabase:
             @param album_id as int
             @return synced as bool
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT synced FROM albums WHERE\
                                  rowid=?", (album_id,))
 
@@ -216,7 +216,7 @@ class AlbumsDatabase:
             @param album id as int
             @return loved as bool
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT loved FROM albums WHERE\
                                  rowid=?", (album_id,))
 
@@ -230,7 +230,7 @@ class AlbumsDatabase:
             Get albums with year
             @param year as str
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (year, )
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums\
@@ -244,7 +244,7 @@ class AlbumsDatabase:
             @param album id as int
             @return rate as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rate FROM albums WHERE\
                                  rowid=?", (album_id,))
 
@@ -259,7 +259,7 @@ class AlbumsDatabase:
             @param album_id as int
             @return popularity as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity FROM albums WHERE\
                                  rowid=?", (album_id,))
 
@@ -275,7 +275,7 @@ class AlbumsDatabase:
             @param pop as int
             @raise sqlite3.OperationalError on db update
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity from albums WHERE rowid=?",
                                  (album_id,))
             pop = result.fetchone()
@@ -293,7 +293,7 @@ class AlbumsDatabase:
             Get higher available popularity
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity\
                                   FROM albums\
                                   ORDER BY POPULARITY DESC LIMIT 1")
@@ -307,7 +307,7 @@ class AlbumsDatabase:
             Return avarage popularity
             @return avarage popularity as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT AVG(popularity)\
                                   FROM (SELECT popularity\
                                         FROM albums\
@@ -325,7 +325,7 @@ class AlbumsDatabase:
             @param artist_ids as [int]
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (album_name,)
             if artist_ids:
                 request = "SELECT albums.rowid FROM albums, album_artists\
@@ -357,7 +357,7 @@ class AlbumsDatabase:
             @param Album id as int
             @return Genres id as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT genre_id FROM album_genres\
                                   WHERE album_id=?", (album_id,))
             return list(itertools.chain(*result))
@@ -368,7 +368,7 @@ class AlbumsDatabase:
             @param Album id as int
             @return Album name as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name FROM albums where rowid=?",
                                  (album_id,))
             v = result.fetchone()
@@ -383,7 +383,7 @@ class AlbumsDatabase:
             @param Album id as int
             @return artists as [str]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT artists.name\
                                  FROM artists, album_artists\
                                  WHERE album_artists.album_id=?\
@@ -397,7 +397,7 @@ class AlbumsDatabase:
             @param album_id
             @return artist ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT artist_id\
                                   FROM album_artists\
                                   WHERE album_id=?",
@@ -410,7 +410,7 @@ class AlbumsDatabase:
             @param album id as int
             @return album year as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT year FROM albums where rowid=?",
                                  (album_id,))
             v = result.fetchone()
@@ -424,7 +424,7 @@ class AlbumsDatabase:
             @param Album id as int
             @return Album uri as string
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT uri FROM albums WHERE rowid=?",
                                  (album_id,))
             uri = ""
@@ -439,7 +439,7 @@ class AlbumsDatabase:
             @param uri as str
             @return count as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(uri) FROM albums WHERE uri=?",
                                  (uri,))
             v = result.fetchone()
@@ -453,7 +453,7 @@ class AlbumsDatabase:
             @param album id as int
             @return count as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(tracks.rowid)\
                                   FROM tracks WHERE album_id=?",
                                  (album_id,))
@@ -468,7 +468,7 @@ class AlbumsDatabase:
             @param limit as int
             @return array of album ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums\
                        WHERE rate>=4\
@@ -482,7 +482,7 @@ class AlbumsDatabase:
             @param limit as int
             @return array of album ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums\
                        WHERE popularity!=0\
@@ -495,7 +495,7 @@ class AlbumsDatabase:
             Get albums ids with popularity
             @return array of album ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums\
                        WHERE loved=1\
@@ -508,7 +508,7 @@ class AlbumsDatabase:
             Return recent albums
             @return array of albums ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums\
                        ORDER BY mtime DESC LIMIT 100"
@@ -520,7 +520,7 @@ class AlbumsDatabase:
             Return random albums
             @return array of albums ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             albums = []
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums ORDER BY random() LIMIT 100"
@@ -552,7 +552,7 @@ class AlbumsDatabase:
                 if recent not in albums:
                     albums.append(recent)
         for genre_id in genre_ids:
-            for album in Lp().genres.get_albums(genre_id):
+            for album in App().genres.get_albums(genre_id):
                 if album not in albums:
                     albums.append(album)
         return albums
@@ -564,7 +564,7 @@ class AlbumsDatabase:
             @param disc as int
             @return name as str
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT discname\
                        FROM tracks\
                        WHERE tracks.album_id=?\
@@ -582,7 +582,7 @@ class AlbumsDatabase:
             @return [disc as int]
         """
         genre_ids = remove_static_genres(genre_ids)
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (album_id,)
             filters += tuple(genre_ids)
             request = "SELECT DISTINCT discnumber\
@@ -612,7 +612,7 @@ class AlbumsDatabase:
             genre_ids = []
         if not self.__has_artists(album_id):
             artist_ids = []
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (album_id,)
             request = "SELECT DISTINCT tracks.rowid\
                        FROM tracks"
@@ -653,7 +653,7 @@ class AlbumsDatabase:
             genre_ids = []
         if not self.__has_artists(album_id):
             artist_ids = []
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (album_id,)
             request = "SELECT DISTINCT tracks.uri\
                        FROM tracks"
@@ -694,7 +694,7 @@ class AlbumsDatabase:
             genre_ids = []
         if not self.__has_artists(album_id):
             artist_ids = []
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = (album_id, disc)
             request = "SELECT DISTINCT tracks.rowid\
                        FROM tracks"
@@ -726,7 +726,7 @@ class AlbumsDatabase:
             @param uri as str
             @return id as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid\
                                   FROM albums\
                                   WHERE uri=?",
@@ -744,7 +744,7 @@ class AlbumsDatabase:
             @return albums ids as [int]
         """
         genre_ids = remove_static_genres(genre_ids)
-        orderby = Lp().settings.get_enum("orderby")
+        orderby = App().settings.get_enum("orderby")
         if artist_ids or orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
@@ -763,7 +763,7 @@ class AlbumsDatabase:
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
 
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = []
             # Get albums for all artists
             if not artist_ids and not genre_ids:
@@ -823,7 +823,7 @@ class AlbumsDatabase:
             @param Filter genre ids as [int]
             @return Array of album ids as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = []
             # Get all compilations
             if not genre_ids or genre_ids[0] == Type.ALL:
@@ -855,7 +855,7 @@ class AlbumsDatabase:
             @param genre ids as [int]
             @return album duration as int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             if genre_ids and genre_ids[0] > 0:
                 filters = (album_id,)
                 filters += tuple(genre_ids)
@@ -879,7 +879,7 @@ class AlbumsDatabase:
         """
             Return genres for album
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT genres.name\
                                   FROM albums, album_genres, genres\
                                   WHERE albums.rowid = ?\
@@ -893,7 +893,7 @@ class AlbumsDatabase:
             Return random albums never listened to
             @return album ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT DISTINCT albums.rowid\
                                   FROM albums, tracks\
                                   WHERE tracks.ltime=0 AND\
@@ -907,7 +907,7 @@ class AlbumsDatabase:
             True if db has loved albums
             @return bool
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             filters = ()
             request = "SELECT albums.rowid\
                        FROM albums\
@@ -923,7 +923,7 @@ class AlbumsDatabase:
             @param limit as int/None
             @return album ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             if limit is None:
                 filters = ("%" + noaccents(string) + "%",)
             else:
@@ -946,7 +946,7 @@ class AlbumsDatabase:
         try:
             ret = []
             for track_id in self.get_track_ids(album_id, [], []):
-                artist_ids = Lp().tracks.get_artist_ids(track_id)
+                artist_ids = App().tracks.get_artist_ids(track_id)
                 # Check if previous track and
                 # track do not have same artists
                 if ret:
@@ -962,7 +962,7 @@ class AlbumsDatabase:
             Count albums
             @return int
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(1) FROM albums")
             v = result.fetchone()
             if v is not None:
@@ -976,7 +976,7 @@ class AlbumsDatabase:
             @param return True if album deleted or genre modified
             @warning commit needed
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             ret = False
             # Check album really have tracks from its genres
             for genre_id in self.get_genre_ids(album_id):
@@ -1019,7 +1019,7 @@ class AlbumsDatabase:
         """
             Update MAX(COUNT(tracks)) for albums
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT MAX(num_tracks)\
                                   FROM (SELECT COUNT(t.rowid)\
                                   AS num_tracks FROM albums\
@@ -1039,7 +1039,7 @@ class AlbumsDatabase:
             @param album id as int
             @return bool
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(*)\
                                  FROM album_genres\
                                  WHERE album_id=?\
@@ -1055,7 +1055,7 @@ class AlbumsDatabase:
             @param album id as int
             @return bool
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(*)\
                                  FROM album_artists\
                                  WHERE album_id=?\
