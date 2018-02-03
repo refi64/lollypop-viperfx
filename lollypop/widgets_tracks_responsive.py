@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, ResponsiveType
 
 
 class TracksResponsiveWidget:
@@ -26,12 +26,12 @@ class TracksResponsiveWidget:
         @member _album as Album needed
     """
 
-    def __init__(self, dnd):
+    def __init__(self, responsive_type):
         """
             Init widget
-            @param dnd as bool
+            @param responsive_type as ResponsiveType
         """
-        self.__dnd = dnd
+        self.__responsive_type = responsive_type
         self.__tracks_left = []
         self.__tracks_right = []
         self._loading = Loading.NONE
@@ -49,7 +49,8 @@ class TracksResponsiveWidget:
 
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}
-        if self.__dnd:
+        if self.__responsive_type in [ResponsiveType.DND,
+                                      ResponsiveType.SEARCH]:
             self._album.merge_discs()
         # Discs to load, will be emptied
         self.__discs = list(self._album.discs)
@@ -302,8 +303,9 @@ class TracksResponsiveWidget:
             Add disc container to box
             @param disc_number as int
         """
-        self._tracks_widget_left[disc_number] = TracksWidget(self.__dnd)
-        self._tracks_widget_right[disc_number] = TracksWidget(self.__dnd)
+        dnd = self.__responsive_type == ResponsiveType.DND
+        self._tracks_widget_left[disc_number] = TracksWidget(dnd)
+        self._tracks_widget_right[disc_number] = TracksWidget(dnd)
         self._tracks_widget_left[disc_number].connect("activated",
                                                       self.__on_activated)
         self._tracks_widget_right[disc_number].connect("activated",
@@ -336,7 +338,7 @@ class TracksResponsiveWidget:
         if not App().settings.get_value("show-tag-tracknumber"):
             track.set_number(i)
         track.set_featuring_ids(self._album.artist_ids)
-        row = TrackRow(track, self.__dnd)
+        row = TrackRow(track, self.__responsive_type == ResponsiveType.DND)
         row.connect("destroy", self.__on_row_destroy)
         row.connect("track-moved", self.__on_track_moved)
         row.show()

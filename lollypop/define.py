@@ -51,6 +51,12 @@ class Loading:
     STOP = 4
 
 
+class ResponsiveType:
+    FIXED = 0
+    DND = 1
+    SEARCH = 2
+
+
 class ArtSize:
     NONE = 0
     SMALL = 33

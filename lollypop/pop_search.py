@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gio
 
-from lollypop.define import App
+from lollypop.define import App, ResponsiveType
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
@@ -49,7 +49,7 @@ class SearchPopover(Gtk.Popover):
         # to emit a signal on init
         builder.connect_signals(self)
 
-        self.__view = AlbumsListView()
+        self.__view = AlbumsListView(ResponsiveType.SEARCH)
         self.__view.show()
         self.__widget.attach(self.__view, 0, 1, 2, 1)
 

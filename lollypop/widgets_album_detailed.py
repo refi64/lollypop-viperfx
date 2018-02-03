@@ -21,7 +21,7 @@ from lollypop.pop_menu import AlbumMenu
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
 from lollypop.widgets_tracks_responsive import TracksResponsiveWidget
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, ResponsiveType
 
 
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
@@ -44,7 +44,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
-        TracksResponsiveWidget.__init__(self, False)
+        TracksResponsiveWidget.__init__(self, ResponsiveType.FIXED)
         self._rounded_class = "rounded-icon-small"
         self.__context = None
         # Cover + rating + spacing
