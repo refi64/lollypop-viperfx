@@ -437,7 +437,7 @@ class AlbumsListView(LazyLoadingView):
             @param x as int
             @param y as int
         """
-        if "a:%s" % self._album.id == album_str:
+        if "a:%s" % row.album.id == album_str:
             return
         # Destroy current album row and search for album row
         i = 0
