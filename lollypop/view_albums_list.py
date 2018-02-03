@@ -14,19 +14,21 @@ from gi.repository import Gtk, GLib, GObject, Gdk, Pango
 
 from gettext import gettext as _
 
-from lollypop.widgets_tracks_responsive import TracksResponsiveWidget
+from lollypop.widgets_tracks_responsive import TracksResponsiveAlbumWidget
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album
 from lollypop.define import ArtSize, App, ResponsiveType
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
+class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
     """
         Album row
     """
+
     __gsignals__ = {
         "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        "albums-update": (GObject.SignalFlags.RUN_FIRST, None, (int, int))
     }
 
     __MARGIN = 4
@@ -150,6 +152,29 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         if len(self._album.tracks) != self._album.tracks_count:
             self.__on_button_release_event(self, None)
 
+    def reveal(self, transition_type=Gtk.RevealerTransitionType.SLIDE_DOWN):
+        """
+            Reveal/Unreveal tracks
+            @param transition_type as Gtk.RevealerTransitionType
+        """
+        self.__revealer.set_transition_type(transition_type)
+        if self.__revealer.get_reveal_child():
+            self.__revealer.set_reveal_child(False)
+            if self.__responsive_type != ResponsiveType.SEARCH:
+                self.__action_button.set_opacity(1)
+                self.__action_button.set_sensitive(True)
+        else:
+            if self._responsive_widget is None:
+                TracksResponsiveAlbumWidget.__init__(self,
+                                                     self.__responsive_type)
+                self.__revealer.add(self._responsive_widget)
+                self.connect("size-allocate", self._on_size_allocate)
+                TracksResponsiveAlbumWidget.populate(self)
+            self.__revealer.set_reveal_child(True)
+            if self.__responsive_type != ResponsiveType.SEARCH:
+                self.__action_button.set_opacity(0)
+                self.__action_button.set_sensitive(False)
+
     @property
     def album(self):
         """
@@ -169,7 +194,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         else:
             self.__play_indicator.set_opacity(0)
         if self.__revealer.get_reveal_child():
-            TracksResponsiveWidget.update_playing_indicator(self)
+            TracksResponsiveAlbumWidget.update_playing_indicator(self)
 
 #######################
 # PRIVATE             #
@@ -180,21 +205,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__revealer.get_reveal_child():
-            self.__revealer.set_reveal_child(False)
-            if self.__responsive_type != ResponsiveType.SEARCH:
-                self.__action_button.set_opacity(1)
-                self.__action_button.set_sensitive(True)
-        else:
-            if self._responsive_widget is None:
-                TracksResponsiveWidget.__init__(self, self.__responsive_type)
-                self.__revealer.add(self._responsive_widget)
-                self.connect("size-allocate", self._on_size_allocate)
-                TracksResponsiveWidget.populate(self)
-            self.__revealer.set_reveal_child(True)
-            if self.__responsive_type != ResponsiveType.SEARCH:
-                self.__action_button.set_opacity(0)
-                self.__action_button.set_sensitive(False)
+        self.reveal()
 
     def __on_drag_begin(self, widget, context):
         """
@@ -404,6 +415,7 @@ class AlbumsListView(LazyLoadingView):
         row = AlbumRow(album, self.__height, self.__responsive_type)
         row.connect("destroy", self.__on_child_destroyed)
         row.connect("album-moved", self.__on_album_moved)
+        row.connect("albums-update", self.__on_albums_update)
         return row
 
     def __get_current_ordinate(self):
@@ -442,11 +454,30 @@ class AlbumsListView(LazyLoadingView):
         # Send signal for parent
         # TODO
 
-    def __on_album_moved(self, row, dst, up):
+    def __on_albums_update(self, row, index, count):
+        """
+            Update count albums at index
+            @param row as AlbumRow
+            @param index as int
+            @param count as int
+        """
+        children = self.__view.get_children()
+        albums = App().player.albums
+        for i in range(index, index + 1 + count):
+            if i == index:
+                to_remove = children[i]
+                self.__view.remove(to_remove)
+            row = self.__row_for_album(albums[i])
+            row.populate()
+            row.reveal(Gtk.RevealerTransitionType.NONE)
+            row.show()
+            self.__view.insert(row, i)
+
+    def __on_album_moved(self, row, src, up):
         """
             Pass signal
             @param row as PlaylistRow
-            @param dst as int
+            @param src as int
             @param up as bool
         """
         # Destroy current album row and search for album row
@@ -456,7 +487,7 @@ class AlbumsListView(LazyLoadingView):
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if child.album.id == dst:
+            if child.album.id == src:
                 album = child.album
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()

@@ -304,6 +304,7 @@ class Row(Gtk.ListBoxRow):
                 App().player.append_to_queue(self._track.id)
         else:
             self.activate()
+        return True
 
     def __on_button_clicked(self, button):
         """
@@ -391,15 +392,15 @@ class Row(Gtk.ListBoxRow):
             return
         height = self.get_allocated_height()
         if y > height/2:
-            up = False
+            down = True
         else:
-            up = True
+            down = False
         try:
             (type_id, object_id) = data.get_text().split(":")
             if type_id == "t":
-                self.emit("track-moved", int(object_id), up)
+                self.emit("track-moved", int(object_id), down)
             elif type_id == "a":
-                self.emit("album-moved", int(object_id), up)
+                self.emit("album-moved", int(object_id), down)
         except Exception as e:
             print("Row::__on_drag_data_received():", e)
 
