@@ -105,13 +105,8 @@ class SearchPopover(Gtk.Popover):
         self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
-        search_items = []
-        for item in self.__current_search.lower().split():
-            if item not in search_items:
-                search_items.append(item)
         search = Search()
-        search.get(search_items,
-                   self.__current_search.lower(),
+        search.get(self.__current_search,
                    self.__cancellable,
                    callback=(self.__on_search_get,))
 

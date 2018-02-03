@@ -24,28 +24,41 @@ class Search:
         """
             Init search
         """
-        pass
+        self.__current_search = ""
 
-    def get(self, search_items, current_search, cancellable, callback):
+    def get(self, current_search, cancellable, callback):
         """
             Get track for name
-            @param search_items as [str]
             @param current_search as str
             @param cancellable as Gio.Cancellable
             @param callback as callback
         """
+        self.__current_search = current_search.lower()
+        search_items = []
+        for item in self.__current_search.split():
+            if item not in search_items:
+                search_items.append(item)
         helper = TaskHelper()
-        helper.run(self.__get, search_items, current_search,
+        helper.run(self.__get, search_items,
                    cancellable, callback=callback)
 
 #######################
 # PRIVATE             #
 #######################
-    def __get(self, search_items, current_search, cancellable):
+    def __calculate_score(self, string, search_items):
+        """
+            Calculate string score for search items
+            @param string as str
+            @param search_item as [str]
+        """
+        split_string = string.lower().split()
+        join = list(set(split_string) & set(search_items))
+        return len(join)
+
+    def __get(self, search_items, cancellable):
         """
             Get track for name
             @param search_items as [str]
-            @param current_search as str
             @param cancellable as Gio.Cancellable
             @return items as [SearchItem]
         """
@@ -76,24 +89,27 @@ class Search:
         # Create albums for album_ids
         for album_id in list(set(album_ids)):
             album = Album(album_id)
-            score = 0
-            if current_search.find(album.name.lower()) != -1:
-                score += 1
+            score = self.__calculate_score(album.name, search_items)
             for artist in album.artists:
-                if current_search.find(artist.lower()) != -1:
-                    score += 3
+                score += self.__calculate_score(artist, search_items)
             albums.append((score, album))
         # Create albums for tracks
         album_tracks = {}
         for track_id in list(set(track_ids)):
             track = Track(track_id)
-            if track.album.id not in album_ids:
+            score = self.__calculate_score(track.name, search_items)
+            for artist in track.artists:
+                score += self.__calculate_score(artist, search_items)
+            # Score existing album
+            if track.album.id in album_ids:
+                for (old_score, album) in albums:
+                    if album.id == track.album.id:
+                        albums.remove((old_score, album))
+                        albums.append((old_score + score, album))
+                        break
+            # Get a new album
+            else:
                 album = track.album
-                score = 0
-                if current_search.find(track.name.lower()) != -1:
-                    score += 2
-                else:
-                    score += 1
                 if album.id in album_tracks.keys():
                     (album, tracks, score) = album_tracks[album.id]
                     tracks.append(track)
@@ -103,6 +119,7 @@ class Search:
         for key in album_tracks.keys():
             (album, tracks, score) = album_tracks[key]
             album.set_tracks(tracks)
+            print(score, album.name)
             albums.append((score, album))
         albums.sort(key=lambda tup: tup[0], reverse=True)
         return [album for (score, album) in albums]
