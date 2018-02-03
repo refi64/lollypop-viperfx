@@ -356,16 +356,16 @@ class TracksResponsiveWidget:
         """
         tracks1_len = len(self.__tracks_left)
         tracks2_len = len(self.__tracks_right)
-        # Drag & drop is always about disc 0 as we are editable
+        disc_number = self._album.discs[0].number
         if src in self.__tracks_left:
-            src_widget = self._tracks_widget_left[0]
+            src_widget = self._tracks_widget_left[disc_number]
         else:
-            src_widget = self._tracks_widget_right[0]
+            src_widget = self._tracks_widget_right[disc_number]
         if tracks1_len == 0 or dst in self.__tracks_left:
-            dst_widget = self._tracks_widget_left[0]
+            dst_widget = self._tracks_widget_left[disc_number]
             dst_tracks = self.__tracks_left
         elif tracks2_len == 0 or dst in self.__tracks_right:
-            dst_widget = self._tracks_widget_right[0]
+            dst_widget = self._tracks_widget_right[disc_number]
             dst_tracks = self.__tracks_right
         else:
             return
