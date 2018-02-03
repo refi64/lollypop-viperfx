@@ -26,7 +26,8 @@ class Row(Gtk.ListBoxRow):
         A row
     """
     __gsignals__ = {
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, int, bool))
+        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
     def __init__(self, track, dnd):
@@ -372,7 +373,7 @@ class Row(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        track_id = str(self._track.id)
+        track_id = "t:%s" % self._track.id
         data.set_text(track_id, len(track_id))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -386,16 +387,19 @@ class Row(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
+        if "t:%s" % self._track.id == data.get_text():
+            return
         height = self.get_allocated_height()
         if y > height/2:
             up = False
         else:
             up = True
         try:
-            src = int(data.get_text())
-            if self._track.id == src:
-                return
-            self.emit("track-moved", self._track.id, src, up)
+            (type_id, object_id) = data.get_text().split(":")
+            if type_id == "t":
+                self.emit("track-moved", int(object_id), up)
+            elif type_id == "a":
+                self.emit("album-moved", int(object_id), up)
         except Exception as e:
             print("Row::__on_drag_data_received():", e)
 

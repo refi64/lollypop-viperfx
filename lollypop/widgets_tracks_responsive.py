@@ -345,19 +345,18 @@ class TracksResponsiveWidget:
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
 
-    def __on_track_moved(self, widget, dst, src, up):
+    def __on_track_moved(self, row, dst, up):
         """
             Move track from src to row
             Recalculate track position
-            @param widget as TracksWidget
+            @param row as TrackRow
             @param dst as int
-            @param src as int
             @param up as bool
         """
         tracks1_len = len(self.__tracks_left)
         tracks2_len = len(self.__tracks_right)
         disc_number = self._album.discs[0].number
-        if src in self.__tracks_left:
+        if row.track.id in self.__tracks_left:
             src_widget = self._tracks_widget_left[disc_number]
         else:
             src_widget = self._tracks_widget_right[disc_number]
@@ -374,7 +373,7 @@ class TracksResponsiveWidget:
         # Search for source track
         # Remove source track row
         for child in src_widget.get_children():
-            if child.track.id == src:
+            if child.track.id == row.track.id:
                 src_track = child.track
                 child.destroy()
                 break

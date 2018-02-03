@@ -25,7 +25,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
         Album row
     """
     __gsignals__ = {
-        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, int, int))
+        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
     __MARGIN = 4
@@ -226,8 +227,19 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
             @param info as int
             @param time as int
         """
+        if "a:%s" % self._album.id == data.get_text():
+            return
+        height = self.get_allocated_height()
+        if y > height/2:
+            up = False
+        else:
+            up = True
         try:
-            self.emit("album-moved", data.get_text(), x, y)
+            (type_id, object_id) = data.get_text().split(":")
+            if type_id == "t":
+                self.emit("track-moved", int(object_id), up)
+            elif type_id == "a":
+                self.emit("album-moved", int(object_id), up)
         except Exception as e:
             print("AlbumsPopover::__on_drag_data_received()", e)
 
@@ -428,17 +440,15 @@ class AlbumsListView(LazyLoadingView):
             @param row as AlbumRow
         """
         # Send signal for parent
+        # TODO
 
-    def __on_album_moved(self, row, album_str, x, y):
+    def __on_album_moved(self, row, dst, up):
         """
             Pass signal
             @param row as PlaylistRow
-            @param album_str as str
-            @param x as int
-            @param y as int
+            @param dst as int
+            @param up as bool
         """
-        if "a:%s" % row.album.id == album_str:
-            return
         # Destroy current album row and search for album row
         i = 0
         row_index = -1
@@ -446,7 +456,7 @@ class AlbumsListView(LazyLoadingView):
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if "a:%s" % child.album.id == album_str:
+            if child.album.id == dst:
                 album = child.album
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()
@@ -454,11 +464,6 @@ class AlbumsListView(LazyLoadingView):
                 i += 1
         # Create new row
         if album is not None:
-            height = row.get_allocated_height()
-            if y > height/2:
-                up = False
-            else:
-                up = True
             album_row = self.__row_for_album(album)
             album_row.populate()
 
