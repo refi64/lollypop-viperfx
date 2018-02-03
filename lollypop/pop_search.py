@@ -137,6 +137,7 @@ class SearchPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(True)
         self.__cancellable.cancel()
+        self.__view.stop()
         self.__header_stack.set_visible_child(self.__new_btn)
         self.__spinner.stop()
 

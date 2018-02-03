@@ -61,6 +61,7 @@ class AlbumsPopover(Gtk.Popover):
 
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
         self.add(grid)
 
 #######################
@@ -87,3 +88,10 @@ class AlbumsPopover(Gtk.Popover):
         """
         height = App().window.get_size()[1]
         self.set_size_request(400, height*0.7)
+
+    def __on_unmap(self, widget):
+        """
+            Stop view
+            @param widget as Gtk.Widget
+        """
+        self.__view.stop()
