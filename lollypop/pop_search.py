@@ -77,7 +77,6 @@ class SearchPopover(Gtk.Popover):
             Timeout filtering
             @param widget as Gtk.TextEntry
         """
-        self.__cancellable.reset()
         if self.__timeout_id:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
@@ -87,6 +86,7 @@ class SearchPopover(Gtk.Popover):
             self.__new_btn.set_sensitive(True)
             self.__cancellable.cancel()
             self.__cancellable.reset()
+            self.__view.stop()
             self.__view.clear()
             self.__timeout_id = GLib.timeout_add(
                                               200,
