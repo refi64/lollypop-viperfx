@@ -235,6 +235,32 @@ popover.background separator {
 	background-color: transparent;
 }
 
+.albumrow {
+    padding: 0px;
+	background-color: transparent;
+  	color: inherit;
+}
+
+.albumrow:hover {
+    border-radius: 5px;
+	background-color: alpha(@theme_fg_color, 0.05);
+  	color: inherit;
+}
+
+.albumrow .album-menu-button {
+	border-color: transparent;
+	background-color: transparent;
+	color: transparent;
+}
+
+.albumrow:hover .album-menu-button {
+  	color: inherit;
+}
+
+.albumrow:hover .album-menu-button:hover {
+	border-color: alpha(@theme_fg_color, 0.1);
+}
+
 .trackrow {
     padding: 0px;
 	background-color: transparent;
@@ -361,6 +387,32 @@ popover.background separator {
     border-color: alpha(@theme_fg_color, 0.1);
   	color: inherit;
 }
+
+
+.album-menu-button {
+	box-shadow: none;
+	min-height: 24px;
+	min-width: 24px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	background-image: none;
+	border-style: solid;
+	border-image-source: none;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-color: transparent;
+    color: inherit;
+}
+
+.album-menu-button:hover {
+    border-color: alpha(@theme_fg_color, 0.1);
+  	color: inherit;
+}
+
 
 .loved-button {
 	box-shadow: none;
