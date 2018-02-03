@@ -89,7 +89,7 @@ class SearchPopover(Gtk.Popover):
             self.__cancellable.reset()
             self.__view.clear()
             self.__timeout_id = GLib.timeout_add(
-                                              300,
+                                              200,
                                               self.__on_search_changed_timeout)
         else:
             self.__new_btn.set_sensitive(False)

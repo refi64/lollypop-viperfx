@@ -86,13 +86,6 @@ class Search:
             for track_id in Lp().tracks.search(item):
                 track_ids.append(track_id)
 
-        # Create albums for album_ids
-        for album_id in list(set(album_ids)):
-            album = Album(album_id)
-            score = self.__calculate_score(album.name, search_items)
-            for artist in album.artists:
-                score += self.__calculate_score(artist, search_items)
-            albums.append((score, album))
         # Create albums for tracks
         album_tracks = {}
         for track_id in list(set(track_ids)):
@@ -102,24 +95,27 @@ class Search:
                 score += self.__calculate_score(artist, search_items)
             # Score existing album
             if track.album.id in album_ids:
-                for (old_score, album) in albums:
-                    if album.id == track.album.id:
-                        albums.remove((old_score, album))
-                        albums.append((old_score + score, album))
-                        break
+                # Remove all album.id occurences
+                album_ids = list(filter((track.album.id).__ne__, album_ids))
             # Get a new album
+            album = track.album
+            if album.id in album_tracks.keys():
+                (album, tracks, score) = album_tracks[album.id]
+                tracks.append(track)
+                album_tracks[track.album.id] = (album, tracks, score)
             else:
-                album = track.album
-                if album.id in album_tracks.keys():
-                    (album, tracks, score) = album_tracks[album.id]
-                    tracks.append(track)
-                    album_tracks[track.album.id] = (album, tracks, score)
-                else:
-                    album_tracks[track.album.id] = (album, [track], score)
+                album_tracks[track.album.id] = (album, [track], score)
+        # Create albums for album results
+        for album_id in list(set(album_ids)):
+            album = Album(album_id)
+            score = self.__calculate_score(album.name, search_items)
+            for artist in album.artists:
+                score += self.__calculate_score(artist, search_items)
+            albums.append((score, album))
+        # Merge albums from track results
         for key in album_tracks.keys():
             (album, tracks, score) = album_tracks[key]
             album.set_tracks(tracks)
-            print(score, album.name)
             albums.append((score, album))
         albums.sort(key=lambda tup: tup[0], reverse=True)
         return [album for (score, album) in albums]
