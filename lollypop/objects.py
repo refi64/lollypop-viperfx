@@ -241,7 +241,8 @@ class Album(Base):
             @param tracks as [Track]
         """
         self._tracks = tracks
-        App().player.set_next()
+        for track in tracks:
+            track.set_album(self)
 
     def add_track(self, track):
         """
@@ -249,15 +250,30 @@ class Album(Base):
             @param track as Track
         """
         self._tracks.append(track)
-        App().player.set_next()
 
     def remove_track(self, track):
         """
             Remove track from album
-            @param track_id as int
+            @param track as Track
         """
         if track in self.tracks:
             self._tracks.remove(track)
+
+    def remove_track_id(self, track_id):
+        """
+            Remove track from album
+            @param track_id as int
+        """
+        for track in self.tracks:
+            if track.id == track_id:
+                self._tracks.remove(track)
+                break
+
+    def clear_tracks(self):
+        """
+            Clear album tracks
+        """
+        self._tracks = []
 
     def disc_names(self, disc):
         """
@@ -370,6 +386,13 @@ class Track(Base):
             @param artists as [int]
         """
         self._album_artists = artists
+
+    def set_album(self, album):
+        """
+            Set track album
+            @param album as Album
+        """
+        self.__album = album
 
     def set_uri(self, uri):
         """

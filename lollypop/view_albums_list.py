@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_tracks_responsive import TracksResponsiveAlbumWidget
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album
-from lollypop.define import ArtSize, App, ResponsiveType
+from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
 
 
 class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
@@ -28,7 +28,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
     __gsignals__ = {
         "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        "albums-update": (GObject.SignalFlags.RUN_FIRST, None, (int, int))
+        "album-added": (GObject.SignalFlags.RUN_FIRST, None,
+                        (int, GObject.TYPE_PYOBJECT)),
+        "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
+                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
     }
 
     __MARGIN = 4
@@ -415,7 +418,8 @@ class AlbumsListView(LazyLoadingView):
         row = AlbumRow(album, self.__height, self.__responsive_type)
         row.connect("destroy", self.__on_child_destroyed)
         row.connect("album-moved", self.__on_album_moved)
-        row.connect("albums-update", self.__on_albums_update)
+        row.connect("album-added", self.__on_album_added)
+        row.connect("track-removed", self.__on_track_removed)
         return row
 
     def __get_current_ordinate(self):
@@ -454,24 +458,33 @@ class AlbumsListView(LazyLoadingView):
         # Send signal for parent
         # TODO
 
-    def __on_albums_update(self, row, index, count):
+    def __on_album_added(self, row, index, album):
         """
-            Update count albums at index
+            Add album as index
             @param row as AlbumRow
             @param index as int
             @param count as int
+            @param src_widget_str
         """
-        children = self.__view.get_children()
-        albums = App().player.albums
-        for i in range(index, index + 1 + count):
-            if i == index:
-                to_remove = children[i]
-                self.__view.remove(to_remove)
-            row = self.__row_for_album(albums[i])
-            row.populate()
-            row.reveal(Gtk.RevealerTransitionType.NONE)
-            row.show()
-            self.__view.insert(row, i)
+        row = self.__row_for_album(album)
+        row.populate()
+        row.reveal(Gtk.RevealerTransitionType.NONE)
+        row.show()
+        self.__view.insert(row, index)
+        if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
+            App().player.set_next()
+
+    def __on_track_removed(self, row, album, tracks):
+        """
+            Remove track from widgets
+            @param row as TrackRow
+            @param album as Album
+            @param tracks as [Track]
+        """
+        for album_row in self.__view.get_children():
+            if album_row.album == album:
+                album_row.remove_rows(tracks)
+                break
 
     def __on_album_moved(self, row, src, up):
         """

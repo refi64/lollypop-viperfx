@@ -27,7 +27,7 @@ class Row(Gtk.ListBoxRow):
     """
     __gsignals__ = {
         "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, str, bool))
     }
 
     def __init__(self, track, dnd):
@@ -374,7 +374,7 @@ class Row(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        track_id = "t:%s" % self._track.id
+        track_id = "t:%s:%s" % (self._track.id, str(self._track.album))
         data.set_text(track_id, len(track_id))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -388,19 +388,20 @@ class Row(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        if "t:%s" % self._track.id == data.get_text():
-            return
         height = self.get_allocated_height()
         if y > height/2:
             down = True
         else:
             down = False
         try:
-            (type_id, object_id) = data.get_text().split(":")
-            if type_id == "t":
-                self.emit("track-moved", int(object_id), down)
+            (type_id, object_id_str, album_str) = data.get_text().split(":")
+            object_id = int(object_id_str)
+            if object_id == self._track.id:
+                pass
+            elif type_id == "t":
+                self.emit("track-moved", object_id, album_str, down)
             elif type_id == "a":
-                self.emit("album-moved", int(object_id), down)
+                self.emit("album-moved", object_id, album_str, down)
         except Exception as e:
             print("Row::__on_drag_data_received():", e)
 

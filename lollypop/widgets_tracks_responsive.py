@@ -63,18 +63,30 @@ class TracksResponsiveWidget:
             @param parent widget as Gtk.Widget
             @return y as int
         """
-        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
-            for widget in dic.values():
-                for child in widget.get_children():
-                    if child.id == App().player.current_track.id:
-                        return child.translate_coordinates(parent, 0, 0)[1]
+        for child in self.children:
+            if child.id == App().player.current_track.id:
+                return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
+    @property
     def height(self):
         """
             Widget height
         """
         return self._height
+
+    @property
+    def children(self):
+        """
+            Return all rows
+            @return [Gtk.ListBoxRow]
+        """
+        rows = []
+        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
+            for widget in dic.values():
+                for row in widget.get_children():
+                    rows.append(row)
+        return rows
 
     @property
     def boxes(self):
@@ -173,7 +185,10 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
         TrackResponsiveWidget dedicated to Album
     """
     __gsignals__ = {
-        "albums-update": (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
+        "album-added": (GObject.SignalFlags.RUN_FIRST, None,
+                        (int, GObject.TYPE_PYOBJECT)),
+        "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
+                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
     }
 
     def __init__(self, responsive_type):
@@ -265,6 +280,16 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
                           self._tracks_widget_right,
                           disc_number,
                           pos)
+
+    def remove_rows(self, tracks):
+        """
+            Remove track row
+            @param tracks as [Track]
+        """
+        track_ids = [track.id for track in tracks]
+        for row in self.children:
+            if row.track.id in track_ids:
+                row.destroy()
 
 #######################
 # PROTECTED           #
@@ -365,30 +390,52 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
 
-    def __move_track(self, src_index, dst_index):
+    def __move_track(self, src_index, dst_index, track_id=None):
         """
             Move track in album
-            @param src_index as int
+            @param src_index as int/None
             @param dst_index as int
+            @param track_id, new track if src_index is None
         """
         # DND allowed, so discs are merged
         disc_number = self._album.discs[0].number
         src_widget = self._tracks_widget_left[disc_number]
         dst_widget = self._tracks_widget_left[disc_number]
         # Search parent widget for src and dst
-        if src_index >= len(src_widget.get_children()):
+        if src_index is not None and\
+                src_index >= len(src_widget.get_children()):
             src_index -= len(src_widget.get_children())
             src_widget = self._tracks_widget_right[disc_number]
         if dst_index >= len(dst_widget.get_children()):
             dst_index -= len(dst_widget.get_children())
             dst_widget = self._tracks_widget_right[disc_number]
         # Get source row
-        src_row = src_widget.get_children()[src_index]
-        src_widget.remove(src_row)
+        if src_index is not None:
+            src_row = src_widget.get_children()[src_index]
+            src_widget.remove(src_row)
+        else:
+            track = Track(track_id, self._album)
+            row = TrackRow(track, self._responsive_type == ResponsiveType.DND)
+            row.connect("destroy", self.__on_row_destroy)
+            row.connect("track-moved", self.__on_track_moved)
+            row.connect("album-moved", self.__on_album_moved)
+            row.show()
         dst_widget.insert(src_row, dst_index)
+        self.__recalculate_tracks_position()
+        if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
+            App().player.set_next()
+
+    def __recalculate_tracks_position(self):
+        """
+            Update track number if needed
+            Check track are correctly populated between left and right
+        """
+        # DND allowed, so discs are merged
+        disc_number = self._album.discs[0].number
         left_widget = self._tracks_widget_left[disc_number]
         right_widget = self._tracks_widget_right[disc_number]
-        # Update numbers if wanted
+        left_children = left_widget.get_children()
+        right_children = right_widget.get_children()
         if not App().settings.get_value("show-tag-tracknumber"):
             i = 1
             for child in left_widget.get_children() +\
@@ -396,9 +443,6 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
                 child.track.set_number(i)
                 child.update_num_label()
                 i += 1
-        # Check track are correctly populated between left and right
-        left_children = left_widget.get_children()
-        right_children = right_widget.get_children()
         if len(right_children) > len(left_children):
             row = right_children[0]
             right_widget.remove(row)
@@ -408,50 +452,65 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
             row = left_children[-1]
             left_widget.remove(row)
             right_widget.prepend(row)
-        if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
-            App().player.set_next()
 
-    def __on_track_moved(self, row, src, down):
+    def __on_track_moved(self, row, src_track_id, src_album_str, down):
         """
             Move src track to row
             Recalculate track position
             @param row as TrackRow
-            @param src as int
+            @param src_track_id as int
+            @param src_widget_str as str
             @param down as bool
         """
         try:
             albums = App().player.albums
-            src_track = Track(src)
+            src_track = Track(src_track_id)
             # Search album
             album_index = albums.index(self._album)
             if src_track.album.id == self._album.id:
                 # Search src in tracks and move it
                 tracks = self._album.tracks
-                src_index = self._album.track_ids.index(src)
-                row_index = tracks.index(row.track)
+                if src_track_id in self._album.track_ids:
+                    src_index = self._album.track_ids.index(src_track_id)
+                    src_track = tracks[src_index]
+                    tracks.remove(src_track)
+                else:
+                    src_index = None
+                    src_track = Track(src_track_id, self._album)
+                track_index = tracks.index(row.track)
+                tracks.insert(track_index, src_track)
                 if down:
-                    row_index += 1
-                src_track = tracks[src_index]
-                tracks.remove(src_track)
-                tracks.insert(row_index, src_track)
-                self.__move_track(src_index, row_index)
+                    track_index += 1
+                self.__move_track(src_index, track_index, src_track_id)
             else:
-                # Create a new album for src
-                track = Track(src)
-                src_album = Album(track.album.id)
-                src_album.set_tracks([track])
+                src_track = Track(src_track_id)
                 # Search track in album
                 track_index = self._album.tracks.index(row.track)
+                if down:
+                    track_index += 1
+                # Search for src album, we need to remove track
+                for album in albums:
+                    if str(album) == src_album_str:
+                        src_album = album
+                        break
+                src_album.remove_track_id(src_track_id)
+                self.emit("track-removed", src_album, [src_track])
+                # Split orig album
+                tracks = list(self._album.tracks)
+                self._album.set_tracks(tracks[0:track_index])
+                self.emit("track-removed", self._album,
+                          tracks[track_index:])
+                # Create a new album for src
+                src_track = Track(src_track_id)
+                new_src_album = Album(src_track.album.id)
+                new_src_album.set_tracks([src_track])
                 # Split album
-                album1 = Album(self._album.id)
-                album1.set_tracks(self._album.tracks[0:track_index])
-                self._album.set_tracks(self._album.tracks[track_index + 1:-1])
-                # Remove album from albums and add 3 new albums
-                albums.remove(self._album)
-                albums.insert(album_index, album1)
-                albums.insert(album_index + 1, src_album)
-                albums.insert(album_index + 2, self._album)
-                self.emit("albums-update", album_index, 2)
+                split_album = Album(self._album.id)
+                split_album.set_tracks(tracks[track_index + 1:-1])
+                albums.insert(album_index + 1, new_src_album)
+                albums.insert(album_index + 2, split_album)
+                self.emit("album-added", album_index + 1, new_src_album)
+                self.emit("album-added", album_index + 2, split_album)
         except Exception as e:
             print("TracksResponsiveWidget::__on_track_moved():", e)
 
