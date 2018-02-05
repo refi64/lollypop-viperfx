@@ -247,7 +247,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
         from lollypop.view import View
         view = widget.get_ancestor(View)
         if view is not None:
-            view.get_style_context().remove_class("padding-top-bottom")
+            view.clear_animation()
         if "a:%s:none" % self._album.id == data.get_text():
             return
         height = self.get_allocated_height()
@@ -362,10 +362,7 @@ class AlbumsListView(LazyLoadingView):
             Show animation to help user dnd
             @param y as int
         """
-        for row in self.__prev_animated_rows:
-            ctx = row.get_style_context()
-            ctx.remove_class("drag-up")
-            ctx.remove_class("drag-down")
+        self.clear_animation()
         for child in self.__view.get_children():
             coordinates = child.translate_coordinates(self, 0, 0)
             if coordinates is not None:
@@ -386,6 +383,16 @@ class AlbumsListView(LazyLoadingView):
                         row = child.children_animation(y, self)
                         if row is not None:
                             self.__prev_animated_rows.append(row)
+
+    def clear_animation(self):
+        """
+            Clear any animation
+        """
+        self.get_style_context().remove_class("padding-top-bottom")
+        for row in self.__prev_animated_rows:
+            ctx = row.get_style_context()
+            ctx.remove_class("drag-up")
+            ctx.remove_class("drag-down")
 
     def on_current_changed(self, player):
         """
@@ -625,6 +632,7 @@ class AlbumsListView(LazyLoadingView):
             @param time as int
         """
         try:
+            self.clear_animation()
             (type_id, object_id_str, album_str) = data.get_text().split(":")
             object_id = int(object_id_str)
             if type_id == "a":

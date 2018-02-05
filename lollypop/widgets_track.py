@@ -390,7 +390,7 @@ class Row(Gtk.ListBoxRow):
         from lollypop.view import View
         view = widget.get_ancestor(View)
         if view is not None:
-            view.get_style_context().remove_class("padding-top-bottom")
+            view.clear_animation()
         height = self.get_allocated_height()
         if y > height/2:
             down = True
@@ -719,6 +719,10 @@ class TracksWidget(Gtk.ListBox):
             @param time as int
         """
         try:
+            from lollypop.view import View
+            view = widget.get_ancestor(View)
+            if view is not None:
+                view.clear_animation()
             value = int(data.get_text())
             bottom_row = self.get_children()[-1]
             bottom_row.emit("track-moved", bottom_row.id, value, False)
