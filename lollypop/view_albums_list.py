@@ -145,14 +145,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
-        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+        self.drag_dest_set(Gtk.DestDefaults.DROP,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-begin", self.__on_drag_begin)
-        self.connect("drag-end", self.__on_drag_end)
         self.connect("drag-data-get", self.__on_drag_data_get)
         self.connect("drag-data-received", self.__on_drag_data_received)
-        self.connect("drag-motion", self.__on_drag_motion)
         self.connect("drag-leave", self.__on_drag_leave)
         self.connect("button-release-event", self.__on_button_release_event)
         if len(self._album.tracks) != self._album.tracks_count:
@@ -221,22 +219,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.get_style_context().add_class("padding-top-bottom")
         widget.drag_source_set_icon_name("emblem-music-symbolic")
-
-    def __on_drag_end(self, widget, context):
-        """
-            Remove view padding
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-        """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.get_style_context().remove_class("padding-top-bottom")
 
     def __on_drag_data_get(self, widget, context, data, info, time):
         """
@@ -280,24 +263,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
                 self.emit("album-moved", int(object_id), album_src, down)
         except Exception as e:
             print("AlbumRow::__on_drag_data_received()", e)
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        widget.reveal(True)
-        height = self.get_allocated_height()
-        if y > height/2:
-            self.get_style_context().add_class("drag-up")
-            self.get_style_context().remove_class("drag-down")
-        else:
-            self.get_style_context().remove_class("drag-up")
-            self.get_style_context().add_class("drag-down")
 
     def __on_drag_leave(self, widget, context, time):
         """
@@ -382,7 +347,6 @@ class AlbumsListView(LazyLoadingView):
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-motion", self.__on_drag_motion)
-        self.connect("drag-leave", self.__on_drag_leave)
 
     def populate(self, albums):
         """
@@ -475,6 +439,31 @@ class AlbumsListView(LazyLoadingView):
             if child.album == App().player.current_track.album:
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
+
+    def __children_animation(self, y):
+        """
+            Show animation to help user dnd
+            @param y as int
+        """
+        for child in self.__view.get_children():
+            coordinates = child.translate_coordinates(self, 0, 0)
+            if coordinates is not None:
+                child_y = coordinates[1]
+                child_height = child.get_allocated_height()
+                if y > child_y and y < child_y + child_height / 2:
+                    child.get_style_context().add_class("drag-down")
+                    child.get_style_context().remove_class("drag-up")
+                elif y > child_y and\
+                        y < child_y + child_height and\
+                        y > child_y + child_height / 2:
+                    child.get_style_context().add_class("drag-up")
+                    child.get_style_context().remove_class("drag-down")
+                else:
+                    child.get_style_context().remove_class("drag-down")
+                    child.get_style_context().remove_class("drag-up")
+            else:
+                child.get_style_context().remove_class("drag-down")
+                child.get_style_context().remove_class("drag-up")
 
     def __on_map(self, widget):
         """
@@ -596,28 +585,28 @@ class AlbumsListView(LazyLoadingView):
             @param y as int
             @param time as int
         """
-        if y <= 10:
+        if y <= ArtSize.MEDIUM:
             self.get_style_context().add_class("drag-down")
-        else:
+            self.get_style_context().remove_class("drag-up")
+        elif y >= self._scrolled.get_allocated_height() - ArtSize.MEDIUM:
             self.get_style_context().add_class("drag-up")
+            self.get_style_context().remove_class("drag-down")
+        else:
+            self.get_style_context().remove_class("drag-down")
+            self.get_style_context().remove_class("drag-up")
+            if self.__autoscroll_timeout_id is not None:
+                GLib.source_remove(self.__autoscroll_timeout_id)
+                self.__autoscroll_timeout_id = None
+            self.__children_animation(y)
+            return
+
+        up = y <= ArtSize.MEDIUM
         if self.__autoscroll_timeout_id is None:
+            self.__children_animation(-1)
             # 10px is padding-top-bottom
             self.__autoscroll_timeout_id = GLib.timeout_add(150,
                                                             self.__auto_scroll,
-                                                            y <= 10)
-
-    def __on_drag_leave(self, widget, context, time):
-        """
-            Stop autoscroll
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param time as int
-        """
-        self.get_style_context().remove_class("drag-up")
-        self.get_style_context().remove_class("drag-down")
-        if self.__autoscroll_timeout_id is not None:
-            GLib.source_remove(self.__autoscroll_timeout_id)
-            self.__autoscroll_timeout_id = None
+                                                            up)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """

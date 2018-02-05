@@ -109,14 +109,12 @@ class Row(Gtk.ListBoxRow):
             self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                                  Gdk.DragAction.MOVE)
             self.drag_source_add_text_targets()
-            self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+            self.drag_dest_set(Gtk.DestDefaults.DROP,
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
             self.connect("drag-begin", self.__on_drag_begin)
-            self.connect("drag-end", self.__on_drag_end)
             self.connect("drag-data-get", self.__on_drag_data_get)
             self.connect("drag-data-received", self.__on_drag_data_received)
-            self.connect("drag-motion", self.__on_drag_motion)
             self.connect("drag-leave", self.__on_drag_leave)
 
     def show_spinner(self):
@@ -364,24 +362,7 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.get_style_context().add_class("padding-top-bottom")
-            view.get_style_context().add_class("selected")
         widget.drag_source_set_icon_name("emblem-music-symbolic")
-
-    def __on_drag_end(self, widget, context):
-        """
-            Remove view padding
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-        """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.get_style_context().remove_class("padding-top-bottom")
-            view.get_style_context().remove_class("selected")
 
     def __on_drag_data_get(self, widget, context, data, info, time):
         """
@@ -426,23 +407,6 @@ class Row(Gtk.ListBoxRow):
                 self.emit("album-moved", object_id, down)
         except Exception as e:
             print("Row::__on_drag_data_received():", e)
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        height = self.get_allocated_height()
-        if y > height/2:
-            self.get_style_context().add_class("drag-up")
-            self.get_style_context().remove_class("drag-down")
-        else:
-            self.get_style_context().remove_class("drag-up")
-            self.get_style_context().add_class("drag-down")
 
     def __on_drag_leave(self, widget, context, time):
         """
@@ -686,7 +650,7 @@ class TracksWidget(Gtk.ListBox):
         self.set_property("hexpand", True)
         self.set_property("selection-mode", Gtk.SelectionMode.NONE)
         if dnd:
-            self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+            self.drag_dest_set(Gtk.DestDefaults.DROP,
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
             self.connect("drag-data-received", self.__on_drag_data_received)
