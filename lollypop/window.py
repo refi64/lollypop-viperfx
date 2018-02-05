@@ -389,11 +389,17 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         try:
             from lollypop.collectionimporter import CollectionImporter
+            from urllib.parse import urlparse
             importer = CollectionImporter()
-            uris = data.get_text().strip("\n").split("\r")
-            task_helper = TaskHelper()
-            task_helper.run(importer.add, uris,
-                            callback=(App().scanner.update,))
+            uris = []
+            for uri in data.get_text().strip("\n").split("\r"):
+                parsed = urlparse(uri)
+                if parsed.scheme in ["file", "sftp", "smb", "webdav"]:
+                    uris.append(uri)
+            if uris:
+                task_helper = TaskHelper()
+                task_helper.run(importer.add, uris,
+                                callback=(App().scanner.update,))
         except:
             pass
 
