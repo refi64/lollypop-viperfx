@@ -569,7 +569,8 @@ class AlbumsListView(LazyLoadingView):
                 self.__on_album_moved(self.__view.get_children()[-1],
                                       object_id, True)
             elif type_id == "t":
-                self.__on_track_moved(self.__view.get_children()[-1],
-                                      object_id, album_str, True)
+                album_row = self.__view.get_children()[-1]
+                track_row = album_row.children[-1]
+                track_row.emit("track-moved", object_id, album_str, True)
         except Exception as e:
             print("AlbumsListView::__on_drag_data_received():", e)
