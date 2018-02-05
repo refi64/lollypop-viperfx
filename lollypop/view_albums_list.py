@@ -621,7 +621,7 @@ class AlbumsListView(LazyLoadingView):
         up = y <= ArtSize.MEDIUM
         if self.__autoscroll_timeout_id is None:
             self.children_animation(-1)
-            self.__autoscroll_timeout_id = GLib.timeout_add(150,
+            self.__autoscroll_timeout_id = GLib.timeout_add(100,
                                                             self.__auto_scroll,
                                                             up)
 
