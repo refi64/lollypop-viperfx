@@ -388,7 +388,6 @@ class AlbumsListView(LazyLoadingView):
         """
             Clear any animation
         """
-        self.get_style_context().remove_class("padding-top-bottom")
         for row in self.__prev_animated_rows:
             ctx = row.get_style_context()
             ctx.remove_class("drag-up")
