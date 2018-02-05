@@ -398,7 +398,7 @@ class ArtistView(ArtistAlbumsView):
             @param widget as Gtk.Widget
         """
         player = App().player
-        art = App().player.art
+        art = App().art
         self.__art_signal_id = art.connect("artist-artwork-changed",
                                            self.__on_artist_artwork_changed)
         self.__party_signal_id = player.connect("party-changed",
