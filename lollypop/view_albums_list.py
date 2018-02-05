@@ -14,13 +14,13 @@ from gi.repository import Gtk, GLib, GObject, Gdk, Pango
 
 from gettext import gettext as _
 
-from lollypop.widgets_tracks_responsive import TracksResponsiveAlbumWidget
+from lollypop.widgets_tracks_responsive import TracksResponsiveWidget
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album
 from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
+class AlbumRow(Gtk.ListBoxRow, TracksResponsiveWidget):
     """
         Album row
     """
@@ -171,11 +171,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
                 self.__action_button.set_sensitive(True)
         else:
             if self._responsive_widget is None:
-                TracksResponsiveAlbumWidget.__init__(self,
-                                                     self.__responsive_type)
+                TracksResponsiveWidget.__init__(self, self.__responsive_type)
                 self.__revealer.add(self._responsive_widget)
                 self.connect("size-allocate", self._on_size_allocate)
-                TracksResponsiveAlbumWidget.populate(self)
+                TracksResponsiveWidget.populate(self)
             self.__revealer.set_reveal_child(True)
             if self.__responsive_type != ResponsiveType.SEARCH:
                 self.__action_button.set_opacity(0)
@@ -192,7 +191,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
         else:
             self.__play_indicator.set_opacity(0)
         if self.__revealer.get_reveal_child():
-            TracksResponsiveAlbumWidget.update_playing_indicator(self)
+            TracksResponsiveWidget.update_playing_indicator(self)
 
     @property
     def album(self):

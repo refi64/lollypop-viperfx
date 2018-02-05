@@ -22,9 +22,16 @@ from lollypop.define import App, ArtSize, Type, ResponsiveType, Shuffle
 
 class TracksResponsiveWidget:
     """
-        Widget with two TracksWidget with responsive orientation
-        @member _album as Album needed
+        TrackResponsiveWidget showing discs on one or two rows
     """
+    __gsignals__ = {
+        "album-added": (GObject.SignalFlags.RUN_FIRST, None,
+                        (int, GObject.TYPE_PYOBJECT)),
+        "track-append": (GObject.SignalFlags.RUN_FIRST, None,
+                         (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
+        "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
+                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
+    }
 
     def __init__(self, responsive_type):
         """
@@ -48,122 +55,6 @@ class TracksResponsiveWidget:
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}
 
-    def set_filter_func(self, func):
-        """
-            Set filter function
-        """
-        for widget in self._tracks_widget_left.values():
-            widget.set_filter_func(func)
-        for widget in self._tracks_widget_right.values():
-            widget.set_filter_func(func)
-
-    def get_current_ordinate(self, parent):
-        """
-            If current track in widget, return it ordinate,
-            @param parent widget as Gtk.Widget
-            @return y as int
-        """
-        for child in self.children:
-            if child.id == App().player.current_track.id:
-                return child.translate_coordinates(parent, 0, 0)[1]
-        return None
-
-    def height(self):
-        """
-            Widget height
-        """
-        return self._height
-
-    @property
-    def children(self):
-        """
-            Return all rows
-            @return [Gtk.ListBoxRow]
-        """
-        rows = []
-        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
-            for widget in dic.values():
-                for row in widget.get_children():
-                    rows.append(row)
-        return rows
-
-    @property
-    def boxes(self):
-        """
-            @return [Gtk.ListBox]
-        """
-        boxes = []
-        for widget in self._tracks_widget_left.values():
-            boxes.append(widget)
-        for widget in self._tracks_widget_right.values():
-            boxes.append(widget)
-        return boxes
-
-#######################
-# PROTECTED           #
-#######################
-    def _redraw_on_allocation(self, orientation):
-        """
-            Redraw widgets on allocation
-            @param orientation as Gtk.Orientation
-        """
-        pass
-
-    def _on_size_allocate(self, widget, allocation):
-        """
-            Change box max/min children
-            @param widget as Gtk.Widget
-            @param allocation as Gtk.Allocation
-        """
-        if self._width == allocation.width:
-            return
-        self._width = allocation.width
-        redraw = False
-        # We want vertical orientation
-        # when not enought place for cover or tracks
-        if allocation.width < WindowSize.MEDIUM or (
-                allocation.width < WindowSize.MONSTER and
-                self._art_size == ArtSize.BIG):
-            orientation = Gtk.Orientation.VERTICAL
-        else:
-            orientation = Gtk.Orientation.HORIZONTAL
-        if orientation != self._orientation:
-            self._orientation = orientation
-            redraw = True
-
-        if redraw:
-            self._redraw_on_allocation(orientation)
-
-    def _on_populated(self):
-        """
-            Remove height request
-        """
-        for disc in self._album.discs:
-            self._tracks_widget_left[disc.number].set_property(
-                                                          "height-request", -1)
-            self._tracks_widget_right[disc.number].set_property(
-                                                          "height-request", -1)
-
-
-class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
-    """
-        TrackResponsiveWidget dedicated to Album
-    """
-    __gsignals__ = {
-        "album-added": (GObject.SignalFlags.RUN_FIRST, None,
-                        (int, GObject.TYPE_PYOBJECT)),
-        "track-append": (GObject.SignalFlags.RUN_FIRST, None,
-                         (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
-        "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
-                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
-    }
-
-    def __init__(self, responsive_type):
-        """
-            Init widget
-            @param responsive_type as ResponsiveType
-        """
-        TracksResponsiveWidget.__init__(self, responsive_type)
         if self._responsive_type in [ResponsiveType.DND,
                                      ResponsiveType.SEARCH]:
             self._album.merge_discs()
@@ -323,57 +214,60 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
             left_widget.remove(row)
             right_widget.prepend(row)
 
+    def set_filter_func(self, func):
+        """
+            Set filter function
+        """
+        for widget in self._tracks_widget_left.values():
+            widget.set_filter_func(func)
+        for widget in self._tracks_widget_right.values():
+            widget.set_filter_func(func)
+
+    def get_current_ordinate(self, parent):
+        """
+            If current track in widget, return it ordinate,
+            @param parent widget as Gtk.Widget
+            @return y as int
+        """
+        for child in self.children:
+            if child.id == App().player.current_track.id:
+                return child.translate_coordinates(parent, 0, 0)[1]
+        return None
+
+    def height(self):
+        """
+            Widget height
+        """
+        return self._height
+
+    @property
+    def children(self):
+        """
+            Return all rows
+            @return [Gtk.ListBoxRow]
+        """
+        rows = []
+        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
+            for widget in dic.values():
+                for row in widget.get_children():
+                    rows.append(row)
+        return rows
+
+    @property
+    def boxes(self):
+        """
+            @return [Gtk.ListBox]
+        """
+        boxes = []
+        for widget in self._tracks_widget_left.values():
+            boxes.append(widget)
+        for widget in self._tracks_widget_right.values():
+            boxes.append(widget)
+        return boxes
+
 #######################
 # PROTECTED           #
 #######################
-    def _redraw_on_allocation(self, orientation):
-        """
-            Redraw widgets on allocation
-            @param orientation as Gtk.Orientation
-        """
-        for child in self._responsive_widget.get_children():
-            self._responsive_widget.remove(child)
-        # Grid index
-        idx = 0
-        # Disc label width / right box position
-        if orientation == Gtk.Orientation.VERTICAL:
-            width = 1
-            pos = 0
-        else:
-            width = 2
-            pos = 1
-        for disc in self._album.discs:
-            show_label = len(self._album.discs) > 1
-            disc_names = self._album.disc_names(disc.number)
-            if show_label or disc_names:
-                label = Gtk.Label()
-                if disc_names:
-                    disc_text = ", ".join(disc_names)
-                elif show_label:
-                    disc_text = _("Disc %s") % disc.number
-                label.set_text(disc_text)
-                label.set_property("halign", Gtk.Align.START)
-                label.get_style_context().add_class("dim-label")
-                label.show()
-                eventbox = Gtk.EventBox()
-                eventbox.add(label)
-                eventbox.connect("realize",
-                                 self.__on_disc_label_realize)
-                eventbox.connect("button-press-event",
-                                 self.__on_disc_press_event, disc.number)
-                eventbox.show()
-                self._responsive_widget.attach(eventbox, 0, idx, width, 1)
-                idx += 1
-            GLib.idle_add(self._responsive_widget.attach,
-                          self._tracks_widget_left[disc.number],
-                          0, idx, 1, 1)
-            if orientation == Gtk.Orientation.VERTICAL:
-                idx += 1
-            GLib.idle_add(self._responsive_widget.attach,
-                          self._tracks_widget_right[disc.number],
-                          pos, idx, 1, 1)
-            idx += 1
-
     def __set_disc_height(self, disc_number, tracks):
         """
             Set disc widget height
@@ -418,6 +312,82 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
             self.__discs = list(self._album.discs)
             self.__set_duration()
             self.populate()
+
+    def _on_populated(self):
+        """
+            Remove height request
+        """
+        for disc in self._album.discs:
+            self._tracks_widget_left[disc.number].set_property(
+                                                          "height-request", -1)
+            self._tracks_widget_right[disc.number].set_property(
+                                                          "height-request", -1)
+
+    def _on_size_allocate(self, widget, allocation):
+        """
+            Change box max/min children
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if self._width == allocation.width:
+            return
+        self._width = allocation.width
+        redraw = False
+        # We want vertical orientation
+        # when not enought place for cover or tracks
+        if allocation.width < WindowSize.MEDIUM or (
+                allocation.width < WindowSize.MONSTER and
+                self._art_size == ArtSize.BIG):
+            orientation = Gtk.Orientation.VERTICAL
+        else:
+            orientation = Gtk.Orientation.HORIZONTAL
+        if orientation != self._orientation:
+            self._orientation = orientation
+            redraw = True
+
+        if redraw:
+            for child in self._responsive_widget.get_children():
+                self._responsive_widget.remove(child)
+            # Grid index
+            idx = 0
+            # Disc label width / right box position
+            if orientation == Gtk.Orientation.VERTICAL:
+                width = 1
+                pos = 0
+            else:
+                width = 2
+                pos = 1
+            for disc in self._album.discs:
+                show_label = len(self._album.discs) > 1
+                disc_names = self._album.disc_names(disc.number)
+                if show_label or disc_names:
+                    label = Gtk.Label()
+                    if disc_names:
+                        disc_text = ", ".join(disc_names)
+                    elif show_label:
+                        disc_text = _("Disc %s") % disc.number
+                    label.set_text(disc_text)
+                    label.set_property("halign", Gtk.Align.START)
+                    label.get_style_context().add_class("dim-label")
+                    label.show()
+                    eventbox = Gtk.EventBox()
+                    eventbox.add(label)
+                    eventbox.connect("realize",
+                                     self.__on_disc_label_realize)
+                    eventbox.connect("button-press-event",
+                                     self.__on_disc_press_event, disc.number)
+                    eventbox.show()
+                    self._responsive_widget.attach(eventbox, 0, idx, width, 1)
+                    idx += 1
+                GLib.idle_add(self._responsive_widget.attach,
+                              self._tracks_widget_left[disc.number],
+                              0, idx, 1, 1)
+                if orientation == Gtk.Orientation.VERTICAL:
+                    idx += 1
+                GLib.idle_add(self._responsive_widget.attach,
+                              self._tracks_widget_right[disc.number],
+                              pos, idx, 1, 1)
+                idx += 1
 
 #######################
 # PRIVATE             #
