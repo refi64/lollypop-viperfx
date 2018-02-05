@@ -483,11 +483,11 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
             src_track = Track(src_track_id)
             # Search album
             album_index = albums.index(self._album)
-            track_index = self._album.tracks.index(row.track)
+            tracks = self._album.tracks
+            track_index = tracks.index(row.track)
             # DND inside same widget
             if src_track.album.id == self._album.id:
                 # Search src in tracks and move it
-                tracks = self._album.tracks
                 if src_track_id in self._album.track_ids:
                     src_index = self._album.track_ids.index(src_track_id)
                     src_track = tracks[src_index]
@@ -510,22 +510,29 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
                 src_album.remove_track_id(src_track_id)
                 self.emit("track-removed", src_album, [src_track])
                 # Special case when moving src at top
-                if track_index == 0 and not down:
-                    # We just create a new album at top
-                    if album_index == 0:
+                if (track_index == 0 and not down) or\
+                        (track_index + 1 == len(tracks) and down):
+                    # We just create a new album at top/bottom
+                    if album_index == 0 or album_index + 1 == len(albums):
+                        if down:
+                            album_index += 1
                         # Create a new album for src
                         new_src_album = Album(src_track.album.id)
                         new_src_album.set_tracks([src_track])
-                        albums.insert(0, new_src_album)
-                        self.emit("album-added", 0, new_src_album)
+                        albums.insert(album_index, new_src_album)
+                        self.emit("album-added", album_index, new_src_album)
                     # We need to check if an album merge is possible
                     else:
-                        previous_album = albums[album_index - 1]
+                        if track_index == 0:
+                            prev_next_index = album_index - 1
+                        else:
+                            prev_next_index = album_index + 1
+                        prev_next_album = albums[prev_next_index]
                         # Merge
-                        if previous_album.id == src_track.album.id:
-                            previous_album.add_track(src_track)
+                        if prev_next_album.id == src_track.album.id:
+                            prev_next_album.add_track(src_track)
                             self.emit("track-append",
-                                      previous_album,
+                                      prev_next_album,
                                       [src_track])
                         # Add an album up
                         else:
@@ -533,7 +540,7 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
                             new_src_album = Album(src_track.album.id)
                             new_src_album.set_tracks([src_track])
                             self.emit("album-added",
-                                      album_index - 1,
+                                      prev_next_index,
                                       new_src_album)
                 else:
                     if down:
