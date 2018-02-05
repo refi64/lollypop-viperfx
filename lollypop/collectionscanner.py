@@ -50,7 +50,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__inotify = None
         App().albums.update_max_count()
 
-    def update(self):
+    def update(self, *ignore):
         """
             Update database
         """
