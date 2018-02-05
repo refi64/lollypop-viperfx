@@ -455,8 +455,8 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
             dst_widget = self._tracks_widget_right[disc_number]
         # Get source row
         if src_index is not None:
-            src_row = src_widget.get_children()[src_index]
-            src_widget.remove(src_row)
+            row = src_widget.get_children()[src_index]
+            src_widget.remove(row)
         else:
             track = Track(track_id, self._album)
             row = TrackRow(track, self._responsive_type == ResponsiveType.DND)
@@ -464,7 +464,7 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
             row.connect("track-moved", self.__on_track_moved)
             row.connect("album-moved", self.__on_album_moved)
             row.show()
-        dst_widget.insert(src_row, dst_index)
+        dst_widget.insert(row, dst_index)
         if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
             App().player.set_next()
 

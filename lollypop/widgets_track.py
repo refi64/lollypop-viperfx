@@ -113,6 +113,7 @@ class Row(Gtk.ListBoxRow):
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
             self.connect("drag-begin", self.__on_drag_begin)
+            self.connect("drag-end", self.__on_drag_end)
             self.connect("drag-data-get", self.__on_drag_data_get)
             self.connect("drag-data-received", self.__on_drag_data_received)
             self.connect("drag-motion", self.__on_drag_motion)
@@ -359,11 +360,28 @@ class Row(Gtk.ListBoxRow):
 
     def __on_drag_begin(self, widget, context):
         """
-            Set icon
+            Set icon and update view padding
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.get_style_context().add_class("padding-top-bottom")
+            view.get_style_context().add_class("selected")
         widget.drag_source_set_icon_name("emblem-music-symbolic")
+
+    def __on_drag_end(self, widget, context):
+        """
+            Remove view padding
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.get_style_context().remove_class("padding-top-bottom")
+            view.get_style_context().remove_class("selected")
 
     def __on_drag_data_get(self, widget, context, data, info, time):
         """
@@ -388,6 +406,10 @@ class Row(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.get_style_context().remove_class("padding-top-bottom")
         height = self.get_allocated_height()
         if y > height/2:
             down = True

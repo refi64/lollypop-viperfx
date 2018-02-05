@@ -61,11 +61,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
             @param height as int
             @param responsive_type as ResponsiveType
         """
+        Gtk.ListBoxRow.__init__(self)
         self._responsive_widget = None
         self._album = album
         self.__responsive_type = responsive_type
         self.__score = None
-        Gtk.ListBoxRow.__init__(self)
         self.__play_indicator = None
         self.set_sensitive(False)
         self.get_style_context().add_class("loading")
@@ -149,6 +149,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-begin", self.__on_drag_begin)
+        self.connect("drag-end", self.__on_drag_end)
         self.connect("drag-data-get", self.__on_drag_data_get)
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-motion", self.__on_drag_motion)
@@ -216,11 +217,26 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
 
     def __on_drag_begin(self, widget, context):
         """
-            Set icon
+            Set icon and update view padding
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.get_style_context().add_class("padding-top-bottom")
         widget.drag_source_set_icon_name("emblem-music-symbolic")
+
+    def __on_drag_end(self, widget, context):
+        """
+            Remove view padding
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.get_style_context().remove_class("padding-top-bottom")
 
     def __on_drag_data_get(self, widget, context, data, info, time):
         """
@@ -245,6 +261,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
             @param info as int
             @param time as int
         """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.get_style_context().remove_class("padding-top-bottom")
         if "a:%s:none" % self._album.id == data.get_text():
             return
         height = self.get_allocated_height()
@@ -342,6 +362,7 @@ class AlbumsListView(LazyLoadingView):
         """
         LazyLoadingView.__init__(self)
         self.__responsive_type = responsive_type
+        self.__autoscroll_timeout_id = None
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
         self.__height = AlbumRow.get_best_height(self)
@@ -360,6 +381,8 @@ class AlbumsListView(LazyLoadingView):
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
+        self.connect("drag-motion", self.__on_drag_motion)
+        self.connect("drag-leave", self.__on_drag_leave)
 
     def populate(self, albums):
         """
@@ -428,6 +451,19 @@ class AlbumsListView(LazyLoadingView):
         row.connect("track-append", self.__on_track_added)
         row.connect("track-removed", self.__on_track_removed)
         return row
+
+    def __auto_scroll(self, up):
+        """
+            Auto scroll up/down
+            @param up as bool
+        """
+        adj = self._scrolled.get_vadjustment()
+        value = adj.get_value()
+        if up:
+            adj.set_value(value - ArtSize.SMALL)
+        else:
+            adj.set_value(value + ArtSize.SMALL)
+        return True
 
     def __get_current_ordinate(self):
         """
@@ -550,6 +586,38 @@ class AlbumsListView(LazyLoadingView):
                     row_index += 1
                 self.__view.insert(album_row, row_index)
                 App().player.move_album(album, row_index)
+
+    def __on_drag_motion(self, widget, context, x, y, time):
+        """
+            Add style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param time as int
+        """
+        if y <= 10:
+            self.get_style_context().add_class("drag-down")
+        else:
+            self.get_style_context().add_class("drag-up")
+        if self.__autoscroll_timeout_id is None:
+            # 10px is padding-top-bottom
+            self.__autoscroll_timeout_id = GLib.timeout_add(150,
+                                                            self.__auto_scroll,
+                                                            y <= 10)
+
+    def __on_drag_leave(self, widget, context, time):
+        """
+            Stop autoscroll
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param time as int
+        """
+        self.get_style_context().remove_class("drag-up")
+        self.get_style_context().remove_class("drag-down")
+        if self.__autoscroll_timeout_id is not None:
+            GLib.source_remove(self.__autoscroll_timeout_id)
+            self.__autoscroll_timeout_id = None
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
