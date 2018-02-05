@@ -260,7 +260,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
             if type_id == "t":
                 self.emit("track-moved", int(object_id), album_src, down)
             elif type_id == "a":
-                self.emit("album-moved", int(object_id), album_src, down)
+                self.emit("album-moved", int(object_id), down)
         except Exception as e:
             print("AlbumRow::__on_drag_data_received()", e)
 

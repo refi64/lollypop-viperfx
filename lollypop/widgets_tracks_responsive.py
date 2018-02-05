@@ -599,19 +599,36 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
         except Exception as e:
             print("TracksResponsiveWidget::__on_track_moved():", e)
 
-    def __on_album_moved(self, row, src, up):
+    def __on_album_moved(self, row, src, down):
         """
             Move src album to row
             Recalculate track position
             @param row as TrackRow
             @param src as int
-            @param up as bool
+            @param down as bool
         """
         try:
+            albums = App().player.albums
             # Search track in album
-            track_index = self._album.tracks.index(row.track)
+            tracks = list(self._album.tracks)
+            track_index = tracks.index(row.track)
             album_index = App().player.albums.index(self._album)
-            print(album_index, track_index)
+            if down:
+                track_index += 1
+            # Split orig album
+            self._album.set_tracks(tracks[0:track_index])
+            self.emit("track-removed", self._album,
+                      tracks[track_index:])
+            # Create a new album for src
+            new_src_album = Album(src)
+            # Split album
+            split_album = Album(self._album.id)
+            split_album.set_tracks(tracks[track_index + 1:-1])
+            albums.insert(album_index + 1, new_src_album)
+            albums.insert(album_index + 2, split_album)
+            self.emit("album-added", album_index + 1, new_src_album)
+            self.emit("album-added", album_index + 2, split_album)
+            self.recalculate_tracks_position()
         except Exception as e:
             print("TracksResponsiveWidget::__on_album_moved():", e)
 
