@@ -68,7 +68,6 @@ class TracksResponsiveWidget:
                 return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
-    @property
     def height(self):
         """
             Widget height

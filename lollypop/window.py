@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
-from gettext import gettext as _
 from lollypop.container import Container
 from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
@@ -375,7 +374,6 @@ class Window(Gtk.ApplicationWindow, Container):
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
-        self.connect("drag-motion", self.__on_drag_motion)
         self.connect("drag-leave", self.__on_drag_leave)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -389,29 +387,15 @@ class Window(Gtk.ApplicationWindow, Container):
             @param info as int
             @param time as int
         """
-        from lollypop.collectionimporter import CollectionImporter
-        importer = CollectionImporter()
-        uris = data.get_text().strip("\n").split("\r")
-        task_helper = TaskHelper()
-        task_helper.run(importer.add, uris, callback=(App().scanner.update,))
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        import_widget = self.__main_stack.get_child_by_name("import")
-        if import_widget is None:
-            import_widget = Gtk.Label()
-            import_widget.set_markup(_("<span size='xx-large'>"
-                                       "<b>Import music</b></span>"))
-            import_widget.show()
-            self.__main_stack.add_named(import_widget, "import")
-        self.__main_stack.set_visible_child_name("import")
+        try:
+            from lollypop.collectionimporter import CollectionImporter
+            importer = CollectionImporter()
+            uris = data.get_text().strip("\n").split("\r")
+            task_helper = TaskHelper()
+            task_helper.run(importer.add, uris,
+                            callback=(App().scanner.update,))
+        except:
+            pass
 
     def __on_drag_leave(self, widget, context, time):
         """
