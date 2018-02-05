@@ -30,6 +30,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
         "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
                         (int, GObject.TYPE_PYOBJECT)),
+        "track-append": (GObject.SignalFlags.RUN_FIRST, None,
+                         (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
         "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
                           (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
     }
@@ -419,6 +421,7 @@ class AlbumsListView(LazyLoadingView):
         row.connect("destroy", self.__on_child_destroyed)
         row.connect("album-moved", self.__on_album_moved)
         row.connect("album-added", self.__on_album_added)
+        row.connect("track-append", self.__on_track_added)
         row.connect("track-removed", self.__on_track_removed)
         return row
 
@@ -473,6 +476,18 @@ class AlbumsListView(LazyLoadingView):
         self.__view.insert(row, index)
         if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
             App().player.set_next()
+
+    def __on_track_added(self, row, album, tracks):
+        """
+            Remove track from widgets
+            @param row as TrackRow
+            @param album as Album
+            @param tracks as [Track]
+        """
+        for album_row in self.__view.get_children():
+            if album_row.album == album:
+                album_row.append_rows(tracks)
+                break
 
     def __on_track_removed(self, row, album, tracks):
         """

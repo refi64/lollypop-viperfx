@@ -250,6 +250,7 @@ class Album(Base):
             @param track as Track
         """
         self._tracks.append(track)
+        track.set_album(self)
 
     def remove_track(self, track):
         """
