@@ -273,6 +273,28 @@ class TracksResponsiveAlbumWidget(TracksResponsiveWidget):
                 row.destroy()
         self.recalculate_tracks_position()
 
+    def children_animation(self, y, widget):
+        """
+            Show animation to help user dnd
+            @param y as int
+            @param relate widget as Gtk.Widget
+        """
+        if self._responsive_widget is None:
+            return None
+        for child in self.children:
+            coordinates = child.translate_coordinates(widget, 0, 0)
+            if coordinates is not None:
+                child_y = coordinates[1]
+                child_height = child.get_allocated_height()
+                if y >= child_y and y <= child_y + child_height:
+                    if y <= child_y + child_height / 2:
+                        child.get_style_context().add_class("drag-down")
+                        return child
+                    elif y >= child_y + child_height / 2:
+                        child.get_style_context().add_class("drag-up")
+                        return child
+        return None
+
     def recalculate_tracks_position(self):
         """
             Update track number if needed

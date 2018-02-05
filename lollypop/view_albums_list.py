@@ -181,14 +181,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
                 self.__action_button.set_opacity(0)
                 self.__action_button.set_sensitive(False)
 
-    @property
-    def album(self):
-        """
-            Get album
-            @return row id as int
-        """
-        return self._album
-
     def update_playing_indicator(self, show):
         """
             Show play indicator
@@ -201,6 +193,14 @@ class AlbumRow(Gtk.ListBoxRow, TracksResponsiveAlbumWidget):
             self.__play_indicator.set_opacity(0)
         if self.__revealer.get_reveal_child():
             TracksResponsiveAlbumWidget.update_playing_indicator(self)
+
+    @property
+    def album(self):
+        """
+            Get album
+            @return row id as int
+        """
+        return self._album
 
 #######################
 # PRIVATE             #
@@ -328,6 +328,7 @@ class AlbumsListView(LazyLoadingView):
         LazyLoadingView.__init__(self)
         self.__responsive_type = responsive_type
         self.__autoscroll_timeout_id = None
+        self.__prev_animated_rows = []
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
         self.__height = AlbumRow.get_best_height(self)
@@ -355,6 +356,36 @@ class AlbumsListView(LazyLoadingView):
         """
         self._stop = False
         self.__add_albums(list(albums))
+
+    def children_animation(self, y):
+        """
+            Show animation to help user dnd
+            @param y as int
+        """
+        for row in self.__prev_animated_rows:
+            ctx = row.get_style_context()
+            ctx.remove_class("drag-up")
+            ctx.remove_class("drag-down")
+        for child in self.__view.get_children():
+            coordinates = child.translate_coordinates(self, 0, 0)
+            if coordinates is not None:
+                child_y = coordinates[1]
+                child_height = child.get_allocated_height()
+                if y >= child_y and y <= child_y + child_height:
+                    if y <= child_y + ArtSize.MEDIUM / 2:
+                        self.__prev_animated_rows.append(child)
+                        child.get_style_context().add_class("drag-down")
+                        child.reveal(True)
+                        break
+                    elif y >= child_y + child_height - ArtSize.MEDIUM / 2:
+                        self.__prev_animated_rows.append(child)
+                        child.get_style_context().add_class("drag-up")
+                        child.reveal(True)
+                        break
+                    else:
+                        row = child.children_animation(y, self)
+                        if row is not None:
+                            self.__prev_animated_rows.append(row)
 
     def on_current_changed(self, player):
         """
@@ -439,31 +470,6 @@ class AlbumsListView(LazyLoadingView):
             if child.album == App().player.current_track.album:
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
-
-    def __children_animation(self, y):
-        """
-            Show animation to help user dnd
-            @param y as int
-        """
-        for child in self.__view.get_children():
-            coordinates = child.translate_coordinates(self, 0, 0)
-            if coordinates is not None:
-                child_y = coordinates[1]
-                child_height = child.get_allocated_height()
-                if y > child_y and y < child_y + child_height / 2:
-                    child.get_style_context().add_class("drag-down")
-                    child.get_style_context().remove_class("drag-up")
-                elif y > child_y and\
-                        y < child_y + child_height and\
-                        y > child_y + child_height / 2:
-                    child.get_style_context().add_class("drag-up")
-                    child.get_style_context().remove_class("drag-down")
-                else:
-                    child.get_style_context().remove_class("drag-down")
-                    child.get_style_context().remove_class("drag-up")
-            else:
-                child.get_style_context().remove_class("drag-down")
-                child.get_style_context().remove_class("drag-up")
 
     def __on_map(self, widget):
         """
@@ -597,12 +603,12 @@ class AlbumsListView(LazyLoadingView):
             if self.__autoscroll_timeout_id is not None:
                 GLib.source_remove(self.__autoscroll_timeout_id)
                 self.__autoscroll_timeout_id = None
-            self.__children_animation(y)
+            self.children_animation(y)
             return
 
         up = y <= ArtSize.MEDIUM
         if self.__autoscroll_timeout_id is None:
-            self.__children_animation(-1)
+            self.children_animation(-1)
             self.__autoscroll_timeout_id = GLib.timeout_add(150,
                                                             self.__auto_scroll,
                                                             up)
