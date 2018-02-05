@@ -461,9 +461,15 @@ class AlbumsListView(LazyLoadingView):
         adj = self._scrolled.get_vadjustment()
         value = adj.get_value()
         if up:
-            adj.set_value(value - ArtSize.SMALL)
+            adj_value = value - ArtSize.SMALL
+            if adj_value < adj.get_lower():
+                adj_value = adj.get_lower()
+            adj.set_value(adj_value)
         else:
-            adj.set_value(value + ArtSize.SMALL)
+            adj_value = value + ArtSize.SMALL
+            if adj_value > adj.get_upper():
+                adj_value = adj.get_upper()
+            adj.set_value(adj_value)
         return True
 
     def __get_current_ordinate(self):
