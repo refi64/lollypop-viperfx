@@ -374,7 +374,7 @@ class Row(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        track_id = "t:%s:%s" % (self._track.id, str(self._track.album))
+        track_id = "t:%s:%s" % (self._track.id, self._track.album)
         data.set_text(track_id, len(track_id))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -401,7 +401,7 @@ class Row(Gtk.ListBoxRow):
             elif type_id == "t":
                 self.emit("track-moved", object_id, album_str, down)
             elif type_id == "a":
-                self.emit("album-moved", object_id, album_str, down)
+                self.emit("album-moved", object_id, down)
         except Exception as e:
             print("Row::__on_drag_data_received():", e)
 
