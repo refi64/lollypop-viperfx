@@ -383,16 +383,15 @@ class Application(Gtk.Application):
             try:
                 value = options.lookup_value("play-ids").get_string()
                 ids = value.split(";")
-                track_ids = []
+                tracks = []
                 for id in ids:
                     if id[0:2] == "a:":
                         album = Album(int(id[2:]))
-                        track_ids += album.track_ids
+                        tracks += album.tracks
                     else:
-                        track_ids.append(int(id[2:]))
-                track = Track(track_ids[0])
-                self.player.load(track)
-                self.player.populate_user_playlist_by_tracks(track_ids,
+                        tracks.append(Track(int(id[2:])))
+                self.player.load(tracks[0])
+                self.player.populate_user_playlist_by_tracks(tracks,
                                                              [Type.SEARCH])
             except Exception as e:
                 print(e)

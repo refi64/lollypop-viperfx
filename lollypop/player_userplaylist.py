@@ -36,30 +36,28 @@ class UserPlaylistPlayer(BasePlayer):
         """
         return self._user_playlist_ids
 
-    def populate_user_playlist_by_tracks(self, track_ids, playlist_ids):
+    def populate_user_playlist_by_tracks(self, tracks, playlist_ids):
         """
             Set user playlist as current playback playlist
-            @param array of track ids as [int]
+            @param array of tracks as [Track]
             @param playlist ids as [int]
         """
         if self.is_party:
             self.set_party(False)
-        self._user_playlist = []
-        for track_id in track_ids:
-            self._user_playlist.append(track_id)
         self._albums = []
-        self._user_playlist_ids = playlist_ids
         self.__user_playlist_backup = []
+        self._user_playlist = [track.id for track in tracks]
+        self._user_playlist_ids = playlist_ids
         self._shuffle_playlist()
 
-    def update_user_playlist(self, track_ids):
+    def update_user_playlist(self, tracks):
         """
             Update user playlist content
-            @param track_ids as int
+            @param tracks as [Track]
         """
         if self._albums:
             return
-        self._user_playlist = track_ids
+        self._user_playlist = [track.id for track in tracks]
         self.__user_playlist_backup = []
         self._shuffle_playlist()
 

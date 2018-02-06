@@ -338,13 +338,13 @@ class Playlists(GObject.GObject):
                                   playlist_id, track.id)
             sql.commit()
 
-    def import_uri(self, playlist_id, uri, start=None, up=False):
+    def import_uri(self, playlist_id, uri, start=None, down=True):
         """
             Import uri in playlist
             @param playlist id as int
             @param uri as str
             @param start track id as int
-            @param up as bool
+            @param down as bool
         """
         try:
             uri = uri.strip("\n\r")
@@ -386,7 +386,7 @@ class Playlists(GObject.GObject):
                     # Insert at wanted position
                     playlist_track_ids = self.get_track_ids(playlist_id)
                     start_idx = playlist_track_ids.index(start)
-                    if not up:
+                    if down:
                         start_idx += 1
                     for track_id in track_ids:
                         playlist_track_ids.insert(start_idx, track_id)

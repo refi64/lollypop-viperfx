@@ -105,17 +105,6 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
-        if dnd:
-            self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
-                                 Gdk.DragAction.MOVE)
-            self.drag_source_add_text_targets()
-            self.drag_dest_set(Gtk.DestDefaults.DROP,
-                               [], Gdk.DragAction.MOVE)
-            self.drag_dest_add_text_targets()
-            self.connect("drag-begin", self.__on_drag_begin)
-            self.connect("drag-data-get", self.__on_drag_data_get)
-            self.connect("drag-data-received", self.__on_drag_data_received)
-            self.connect("drag-leave", self.__on_drag_leave)
 
     def show_spinner(self):
         """
@@ -356,68 +345,6 @@ class Row(Gtk.ListBoxRow):
             text = "%s" % (GLib.markup_escape_text(label))
         widget.set_tooltip_markup(text)
 
-    def __on_drag_begin(self, widget, context):
-        """
-            Set icon and update view padding
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-        """
-        widget.drag_source_set_icon_name("emblem-music-symbolic")
-
-    def __on_drag_data_get(self, widget, context, data, info, time):
-        """
-            Send track id
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        track_id = "t:%s:%s" % (self._track.id, self._track.album)
-        data.set_text(track_id, len(track_id))
-
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move track
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.clear_animation()
-        height = self.get_allocated_height()
-        if y > height/2:
-            down = True
-        else:
-            down = False
-        try:
-            (type_id, object_id_str, album_str) = data.get_text().split(":")
-            object_id = int(object_id_str)
-            if object_id == self._track.id:
-                pass
-            elif type_id == "t":
-                self.emit("track-moved", object_id, album_str, down)
-            elif type_id == "a":
-                self.emit("album-moved", object_id, down)
-        except Exception as e:
-            print("Row::__on_drag_data_received():", e)
-
-    def __on_drag_leave(self, widget, context, time):
-        """
-            Remove style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param time as int
-        """
-        self.get_style_context().remove_class("drag-up")
-        self.get_style_context().remove_class("drag-down")
-
 
 class PlaylistRow(Row):
     """
@@ -491,6 +418,15 @@ class PlaylistRow(Row):
         self.set_indicator(App().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self.show_headers(self.__show_headers)
+        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
+                             Gdk.DragAction.MOVE)
+        self.drag_source_add_text_targets()
+        self.drag_dest_set(Gtk.DestDefaults.DROP,
+                           [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect("drag-begin", self.__on_drag_begin)
+        self.connect("drag-data-get", self.__on_drag_data_get)
+        self.connect("drag-data-received", self.__on_drag_data_received)
 
     @property
     def filter(self):
@@ -561,6 +497,57 @@ class PlaylistRow(Row):
         if window is not None:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
+    def __on_drag_begin(self, widget, context):
+        """
+            Set icon
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        widget.drag_source_set_icon_name("emblem-music-symbolic")
+
+    def __on_drag_data_get(self, widget, context, data, info, time):
+        """
+            Send track id
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        track_id = str(self._track.id)
+        data.set_text(track_id, len(track_id))
+
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.clear_animation()
+        height = self.get_allocated_height()
+        if y > height/2:
+            down = True
+        else:
+            down = False
+        try:
+            src = data.get_text()
+            if self._track.id == int(src):
+                return
+            self.emit("track-moved", self._track.id, src, down)
+        except:
+            if len(App().window.container.view.get_ids()) == 1:
+                App().playlists.import_uri(
+                                    App().window.container.view.get_ids()[0],
+                                    data.get_text(), self._track.id, down)
+
 
 class TrackRow(Row):
     """
@@ -595,6 +582,16 @@ class TrackRow(Row):
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
+        if dnd:
+            self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
+                                 Gdk.DragAction.MOVE)
+            self.drag_source_add_text_targets()
+            self.drag_dest_set(Gtk.DestDefaults.DROP,
+                               [], Gdk.DragAction.MOVE)
+            self.drag_dest_add_text_targets()
+            self.connect("drag-begin", self.__on_drag_begin)
+            self.connect("drag-data-get", self.__on_drag_data_get)
+            self.connect("drag-data-received", self.__on_drag_data_received)
 
     @property
     def filter(self):
@@ -615,9 +612,61 @@ class TrackRow(Row):
             True if filtered by parent
         """
         return self.__parent_filter
+
 #######################
 # PRIVATE             #
 #######################
+    def __on_drag_begin(self, widget, context):
+        """
+            Set icon and update view padding
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        widget.drag_source_set_icon_name("emblem-music-symbolic")
+
+    def __on_drag_data_get(self, widget, context, data, info, time):
+        """
+            Send track id
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        track_id = "t:%s:%s" % (self._track.id, self._track.album)
+        data.set_text(track_id, len(track_id))
+
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        from lollypop.view import View
+        view = widget.get_ancestor(View)
+        if view is not None:
+            view.clear_animation()
+        height = self.get_allocated_height()
+        if y > height/2:
+            down = True
+        else:
+            down = False
+        try:
+            (type_id, object_id_str, album_str) = data.get_text().split(":")
+            object_id = int(object_id_str)
+            if object_id == self._track.id:
+                pass
+            elif type_id == "t":
+                self.emit("track-moved", object_id, album_str, down)
+            elif type_id == "a":
+                self.emit("album-moved", object_id, down)
+        except Exception as e:
+            print("Row::__on_drag_data_received():", e)
 
 
 class TracksWidget(Gtk.ListBox):

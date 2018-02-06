@@ -10,14 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 from gettext import gettext as _
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ArtSize
 from lollypop.objects import Track
 
 
@@ -33,6 +33,8 @@ class PlaylistsView(View):
             @param editable as bool
         """
         View.__init__(self, True)
+        self.__autoscroll_timeout_id = None
+        self.__prev_animated_rows = []
         self.__tracks = []
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect("playlist-add",
@@ -70,6 +72,12 @@ class PlaylistsView(View):
         # Connect signals after ui init
         # "split-button" will emit a signal otherwise
         builder.connect_signals(self)
+
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect("drag-motion", self.__on_drag_motion)
+
         # No duration for non user playlists
         # FIXME
         if playlist_ids[0] > 0:
@@ -111,6 +119,15 @@ class PlaylistsView(View):
                                                    1)
         self.__playlists_widget.populate_list_right(tracks[mid_tracks:],
                                                     mid_tracks + 1)
+
+    def clear_animation(self):
+        """
+            Clear any animation
+        """
+        for row in self.__prev_animated_rows:
+            ctx = row.get_style_context()
+            ctx.remove_class("drag-up")
+            ctx.remove_class("drag-down")
 
     def get_ids(self):
         """
@@ -191,6 +208,25 @@ class PlaylistsView(View):
 #######################
 # PRIVATE             #
 #######################
+    def __auto_scroll(self, up):
+        """
+            Auto scroll up/down
+            @param up as bool
+        """
+        adj = self._scrolled.get_vadjustment()
+        value = adj.get_value()
+        if up:
+            adj_value = value - ArtSize.SMALL
+            if adj_value < adj.get_lower():
+                adj_value = adj.get_lower()
+            adj.set_value(adj_value)
+        else:
+            adj_value = value + ArtSize.SMALL
+            if adj_value > adj.get_upper():
+                adj_value = adj.get_upper()
+            adj.set_value(adj_value)
+        return True
+
     def __set_duration(self):
         """
             Set playlist duration
@@ -224,6 +260,40 @@ class PlaylistsView(View):
         else:
             self.__jump_button.set_sensitive(False)
             self.__jump_button.set_tooltip_text("")
+
+    def __on_drag_motion(self, widget, context, x, y, time):
+        """
+            Add style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param time as int
+        """
+        if y <= ArtSize.MEDIUM:
+            self.get_style_context().add_class("drag-down")
+            self.get_style_context().remove_class("drag-up")
+        elif y >= self._scrolled.get_allocated_height() - ArtSize.MEDIUM:
+            self.get_style_context().add_class("drag-up")
+            self.get_style_context().remove_class("drag-down")
+        else:
+            self.get_style_context().remove_class("drag-down")
+            self.get_style_context().remove_class("drag-up")
+            if self.__autoscroll_timeout_id is not None:
+                GLib.source_remove(self.__autoscroll_timeout_id)
+                self.__autoscroll_timeout_id = None
+            self.clear_animation()
+            row = self.__playlists_widget.children_animation(y, self)
+            if row is not None:
+                self.__prev_animated_rows.append(row)
+            return
+
+        up = y <= ArtSize.MEDIUM
+        if self.__autoscroll_timeout_id is None:
+            self.clear_animation()
+            self.__autoscroll_timeout_id = GLib.timeout_add(100,
+                                                            self.__auto_scroll,
+                                                            up)
 
     def __on_playlist_add(self, manager, playlist_id, track_id, pos):
         """

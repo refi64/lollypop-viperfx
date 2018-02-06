@@ -267,28 +267,24 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     # because seek while failed otherwise
                     self.pause()
                     if playlist_ids:
-                        pids = []
-                        for playlist_id in playlist_ids:
-                            pids.append(int(playlist_id))
                         track_ids = []
                         for playlist_id in playlist_ids:
                             if playlist_id == Type.POPULARS:
-                                tracks = App().tracks.get_populars()
+                                track_ids = App().tracks.get_populars()
                             elif playlist_id == Type.RECENTS:
-                                tracks = App().tracks.get_recently_listened_to(
-                                                                              )
+                                track_ids = App().tracks.\
+                                    get_recently_listened_to()
                             elif playlist_id == Type.NEVER:
-                                tracks = App().tracks.get_never_listened_to()
+                                track_ids = App().tracks.\
+                                    get_never_listened_to()
                             elif playlist_id == Type.RANDOMS:
-                                tracks = App().tracks.get_randoms()
+                                track_ids = App().tracks.get_randoms()
                             else:
-                                tracks = App().playlists.get_track_ids(
+                                track_ids = App().playlists.get_track_ids(
                                                                    playlist_id)
-                            for track_id in tracks:
-                                if track_id not in track_ids:
-                                    track_ids.append(track_id)
-                            self.populate_user_playlist_by_tracks(track_ids,
-                                                                  pids)
+                            self.populate_user_playlist_by_tracks(
+                                                          list(set(track_ids)),
+                                                          playlist_ids)
                     else:
                         if was_party:
                             self.emit("party-changed", True)
