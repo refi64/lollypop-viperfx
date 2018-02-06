@@ -21,13 +21,13 @@ from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_externals import ExternalsPlayer
-from lollypop.player_userplaylist import UserPlaylistPlayer
+from lollypop.player_playlist import PlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track, Album
 from lollypop.define import App, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
 
 
-class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
+class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
              LinearPlayer, ShufflePlayer, ExternalsPlayer):
     """
         Player object used to manage playback and playlists
@@ -41,7 +41,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         QueuePlayer.__init__(self)
         LinearPlayer.__init__(self)
         ShufflePlayer.__init__(self)
-        UserPlaylistPlayer.__init__(self)
+        PlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
         ExternalsPlayer.__init__(self)
         self.update_crossfading()
@@ -99,8 +99,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         # We are not playing a user playlist anymore
-        self._user_playlist = []
-        self._user_playlist_ids = []
+        self._playlist_track_ids = []
+        self._playlist_ids = []
         self.shuffle_albums(False)
         self._albums.append(album)
         self.shuffle_albums(True)
@@ -144,8 +144,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.set_party(False)
         self.reset_history()
         # We are not playing a user playlist anymore
-        self._user_playlist = []
-        self._user_playlist_ids = []
+        self._playlist_track_ids = []
+        self._playlist_ids = []
         if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(album.tracks)
         else:
@@ -165,8 +165,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
-        self._user_playlist = []
-        self._user_playlist_ids = []
+        self._playlist_track_ids = []
+        self._playlist_ids = []
         # We are in all artists
         if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
@@ -282,7 +282,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                             else:
                                 track_ids = App().playlists.get_track_ids(
                                                                    playlist_id)
-                            self.populate_user_playlist_by_tracks(
+                            self.populate_playlist_by_track_ids(
                                                           list(set(track_ids)),
                                                           playlist_ids)
                     else:
@@ -332,7 +332,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
             # Look at user playlist then
             if self._prev_track.id is None:
-                self._prev_track = UserPlaylistPlayer.prev(self)
+                self._prev_track = PlaylistPlayer.prev(self)
 
             # Look at shuffle
             if self._prev_track.id is None:
@@ -371,7 +371,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
             # Look at user playlist then
             if next_track.id is None:
-                next_track = UserPlaylistPlayer.next(self, force)
+                next_track = PlaylistPlayer.next(self, force)
 
             # Get a random album/track then
             if next_track.id is None:

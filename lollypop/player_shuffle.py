@@ -51,8 +51,8 @@ class ShufflePlayer(BasePlayer):
         helper = TaskHelper()
         helper.run(self.__init_party_blacklist)
         # Reset user playlist
-        self._user_playlist = []
-        self._user_playlist_ids = []
+        self._playlist_track_ids = []
+        self._playlist_ids = []
 
     @property
     def shuffle_has_next(self):
@@ -236,14 +236,14 @@ class ShufflePlayer(BasePlayer):
 
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
-            if self._shuffle == Shuffle.TRACKS or self._user_playlist:
+            if self._shuffle == Shuffle.TRACKS or self._playlist_track_ids:
                 self._plugins1.rgvolume.props.album_mode = 0
                 self._plugins2.rgvolume.props.album_mode = 0
             else:
                 self._plugins1.rgvolume.props.album_mode = 1
                 self._plugins2.rgvolume.props.album_mode = 1
 
-        if self._user_playlist:
+        if self._playlist_track_ids:
             self._shuffle_playlist()
         elif self._shuffle == Shuffle.NONE:
             self.shuffle_albums(False)

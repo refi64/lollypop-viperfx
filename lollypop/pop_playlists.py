@@ -31,7 +31,7 @@ class PlaylistsPopover(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
-        self._widget = PlaylistsView(App().player.get_user_playlist_ids(),
+        self._widget = PlaylistsView(App().player.get_playlist_ids(),
                                      False)
         self._widget.show()
         self.add(self._widget)
@@ -41,7 +41,7 @@ class PlaylistsPopover(Gtk.Popover):
             Populate view
         """
         def load():
-            return App().player.get_user_playlist()
+            return App().player.get_playlist()
         loader = Loader(target=load, view=self._widget)
         loader.start()
 

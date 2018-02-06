@@ -292,10 +292,10 @@ class Application(Gtk.Application):
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]
-            elif not self.player.get_user_playlist_ids():
+            elif not self.player.get_playlist_ids():
                 playlist_ids = []
             else:
-                playlist_ids = self.player.get_user_playlist_ids()
+                playlist_ids = self.player.get_playlist_ids()
             dump(playlist_ids,
                  open(LOLLYPOP_DATA_PATH + "/playlist_ids.bin", "wb"))
         if self.player.current_track.id is not None:
@@ -391,8 +391,8 @@ class Application(Gtk.Application):
                     else:
                         tracks.append(Track(int(id[2:])))
                 self.player.load(tracks[0])
-                self.player.populate_user_playlist_by_tracks(tracks,
-                                                             [Type.SEARCH])
+                self.player.populate_playlist_by_tracks(tracks,
+                                                        [Type.SEARCH])
             except Exception as e:
                 print(e)
                 pass

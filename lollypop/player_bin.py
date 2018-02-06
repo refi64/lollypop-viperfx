@@ -577,7 +577,7 @@ class BinPlayer(BasePlayer):
         if playback == NextContext.STOP:
             if (not self._albums and
                 not self.queue and
-                not self._user_playlist_ids) or\
+                not self._playlist_ids) or\
                     playback == self._next_context:
                 stop = True
         return stop and self.is_playing

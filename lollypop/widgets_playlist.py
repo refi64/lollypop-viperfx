@@ -445,8 +445,8 @@ class PlaylistsWidget(Gtk.Grid):
                                            tracks,
                                            False)
             if not (set(self.__playlist_ids) -
-               set(App().player.get_user_playlist_ids())):
-                App().player.update_user_playlist(tracks)
+               set(App().player.get_playlist_ids())):
+                App().player.update_playlist(tracks)
         src_track = dst_track = None
         row_tracks_left = self.__get_row_tracks(Loading.LEFT)
         row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
@@ -510,7 +510,7 @@ class PlaylistsWidget(Gtk.Grid):
             if not App().player.is_party:
                 row_tracks_left = self.__get_row_tracks(Loading.LEFT)
                 row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
-                App().player.populate_user_playlist_by_tracks(
+                App().player.populate_playlist_by_tracks(
                                                        row_tracks_left +
                                                        row_tracks_right,
                                                        self.__playlist_ids)

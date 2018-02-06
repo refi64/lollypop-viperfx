@@ -55,10 +55,10 @@ class BasePlayer(GObject.GObject):
             # Keep track of artist/album finished
             self._next_context = NextContext.NONE
             # A user playlist used as current playlist
-            self._user_playlist_ids = []
-            self._user_playlist = []
+            self._playlist_ids = []
+            self._playlist_track_ids = []
             # Used by shuffle tracks to restore user playlist before shuffle
-            self._user_playlist_backup = None
+            self._playlist_backup = None
             self._current_track = Track()
             self._next_track = Track()
             self._prev_track = Track()
