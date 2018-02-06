@@ -308,8 +308,7 @@ class TracksView:
         for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
                 for child in widget.get_children():
-                    track = Track(child.id)
-                    if track.album.id == Type.NONE:
+                    if child.track.album.id == Type.NONE:
                         removed = True
         if removed:
             for dic in [self._tracks_widget_left, self._tracks_widget_right]:
