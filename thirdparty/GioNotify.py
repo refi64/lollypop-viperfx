@@ -127,7 +127,11 @@ class GioNotify(Gio.DBusProxy):
 
     def show_new(self, summary, body, icon):
         def on_Notify_finish(self, result):
-            self._replace_id = self.call_finish(result).unpack()[0]
+            # https://gitlab.gnome.org/gnumdk/lollypop/issues/1347#note_50460
+            try:
+                self._replace_id = self.call_finish(result).unpack()[0]
+            except:
+                pass
 
         args = GLib.Variant('(susssasa{sv}i)', (self._app_name, self._replace_id,
                                                 icon, summary, body,
