@@ -23,8 +23,22 @@ from lollypop.utils import debug
 
 
 class GoaSyncedAccount(GObject.Object):
+    """
+        Provides access to a GOA account with given provider_name.
+
+        The account will be kept in sync and will be updated if accounts
+        are added, removed or changed.
+    """
+
+    __gsignals__ = {
+        "account-switched": (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
 
     def __init__(self, provider_name):
+        """
+            Initialize a new GoaSyncedAccount for provider_name
+            @param provider_name as str
+        """
         GObject.Object.__init__(self)
         self._provider_name = provider_name
         self._proxy = None
@@ -41,16 +55,19 @@ class GoaSyncedAccount(GObject.Object):
             debug("GOA not available")
             self.__client = None
 
-    @GObject.Signal("account-switched")
-    def account_switched(self):
-        debug("GOA account-switched")
-
     @property
     def has_account(self):
+        """
+            True if there is an account with provider_name, False otherwise
+            @return bool
+        """
         return self._proxy is not None
 
     @property
     def account(self):
+        """
+            @return Goa.Account
+        """
         if self._proxy is None:
             return None
         if self._account is None:
@@ -59,6 +76,9 @@ class GoaSyncedAccount(GObject.Object):
 
     @property
     def oauth2_based(self):
+        """
+            @return Goa.OAuth2Based
+        """
         if self._proxy is None:
             return None
         if self._oauth2_based is None:
@@ -66,12 +86,20 @@ class GoaSyncedAccount(GObject.Object):
         return self._oauth2_based
 
     def on_account_added(self, client, proxy):
+        """
+            @param client as Goa.Client
+            @param proxy as Goa.Object
+        """
         debug("GOA account added")
         if self._proxy is None and self._account_matches_provider(proxy):
             self._proxy = proxy
             self.emit("account-switched")
 
     def on_account_removed(self, client, proxy):
+        """
+            @param client as Goa.Client
+            @param proxy as Goa.Object
+        """
         debug("GOA account removed")
         if self._proxy == proxy:
             # Try finding a new account
@@ -79,6 +107,10 @@ class GoaSyncedAccount(GObject.Object):
             self.emit("account-switched")
 
     def on_account_changed(self, client, proxy):
+        """
+            @param client as Goa.Client
+            @param proxy as Goa.Object
+        """
         debug("GOA account changed")
         if self._proxy == proxy:
             self._account = None
