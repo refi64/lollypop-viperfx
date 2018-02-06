@@ -180,6 +180,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         """
         TracksView.update_playing_indicator(self)
 
+    def hide_header_labels(self):
+        """
+            Hide header labels
+        """
+        self.__title_label.hide()
+        self.__artist_label.hide()
+        self.__year_label.hide()
+
     @property
     def requested_height(self):
         """
