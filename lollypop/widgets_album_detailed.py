@@ -20,11 +20,11 @@ from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
-from lollypop.widgets_tracks_responsive import TracksResponsiveWidget
+from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, ResponsiveType
 
 
-class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
+class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
     """
         Widget with cover and tracks
     """
@@ -44,7 +44,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
-        TracksResponsiveWidget.__init__(self, ResponsiveType.FIXED)
+        TracksView.__init__(self, ResponsiveType.FIXED)
         self._rounded_class = "rounded-icon-small"
         self.__context = None
         # Cover + rating + spacing
@@ -178,14 +178,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
             Update playing indicator
         """
-        TracksResponsiveWidget.update_playing_indicator(self)
+        TracksView.update_playing_indicator(self)
 
     @property
     def requested_height(self):
         """
             Requested height: Internal tracks or at least cover
         """
-        boxes_height = TracksResponsiveWidget.height(self)
+        boxes_height = TracksView.height(self)
         if boxes_height < self.__height:
             return self.__height
         else:
@@ -198,7 +198,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
         """
             Emit populated signal
         """
-        TracksResponsiveWidget._on_populated(self)
+        TracksView._on_populated(self)
         self.emit("populated")
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
@@ -246,8 +246,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
             @param album id as int
             @param destroy as bool
         """
-        TracksResponsiveWidget._on_album_updated(self, scanner,
-                                                 album_id, destroy)
+        TracksView._on_album_updated(self, scanner, album_id, destroy)
         AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
 
     def _on_size_allocate(self, widget, allocation):
@@ -256,7 +255,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksResponsiveWidget):
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
-        TracksResponsiveWidget._on_size_allocate(self, widget, allocation)
+        TracksView._on_size_allocate(self, widget, allocation)
         if self._art_size == ArtSize.BIG:
             if allocation.width < WindowSize.MEDIUM:
                 self.__coverbox.hide()

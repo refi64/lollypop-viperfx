@@ -20,9 +20,9 @@ from lollypop.objects import Track, Album
 from lollypop.define import App, ArtSize, Type, ResponsiveType, Shuffle
 
 
-class TracksResponsiveWidget:
+class TracksView:
     """
-        TrackResponsiveWidget showing discs on one or two rows
+        Responsive view showing discs on one or two rows
     """
     __gsignals__ = {
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
@@ -567,7 +567,7 @@ class TracksResponsiveWidget:
                     self.emit("album-added", album_index + 2, split_album)
             self.recalculate_tracks_position()
         except Exception as e:
-            print("TracksResponsiveWidget::__on_track_moved():", e)
+            print("TracksView::__on_track_moved():", e)
 
     def __on_album_moved(self, row, src, down):
         """
@@ -600,7 +600,7 @@ class TracksResponsiveWidget:
             self.emit("album-added", album_index + 2, split_album)
             self.recalculate_tracks_position()
         except Exception as e:
-            print("TracksResponsiveWidget::__on_album_moved():", e)
+            print("TracksView::__on_album_moved():", e)
 
     def __on_disc_label_realize(self, eventbox):
         """
