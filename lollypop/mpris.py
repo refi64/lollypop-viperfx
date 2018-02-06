@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2017 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# Copyright (c) 2014-2018 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
 # Copyright (c) 2016 Gaurav Narula
 # Copyright (c) 2016 Felipe Borges <felipeborges@gnome.org>
 # Copyright (c) 2013 Arnel A. Borja <kyoushuu@yahoo.com>
