@@ -82,12 +82,11 @@ class SearchPopover(Gtk.Popover):
             self.__timeout_id = None
         self.__cancellable.cancel()
         self.__view.stop()
-        self.__view.clear()
         self.__current_search = widget.get_text().strip()
         if self.__current_search != "":
             self.__new_btn.set_sensitive(True)
             self.__timeout_id = GLib.timeout_add(
-                                              200,
+                                              250,
                                               self.__on_search_changed_timeout)
         else:
             self.__new_btn.set_sensitive(False)
@@ -145,5 +144,9 @@ class SearchPopover(Gtk.Popover):
         """
             Populate widget
         """
+        if self.__view.children:
+            self.__view.stop()
+            self.__view.clear()
+            return True
         self.__timeout_id = None
         self.__populate()

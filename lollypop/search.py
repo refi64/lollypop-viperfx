@@ -24,7 +24,7 @@ class Search:
         """
             Init search
         """
-        self.__current_search = ""
+        pass
 
     def get(self, current_search, cancellable, callback):
         """
@@ -33,9 +33,8 @@ class Search:
             @param cancellable as Gio.Cancellable
             @param callback as callback
         """
-        self.__current_search = current_search.lower()
         search_items = []
-        for item in self.__current_search.split():
+        for item in current_search.lower().split():
             if item not in search_items:
                 search_items.append(item)
         helper = TaskHelper()
@@ -52,8 +51,89 @@ class Search:
             @param search_item as [str]
         """
         split_string = string.lower().split()
-        join = list(set(split_string) & set(search_items))
+        explode_split = self.__explode_search_items(split_string)
+        explode_search = self.__explode_search_items(search_items)
+        join = list(set(explode_split) & set(explode_search))
         return len(join)
+
+    def __explode_search_items(self, search_items):
+        """
+            Explose search items for all search possiblities
+            @param search_items as [str]
+            @return [str]
+        """
+        possibilities = []
+        index = len(search_items)
+        while index > 1:
+            item = " ".join(search_items[:index])
+            if item:
+                possibilities.append(item)
+            index -= 1
+        index = len(search_items)
+        while index >= 1:
+            item = " ".join(search_items[index:])
+            if item:
+                possibilities.append(item)
+            index -= 1
+        return possibilities + search_items
+
+    def __search_artists(self, search_items, cancellable):
+        """
+            Get artist albums for search items
+            @param search_items as [str]
+            @param cancellable as Gio.Cancellable
+            @return albums_ids as [int]
+        """
+        artist_ids = []
+        for search_str in self.__explode_search_items(search_items):
+            artist_ids += App().artists.search(search_str)
+            if cancellable.is_cancelled():
+                break
+        album_ids = []
+        for artist_id in artist_ids:
+            if cancellable.is_cancelled():
+                return []
+            for album_id in App().albums.get_ids([artist_id], []):
+                if (album_id, artist_id) not in album_ids:
+                    album_ids.append(album_id)
+        return album_ids
+
+    def __search_tracks(self, search_items, cancellable):
+        """
+            Get tracks for search items
+            @param search_items as [str]
+            @param cancellable as Gio.Cancellable
+            @return track_ids as [int]
+        """
+        track_ids = []
+        for search_str in self.__explode_search_items(search_items):
+            track_ids += App().tracks.search(search_str)
+            if cancellable.is_cancelled():
+                break
+        return track_ids
+
+    def __search_albums(self, search_items, cancellable):
+        """
+            Get albums for search items
+            @param search_items as [str]
+            @param cancellable as Gio.Cancellable
+            @return track_ids as [int]
+        """
+        album_ids = []
+        for search_str in self.__explode_search_items(search_items):
+            album_ids = App().albums.search(search_str)
+            if cancellable.is_cancelled():
+                break
+        # Same for year #TODO make this ok for all date + for tracks
+        if not album_ids and not cancellable.is_cancelled():
+            for search_str in self.__explode_search_items(search_items):
+                try:
+                    album_ids = App().albums.get_by_year(int(search_str))
+                except:
+                    pass
+                if album_ids:
+                    break
+        return album_ids
 
     def __get(self, search_items, cancellable):
         """
@@ -62,30 +142,10 @@ class Search:
             @param cancellable as Gio.Cancellable
             @return items as [SearchItem]
         """
-        album_ids = []
-        track_ids = []
-        album_artist_ids = []
+        album_ids = self.__search_albums(search_items, cancellable)
+        track_ids = self.__search_tracks(search_items, cancellable)
+        album_artist_ids = self.__search_artists(search_items, cancellable)
         albums = []
-        for item in search_items:
-            if cancellable.is_cancelled():
-                return
-            # Get all albums for all artists and non album_artist tracks
-            for artist_id in App().artists.search(item):
-                if cancellable.is_cancelled():
-                    return
-                for album_id in App().albums.get_ids([artist_id], []):
-                    if (album_id, artist_id) not in albums:
-                        album_artist_ids.append(album_id)
-                for track_id in App().tracks.get_for_artist(artist_id):
-                    track_ids.append(track_id)
-            try:
-                year = int(item)
-                album_ids += App().albums.get_by_year(year)
-            except:
-                pass
-            album_ids += App().albums.search(item)
-            for track_id in App().tracks.search(item):
-                track_ids.append(track_id)
 
         # Create albums for tracks
         album_tracks = {}

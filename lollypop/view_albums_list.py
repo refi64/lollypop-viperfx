@@ -425,6 +425,14 @@ class AlbumsListView(LazyLoadingView):
         if clear_albums:
             App().player.clear_albums()
 
+    @property
+    def children(self):
+        """
+            Get view children
+            @return [AlbumRow]
+        """
+        return self.__view.get_children()
+
 #######################
 # PRIVATE             #
 #######################
