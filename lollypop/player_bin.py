@@ -275,7 +275,7 @@ class BinPlayer(BasePlayer):
         if finished.duration < 30:
             return
         # Scrobble on lastfm
-        if App().lastfm is not None and App().lastfm.session_key:
+        if App().lastfm is not None and App().lastfm.available:
             artists = ", ".join(finished.artists)
             # We can scrobble if the track has been played
             # for at least half its duration, or for 4 minutes
@@ -286,7 +286,7 @@ class BinPlayer(BasePlayer):
                                          int(finished_start_time),
                                          finished.mb_track_id)
         # Scrobble on librefm
-        if App().librefm is not None and App().librefm.session_key:
+        if App().librefm is not None and App().librefm.available:
             artists = ", ".join(finished.artists)
             # We can scrobble if the track has been played
             # for at least half its duration, or for 4 minutes
@@ -315,7 +315,7 @@ class BinPlayer(BasePlayer):
         # Update now playing on lastfm
         # Not supported by librefm
         if App().lastfm is not None and\
-                App().lastfm.session_key and\
+                App().lastfm.available and\
                 self._current_track.id >= 0:
             artists = ", ".join(self._current_track.artists)
             App().lastfm.now_playing(artists,

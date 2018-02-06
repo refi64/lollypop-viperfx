@@ -23,12 +23,6 @@ except Exception as e:
     print(_("Last.fm authentication disabled"))
     Secret = None
 
-try:
-    gi.require_version("Goa", "1.0")
-    from gi.repository import Goa
-except:
-    pass
-
 from pylast import LastFMNetwork, LibreFMNetwork, md5, WSError
 from pylast import SessionKeyGenerator
 from gettext import gettext as _
@@ -39,6 +33,7 @@ from lollypop.helper_task import TaskHelper
 from lollypop.define import App, Type
 from lollypop.objects import Track
 from lollypop.utils import debug, get_network_available
+from lollypop.goa import GoaSyncedAccount
 
 
 class LastFM(LastFMNetwork, LibreFMNetwork):
@@ -67,10 +62,13 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         if name == "librefm":
             LibreFMNetwork.__init__(self)
         else:
-            self.__goa = self.__get_goa_oauth()
-            if self.__goa is not None:
-                self.__API_KEY = self.__goa.props.client_id
-                self.__API_SECRET = self.__goa.props.client_secret
+            self.__goa = GoaSyncedAccount("Last.fm")
+            self.__goa.connect("account-switched",
+                               self.on_goa_account_switched)
+            if self.is_goa:
+                auth = self.__goa.oauth2_based
+                self.__API_KEY = auth.props.client_id
+                self.__API_SECRET = auth.props.client_secret
             else:
                 self.__API_KEY = "7a9619a850ccf7377c46cf233c51e3c6"
                 self.__API_SECRET = "9254319364d73bec6c59ace485a95c98"
@@ -79,13 +77,27 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                    api_secret=self.__API_SECRET)
         self.connect()
 
+    @property
+    def available(self):
+        """
+            Return True if Last.fm/Libre.fm submission is available
+            @return bool
+        """
+        if not self.session_key:
+            return False
+        if self.is_goa:
+            music_disabled = self.__goa.account.props.music_disabled
+            debug("Last.fm GOA scrobbling disabled: %s" % music_disabled)
+            return not music_disabled
+        return True
+
     def connect(self, full_sync=False, callback=None, *args):
         """
             Connect service
             @param full_sync as bool
             @param callback as function
         """
-        if self.__goa is not None:
+        if self.is_goa:
             helper = TaskHelper()
             helper.run(self.__connect, full_sync)
         elif get_network_available():
@@ -193,6 +205,13 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             pass
         return artists
 
+    def on_goa_account_switched(self, obj):
+        """
+            Callback for GoaSyncedAccount signal "account-switched"
+            @param obj as GoaSyncedAccount
+        """
+        self.connect()
+
     @property
     def is_auth(self):
         """
@@ -205,25 +224,11 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             True if using Gnome Online Account
         """
-        return self.__goa is not None
+        return self.__goa is not None and self.__goa.has_account
 
 #######################
 # PRIVATE             #
 #######################
-    def __get_goa_oauth(self):
-        """
-            Init Gnome Online Account
-            @return get_oauth2_based()/None
-        """
-        try:
-            c = Goa.Client.new_sync()
-            for proxy in c.get_accounts():
-                if proxy.get_account().props.provider_name == "Last.fm":
-                    return proxy.get_oauth2_based()
-        except:
-            pass
-        return None
-
     def __check_for_proxy(self):
         """
             Enable proxy if needed
@@ -248,17 +253,19 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param full_sync as bool
             @thread safe
         """
-        if self.__goa is not None or (self.__password != "" and
-                                      self.__login != ""):
+        if self.is_goa or (self.__password != "" and
+                           self.__login != ""):
             self.__is_auth = True
         else:
             self.__is_auth = False
         try:
             self.session_key = ""
             self.__check_for_proxy()
-            if self.__goa is not None:
-                self.session_key = self.__goa.call_get_access_token_sync(
-                                                                      None)[0]
+            if self.is_goa:
+                auth = self.__goa.oauth2_based
+                self.api_key = auth.props.client_id
+                self.api_secret = auth.props.client_secret
+                self.session_key = auth.call_get_access_token_sync(None)[0]
             else:
                 skg = SessionKeyGenerator(self)
                 self.session_key = skg.get_session_key(
