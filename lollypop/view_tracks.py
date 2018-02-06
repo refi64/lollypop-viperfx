@@ -186,10 +186,10 @@ class TracksView:
                     y > row_y + row_height:
                 continue
             if y <= row_y + row_height / 2:
-                row.get_style_context().add_class("drag-down")
+                row.get_style_context().add_class("drag-up")
                 return row
             elif y >= row_y + row_height / 2:
-                row.get_style_context().add_class("drag-up")
+                row.get_style_context().add_class("drag-down")
                 return row
         return None
 

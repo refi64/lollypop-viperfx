@@ -217,14 +217,26 @@ class PlaylistsView(View):
         value = adj.get_value()
         if up:
             adj_value = value - ArtSize.SMALL
-            if adj_value < adj.get_lower():
-                adj_value = adj.get_lower()
             adj.set_value(adj_value)
+            if adj.get_value() == 0:
+                self.__autoscroll_timeout_id = None
+                self.get_style_context().remove_class("drag-down")
+                self.get_style_context().remove_class("drag-up")
+                return False
+            else:
+                self.get_style_context().remove_class("drag-down")
+                self.get_style_context().add_class("drag-up")
         else:
             adj_value = value + ArtSize.SMALL
-            if adj_value > adj.get_upper():
-                adj_value = adj.get_upper()
             adj.set_value(adj_value)
+            if adj.get_value() < adj_value:
+                self.__autoscroll_timeout_id = None
+                self.get_style_context().remove_class("drag-down")
+                self.get_style_context().remove_class("drag-up")
+                return False
+            else:
+                self.get_style_context().add_class("drag-down")
+                self.get_style_context().remove_class("drag-up")
         return True
 
     def __set_duration(self):
@@ -270,12 +282,12 @@ class PlaylistsView(View):
             @param y as int
             @param time as int
         """
-        if y <= ArtSize.MEDIUM:
-            self.get_style_context().add_class("drag-down")
-            self.get_style_context().remove_class("drag-up")
+        auto_scroll = False
+        up = y <= ArtSize.MEDIUM
+        if up:
+            auto_scroll = True
         elif y >= self._scrolled.get_allocated_height() - ArtSize.MEDIUM:
-            self.get_style_context().add_class("drag-up")
-            self.get_style_context().remove_class("drag-down")
+            auto_scroll = True
         else:
             self.get_style_context().remove_class("drag-down")
             self.get_style_context().remove_class("drag-up")
@@ -287,9 +299,7 @@ class PlaylistsView(View):
             if row is not None:
                 self.__prev_animated_rows.append(row)
             return
-
-        up = y <= ArtSize.MEDIUM
-        if self.__autoscroll_timeout_id is None:
+        if self.__autoscroll_timeout_id is None and auto_scroll:
             self.clear_animation()
             self.__autoscroll_timeout_id = GLib.timeout_add(100,
                                                             self.__auto_scroll,

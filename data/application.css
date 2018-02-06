@@ -213,7 +213,7 @@ popover.background separator {
     background-color: @theme_selected_bg_color;
 }
 
-.drag-up {
+.drag-down {
     background-image: -gtk-gradient (linear,
                                      left top,
                                      left bottom,
@@ -222,7 +222,7 @@ popover.background separator {
                                      to (@theme_selected_bg_color));
 }
 
-.drag-down {
+.drag-up {
     background-image: -gtk-gradient (linear,
                                      left top,
                                      left bottom,
