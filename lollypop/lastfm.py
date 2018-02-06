@@ -63,7 +63,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             LibreFMNetwork.__init__(self)
         else:
             self.__goa = GoaSyncedAccount("Last.fm")
-            self.__goa.connect("account-changed", self.on_goa_account_changed)
+            self.__goa.connect("account-switched",
+                               self.on_goa_account_switched)
             if self.is_goa:
                 auth = self.__goa.oauth2_based
                 self.__API_KEY = auth.props.client_id
@@ -204,7 +205,11 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             pass
         return artists
 
-    def on_goa_account_changed(self, obj):
+    def on_goa_account_switched(self, obj):
+        """
+            Callback for GoaSyncedAccount signal "account-switched"
+            @param obj as GoaSyncedAccount
+        """
         self.connect()
 
     @property

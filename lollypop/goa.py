@@ -28,19 +28,22 @@ class GoaSyncedAccount(GObject.Object):
         GObject.Object.__init__(self)
         self._provider_name = provider_name
         self._proxy = None
+        self._account = None
+        self._oauth2_based = None
         try:
             self._client = Goa.Client.new_sync()
             self._find_account()
-            self.emit("account-changed")
+            self.emit("account-switched")
             self._client.connect("account-added", self.on_account_added)
             self._client.connect("account-removed", self.on_account_removed)
+            self._client.connect("account-changed", self.on_account_changed)
         except:
             debug("GOA not available")
             self.__client = None
 
-    @GObject.Signal("account-changed")
-    def account_changed(self):
-        debug("GOA account-changed")
+    @GObject.Signal("account-switched")
+    def account_switched(self):
+        debug("GOA account-switched")
 
     @property
     def has_account(self):
@@ -50,26 +53,36 @@ class GoaSyncedAccount(GObject.Object):
     def account(self):
         if self._proxy is None:
             return None
-        return self._proxy.get_account()
+        if self._account is None:
+            self._account = self._proxy.get_account()
+        return self._account
 
     @property
     def oauth2_based(self):
         if self._proxy is None:
             return None
-        return self._proxy.get_oauth2_based()
+        if self._oauth2_based is None:
+            self._oauth2_based = self._proxy.get_oauth2_based()
+        return self._oauth2_based
 
     def on_account_added(self, client, proxy):
         debug("GOA account added")
         if self._proxy is None and self._account_matches_provider(proxy):
             self._proxy = proxy
-            self.emit("account-changed")
+            self.emit("account-switched")
 
     def on_account_removed(self, client, proxy):
         debug("GOA account removed")
         if self._proxy == proxy:
             # Try finding a new account
             self._find_account()
-            self.emit("account-changed")
+            self.emit("account-switched")
+
+    def on_account_changed(self, client, proxy):
+        debug("GOA account changed")
+        if self._proxy == proxy:
+            self._account = None
+            self._oauth2_based = None
 
     def _find_account(self):
         debug("GOA _find_account")
@@ -86,7 +99,6 @@ class GoaSyncedAccount(GObject.Object):
 
     def _account_matches_provider(self, proxy):
         account = proxy.get_account()
-        debug("GOA _account_matches_provider:",
-              account.props.provider_name,
-              self._provider_name)
+        debug("GOA _account_matches_provider: %s = %s ?" %
+              (account.props.provider_name, self._provider_name))
         return account.props.provider_name == self._provider_name
