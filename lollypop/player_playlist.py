@@ -42,7 +42,8 @@ class PlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @param playlist ids as [int]
         """
-        self.populate_playlist_by_track_ids([track.id for track in tracks])
+        self.populate_playlist_by_track_ids([track.id for track in tracks],
+                                            playlist_ids)
 
     def populate_playlist_by_track_ids(self, track_ids, playlist_ids):
         """
