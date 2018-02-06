@@ -64,6 +64,7 @@ class Search:
         """
         album_ids = []
         track_ids = []
+        album_artist_ids = []
         albums = []
         for item in search_items:
             if cancellable.is_cancelled():
@@ -74,7 +75,7 @@ class Search:
                     return
                 for album_id in App().albums.get_ids([artist_id], []):
                     if (album_id, artist_id) not in albums:
-                        album_ids.append(album_id)
+                        album_artist_ids.append(album_id)
                 for track_id in App().tracks.get_for_artist(artist_id):
                     track_ids.append(track_id)
             try:
@@ -97,6 +98,9 @@ class Search:
             if track.album.id in album_ids:
                 # Remove all album.id occurences
                 album_ids = list(filter((track.album.id).__ne__, album_ids))
+            elif track.album.id in album_artist_ids:
+                album_artist_ids = list(filter((track.album.id).__ne__,
+                                               album_artist_ids))
             # Get a new album
             album = track.album
             if album.id in album_tracks.keys():
@@ -106,7 +110,7 @@ class Search:
             else:
                 album_tracks[track.album.id] = (album, [track], score)
         # Create albums for album results
-        for album_id in list(set(album_ids)):
+        for album_id in list(set(album_ids + album_artist_ids)):
             album = Album(album_id)
             score = self.__calculate_score(album.name, search_items)
             for artist in album.artists:

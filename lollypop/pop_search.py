@@ -80,14 +80,12 @@ class SearchPopover(Gtk.Popover):
         if self.__timeout_id:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
-
+        self.__cancellable.cancel()
+        self.__view.stop()
+        self.__view.clear()
         self.__current_search = widget.get_text().strip()
         if self.__current_search != "":
             self.__new_btn.set_sensitive(True)
-            self.__cancellable.cancel()
-            self.__cancellable.reset()
-            self.__view.stop()
-            self.__view.clear()
             self.__timeout_id = GLib.timeout_add(
                                               200,
                                               self.__on_search_changed_timeout)
@@ -102,6 +100,7 @@ class SearchPopover(Gtk.Popover):
             Populate searching items
             in db based on text entry current text
         """
+        self.__cancellable.reset()
         self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
@@ -115,9 +114,10 @@ class SearchPopover(Gtk.Popover):
             Add rows for internal results
             @param albums as [Album]
         """
-        self.__view.populate(albums)
+        if albums is not None:
+            self.__view.populate(albums)
+            self.__header_stack.set_visible_child(self.__new_btn)
         GLib.idle_add(self.__spinner.stop)
-        GLib.idle_add(self.__header_stack.set_visible_child, self.__new_btn)
 
     def __on_map(self, widget):
         """
