@@ -356,32 +356,39 @@ class AlbumsListView(LazyLoadingView):
         self._stop = False
         self.__add_albums(list(albums))
 
-    def children_animation(self, y):
+    def rows_animation(self, x, y):
         """
             Show animation to help user dnd
+            @param x as int
             @param y as int
         """
         self.clear_animation()
-        for child in self.__view.get_children():
-            coordinates = child.translate_coordinates(self, 0, 0)
-            if coordinates is not None:
-                child_y = coordinates[1]
-                child_height = child.get_allocated_height()
-                if y >= child_y and y <= child_y + child_height:
-                    if y <= child_y + ArtSize.MEDIUM / 2:
-                        self.__prev_animated_rows.append(child)
-                        child.get_style_context().add_class("drag-down")
-                        child.reveal(True)
-                        break
-                    elif y >= child_y + child_height - ArtSize.MEDIUM / 2:
-                        self.__prev_animated_rows.append(child)
-                        child.get_style_context().add_class("drag-up")
-                        child.reveal(True)
-                        break
-                    else:
-                        row = child.children_animation(y, self)
-                        if row is not None:
-                            self.__prev_animated_rows.append(row)
+        for row in self.__view.get_children():
+            coordinates = row.translate_coordinates(self, 0, 0)
+            if coordinates is None:
+                continue
+            (row_x, row_y) = coordinates
+            row_width = row.get_allocated_width()
+            row_height = row.get_allocated_height()
+            if x < row_x or\
+                    x > row_x + row_width or\
+                    y < row_y or\
+                    y > row_y + row_height:
+                continue
+            if y <= row_y + ArtSize.MEDIUM / 2:
+                self.__prev_animated_rows.append(row)
+                row.get_style_context().add_class("drag-down")
+                row.reveal(True)
+                break
+            elif y >= row_y + row_height - ArtSize.MEDIUM / 2:
+                self.__prev_animated_rows.append(row)
+                row.get_style_context().add_class("drag-up")
+                row.reveal(True)
+                break
+            else:
+                subrow = row.rows_animation(x, y, self)
+                if subrow is not None:
+                    self.__prev_animated_rows.append(subrow)
 
     def clear_animation(self):
         """
@@ -614,7 +621,7 @@ class AlbumsListView(LazyLoadingView):
             if self.__autoscroll_timeout_id is not None:
                 GLib.source_remove(self.__autoscroll_timeout_id)
                 self.__autoscroll_timeout_id = None
-            self.children_animation(y)
+            self.rows_animation(x, y)
             return
 
         up = y <= ArtSize.MEDIUM

@@ -164,26 +164,33 @@ class TracksView:
                 row.destroy()
         self.recalculate_tracks_position()
 
-    def children_animation(self, y, widget):
+    def rows_animation(self, x, y, widget):
         """
             Show animation to help user dnd
+            @parma x as int
             @param y as int
             @param relate widget as Gtk.Widget
         """
         if self._responsive_widget is None:
             return None
-        for child in self.children:
-            coordinates = child.translate_coordinates(widget, 0, 0)
-            if coordinates is not None:
-                child_y = coordinates[1]
-                child_height = child.get_allocated_height()
-                if y >= child_y and y <= child_y + child_height:
-                    if y <= child_y + child_height / 2:
-                        child.get_style_context().add_class("drag-down")
-                        return child
-                    elif y >= child_y + child_height / 2:
-                        child.get_style_context().add_class("drag-up")
-                        return child
+        for row in self.children:
+            coordinates = row.translate_coordinates(widget, 0, 0)
+            if coordinates is None:
+                continue
+            (row_x, row_y) = coordinates
+            row_width = row.get_allocated_width()
+            row_height = row.get_allocated_height()
+            if x < row_x or\
+                    x > row_x + row_width or\
+                    y < row_y or\
+                    y > row_y + row_height:
+                continue
+            if y <= row_y + row_height / 2:
+                row.get_style_context().add_class("drag-down")
+                return row
+            elif y >= row_y + row_height / 2:
+                row.get_style_context().add_class("drag-up")
+                return row
         return None
 
     def recalculate_tracks_position(self):

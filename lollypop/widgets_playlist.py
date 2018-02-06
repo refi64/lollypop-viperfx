@@ -231,26 +231,34 @@ class PlaylistsWidget(Gtk.Grid):
             self.__tracks_widget_right.update_indexes(
                                                   len(track_left_children) + 1)
 
-    def children_animation(self, y, widget):
+    def rows_animation(self, x, y, widget):
         """
             Show animation to help user dnd
+            @param x as int
             @param y as int
             @param widget as Gtk.Widget (related widget)
+            @return child as PlaylistRow/None
         """
-        children = self.__tracks_widget_left.get_children() +\
+        rows = self.__tracks_widget_left.get_children() +\
             self.__tracks_widget_right.get_children()
-        for child in children:
-            coordinates = child.translate_coordinates(widget, 0, 0)
-            if coordinates is not None:
-                child_y = coordinates[1]
-                child_height = child.get_allocated_height()
-                if y >= child_y and y <= child_y + child_height:
-                    if y <= child_y + child_height / 2:
-                        child.get_style_context().add_class("drag-down")
-                        return child
-                    elif y >= child_y + child_height / 2:
-                        child.get_style_context().add_class("drag-up")
-                        return child
+        for row in rows:
+            coordinates = row.translate_coordinates(widget, 0, 0)
+            if coordinates is None:
+                continue
+            (row_x, row_y) = coordinates
+            row_width = row.get_allocated_width()
+            row_height = row.get_allocated_height()
+            if x < row_x or\
+                    x > row_x + row_width or\
+                    y < row_y or\
+                    y > row_y + row_height:
+                continue
+            if y <= row_y + row_height / 2:
+                row.get_style_context().add_class("drag-down")
+                return row
+            elif y >= row_y + row_height / 2:
+                row.get_style_context().add_class("drag-up")
+                return row
         return None
 
 #######################

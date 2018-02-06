@@ -283,7 +283,7 @@ class PlaylistsView(View):
                 GLib.source_remove(self.__autoscroll_timeout_id)
                 self.__autoscroll_timeout_id = None
             self.clear_animation()
-            row = self.__playlists_widget.children_animation(y, self)
+            row = self.__playlists_widget.rows_animation(x, y, self)
             if row is not None:
                 self.__prev_animated_rows.append(row)
             return
