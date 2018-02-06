@@ -176,7 +176,10 @@ class ArtistView(ArtistAlbumsView):
                     if album_tracks:
                         track = choice(album_tracks)
                 else:
-                    album_id = choice(album_ids)
+                    if App().settings.get_enum("shuffle") == Shuffle.ALBUMS:
+                        album_id = choice(album_ids)
+                    else:
+                        album_id = album_ids[0]
                     album_tracks = Album(album_id).tracks
                     if album_tracks:
                         track = album_tracks[0]
