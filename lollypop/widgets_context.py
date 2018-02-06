@@ -40,14 +40,14 @@ class HoverWidget(Gtk.EventBox):
         image.show()
         self.add(image)
         self.set_opacity(0.2)
-        self.connect("enter-notify-event", self.__on_enter_notify)
-        self.connect("leave-notify-event", self.__on_leave_notify)
-        self.connect("button-press-event", self.__on_button_press)
+        self.connect("enter-notify-event", self.__on_enter_notify_event)
+        self.connect("leave-notify-event", self.__on_leave_notify_event)
+        self.connect("button-press-event", self.__on_button_press_event)
 
 #######################
 # PRIVATE             #
 #######################
-    def __on_enter_notify(self, widget, event):
+    def __on_enter_notify_event(self, widget, event):
         """
             On enter notify, change love opacity
             @param widget as Gtk.EventBox
@@ -55,7 +55,7 @@ class HoverWidget(Gtk.EventBox):
         """
         self.set_opacity(0.8)
 
-    def __on_leave_notify(self, widget, event):
+    def __on_leave_notify_event(self, widget, event):
         """
             On leave notify, change love opacity
             @param widget as Gtk.EventBox (can be None)
@@ -63,7 +63,7 @@ class HoverWidget(Gtk.EventBox):
         """
         self.set_opacity(0.2)
 
-    def __on_button_press(self, widget, event):
+    def __on_button_press_event(self, widget, event):
         """
             On button press, toggle loved status
             @param widget as Gtk.EventBox
