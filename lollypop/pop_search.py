@@ -86,7 +86,7 @@ class SearchPopover(Gtk.Popover):
         if self.__current_search != "":
             self.__new_btn.set_sensitive(True)
             self.__timeout_id = GLib.timeout_add(
-                                              250,
+                                              500,
                                               self.__on_search_changed_timeout)
         else:
             self.__new_btn.set_sensitive(False)
