@@ -258,6 +258,12 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        def close_indicator():
+            """
+                Simulate a release event
+            """
+            self.__on_indicator_button_release_event(self.__menu_button,
+                                                     event)
         allocation = widget.get_allocation()
         if event.x <= 0 or\
            event.x >= allocation.width or\
@@ -266,10 +272,8 @@ class Row(Gtk.ListBoxRow):
             if self.__context is not None and\
                     self.__context_timeout_id is None:
                 self.__context_timeout_id = GLib.timeout_add(
-                                      1000,
-                                      self.__on_indicator_button_release_event,
-                                      self.__menu_button,
-                                      event)
+                                     1000,
+                                     close_indicator)
             if App().settings.get_value("preview-output").get_string() != "":
                 if self.__preview_timeout_id is not None:
                     GLib.source_remove(self.__preview_timeout_id)
