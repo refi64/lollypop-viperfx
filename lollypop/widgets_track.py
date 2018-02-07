@@ -396,10 +396,7 @@ class PlaylistRow(Row):
             self.__album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
             self.__album_artist_label.get_style_context().add_class(
                                                                    "dim-label")
-            artist_eventbox = Gtk.EventBox()
-            artist_eventbox.add(self.__album_artist_label)
-            artist_eventbox.show()
-            self.__header.add(artist_eventbox)
+            self.__header.add(self.__album_artist_label)
         self.__album_label = Gtk.Label.new(self._track.album.name)
         self.__album_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__album_label.get_style_context().add_class("dim-label")
