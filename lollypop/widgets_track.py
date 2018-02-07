@@ -47,8 +47,8 @@ class Row(Gtk.ListBoxRow):
         self.set_indicator(App().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self._row_widget = Gtk.EventBox()
-        self._row_widget.connect("button-press-event",
-                                 self.__on_button_press_event)
+        self._row_widget.connect("button-release-event",
+                                 self.__on_button_release_event)
         self._row_widget.connect("enter-notify-event",
                                  self.__on_enter_notify_event)
         self._row_widget.connect("leave-notify-event",
@@ -267,7 +267,7 @@ class Row(Gtk.ListBoxRow):
                                utils.is_loved(self._track.id))
                 App().player.preview.set_state(Gst.State.NULL)
 
-    def __on_button_press_event(self, widget, event):
+    def __on_button_release_event(self, widget, event):
         """
             Handle button press event:
                 |_ 1 => activate
@@ -276,8 +276,6 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__context is not None:
-            self.__on_button_clicked(self.__menu_button)
         if event.button == 3:
             window = widget.get_window()
             if window == event.window:
@@ -290,9 +288,6 @@ class Row(Gtk.ListBoxRow):
                 App().player.del_from_queue(self._track.id)
             else:
                 App().player.append_to_queue(self._track.id)
-        else:
-            self.activate()
-        return True
 
     def __on_button_clicked(self, button):
         """
