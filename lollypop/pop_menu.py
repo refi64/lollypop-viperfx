@@ -437,15 +437,19 @@ class TrackMenu(Gio.Menu):
         Contextual menu for a track
     """
 
-    def __init__(self, track):
+    def __init__(self, track, show_artist=False):
         """
             Init menu model
             @param track as Track
+            @param show artist menu as bool
         """
         Gio.Menu.__init__(self)
-        self.insert_section(0, _("Queue"),
+        if show_artist:
+            self.insert_section(0, _("Artist"),
+                                ArtistMenu(track))
+        self.insert_section(1, _("Queue"),
                             QueueMenu(track))
-        self.insert_section(1, _("Playlists"),
+        self.insert_section(2, _("Playlists"),
                             PlaylistsMenu(track))
         self.insert_section(3, _("Edit"),
                             EditMenu(track))

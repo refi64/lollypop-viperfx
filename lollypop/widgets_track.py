@@ -167,6 +167,15 @@ class Row(Gtk.ListBoxRow):
         return self._track
 
 #######################
+# PROTECTED           #
+#######################
+    def _get_menu(self):
+        """
+            Return TrackMenu
+        """
+        return TrackMenu(self._track)
+
+#######################
 # PRIVATE             #
 #######################
     def __play_preview(self):
@@ -186,7 +195,7 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        popover = TrackMenuPopover(self._track, TrackMenu(self._track))
+        popover = TrackMenuPopover(self._track, self._get_menu())
         if xcoordinate is not None and ycoordinate is not None:
             rect = widget.get_allocation()
             rect.x = xcoordinate
@@ -389,9 +398,6 @@ class PlaylistRow(Row):
                                                                    "dim-label")
             artist_eventbox = Gtk.EventBox()
             artist_eventbox.add(self.__album_artist_label)
-            artist_eventbox.connect("realize", self.__on_eventbox_realize)
-            artist_eventbox.connect("button-press-event",
-                                    self.__on_artist_button_press)
             artist_eventbox.show()
             self.__header.add(artist_eventbox)
         self.__album_label = Gtk.Label.new(self._track.album.name)
@@ -471,27 +477,17 @@ class PlaylistRow(Row):
             self.__header.hide()
 
 #######################
+# PROTECTED           #
+#######################
+    def _get_menu(self):
+        """
+            Return TrackMenu
+        """
+        return TrackMenu(self._track, True)
+
+#######################
 # PRIVATE             #
 #######################
-    def __on_artist_button_press(self, eventbox, event):
-        """
-            Go to artist page
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.EventButton
-        """
-        App().window.container.show_artists_albums(
-                                                  self._track.album.artist_ids)
-        return True
-
-    def __on_eventbox_realize(self, eventbox):
-        """
-            Change cursor over eventbox
-            @param eventbox as Gdk.Eventbox
-        """
-        window = eventbox.get_window()
-        if window is not None:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-
     def __on_drag_begin(self, widget, context):
         """
             Set icon
