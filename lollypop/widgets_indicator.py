@@ -188,7 +188,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Add or remove track to player
             @param widget as Gtk.Widget
-            @param event as Gdk.Event
+            @param event as Gdk.EventButton
         """
         if self.__is_in_current_playlist():
             # We want track from player, not from current widget

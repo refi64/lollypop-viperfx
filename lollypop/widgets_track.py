@@ -247,7 +247,9 @@ class Row(Gtk.ListBoxRow):
                                                  Gtk.IconSize.MENU)
             image.set_opacity(0.2)
             self.__menu_button.set_image(image)
-            self.__menu_button.connect("clicked", self.__on_button_clicked)
+            self.__menu_button.connect(
+                                      "button-release-event",
+                                      self.__on_indicator_button_release_event)
             self._indicator.update_button()
 
     def __on_leave_notify_event(self, widget, event):
@@ -264,9 +266,10 @@ class Row(Gtk.ListBoxRow):
             if self.__context is not None and\
                     self.__context_timeout_id is None:
                 self.__context_timeout_id = GLib.timeout_add(
-                                                      1000,
-                                                      self.__on_button_clicked,
-                                                      self.__menu_button)
+                                      1000,
+                                      self.__on_indicator_button_release_event,
+                                      self.__menu_button,
+                                      event)
             if App().settings.get_value("preview-output").get_string() != "":
                 if self.__preview_timeout_id is not None:
                     GLib.source_remove(self.__preview_timeout_id)
@@ -283,7 +286,7 @@ class Row(Gtk.ListBoxRow):
                 |_ 2 => queue
                 |_ 3 => menu
             @param widget as Gtk.Widget
-            @param event as Gdk.Event
+            @param event as Gdk.EventButton
         """
         if event.button == 3:
             window = widget.get_window()
@@ -291,17 +294,22 @@ class Row(Gtk.ListBoxRow):
                 self.__popup_menu(widget, event.x, event.y)
             # Happens when pressing button over menu btn
             else:
-                self.__on_button_clicked(self.__menu_button)
+                self.__on_indicator_button_release_event(self.__menu_button,
+                                                         event)
         elif event.button == 2:
             if self._track.id in App().player.queue:
                 App().player.del_from_queue(self._track.id)
             else:
                 App().player.append_to_queue(self._track.id)
+        else:
+            self.activate()
+        return True
 
-    def __on_button_clicked(self, button):
+    def __on_indicator_button_release_event(self, button, event):
         """
             Popup menu for track relative to button
             @param button as Gtk.Button
+            @param event as Gdk.EventButton
         """
         self.__context_timeout_id = None
         image = self.__menu_button.get_image()
@@ -325,6 +333,7 @@ class Row(Gtk.ListBoxRow):
             self.__context = None
             self.set_indicator(App().player.current_track.id == self._track.id,
                                utils.is_loved(self._track.id))
+        return True
 
     def __on_closed(self, widget):
         """
