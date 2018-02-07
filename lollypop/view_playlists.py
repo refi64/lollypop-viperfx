@@ -224,8 +224,8 @@ class PlaylistsView(View):
                 self.get_style_context().remove_class("drag-up")
                 return False
             else:
-                self.get_style_context().remove_class("drag-down")
                 self.get_style_context().add_class("drag-up")
+                self.get_style_context().remove_class("drag-down")
         else:
             adj_value = value + ArtSize.SMALL
             adj.set_value(adj_value)

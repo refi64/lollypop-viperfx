@@ -377,12 +377,12 @@ class AlbumsListView(LazyLoadingView):
                 continue
             if y <= row_y + ArtSize.MEDIUM / 2:
                 self.__prev_animated_rows.append(row)
-                row.get_style_context().add_class("drag-down")
+                row.get_style_context().add_class("drag-up")
                 row.reveal(True)
                 break
             elif y >= row_y + row_height - ArtSize.MEDIUM / 2:
                 self.__prev_animated_rows.append(row)
-                row.get_style_context().add_class("drag-up")
+                row.get_style_context().add_class("drag-down")
                 row.reveal(True)
                 break
             else:
