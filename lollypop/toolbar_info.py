@@ -107,7 +107,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
         if App().player.current_track.album.id == album_id:
             surface = App().art.get_album_artwork(
                                        App().player.current_track.album,
-                                       self._artsize,
+                                       self.artsize,
                                        self._cover.get_scale_factor())
             self._cover.set_from_surface(surface)
 
@@ -118,7 +118,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             @param name as str
         """
         if App().player.current_track.album_artist == name:
-            pixbuf = App().art.get_radio_artwork(name, self._artsize)
+            pixbuf = App().art.get_radio_artwork(name, self.artsize)
             self._cover.set_from_surface(pixbuf)
 
     def __on_info_long(self, args):
@@ -182,11 +182,12 @@ class ToolbarInfo(Gtk.Bin, InfoController):
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
-        self._artsize = self.get_allocated_height()\
+        artsize = self.get_allocated_height()\
             - padding.top - padding.bottom
         # Since GTK 3.20, we can set cover full height
         if Gtk.get_minor_version() < 20:
-            self._artsize -= 2
+            artsize -= 2
+        self.set_artsize(artsize)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

@@ -159,7 +159,7 @@ class Toolbar(Gtk.HeaderBar):
             Update toolbar
             @param player as Player
         """
-        debug("Toolbar::_on_current_changed")
+        debug("Toolbar::_on_current_changed()")
         self.__toolbar_playback.on_current_changed(player)
         self.__toolbar_info.on_current_changed(player)
         self.__toolbar_title.on_current_changed(player)

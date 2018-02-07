@@ -347,7 +347,7 @@ class InfoController:
         self._infobox = None
         self._spinner = None
         self.__font_size = font_size
-        self.__art_size = art_size
+        self.__artsize = art_size
 
     def on_current_changed(self, player):
         """
@@ -393,17 +393,17 @@ class InfoController:
         if player.current_track.id == Type.RADIOS:
             art = App().art.get_radio_artwork(
                                    player.current_track.album_artists[0],
-                                   self.__art_size,
+                                   self.__artsize,
                                    self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = App().art.get_album_artwork2(
                     player.current_track.uri,
-                    self.__art_size,
+                    self.__artsize,
                     self.get_scale_factor())
         elif player.current_track.id is not None:
             art = App().art.get_album_artwork(
                                    player.current_track.album,
-                                   self.__art_size,
+                                   self.__artsize,
                                    self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
@@ -415,9 +415,16 @@ class InfoController:
         if self._infobox is not None:
             self._infobox.show()
 
+    def set_artsize(self, artsize):
+        """
+            Set a new artsize for controller
+            @param artsize as int
+        """
+        self.__artsize = artsize
+
     @property
-    def art_size(self):
+    def artsize(self):
         """
             Art size as int
         """
-        return self.__art_size
+        return self.__artsize
