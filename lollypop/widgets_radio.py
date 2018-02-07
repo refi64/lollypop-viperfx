@@ -45,6 +45,8 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         """
             Init widget content
         """
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         self.__helper = TouchHelper(self._widget, None, None)
@@ -55,21 +57,21 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         self._cover = Gtk.Image()
         self._cover.set_property("halign", Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
+        self._cover.get_style_context().add_class("cover-frame")
         self.__title_label = Gtk.Label()
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label.set_property("halign", Gtk.Align.CENTER)
         self.__title_label.set_text(self.__name)
         self.__title_label.set_property("has-tooltip", True)
         self.__title_label.connect("query-tooltip", self._on_query_tooltip)
-        self._overlay = Gtk.Overlay()
-        frame = Gtk.Frame()
-        frame.get_style_context().add_class("cover-frame")
-        frame.add(self._cover)
-        self._overlay.add(frame)
-        grid = Gtk.Grid()
-        grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._overlay.get_style_context().add_class("white")
-        grid.add(self._overlay)
+        self.__overlay = Gtk.Overlay()
+        self.__overlay.add(self._cover)
+        color = Gtk.Grid()
+        color.set_property("halign", Gtk.Align.CENTER)
+        color.set_property("valign", Gtk.Align.CENTER)
+        color.get_style_context().add_class("white")
+        color.add(self.__overlay)
+        grid.add(color)
         grid.add(self.__title_label)
         self._widget.add(grid)
         self.set_property("halign", Gtk.Align.CENTER)
@@ -157,12 +159,11 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             return
         selected = App().player.current_track.id == Type.RADIOS and\
             self.__name == App().player.current_track.album_artists[0]
+        style_context = self._cover.get_style_context()
         if selected:
-            self._overlay.get_style_context().add_class(
-                                                    "cover-frame-selected")
+            style_context.add_class("cover-frame-selected")
         else:
-            self._overlay.get_style_context().remove_class(
-                                                    "cover-frame-selected")
+            style_context.remove_class("cover-frame-selected")
 
 #######################
 # PROTECTED           #
@@ -208,9 +209,9 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             self._artwork_button.set_opacity(0)
             self._play_event.add(self._play_button)
             self._artwork_event.add(self._artwork_button)
-            self._overlay.add_overlay(self._play_event)
-            self._overlay.add_overlay(self._artwork_event)
-            self._overlay.show_all()
+            self.__overlay.add_overlay(self._play_event)
+            self.__overlay.add_overlay(self._artwork_event)
+            self.__overlay.show_all()
             BaseWidget._show_overlay_func(self, True)
         else:
             BaseWidget._show_overlay_func(self, False)

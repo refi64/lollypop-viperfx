@@ -29,7 +29,6 @@ class BaseWidget:
         """
             Init widget
         """
-        self._selected = None
         self._loading = Loading.NONE
         self._cover = None
         self._widget = None
@@ -391,13 +390,11 @@ class AlbumWidget(BaseWidget):
         if self._cover is None or self._art_size != ArtSize.BIG:
             return
         selected = self._album.id == App().player.current_track.album.id
-        if selected != self._selected:
-            if selected:
-                self._cover.get_style_context().add_class(
-                                                    "cover-frame-selected")
-            else:
-                self._cover.get_style_context().remove_class(
-                                                    "cover-frame-selected")
+        style_context = self._cover.get_style_context()
+        if selected:
+            style_context.add_class("cover-frame-selected")
+        else:
+            style_context.remove_class("cover-frame-selected")
 
 #######################
 # PROTECTED           #
