@@ -42,7 +42,7 @@ class RatingWidget(Gtk.Bin):
         self._stars.append(builder.get_object("star2"))
         self._stars.append(builder.get_object("star3"))
         self._stars.append(builder.get_object("star4"))
-        self._on_leave_notify(None, None)
+        self._on_leave_notify_event(None, None)
         self.add(builder.get_object("widget"))
         if isinstance(object, Track):
             play_count = object.popularity
@@ -51,9 +51,9 @@ class RatingWidget(Gtk.Bin):
 #######################
 # PROTECTED           #
 #######################
-    def _on_enter_notify(self, widget, event):
+    def _on_enter_notify_event(self, widget, event):
         """
-            On enter notify, change star opacity
+            Update star opacity
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
@@ -73,9 +73,9 @@ class RatingWidget(Gtk.Bin):
             if star == event_star:
                 found = True
 
-    def _on_leave_notify(self, widget, event):
+    def _on_leave_notify_event(self, widget, event):
         """
-            On leave notify, change star opacity
+            Update star opacity
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
@@ -104,9 +104,9 @@ class RatingWidget(Gtk.Bin):
                 self._stars[idx].set_opacity(0.2)
                 self._stars[idx].get_style_context().remove_class("selected")
 
-    def _on_button_press(self, widget, event):
+    def _on_button_release_event(self, widget, event):
         """
-            On button press, set album popularity
+            Set album popularity
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
@@ -132,7 +132,7 @@ class RatingWidget(Gtk.Bin):
                 self.__object.set_rate(Type.NONE)
             else:
                 self.__object.set_popularity(0)
-            self._on_leave_notify(None, None)
+            self._on_leave_notify_event(None, None)
         else:
             self.__object.set_rate(pop)
 

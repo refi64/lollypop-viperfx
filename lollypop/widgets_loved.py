@@ -41,9 +41,9 @@ class LovedWidget(Gtk.Bin):
 #######################
 # PROTECTED           #
 #######################
-    def _on_enter_notify(self, widget, event):
+    def _on_enter_notify_event(self, widget, event):
         """
-            On enter notify, change love opacity
+            Update love opacity
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
@@ -52,9 +52,9 @@ class LovedWidget(Gtk.Bin):
         else:
             self.set_opacity(0.2 if is_loved(self.__object.id) else 0.8)
 
-    def _on_leave_notify(self, widget, event):
+    def _on_leave_notify_event(self, widget, event):
         """
-            On leave notify, change love opacity
+            Update love opacity
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
@@ -63,9 +63,9 @@ class LovedWidget(Gtk.Bin):
         else:
             self.set_opacity(0.8 if is_loved(self.__object.id) else 0.2)
 
-    def _on_button_press(self, widget, event):
+    def _on_button_release_event(self, widget, event):
         """
-            On button press, toggle loved status
+            Toggle loved status
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """

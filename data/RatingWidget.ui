@@ -10,9 +10,9 @@
       <object class="GtkEventBox" id="eventbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+        <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+        <signal name="enter-notify-event" handler="_on_enter_notify_event" swapped="no"/>
+        <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
         <child>
           <object class="GtkImage" id="star0">
             <property name="visible">True</property>
@@ -31,9 +31,9 @@
       <object class="GtkEventBox" id="eventbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+        <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+        <signal name="enter-notify-event" handler="_on_enter_notify_event" swapped="no"/>
+        <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
         <child>
           <object class="GtkImage" id="star4">
             <property name="visible">True</property>
@@ -52,9 +52,9 @@
       <object class="GtkEventBox" id="eventbox3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+        <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+        <signal name="enter-notify-event" handler="_on_enter_notify_event" swapped="no"/>
+        <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
         <child>
           <object class="GtkImage" id="star3">
             <property name="visible">True</property>
@@ -73,9 +73,9 @@
       <object class="GtkEventBox" id="eventbox4">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+        <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+        <signal name="enter-notify-event" handler="_on_enter_notify_event" swapped="no"/>
+        <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
         <child>
           <object class="GtkImage" id="star2">
             <property name="visible">True</property>
@@ -94,9 +94,9 @@
       <object class="GtkEventBox" id="eventbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+        <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+        <signal name="enter-notify-event" handler="_on_enter_notify_event" swapped="no"/>
+        <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
         <child>
           <object class="GtkImage" id="star1">
             <property name="visible">True</property>
@@ -115,9 +115,9 @@
       <object class="GtkEventBox" id="eventbox6">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+        <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+        <signal name="enter-notify-event" handler="_on_enter_notify_event" swapped="no"/>
+        <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
         <child>
           <object class="GtkImage" id="empty_star1">
             <property name="visible">True</property>
