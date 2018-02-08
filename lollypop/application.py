@@ -72,6 +72,12 @@ class Application(Gtk.Application):
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.__version = version
         self.set_property("register-session", True)
+
+        socks_proxy = GLib.getenv("ALL_PROXY")
+        if socks_proxy:
+            fixed_proxy = socks_proxy.replace("socks://", "socks4://")
+            GLib.setenv("ALL_PROXY", fixed_proxy, True)
+            GLib.setenv("all_proxy", fixed_proxy, True)
         GLib.setenv("PULSE_PROP_media.role", "music", True)
         GLib.setenv("PULSE_PROP_application.icon_name",
                     "org.gnome.Lollypop", True)

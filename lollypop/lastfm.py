@@ -12,7 +12,6 @@
 
 import gi
 gi.require_version("Secret", "1")
-from gi.repository import Gio
 
 from gettext import gettext as _
 
@@ -58,7 +57,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.__session_key = ""
         self.__password = None
         self.__goa = None
-        self.__check_for_proxy()
         if name == "librefm":
             LibreFMNetwork.__init__(self)
         else:
@@ -218,24 +216,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
 #######################
 # PRIVATE             #
 #######################
-    def __check_for_proxy(self):
-        """
-            Enable proxy if needed
-        """
-        try:
-            proxy = Gio.Settings.new("org.gnome.system.proxy")
-            https = Gio.Settings.new("org.gnome.system.proxy.https")
-            mode = proxy.get_value("mode").get_string()
-            if mode != "none":
-                h = https.get_value("host").get_string()
-                p = https.get_value("port").get_int32()
-                if h != "" and p != 0:
-                    self.enable_proxy(host=h, port=p)
-            else:
-                self.disable_proxy()
-        except:
-            pass
-
     def __connect(self, full_sync=False):
         """
             Connect service
@@ -244,7 +224,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         try:
             self.__session_key = ""
-            self.__check_for_proxy()
             if self.is_goa:
                 auth = self.__goa.oauth2_based
                 self.api_key = auth.props.client_id
