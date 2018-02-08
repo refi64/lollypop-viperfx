@@ -254,6 +254,8 @@ class SettingsDialog:
 #######################
 # PROTECTED           #
 #######################
+# TODO Update all callbacks to be _on_widget_action
+
     def _on_enable_network_access_state_set(self, widget, state):
         """
             Save network access state
