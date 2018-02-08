@@ -286,11 +286,12 @@ class TracksView:
         mid_tracks = int(0.5 + count_tracks / 2)
         left_height = self._child_height * mid_tracks
         # +1 is disc label
-        right_height = self._child_height * (count_tracks - mid_tracks + 1)
+        right_height = self._child_height * (count_tracks - mid_tracks)
+        # Add self._child_height for disc label
         if left_height > right_height:
-            self._height += left_height
+            self._height += left_height + self._child_height
         else:
-            self._height += right_height
+            self._height += right_height + self._child_height
         self._tracks_widget_left[disc_number].set_property("height-request",
                                                            left_height)
         self._tracks_widget_right[disc_number].set_property("height-request",
