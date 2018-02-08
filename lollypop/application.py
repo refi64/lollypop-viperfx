@@ -231,6 +231,8 @@ class Application(Gtk.Application):
             Quit Lollypop
             @param vacuum as bool
         """
+        if self.settings.get_value("save-state"):
+            self.window.container.save_view_state()
         # Then vacuum db
         if vacuum:
             self.__vacuum()
@@ -268,7 +270,6 @@ class Application(Gtk.Application):
             Save window position and view
         """
         if self.settings.get_value("save-state"):
-            self.window.container.save_view_state()
             # Save current track
             if self.player.current_track.id is None:
                 track_id = -1
