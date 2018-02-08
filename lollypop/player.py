@@ -291,7 +291,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                         else:
                             self._albums = load(open(
                                                 LOLLYPOP_DATA_PATH +
-                                                "/albums.bin",
+                                                "/Albums.bin",
                                                 "rb"))
                     self.set_next()
                     self.set_prev()
