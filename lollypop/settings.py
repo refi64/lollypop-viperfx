@@ -312,6 +312,11 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
+        if not state:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", []))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", []))
         App().settings.set_value("save-state",
                                  GLib.Variant("b", state))
 
