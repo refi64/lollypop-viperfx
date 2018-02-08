@@ -40,7 +40,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="halign">end</property>
-        <signal name="state-set" handler="_update_party_mix_setting" swapped="no"/>
+        <signal name="state-set" handler="_on_switch_mix_party_state_set" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -59,14 +59,14 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="duration">
+      <object class="GtkScale" id="scale_mix_duration">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
         <property name="round_digits">0</property>
         <property name="digits">0</property>
         <property name="value_pos">left</property>
-        <signal name="value-changed" handler="_update_mix_duration_setting" swapped="no"/>
+        <signal name="value-changed" handler="_on_scale_mix_duration_value_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -152,7 +152,7 @@
                 <property name="tooltip_text" translatable="yes">Use dark theme variant</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
-                <signal name="state-set" handler="_update_ui_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_dark_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -179,7 +179,7 @@
                 <property name="tooltip_text" translatable="yes">Show genres</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
-                <signal name="state-set" handler="_update_genres_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_genres_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -204,7 +204,7 @@
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Show compilations in albums view</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_update_compilations_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_compilations_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -231,7 +231,7 @@
                 <property name="halign">end</property>
                 <property name="round_digits">1</property>
                 <property name="draw_value">False</property>
-                <signal name="value-changed" handler="_update_coversize" swapped="no"/>
+                <signal name="value-changed" handler="_on_scale_coversize_value_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -256,7 +256,7 @@
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Show artist artwork</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_update_artwork_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_artwork_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -286,7 +286,7 @@
                   <item id="year" translatable="yes">Year</item>
                   <item id="popularity" translatable="yes">Popularity</item>
                 </items>
-                <signal name="changed" handler="_update_orderby_setting" swapped="no"/>
+                <signal name="changed" handler="_on_combo_order_by_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -340,7 +340,7 @@
                 <property name="tooltip_text" translatable="yes">Auto update music</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
-                <signal name="state-set" handler="_update_scan_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_scan_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -354,7 +354,7 @@
                 <property name="tooltip_text" translatable="yes">Continue playback when closed</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
-                <signal name="state-set" handler="_update_background_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_background_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -392,7 +392,7 @@
                 <property name="tooltip_text" translatable="yes">Restore state on startup</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
-                <signal name="state-set" handler="_update_state_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_state_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -418,7 +418,7 @@
                 <property name="events">GDK_ENTER_NOTIFY_MASK | GDK_STRUCTURE_MASK</property>
                 <property name="tooltip_text" translatable="yes">Long press to show options</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_update_mix_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_mix_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -443,7 +443,7 @@
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Save changes to files</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_update_artwork_tags_setting" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_artwork_tags_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -471,7 +471,7 @@
                 <items>
                   <item id="" translatable="yes">No audio device</item>
                 </items>
-                <signal name="changed" handler="_on_preview_changed" swapped="no"/>
+                <signal name="changed" handler="_on_combo_preview_changed" swapped="no"/>
                 <signal name="query-tooltip" handler="_on_preview_query_tooltip" swapped="no"/>
               </object>
               <packing>
@@ -1074,13 +1074,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="listenbrainz-user-token">
+                  <object class="GtkEntry" id="listenbrainz_user_token_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="halign">start</property>
                     <property name="width_chars">34</property>
                     <property name="placeholder_text">00000000-0000-0000-0000-000000000000</property>
-                    <signal name="changed" handler="_on_listenbrainz_token_changed" swapped="no"/>
+                    <signal name="changed" handler="_on_entry_listenbrainz_token_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -1148,7 +1148,7 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
                     <property name="can_focus">True</property>
                     <property name="halign">start</property>
                     <property name="placeholder_text">AIzaSyAfXimyn-JsnPzAhhIuxYwgyMrj21Ee7e0</property>
-                    <signal name="changed" handler="_on_cs_api_changed" swapped="no"/>
+                    <signal name="changed" handler="_on_entry_cs_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>

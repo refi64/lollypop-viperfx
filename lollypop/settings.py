@@ -94,9 +94,9 @@ class SettingsDialog:
                             ngettext("%d track", "%d tracks", tracks) % tracks)
 
         self.__popover_content = builder.get_object("popover")
-        duration = builder.get_object("duration")
-        duration.set_range(1, 20)
-        duration.set_value(
+        scale_mix_duration = builder.get_object("scale_mix_duration")
+        scale_mix_duration.set_range(1, 20)
+        scale_mix_duration.set_value(
                           App().settings.get_value("mix-duration").get_int32())
 
         self.__settings_dialog = builder.get_object("settings_dialog")
@@ -217,7 +217,7 @@ class SettingsDialog:
         #
         token = App().settings.get_value(
                                         "listenbrainz-user-token").get_string()
-        builder.get_object("listenbrainz-user-token").set_text(token)
+        builder.get_object("listenbrainz_user_token_entry").set_text(token)
 
         from lollypop.helper_passwords import PasswordsHelper
         helper = PasswordsHelper()
@@ -254,8 +254,6 @@ class SettingsDialog:
 #######################
 # PROTECTED           #
 #######################
-# TODO Update all callbacks to be _on_widget_action
-
     def _on_enable_network_access_state_set(self, widget, state):
         """
             Save network access state
@@ -265,7 +263,7 @@ class SettingsDialog:
         App().settings.set_value("network-access",
                                  GLib.Variant("b", state))
 
-    def _update_coversize(self, widget):
+    def _on_scale_coversize_value_changed(self, widget):
         """
             Delayed update cover size
             @param widget as Gtk.Range
@@ -277,7 +275,7 @@ class SettingsDialog:
                                             self.__really_update_coversize,
                                             widget)
 
-    def _update_ui_setting(self, widget, state):
+    def _on_switch_dark_state_set(self, widget, state):
         """
             Update view setting
             @param widget as Gtk.Switch
@@ -288,7 +286,7 @@ class SettingsDialog:
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
 
-    def _update_scan_setting(self, widget, state):
+    def _on_switch_scan_state_set(self, widget, state):
         """
             Update scan setting
             @param widget as Gtk.Switch
@@ -297,7 +295,7 @@ class SettingsDialog:
         App().settings.set_value("auto-update",
                                  GLib.Variant("b", state))
 
-    def _update_background_setting(self, widget, state):
+    def _on_switch_background_state_set(self, widget, state):
         """
             Update background mode setting
             @param widget as Gtk.Switch
@@ -306,7 +304,7 @@ class SettingsDialog:
         App().settings.set_value("background-mode",
                                  GLib.Variant("b", state))
 
-    def _update_state_setting(self, widget, state):
+    def _on_switch_state_state_set(self, widget, state):
         """
             Update save state setting
             @param widget as Gtk.Switch
@@ -320,7 +318,7 @@ class SettingsDialog:
         App().settings.set_value("save-state",
                                  GLib.Variant("b", state))
 
-    def _update_genres_setting(self, widget, state):
+    def _on_switch_genres_state_set(self, widget, state):
         """
             Update show genre setting
             @param widget as Gtk.Switch
@@ -330,7 +328,7 @@ class SettingsDialog:
         App().settings.set_value("show-genres",
                                  GLib.Variant("b", state))
 
-    def _update_mix_setting(self, widget, state):
+    def _on_switch_mix_state_set(self, widget, state):
         """
             Update mix setting
             @param widget as Gtk.Switch
@@ -347,7 +345,7 @@ class SettingsDialog:
         elif self.__popover is not None:
             self.__popover.hide()
 
-    def _update_party_mix_setting(self, widget, state):
+    def _on_switch_mix_party_state_set(self, widget, state):
         """
             Update party mix setting
             @param widget as Gtk.Range
@@ -355,7 +353,7 @@ class SettingsDialog:
         App().settings.set_value("party-mix", GLib.Variant("b", state))
         App().player.update_crossfading()
 
-    def _update_mix_duration_setting(self, widget):
+    def _on_scale_mix_duration_value_changed(self, widget):
         """
             Update mix duration setting
             @param widget as Gtk.Range
@@ -363,7 +361,7 @@ class SettingsDialog:
         value = widget.get_value()
         App().settings.set_value("mix-duration", GLib.Variant("i", value))
 
-    def _update_artwork_tags_setting(self, widget, state):
+    def _on_switch_artwork_tags_state_set(self, widget, state):
         """
             Update artwork in tags setting
             @param widget as Gtk.Switch
@@ -371,7 +369,7 @@ class SettingsDialog:
         """
         App().settings.set_value("save-to-tags", GLib.Variant("b", state))
 
-    def _update_compilations_setting(self, widget, state):
+    def _on_switch_compilations_state_set(self, widget, state):
         """
             Update compilations setting
             @param widget as Gtk.Switch
@@ -380,7 +378,7 @@ class SettingsDialog:
         App().settings.set_value("show-compilations",
                                  GLib.Variant("b", state))
 
-    def _update_artwork_setting(self, widget, state):
+    def _on_switch_artwork_state_set(self, widget, state):
         """
             Update artist artwork setting
             @param widget as Gtk.Switch
@@ -392,45 +390,14 @@ class SettingsDialog:
         if state:
             App().art.cache_artists_info()
 
-    def _update_orderby_setting(self, widget):
+    def _on_combo_order_by_changed(self, widget):
         """
             Update orderby setting
             @param widget as Gtk.ComboBoxText
         """
         App().settings.set_enum("orderby", widget.get_active())
 
-    def _update_fm_settings(self, name):
-        """
-            Update lastfm settings
-            @param name as str (librefm/lastfm)
-        """
-        fm = None
-        if name == "librefm" and App().librefm is not None:
-            fm = App().librefm
-            callback = self.__test_librefm_connection
-            login = self.__librefm_login.get_text()
-            password = self.__librefm_password.get_text()
-        elif App().lastfm is not None:
-            fm = App().lastfm
-            callback = self.__test_lastfm_connection
-            login = self.__lastfm_login.get_text()
-            password = self.__lastfm_password.get_text()
-        try:
-            if fm is not None and login and password:
-                from lollypop.helper_passwords import PasswordsHelper
-                helper = PasswordsHelper()
-                helper.clear(name,
-                             helper.store,
-                             name,
-                             login,
-                             password,
-                             self.__on_password_store,
-                             fm,
-                             callback)
-        except Exception as e:
-            print("Settings::_update_fm_settings(): %s" % e)
-
-    def _on_cs_api_changed(self, entry):
+    def _on_entry_cs_changed(self, entry):
         """
             Save key
             @param entry as Gtk.Entry
@@ -438,7 +405,7 @@ class SettingsDialog:
         value = entry.get_text().strip()
         App().settings.set_value("cs-api-key", GLib.Variant("s", value))
 
-    def _on_listenbrainz_token_changed(self, entry):
+    def _on_entry_listenbrainz_token_changed(self, entry):
         """
             Save listenbrainz token
             @param entry as Gtk.Entry
@@ -447,7 +414,7 @@ class SettingsDialog:
         App().settings.set_value("listenbrainz-user-token",
                                  GLib.Variant("s", value))
 
-    def _on_preview_changed(self, combo):
+    def _on_combo_preview_changed(self, combo):
         """
             Update preview setting
             @param combo as Gtk.ComboBoxText
@@ -481,7 +448,7 @@ class SettingsDialog:
             Test lastfm connection
             @param button as Gtk.Button
         """
-        self._update_fm_settings("lastfm")
+        self.__update_fm_settings("lastfm")
         if not get_network_available():
             self.__lastfm_test_image.set_from_icon_name(
                                                "computer-fail-symbolic",
@@ -493,7 +460,7 @@ class SettingsDialog:
             Test librefm connection
             @param button as Gtk.Button
         """
-        self._update_fm_settings("librefm")
+        self.__update_fm_settings("librefm")
         if not get_network_available():
             self.__librefm_test_image.set_from_icon_name(
                                                "computer-fail-symbolic",
@@ -550,6 +517,37 @@ class SettingsDialog:
 #######################
 # PRIVATE             #
 #######################
+    def __update_fm_settings(self, name):
+        """
+            Update *fm settings
+            @param name as str (librefm/lastfm)
+        """
+        fm = None
+        if name == "librefm" and App().librefm is not None:
+            fm = App().librefm
+            callback = self.__test_librefm_connection
+            login = self.__librefm_login.get_text()
+            password = self.__librefm_password.get_text()
+        elif App().lastfm is not None:
+            fm = App().lastfm
+            callback = self.__test_lastfm_connection
+            login = self.__lastfm_login.get_text()
+            password = self.__lastfm_password.get_text()
+        try:
+            if fm is not None and login and password:
+                from lollypop.helper_passwords import PasswordsHelper
+                helper = PasswordsHelper()
+                helper.clear(name,
+                             helper.store,
+                             name,
+                             login,
+                             password,
+                             self.__on_password_store,
+                             fm,
+                             callback)
+        except Exception as e:
+            print("Settings::__update_fm_settings(): %s" % e)
+
     def __mix_long_func(self, args):
         """
             Show popover
