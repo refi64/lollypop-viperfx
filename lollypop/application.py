@@ -51,7 +51,6 @@ from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
 from lollypop.helper_task import TaskHelper
 from lollypop.collectionscanner import CollectionScanner
-from lollypop.listenbrainz import ListenBrainz
 
 
 class Application(Gtk.Application):
@@ -91,9 +90,7 @@ class Application(Gtk.Application):
         self.cursors = {}
         self.window = None
         self.notify = None
-        self.lastfm = None
-        self.librefm = None
-        self.listenbrainz = None
+        self.scrobblers = []
         self.debug = False
         self.__fs = None
         self.__externals_count = 0
@@ -179,12 +176,11 @@ class Application(Gtk.Application):
         self.art.update_art_size()
         if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
+        # Load lastfm if support available
         if LastFM is not None:
-            self.lastfm = LastFM("lastfm")
-            self.librefm = LastFM("librefm")
-        self.listenbrainz = ListenBrainz()
-        self.settings.bind("listenbrainz-user-token", self.listenbrainz,
-                           "user_token", 0)
+            self.scrobblers = [LastFM("lastfm"),
+                               LastFM("librefm")]
+        self.load_listenbrainz()
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)
@@ -253,6 +249,34 @@ class Application(Gtk.Application):
         """
         if self.window is not None:
             self.window.set_mini()
+
+    def load_listenbrainz(self):
+        """
+            Load listenbrainz support if needed
+        """
+        if self.settings.get_value("listenbrainz-user-token").get_string():
+            from lollypop.listenbrainz import ListenBrainz
+            for scrobbler in self.scrobblers:
+                if isinstance(scrobbler, ListenBrainz):
+                    return
+            listenbrainz = ListenBrainz()
+            self.scrobblers.append(listenbrainz)
+            self.settings.bind("listenbrainz-user-token", listenbrainz,
+                               "user_token", 0)
+
+    @property
+    def lastfm(self):
+        """
+            Get lastfm provider from scrobbler
+            @return LastFM/None
+        """
+        if LastFM is None:
+            return None
+        from pylast import LastFMNetwork
+        for scrobbler in self.scrobblers:
+            if isinstance(scrobbler, LastFMNetwork):
+                return scrobbler
+        return None
 
     @property
     def gtk_application_prefer_dark_theme(self):

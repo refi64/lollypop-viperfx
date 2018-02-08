@@ -218,7 +218,7 @@ def _set_loved_on_lastfm(track_id, loved):
     """
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
-            App().lastfm.is_auth:
+            App().lastfm.available:
         title = App().tracks.get_name(track_id)
         artists = ", ".join(App().tracks.get_artists(track_id))
         if loved:

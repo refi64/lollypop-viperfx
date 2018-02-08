@@ -235,7 +235,7 @@ class SettingsDialog:
         #
         # Libre.fm tab
         #
-        if App().librefm is not None:
+        if App().lastfm is not None:
             self.__librefm_test_image = builder.get_object(
                                                           "librefm_test_image")
             self.__librefm_login = builder.get_object("librefm_login")
@@ -413,6 +413,7 @@ class SettingsDialog:
         value = entry.get_text().strip()
         App().settings.set_value("listenbrainz-user-token",
                                  GLib.Variant("s", value))
+        App().load_listenbrainz()
 
     def _on_combo_preview_changed(self, combo):
         """
@@ -522,14 +523,22 @@ class SettingsDialog:
             Update *fm settings
             @param name as str (librefm/lastfm)
         """
+        if App().lastfm is None:
+            return
+        from pylast import LastFMNetwork, LibreFMNetwork
         fm = None
-        if name == "librefm" and App().librefm is not None:
-            fm = App().librefm
+        for scrobbler in App().scrobblers:
+            if (isinstance(scrobbler, LibreFMNetwork) and
+                name == "librefm") or\
+                    (isinstance(scrobbler, LastFMNetwork) and
+                     name != "librefm"):
+                fm = scrobbler
+                break
+        if name == "librefm":
             callback = self.__test_librefm_connection
             login = self.__librefm_login.get_text()
             password = self.__librefm_password.get_text()
         elif App().lastfm is not None:
-            fm = App().lastfm
             callback = self.__test_lastfm_connection
             login = self.__lastfm_login.get_text()
             password = self.__lastfm_password.get_text()
@@ -641,12 +650,13 @@ class SettingsDialog:
         if App().window.container.view is not None:
             App().window.container.view.update_children()
 
-    def __test_lastfm_connection(self, result):
+    def __test_lastfm_connection(self, result, fm):
         """
             Test lastfm connection
             @param result as None
+            @param fm as LastFM
         """
-        if App().lastfm.session_key:
+        if fm.available:
             self.__lastfm_test_image.set_from_icon_name(
                           "object-select-symbolic",
                           Gtk.IconSize.MENU)
@@ -655,12 +665,13 @@ class SettingsDialog:
                           "computer-fail-symbolic",
                           Gtk.IconSize.MENU)
 
-    def __test_librefm_connection(self, result):
+    def __test_librefm_connection(self, result, fm):
         """
             Test librefm connection
             @param result as None
+            @param fm as LastFM
         """
-        if App().librefm.session_key:
+        if fm.available:
             self.__librefm_test_image.set_from_icon_name(
                           "object-select-symbolic",
                           Gtk.IconSize.MENU)
@@ -677,7 +688,7 @@ class SettingsDialog:
             @param fm as LastFM
             @param callback as function
         """
-        fm.connect(True, callback)
+        fm.connect(True, callback, fm)
 
     def __on_pa_list_sinks(self, source, result, combo):
         """

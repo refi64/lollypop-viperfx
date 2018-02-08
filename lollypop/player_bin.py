@@ -266,39 +266,15 @@ class BinPlayer(BasePlayer):
             @param finished_start_time as int
         """
         played = time() - finished_start_time
-
-        # Listen on ListenBrainz
-        if App().listenbrainz is not None and App().listenbrainz.user_token:
-            # We can listen if the track has been played
-            # for at least half its duration, or for 4 minutes
-            if played >= finished.duration / 2 or played >= 240:
-                App().listenbrainz.listen(int(finished_start_time), finished)
-
-        # Last.fm policy
+        # Last.fm policy, force it for ListenBrainz too
         if finished.duration < 30:
             return
-        # Scrobble on lastfm
-        if App().lastfm is not None and App().lastfm.available:
-            artists = ", ".join(finished.artists)
-            # We can scrobble if the track has been played
-            # for at least half its duration, or for 4 minutes
-            if played >= finished.duration / 2 or played >= 240:
-                App().lastfm.do_scrobble(artists,
-                                         finished.album_name,
-                                         finished.title,
-                                         int(finished_start_time),
-                                         finished.mb_track_id)
-        # Scrobble on librefm
-        if App().librefm is not None and App().librefm.available:
-            artists = ", ".join(finished.artists)
-            # We can scrobble if the track has been played
-            # for at least half its duration, or for 4 minutes
-            if played >= finished.duration / 2 or played >= 240:
-                App().librefm.do_scrobble(artists,
-                                          finished.album_name,
-                                          finished.title,
-                                          int(finished_start_time),
-                                          finished.mb_track_id)
+        # We can listen if the track has been played
+        # for at least half its duration, or for 4 minutes
+        if played >= finished.duration / 2 or played >= 240:
+            for scrobbler in App().scrobblers:
+                if scrobbler.available:
+                    scrobbler.listen(finished, int(finished_start_time))
 
     def _on_stream_start(self, bus, message):
         """
@@ -310,22 +286,9 @@ class BinPlayer(BasePlayer):
         self._start_time = time()
         debug("Player::_on_stream_start(): %s" % self._current_track.uri)
         self.emit("current-changed")
-
-        # Update now playing on ListenBrainz
-        if App().listenbrainz is not None and App().listenbrainz.user_token:
-            App().listenbrainz.playing_now(self._current_track)
-
-        # Update now playing on lastfm
-        # Not supported by librefm
-        if App().lastfm is not None and\
-                App().lastfm.available and\
-                self._current_track.id >= 0:
-            artists = ", ".join(self._current_track.artists)
-            App().lastfm.now_playing(artists,
-                                     self._current_track.album_name,
-                                     self._current_track.title,
-                                     int(self._current_track.duration),
-                                     self._current_track.mb_track_id)
+        for scrobbler in App().scrobblers:
+            if scrobbler.available:
+                scrobbler.playing_now(self._current_track)
         try:
             if not App().scanner.is_locked():
                 App().tracks.set_listened_at(self._current_track.id,

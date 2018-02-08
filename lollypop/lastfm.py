@@ -55,7 +55,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         self.__name = name
         self.__login = ""
-        self.__is_auth = False
+        self.__session_key = ""
         self.__password = None
         self.__goa = None
         self.__check_for_proxy()
@@ -76,20 +76,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                    api_key=self.__API_KEY,
                                    api_secret=self.__API_SECRET)
         self.connect()
-
-    @property
-    def available(self):
-        """
-            Return True if Last.fm/Libre.fm submission is available
-            @return bool
-        """
-        if not self.session_key:
-            return False
-        if self.is_goa:
-            music_disabled = self.__goa.account.props.music_disabled
-            debug("Last.fm GOA scrobbling disabled: %s" % music_disabled)
-            return not music_disabled
-        return True
 
     def connect(self, full_sync=False, callback=None, *args):
         """
@@ -127,36 +113,34 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         url = last_artist.get_cover_image(3)
         return (url, content.encode(encoding="UTF-8"))
 
-    def do_scrobble(self, artist, album, title, timestamp, mb_track_id):
+    def listen(self, track, timestamp):
         """
-            Scrobble track
-            @param artist as str
-            @param title as str
-            @param album as str
+            Submit a listen for a track (scrobble)
+            @param track as Track
             @param timestamp as int
-            @param duration as int
-            @param mb_track_id as str
         """
-        if get_network_available() and\
-           self.__is_auth and Secret is not None:
+        if get_network_available() and self.available:
             helper = TaskHelper()
-            helper.run(self.__scrobble, artist, album,
-                       title, timestamp, mb_track_id)
+            helper.run(self.__scrobble,
+                       ", ".join(track.artists),
+                       track.album_name,
+                       track.title,
+                       timestamp,
+                       track.mb_track_id)
 
-    def now_playing(self, artist, album, title, duration, mb_track_id):
+    def playing_now(self, track):
         """
-            Now playing track
-            @param artist as str
-            @param title as str
-            @param album as str
-            @param duration as int
-            @param mb_track_id as str
+            Submit a playing now notification for a track
+            @param track as Track
         """
-        if get_network_available() and\
-           self.__is_auth and Secret is not None:
+        if get_network_available() and track.id > 0 and self.available:
             helper = TaskHelper()
-            helper.run(self.__now_playing, artist, album,
-                       title, duration, mb_track_id)
+            helper.run(self.__now_playing,
+                       ", ".join(track.artists),
+                       track.album_name,
+                       track.title,
+                       int(track.duration),
+                       track.mb_track_id)
 
     def love(self, artist, title):
         """
@@ -166,8 +150,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if get_network_available() and\
-           self.__is_auth:
+        if get_network_available() and self.available:
             track = self.get_track(artist, title)
             try:
                 track.love()
@@ -182,8 +165,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if get_network_available() and\
-           self.__is_auth:
+        if get_network_available() and self.available:
             track = self.get_track(artist, title)
             try:
                 track.unlove()
@@ -213,18 +195,25 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.connect()
 
     @property
-    def is_auth(self):
-        """
-            True if valid authentication send
-        """
-        return self.__is_auth
-
-    @property
     def is_goa(self):
         """
             True if using Gnome Online Account
         """
         return self.__goa is not None and self.__goa.has_account
+
+    @property
+    def available(self):
+        """
+            Return True if Last.fm/Libre.fm submission is available
+            @return bool
+        """
+        if not self.__session_key:
+            return False
+        if self.is_goa:
+            music_disabled = self.__goa.account.props.music_disabled
+            debug("Last.fm GOA scrobbling disabled: %s" % music_disabled)
+            return not music_disabled
+        return True
 
 #######################
 # PRIVATE             #
@@ -253,22 +242,17 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param full_sync as bool
             @thread safe
         """
-        if self.is_goa or (self.__password != "" and
-                           self.__login != ""):
-            self.__is_auth = True
-        else:
-            self.__is_auth = False
         try:
-            self.session_key = ""
+            self.__session_key = ""
             self.__check_for_proxy()
             if self.is_goa:
                 auth = self.__goa.oauth2_based
                 self.api_key = auth.props.client_id
                 self.api_secret = auth.props.client_secret
-                self.session_key = auth.call_get_access_token_sync(None)[0]
+                self.__session_key = auth.call_get_access_token_sync(None)[0]
             else:
                 skg = SessionKeyGenerator(self)
-                self.session_key = skg.get_session_key(
+                self.__session_key = skg.get_session_key(
                                           username=self.__login,
                                           password_hash=md5(self.__password))
             if full_sync:
@@ -276,7 +260,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                 helper.run(self.__populate_loved_tracks)
         except Exception as e:
             debug("LastFM::__connect(): %s" % e)
-            self.__is_auth = False
 
     def __scrobble(self, artist, album, title, timestamp, mb_track_id,
                    first=True):
@@ -345,7 +328,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Populate loved tracks playlist
         """
-        if not self.__is_auth:
+        if not self.available:
             return
         try:
             tracks = []

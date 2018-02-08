@@ -41,11 +41,11 @@ class ListenBrainz(GObject.GObject):
         self.__proxy = None
         self.__check_for_proxy()
 
-    def listen(self, time, track):
+    def listen(self, track, time):
         """
             Submit a listen for a track
-            @param time as int
             @param track as Track
+            @param time as int
         """
         payload = self.__get_payload(track)
         payload[0]["listened_at"] = time
@@ -59,6 +59,16 @@ class ListenBrainz(GObject.GObject):
         payload = self.__get_payload(track)
         self.__submit("playing_now", payload)
 
+    @property
+    def available(self):
+        """
+            True if service available
+        """
+        return self.user_token != ""
+
+#######################
+# PRIVATE             #
+#######################
     def __submit(self, listen_type, payload):
         if get_network_available():
             helper = TaskHelper()
