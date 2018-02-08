@@ -285,7 +285,8 @@ class TracksView:
         count_tracks = len(tracks)
         mid_tracks = int(0.5 + count_tracks / 2)
         left_height = self._child_height * mid_tracks
-        right_height = self._child_height * (count_tracks - mid_tracks)
+        # +1 is disc label
+        right_height = self._child_height * (count_tracks - mid_tracks + 1)
         if left_height > right_height:
             self._height += left_height
         else:
