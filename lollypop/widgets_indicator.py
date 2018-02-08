@@ -197,8 +197,10 @@ class IndicatorWidget(Gtk.EventBox):
                 if album.id == self.__track.album.id:
                     for track in album.tracks:
                         if track.id == self.__track.id:
+                            count = len(album.tracks)
                             album.remove_track(track)
-                            if not album.tracks:
+                            # Album is now empty
+                            if count == 1:
                                 App().player.remove_album(album)
                                 App().player.stop()
                             elif App().player.next_track.id == track.id:
