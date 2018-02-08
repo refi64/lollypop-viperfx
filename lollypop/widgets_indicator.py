@@ -198,7 +198,10 @@ class IndicatorWidget(Gtk.EventBox):
                     for track in album.tracks:
                         if track.id == self.__track.id:
                             album.remove_track(track)
-                            if App().player.next_track.id == track.id:
+                            if not album.tracks:
+                                App().player.remove_album(album)
+                                App().player.stop()
+                            elif App().player.next_track.id == track.id:
                                 App().player.set_next()
                             break
                     break

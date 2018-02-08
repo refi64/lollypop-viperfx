@@ -68,11 +68,14 @@ class TracksView:
         """
             Update playing indicator
         """
-        for disc in self._album.discs:
-            self._tracks_widget_left[disc.number].update_playing(
-                App().player.current_track.id)
-            self._tracks_widget_right[disc.number].update_playing(
-                App().player.current_track.id)
+        try:
+            for disc in self._album.discs:
+                self._tracks_widget_left[disc.number].update_playing(
+                    App().player.current_track.id)
+                self._tracks_widget_right[disc.number].update_playing(
+                    App().player.current_track.id)
+        except Exception as e:
+            print("TrackView::update_playing_indicator()", e)
 
     def update_duration(self, track_id):
         """

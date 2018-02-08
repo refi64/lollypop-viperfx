@@ -156,6 +156,7 @@ class ProgressController:
         if player.current_track.id is None:
             self._progress.set_sensitive(False)
             self._total_time_label.set_text("")
+            self._timelabel.set_text("")
             return
 
         self._progress.set_value(0.0)

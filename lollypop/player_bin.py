@@ -20,6 +20,7 @@ from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, App
 from lollypop.codecs import Codecs
 from lollypop.define import Type
+from lollypop.objects import Track
 from lollypop.utils import debug
 
 
@@ -136,7 +137,9 @@ class BinPlayer(BasePlayer):
             Change player state to STOPPED
         """
         self._playbin.set_state(Gst.State.NULL)
+        self._current_track = Track()
         self.emit("status-changed")
+        self.emit("current-changed")
 
     def stop_all(self):
         """
