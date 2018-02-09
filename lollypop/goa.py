@@ -46,11 +46,11 @@ class GoaSyncedAccount(GObject.Object):
         self._oauth2_based = None
         try:
             self._client = Goa.Client.new_sync()
-            self._find_account()
+            self.__find_account()
             self.emit("account-switched")
-            self._client.connect("account-added", self.on_account_added)
-            self._client.connect("account-removed", self.on_account_removed)
-            self._client.connect("account-changed", self.on_account_changed)
+            self._client.connect("account-added", self.__on_account_added)
+            self._client.connect("account-removed", self.__on_account_removed)
+            self._client.connect("account-changed", self.__on_account_changed)
         except:
             debug("GOA not available")
             self.__client = None
@@ -66,6 +66,7 @@ class GoaSyncedAccount(GObject.Object):
     @property
     def account(self):
         """
+            Return current GOA account
             @return Goa.Account
         """
         if self._proxy is None:
@@ -77,6 +78,7 @@ class GoaSyncedAccount(GObject.Object):
     @property
     def oauth2_based(self):
         """
+            Get OAuth2Based for current account
             @return Goa.OAuth2Based
         """
         if self._proxy is None:
@@ -85,29 +87,61 @@ class GoaSyncedAccount(GObject.Object):
             self._oauth2_based = self._proxy.get_oauth2_based()
         return self._oauth2_based
 
-    def on_account_added(self, client, proxy):
+#######################
+# PRIVATE             #
+#######################
+    def __find_account(self):
         """
+            Find account matching current provider
+        """
+        debug("GOA __find_account")
+        self._proxy = None
+        try:
+            for proxy in self._client.get_accounts():
+                if self.__account_matches_provider(proxy):
+                    debug("GOA account found")
+                    self._proxy = proxy
+                    return
+        except Exception as e:
+            debug("GOA __find_account failed: %s" % e)
+            pass
+
+    def __account_matches_provider(self, proxy):
+        """
+            True if current account match proxy account provider
+            @param proxy as Goa.Object
+            @return bool
+        """
+        account = proxy.get_account()
+        debug("GOA __account_matches_provider: %s = %s ?" %
+              (account.props.provider_name, self._provider_name))
+        return account.props.provider_name == self._provider_name
+
+    def __on_account_added(self, client, proxy):
+        """
+            Update proxy and emit account-switched
             @param client as Goa.Client
             @param proxy as Goa.Object
         """
         debug("GOA account added")
-        if self._proxy is None and self._account_matches_provider(proxy):
+        if self._proxy is None and self.__account_matches_provider(proxy):
             self._proxy = proxy
             self.emit("account-switched")
 
-    def on_account_removed(self, client, proxy):
+    def __on_account_removed(self, client, proxy):
         """
+            Try finding a new account and emit account-switched
             @param client as Goa.Client
             @param proxy as Goa.Object
         """
         debug("GOA account removed")
         if self._proxy == proxy:
-            # Try finding a new account
-            self._find_account()
+            self.__find_account()
             self.emit("account-switched")
 
-    def on_account_changed(self, client, proxy):
+    def __on_account_changed(self, client, proxy):
         """
+            Reset current account settings
             @param client as Goa.Client
             @param proxy as Goa.Object
         """
@@ -115,22 +149,3 @@ class GoaSyncedAccount(GObject.Object):
         if self._proxy == proxy:
             self._account = None
             self._oauth2_based = None
-
-    def _find_account(self):
-        debug("GOA _find_account")
-        self._proxy = None
-        try:
-            for proxy in self._client.get_accounts():
-                if self._account_matches_provider(proxy):
-                    debug("GOA account found")
-                    self._proxy = proxy
-                    return
-        except Exception as e:
-            debug("GOA _find_account failed: %s" % e)
-            pass
-
-    def _account_matches_provider(self, proxy):
-        account = proxy.get_account()
-        debug("GOA _account_matches_provider: %s = %s ?" %
-              (account.props.provider_name, self._provider_name))
-        return account.props.provider_name == self._provider_name
