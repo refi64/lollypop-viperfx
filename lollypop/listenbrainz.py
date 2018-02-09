@@ -33,6 +33,9 @@ class ListenBrainz(GObject.GObject):
     user_token = GObject.Property(type=str, default=None)
 
     def __init__(self):
+        """
+            Init ListenBrainz object
+        """
         GObject.GObject.__init__(self)
         self.__next_request_time = 0
 
@@ -58,6 +61,7 @@ class ListenBrainz(GObject.GObject):
     def available(self):
         """
             True if service available
+            @return bool
         """
         return self.user_token != ""
 
@@ -65,11 +69,22 @@ class ListenBrainz(GObject.GObject):
 # PRIVATE             #
 #######################
     def __submit(self, listen_type, payload):
+        """
+            Submit payload to service in a thread
+            @param listen_type as str
+            @param payload as []
+        """
         if get_network_available():
             helper = TaskHelper()
             helper.run(self.__request, listen_type, payload)
 
     def __request(self, listen_type, payload, retry=0):
+        """
+            Submit payload to service
+            @param listen_type as str
+            @param payload as []
+            @param retry as int (internal)
+        """
         self.__wait_for_ratelimit()
         debug("ListenBrainz %s: %r" % (listen_type, payload))
         data = {
@@ -96,6 +111,9 @@ class ListenBrainz(GObject.GObject):
             print("ListenBrainz::__submit():", e)
 
     def __wait_for_ratelimit(self):
+        """
+            Sleep to respect service X-RateLimit
+        """
         now = time.time()
         if self.__next_request_time > now:
             delay = self.__next_request_time - now
@@ -103,6 +121,10 @@ class ListenBrainz(GObject.GObject):
             time.sleep(delay)
 
     def __handle_ratelimit(self, response):
+        """
+            Set rate limit from response
+            @param response as Soup.MessageHeaders
+        """
         remaining = response.get("X-RateLimit-Remaining")
         reset_in = response.get("X-RateLimit-Reset-In")
         if remaining is None or reset_in is None:
@@ -113,6 +135,10 @@ class ListenBrainz(GObject.GObject):
             self.__next_request_time = time.time() + int(reset_in)
 
     def __get_payload(self, track):
+        """
+            Build payload from track
+            @param track as Track
+        """
         artists = ", ".join(track.artists)
         payload = {
             "track_metadata": {
@@ -126,5 +152,4 @@ class ListenBrainz(GObject.GObject):
                 }
             }
         }
-
         return [payload]
