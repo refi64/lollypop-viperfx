@@ -33,7 +33,7 @@ except Exception as e:
     print("$ sudo pip3 install pylast")
     LastFM = None
 
-from lollypop.utils import is_gnome, is_unity
+from lollypop.utils import is_gnome, is_unity, set_proxy_from_gnome
 from lollypop.define import Type, LOLLYPOP_DATA_PATH
 from lollypop.window import Window
 from lollypop.database import Database
@@ -71,13 +71,8 @@ class Application(Gtk.Application):
                             application_id="org.gnome.Lollypop",
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.__version = version
+        set_proxy_from_gnome()
         self.set_property("register-session", True)
-
-        socks_proxy = GLib.getenv("ALL_PROXY")
-        if socks_proxy:
-            fixed_proxy = socks_proxy.replace("socks://", "socks4://")
-            GLib.setenv("ALL_PROXY", fixed_proxy, True)
-            GLib.setenv("all_proxy", fixed_proxy, True)
         GLib.setenv("PULSE_PROP_media.role", "music", True)
         GLib.setenv("PULSE_PROP_application.icon_name",
                     "org.gnome.Lollypop", True)
