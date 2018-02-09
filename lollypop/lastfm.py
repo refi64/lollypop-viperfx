@@ -54,7 +54,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         self.__name = name
         self.__login = ""
-        self.__session_key = ""
+        self.session_key = ""
         self.__password = None
         self.__goa = None
         if name == "librefm":
@@ -205,7 +205,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             Return True if Last.fm/Libre.fm submission is available
             @return bool
         """
-        if not self.__session_key:
+        if not self.session_key:
             return False
         if self.is_goa:
             music_disabled = self.__goa.account.props.music_disabled
@@ -223,15 +223,15 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         try:
-            self.__session_key = ""
+            self.session_key = ""
             if self.is_goa:
                 auth = self.__goa.oauth2_based
                 self.api_key = auth.props.client_id
                 self.api_secret = auth.props.client_secret
-                self.__session_key = auth.call_get_access_token_sync(None)[0]
+                self.session_key = auth.call_get_access_token_sync(None)[0]
             else:
                 skg = SessionKeyGenerator(self)
-                self.__session_key = skg.get_session_key(
+                self.session_key = skg.get_session_key(
                                           username=self.__login,
                                           password_hash=md5(self.__password))
             if full_sync:
