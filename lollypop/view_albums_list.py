@@ -378,12 +378,11 @@ class AlbumsListView(LazyLoadingView):
             if y <= row_y + ArtSize.MEDIUM / 2:
                 self.__prev_animated_rows.append(row)
                 row.get_style_context().add_class("drag-up")
-                row.reveal(True)
                 break
             elif y >= row_y + row_height - ArtSize.MEDIUM / 2:
                 self.__prev_animated_rows.append(row)
                 row.get_style_context().add_class("drag-down")
-                row.reveal(True)
+                GLib.timeout_add(1000, self.__reveal_row, row)
                 break
             else:
                 subrow = row.rows_animation(x, y, self)
@@ -436,6 +435,14 @@ class AlbumsListView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
+    def __reveal_row(self, row):
+        """
+            Reveal row if style always present
+        """
+        style_context = row.get_style_context()
+        if style_context.has_class("drag-down"):
+            row.reveal(True)
+
     def __add_albums(self, albums):
         """
             Add items to the view
