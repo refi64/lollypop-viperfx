@@ -59,10 +59,6 @@ class Container(Gtk.Bin):
 
         App().playlists.connect("playlists-changed",
                                 self.__update_playlists)
-        # Allow user to disable network access
-        if App().tracks.count() == 0:
-            self.__show_first_run()
-
         self.add(self.__paned_main_list)
 
     def init_list_one(self):
@@ -358,18 +354,6 @@ class Container(Gtk.Bin):
         else:
             self.__progress.set_fraction(0.0, self)
             return False
-
-    def __show_first_run(self):
-        """
-            Show first run view
-        """
-        from lollypop.view_first_run import FirstRunView
-        self.__stop_current_view()
-        view = FirstRunView()
-        view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
 
     def __setup_view(self):
         """
