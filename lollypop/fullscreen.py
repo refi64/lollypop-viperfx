@@ -139,6 +139,7 @@ class FullScreen(Gtk.Window, InfoController,
         """
             Remove signals and unset color
         """
+        self.__view.stop()
         self.__parent.set_skip_pager_hint(False)
         self.__parent.set_skip_taskbar_hint(False)
         Gtk.Window.do_hide(self)
@@ -195,6 +196,7 @@ class FullScreen(Gtk.Window, InfoController,
             Destroy self
             @param widget as Gtk.Button
         """
+        self.__view.stop()
         self.destroy()
 
     def _on_motion_notify_event(self, widget, event):
