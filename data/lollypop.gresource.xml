@@ -13,7 +13,6 @@
      <file compressed="true" preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ExternalSearchRow.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ExternalsPopover.ui</file>
-     <file compressed="true" preprocess="xml-stripblanks">FirstRunView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">FullScreen.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">InfoContent.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LastfmPopover.ui</file>
