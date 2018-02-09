@@ -38,7 +38,7 @@ def set_proxy_from_gnome():
                 socks.set_default_proxy(socks.SOCKS4, h, p)
                 socket.socket = socks.socksocket
             else:
-                http = Gio.Settings.new("org.gnome.system.proxy.https")
+                http = Gio.Settings.new("org.gnome.system.proxy.http")
                 https = Gio.Settings.new("org.gnome.system.proxy.https")
                 h = http.get_value("host").get_string()
                 p = http.get_value("port").get_int32()
