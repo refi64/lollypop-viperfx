@@ -14,8 +14,9 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 
 from datetime import datetime
 
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, ResponsiveType
 from lollypop.pop_next import NextPopover
+from lollypop.view_albums_list import AlbumsListView
 from lollypop.controllers import InfoController, PlaybackController
 from lollypop.controllers import ProgressController
 
@@ -60,6 +61,7 @@ class FullScreen(Gtk.Window, InfoController,
         self.__font_size = int(14 * geometry.height / 1080)
         InfoController.__init__(self, artsize, self.__font_size)
         widget = builder.get_object("widget")
+        grid = builder.get_object("grid")
         self._play_btn = builder.get_object("play_btn")
         self._next_btn = builder.get_object("next_btn")
         self._prev_btn = builder.get_object("prev_btn")
@@ -71,22 +73,26 @@ class FullScreen(Gtk.Window, InfoController,
         preferences = Gio.Settings.new("org.gnome.desktop.wm.preferences")
         layout = preferences.get_value("button-layout").get_string()
         if layout.split(":")[0] == "close":
-            widget.attach(close_btn, 0, 0, 1, 1)
+            grid.attach(close_btn, 0, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.START)
         else:
-            widget.attach(close_btn, 2, 0, 1, 1)
+            grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._cover = builder.get_object("cover")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._album_label = builder.get_object("album")
-
+        self.__revealer = builder.get_object("reveal")
         self._datetime = builder.get_object("datetime")
-
         self._progress = builder.get_object("progress_scale")
         self._timelabel = builder.get_object("playback")
         self._total_time_label = builder.get_object("duration")
         self.connect("key-release-event", self.__on_key_release_event)
+
+        # Add an AlbumListView on the right
+        self.__view = AlbumsListView(ResponsiveType.DND)
+        self.__view.show()
+        self.__revealer.add(self.__view)
         self.add(widget)
 
     def do_show(self):
@@ -102,6 +108,7 @@ class FullScreen(Gtk.Window, InfoController,
         else:
             self.on_status_changed(App().player)
             self.on_current_changed(App().player)
+        self.__view.populate(App().player.albums)
         if self.__timeout1 is None:
             self.__timeout1 = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
@@ -189,6 +196,15 @@ class FullScreen(Gtk.Window, InfoController,
             @param widget as Gtk.Button
         """
         self.destroy()
+
+    def _on_motion_notify_event(self, widget, event):
+        """
+            Show/Hide track list if mouse on the right
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        reveal = event.x_root > widget.get_allocated_width() / 2
+        self.__revealer.set_reveal_child(reveal)
 
 #######################
 # PRIVATE             #

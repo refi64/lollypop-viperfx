@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track, Album
-from lollypop.define import App, ArtSize, Type, ResponsiveType, Shuffle
+from lollypop.define import App, Type, ResponsiveType, Shuffle
 
 
 class TracksView:
@@ -346,9 +346,7 @@ class TracksView:
         redraw = False
         # We want vertical orientation
         # when not enought place for cover or tracks
-        if allocation.width < WindowSize.MEDIUM or (
-                allocation.width < WindowSize.MONSTER and
-                self._art_size == ArtSize.BIG):
+        if allocation.width < WindowSize.MONSTER:
             orientation = Gtk.Orientation.VERTICAL
         else:
             orientation = Gtk.Orientation.HORIZONTAL
