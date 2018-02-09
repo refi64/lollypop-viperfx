@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Pango
 
 from lollypop.define import App
+from lollypop.helper_task import TaskHelper
 from lollypop.utils import get_network_available
 
 
@@ -51,17 +52,23 @@ class LastfmPopover(Gtk.Popover):
             artists = []
             for artist_id in artist_ids:
                 artists.append(App().artists.get_name(artist_id))
-            GLib.idle_add(self.__populate, artists)
+            task_helper = TaskHelper()
+            task_helper.run(self.__get_similars, artists,
+                            callback=(self.__populate,))
 
 #######################
 # PRIVATE             #
 #######################
-    def __on_map(self, widget):
+    def __get_similars(self, artists):
         """
-            Resize
-            @param widget as Gtk.Widget
+            Get similars artists from lastfm
+            @param artists as [str]
+            @return [str]
         """
-        self.set_size_request(300, 400)
+        similars = []
+        for artist in artists:
+            similars += App().lastfm.get_similars(artist)
+        return similars
 
     def __populate(self, artists):
         """
@@ -70,16 +77,21 @@ class LastfmPopover(Gtk.Popover):
         """
         if artists:
             artist = artists.pop(0)
-            similars = App().lastfm.get_similars(artist)
-            for similar in similars:
-                label = Gtk.Label.new(similar)
-                label.set_ellipsize(Pango.EllipsizeMode.END)
-                label.show()
-                self.__view.add(label)
+            label = Gtk.Label.new(artist)
+            label.set_ellipsize(Pango.EllipsizeMode.END)
+            label.show()
+            self.__view.add(label)
             GLib.idle_add(self.__populate, artists)
         else:
             self.__spinner.stop()
             self.__stack.set_visible_child(self.__view)
+
+    def __on_map(self, widget):
+        """
+            Resize widget on map
+            @param widget as Gtk.Widget
+        """
+        self.set_size_request(300, 400)
 
     def __on_row_activated(self, widget, row):
         """
