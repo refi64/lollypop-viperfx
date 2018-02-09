@@ -93,16 +93,17 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 BinPlayer._load_track(self, track)
                 self.emit("current-changed")
 
-    def add_album(self, album):
+    def add_album(self, album, index=-1):
         """
             Add album
             @param album as Album
+            @param index as int
         """
         # We are not playing a user playlist anymore
         self._playlist_track_ids = []
         self._playlist_ids = []
         self.shuffle_albums(False)
-        self._albums.append(album)
+        self._albums.insert(index, album)
         self.shuffle_albums(True)
         if self._current_track.id is not None and self._current_track.id > 0:
             if not self.is_party:
@@ -424,6 +425,22 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     if track.id == track_id:
                         return True
         return False
+
+    def object_by_name(self, track_name, album_name):
+        """
+            Get track by object name
+            @track_name as str
+            @param album_name as str
+            @return Album is track_name is None, else Track or None
+        """
+        for album in self._albums:
+            if str(album) == album_name:
+                if track_name is None:
+                    return album
+                for track in album.tracks:
+                    if str(track) == track_name:
+                        return track
+        return None
 
     @property
     def next_track(self):

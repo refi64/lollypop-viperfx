@@ -26,8 +26,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
     """
 
     __gsignals__ = {
-        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (int, str, bool)),
+        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, bool)),
+        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, str, bool)),
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
                         (int, GObject.TYPE_PYOBJECT)),
         "track-append": (GObject.SignalFlags.RUN_FIRST, None,
@@ -229,7 +229,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             @param info as int
             @param time as int
         """
-        album_str = "a:%s:none" % self._album.id
+        album_str = "a:%s:none" % self._album
         data.set_text(album_str, len(album_str))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -247,7 +247,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         view = widget.get_ancestor(View)
         if view is not None:
             view.clear_animation()
-        if "a:%s:none" % self._album.id == data.get_text():
+        if "a:%s:none" % self._album == data.get_text():
             return
         height = self.get_allocated_height()
         if y > height/2:
@@ -255,11 +255,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         else:
             down = False
         try:
-            (type_id, object_id, album_src) = data.get_text().split(":")
+            (type_id, object_str, album_str) = data.get_text().split(":")
             if type_id == "t":
-                self.emit("track-moved", int(object_id), album_src, down)
+                self.emit("track-moved", object_str, album_str, down)
             elif type_id == "a":
-                self.emit("album-moved", int(object_id), down)
+                self.emit("album-moved", object_str, down)
         except Exception as e:
             print("AlbumRow::__on_drag_data_received()", e)
 
@@ -581,25 +581,42 @@ class AlbumsListView(LazyLoadingView):
                 album_row.remove_rows(tracks)
                 break
 
-    def __on_track_moved(self, row, src_track_id, src_album_str, down):
+    def __on_track_moved(self, row, src_track_str, src_album_str, down):
         """
             Move src track to row
             Recalculate track position
             @param row as TrackRow
-            @param src_track_id as int
+            @param src_track_str as str
             @param src_widget_str as str
             @param down as bool
         """
-        # It's like adding up on first album row
-        if row.children:
-            child = row.children[0]
-            child.emit("track-moved", src_track_id, src_album_str, False)
+        try:
+            children = self.__view.get_children()
+            row_index = children.index(row)
+            src_track = App().player.object_by_name(src_track_str,
+                                                    src_album_str)
+            src_album = App().player.object_by_name(None, src_album_str)
+            if src_track is None or src_album is None:
+                return
+            src_album.remove_track(src_track)
+            children[row_index].emit("track-removed", src_album, [src_track])
+            new_album = Album(src_track.album.id)
+            new_album.set_tracks([src_track])
+            album_row = self.__row_for_album(new_album)
+            album_row.populate()
+            album_row.show()
+            if down:
+                row_index += 1
+            self.__view.insert(album_row, row_index)
+            App().player.add_album(new_album, row_index)
+        except Exception as e:
+            print("AlbumsListView::__on_track_moved()", e)
 
     def __on_album_moved(self, row, src, down):
         """
             Pass signal
             @param row as PlaylistRow
-            @param src as int
+            @param src as str
             @param down as bool
         """
         # Destroy current album row and search for album row
@@ -609,7 +626,7 @@ class AlbumsListView(LazyLoadingView):
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if child.album.id == src:
+            if str(child.album) == src:
                 album = child.album
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()
@@ -669,14 +686,12 @@ class AlbumsListView(LazyLoadingView):
         """
         try:
             self.clear_animation()
-            (type_id, object_id_str, album_str) = data.get_text().split(":")
-            object_id = int(object_id_str)
+            (type_id, object_str, album_str) = data.get_text().split(":")
             if type_id == "a":
                 self.__on_album_moved(self.__view.get_children()[-1],
-                                      object_id, True)
+                                      object_str, True)
             elif type_id == "t":
-                album_row = self.__view.get_children()[-1]
-                track_row = album_row.children[-1]
-                track_row.emit("track-moved", object_id, album_str, True)
+                self.__on_track_moved(self.__view.get_children()[-1],
+                                      object_str, album_str, True)
         except Exception as e:
             print("AlbumsListView::__on_drag_data_received():", e)

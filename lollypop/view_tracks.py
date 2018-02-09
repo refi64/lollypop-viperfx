@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
-from lollypop.objects import Track, Album
+from lollypop.objects import Album
 from lollypop.define import App, Type, ResponsiveType, Shuffle
 
 
@@ -26,6 +26,8 @@ class TracksView:
     """
     __gsignals__ = {
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
+                        (int, GObject.TYPE_PYOBJECT)),
+        "album-moved": (GObject.SignalFlags.RUN_FIRST, None,
                         (int, GObject.TYPE_PYOBJECT)),
         "track-append": (GObject.SignalFlags.RUN_FIRST, None,
                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
@@ -449,12 +451,11 @@ class TracksView:
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
 
-    def __move_track(self, src_index, dst_index, track_id=None):
+    def __move_track(self, src_index, dst_index):
         """
             Move track in album
             @param src_index as int/None
             @param dst_index as int
-            @param track_id, new track if src_index is None
         """
         # DND allowed, so discs are merged
         disc_number = self._album.discs[0].number
@@ -472,56 +473,46 @@ class TracksView:
         if src_index is not None:
             row = src_widget.get_children()[src_index]
             src_widget.remove(row)
-        else:
-            track = Track(track_id, self._album)
-            row = TrackRow(track, self._responsive_type == ResponsiveType.DND)
-            row.connect("destroy", self.__on_row_destroy)
-            row.connect("track-moved", self.__on_track_moved)
-            row.connect("album-moved", self.__on_album_moved)
-            row.show()
-        dst_widget.insert(row, dst_index)
+            dst_widget.insert(row, dst_index)
         if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
             App().player.set_next()
 
-    def __on_track_moved(self, row, src_track_id, src_album_str, down):
+    def __on_track_moved(self, row, src_track_str, src_album_str, down):
         """
             Move src track to row
             Recalculate track position
             @param row as TrackRow
-            @param src_track_id as int
+            @param src_track_str as str
             @param src_widget_str as str
             @param down as bool
         """
         try:
             albums = App().player.albums
-            src_track = Track(src_track_id)
+            src_track = App().player.object_by_name(src_track_str,
+                                                    src_album_str)
+            if src_track is None:
+                return
             # Search album
             album_index = albums.index(self._album)
             tracks = self._album.tracks
             track_index = tracks.index(row.track)
             # DND inside same widget
-            if src_track.album.id == self._album.id:
-                # Search src in tracks and move it
-                if src_track_id in self._album.track_ids:
-                    src_index = self._album.track_ids.index(src_track_id)
-                    src_track = tracks[src_index]
-                    tracks.remove(src_track)
-                else:
-                    src_index = None
-                    src_track = Track(src_track_id, self._album)
+            if src_album_str == str(self._album):
+                src_index = self._album.tracks.index(src_track)
+                tracks.remove(src_track)
                 track_index = tracks.index(row.track)
                 tracks.insert(track_index, src_track)
                 if down:
                     track_index += 1
-                self.__move_track(src_index, track_index, src_track_id)
+                self.__move_track(src_index, track_index)
             # Move src track into row
             else:
                 # Search for src album, we need to remove track
-                for album in albums:
-                    if str(album) == src_album_str:
-                        src_album = album
-                        break
-                src_album.remove_track_id(src_track_id)
+                src_album = App().player.object_by_name(None,
+                                                        src_album_str)
+                if src_album is None:
+                    return
+                src_album.remove_track(src_track)
                 self.emit("track-removed", src_album, [src_track])
                 # Special case when moving src at top
                 if (track_index == 0 and not down) or\
@@ -578,12 +569,12 @@ class TracksView:
         except Exception as e:
             print("TracksView::__on_track_moved():", e)
 
-    def __on_album_moved(self, row, src, down):
+    def __on_album_moved(self, row, src_album_str, down):
         """
             Move src album to row
             Recalculate track position
             @param row as TrackRow
-            @param src as int
+            @param src_album_str as str
             @param down as bool
         """
         try:
@@ -598,14 +589,17 @@ class TracksView:
             self._album.set_tracks(tracks[0:track_index])
             self.emit("track-removed", self._album,
                       tracks[track_index:])
-            # Create a new album for src
-            new_src_album = Album(src)
+            # Get album for src
+            src_album = App().player.object_by_name(None, src_album_str)
+            if src_album is None:
+                return
             # Split album
             split_album = Album(self._album.id)
-            split_album.set_tracks(tracks[track_index + 1:-1])
-            albums.insert(album_index + 1, new_src_album)
+            split_album.set_tracks(tracks[track_index:])
+            albums.remove(src_album)
+            albums.insert(album_index + 1, src_album)
             albums.insert(album_index + 2, split_album)
-            self.emit("album-added", album_index + 1, new_src_album)
+            self.emit("album-moved", album_index + 1, src_album)
             self.emit("album-added", album_index + 2, split_album)
             self.recalculate_tracks_position()
         except Exception as e:

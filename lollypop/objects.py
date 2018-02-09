@@ -265,16 +265,6 @@ class Album(Base):
         if track in self.tracks:
             self._tracks.remove(track)
 
-    def remove_track_id(self, track_id):
-        """
-            Remove track from album
-            @param track_id as int
-        """
-        for track in self.tracks:
-            if track.id == track_id:
-                self._tracks.remove(track)
-                break
-
     def clear_tracks(self):
         """
             Clear album tracks
