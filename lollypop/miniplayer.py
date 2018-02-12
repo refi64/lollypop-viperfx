@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from lollypop.controllers import InfoController, ProgressController
 from lollypop.define import App, WindowSize
@@ -89,7 +89,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
 #######################
 # PROTECTED           #
 #######################
-    def _on_button_press(self, button, event):
+    def _on_button_release_event(self, button, event):
         """
             Show track menu
             @param button as Gtk.Button
@@ -108,6 +108,13 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
                 popover.set_relative_to(self)
                 popover.show()
         return True
+
+    def _on_labels_realize(self, eventbox):
+        """
+            Set mouse cursor
+            @param eventbox as Gtk.EventBox
+        """
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
 #######################
 # PRIVATE             #

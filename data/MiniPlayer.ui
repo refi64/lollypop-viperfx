@@ -5,7 +5,6 @@
   <object class="GtkEventBox" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
     <child>
       <object class="GtkOverlay" id="overlay">
         <property name="visible">True</property>
@@ -28,103 +27,120 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">end</property>
+            <property name="column_spacing">5</property>
             <child>
-              <object class="GtkLabel" id="artist">
+              <object class="GtkLabel" id="playback">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="ellipsize">end</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                  <attribute name="foreground" value="#ffffffffffff"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="title">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_bottom">1</property>
-                <property name="hexpand">True</property>
-                <property name="ellipsize">end</property>
+                <property name="halign">start</property>
+                <property name="margin_left">10</property>
+                <property name="margin_start">10</property>
+                <property name="justify">right</property>
+                <property name="width_chars">5</property>
                 <attributes>
                   <attribute name="foreground" value="#ffffffffffff"/>
                 </attributes>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">start</property>
-                <property name="margin_top">1</property>
-                <property name="column_spacing">5</property>
-                <child>
-                  <object class="GtkLabel" id="playback">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_left">10</property>
-                    <property name="margin_start">10</property>
-                    <property name="justify">right</property>
-                    <property name="width_chars">5</property>
-                    <attributes>
-                      <attribute name="foreground" value="#ffffffffffff"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="duration">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_right">10</property>
-                    <property name="margin_end">10</property>
-                    <property name="width_chars">5</property>
-                    <attributes>
-                      <attribute name="foreground" value="#ffffffffffff"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="progress_scale">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="valign">center</property>
-                    <property name="draw_value">False</property>
-                    <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
-                    <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
-                    <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
-                    <style>
-                      <class name="mini-scale"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">0</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="duration">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin_right">10</property>
+                <property name="margin_end">10</property>
+                <property name="width_chars">5</property>
+                <attributes>
+                  <attribute name="foreground" value="#ffffffffffff"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="progress_scale">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="valign">center</property>
+                <property name="draw_value">False</property>
+                <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
+                <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
+                <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
+                <style>
+                  <class name="mini-scale"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
+                <signal name="realize" handler="_on_labels_realize" swapped="no"/>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="artist">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
+                        <property name="ellipsize">end</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="foreground" value="#ffffffffffff"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="title">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_bottom">1</property>
+                        <property name="hexpand">True</property>
+                        <property name="ellipsize">end</property>
+                        <attributes>
+                          <attribute name="foreground" value="#ffffffffffff"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <style>
               <class name="black"/>
