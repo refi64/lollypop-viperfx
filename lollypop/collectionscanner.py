@@ -181,59 +181,58 @@ class CollectionScanner(GObject.GObject, TagReader):
                 if d.startswith("file://"):
                     self.__inotify.add_monitor(d)
 
-        with SqlCursor(App().db) as sql:
-            i = 0
-            # Look for new files/modified files
-            try:
-                to_add = []
-                for uri in new_tracks:
-                    if self.__thread is None:
-                        return
-                    try:
-                        GLib.idle_add(self.__update_progress, i, count)
-                        f = Gio.File.new_for_uri(uri)
-                        # We do not use time::modified because many tag editors
-                        # just preserve this setting
-                        info = f.query_info("time::changed",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
-                        mtime = int(info.get_attribute_as_string(
-                                                             "time::changed"))
-                        # If songs exists and mtime unchanged, continue,
-                        # else rescan
-                        if uri in orig_tracks:
-                            orig_tracks.remove(uri)
+        i = 0
+        # Look for new files/modified files
+        try:
+            to_add = []
+            for uri in new_tracks:
+                if self.__thread is None:
+                    return
+                try:
+                    GLib.idle_add(self.__update_progress, i, count)
+                    f = Gio.File.new_for_uri(uri)
+                    # We do not use time::modified because many tag editors
+                    # just preserve this setting
+                    info = f.query_info("time::changed",
+                                        Gio.FileQueryInfoFlags.NONE,
+                                        None)
+                    mtime = int(info.get_attribute_as_string(
+                                                         "time::changed"))
+                    # If songs exists and mtime unchanged, continue,
+                    # else rescan
+                    if uri in orig_tracks:
+                        orig_tracks.remove(uri)
+                        i += 1
+                        if mtime <= mtimes.get(uri, mtime + 1):
                             i += 1
-                            if mtime <= mtimes.get(uri, mtime + 1):
-                                i += 1
-                                continue
-                            else:
-                                self.__del_from_db(uri)
-                        # On first scan, use modification time
-                        # Else, use current time
-                        if not was_empty:
-                            mtime = int(time())
-                        to_add.append((uri, mtime))
-                    except Exception as e:
-                        print("CollectionScanner::__scan(mtime):", e)
-                # Clean deleted files
-                # Now because we need to populate history
-                for uri in orig_tracks:
+                            continue
+                        else:
+                            self.__del_from_db(uri)
+                    # On first scan, use modification time
+                    # Else, use current time
+                    if not was_empty:
+                        mtime = int(time())
+                    to_add.append((uri, mtime))
+                except Exception as e:
+                    print("CollectionScanner::__scan(mtime):", e)
+            # Clean deleted files
+            # Now because we need to populate history
+            for uri in orig_tracks:
+                i += 1
+                GLib.idle_add(self.__update_progress, i, count)
+                self.__del_from_db(uri)
+            # Add files to db
+            for (uri, mtime) in to_add:
+                try:
+                    debug("Adding file: %s" % uri)
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
-                    self.__del_from_db(uri)
-                # Add files to db
-                for (uri, mtime) in to_add:
-                    try:
-                        debug("Adding file: %s" % uri)
-                        i += 1
-                        GLib.idle_add(self.__update_progress, i, count)
-                        self.__add2db(uri, mtime)
-                    except Exception as e:
-                        print("CollectionScanner::__scan(add):", e, uri)
-                sql.commit()
-            except Exception as e:
-                print("CollectionScanner::__scan():", e)
+                    self.__add2db(uri, mtime)
+                    SqlCursor.allow_main_thread_execution(App().db)
+                except Exception as e:
+                    print("CollectionScanner::__scan(add):", e, uri)
+        except Exception as e:
+            print("CollectionScanner::__scan():", e)
         GLib.idle_add(self.__finish)
         del self.__history
         self.__history = None
@@ -327,8 +326,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): Update album")
         self.update_album(album_id, album_artist_ids, genre_ids, year)
         if new_album:
-            with SqlCursor(App().db) as sql:
-                sql.commit()
+            SqlCursor.commit(App().db)
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         for artist_id in new_artist_ids:
@@ -364,15 +362,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().tracks.clean(track_id)
             cleaned = App().albums.clean(album_id)
             if cleaned:
-                with SqlCursor(App().db) as sql:
-                    sql.commit()
+                SqlCursor.commit(App().db)
                 GLib.idle_add(self.emit, "album-updated",
                               album_id, True)
             for artist_id in album_artist_ids + artist_ids:
                 cleaned = App().artists.clean(artist_id)
-                if cleaned:
-                    with SqlCursor(App().db) as sql:
-                        sql.commit()
                 # Force update even if not cleaned as artist may
                 # have been removed from a selected genre
                 GLib.idle_add(self.emit, "artist-updated",
@@ -380,8 +374,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             for genre_id in genre_ids:
                 cleaned = App().genres.clean(genre_id)
                 if cleaned:
-                    with SqlCursor(App().db) as sql:
-                        sql.commit()
+                    SqlCursor.commit(App().db)
                     GLib.idle_add(self.emit, "genre-updated",
                                   genre_id, False)
         except Exception as e:

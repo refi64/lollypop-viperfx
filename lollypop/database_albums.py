@@ -126,7 +126,6 @@ class AlbumsDatabase:
         with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET loved=? WHERE rowid=?",
                         (loved, album_id))
-            sql.commit()
 
     def set_rate(self, album_id, rate):
         """
@@ -136,7 +135,6 @@ class AlbumsDatabase:
         with SqlCursor(App().db) as sql:
             sql.execute("UPDATE albums SET rate=? WHERE rowid=?",
                         (rate, album_id))
-            sql.commit()
 
     def set_year(self, album_id, year):
         """
@@ -159,19 +157,16 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET uri=? WHERE rowid=?",
                         (uri, album_id))
 
-    def set_popularity(self, album_id, popularity, commit=False):
+    def set_popularity(self, album_id, popularity):
         """
             Set popularity
             @param album_id as int
             @param popularity as int
-            @param commit as bool
         """
         with SqlCursor(App().db) as sql:
             try:
                 sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                             (popularity, album_id))
-                if commit:
-                    sql.commit()
             except:  # Database is locked
                 pass
 
@@ -286,7 +281,6 @@ class AlbumsDatabase:
             current += pop_to_add
             sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                         (current, album_id))
-            sql.commit()
 
     def get_higher_popularity(self):
         """

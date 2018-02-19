@@ -13,6 +13,7 @@
 from gi.repository import GLib, Gio
 
 import sqlite3
+from threading import Lock
 
 from lollypop.define import App
 from lollypop.objects import Album
@@ -90,6 +91,7 @@ class Database:
         """
             Create database tables or manage update if needed
         """
+        self.thread_lock = Lock()
         f = Gio.File.new_for_path(self.DB_PATH)
         upgrade = DatabaseUpgrade()
         if not f.query_exists():
@@ -112,7 +114,6 @@ class Database:
                     sql.execute(self.__create_album_genres_idx)
                     sql.execute(self.__create_track_genres_idx)
                     sql.execute("PRAGMA user_version=%s" % upgrade.version)
-                    sql.commit()
             except Exception as e:
                 print("Database::__init__(): %s" % e)
         else:
@@ -145,33 +146,29 @@ class Database:
             Delete tracks from db
             @param track_ids as [int]
         """
-        SqlCursor.add(App().playlists)
-        with SqlCursor(self) as sql:
-            all_album_ids = []
-            all_artist_ids = []
-            all_genre_ids = []
-            for track_id in track_ids:
-                album_id = App().tracks.get_album_id(track_id)
-                art_file = App().art.get_album_cache_name(Album(album_id))
-                genre_ids = App().tracks.get_genre_ids(track_id)
-                album_artist_ids = App().albums.get_artist_ids(album_id)
-                artist_ids = App().tracks.get_artist_ids(track_id)
-                uri = App().tracks.get_uri(track_id)
-                App().playlists.remove(uri)
-                App().tracks.remove(track_id)
-                App().tracks.clean(track_id)
-                all_album_ids.append(album_id)
-                all_artist_ids += album_artist_ids + artist_ids
-                all_genre_ids += genre_ids
-            for album_id in list(set(all_album_ids)):
-                if App().albums.clean(album_id):
-                    App().art.clean_store(art_file)
-            for artist_id in list(set(all_artist_ids)):
-                App().artists.clean(artist_id)
-            for genre_id in list(set(all_genre_ids)):
-                App().genres.clean(genre_id)
-            sql.commit()
-        SqlCursor.remove(App().playlists)
+        all_album_ids = []
+        all_artist_ids = []
+        all_genre_ids = []
+        for track_id in track_ids:
+            album_id = App().tracks.get_album_id(track_id)
+            art_file = App().art.get_album_cache_name(Album(album_id))
+            genre_ids = App().tracks.get_genre_ids(track_id)
+            album_artist_ids = App().albums.get_artist_ids(album_id)
+            artist_ids = App().tracks.get_artist_ids(track_id)
+            uri = App().tracks.get_uri(track_id)
+            App().playlists.remove(uri)
+            App().tracks.remove(track_id)
+            App().tracks.clean(track_id)
+            all_album_ids.append(album_id)
+            all_artist_ids += album_artist_ids + artist_ids
+            all_genre_ids += genre_ids
+        for album_id in list(set(all_album_ids)):
+            if App().albums.clean(album_id):
+                App().art.clean_store(art_file)
+        for artist_id in list(set(all_artist_ids)):
+            App().artists.clean(artist_id)
+        for genre_id in list(set(all_genre_ids)):
+            App().genres.clean(genre_id)
 
 #######################
 # PRIVATE             #

@@ -249,7 +249,6 @@ class TracksDatabase:
             sql.execute("UPDATE tracks SET uri=?\
                          WHERE rowid=?",
                         (uri, track_id))
-            sql.commit()
             if uri.startswith("http") or uri.startswith("https"):
                 self.set_duration(track_id, 0)
 
@@ -263,7 +262,6 @@ class TracksDatabase:
             sql.execute("UPDATE tracks SET rate=?\
                          WHERE rowid=?",
                         (rate, track_id))
-            sql.commit()
 
     def get_album_id(self, track_id):
         """
@@ -426,7 +424,6 @@ class TracksDatabase:
             sql.execute("UPDATE tracks\
                          SET duration=?\
                          WHERE rowid=?", (duration, track_id,))
-            sql.commit()
 
     def is_empty(self):
         """
@@ -531,7 +528,6 @@ class TracksDatabase:
             current += 1
             sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
                         (current, track_id))
-            sql.commit()
 
     def set_listened_at(self, track_id, time):
         """
@@ -542,7 +538,6 @@ class TracksDatabase:
         with SqlCursor(App().db) as sql:
             sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
                         (time, track_id))
-            sql.commit()
 
     def get_never_listened_to(self):
         """
@@ -592,7 +587,6 @@ class TracksDatabase:
             sql.execute("UPDATE tracks\
                          SET persistent=?\
                          WHERE rowid=?", (persistent, track_id,))
-            sql.commit()
 
     def get_randoms(self):
         """
@@ -605,26 +599,21 @@ class TracksDatabase:
                                   ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
-    def set_popularity(self, track_id, popularity, commit=False):
+    def set_popularity(self, track_id, popularity):
         """
             Set popularity
             @param track id as int
             @param popularity as int
-            @warning: commit needed
         """
         with SqlCursor(App().db) as sql:
             try:
                 sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
                             (popularity, track_id))
-                if commit:
-                    sql.commit()
             except:  # Database is locked
                 pass
 
     def get_popularity(self, track_id):
-        """ème a déjà été remonté en début de semaine et semble ancien.
-Nous traitons le problème dès que possible (salle très occupée).
-
+        """
             Get popularity
             @param track id  as int
             @return popularity as int

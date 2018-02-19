@@ -87,7 +87,7 @@ class Base:
                 best_popularity = self.db.get_higher_popularity()
                 if new_rate == 5:
                     popularity = (popularity + best_popularity) / 2
-                self.db.set_popularity(self.id, popularity, True)
+                self.db.set_popularity(self.id, popularity)
             elif self.id == Type.RADIOS:
                 radios = Radios()
                 avg_popularity = radios.get_avg_popularity()

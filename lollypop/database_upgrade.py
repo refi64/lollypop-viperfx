@@ -73,7 +73,6 @@ class DatabaseUpgrade:
         if gsettings_version != -1:
             with SqlCursor(db) as sql:
                 sql.execute("PRAGMA user_version=%s" % gsettings_version)
-                sql.commit()
                 App().settings.set_value("db-version",
                                          GLib.Variant("i", -1))
         version = 0
@@ -87,13 +86,11 @@ class DatabaseUpgrade:
                     try:
                         if isinstance(self.__UPGRADES[i], str):
                             sql.execute(self.__UPGRADES[i])
-                            sql.commit()
                         else:
                             self.__UPGRADES[i](db)
                     except Exception as e:
                         print("History DB upgrade %s failed: %s" % (i, e))
                 sql.execute("PRAGMA user_version=%s" % self.version)
-                sql.commit()
 
     @property
     def version(self):
@@ -120,7 +117,6 @@ class DatabaseUpgrade:
                             (translated, row[0]))
                 sql.execute("UPDATE artists SET sortname=? WHERE rowid=?",
                             (row[1], row[0]))
-            sql.commit()
 
     def __upgrade_4(self, db):
         """
@@ -175,7 +171,6 @@ class DatabaseUpgrade:
                                popularity,\
                                mtime FROM backup")
             sql.execute("DROP TABLE backup")
-            sql.commit()
 
     def __upgrade_13(self, db):
         """
@@ -217,7 +212,6 @@ class DatabaseUpgrade:
                         uri = GLib.filename_to_uri(uri)
                         sql.execute("UPDATE tracks set uri=? WHERE rowid=?",
                                     (uri, track_id))
-            sql.commit()
         with SqlCursor(App().playlists) as sql:
             sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
             sql.execute("""CREATE TABLE tracks (playlist_id INT NOT NULL,
@@ -231,7 +225,6 @@ class DatabaseUpgrade:
                     uri = GLib.filename_to_uri(path)
                     sql.execute("UPDATE tracks set uri=? WHERE uri=?",
                                 (uri, path))
-            sql.commit()
 
     def __upgrade_15(self, db):
         """
@@ -280,7 +273,6 @@ class DatabaseUpgrade:
                     uri = GLib.filename_to_uri(uri)
                     sql.execute("UPDATE albums set uri=? WHERE rowid=?",
                                 (uri, rowid))
-            sql.commit()
 
     def __upgrade_18(self, db):
         """
@@ -289,7 +281,6 @@ class DatabaseUpgrade:
         with SqlCursor(History()) as sql:
             sql.execute("ALTER TABLE history ADD loved_album\
                         INT NOT NULL DEFAULT 0")
-            sql.commit()
 
     def __upgrade_19(self, db):
         """
@@ -301,7 +292,6 @@ class DatabaseUpgrade:
                             INT NOT NULL DEFAULT -1")
                 sql.execute("ALTER TABLE history ADD rate\
                             INT NOT NULL DEFAULT -1")
-                sql.commit()
             except:
                 pass  # May fails if History was non existent
         with SqlCursor(db) as sql:
@@ -309,7 +299,6 @@ class DatabaseUpgrade:
                         INT NOT NULL DEFAULT -1")
             sql.execute("ALTER TABLE albums ADD rate\
                         INT NOT NULL DEFAULT -1")
-            sql.commit()
 
     def __upgrade_20(self, db):
         """
@@ -423,7 +412,6 @@ class DatabaseUpgrade:
                                    ltime,\
                                    persistent FROM backup")
             sql.execute("DROP TABLE backup")
-            sql.commit()
 
     def __upgrade_21(self, db):
         """
@@ -432,7 +420,6 @@ class DatabaseUpgrade:
         with SqlCursor(Radios()) as sql:
             sql.execute("ALTER TABLE radios ADD rate\
                          INT NOT NULL DEFAULT -1")
-            sql.commit()
 
     def __upgrade_22(self, db):
         """
@@ -500,7 +487,6 @@ class DatabaseUpgrade:
                                    rate,\
                                    ltime FROM backup")
             sql.execute("DROP TABLE backup")
-            sql.commit()
 
     def __upgrade_23(self, db):
         """
@@ -517,7 +503,6 @@ class DatabaseUpgrade:
             sql.execute("UPDATE albums SET mtime = (\
                             SELECT mtime FROM album_genres\
                             WHERE album_genres.album_id=albums.rowid)")
-            sql.commit()
             # Remove mtime from album_genres table
             sql.execute("CREATE TABLE album_genres2 (\
                                                 album_id INT NOT NULL,\
@@ -537,7 +522,6 @@ class DatabaseUpgrade:
                                    genre_id FROM track_genres")
             sql.execute("DROP TABLE track_genres")
             sql.execute("ALTER TABLE track_genres2 RENAME TO track_genres")
-            sql.commit()
 
     def __upgrade_26(self, db):
         """
@@ -564,4 +548,3 @@ class DatabaseUpgrade:
                             no_album_artist, year, uri, popularity, rate,
                             loved, mtime, synced FROM tmp_albums""")
             sql.execute("DROP TABLE tmp_albums")
-            sql.commit()

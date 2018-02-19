@@ -13,6 +13,7 @@
 from gi.repository import GLib
 
 import sqlite3
+from threading import Lock
 
 from lollypop.sqlcursor import SqlCursor
 
@@ -41,11 +42,11 @@ class History:
         """
             Init playlists manager
         """
+        self.thread_lock = Lock()
         # Create db schema
         try:
             with SqlCursor(self) as sql:
                 sql.execute(self.__create_history)
-                sql.commit()
         except:
             pass
         with SqlCursor(self) as sql:
@@ -57,7 +58,6 @@ class History:
                              WHERE rowid IN (SELECT rowid\
                                              FROM history\
                                              LIMIT %s)" % self.__DELETE)
-                sql.commit()
                 sql.execute("VACUUM")
 
     def add(self, name, duration, popularity, rate,
@@ -90,7 +90,6 @@ class History:
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             (name, duration, popularity, rate, ltime, mtime,
                              loved_album, album_popularity, album_rate))
-            sql.commit()
 
     def get(self, name, duration):
         """

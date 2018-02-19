@@ -13,6 +13,7 @@
 from gi.repository import GObject, GLib
 
 import sqlite3
+from threading import Lock
 
 from lollypop.sqlcursor import SqlCursor
 
@@ -40,11 +41,11 @@ class Radios(GObject.GObject):
             Init playlists manager
         """
         GObject.GObject.__init__(self)
+        self.thread_lock = Lock()
         # Create db schema
         try:
             with SqlCursor(self) as sql:
                 sql.execute(self.create_radios)
-                sql.commit()
         except:
             pass
 
@@ -64,7 +65,6 @@ class Radios(GObject.GObject):
                 sql.execute("INSERT INTO radios (name, url, popularity)\
                              VALUES (?, ?, ?)",
                             (name, url, 0))
-            sql.commit()
             GLib.idle_add(self.emit, "radios-changed")
 
     def exists(self, name):
@@ -95,7 +95,6 @@ class Radios(GObject.GObject):
                         SET name=?\
                         WHERE name=?",
                         (new_name, old_name))
-            sql.commit()
             GLib.idle_add(self.emit, "radios-changed")
 
     def delete(self, name):
@@ -107,7 +106,6 @@ class Radios(GObject.GObject):
             sql.execute("DELETE FROM radios\
                         WHERE name=?",
                         (name,))
-            sql.commit()
             GLib.idle_add(self.emit, "radios-changed")
 
     def get(self):
@@ -153,7 +151,6 @@ class Radios(GObject.GObject):
             current += 1
             sql.execute("UPDATE radios set popularity=? WHERE name=?",
                         (current, name))
-            sql.commit()
 
     def get_higher_popularity(self):
         """
@@ -195,7 +192,6 @@ class Radios(GObject.GObject):
                 sql.execute("UPDATE radios SET\
                             popularity=? WHERE name=?",
                             (popularity, name))
-                sql.commit()
             except:  # Database is locked
                 pass
 
@@ -210,7 +206,6 @@ class Radios(GObject.GObject):
                 sql.execute("UPDATE radios SET\
                             rate=? WHERE name=?",
                             (rate, name))
-                sql.commit()
             except:  # Database is locked
                 pass
 

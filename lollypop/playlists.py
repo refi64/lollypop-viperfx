@@ -16,6 +16,7 @@ from gettext import gettext as _
 import itertools
 import sqlite3
 from datetime import datetime
+from threading import Lock
 
 from lollypop.database import Database
 from lollypop.define import App, Type
@@ -50,6 +51,7 @@ class Playlists(GObject.GObject):
         """
             Init playlists manager
         """
+        self.thread_lock = Lock()
         GObject.GObject.__init__(self)
         self.LOVED = _("Loved tracks")
         # Create db schema
@@ -57,7 +59,6 @@ class Playlists(GObject.GObject):
             with SqlCursor(self) as sql:
                 sql.execute(self.__create_playlists)
                 sql.execute(self.__create_tracks)
-                sql.commit()
         except:
             pass
 
@@ -71,7 +72,6 @@ class Playlists(GObject.GObject):
             result = sql.execute("INSERT INTO playlists (name, mtime)"
                                  " VALUES (?, ?)",
                                  (name, datetime.now().strftime("%s")))
-            sql.commit()
             GLib.idle_add(self.emit, "playlists-changed", result.lastrowid)
 
     def exists(self, playlist_id):
@@ -103,7 +103,6 @@ class Playlists(GObject.GObject):
                         SET name=?\
                         WHERE name=?",
                         (new_name, old_name))
-            sql.commit()
             GLib.idle_add(self.emit, "playlists-changed", playlist_id)
 
     def delete(self, name):
@@ -119,7 +118,6 @@ class Playlists(GObject.GObject):
             sql.execute("DELETE FROM tracks\
                         WHERE playlist_id=?",
                         (playlist_id,))
-            sql.commit()
             GLib.idle_add(self.emit, "playlists-changed", playlist_id)
 
     def remove(self, uri):
@@ -131,7 +129,6 @@ class Playlists(GObject.GObject):
             sql.execute("DELETE FROM tracks\
                         WHERE uri=?",
                         (uri,))
-            sql.commit()
 
     def get(self):
         """
@@ -294,7 +291,6 @@ class Playlists(GObject.GObject):
         with SqlCursor(self) as sql:
             sql.execute("DELETE FROM tracks\
                          WHERE playlist_id=?", (playlist_id,))
-            sql.commit()
             if notify:
                 GLib.idle_add(self.emit, "playlist-del", playlist_id, None)
 
@@ -320,7 +316,6 @@ class Playlists(GObject.GObject):
                 sql.execute("UPDATE playlists SET mtime=?\
                              WHERE rowid=?", (datetime.now().strftime("%s"),
                                               playlist_id))
-                sql.commit()
 
     def remove_tracks(self, playlist_id, tracks, notify=True):
         """
@@ -336,7 +331,6 @@ class Playlists(GObject.GObject):
                 if notify:
                     GLib.idle_add(self.emit, "playlist-del",
                                   playlist_id, track.id)
-            sql.commit()
 
     def import_uri(self, playlist_id, uri, start=None, down=True):
         """

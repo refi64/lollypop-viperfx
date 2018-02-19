@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib, Gio, GObject, Pango
 from gettext import gettext as _
 
 from lollypop.sync_mtp import MtpSync
-from lollypop.sqlcursor import SqlCursor
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.selectionlist import SelectionList
 from lollypop.define import App, Type
@@ -367,7 +366,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Populate hidden albums playlist
             @param album_id as int
             @param toggle as bool
-            @warning commit on default sql cursor needed
         """
         if App().settings.get_value("sync-albums"):
             App().albums.set_synced(album_id, toggle)
@@ -400,8 +398,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         for item in self.__model:
             item[0] = not selected
             self.__populate_albums_playlist(item[2], item[0])
-        with SqlCursor(App().db) as sql:
-            sql.commit()
 
     def __on_item_toggled(self, view, path):
         """
@@ -414,5 +410,3 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self.__model.set_value(iterator, 0, toggle)
         album_id = self.__model.get_value(iterator, 2)
         self.__populate_albums_playlist(album_id, toggle)
-        with SqlCursor(App().db) as sql:
-            sql.commit()

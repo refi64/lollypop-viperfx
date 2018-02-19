@@ -162,9 +162,6 @@ class Application(Gtk.Application):
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         self.db = Database()
         self.playlists = Playlists()
-        # We store cursors for main thread
-        SqlCursor.add(self.db)
-        SqlCursor.add(self.playlists)
         self.albums = AlbumsDatabase()
         self.artists = ArtistsDatabase()
         self.genres = GenresDatabase()
