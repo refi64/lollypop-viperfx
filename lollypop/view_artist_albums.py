@@ -84,6 +84,25 @@ class ArtistAlbumsView(LazyLoadingView):
             self.set_sensitive(False)
             self._albumbox.add(label)
 
+    def lazy_loading(self, widgets=[], scroll_value=0):
+        """
+            Load the view in a lazy way
+            @param widgets as [AlbumSimpleWidgets]
+            @param scroll_value as float
+        """
+        widget = None
+        if self._stop or self._scroll_value != scroll_value:
+            return
+        if widgets:
+            widget = widgets.pop(0)
+            self._lazy_queue.remove(widget)
+        elif self._lazy_queue:
+            widget = self._lazy_queue.pop(0)
+        if widget is not None:
+            widget.connect("populated", self._on_populated,
+                           widgets, scroll_value)
+            widget.populate()
+
     def jump_to_current(self):
         """
             Jump to current album
@@ -146,25 +165,6 @@ class ArtistAlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
-    def lazy_loading(self, widgets=[], scroll_value=0):
-        """
-            Load the view in a lazy way
-            @param widgets as [AlbumSimpleWidgets]
-            @param scroll_value as float
-        """
-        widget = None
-        if self._stop or self._scroll_value != scroll_value:
-            return
-        if widgets:
-            widget = widgets.pop(0)
-            self._lazy_queue.remove(widget)
-        elif self._lazy_queue:
-            widget = self._lazy_queue.pop(0)
-        if widget is not None:
-            widget.connect("populated", self._on_populated,
-                           widgets, scroll_value)
-            widget.populate()
-
     def __add_albums(self, albums):
         """
             Pop an album and add it to the view,
