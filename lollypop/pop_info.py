@@ -391,8 +391,8 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         size = App().window.get_size()
-        self.set_size_request(size[0]*0.6,
-                              size[1]*0.7)
+        self.set_size_request(min(size[0] * 0.6, 1100),
+                              min(size[1] * 0.7, 800))
         if App().settings.get_value("inforeload"):
             self.__signal_id = App().player.connect("current-changed",
                                                     self.__on_current_changed)
