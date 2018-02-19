@@ -19,6 +19,7 @@ gi.require_version("Notify", "0.7")
 gi.require_version("TotemPlParser", "1.0")
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
+from threading import current_thread
 from pickle import dump
 from gettext import gettext as _
 
@@ -71,6 +72,10 @@ class Application(Gtk.Application):
                             application_id="org.gnome.Lollypop",
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.__version = version
+        # Set main thread name
+        # We force it to current python 3.6 name, to be sure in case of
+        # change in python
+        current_thread().setName("MainThread")
         set_proxy_from_gnome()
         self.set_property("register-session", True)
         GLib.setenv("PULSE_PROP_media.role", "music", True)
