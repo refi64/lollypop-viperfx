@@ -295,9 +295,7 @@ class LazyLoadingView(View):
 
     def lazy_loading(self, widgets=[], scroll_value=0):
         """
-            Load the view in a lazy way:
-                - widgets first
-                - _waiting_init then
+            Load the view in a lazy way
             @param widgets as [Gtk.Widget]
             @param scroll_value as float
         """
@@ -322,9 +320,7 @@ class LazyLoadingView(View):
 #######################
     def __lazy_loading(self, widgets=[], scroll_value=0):
         """
-            Load the view in a lazy way:
-                - widgets first
-                - _waiting_init then
+            Load the view in a lazy way
             @param widgets as [Gtk.Widget]
             @param scroll_value as float
         """

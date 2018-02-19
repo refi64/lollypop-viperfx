@@ -148,9 +148,7 @@ class ArtistAlbumsView(LazyLoadingView):
 #######################
     def lazy_loading(self, widgets=[], scroll_value=0):
         """
-            Load the view in a lazy way:
-                - widgets first
-                - _waiting_init then
+            Load the view in a lazy way
             @param widgets as [AlbumSimpleWidgets]
             @param scroll_value as float
         """
