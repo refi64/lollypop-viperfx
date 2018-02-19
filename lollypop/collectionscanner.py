@@ -185,6 +185,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Look for new files/modified files
         try:
             to_add = []
+            SqlCursor.add(App().db)
             for uri in new_tracks:
                 if self.__thread is None:
                     return
@@ -231,6 +232,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     SqlCursor.allow_main_thread_execution(App().db)
                 except Exception as e:
                     print("CollectionScanner::__scan(add):", e, uri)
+            SqlCursor.remove(App().db)
         except Exception as e:
             print("CollectionScanner::__scan():", e)
         GLib.idle_add(self.__finish)
@@ -243,6 +245,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uri as string
             @param mtime as int
             @return track id as int
+            @warning, be sure SqlCursor is available for App().db
         """
         f = Gio.File.new_for_uri(uri)
         debug("CollectionScanner::add2db(): Read tags")
