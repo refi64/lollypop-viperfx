@@ -122,8 +122,9 @@ class IndicatorWidget(Gtk.EventBox):
             @return bool
         """
         for album in App().player.albums:
-            if self.__track.id in album.track_ids:
-                return True
+            if self.__track.album.id == album.id:
+                if self.__track.id in album.track_ids:
+                    return True
         return False
 
     def __clear_spinner(self):
