@@ -69,6 +69,7 @@ class SearchPopover(Gtk.Popover):
             Create a new playlist based on search
             @param button as Gtk.Button
         """
+        button.set_sensitive(False)
         helper = TaskHelper()
         helper.run(self.__search_to_playlist)
 
