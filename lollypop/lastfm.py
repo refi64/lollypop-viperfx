@@ -12,6 +12,7 @@
 
 import gi
 gi.require_version("Secret", "1")
+from gi.repository import Gio
 
 from gettext import gettext as _
 
@@ -31,7 +32,7 @@ import re
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, Type
 from lollypop.objects import Track
-from lollypop.utils import debug, get_network_available
+from lollypop.utils import debug
 from lollypop.goa import GoaSyncedAccount
 
 
@@ -84,7 +85,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         if self.is_goa:
             helper = TaskHelper()
             helper.run(self.__connect, full_sync)
-        elif get_network_available():
+        elif Gio.NetworkMonitor.get_default().get_network_available():
             from lollypop.helper_passwords import PasswordsHelper
             helper = PasswordsHelper()
             helper.get(self.__name,
@@ -99,7 +100,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param artist as str
             @return (url as str, content as str)
         """
-        if not get_network_available():
+        if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         last_artist = self.get_artist(artist)
         try:
@@ -117,7 +118,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param track as Track
             @param timestamp as int
         """
-        if get_network_available() and self.available:
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+                self.available:
             helper = TaskHelper()
             helper.run(self.__scrobble,
                        ", ".join(track.artists),
@@ -131,7 +133,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             Submit a playing now notification for a track
             @param track as Track
         """
-        if get_network_available() and track.id > 0 and self.available:
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+                track.id > 0 and self.available:
             helper = TaskHelper()
             helper.run(self.__now_playing,
                        ", ".join(track.artists),
@@ -148,7 +151,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if get_network_available() and self.available:
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+                self.available:
             track = self.get_track(artist, title)
             try:
                 track.love()
@@ -163,7 +167,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if get_network_available() and self.available:
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+                self.available:
             track = self.get_track(artist, title)
             try:
                 track.unlove()
@@ -336,6 +341,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             return
         self.__login = attributes["login"]
         self.__password = password
-        if get_network_available():
+        if Gio.NetworkMonitor.get_default().get_network_available():
             helper = TaskHelper()
             helper.run(self.__connect, full_sync, callback=(callback, *args))

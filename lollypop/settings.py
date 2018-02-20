@@ -20,7 +20,6 @@ from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
-from lollypop.utils import get_network_available
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -450,7 +449,7 @@ class SettingsDialog:
             @param button as Gtk.Button
         """
         self.__update_fm_settings("lastfm")
-        if not get_network_available():
+        if not Gio.NetworkMonitor.get_default().get_network_available():
             self.__lastfm_test_image.set_from_icon_name(
                                                "computer-fail-symbolic",
                                                Gtk.IconSize.MENU)
@@ -462,7 +461,7 @@ class SettingsDialog:
             @param button as Gtk.Button
         """
         self.__update_fm_settings("librefm")
-        if not get_network_available():
+        if not Gio.NetworkMonitor.get_default().get_network_available():
             self.__librefm_test_image.set_from_icon_name(
                                                "computer-fail-symbolic",
                                                Gtk.IconSize.MENU)
