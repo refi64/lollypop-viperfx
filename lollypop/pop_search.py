@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gio
 
-from lollypop.define import App, ResponsiveType
+from lollypop.define import App, ResponsiveType, Type
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
@@ -70,7 +70,7 @@ class SearchPopover(Gtk.Popover):
             @param button as Gtk.Button
         """
         helper = TaskHelper()
-        helper.run(self.__new_playlist)
+        helper.run(self.__search_to_playlist)
 
     def _on_search_changed(self, widget):
         """
@@ -107,6 +107,21 @@ class SearchPopover(Gtk.Popover):
         search.get(self.__current_search,
                    self.__cancellable,
                    callback=(self.__on_search_get,))
+
+    def __search_to_playlist(self):
+        """
+            Create a new playlist based on search
+            @params as ()
+        """
+        tracks = []
+        for child in self.__view.children:
+            tracks += child.album.tracks
+        if tracks:
+            playlist_id = App().playlists.get_id(self.__current_search)
+            if playlist_id == Type.NONE:
+                App().playlists.add(self.__current_search)
+                playlist_id = App().playlists.get_id(self.__current_search)
+            App().playlists.add_tracks(playlist_id, tracks)
 
     def __on_search_get(self, albums):
         """
