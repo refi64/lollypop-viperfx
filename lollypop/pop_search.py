@@ -111,7 +111,6 @@ class SearchPopover(Gtk.Popover):
     def __search_to_playlist(self):
         """
             Create a new playlist based on search
-            @params as ()
         """
         tracks = []
         for child in self.__view.children:
