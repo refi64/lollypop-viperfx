@@ -91,7 +91,7 @@ class Downloader:
             for item in decode["items"]:
                 uris.append(item["link"])
         except Exception as e:
-            print("Downloader::get_google_artwork():", e)
+            print("Downloader::get_google_artwork():", e, decode)
         return uris or None
 
 #######################
