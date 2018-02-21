@@ -115,7 +115,6 @@ class ToolbarEnd(Gtk.Bin):
         self.connect("show", self.__on_show)
         self.connect("hide", self.__on_hide)
         self.set_hexpand(True)
-        self.__next_popover = NextPopover()
         self.__search = None
         self.__timeout_id = None
         builder = Gtk.Builder()
@@ -123,8 +122,6 @@ class ToolbarEnd(Gtk.Bin):
         builder.connect_signals(self)
 
         self.add(builder.get_object("end"))
-
-        self.__grid_next = builder.get_object("grid-next")
 
         self.__shuffle_button = builder.get_object("shuffle-button")
         self.__shuffle_image = builder.get_object("shuffle-button-image")
@@ -140,6 +137,8 @@ class ToolbarEnd(Gtk.Bin):
         party_action.connect("activate", self.__activate_party_button)
         App().add_action(party_action)
         App().set_accels_for_action("app.party", ["<Control>p"])
+        self.__next_popover = NextPopover()
+        self.__next_popover.set_relative_to(self.__party_button)
 
         self.__search_button = builder.get_object("search-button")
         self.__helper = TouchHelper(self.__search_button,
@@ -193,14 +192,10 @@ class ToolbarEnd(Gtk.Bin):
             Show next popover
             @param player as Player
         """
-        # Do not show popover if we are hidden
-        if not self.__grid_next.is_visible():
-            return
         if self.__next_popover.should_be_shown():
             if self.__next_popover.is_visible():
                 self.__next_popover.update()
             else:
-                self.__next_popover.set_relative_to(self.__grid_next)
                 self.__next_popover.show()
         else:
             self.__next_popover.hide()
@@ -394,7 +389,6 @@ class ToolbarEnd(Gtk.Bin):
         """
         self.__next_popover.inhibit(False)
         if self.__next_popover.should_be_shown():
-            self.__next_popover.set_relative_to(self.__grid_next)
             self.__next_popover.show()
 
     def __on_show(self, widget):
