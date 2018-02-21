@@ -102,9 +102,9 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._playlist_track_ids = []
         self._playlist_ids = []
-        self.shuffle_albums(False)
+        # We do not shuffle when user add an album
+        self._albums_backup = []
         self._albums.insert(index, album)
-        self.shuffle_albums(True)
         if self._current_track.id is not None and self._current_track.id > 0:
             if not self.is_party:
                 self.set_next()

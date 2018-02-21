@@ -598,6 +598,8 @@ class AlbumsListView(LazyLoadingView):
             if src_track is None or src_album is None:
                 return
             src_album.remove_track(src_track)
+            if not src_album.tracks:
+                App().player.remove_album(src_album)
             children[row_index].emit("track-removed", src_album, [src_track])
             new_album = Album(src_track.album.id)
             new_album.set_tracks([src_track])
