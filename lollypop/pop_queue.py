@@ -196,11 +196,11 @@ class QueueRow(Gtk.ListBoxRow):
         """
         height = self.get_allocated_height()
         if y > height/2:
-            self.get_style_context().add_class("drag-up")
-            self.get_style_context().remove_class("drag-down")
-        else:
             self.get_style_context().remove_class("drag-up")
             self.get_style_context().add_class("drag-down")
+        else:
+            self.get_style_context().add_class("drag-up")
+            self.get_style_context().remove_class("drag-down")
 
     def __on_drag_leave(self, widget, context, time):
         """
