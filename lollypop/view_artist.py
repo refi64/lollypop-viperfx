@@ -66,7 +66,7 @@ class ArtistView(ArtistAlbumsView):
 
         self.__scale_factor = self.__artwork.get_scale_factor()
         self.__set_artwork()
-        self.__set_add_icon()
+        self.__on_album_changed(App().player)
         self.__on_lock_changed(App().player)
 
         artists = []
@@ -187,7 +187,7 @@ class ArtistView(ArtistAlbumsView):
                     App().player.play_albums(track,
                                              self._genre_ids,
                                              self._artist_ids)
-                    self.__set_add_icon()
+            self.__update_icon(False)
         except Exception as e:
             print("ArtistView::_on_play_clicked:", e)
 
@@ -196,24 +196,17 @@ class ArtistView(ArtistAlbumsView):
             Add artist albums
         """
         try:
-            albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
-            if self.__add_button.get_image().get_icon_name(
-                                                   )[0] == "list-add-symbolic":
-                for album_id in albums:
-                    album = Album(album_id)
-                    # If playing and no albums, play it
-                    if not App().player.has_album(album):
-                        if App().player.is_playing and\
-                                not App().player.get_albums():
-                            App().player.play_album(album)
-                        else:
-                            App().player.add_album(album)
-            else:
-                for album_id in albums:
-                    album = Album(album_id)
-                    if App().player.has_album(album):
-                        App().player.remove_album(album)
-            self.__set_add_icon()
+            album_ids = App().albums.get_ids(self._artist_ids, self._genre_ids)
+            player_ids = [album.id for album in App().player.albums]
+            icon_name = self.__add_button.get_image().get_icon_name()[0]
+            add = icon_name == "list-add-symbolic"
+            for album_id in album_ids:
+                in_player = album_id in player_ids
+                if add and not in_player:
+                    App().player.add_album(Album(album_id))
+                elif not add and in_player:
+                    App().player.remove_album(Album(album_id))
+            self.__update_icon(not add)
         except:
             pass  # Artist not available anymore for this context
 
@@ -377,23 +370,23 @@ class ArtistView(ArtistAlbumsView):
         else:
             self.__jump_button.set_sensitive(False)
 
-    def __set_add_icon(self):
+    def __update_icon(self, add):
         """
-            Set add icon based on player albums
+            Set icon for Artist +/-
+            @param add as bool
         """
-        albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
-        if len(set(albums) & set(App().player.albums)) == len(albums):
-            # Translators: artist context
-            self.__add_button.set_tooltip_text(_("Remove"))
-            self.__add_button.get_image().set_from_icon_name(
-                                                        "list-remove-symbolic",
-                                                        Gtk.IconSize.MENU)
-        else:
+        if add:
             # Translators: artist context
             self.__add_button.set_tooltip_text(_("Add"))
             self.__add_button.get_image().set_from_icon_name(
                                                            "list-add-symbolic",
                                                            Gtk.IconSize.MENU)
+        else:
+            # Translators: artist context
+            self.__add_button.set_tooltip_text(_("Remove"))
+            self.__add_button.get_image().set_from_icon_name(
+                                                        "list-remove-symbolic",
+                                                        Gtk.IconSize.MENU)
 
     def __on_realize(self, widget):
         """
@@ -434,13 +427,15 @@ class ArtistView(ArtistAlbumsView):
             App().player.disconnect(self.__lock_signal_id)
             self.__lock_signal_id = None
 
-    def __on_album_changed(self, player, unused):
+    def __on_album_changed(self, player, album_id=None):
         """
-            Update add icon
+            Update icon
             @param player as Player
-            @param unused
+            @param album_id as int
         """
-        self.__set_add_icon()
+        albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
+        album_ids = [album.id for album in App().player.albums]
+        self.__update_icon(len(set(albums) & set(album_ids)) != len(albums))
 
     def __on_lock_changed(self, player):
         """
