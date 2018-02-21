@@ -117,7 +117,6 @@ class ToolbarEnd(Gtk.Bin):
         self.set_hexpand(True)
         self.__next_popover = NextPopover()
         self.__search = None
-        self.__next_was_inhibited = False
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
@@ -189,18 +188,15 @@ class ToolbarEnd(Gtk.Bin):
             # via Fullscreen class, so check button state
             self.__party_button.set_active(player.is_party)
 
-    def on_next_changed(self, player, force=False):
+    def on_next_changed(self, player):
         """
             Show next popover
             @param player as Player
-            @param force to show the popover
         """
-        # Do not show popover is this menu is active
-        # or if we are hidden
-        if self.__shuffle_button.get_active() or\
-           not self.__grid_next.is_visible():
+        # Do not show popover if we are hidden
+        if not self.__grid_next.is_visible():
             return
-        if self.__next_popover.should_be_shown() or force:
+        if self.__next_popover.should_be_shown():
             if self.__next_popover.is_visible():
                 self.__next_popover.update()
             else:
@@ -241,19 +237,6 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PROTECTED           #
 #######################
-    def _on_shuffle_button_toggled(self, button):
-        """
-            Hide next popover
-            @param button as Gtk.Button
-        """
-        if button.get_active():
-            self.__next_popover.hide()
-            self.__next_popover.inhibit(True)
-        else:
-            self.__next_popover.inhibit(False)
-            if self.__next_popover.should_be_shown():
-                self.__next_popover.show()
-
     def _on_party_button_toggled(self, button):
         """
             Set party mode on if party button active
@@ -290,7 +273,6 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self.__list_popover is not None:
             return
-        self.__next_was_inhibited = self.__next_popover.inhibited
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
         self.__list_popover = self.show_list_popover(widget)
@@ -313,7 +295,6 @@ class ToolbarEnd(Gtk.Bin):
             Show search popover
             @param args as []
         """
-        self.__next_was_inhibited = self.__next_popover.inhibited
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
         if self.__search is None:
@@ -411,8 +392,7 @@ class ToolbarEnd(Gtk.Bin):
             Restore next popover if needed
             @param popover as Gtk.Popover
         """
-        if not self.__next_was_inhibited:
-            self.__next_popover.inhibit(False)
+        self.__next_popover.inhibit(False)
         if self.__next_popover.should_be_shown():
             self.__next_popover.set_relative_to(self.__grid_next)
             self.__next_popover.show()

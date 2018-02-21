@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import App, ArtSize, Shuffle
+from lollypop.define import App, ArtSize
 
 
 class NextPopover(Gtk.Popover):
@@ -69,19 +69,16 @@ class NextPopover(Gtk.Popover):
         """
             Return True if widget should be shown, not already closed by user
         """
-        return not self.__inhibited and (
-                App().player.is_party or
-                App().settings.get_enum("shuffle") == Shuffle.TRACKS) and\
-            App().player.next_track.id is not None and\
-            App().player.next_track.id >= 0 and\
+        return not self.__inhibited and\
+            App().player.is_party and\
             not App().window.container.is_paned_stack
 
-    def inhibit(self, i):
+    def inhibit(self, b):
         """
             Inhibit popover
-            @param i as bool
+            @param b as bool
         """
-        self.__inhibited = i
+        self.__inhibited = b
 
     @property
     def inhibited(self):
