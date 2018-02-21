@@ -25,6 +25,13 @@ class QueuePlayer:
         self.__queue = []
         self.__backup_next = None
 
+    def set_queue(self, queue):
+        """
+            Set queue
+            @param queue as [int]
+        """
+        self.__queue = queue
+
     def append_to_queue(self, track_id, notify=True):
         """
             Append track to queue,
@@ -92,14 +99,6 @@ class QueuePlayer:
         if notify:
             self.emit("queue-changed")
 
-    @property
-    def queue(self):
-        """
-            Return queue
-            @return [ids as int]
-        """
-        return self.__queue
-
     def track_in_queue(self, track):
         """
             True if track exists in queue
@@ -140,6 +139,14 @@ class QueuePlayer:
         if self.__queue:
             track_id = self.__queue[0]
         return Track(track_id)
+
+    @property
+    def queue(self):
+        """
+            Return queue
+            @return [ids as int]
+        """
+        return self.__queue
 
 #######################
 # PRIVATE             #

@@ -317,6 +317,8 @@ class Application(Gtk.Application):
             dump(track_id, open(LOLLYPOP_DATA_PATH + "/track_id.bin", "wb"))
             dump([self.player.is_playing, self.player.is_party],
                  open(LOLLYPOP_DATA_PATH + "/player.bin", "wb"))
+            dump(self.player.queue,
+                 open(LOLLYPOP_DATA_PATH + "/queue.bin", "wb"))
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]

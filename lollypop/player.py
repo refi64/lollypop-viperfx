@@ -246,14 +246,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         try:
             if App().settings.get_value("save-state"):
                 track_id = load(open(LOLLYPOP_DATA_PATH +
-                                     "/track_id.bin",
-                                     "rb"))
+                                     "/track_id.bin", "rb"))
+                self.set_queue(load(open(LOLLYPOP_DATA_PATH +
+                               "/queue.bin", "rb")))
                 playlist_ids = load(open(LOLLYPOP_DATA_PATH +
-                                         "/playlist_ids.bin",
-                                         "rb"))
+                                         "/playlist_ids.bin", "rb"))
                 (is_playing, was_party) = load(open(LOLLYPOP_DATA_PATH +
-                                                    "/player.bin",
-                                                    "rb"))
+                                                    "/player.bin", "rb"))
                 if playlist_ids and playlist_ids[0] == Type.RADIOS:
                     radios = Radios()
                     track = Track()
