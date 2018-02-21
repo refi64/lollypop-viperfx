@@ -197,6 +197,27 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         self.connect()
 
+    def set_loved(self, track, loved):
+        """
+            Add or remove track from loved playlist on Last.fm
+            @param track as Track
+            @param loved Add to loved playlist if `True`; remove if `False`
+        """
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+                self.available:
+            if loved:
+                self.love(",".join(track.artists), track.name)
+            else:
+                self.unlove(",".join(track.artists), track.name)
+
+    @property
+    def can_love(self):
+        """
+            True if engine can love
+            @return bool
+        """
+        return True
+
     @property
     def is_goa(self):
         """

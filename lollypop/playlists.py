@@ -304,7 +304,7 @@ class Playlists(GObject.GObject):
         with SqlCursor(self) as sql:
             changed = False
             for track in tracks:
-                if not self.exists_track(playlist_id, track.id):
+                if not self.exists_track(playlist_id, track):
                     changed = True
                     sql.execute("INSERT INTO tracks"
                                 " VALUES (?, ?)",
@@ -409,7 +409,7 @@ class Playlists(GObject.GObject):
             i += 1
         return i
 
-    def exists_track(self, playlist_id, track_id):
+    def exists_track(self, playlist_id, track):
         """
             Check if track id exist in playlist
             @param playlist id as int
@@ -423,27 +423,22 @@ class Playlists(GObject.GObject):
                                   AND playlist_id=?\
                                   AND music.tracks.uri=\
                                   main.tracks.uri",
-                                 (track_id, playlist_id))
+                                 (track.id, playlist_id))
             v = result.fetchone()
             if v is not None:
                 return True
             return False
 
-    def exists_album(self, playlist_id, album_id, genre_ids, artist_ids):
+    def exists_album(self, playlist_id, album):
         """
             Return True if object_id is already present in playlist
             @param playlist id as int
-            @param album id as int
-            @param genre ids as [int]
-            @param artist ids as [int]
-            @param sql as sqlite cursor
+            @param album as Album/Disc
             @return bool
         """
         # We do not use Album object for performance reasons
         playlist_uris = self.get_tracks(playlist_id)
-        track_uris = App().albums.get_track_uris(album_id,
-                                                 genre_ids,
-                                                 artist_ids)
+        track_uris = album.track_uris
         return len(set(playlist_uris) & set(track_uris)) == len(track_uris)
 
     def get_cursor(self):

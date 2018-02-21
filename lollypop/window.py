@@ -16,7 +16,7 @@ from lollypop.container import Container
 from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
-from lollypop.utils import is_unity, set_loved, is_loved
+from lollypop.utils import is_unity
 
 
 class Window(Gtk.ApplicationWindow, Container):
@@ -534,19 +534,19 @@ class Window(Gtk.ApplicationWindow, Container):
                                      GLib.Variant("b", state))
             self.__container.show_genres(state)
         elif string == "loved":
-            if App().player.current_track.id is not None and\
-                    App().player.current_track.id >= 0:
-                isloved = is_loved(App().player.current_track.id)
-                set_loved(App().player.current_track.id, not isloved)
+            track = App().player.current_track
+            if track.id >= 0:
+                is_loved = track.loved()
+                track.set_loved(not is_loved)
                 if App().notify is not None:
-                    if isloved:
+                    if is_loved:
                         heart = "♡"
                     else:
                         heart = "❤"
-                    App().notify.send("%s - %s: %s" % (
-                                ", ".join(App().player.current_track.artists),
-                                App().player.current_track.name,
-                                heart))
+                    App().notify.send("%s - %s: %s" %
+                                      (", ".join(track.artists),
+                                       track.name,
+                                       heart))
 
     def __on_realize(self, widget):
         """

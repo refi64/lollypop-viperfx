@@ -58,6 +58,14 @@ class ListenBrainz(GObject.GObject):
         self.__submit("playing_now", payload)
 
     @property
+    def can_love(self):
+        """
+            True if engine can love
+            @return bool
+        """
+        return False
+
+    @property
     def available(self):
         """
             True if service available

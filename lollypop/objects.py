@@ -13,6 +13,7 @@
 
 from gi.repository import GLib
 
+from lollypop.helper_task import TaskHelper
 from lollypop.radios import Radios
 from lollypop.define import App, Type
 
@@ -170,6 +171,14 @@ class Disc:
         return [track.id for track in self.tracks]
 
     @property
+    def track_uris(self):
+        """
+            Get disc track uris
+            @return [str]
+        """
+        return [track.uri for track in self.tracks]
+
+    @property
     def tracks(self):
         """
             Get disc tracks
@@ -279,6 +288,15 @@ class Album(Base):
         """
         return self.db.get_disc_names(self.id, disc)
 
+    def set_loved(self, loved):
+        """
+            Mark album as loved
+            @param loved as bool
+        """
+        if self.id >= 0:
+            App().albums.set_loved(self.id, loved)
+            self.loved = loved
+
     @property
     def title(self):
         """
@@ -294,6 +312,14 @@ class Album(Base):
             @return [int]
         """
         return [track.id for track in self.tracks]
+
+    @property
+    def track_uris(self):
+        """
+            Get album track uris
+            @return [str]
+        """
+        return [track.uri for track in self.tracks]
 
     @property
     def tracks(self):
@@ -316,14 +342,6 @@ class Album(Base):
             disc_numbers = self.db.get_discs(self.id, self.genre_ids)
             self._discs = [Disc(self, number) for number in disc_numbers]
         return self._discs
-
-    def set_loved(self, loved):
-        """
-            Mark album as loved
-            @param loved as bool
-        """
-        if self.id >= 0:
-            App().albums.set_loved(self.id, loved)
 
 
 class Track(Base):
@@ -413,6 +431,32 @@ class Track(Base):
             @param number as int
         """
         self._number = number
+
+    def set_loved(self, loved):
+        """
+            Add or remove track from loved playlist
+            @param loved Add to loved playlist if `True`; remove if `False`
+        """
+        scrobbler_love = True
+        if not self.loved:
+            if loved:
+                App().playlists.add_tracks(Type.LOVED, [self])
+        elif not loved:
+            scrobbler_love = False
+            App().playlists.remove_tracks(Type.LOVED, [self])
+        for scrobbler in App().scrobblers:
+            if scrobbler.can_love:
+                helper = TaskHelper()
+                helper.run(scrobbler.set_loved, self, scrobbler_love)
+
+    @property
+    def loved(self):
+        """
+            True if track loved
+            @return bool
+        """
+        return App().playlists.exists_track(Type.LOVED,
+                                            self)
 
     @property
     def featuring_artist_ids(self):

@@ -15,9 +15,7 @@ from gi.repository import Gio, GLib
 from gettext import gettext as _
 import unicodedata
 
-from lollypop.helper_task import TaskHelper
-from lollypop.define import App, Type
-from lollypop.objects import Track
+from lollypop.define import App
 
 
 def set_proxy_from_gnome():
@@ -203,57 +201,9 @@ def is_readonly(uri):
     return not info.get_attribute_boolean("access::can-write")
 
 
-def is_loved(track_id):
-    """
-        Check if object is in loved playlist
-        @return bool
-    """
-    return App().playlists.exists_track(Type.LOVED,
-                                        track_id)
-
-
 def remove_static_genres(genre_ids):
     """
         Remove static genre ids
         @param genre ids as [int]
     """
     return [item for item in genre_ids if item >= 0]
-
-
-def set_loved(track_id, loved):
-    """
-        Add or remove track from loved playlist
-        @param track_id
-        @param loved Add to loved playlist if `True`; remove if `False`
-    """
-    if not is_loved(track_id):
-        if loved:
-            App().playlists.add_tracks(Type.LOVED,
-                                       [Track(track_id)])
-            if App().lastfm is not None:
-                helper = TaskHelper()
-                helper.run(_set_loved_on_lastfm, track_id, True)
-    else:
-        if not loved:
-            App().playlists.remove_tracks(Type.LOVED,
-                                          [Track(track_id)])
-            if App().lastfm is not None:
-                helper = TaskHelper()
-                helper.run(_set_loved_on_lastfm, track_id, False)
-
-
-def _set_loved_on_lastfm(track_id, loved):
-    """
-        Add or remove track from loved playlist on Last.fm
-        @param track_id
-        @param loved Add to loved playlist if `True`; remove if `False`
-    """
-    # Love the track on lastfm
-    if Gio.NetworkMonitor.get_default().get_network_available() and\
-            App().lastfm.available:
-        title = App().tracks.get_name(track_id)
-        artists = ", ".join(App().tracks.get_artists(track_id))
-        if loved:
-            App().lastfm.love(artists, title)
-        else:
-            App().lastfm.unlove(artists, title)

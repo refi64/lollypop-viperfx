@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk, Gdk, GObject
+from gi.repository import GLib, Gtk, GObject
 
 from gettext import gettext as _
 
@@ -372,23 +372,30 @@ class TracksView:
                 show_label = len(self._album.discs) > 1
                 disc_names = self._album.disc_names(disc.number)
                 if show_label or disc_names:
-                    label = Gtk.Label()
                     if disc_names:
                         disc_text = ", ".join(disc_names)
                     elif show_label:
                         disc_text = _("Disc %s") % disc.number
+                    box = Gtk.Box()
+                    label = Gtk.Label()
                     label.set_text(disc_text)
                     label.set_property("halign", Gtk.Align.START)
                     label.get_style_context().add_class("dim-label")
                     label.show()
-                    eventbox = Gtk.EventBox()
-                    eventbox.add(label)
-                    eventbox.connect("realize",
-                                     self.__on_disc_label_realize)
-                    eventbox.connect("button-press-event",
-                                     self.__on_disc_press_event, disc.number)
-                    eventbox.show()
-                    self._responsive_widget.attach(eventbox, 0, idx, width, 1)
+                    indicator = Gtk.Button.new_from_icon_name(
+                                                        "go-next-symbolic",
+                                                        Gtk.IconSize.BUTTON)
+                    indicator.get_style_context().add_class("menu-button")
+                    indicator.connect("clicked",
+                                      self.__on_indicator_button_clicked,
+                                      box,
+                                      disc)
+                    indicator.show()
+                    box.set_spacing(5)
+                    box.add(label)
+                    box.add(indicator)
+                    box.show()
+                    self._responsive_widget.attach(box, 0, idx, width, 1)
                     idx += 1
                 GLib.idle_add(self._responsive_widget.attach,
                               self._tracks_widget_left[disc.number],
@@ -605,34 +612,6 @@ class TracksView:
         except Exception as e:
             print("TracksView::__on_album_moved():", e)
 
-    def __on_disc_label_realize(self, eventbox):
-        """
-            Set mouse cursor
-            @param eventbox as Gtk.EventBox
-        """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-
-    def __on_disc_press_event(self, eventbox, event, idx):
-        """
-            Add/Remove disc to/from queue
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-            @param idx as int
-        """
-        disc = None
-        for d in self._album.discs:
-            if d.number == idx:
-                disc = d
-                break
-        if disc is None:
-            return
-        for track in disc.tracks:
-            if App().player.track_in_queue(track):
-                App().player.del_from_queue(track.id, False)
-            else:
-                App().player.append_to_queue(track.id, False)
-        App().player.emit("queue-changed")
-
     def __on_row_destroy(self, widget):
         """
             Destroy self if no more row
@@ -644,6 +623,32 @@ class TracksView:
                 break
         if not contain_children:
             self.destroy()
+
+    def __on_indicator_button_clicked(self, button, box, disc):
+        """
+            Popup menu for track relative to button
+            @param button as Gtk.Button
+            @param box as Gtk.Box
+            @param disc as Disc
+        """
+        from lollypop.widgets_context import ContextWidget
+        context_widget = None
+        for child in box.get_children():
+            if isinstance(child, ContextWidget):
+                context_widget = child
+                break
+        image = button.get_image()
+        if context_widget is None:
+            image.set_from_icon_name("go-previous-symbolic",
+                                     Gtk.IconSize.MENU)
+            context_widget = ContextWidget(disc, button)
+            context_widget.show()
+            box.add(context_widget)
+        else:
+            image.set_from_icon_name("go-next-symbolic",
+                                     Gtk.IconSize.MENU)
+            context_widget.destroy()
+        return True
 
     def __on_activated(self, widget, track):
         """

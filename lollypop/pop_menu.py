@@ -18,7 +18,6 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.define import App, Type, TAG_EDITORS
 from lollypop.objects import Track, Album
-from lollypop.utils import set_loved
 from lollypop.helper_dbus import DBusHelper
 from lollypop.helper_task import TaskHelper
 
@@ -39,7 +38,7 @@ class BaseMenu(Gio.Menu):
 
 class ArtistMenu(BaseMenu):
     """
-        Contextual menu for queue
+        Contextual menu for artist
     """
 
     def __init__(self, object):
@@ -89,12 +88,12 @@ class QueueMenu(BaseMenu):
         Contextual menu for queue
     """
 
-    def __init__(self, object):
+    def __init__(self, track):
         """
             Init playlists menu
-            @param object as Album/Track
+            @param track as Track
         """
-        BaseMenu.__init__(self, object)
+        BaseMenu.__init__(self, track)
         self.__set_queue_actions()
 
 #######################
@@ -104,48 +103,15 @@ class QueueMenu(BaseMenu):
         """
             Set queue actions
         """
-        queue = App().player.queue
-        append = True
-        prepend = True
-        delete = True
-        if not queue:
-            append = False
-        if not isinstance(self._object, Album):
-            if self._object.id in queue:
-                if queue and queue[0] == self._object.id:
-                    prepend = False
-                append = False
-            else:
-                delete = False
-        else:
-            tracks = App().albums.get_track_ids(self._object.id,
-                                                self._object.genre_ids,
-                                                self._object.artist_ids)
-            union = set(queue) & set(tracks)
-            if len(union) == len(tracks):
-                append = False
-                prepend = False
-            elif not bool(union):
-                delete = False
-
-        append_queue_action = Gio.SimpleAction(name="append_queue_action")
-        App().add_action(append_queue_action)
-        prepend_queue_action = Gio.SimpleAction(name="prepend_queue_action")
-        App().add_action(prepend_queue_action)
-        del_queue_action = Gio.SimpleAction(name="del_queue_action")
-        App().add_action(del_queue_action)
-        if append:
+        if self._object.id not in App().player.queue:
+            append_queue_action = Gio.SimpleAction(name="append_queue_action")
+            App().add_action(append_queue_action)
             append_queue_action.connect("activate",
                                         self.__append_to_queue)
             self.append(_("Add to queue"), "app.append_queue_action")
-        if prepend:
-            prepend_queue_action.connect("activate",
-                                         self.__insert_in_queue)
-            if isinstance(self._object, Album):
-                self.append(_("Next tracks"), "app.prepend_queue_action")
-            else:
-                self.append(_("Next track"), "app.prepend_queue_action")
-        if delete:
+        else:
+            del_queue_action = Gio.SimpleAction(name="del_queue_action")
+            App().add_action(del_queue_action)
             del_queue_action.connect("activate",
                                      self.__del_from_queue)
             self.append(_("Remove from queue"), "app.del_queue_action")
@@ -156,30 +122,7 @@ class QueueMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        if isinstance(self._object, Album):
-            for track_id in App().albums.get_track_ids(
-                                                   self._object.id,
-                                                   self._object.genre_ids,
-                                                   self._object.artist_ids):
-                App().player.append_to_queue(track_id, False)
-        else:
-            App().player.append_to_queue(self._object.id, False)
-        App().player.emit("queue-changed")
-
-    def __insert_in_queue(self, action, variant):
-        """
-            Prepend track id to queue
-            @param SimpleAction
-            @param GVariant
-        """
-        if isinstance(self._object, Album):
-            for track_id in reversed(App().albums.get_track_ids(
-                                                     self._object.id,
-                                                     self._object.genre_ids,
-                                                     self._object.artist_ids)):
-                App().player.insert_in_queue(track_id, 0, False)
-        else:
-            App().player.insert_in_queue(self._object.id, 0, False)
+        App().player.append_to_queue(self._object.id, False)
         App().player.emit("queue-changed")
 
     def __del_from_queue(self, action, variant):
@@ -188,14 +131,7 @@ class QueueMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        if isinstance(self._object, Album):
-            for track_id in App().albums.get_track_ids(
-                                                   self._object.id,
-                                                   self._object.genre_ids,
-                                                   self._object.artist_ids):
-                App().player.del_from_queue(track_id, False)
-        else:
-            App().player.del_from_queue(self._object.id, False)
+        App().player.del_from_queue(self._object.id, False)
         App().player.emit("queue-changed")
 
 
@@ -229,12 +165,10 @@ class PlaylistsMenu(BaseMenu):
         App().add_action(playlist_action)
         if isinstance(self._object, Album):
             exists = App().playlists.exists_album(Type.NOPARTY,
-                                                  self._object.id,
-                                                  self._object.genre_ids,
-                                                  self._object.artist_ids)
+                                                  self._object)
         else:
             exists = App().playlists.exists_track(Type.NOPARTY,
-                                                  self._object.id)
+                                                  self._object)
         if exists:
             self.append(_('Remove from "Not in party"'),
                         "app.playlist_not_in_party")
@@ -252,12 +186,10 @@ class PlaylistsMenu(BaseMenu):
             App().add_action(action)
             if isinstance(self._object, Album):
                 exists = App().playlists.exists_album(playlist[0],
-                                                      self._object.id,
-                                                      self._object.genre_ids,
-                                                      self._object.artist_ids)
+                                                      self._object)
             else:
                 exists = App().playlists.exists_track(playlist[0],
-                                                      self._object.id)
+                                                      self._object)
             if exists:
                 action.connect("activate",
                                self.__remove_from_playlist,
@@ -278,11 +210,7 @@ class PlaylistsMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        App().window.container.show_playlist_manager(
-                                          self._object.id,
-                                          self._object.genre_ids,
-                                          self._object.artist_ids,
-                                          isinstance(self._object, Album))
+        App().window.container.show_playlist_manager(self._object)
 
     def __add_to_playlist(self, action, variant, playlist_id):
         """
@@ -341,7 +269,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist name as str
         """
-        set_loved(self._object.id, True)
+        self._object.set_loved(True)
 
     def __del_from_loved(self, action, variant):
         """
@@ -350,7 +278,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist name as str
         """
-        set_loved(self._object.id, False)
+        self._object.set_loved(False)
 
 
 class EditMenu(BaseMenu):
@@ -436,8 +364,6 @@ class AlbumMenu(Gio.Menu):
         if show_artist:
             self.insert_section(0, _("Artist"),
                                 ArtistMenu(album))
-        self.insert_section(1, _("Queue"),
-                            QueueMenu(album))
         self.insert_section(2, _("Playlists"),
                             PlaylistsMenu(album))
         self.insert_section(3, _("Edit"),

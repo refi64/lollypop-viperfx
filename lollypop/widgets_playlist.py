@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.define import App, Type, WindowSize, Loading
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget, PlaylistRow
-from lollypop.objects import Track
+from lollypop.objects import Track, Album, Disc
 from lollypop.helper_task import TaskHelper
 
 
@@ -221,7 +221,7 @@ class PlaylistsWidget(Gtk.Grid):
                 child.destroy()
         else:
             for child in children:
-                if child.id == track_id:
+                if child.track.id == track_id:
                     child.destroy()
                     break
             self.__update_position()
@@ -529,19 +529,13 @@ class PlaylistsManagerWidget(Gtk.Bin):
         Widget for playlists management
     """
 
-    def __init__(self, object_id, genre_ids, artist_ids, is_album):
+    def __init__(self, object):
         """
             Init widget
-            @param object id as int
-            @param genre ids as [int]
-            @param artist ids as [int]
-            @param is album as bool
+            @param object as Track/Album/Disc
         """
         Gtk.Bin.__init__(self)
-        self.__genre_ids = genre_ids
-        self.__artist_ids = artist_ids
-        self.__object_id = object_id
-        self.__is_album = is_album
+        self.__object = object
         self.__deleted_path = None
 
         builder = Gtk.Builder()
@@ -566,7 +560,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
         self.add(builder.get_object("widget"))
 
-        if self.__object_id != Type.NONE:
+        if object is not None:
             renderer0 = Gtk.CellRendererToggle()
             renderer0.set_property("activatable", True)
             renderer0.connect("toggled", self.__on_playlist_toggled)
@@ -594,7 +588,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column2.set_property("fixed_width", 50)
 
-        if self.__object_id != Type.NONE:
+        if self.__object is not None:
             self.__view.append_column(column0)
         self.__view.append_column(column1)
         self.__view.append_column(column2)
@@ -702,18 +696,17 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param playlist selected as bool
         """
         for playlist in playlists:
-            if self.__object_id != Type.NONE:
-                if self.__is_album:
+            if self.__object is not None:
+                if isinstance(self.__object, Album) or\
+                        isinstance(self.__object, Disc):
                     selected = App().playlists.exists_album(
                                                        playlist[0],
-                                                       self.__object_id,
-                                                       self.__genre_ids,
-                                                       self.__artist_ids)
+                                                       self.__object)
                 else:
 
                     selected = App().playlists.exists_track(
                                                        playlist[0],
-                                                       self.__object_id)
+                                                       self.__object)
             else:
                 selected = False
             self.__model.append([selected, playlist[1],
@@ -770,15 +763,12 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param add as bool
         """
         def set(playlist_id, add):
-            tracks = []
-            if self.__is_album:
-                track_ids = App().albums.get_track_ids(self.__object_id,
-                                                       self.__genre_ids,
-                                                       self.__artist_ids)
-                for track_id in track_ids:
-                    tracks.append(Track(track_id))
+            if isinstance(self.__object, Disc):
+                tracks = self.__object.tracks
+            elif isinstance(self.__object, Album):
+                tracks = self.__object.tracks
             else:
-                tracks = [Track(self.__object_id)]
+                tracks = [self.__object]
             if add:
                 App().playlists.add_tracks(playlist_id, tracks)
             else:

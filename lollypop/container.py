@@ -106,19 +106,15 @@ class Container(Gtk.Bin):
                             GLib.Variant("ai",
                                          self.__list_two.selected_ids))
 
-    def show_playlist_manager(self, object_id, genre_ids,
-                              artist_ids, is_album):
+    def show_playlist_manager(self, object):
         """
             Show playlist manager for object_id
             Current view stay present in ViewContainer
-            @param object id as int
-            @param genre ids as [int]
-            @param artist ids as [int]
-            @param is_album as bool
+            @param object as Track/Album/Disc
         """
         from lollypop.view_playlists import PlaylistsManageView
         current = self.__stack.get_visible_child()
-        view = PlaylistsManageView(object_id, genre_ids, artist_ids, is_album)
+        view = PlaylistsManageView(object)
         view.populate()
         view.show()
         self.__stack.add(view)
@@ -676,7 +672,7 @@ class Container(Gtk.Bin):
             loader.start()
         else:
             from lollypop.view_playlists import PlaylistsManageView
-            view = PlaylistsManageView(Type.NONE, [], [], False)
+            view = PlaylistsManageView(None)
             view.populate()
         view.show()
         return view

@@ -331,26 +331,19 @@ class PlaylistsManageView(View):
         Playlist view used to manage playlists
     """
 
-    def __init__(self, object_id, genre_ids, artist_ids, is_album):
+    def __init__(self, object):
         """
             Init View
-            @param object id as int
-            @param genre ids as [int]
-            @param artist ids as [int]
-            @param is album as bool
-            @param width as int
+            @param object as Track/Album/Disc
         """
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource(
             "/org/gnome/Lollypop/PlaylistsManagerView.ui")
-        if object_id != Type.NONE:
+        if object is not None:
             builder.get_object("back_btn").show()
         builder.connect_signals(self)
-        self.__manage_widget = PlaylistsManagerWidget(object_id,
-                                                      genre_ids,
-                                                      artist_ids,
-                                                      is_album)
+        self.__manage_widget = PlaylistsManagerWidget(object)
         self.__manage_widget.show()
         self._viewport.add(self.__manage_widget)
         self.add(builder.get_object("widget"))

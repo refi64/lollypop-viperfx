@@ -18,7 +18,6 @@ from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
 from lollypop.utils import seconds_to_string
 from lollypop.objects import Track
-from lollypop import utils
 
 
 class Row(Gtk.ListBoxRow):
@@ -45,7 +44,7 @@ class Row(Gtk.ListBoxRow):
         self.__context = None
         self._indicator = IndicatorWidget(self._track, self if dnd else None)
         self.set_indicator(App().player.current_track.id == self._track.id,
-                           utils.is_loved(self._track.id))
+                           self._track.loved)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("button-release-event",
                                  self.__on_button_release_event)
@@ -245,7 +244,6 @@ class Row(Gtk.ListBoxRow):
         if self.__menu_button.get_image() is None:
             image = Gtk.Image.new_from_icon_name("go-previous-symbolic",
                                                  Gtk.IconSize.MENU)
-            image.set_opacity(0.2)
             self.__menu_button.set_image(image)
             self.__menu_button.connect(
                                       "button-release-event",
@@ -280,7 +278,7 @@ class Row(Gtk.ListBoxRow):
                     self.__preview_timeout_id = None
                 self.set_indicator(
                                App().player.current_track.id == self._track.id,
-                               utils.is_loved(self._track.id))
+                               self._track.loved)
                 App().player.preview.set_state(Gst.State.NULL)
 
     def __on_button_release_event(self, widget, event):
@@ -336,7 +334,7 @@ class Row(Gtk.ListBoxRow):
             self._duration_label.show()
             self.__context = None
             self.set_indicator(App().player.current_track.id == self._track.id,
-                               utils.is_loved(self._track.id))
+                               self._track.loved)
         return True
 
     def __on_closed(self, widget):
@@ -427,7 +425,7 @@ class PlaylistRow(Row):
         else:
             self._grid.attach(self.__header, 1, 0, 4, 1)
         self.set_indicator(App().player.current_track.id == self._track.id,
-                           utils.is_loved(self._track.id))
+                           self._track.loved)
         self.show_headers(self.__show_headers)
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
@@ -733,7 +731,7 @@ class TracksWidget(Gtk.ListBox):
         """
         for row in self.get_children():
             row.set_indicator(row.track.id == track_id,
-                              utils.is_loved(row.track.id))
+                              Track(track_id).loved)
 
     def update_duration(self, track_id):
         """
@@ -799,11 +797,10 @@ class TracksWidget(Gtk.ListBox):
         """
         if playlist_id != Type.LOVED:
             return
-
         for row in self.get_children():
             if track_id == row.track.id:
                 row.set_indicator(track_id == App().player.current_track.id,
-                                  utils.is_loved(track_id))
+                                  Track(track_id).loved)
 
     def __on_destroy(self, widget):
         """

@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App
-from lollypop.utils import is_loved
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -150,7 +149,6 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
         self.__button.get_style_context().add_class("menu-button")
         self.__button.get_style_context().add_class("track-menu-button")
-        self.__image.set_opacity(0.2)
         self.__button.show()
         self.__button.connect("button-release-event",
                               self.__on_button_release_event)
@@ -182,7 +180,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
         if self.__track.id == App().player.current_track.id:
             self.play()
-        elif is_loved(self.__track.id):
+        elif self.__track.loved:
             self.loved()
 
     def __on_button_release_event(self, widget, event):
