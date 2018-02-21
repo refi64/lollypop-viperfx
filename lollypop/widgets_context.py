@@ -163,7 +163,7 @@ class ContextWidget(Gtk.EventBox):
             else:
                 App().player.del_from_queue(self.__object.id, False)
         App().player.emit("queue-changed")
-        self.destroy()
+        self.hide()
 
     def __on_playback_button_clicked(self, button, add_to_playback):
         """
@@ -179,7 +179,7 @@ class ContextWidget(Gtk.EventBox):
             App().player.add_album(album)
         else:
             App().player.remove_album(album)
-        self.destroy()
+        self.hide()
 
     def __on_edit_button_clicked(self, button):
         """
@@ -191,7 +191,7 @@ class ContextWidget(Gtk.EventBox):
         dbus_helper.call("LaunchTagEditor",
                          GLib.Variant("(ss)", (self.__tag_editor, path)),
                          None, None)
-        self.destroy()
+        self.hide()
 
     def __on_playlist_button_clicked(self, button):
         """
@@ -199,7 +199,7 @@ class ContextWidget(Gtk.EventBox):
             @param button as Gtk.Button
         """
         App().window.container.show_playlist_manager(self.__object)
-        self.destroy()
+        self.hide()
 
     def __on_can_launch_tag_editor(self, source, result, button):
         """

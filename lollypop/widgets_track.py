@@ -313,15 +313,15 @@ class Row(Gtk.ListBoxRow):
             @param button as Gtk.Button
             @param event as Gdk.EventButton
         """
-        def on_destroy(widget):
-            button.emit("clicked")
+        def on_hide(widget):
+            self.__on_indicator_button_release_event(button, event)
         self.__context_timeout_id = None
         image = self.__menu_button.get_image()
         if self.__context is None:
             image.set_from_icon_name("go-next-symbolic",
                                      Gtk.IconSize.MENU)
             self.__context = ContextWidget(self._track, button)
-            self.__context.connect("destroy", on_destroy)
+            self.__context.connect("hide", on_hide)
             self.__context.set_property("halign", Gtk.Align.END)
             self.__context.show()
             self._duration_label.hide()
