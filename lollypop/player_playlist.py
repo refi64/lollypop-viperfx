@@ -78,7 +78,7 @@ class PlaylistPlayer(BasePlayer):
         if self.__playlist_backup:
             return self.__playlist_backup
         else:
-            return self._playlist
+            return self._playlist_track_ids
 
     def next(self, force):
         """

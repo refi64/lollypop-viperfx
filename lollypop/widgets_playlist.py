@@ -46,6 +46,10 @@ class PlaylistsWidget(Gtk.Grid):
         # Used to block widget2 populate while showing one column
         self.__locked_widget_right = True
 
+        self.set_margin_start(5)
+        # 15 for scrollbar overlay
+        self.set_margin_end(15)
+
         self.__grid = Gtk.Grid()
         self.__grid.set_vexpand(True)
         self.__grid.set_column_homogeneous(True)
@@ -486,9 +490,11 @@ class PlaylistsWidget(Gtk.Grid):
         if allocation.width < WindowSize.MONSTER or\
                 not App().settings.get_value("split-view"):
             self.__grid.set_property("valign", Gtk.Align.START)
+            self.__grid.set_column_spacing(0)
             orientation = Gtk.Orientation.VERTICAL
         else:
             self.__grid.set_property("valign", Gtk.Align.FILL)
+            self.__grid.set_column_spacing(5)
             orientation = Gtk.Orientation.HORIZONTAL
         if orientation != self.__orientation:
             self.__orientation = orientation

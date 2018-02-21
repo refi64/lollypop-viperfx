@@ -36,10 +36,8 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button = None
         self.__stack = None
         self.connect("destroy", self.__on_destroy)
-        # Here a hack to make old Gtk version support min-height css attribute
-        # min-height = 24px, borders = 2px, we set directly on stack
         # min-width = 24px, borders = 2px, padding = 8px
-        self.set_size_request(34, 26)
+        self.set_size_request(34, -1)
 
     def show_spinner(self):
         """

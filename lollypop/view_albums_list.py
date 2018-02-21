@@ -71,7 +71,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.get_style_context().add_class("loading")
         self.set_property("height-request", height)
         self.set_margin_start(5)
-        self.set_margin_end(5)
+        # 15 for scrollbar overlay
+        self.set_margin_end(15)
 
     def populate(self):
         """
@@ -117,9 +118,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.__action_button = Gtk.Button.new_from_icon_name(
                                                       action_icon,
                                                       Gtk.IconSize.MENU)
-        # Here a hack to make old Gtk version support min-height css attribute
-        # min-height = 24px, borders = 2px
-        self.__action_button.set_property("height-request", 26)
         self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__action_button.get_style_context().add_class("album-menu-button")
         self.__action_button.get_style_context().add_class("track-menu-button")

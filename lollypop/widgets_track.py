@@ -89,10 +89,6 @@ class Row(Gtk.ListBoxRow):
         self._num_label.get_style_context().add_class("dim-label")
         self.update_num_label()
         self.__menu_button = Gtk.Button.new()
-        # Here a hack to make old Gtk version support min-height css attribute
-        # min-height = 24px, borders = 2px, we set directly on stack
-        # min-width = 24px, borders = 2px, padding = 8px
-        self.__menu_button.set_size_request(34, 26)
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
@@ -378,10 +374,6 @@ class PlaylistRow(Row):
         Row.__init__(self, track, True)
         self.__parent_filter = False
         self.__show_headers = show_headers
-        self._indicator.set_margin_start(5)
-        self._row_widget.set_margin_start(5)
-        self._row_widget.set_margin_top(2)
-        self._row_widget.set_margin_end(5)
         self._grid.insert_row(0)
         self._grid.insert_column(0)
         self._grid.insert_column(1)
@@ -395,7 +387,7 @@ class PlaylistRow(Row):
         box = Gtk.Box()
         box.set_homogeneous(True)
         box.add(self.__cover)
-        box.set_property("width-request", ArtSize.MEDIUM+2)
+        box.set_property("width-request", ArtSize.MEDIUM + 2)
         self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
         self.__header = Gtk.Grid()
@@ -417,12 +409,6 @@ class PlaylistRow(Row):
         self.__album_label.set_hexpand(True)
         self.__album_label.set_property("halign", Gtk.Align.END)
         self.__header.add(self.__album_label)
-        self._num_label.set_property("valign", Gtk.Align.END)
-        self._title_label.set_property("valign", Gtk.Align.END)
-        if self._artists_label is not None:
-            self._artists_label.set_property("valign", Gtk.Align.END)
-        self._duration_label.set_property("valign", Gtk.Align.END)
-        self._indicator.set_property("valign", Gtk.Align.END)
         if self._artists_label is not None:
             self._grid.attach(self.__header, 1, 0, 5, 1)
         else:
