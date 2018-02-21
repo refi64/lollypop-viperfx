@@ -88,6 +88,7 @@ class FullScreen(Gtk.Window, InfoController,
 
         # Add an AlbumListView on the right
         self.__view = AlbumsListView(ResponsiveType.DND)
+        self.__view.get_style_context().add_class("background-opacity")
         self.__view.show()
         self.__revealer.add(self.__view)
         self.add(widget)

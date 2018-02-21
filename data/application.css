@@ -53,6 +53,11 @@ popover.background separator {
     box-shadow: 1px 1px 5px 5px alpha(black, 0.4);
 }
 
+.background-opacity {
+    background-color: @theme_bg_color;
+    opacity: 0.9;
+}
+
 .loading {
     background-color: shade(@theme_bg_color, 1.2);
     border: 1px solid @theme_bg_color;
