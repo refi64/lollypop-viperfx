@@ -37,10 +37,8 @@ class FullScreen(Gtk.Window, InfoController,
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
         self.set_application(app)
-        self.__timeout1 = None
-        self.__timeout2 = None
-        self.__signal1_id = None
-        self.__signal2_id = None
+        self.__timeout1 = self.__timeout2 = None
+        self.__signal1_id = self.__signal2_id = self.__signal3_id = None
         self.set_decorated(False)
         self.__parent = parent
 
@@ -129,6 +127,8 @@ class FullScreen(Gtk.Window, InfoController,
 
         # Disable screensaver (idle)
         App().inhibitor.manual_inhibit(suspend=False, idle=True)
+        self.__signal3_id = App().player.connect("party-changed",
+                                                 self.__on_party_changed)
 
     def do_hide(self):
         """
@@ -144,6 +144,9 @@ class FullScreen(Gtk.Window, InfoController,
         if self.__signal2_id is not None:
             App().player.disconnect(self.__signal2_id)
             self.__signal2_id = None
+        if self.__signal3_id is not None:
+            App().player.disconnect(self.__signal3_id)
+            self.__signal3_id = None
         if self.__timeout1 is not None:
             GLib.source_remove(self.__timeout1)
             self.__timeout1 = None
@@ -211,6 +214,14 @@ class FullScreen(Gtk.Window, InfoController,
             self.__timeout2 = GLib.timeout_add(60000, self.__update_datetime)
             return False
         return True
+
+    def __on_party_changed(self, player, party):
+        """
+            Populate view again
+            @param player as Player
+            @param party as bool
+        """
+        self.__view.populate(player.albums)
 
     def __on_key_release_event(self, widget, event):
         """

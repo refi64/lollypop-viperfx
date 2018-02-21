@@ -353,6 +353,8 @@ class AlbumsListView(LazyLoadingView):
             @param albums as [Album]
         """
         self._stop = False
+        for child in self.__view.get_children():
+            GLib.idle_add(child.destroy)
         self.__add_albums(list(albums))
 
     def rows_animation(self, x, y):
