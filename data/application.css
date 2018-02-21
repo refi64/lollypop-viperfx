@@ -160,6 +160,7 @@ popover.background separator {
 .cover-frame-selected {
     border-color: @theme_selected_bg_color;
     background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
 }
 
 .artwork-icon {

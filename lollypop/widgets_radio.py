@@ -66,12 +66,12 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         self.__title_label.connect("query-tooltip", self._on_query_tooltip)
         self.__overlay = Gtk.Overlay()
         self.__overlay.add(self._cover)
-        color = Gtk.Grid()
-        color.set_property("halign", Gtk.Align.CENTER)
-        color.set_property("valign", Gtk.Align.CENTER)
-        color.get_style_context().add_class("white")
-        color.add(self.__overlay)
-        grid.add(color)
+        white = Gtk.Grid()
+        white.set_property("halign", Gtk.Align.CENTER)
+        white.set_property("valign", Gtk.Align.CENTER)
+        white.get_style_context().add_class("white")
+        white.add(self.__overlay)
+        grid.add(white)
         grid.add(self.__title_label)
         self._widget.add(grid)
         self.set_property("halign", Gtk.Align.CENTER)
@@ -87,27 +87,6 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             Ignore set sensitive
         """
         pass
-
-    @property
-    def id(self):
-        """
-            Return widget id (same value for all radio widgets)
-        """
-        return Type.RADIOS
-
-    @property
-    def filter(self):
-        """
-            @Return filter as str
-        """
-        return self.__name
-
-    @property
-    def title(self):
-        """
-            @Return title as str
-        """
-        return self.__name
 
     def do_get_preferred_width(self):
         """
@@ -159,11 +138,32 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             return
         selected = App().player.current_track.id == Type.RADIOS and\
             self.__name == App().player.current_track.album_artists[0]
-        style_context = self._cover.get_style_context()
+        style_context = self.get_style_context()
         if selected:
             style_context.add_class("cover-frame-selected")
         else:
             style_context.remove_class("cover-frame-selected")
+
+    @property
+    def id(self):
+        """
+            Return widget id (same value for all radio widgets)
+        """
+        return Type.RADIOS
+
+    @property
+    def filter(self):
+        """
+            @Return filter as str
+        """
+        return self.__name
+
+    @property
+    def title(self):
+        """
+            @Return title as str
+        """
+        return self.__name
 
 #######################
 # PROTECTED           #
