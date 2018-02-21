@@ -289,11 +289,12 @@ class BaseWidget:
         if append:
             self._action_button.set_from_icon_name("list-add-symbolic",
                                                    Gtk.IconSize.BUTTON)
-            self._action_event.set_tooltip_text(_("Append"))
+            self._action_event.set_tooltip_text(_("Add to current playlist"))
         else:
             self._action_button.set_from_icon_name("list-remove-symbolic",
                                                    Gtk.IconSize.BUTTON)
-            self._action_event.set_tooltip_text(_("Remove"))
+            self._action_event.set_tooltip_text(
+                                           _("Remove from current playlist"))
 
 #######################
 # PRIVATE             #
