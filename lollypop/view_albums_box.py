@@ -37,10 +37,6 @@ class AlbumsBoxView(LazyLoadingView):
         self.__artist_ids = artist_ids
         self.__press_rect = None
 
-        self.set_margin_start(5)
-        # 15 for scrollbar overlay
-        self.set_margin_end(15)
-
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
