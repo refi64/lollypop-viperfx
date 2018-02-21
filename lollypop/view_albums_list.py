@@ -120,7 +120,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px
         self.__action_button.set_property("height-request", 26)
-        self.__action_button.get_image().set_opacity(0.2)
         self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__action_button.get_style_context().add_class("album-menu-button")
         self.__action_button.get_style_context().add_class("track-menu-button")
