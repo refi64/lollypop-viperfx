@@ -377,13 +377,14 @@ class ArtistView(ArtistAlbumsView):
         """
         if add:
             # Translators: artist context
-            self.__add_button.set_tooltip_text(_("Add"))
+            self.__add_button.set_tooltip_text(_("Add to current playlist"))
             self.__add_button.get_image().set_from_icon_name(
                                                            "list-add-symbolic",
                                                            Gtk.IconSize.MENU)
         else:
             # Translators: artist context
-            self.__add_button.set_tooltip_text(_("Remove"))
+            self.__add_button.set_tooltip_text(
+                                          _("Remove from current playlist"))
             self.__add_button.get_image().set_from_icon_name(
                                                         "list-remove-symbolic",
                                                         Gtk.IconSize.MENU)
