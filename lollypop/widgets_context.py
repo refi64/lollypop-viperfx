@@ -82,6 +82,36 @@ class ContextWidget(Gtk.EventBox):
             queue_button.set_margin_end(2)
             queue_button.show()
             grid.add(queue_button)
+        else:
+            add_to_playback = True
+            string = _("Add to current playlist")
+            icon = "list-add-symbolic"
+            # Search album in player
+            if isinstance(object, Disc):
+                album = object.album
+            else:
+                album = object
+            player_album = None
+            for _album in App().player.albums:
+                if album.id == _album.id:
+                    player_album = _album
+                    break
+            if player_album is not None:
+                if player_album.track_ids.sort() == object.track_ids.sort():
+                    add_to_playback = False
+                    string = _("Remove from current playlist")
+                    icon = "list-remove-symbolic"
+            playback_button = Gtk.Button.new_from_icon_name(
+                                                         icon,
+                                                         Gtk.IconSize.BUTTON)
+            playback_button.connect("clicked",
+                                    self.__on_playback_button_clicked,
+                                    add_to_playback)
+            playback_button.get_style_context().add_class("dim-button")
+            playback_button.set_tooltip_text(string)
+            playback_button.set_margin_end(2)
+            playback_button.show()
+            grid.add(playback_button)
 
         playlist_button = Gtk.Button.new_from_icon_name("view-list-symbolic",
                                                         Gtk.IconSize.BUTTON)
@@ -133,7 +163,23 @@ class ContextWidget(Gtk.EventBox):
             else:
                 App().player.del_from_queue(self.__object.id, False)
         App().player.emit("queue-changed")
-        self.__button.emit("button-release-event", None)
+        self.destroy()
+
+    def __on_playback_button_clicked(self, button, add_to_playback):
+        """
+            Add to/remove from current playback
+            @param button as Gtk.Button
+            @param add_to_playback as bool
+        """
+        if isinstance(self.__object, Disc):
+            album = self.__object.album
+        else:
+            album = self.__object
+        if add_to_playback:
+            App().player.add_album(album)
+        else:
+            App().player.remove_album(album)
+        self.destroy()
 
     def __on_edit_button_clicked(self, button):
         """
@@ -145,7 +191,7 @@ class ContextWidget(Gtk.EventBox):
         dbus_helper.call("LaunchTagEditor",
                          GLib.Variant("(ss)", (self.__tag_editor, path)),
                          None, None)
-        self.__button.emit("button-release-event", None)
+        self.destroy()
 
     def __on_playlist_button_clicked(self, button):
         """
@@ -153,6 +199,7 @@ class ContextWidget(Gtk.EventBox):
             @param button as Gtk.Button
         """
         App().window.container.show_playlist_manager(self.__object)
+        self.destroy()
 
     def __on_can_launch_tag_editor(self, source, result, button):
         """

@@ -631,6 +631,8 @@ class TracksView:
             @param box as Gtk.Box
             @param disc as Disc
         """
+        def on_destroy(widget):
+            button.emit("clicked")
         from lollypop.widgets_context import ContextWidget
         context_widget = None
         for child in box.get_children():
@@ -642,6 +644,7 @@ class TracksView:
             image.set_from_icon_name("go-previous-symbolic",
                                      Gtk.IconSize.MENU)
             context_widget = ContextWidget(disc, button)
+            context_widget.connect("destroy", on_destroy)
             context_widget.show()
             box.add(context_widget)
         else:

@@ -104,11 +104,11 @@ class IndicatorWidget(Gtk.EventBox):
         self.__init()
         if self.__is_in_current_playlist():
             self.__button.set_tooltip_text(
-                                       _("Remove track from current playlist"))
+                                       _("Remove from current playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
         else:
-            self.__button.set_tooltip_text(_("Add track to current playlist"))
+            self.__button.set_tooltip_text(_("Add to current playlist"))
             self.__image.set_from_icon_name("list-add-symbolic",
                                             Gtk.IconSize.MENU)
 

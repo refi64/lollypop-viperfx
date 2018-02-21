@@ -230,11 +230,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             Show context widget
             @param button as Gtk.Button
         """
+        def on_destroy(widget):
+            button.emit("clicked")
         image = button.get_image()
         if self.__context is None:
             image.set_from_icon_name("go-previous-symbolic",
                                      Gtk.IconSize.MENU)
             self.__context = ContextWidget(self._album, button)
+            self.__context.connect("destroy", on_destroy)
             self.__context.set_property("halign", Gtk.Align.START)
             self.__context.set_property("valign", Gtk.Align.CENTER)
             self.__context.show()
