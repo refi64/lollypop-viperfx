@@ -14,8 +14,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 
 from datetime import datetime
 
-from lollypop.define import App, ArtSize, Type, ResponsiveType
-from lollypop.pop_next import NextPopover
+from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.controllers import InfoController, PlaybackController
 from lollypop.controllers import ProgressController
@@ -65,8 +64,6 @@ class FullScreen(Gtk.Window, InfoController,
         self._play_btn = builder.get_object("play_btn")
         self._next_btn = builder.get_object("next_btn")
         self._prev_btn = builder.get_object("prev_btn")
-        self._next_popover = NextPopover()
-        self._next_popover.set_position(Gtk.PositionType.RIGHT)
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
         close_btn = builder.get_object("close_btn")
@@ -128,9 +125,6 @@ class FullScreen(Gtk.Window, InfoController,
         screen = Gdk.Screen.get_default()
         monitor = screen.get_monitor_at_window(self.__parent.get_window())
         self.fullscreen_on_monitor(screen, monitor)
-        self._next_popover.set_relative_to(self._next_btn)
-        if App().player.next_track.id != Type.RADIOS:
-            self._next_popover.show()
 
         # Disable screensaver (idle)
         App().inhibitor.manual_inhibit(suspend=False, idle=True)
@@ -154,8 +148,6 @@ class FullScreen(Gtk.Window, InfoController,
             self.__timeout1 = None
         if self.__timeout2 is not None:
             GLib.source_remove(self.__timeout2)
-        self._next_popover.set_relative_to(None)
-        self._next_popover.hide()
         App().inhibitor.manual_uninhibit()
 
     def show_hide_volume_control(self):
@@ -180,13 +172,6 @@ class FullScreen(Gtk.Window, InfoController,
                                         "<span font='%s'>%s</span>" %
                                         (self.__font_size - 1,
                                          GLib.markup_escape_text(album_name)))
-        # Do not show next popover non internal tracks as
-        # tags will be readed on the fly
-        if player.next_track.id is not None and player.next_track.id >= 0:
-            self._next_popover.update()
-            self._next_popover.show()
-        else:
-            self._next_popover.hide()
 
 #######################
 # PROTECTED           #
