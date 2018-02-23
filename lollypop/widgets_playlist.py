@@ -442,8 +442,8 @@ class PlaylistsWidget(Gtk.Grid):
             Move track from src to row
             Recalculate track position
             @param widget as TracksWidget
-            @param dst as int
-            @param src as int
+            @param dst as str
+            @param src as str
             @param up as bool
         """
         def update_playlist():
@@ -463,7 +463,7 @@ class PlaylistsWidget(Gtk.Grid):
         row_tracks_left = self.__get_row_tracks(Loading.LEFT)
         row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
         for track in row_tracks_left + row_tracks_right:
-            if track.id == dst:
+            if track.id == int(dst):
                 dst_track = track
             elif track.id == int(src):
                 src_track = track
