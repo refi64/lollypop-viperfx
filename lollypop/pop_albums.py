@@ -33,7 +33,7 @@ class AlbumsPopover(Gtk.Popover):
                                                     Gtk.IconSize.MENU)
         self.__clear_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__clear_button.set_tooltip_text(_("Clear albums"))
-        self.__clear_button.set_sensitive(False)
+        self.__clear_button.set_sensitive(App().player.albums)
         self.__clear_button.connect("clicked", self.__on_clear_clicked)
         self.__jump_button = Gtk.Button.new_from_icon_name(
                                                     "go-jump-symbolic",
@@ -80,6 +80,7 @@ class AlbumsPopover(Gtk.Popover):
         """
         self._stop = True
         GLib.idle_add(self.__view.clear, True)
+        self.__clear_button.set_sensitive(False)
 
     def __on_map(self, widget):
         """
