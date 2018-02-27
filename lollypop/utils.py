@@ -26,28 +26,31 @@ def set_proxy_from_gnome():
         proxy = Gio.Settings.new("org.gnome.system.proxy")
         mode = proxy.get_value("mode").get_string()
         if mode == "manual":
-            socks = Gio.Settings.new("org.gnome.system.proxy.socks")
-            h = socks.get_value("host").get_string()
-            p = socks.get_value("port").get_int32()
-            # Set socks proxy
+            no_http_proxy = True
+            http = Gio.Settings.new("org.gnome.system.proxy.http")
+            https = Gio.Settings.new("org.gnome.system.proxy.https")
+            h = http.get_value("host").get_string()
+            p = http.get_value("port").get_int32()
+            hs = https.get_value("host").get_string()
+            ps = https.get_value("port").get_int32()
             if h != "" and p != 0:
-                import socket
-                import socks
-                socks.set_default_proxy(socks.SOCKS4, h, p)
-                socket.socket = socks.socksocket
-            else:
-                http = Gio.Settings.new("org.gnome.system.proxy.http")
-                https = Gio.Settings.new("org.gnome.system.proxy.https")
-                h = http.get_value("host").get_string()
-                p = http.get_value("port").get_int32()
-                hs = https.get_value("host").get_string()
-                ps = https.get_value("port").get_int32()
+                no_http_proxy = False
+                GLib.setenv("http_proxy", "http://%s:%s" % (h, p), True)
+            if hs != "" and ps != 0:
+                no_http_proxy = False
+                GLib.setenv("https_proxy", "http://%s:%s" % (hs, ps), True)
+            if no_http_proxy:
+                socks = Gio.Settings.new("org.gnome.system.proxy.socks")
+                h = socks.get_value("host").get_string()
+                p = socks.get_value("port").get_int32()
+                # Set socks proxy
                 if h != "" and p != 0:
-                    GLib.setenv("http_proxy", "http://%s:%s" % (h, p), True)
-                if hs != "" and ps != 0:
-                    GLib.setenv("https_proxy", "http://%s:%s" % (hs, ps), True)
+                    import socket
+                    import socks
+                    socks.set_default_proxy(socks.SOCKS4, h, p)
+                    socket.socket = socks.socksocket
     except Exception as e:
-        print("set_proxy_from_gnome()", e)
+        print("set_proxy_from_gnome():", e)
 
 
 def debug(str):
