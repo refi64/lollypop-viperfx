@@ -60,7 +60,6 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__main_stack.show()
 
         self.__setup_content()
-        self.setup_window()
         # FIXME Remove this, handled by MPRIS in GNOME 3.26
         self.__setup_media_keys()
         self.__enabled_shortcuts = False
@@ -553,6 +552,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Run scanner on realize
             @param widget as Gtk.Widget
         """
+        self.setup_window()
         if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
