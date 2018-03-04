@@ -202,7 +202,7 @@ class Application(Gtk.Application):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
 
-        if not self.window:
+        if self.window is None:
             self.init()
             menu = self.__setup_app_menu()
             # If GNOME/Unity, add appmenu
@@ -438,14 +438,14 @@ class Application(Gtk.Application):
                 parser = TotemPlParser.Parser.new()
                 parser.connect("entry-parsed", self.__on_entry_parsed)
                 parser.parse_async(uri, True, None, None)
-        elif self.window is not None and self.window.is_visible():
-            # https://bugzilla.gnome.org/show_bug.cgi?id=766284
-            self.window.present_with_time(int(GLib.get_real_time() / 1000000))
         elif self.window is not None:
             self.window.setup_window()
-            self.window.present()
-            self.player.emit("status-changed")
-            self.player.emit("current-changed")
+            if not self.window.is_visible():
+                # https://bugzilla.gnome.org/show_bug.cgi?id=766284
+                self.window.present_with_time(
+                                           int(GLib.get_real_time() / 1000000))
+                self.player.emit("status-changed")
+                self.player.emit("current-changed")
         return 0
 
     def __on_entry_parsed(self, parser, uri, metadata):
