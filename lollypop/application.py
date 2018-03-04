@@ -441,9 +441,7 @@ class Application(Gtk.Application):
         elif self.window is not None:
             self.window.setup_window()
             if not self.window.is_visible():
-                # https://bugzilla.gnome.org/show_bug.cgi?id=766284
-                self.window.present_with_time(
-                                           int(GLib.get_real_time() / 1000000))
+                self.window.present()
                 self.player.emit("status-changed")
                 self.player.emit("current-changed")
         return 0
