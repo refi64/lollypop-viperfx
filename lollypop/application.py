@@ -442,19 +442,8 @@ class Application(Gtk.Application):
             # https://bugzilla.gnome.org/show_bug.cgi?id=766284
             self.window.present_with_time(int(GLib.get_real_time() / 1000000))
         elif self.window is not None:
-            # self.window.setup_window()
-            # self.window.present()
-            # Horrible HACK: https://bugzilla.gnome.org/show_bug.cgi?id=774130
-            self.window.container.save_view_state()
-            self.window.destroy()
-            self.window = Window()
-            # If not GNOME/Unity add menu to toolbar
-            if not is_gnome() and not is_unity():
-                menu = self.__setup_app_menu()
-                self.window.setup_menu(menu)
-            self.window.connect("delete-event", self.__hide_on_delete)
-            self.window.container.init_list_one()
-            self.window.show()
+            self.window.setup_window()
+            self.window.present()
             self.player.emit("status-changed")
             self.player.emit("current-changed")
         return 0
