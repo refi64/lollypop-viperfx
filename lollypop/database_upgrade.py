@@ -238,7 +238,7 @@ class DatabaseUpgrade:
                                                  SELECT track_id\
                                                  FROM track_genres\
                                                  WHERE track_id=tracks.rowid)")
-            App().db.del_tracks(list(itertools.chain(*result)))
+            db.del_tracks(list(itertools.chain(*result)))
 
     def __upgrade_16(self, db):
         """
@@ -431,7 +431,7 @@ class DatabaseUpgrade:
                                   persistent=2 OR\
                                   persistent=3")
             track_ids = list(itertools.chain(*result))
-            App().db.del_tracks(track_ids)
+            db.del_tracks(track_ids)
             # Remove persistent from tracks table
             sql.execute("CREATE TEMPORARY TABLE backup(\
                                           id INTEGER PRIMARY KEY,\
