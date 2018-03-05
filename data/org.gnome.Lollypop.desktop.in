@@ -14,7 +14,7 @@ MimeType=application/ogg;application/x-ogg;application/x-ogm-audio;audio/aac;aud
 Actions=Toggle;Next;Prev;
 
 [Desktop Action Toggle]
-Name=Play/Pause
+Name=Play Pause
 Exec=lollypop -t
 
 [Desktop Action Next]
