@@ -9,17 +9,17 @@
     <p>Lollypop is a modern music player for GNOME.</p>
     <p>Features:</p>
     <ul>
-      <li>Play many audio formats: mp3, mp4, ogg, and flac</li>
-      <li>Intuitive browsing: Walk through your collection by genres/artists and through albums artwork</li>
+      <li>Play many audio formats: MP3, MP4, OGG, and FLAC</li>
+      <li>Intuitive browsing: walk through your collection by genres/artists and through albums artwork</li>
       <li>Search in your collection by artist, album and title</li>
-      <li>Queue: Arrange your songs the way you want to hear them</li>
-      <li>Artist bio, lyrics Artist bio, lyrics: Get artists and tracks information from the web</li>
-      <li>Party mode: No awkward silences, let Lollypop choose music for you</li>
-      <li>ReplayGain (RG): Automatically select the best audio level</li>
-      <li>Cover art downloader: Automatic artwork downloader from Last.fm, Itunes and Spotify</li>
+      <li>Queue: arrange your songs the way you want to hear them</li>
+      <li>Artist bio, lyrics Artist bio, lyrics: get artists and tracks information from the web</li>
+      <li>Party mode: no awkward silences, let Lollypop choose music for you</li>
+      <li>ReplayGain (RG): automatically select the best audio level</li>
+      <li>Cover art downloader: automatic artwork downloader from Last.fm, Itunes and Spotify</li>
       <li>Context artist view</li>
-      <li>MTP devices: Sync your music with Android phones and any mtp devices</li>
-      <li>Fullscreen view: Visual access from your couch</li>
+      <li>MTP devices: sync your music with Android phones and any mtp devices</li>
+      <li>Fullscreen view: visual access from your couch</li>
       <li>Radios support</li>
       <li>Last.fm, Libre.fm and ListenBrainz support</li>
       <li>Auto install codecs</li>

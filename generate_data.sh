@@ -34,7 +34,7 @@ function generate_po()
     do
         msgmerge -N $language lollypop.pot > /tmp/$$language_new.po
         mv /tmp/$$language_new.po $language
-    done < LINGUAS
+    done
 }
 
 generate_resource > data/lollypop.gresource.xml
