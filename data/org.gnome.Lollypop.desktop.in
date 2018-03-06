@@ -1,7 +1,9 @@
 [Desktop Entry]
+# Translators: Do NOT translate or transliterate this text
 Name=Lollypop
 GenericName=Music Player
 Comment=Play and organize your music collection
+# Translators: Do NOT translate or transliterate this text (this is an icon file name)!
 Icon=org.gnome.Lollypop
 Exec=lollypop %U
 Terminal=false
@@ -14,7 +16,7 @@ MimeType=application/ogg;application/x-ogg;application/x-ogm-audio;audio/aac;aud
 Actions=Toggle;Next;Prev;
 
 [Desktop Action Toggle]
-Name=Play Pause
+Name=Play/Pause
 Exec=lollypop -t
 
 [Desktop Action Next]
