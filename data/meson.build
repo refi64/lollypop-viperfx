@@ -16,31 +16,50 @@ gnome.compile_resources(
   )
 )
 
-message('Compiling schemas')
-gnome.compile_schemas()
+# Installing the schema file 
 install_data(
   project_id + '.gschema.xml',
   install_dir: 'share/glib-2.0/schemas'
 )
 
-message('Making a .desktop file')
+# Merging the translations with the desktop file
 i18n.merge_file(
   output: project_id + '.desktop',
   input: project_id + '.desktop.in',
-  po_dir: '../subprojects/po',
+  po_dir: join_paths(meson.source_root(), 'po'),
   type: 'desktop',
   install: true,
-  install_dir: join_paths(get_option('datadir'), 'applications')
+  install_dir: join_paths(get_option('prefix'), get_option('datadir'), 'applications')
 )
 
-message('Preparing appdata')
+# Validating the desktop file
+desktop_file_validate = find_program('desktop-file-validate', required:false)
+if desktop_file_validate.found()
+  test (
+    'Validate desktop file',
+    desktop_file_validate,
+    args: join_paths(meson.current_build_dir (), project_id + '.desktop')
+  )
+endif
+
+# Merging the translations with the appdata file
 i18n.merge_file(
   output: project_id + '.appdata.xml',
   input: project_id + '.appdata.xml.in',
-  po_dir: '../subprojects/po',
+  po_dir: join_paths(meson.source_root(), 'po'),
   install: true,
-  install_dir: join_paths(get_option('datadir'), 'appdata')
+  install_dir: join_paths(get_option('prefix'), get_option('datadir'), 'metainfo')
 )
+
+# Validating the appdata file
+appstreamcli = find_program(['appstreamcli', 'appstream-util'], required: false)
+if appstreamcli.found()
+  test (
+    'Validate appdata file',
+    appstreamcli,
+    args: ['validate', join_paths(meson.current_build_dir (), project_id + '.appdata.xml')]
+  )
+endif
 
 message('Making a list of icons')
 subdir('icons')

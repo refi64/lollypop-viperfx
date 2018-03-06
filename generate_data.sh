@@ -30,10 +30,13 @@ function generate_po()
     do
         xgettext --from-code=UTF-8 -j $file -o lollypop.pot
     done
-    for language in *.po
+    >LINGUAS
+    for po in *.po
     do
-        msgmerge -N $language lollypop.pot > /tmp/$$language_new.po
-        mv /tmp/$$language_new.po $language
+        msgmerge -N $po lollypop.pot > /tmp/$$language_new.po
+        mv /tmp/$$language_new.po $po
+        language=${po%.po}
+        echo $language >>LINGUAS
     done
 }
 
