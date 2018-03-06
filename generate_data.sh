@@ -1,4 +1,4 @@
-#!/bin/bash
+    #!/bin/bash
 
 function generate_resource()
 {
@@ -21,36 +21,21 @@ function generate_resource()
     echo '</gresources>'
 }
 
-function generate_pot()
-{
-    echo '[encoding: UTF-8]'
-    for file in data/*.xml data/*.in lollypop/*.py
-    do
-        echo $file
-    done
-    for file in data/*.ui data/AboutDialog.ui.in
-    do
-        echo -n '[type: gettext/glade]'
-        echo $file
-    done
-}
-
 function generate_po()
 {
     cd po
     git pull https://hosted.weblate.org/git/gnumdk/lollypop
-    intltool-update --pot
-    mv -f untitled.pot lollypop.pot
-    >LINGUAS
-    for file in *.po
+    >lollypop.pot
+    for file in ../data/org.gnome.Lollypop.gschema.xml ../data/*.in ../data/*.ui ../lollypop/*.py
     do
-        po=${file%.po}
-        echo $po >> LINGUAS
-        intltool-update $po
+        xgettext --from-code=UTF-8 -j $file -o lollypop.pot
     done
-    cd -
+    for language in *.po
+    do
+        msgmerge -N $language lollypop.pot > /tmp/$$language_new.po
+        mv /tmp/$$language_new.po $language
+    done < LINGUAS
 }
 
 generate_resource > data/lollypop.gresource.xml
-generate_pot > po/POTFILES.in
 generate_po
