@@ -13,7 +13,15 @@
     <property name="comments" translatable="yes">A music player for GNOME.</property>
     <property name="website">@PACKAGE_URL@</property>
     <property name="website_label" translatable="yes">Visit Lollypop website</property>
-    <property name="authors">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;
+    <property name="authors">
+Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;
+Jean-Philippe Braun
+Philipp Wolfer
+Jason Gray
+Rodrigo Lourenço
+Yosef Or Boczko
+Manuel Kehl
+Bilal Elmoussaoui
 </property>
     <property name="translator_credits" translatable="yes" context="Translation credits here, put your name here!" comments="Replace me with your names">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;</property>
     <property name="artists"> Reda Lazri (Lollypop icon)
