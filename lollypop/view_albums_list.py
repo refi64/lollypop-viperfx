@@ -36,6 +36,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
                           (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
     }
 
+    # Update padding in application.css => albumrow
     __MARGIN = 4
 
     def get_best_height(widget):
@@ -85,8 +86,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.connect("query-tooltip", self.__on_query_tooltip)
         row_widget = Gtk.EventBox()
         row_widget.set_property("valign", Gtk.Align.CENTER)
-        row_widget.set_margin_top(self.__MARGIN)
-        row_widget.set_margin_end(self.__MARGIN)
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         if self._album.artists:
