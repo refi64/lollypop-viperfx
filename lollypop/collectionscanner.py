@@ -208,6 +208,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             i += 1
                             continue
                         else:
+                            SqlCursor.allow_main_thread_execution(App().db)
                             self.__del_from_db(uri)
                     # On first scan, use modification time
                     # Else, use current time
