@@ -26,7 +26,7 @@ install_data(
 i18n.merge_file(
   output: project_id + '.desktop',
   input: project_id + '.desktop.in',
-  po_dir: join_paths(meson.source_root(), 'po'),
+  po_dir: join_paths(meson.source_root(), 'subprojects/po'),
   type: 'desktop',
   install: true,
   install_dir: join_paths(get_option('prefix'), get_option('datadir'), 'applications')
@@ -46,7 +46,7 @@ endif
 i18n.merge_file(
   output: project_id + '.appdata.xml',
   input: project_id + '.appdata.xml.in',
-  po_dir: join_paths(meson.source_root(), 'po'),
+  po_dir: join_paths(meson.source_root(), 'subprojects/po'),
   install: true,
   install_dir: join_paths(get_option('prefix'), get_option('datadir'), 'metainfo')
 )
