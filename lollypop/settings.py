@@ -93,10 +93,11 @@ class SettingsDialog:
                             ngettext("%d track", "%d tracks", tracks) % tracks)
 
         self.__popover_content = builder.get_object("popover")
-        scale_mix_duration = builder.get_object("scale_mix_duration")
-        scale_mix_duration.set_range(1, 20)
-        scale_mix_duration.set_value(
-                          App().settings.get_value("mix-duration").get_int32())
+        scale_transition_duration = builder.get_object(
+                                                   "scale_transition_duration")
+        scale_transition_duration.set_range(1, 20)
+        scale_transition_duration.set_value(
+                   App().settings.get_value("transition-duration").get_int32())
 
         self.__settings_dialog = builder.get_object("settings_dialog")
         self.__settings_dialog.set_transient_for(App().window)
@@ -128,12 +129,13 @@ class SettingsDialog:
         network_access = App().settings.get_value("network-access")
         switch_network_access.set_state(network_access)
 
-        switch_mix = builder.get_object("switch_mix")
-        switch_mix.set_state(App().settings.get_value("mix"))
+        switch_transitions = builder.get_object("switch_transitions")
+        switch_transitions.set_state(
+                                App().settings.get_value("smooth-transitions"))
 
-        self.__helper = TouchHelper(switch_mix, None, None)
-        self.__helper.set_long_func(self.__mix_long_func, switch_mix)
-        self.__helper.set_short_func(self.__mix_short_func, switch_mix)
+        self.__helper = TouchHelper(switch_transitions, None, None)
+        self.__helper.set_long_func(self.__mix_long_func, switch_transitions)
+        self.__helper.set_short_func(self.__mix_short_func, switch_transitions)
 
         switch_mix_party = builder.get_object("switch_mix_party")
         switch_mix_party.set_state(App().settings.get_value("party-mix"))
@@ -327,13 +329,14 @@ class SettingsDialog:
         App().settings.set_value("show-genres",
                                  GLib.Variant("b", state))
 
-    def _on_switch_mix_state_set(self, widget, state):
+    def _on_switch_transitions_state_set(self, widget, state):
         """
-            Update mix setting
+            Update smooth transitions setting
             @param widget as Gtk.Switch
             @param state as bool
         """
-        App().settings.set_value("mix", GLib.Variant("b", state))
+        App().settings.set_value("smooth-transitions",
+                                 GLib.Variant("b", state))
         App().player.update_crossfading()
         if state:
             if self.__popover is None:
@@ -352,13 +355,14 @@ class SettingsDialog:
         App().settings.set_value("party-mix", GLib.Variant("b", state))
         App().player.update_crossfading()
 
-    def _on_scale_mix_duration_value_changed(self, widget):
+    def _on_scale_transition_duration_value_changed(self, widget):
         """
             Update mix duration setting
             @param widget as Gtk.Range
         """
         value = widget.get_value()
-        App().settings.set_value("mix-duration", GLib.Variant("i", value))
+        App().settings.set_value("transition-duration",
+                                 GLib.Variant("i", value))
 
     def _on_switch_artwork_tags_state_set(self, widget, state):
         """
@@ -561,7 +565,7 @@ class SettingsDialog:
             Show popover
             @param args as []
         """
-        if App().settings.get_value("mix"):
+        if App().settings.get_value("smooth-transitions"):
             if self.__popover is None:
                 self.__popover = Gtk.Popover.new(args[0])
                 self.__popover.set_modal(False)

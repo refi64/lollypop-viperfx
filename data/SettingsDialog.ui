@@ -59,14 +59,14 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="scale_mix_duration">
+      <object class="GtkScale" id="scale_transition_duration">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
         <property name="round_digits">0</property>
         <property name="digits">0</property>
         <property name="value_pos">left</property>
-        <signal name="value-changed" handler="_on_scale_mix_duration_value_changed" swapped="no"/>
+        <signal name="value-changed" handler="_on_scale_transition_duration_value_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -94,7 +94,7 @@
       <object class="GtkLabel" id="label8">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Mix duration in seconds</property>
+        <property name="label" translatable="yes">Transition duration in seconds</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -400,11 +400,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="mix">
+              <object class="GtkLabel" id="transition">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Mix tracks</property>
+                <property name="label" translatable="yes">Smooth transitions</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -412,13 +412,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSwitch" id="switch_mix">
+              <object class="GtkSwitch" id="switch_transitions">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="events">GDK_ENTER_NOTIFY_MASK | GDK_STRUCTURE_MASK</property>
                 <property name="tooltip_text" translatable="yes">Long press to show options</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_on_switch_mix_state_set" swapped="no"/>
+                <signal name="state-set" handler="_on_switch_transitions_state_set" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>

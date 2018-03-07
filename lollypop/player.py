@@ -410,7 +410,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Calculate if crossfading is needed
         """
-        mix = App().settings.get_value("mix")
+        mix = App().settings.get_value("smooth-transitions")
         party_mix = App().settings.get_value("party-mix")
         self._crossfading = (mix and not party_mix) or\
                             (mix and party_mix and self.is_party)
