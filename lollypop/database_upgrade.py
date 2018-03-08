@@ -19,7 +19,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
 from lollypop.database_history import History
 from lollypop.radios import Radios
-from lollypop.define import App
+from lollypop.define import App, Type
 
 
 class DatabaseUpgrade:
@@ -60,7 +60,8 @@ class DatabaseUpgrade:
             24: "ALTER TABLE albums ADD album_id TEXT",
             25: "ALTER TABLE tracks ADD mb_track_id TEXT",
             26: self.__upgrade_26,
-            27: "UPDATE tracks SET duration=CAST(duration AS INT)"
+            27: "UPDATE tracks SET duration=CAST(duration AS INT)",
+            28: self.__upgrade_28,
         }
 
     def upgrade(self, db):
@@ -548,3 +549,19 @@ class DatabaseUpgrade:
                             no_album_artist, year, uri, popularity, rate,
                             loved, mtime, synced FROM tmp_albums""")
             sql.execute("DROP TABLE tmp_albums")
+
+    def __upgrade_28(self, db):
+        """
+            Upgrade setting based on db
+            https://gitlab.gnome.org/gnumdk/lollypop/issues/1368
+        """
+        with SqlCursor(db) as sql:
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums, album_artists\
+                                  WHERE album_artists.artist_id=?\
+                                  AND album_artists.album_id=albums.rowid\
+                                  LIMIT 1",
+                                 (Type.COMPILATIONS,))
+            if list(itertools.chain(*result)):
+                App().settings.set_value("show-compilations",
+                                         GLib.Variant("b", True))
