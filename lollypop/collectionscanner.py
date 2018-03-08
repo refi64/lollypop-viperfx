@@ -44,6 +44,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         self.__thread = None
         self.__history = None
+        self.__disable_compilations = True
         if App().settings.get_value("auto-update"):
             self.__inotify = Inotify()
         else:
@@ -59,6 +60,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.stop()
             GLib.timeout_add(250, self.update)
         else:
+            self.__disable_compilations = not App().settings.get_value(
+                                                        "show-compilations")
             uris = App().settings.get_music_uris()
             if not uris:
                 return
@@ -299,6 +302,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): "
               "Add album artists %s" % album_artists)
         album_artist_ids = self.add_album_artists(album_artists, aa_sortnames)
+
+        # User does not want compilations
+        if self.__disable_compilations and not album_artist_ids:
+            album_artist_ids = artist_ids
 
         new_artist_ids = list(set(album_artist_ids) | set(artist_ids))
 
