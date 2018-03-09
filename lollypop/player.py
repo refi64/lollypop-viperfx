@@ -182,7 +182,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 album_ids += App().albums.get_ids(artist_ids)
             # Genres: all, Artists: all
             else:
-                if App().settings.get_value("show-compilations"):
+                if App().settings.get_value("show-compilations-in-album-view"):
                     album_ids += App().albums.get_compilation_ids()
                 album_ids += App().albums.get_ids()
         # We are in populars view, add popular albums
@@ -208,7 +208,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 album_ids += App().albums.get_compilation_ids(genre_ids)
             else:
                 if not artist_ids and\
-                        App().settings.get_value("show-compilations"):
+                        App().settings.get_value(
+                                            "show-compilations-in-album-view"):
                     album_ids += App().albums.get_compilation_ids(genre_ids)
                 album_ids += App().albums.get_ids(artist_ids, genre_ids)
         # Create album objects

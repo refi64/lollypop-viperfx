@@ -601,7 +601,8 @@ class Container(Gtk.Bin):
             is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
             if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation or\
-                        App().settings.get_value("show-compilations"):
+                        App().settings.get_value(
+                                            "show-compilations-in-album-view"):
                     items = App().albums.get_compilation_ids()
                 if not is_compilation:
                     items += App().albums.get_ids()
@@ -621,7 +622,8 @@ class Container(Gtk.Bin):
                 items = App().albums.get_randoms()
             else:
                 if is_compilation or\
-                        App().settings.get_value("show-compilations"):
+                        App().settings.get_value(
+                                            "show-compilations-in-album-view"):
                     items = App().albums.get_compilation_ids(genre_ids)
                 if not is_compilation:
                     items += App().albums.get_ids([], genre_ids)
