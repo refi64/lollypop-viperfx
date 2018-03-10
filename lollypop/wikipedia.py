@@ -14,11 +14,10 @@ from gettext import gettext as _
 from locale import getdefaultlocale
 from random import shuffle
 import re
-import wikipedia
-
 from lollypop.utils import get_network_available
 
 
+# We import wikipedia module later as slow to load :-/
 class Wikipedia:
     """
         Wikipedia helper
@@ -28,6 +27,7 @@ class Wikipedia:
         """
             Init wikipedia
         """
+        import wikipedia
         language = getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
         # Translators: Put here words added by wikipedia in band search
@@ -41,6 +41,7 @@ class Wikipedia:
             @param search as str
             @return [str]
         """
+        import wikipedia
         return wikipedia.search(search)
 
     def get_page_infos(self, name):
@@ -49,6 +50,7 @@ class Wikipedia:
             @param page name as str
             @return (url as str, content as str)
         """
+        import wikipedia
         if not get_network_available():
             return (None, None)
         page = wikipedia.page(name)
