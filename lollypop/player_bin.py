@@ -105,7 +105,8 @@ class BinPlayer(BasePlayer):
            self._current_track.id is not None and\
            self.is_playing and\
            self._current_track.id != Type.RADIOS:
-            duration = App().settings.get_value("mix-duration").get_int32()
+            duration = App().settings.get_value(
+                                             "transition-duration").get_int32()
             self.__do_crossfade(duration, track, False)
         else:
             self.__load(track)
@@ -202,7 +203,8 @@ class BinPlayer(BasePlayer):
         position = self._playbin.query_position(Gst.Format.TIME)[1]
         if self._crossfading and self._current_track.duration > 0:
             duration = self._current_track.duration - position / Gst.SECOND
-            if duration < App().settings.get_value("mix-duration").get_int32():
+            if duration < App().settings.get_value(
+                                            "transition-duration").get_int32():
                 self.__do_crossfade(duration)
         return position
 
