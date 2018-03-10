@@ -64,7 +64,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__setup_media_keys()
         self.__enabled_shortcuts = False
         self.enable_global_shortcuts(True)
-
+        self.set_auto_startup_notification(False)
         self.connect("destroy", self.__on_destroyed_window)
         self.connect("realize", self.__on_realize)
 
