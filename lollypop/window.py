@@ -558,6 +558,7 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
+        GLib.idle_add(self.__container.init_list_one)
         GLib.idle_add(self.__container.restore_view_state)
 
     def __on_current_changed(self, player):

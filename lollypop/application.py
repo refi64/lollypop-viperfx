@@ -211,7 +211,6 @@ class Application(Gtk.Application):
             if not is_gnome() and not is_unity():
                 self.window.setup_menu(menu)
             self.window.connect("delete-event", self.__hide_on_delete)
-            self.window.container.init_list_one()
             self.window.show()
             self.player.restore_state()
             # We add to mainloop as we want to run
