@@ -1,1 +1,3 @@
-ninja -C build install && lollypop
+ninja -C build install
+echo "Running lollypop"
+lollypop
