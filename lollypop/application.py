@@ -130,9 +130,7 @@ class Application(Gtk.Application):
         self.connect("handle-local-options", self.__on_handle_local_options)
         self.connect("activate", self.__on_activate)
         self.connect("shutdown", lambda a: self.__save_state())
-        self.register(None)
-        if self.get_is_remote():
-            Gdk.notify_startup_complete()
+        Gdk.notify_startup_complete()
 
     def init(self):
         """
