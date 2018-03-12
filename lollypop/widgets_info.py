@@ -104,12 +104,7 @@ class InfoContent(Gtk.Stack):
         """
         (content, data) = InfoCache.get(prefix, suffix)
         if content is not None:
-            stream = None
-            if data is not None:
-                bytes = GLib.Bytes(data)
-                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                bytes.unref()
-            GLib.idle_add(self.__set_content, content, stream)
+            GLib.idle_add(self.__set_content, content, data)
             return True
         return False
 
@@ -130,16 +125,18 @@ class InfoContent(Gtk.Stack):
 #######################
 # PRIVATE             #
 #######################
-    def __set_content(self, content, stream):
+    def __set_content(self, content, data):
         """
             Set content
             @param content as string
-            @param data as Gio.MemoryInputStream
+            @param data as bytes
         """
         if content is not None:
             self.__content.set_markup(
                               GLib.markup_escape_text(content.decode("utf-8")))
-            if stream is not None:
+            if data is not None:
+                gbytes = GLib.Bytes(data)
+                stream = Gio.MemoryInputStream.new_from_bytes(gbytes)
                 scale = self.__image.get_scale_factor()
                 # Will happen if cache is broken or when reading empty files
                 try:
@@ -151,6 +148,7 @@ class InfoContent(Gtk.Stack):
                                True,
                                None)
                     stream.close()
+                    gbytes.unref()
                     surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                                    scale,
                                                                    None)
