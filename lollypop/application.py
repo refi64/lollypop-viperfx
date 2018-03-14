@@ -77,7 +77,6 @@ class Application(Gtk.Application):
         # change in python
         current_thread().setName("MainThread")
         set_proxy_from_gnome()
-        self.set_property("register-session", True)
         GLib.setenv("PULSE_PROP_media.role", "music", True)
         GLib.setenv("PULSE_PROP_application.icon_name",
                     "org.gnome.Lollypop", True)
@@ -130,7 +129,9 @@ class Application(Gtk.Application):
         self.connect("handle-local-options", self.__on_handle_local_options)
         self.connect("activate", self.__on_activate)
         self.connect("shutdown", lambda a: self.__save_state())
-        Gdk.notify_startup_complete()
+        self.register(None)
+        if self.get_is_remote():
+            Gdk.notify_startup_complete()
 
     def init(self):
         """
@@ -441,6 +442,7 @@ class Application(Gtk.Application):
                 self.window.present()
                 self.player.emit("status-changed")
                 self.player.emit("current-changed")
+        Gdk.notify_startup_complete()
         return 0
 
     def __on_entry_parsed(self, parser, uri, metadata):
