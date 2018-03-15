@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>org.gnome.Lollypop.desktop</id>
+  <id>org.gnome.Lollypop</id>
+  <launchable type="desktop-id">org.gnome.lollypop.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Lollypop</name>
@@ -25,6 +26,33 @@
       <li>TuneIn support</li>
     </ul>
   </description>
+  <releases>
+    <release version="0.9.401" date="2018-03-13">
+      <description>
+        <ul>
+          <li>Fix an issue in Collection scanner</li>
+          <li>Add an option to disable compilations</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.9.400.1" date="2018-03-07">
+      <description>
+        <ul>
+          <li>Fix a packaging issue</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.9.400" date="2017-12-20">
+      <description>
+        <ul>
+          <li>New responsive design</li>
+          <li>New fullscreen mode</li>
+          <li>New default playback behavior: you can mix albums and tracks!</li>
+          <li>New search widget</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
   <categories>
     <category>AudioVideo</category>
     <category>Audio</category>
