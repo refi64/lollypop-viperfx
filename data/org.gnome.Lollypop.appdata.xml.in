@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>org.gnome.Lollypop.desktop</id>
+  <id>org.gnome.Lollypop</id>
+  <launchable type="desktop-id">org.gnome.lollypop.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Lollypop</name>
