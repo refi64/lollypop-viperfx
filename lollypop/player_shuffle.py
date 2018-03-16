@@ -54,22 +54,6 @@ class ShufflePlayer(BasePlayer):
         self._playlist_track_ids = []
         self._playlist_ids = []
 
-    @property
-    def shuffle_has_next(self):
-        """
-            True if history provide a next track
-            @return bool
-        """
-        return self.__history and self.__history.has_next
-
-    @property
-    def shuffle_has_prev(self):
-        """
-            True if history provide a prev track
-            @return bool
-        """
-        return self.__history and self.__history.has_prev
-
     def next(self):
         """
             Next shuffle track
@@ -153,14 +137,6 @@ class ShufflePlayer(BasePlayer):
             self.set_prev()
         self.emit("party-changed", party)
 
-    @property
-    def is_party(self):
-        """
-            True if party mode on
-            @return bool
-        """
-        return self.__is_party
-
     def shuffle_albums(self, shuffle):
         """
             Shuffle album list
@@ -188,6 +164,30 @@ class ShufflePlayer(BasePlayer):
         else:
             album_ids = App().albums.get_ids()
         self._albums = [Album(album_id) for album_id in album_ids]
+
+    @property
+    def is_party(self):
+        """
+            True if party mode on
+            @return bool
+        """
+        return self.__is_party
+
+    @property
+    def shuffle_has_next(self):
+        """
+            True if history provide a next track
+            @return bool
+        """
+        return self.__history and self.__history.has_next
+
+    @property
+    def shuffle_has_prev(self):
+        """
+            True if history provide a prev track
+            @return bool
+        """
+        return self.__history and self.__history.has_prev
 
 #######################
 # PROTECTED           #

@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Album
-from lollypop.define import App, Type, ResponsiveType, Shuffle
+from lollypop.define import App, Type, ResponsiveType, Shuffle, NextContext
 
 
 class TracksView:
@@ -666,8 +666,10 @@ class TracksView:
             else:
                 App().player.append_to_queue(track.id)
         else:
+            playback = App().settings.get_enum("playback")
             # Do not update album list if in party or album already available
             if not App().player.is_party and\
+                    playback != NextContext.STOP and\
                     not App().player.track_in_playback(track):
                 App().player.add_album(self._album)
             App().player.load(track)
