@@ -720,7 +720,7 @@ class TracksWidget(Gtk.ListBox):
         """
         for row in self.get_children():
             row.set_indicator(row.track.id == track_id,
-                              Track(track_id).loved)
+                              Track(row.track.id).loved)
 
     def update_duration(self, track_id):
         """
