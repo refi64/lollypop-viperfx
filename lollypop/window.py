@@ -535,10 +535,9 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "loved":
             track = App().player.current_track
             if track.id >= 0:
-                is_loved = track.loved()
-                track.set_loved(not is_loved)
+                track.set_loved(not track.loved)
                 if App().notify is not None:
-                    if is_loved:
+                    if track.loved:
                         heart = "♡"
                     else:
                         heart = "❤"
