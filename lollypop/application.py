@@ -22,6 +22,7 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 from threading import current_thread
 from pickle import dump
 from gettext import gettext as _
+from signal import signal, SIGINT, SIGTERM
 
 
 try:
@@ -73,6 +74,8 @@ class Application(Gtk.Application):
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.__version = version
         self.set_property("register-session", True)
+        signal(SIGINT, lambda a, b: self.quit())
+        signal(SIGTERM, lambda a, b: self.quit())
         # Set main thread name
         # We force it to current python 3.6 name, to be sure in case of
         # change in python
