@@ -32,10 +32,6 @@ def install_excepthook():
         sys.exit()
     sys.excepthook = new_hook
 
-def plop():
-	print("plop")
-	sys.exit(0)
-
 if __name__ == "__main__":
     install_excepthook()
 
