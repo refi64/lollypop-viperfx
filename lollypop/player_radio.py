@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import TotemPlParser, Gst, Gio, GLib
+from gi.repository import TotemPlParser, Gst, Gio
 
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
@@ -119,29 +119,10 @@ class RadioPlayer(BasePlayer):
 #######################
 # PROTECTED           #
 #######################
-    def _on_bus_error(self, bus, message):
-        """
-            Try a codec install and update current track
-            @param bus as Gst.Bus
-            @param message as Gst.Message
-        """
-        # Reload track if network is down
-        if self._current_track.id < 0 and\
-                not Gio.NetworkMonitor.get_default().get_network_available():
-            GLib.timeout_add(1000, self.__check_for_network)
 
 #######################
 # PRIVATE             #
 #######################
-    def __check_for_network(self):
-        """
-            Play track again once network is up
-        """
-        if Gio.NetworkMonitor.get_default().get_network_available():
-            self.load(self._current_track)
-        else:
-            return True
-
     def __start_playback(self, track, play):
         """
             Start playing track

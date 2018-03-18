@@ -355,7 +355,7 @@ class BinPlayer(BasePlayer):
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
-        debug("Error playing: %s" % self._current_track.uri)
+        print("Player::_on_bus_error():", message.parse_error()[1])
         App().window.container.pulse(False)
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
