@@ -72,6 +72,7 @@ class Application(Gtk.Application):
                             application_id="org.gnome.Lollypop",
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.__version = version
+        self.set_property("register-session", True)
         # Set main thread name
         # We force it to current python 3.6 name, to be sure in case of
         # change in python
