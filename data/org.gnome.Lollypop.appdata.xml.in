@@ -27,6 +27,14 @@
     </ul>
   </description>
   <releases>
+    <release version="0.9.402" date="2018-03-19">
+      <description>
+        <ul>
+          <li>Save state on SIGTERM/SIGINT</li>
+          <li>Bug fixes</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.9.401" date="2018-03-13">
       <description>
         <ul>
