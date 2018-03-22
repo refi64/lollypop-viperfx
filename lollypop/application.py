@@ -234,6 +234,8 @@ class Application(Gtk.Application):
         if vacuum:
             self.__vacuum()
         self.window.destroy()
+        if self.__quit_notification is not None:
+            self.__quit_notification.close()
         Gio.Application.quit(self)
 
     def is_fullscreen(self):
