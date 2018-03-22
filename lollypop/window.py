@@ -534,7 +534,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__container.show_genres(state)
         elif string == "loved":
             track = App().player.current_track
-            if track.id >= 0:
+            if track.id is not None and track.id >= 0:
                 track.set_loved(not track.loved)
                 if App().notify is not None:
                     if track.loved:
