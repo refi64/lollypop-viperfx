@@ -131,8 +131,9 @@ class NotificationManager:
         """
         state = App().window.get_window().get_state()
         app = App().window.get_application()
-        if player.current_track.id is None or\
-                state & Gdk.WindowState.FOCUSED or\
+        if player.current_track.id is None or (
+                state & Gdk.WindowState.FOCUSED and
+                App().window.is_visible()) or\
                 app.is_fullscreen():
             return
         if player.current_track.album.name == '':
