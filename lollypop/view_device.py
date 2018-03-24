@@ -24,6 +24,7 @@ class DeviceLocked(View):
     """
         Show a message about locked device to users
     """
+
     def __init__(self):
         """
             Init view
@@ -45,7 +46,7 @@ class DeviceView(View):
             @param uri as str
             @return bool
         """
-        d = Gio.File.new_for_uri(uri+"/Music/lollypop/tracks")
+        d = Gio.File.new_for_uri(uri + "/Music/lollypop/tracks")
         return d.query_exists()
 
     def get_files(uri):

@@ -102,21 +102,21 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         cover = Gtk.Image()
         cover.get_style_context().add_class("small-cover-frame")
         surface = App().art.get_album_artwork(
-                                        self._album,
-                                        ArtSize.MEDIUM,
-                                        self.get_scale_factor())
+            self._album,
+            ArtSize.MEDIUM,
+            self.get_scale_factor())
         cover.set_from_surface(surface)
         cover.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
         self.__play_indicator = Gtk.Image.new_from_icon_name(
-                                               "media-playback-start-symbolic",
-                                               Gtk.IconSize.MENU)
+            "media-playback-start-symbolic",
+            Gtk.IconSize.MENU)
         if self.__responsive_type == ResponsiveType.SEARCH:
             action_icon = "media-playback-start-symbolic"
         else:
             action_icon = "user-trash-symbolic"
         self.__action_button = Gtk.Button.new_from_icon_name(
-                                                      action_icon,
-                                                      Gtk.IconSize.MENU)
+            action_icon,
+            Gtk.IconSize.MENU)
         self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__action_button.get_style_context().add_class("album-menu-button")
         self.__action_button.get_style_context().add_class("track-menu-button")
@@ -246,7 +246,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         if "a:%s:none" % self._album == data.get_text():
             return
         height = self.get_allocated_height()
-        if y > height/2:
+        if y > height / 2:
             down = True
         else:
             down = False

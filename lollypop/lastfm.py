@@ -258,8 +258,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             else:
                 skg = SessionKeyGenerator(self)
                 self.session_key = skg.get_session_key(
-                                          username=self.__login,
-                                          password_hash=md5(self.__password))
+                    username=self.__login,
+                    password_hash=md5(self.__password))
             if full_sync:
                 helper = TaskHelper()
                 helper.run(self.__populate_loved_tracks)
@@ -318,7 +318,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                     duration=duration,
                                     mbid=mb_track_id)
             debug("LastFM::__now_playing(): %s, %s, %s, %s, %s" % (
-                   artist, album, title, duration, mb_track_id))
+                artist, album, title, duration, mb_track_id))
         except WSError:
             pass
         except Exception as e:
@@ -340,13 +340,13 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             user = self.get_user(self.__login)
             for loved in user.get_loved_tracks():
                 track_id = App().tracks.search_track(
-                                                  str(loved.track.artist),
-                                                  str(loved.track.title))
+                    str(loved.track.artist),
+                    str(loved.track.title))
                 if track_id is not None:
                     tracks.append(Track(track_id))
             App().playlists.add_tracks(Type.LOVED, tracks)
         except Exception as e:
-                print("LastFM::__populate_loved_tracks: %s" % e)
+            print("LastFM::__populate_loved_tracks: %s" % e)
 
     def __on_get_password(self, attributes, password,
                           name, full_sync, callback, *args):

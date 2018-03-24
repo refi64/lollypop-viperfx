@@ -19,6 +19,7 @@ from lollypop.define import App, PowerManagement
 
 
 class Inhibitor:
+
     def __init__(self):
         self.__cookie_suspend = 0
         self.__cookie_idle = 0

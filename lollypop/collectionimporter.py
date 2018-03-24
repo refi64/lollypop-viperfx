@@ -24,6 +24,7 @@ class CollectionImporter:
     """
         Import files to main collection (as files)
     """
+
     def __init__(self):
         """
             Init collection scanner

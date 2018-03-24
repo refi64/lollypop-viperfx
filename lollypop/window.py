@@ -56,7 +56,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self.__main_stack = Gtk.Stack()
         self.__main_stack.set_transition_duration(1000)
         self.__main_stack.set_transition_type(
-                                             Gtk.StackTransitionType.CROSSFADE)
+            Gtk.StackTransitionType.CROSSFADE)
         self.__main_stack.show()
 
         self.__setup_content()
@@ -364,7 +364,7 @@ class Window(Gtk.ApplicationWindow, Container):
         else:
             self.set_titlebar(self.__toolbar)
             self.__toolbar.set_show_close_button(
-                                   not App().settings.get_value("disable-csd"))
+                not App().settings.get_value("disable-csd"))
         self.__vgrid.add(self.__main_stack)
         self.add(self.__vgrid)
         self.__main_stack.add_named(self.__container, "main")
@@ -435,9 +435,9 @@ class Window(Gtk.ApplicationWindow, Container):
         self.responsive_design()
         if not self.is_maximized():
             self.__timeout_configure = GLib.timeout_add(
-                                                   1000,
-                                                   self.__save_size_position,
-                                                   widget)
+                1000,
+                self.__save_size_position,
+                widget)
 
     def __save_size_position(self, widget):
         """

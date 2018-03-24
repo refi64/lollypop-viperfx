@@ -59,8 +59,8 @@ class Toolbar(Gtk.HeaderBar):
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
         info_height = self.__toolbar_info.get_preferred_height()
-        if info_height[0]+padding.top+padding.bottom > 47:
-            height = info_height[0]+padding.top+padding.bottom
+        if info_height[0] + padding.top + padding.bottom > 47:
+            height = info_height[0] + padding.top + padding.bottom
         else:
             height = Gtk.HeaderBar.do_get_preferred_height(self)[0]
         return (height, height)
@@ -88,7 +88,7 @@ class Toolbar(Gtk.HeaderBar):
                 else:
                     title = available
                 self.__toolbar_title.set_width(title)
-                self.__toolbar_info.set_width((available-title)/2)
+                self.__toolbar_info.set_width((available - title) / 2)
             self.__width = window.get_width()
 
     def update_position(self, value=None):
@@ -114,7 +114,7 @@ class Toolbar(Gtk.HeaderBar):
             if App().settings.get_value("save-state"):
                 from pickle import load
                 position = load(open(LOLLYPOP_DATA_PATH + "/position.bin",
-                                "rb"))
+                                     "rb"))
                 self.__toolbar_title.add_mark(position / Gst.SECOND)
         except Exception as e:
             print("Toolbar::restore_state():", e)

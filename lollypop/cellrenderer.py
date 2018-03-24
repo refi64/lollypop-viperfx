@@ -121,22 +121,22 @@ class CellRendererArtist(Gtk.CellRendererText):
                                                                     size,
                                                                     size)
                     surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                     pixbuf,
-                                                     self.__scale_factor,
-                                                     None)
+                        pixbuf,
+                        self.__scale_factor,
+                        None)
                     self.__surfaces[self.rowid] = surface
                     break
         if surface is None:
             surface = Gtk.IconTheme.get_default().load_surface(
-                                             "avatar-default-symbolic",
-                                             ArtSize.ARTIST_SMALL,
-                                             1,
-                                             widget.get_window(),
-                                             0)
+                "avatar-default-symbolic",
+                ArtSize.ARTIST_SMALL,
+                1,
+                widget.get_window(),
+                0)
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
         radius = ArtSize.ARTIST_SMALL / 2
-        ctx.arc(ArtSize.ARTIST_SMALL/2, ArtSize.ARTIST_SMALL/2,
+        ctx.arc(ArtSize.ARTIST_SMALL / 2, ArtSize.ARTIST_SMALL / 2,
                 radius, 0, 2 * pi)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill_preserve()
@@ -149,13 +149,13 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def do_get_preferred_height_for_width(self, widget, width):
         draw_artwork = self.__is_artists and\
-                       self.rowid >= 0 and\
-                       App().settings.get_value("artist-artwork")
+            self.rowid >= 0 and\
+            App().settings.get_value("artist-artwork")
         if draw_artwork:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
-                                                           self, widget, width)
+                self, widget, width)
 
     def on_artist_artwork_changed(self, artist):
         artist_id = App().artists.get_id(artist)

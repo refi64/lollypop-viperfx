@@ -52,9 +52,9 @@ class FullScreen(Gtk.Window, InfoController,
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
-            artsize = int(ArtSize.FULLSCREEN*geometry.height/1080)
+            artsize = int(ArtSize.FULLSCREEN * geometry.height / 1080)
         else:
-            artsize = int(ArtSize.FULLSCREEN*geometry.width/1920)
+            artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
         InfoController.__init__(self, artsize, self.__font_size)
         widget = builder.get_object("widget")
@@ -120,7 +120,7 @@ class FullScreen(Gtk.Window, InfoController,
             self.__timeout2 = GLib.timeout_add(1000,
                                                self.__update_datetime,
                                                show_seconds)
-        self._update_position(App().player.position/Gst.SECOND)
+        self._update_position(App().player.position / Gst.SECOND)
         screen = Gdk.Screen.get_default()
         monitor = screen.get_monitor_at_window(self.__parent.get_window())
         self.fullscreen_on_monitor(screen, monitor)
@@ -173,7 +173,7 @@ class FullScreen(Gtk.Window, InfoController,
             if player.current_track.year:
                 album_name += " (%s)" % player.current_track.year
             self._album_label.set_markup(
-                                        "<span font='%s'>%s</span>" %
+                "<span font='%s'>%s</span>" %
                                         (self.__font_size - 1,
                                          GLib.markup_escape_text(album_name)))
 

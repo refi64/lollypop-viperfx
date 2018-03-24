@@ -22,6 +22,7 @@ from lollypop.define import App, ArtSize, Type, Shuffle, NextContext
 
 
 class Server:
+
     def __init__(self, con, path):
         method_outargs = {}
         method_inargs = {}
@@ -31,7 +32,7 @@ class Server:
                 method_outargs[method.name] = "(" + "".join(
                               [arg.signature for arg in method.out_args]) + ")"
                 method_inargs[method.name] = tuple(
-                                       arg.signature for arg in method.in_args)
+                    arg.signature for arg in method.in_args)
 
             con.register_object(object_path=path,
                                 interface_info=interface,
@@ -172,8 +173,8 @@ class MPRIS(Server):
         self.__rating = None
         self.__lollypop_id = 0
         self.__metadata = {"mpris:trackid": GLib.Variant(
-                                  "o",
-                                  "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
+            "o",
+            "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
         # Get the shuffle state for our shuffle toggle setting so we can
         # remember the last non-NONE suffle state if we start with Shuffle.NONE
         # then our "on" setting starts with Shuffle.TRACKS.
@@ -239,11 +240,11 @@ class MPRIS(Server):
 
     def Seeked(self, position):
         self.__bus.emit_signal(
-                          None,
-                          self.__MPRIS_PATH,
-                          self.__MPRIS_PLAYER_IFACE,
-                          "Seeked",
-                          GLib.Variant.new_tuple(GLib.Variant("x", position)))
+            None,
+            self.__MPRIS_PATH,
+            self.__MPRIS_PLAYER_IFACE,
+            "Seeked",
+            GLib.Variant.new_tuple(GLib.Variant("x", position)))
 
     def SetRating(self, track_id, rating):
         # We don't currently care about the trackId since
@@ -258,8 +259,8 @@ class MPRIS(Server):
             return GLib.Variant("b", False)
         elif property_name == "Shuffle":
             return GLib.Variant(
-                           "b",
-                           App().settings.get_enum("shuffle") != Shuffle.NONE)
+                "b",
+                App().settings.get_enum("shuffle") != Shuffle.NONE)
         elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
             return GLib.Variant("d", 1.0)
         elif property_name == "Identity":
@@ -290,8 +291,8 @@ class MPRIS(Server):
             return GLib.Variant("d", App().player.volume)
         elif property_name == "Position":
             return GLib.Variant(
-                              "x",
-                              App().player.position / Gst.SECOND * 1000 * 1000)
+                "x",
+                App().player.position / Gst.SECOND * 1000 * 1000)
         elif property_name in ["CanGoNext", "CanGoPrevious",
                                "CanPlay", "CanPause"]:
             return GLib.Variant("b", App().player.current_track.id is not None)
@@ -384,8 +385,8 @@ class MPRIS(Server):
     def __update_metadata(self):
         if self.__get_status() == "Stopped":
             self.__metadata = {"mpris:trackid": GLib.Variant(
-                                  "o",
-                                  "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
+                "o",
+                "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
         else:
             self.__metadata["mpris:trackid"] = self.__track_id
             track_number = App().player.current_track.number
@@ -394,35 +395,35 @@ class MPRIS(Server):
             self.__metadata["xesam:trackNumber"] = GLib.Variant("i",
                                                                 track_number)
             self.__metadata["xesam:title"] = GLib.Variant(
-                                               "s",
-                                               App().player.current_track.name)
+                "s",
+                App().player.current_track.name)
             self.__metadata["xesam:album"] = GLib.Variant(
-                                         "s",
-                                         App().player.current_track.album.name)
+                "s",
+                App().player.current_track.album.name)
             self.__metadata["xesam:artist"] = GLib.Variant(
-                                            "as",
-                                            App().player.current_track.artists)
+                "as",
+                App().player.current_track.artists)
             self.__metadata["xesam:albumArtist"] = GLib.Variant(
-                                      "as",
-                                      App().player.current_track.album_artists)
+                "as",
+                App().player.current_track.album_artists)
             self.__metadata["mpris:length"] = GLib.Variant(
-                             "x",
-                             App().player.current_track.duration * 1000 * 1000)
+                "x",
+                App().player.current_track.duration * 1000 * 1000)
             self.__metadata["xesam:genre"] = GLib.Variant(
-                                             "as",
-                                             App().player.current_track.genres)
+                "as",
+                App().player.current_track.genres)
             self.__metadata["xesam:url"] = GLib.Variant(
-                                                "s",
-                                                App().player.current_track.uri)
+                "s",
+                App().player.current_track.uri)
             if self.__rating is None:
                 self.__rating = App().player.current_track.get_rate()
             self.__metadata["xesam:userRating"] = GLib.Variant(
-                                                             "d",
-                                                             self.__rating / 5)
+                "d",
+                self.__rating / 5)
             if App().player.current_track.id == Type.RADIOS:
                 cover_path = App().art.get_radio_cache_path(
-                     ", ".join(App().player.current_track.artists),
-                     ArtSize.MONSTER)
+                    ", ".join(App().player.current_track.artists),
+                    ArtSize.MONSTER)
             elif App().player.current_track.id == Type.EXTERNALS:
                 cover_path = "/tmp/lollypop_mpris.jpg"
                 pixbuf = App().art.pixbuf_from_tags(
@@ -436,8 +437,8 @@ class MPRIS(Server):
                     App().player.current_track.album, ArtSize.MONSTER)
             if cover_path is not None:
                 self.__metadata["mpris:artUrl"] = GLib.Variant(
-                                                        "s",
-                                                        "file://" + cover_path)
+                    "s",
+                    "file://" + cover_path)
 
     def __on_seeked(self, player, position):
         self.Seeked(position * (1000 * 1000))
@@ -445,7 +446,7 @@ class MPRIS(Server):
     def __on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE,
                                {"Volume": GLib.Variant("d",
-                                App().player.volume), },
+                                                       App().player.volume), },
                                [])
 
     def __on_shuffle_changed(self, settings, value):
@@ -454,8 +455,8 @@ class MPRIS(Server):
         if shuffle_state != Shuffle.NONE:
             self.__shuffle_state = shuffle_state
         value = GLib.Variant(
-                           "b",
-                           shuffle_state != Shuffle.NONE)
+            "b",
+            shuffle_state != Shuffle.NONE)
         properties = {"Shuffle": GLib.Variant("b", value)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 

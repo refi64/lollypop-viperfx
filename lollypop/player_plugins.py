@@ -72,6 +72,6 @@ class PluginsPlayer:
         rg_audioconvert3.link(rg_audiosink)
 
         bin.add_pad(Gst.GhostPad.new(
-                               "sink",
-                               rg_audioconvert1.get_static_pad("sink")))
+            "sink",
+            rg_audioconvert1.get_static_pad("sink")))
         playbin.set_property("audio-sink", bin)

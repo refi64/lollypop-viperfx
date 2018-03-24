@@ -72,13 +72,13 @@ def get_network_available():
 
 
 def noaccents(string):
-        """
-            Return string without accents
-            @param string as str
-            @return str
-        """
-        nfkd_form = unicodedata.normalize("NFKD", string)
-        return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
+    """
+        Return string without accents
+        @param string as str
+        @return str
+    """
+    nfkd_form = unicodedata.normalize("NFKD", string)
+    return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 
 def escape(str, ignore=["_", "-", " ", "."]):
@@ -164,9 +164,9 @@ def format_artist_name(name):
     # Translators: Add here words that shoud be ignored for artist sort order
     # Translators: Add The the too
     for special in _("The the").split():
-        if name.startswith(special+" "):
-            strlen = len(special)+1
-            name = name[strlen:]+"@@@@"+special
+        if name.startswith(special + " "):
+            strlen = len(special) + 1
+            name = name[strlen:] + "@@@@" + special
     return name
 
 
@@ -177,7 +177,7 @@ def translate_artist_name(name):
     """
     split = name.split("@@@@")
     if len(split) == 2:
-        name = split[1]+" "+split[0]
+        name = split[1] + " " + split[0]
     return name
 
 

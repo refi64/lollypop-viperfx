@@ -76,7 +76,7 @@ class InfoPopover(Gtk.Popover):
         self.add(builder.get_object("widget"))
         if App().settings.get_value("inforeload"):
             builder.get_object("reload").get_style_context().add_class(
-                                                                    "selected")
+                "selected")
 
     def set_view_type(self, view_type):
         """
@@ -134,7 +134,7 @@ class InfoPopover(Gtk.Popover):
                     InfoCache.remove(artist, visible_name)
                 # stack -> scrolled -> viewport -> grid
                 self._on_child_unmap(
-                      self.__stack.get_visible_child().get_child().get_child())
+                    self.__stack.get_visible_child().get_child().get_child())
             self.__on_current_changed(App().player)
 
     def _on_jump_button_clicked(self, widget):
@@ -143,7 +143,7 @@ class InfoPopover(Gtk.Popover):
         """
         try:
             self.__stack.get_visible_child().get_child_at(
-                                                        0, 0).jump_to_current()
+                0, 0).jump_to_current()
         except Exception as e:
             print(e)
 
@@ -262,17 +262,17 @@ class InfoPopover(Gtk.Popover):
                 string = GLib.markup_escape_text(_("Network access disabled"))
                 label.get_style_context().add_class("dim-label")
                 label.set_markup(
-                       '<span font_weight="bold" size="xx-large">' +
-                       string +
-                       "</span>")
+                    '<span font_weight="bold" size="xx-large">' +
+                    string +
+                    "</span>")
             else:
                 string = GLib.markup_escape_text(
-                       _("No lyrics found, please install gir1.2-webkit2-4.0"))
+                    _("No lyrics found, please install gir1.2-webkit2-4.0"))
                 label.get_style_context().add_class("dim-label")
                 label.set_markup(
-                       '<span font_weight="bold" size="xx-large">' +
-                       string +
-                       "</span>")
+                    '<span font_weight="bold" size="xx-large">' +
+                    string +
+                    "</span>")
         elif get_network_available():
             title = self.__current_track.name
             if self.__current_track.id == Type.RADIOS:

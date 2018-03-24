@@ -37,10 +37,10 @@ class AlbumArt(BaseArt, TagReader):
         BaseArt.__init__(self)
         TagReader.__init__(self)
         self.__favorite = App().settings.get_value(
-                                                "favorite-cover").get_string()
+            "favorite-cover").get_string()
         if not self.__favorite:
             self.__favorite = App().settings.get_default_value(
-                                                "favorite-cover").get_string()
+                "favorite-cover").get_string()
 
     def get_album_cache_path(self, album, size):
         """
@@ -64,8 +64,8 @@ class AlbumArt(BaseArt, TagReader):
                     return cache_path_jpg
                 else:
                     return self._get_default_icon_path(
-                                           size,
-                                           "folder-music-symbolic")
+                        size,
+                        "folder-music-symbolic")
         except Exception as e:
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
@@ -129,9 +129,9 @@ class AlbumArt(BaseArt, TagReader):
         try:
             f = Gio.File.new_for_uri(album.uri)
             infos = f.enumerate_children(
-                                     "standard::name",
-                                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                                     None)
+                "standard::name",
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                None)
             all_uris = []
             for info in infos:
                 f = infos.get_child(info)
@@ -177,17 +177,17 @@ class AlbumArt(BaseArt, TagReader):
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                                       stream,
-                                                                       size,
-                                                                       size,
-                                                                       ratio,
-                                                                       None)
+                            stream,
+                            size,
+                            size,
+                            ratio,
+                            None)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
                     try:
                         pixbuf = self.pixbuf_from_tags(
-                                    album.tracks[0].uri, size)
+                            album.tracks[0].uri, size)
                     except Exception as e:
                         print("AlbumArt::get_album_artwork()", e)
 
@@ -203,11 +203,11 @@ class AlbumArt(BaseArt, TagReader):
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                                       stream,
-                                                                       size,
-                                                                       size,
-                                                                       ratio,
-                                                                       None)
+                            stream,
+                            size,
+                            size,
+                            ratio,
+                            None)
                         stream.close()
                 # Use default artwork
                 if pixbuf is None:
@@ -218,7 +218,7 @@ class AlbumArt(BaseArt, TagReader):
                 else:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
-                                                "cover-quality").get_int32())])
+                                     "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             return surface
 
@@ -278,15 +278,15 @@ class AlbumArt(BaseArt, TagReader):
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                               stream,
-                                                               ArtSize.MONSTER,
-                                                               ArtSize.MONSTER,
-                                                               True,
-                                                               None)
+                    stream,
+                    ArtSize.MONSTER,
+                    ArtSize.MONSTER,
+                    True,
+                    None)
                 stream.close()
                 pixbuf.savev(store_path, "jpeg", ["quality"],
                              [str(App().settings.get_value(
-                                                "cover-quality").get_int32())])
+                                 "cover-quality").get_int32())])
                 dst = Gio.File.new_for_uri(arturi)
                 src = Gio.File.new_for_path(store_path)
                 src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
@@ -359,7 +359,7 @@ class AlbumArt(BaseArt, TagReader):
                 # Some file store it in a preview-image tag
                 if not exist:
                     (exist, sample) = info.get_tags().get_sample_index(
-                                                            "preview-image", 0)
+                        "preview-image", 0)
             if exist:
                 (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
             if exist:

@@ -49,7 +49,7 @@ class MtpSyncDb:
             @param uri as str
         """
         return self.__metadata.get(
-                           self.__get_reluri(uri), {}).get("time::modified", 0)
+            self.__get_reluri(uri), {}).get("time::modified", 0)
 
     def set_mtime(self, uri, mtime):
         """
@@ -108,14 +108,14 @@ class MtpSyncDb:
         debug("MtpSyncDb::__save_db()")
         jsondb = json.dumps({"version": 1,
                              "tracks_metadata": [
-                                {"uri": x, "metadata": y}
-                                for x, y in sorted(self.__metadata.items())]})
+                                 {"uri": x, "metadata": y}
+                                 for x, y in sorted(self.__metadata.items())]})
         dbfile = Gio.File.new_for_uri(self.__db_uri)
         ok, _ = dbfile.replace_contents(
-                                    jsondb.encode("utf-8"),
-                                    None, False,
-                                    Gio.FileCreateFlags.REPLACE_DESTINATION,
-                                    None)
+            jsondb.encode("utf-8"),
+            None, False,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            None)
         if not ok:
             print("MtpSyncDb::__save_db() failed")
 
@@ -139,6 +139,7 @@ class MtpSync:
     """
         Synchronisation to MTP devices
     """
+
     def __init__(self):
         """
             Init MTP synchronisation
@@ -248,7 +249,7 @@ class MtpSync:
                     f = infos.get_child(info)
                     self.__retry(f.delete, (None,))
 
-            d = Gio.File.new_for_uri(self._uri+"/unsync")
+            d = Gio.File.new_for_uri(self._uri + "/unsync")
             if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
@@ -284,7 +285,7 @@ class MtpSync:
                 if isinstance(a, Gio.File):
                     print(a.get_uri())
             sleep(5)
-            self.__retry(func, args, t-1)
+            self.__retry(func, args, t - 1)
 
     def __remove_empty_dirs(self):
         """
@@ -309,9 +310,9 @@ class MtpSync:
                             # On some device, Gio.File.delete() remove
                             # non empty directories #828
                             subinfos = f.enumerate_children(
-                                    "standard::name,standard::type",
-                                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                                    None)
+                                "standard::name,standard::type",
+                                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                                None)
                             subfiles = False
                             for info in subinfos:
                                 subfiles = True
@@ -376,10 +377,13 @@ class MtpSync:
                     # Create playlist
                     m3u = Gio.File.new_for_path(
                         "/tmp/lollypop_%s.m3u" % (playlist_name,))
-                    self.__retry(m3u.replace_contents, (b"#EXTM3U\n", None,
-                                 False,
-                                 Gio.FileCreateFlags.REPLACE_DESTINATION,
-                                 None))
+                    self.__retry(
+                        m3u.replace_contents,
+                        (b"#EXTM3U\n",
+                         None,
+                         False,
+                         Gio.FileCreateFlags.REPLACE_DESTINATION,
+                         None))
                     stream = m3u.open_readwrite(None)
                 except Exception as e:
                     print("DeviceWidget::_copy_to_device(): %s" % e)
@@ -454,19 +458,19 @@ class MtpSync:
                 if stream is not None:
                     if is_compilation:
                         line = "%s/%s\n" %\
-                                (album_name,
-                                 track_name)
+                            (album_name,
+                             track_name)
                     else:
                         line = "%s_%s/%s\n" %\
-                                (artists,
-                                 album_name,
-                                 track_name)
+                            (artists,
+                             album_name,
+                             track_name)
                     self.__retry(stream.get_output_stream().write,
                                  (line.encode(encoding="UTF-8"), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists() or\
-                        self.__mtpmetadata.get_mtime(
-                                                  dst_track.get_uri()) < mtime:
+                    self.__mtpmetadata.get_mtime(
+                        dst_track.get_uri()) < mtime:
                     if convertion_needed:
                         mp3_uri = "file:///tmp/%s" % track_name
                         mp3_file = Gio.File.new_for_uri(mp3_uri)
@@ -484,9 +488,9 @@ class MtpSync:
                             pipeline.set_state(Gst.State.READY)
                             pipeline.set_state(Gst.State.NULL)
                             self.__retry(
-                                    mp3_file.move,
-                                    (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                                     None, None))
+                                mp3_file.move,
+                                (dst_track, Gio.FileCopyFlags.OVERWRITE,
+                                 None, None))
                             # To be sure
                             try:
                                 mp3_file.delete(None)
@@ -500,12 +504,13 @@ class MtpSync:
                 else:
                     self.__done += 1
                 self.__done += 1
-                self._fraction = self.__done/self.__total
+                self._fraction = self.__done / self.__total
             if stream is not None:
                 stream.close()
             if m3u is not None:
                 playlist_name = escape(playlist_name)
-                dst = Gio.File.new_for_uri(self._uri+"/"+playlist_name+".m3u")
+                dst = Gio.File.new_for_uri(
+                    self._uri + "/" + playlist_name + ".m3u")
                 self.__retry(m3u.move,
                              (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
@@ -571,7 +576,7 @@ class MtpSync:
                 self.__retry(to_delete.delete, (None,))
                 self.__mtpmetadata.delete_uri(uri)
             self.__done += 1
-            self._fraction = self.__done/self.__total
+            self._fraction = self.__done / self.__total
 
     def __convert_to_mp3(self, src, dst):
         """
@@ -586,7 +591,7 @@ class MtpSync:
             dst_path = dst.get_path().replace("\\", "\\\\\\")
             if self.__normalize:
                 pipeline = Gst.parse_launch(
-                            'filesrc location="%s" ! decodebin\
+                    'filesrc location="%s" ! decodebin\
                             ! audioconvert\
                             ! audioresample\
                             ! audio/x-raw,rate=44100,channels=2\
@@ -594,17 +599,17 @@ class MtpSync:
                             ! rglimiter ! audioconvert\
                             ! lamemp3enc target=quality quality=%s ! id3v2mux\
                             ! filesink location="%s"'
-                            % (src_path, self.__quality, dst_path))
+                    % (src_path, self.__quality, dst_path))
             else:
                 pipeline = Gst.parse_launch(
-                            'filesrc location="%s" ! decodebin\
+                    'filesrc location="%s" ! decodebin\
                             ! audioconvert\
                             ! audioresample\
                             ! audio/x-raw,rate=44100,channels=2\
                             ! lamemp3enc target=quality quality=%s\
                             ! id3v2mux\
                             ! filesink location="%s"'
-                            % (src_path, self.__quality, dst_path))
+                    % (src_path, self.__quality, dst_path))
             pipeline.set_state(Gst.State.PLAYING)
             return pipeline
         except Exception as e:

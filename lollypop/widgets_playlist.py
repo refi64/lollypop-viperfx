@@ -233,7 +233,7 @@ class PlaylistsWidget(Gtk.Grid):
             self.__tracks_widget_left.update_indexes(1)
             track_left_children = self.__tracks_widget_left.get_children()
             self.__tracks_widget_right.update_indexes(
-                                                  len(track_left_children) + 1)
+                len(track_left_children) + 1)
 
     def rows_animation(self, x, y, widget):
         """
@@ -400,8 +400,8 @@ class PlaylistsWidget(Gtk.Grid):
                     len(src_track.artist_ids) > 1 or
                     src_track.album.artist_id not in src_track.artist_ids):
                 name = "<b>%s</b>\n%s" % (
-                         GLib.markup_escape_text(", ".join(src_track.artists)),
-                         name)
+                    GLib.markup_escape_text(", ".join(src_track.artists)),
+                    name)
         src_track.set_number(index)
         row = PlaylistRow(src_track, index == 0 or
                           src_track.album.id != prev_track.album.id)
@@ -457,7 +457,7 @@ class PlaylistsWidget(Gtk.Grid):
                                            tracks,
                                            False)
             if not (set(self.__playlist_ids) -
-               set(App().player.get_playlist_ids())):
+                    set(App().player.get_playlist_ids())):
                 App().player.update_playlist(tracks)
         src_track = dst_track = None
         row_tracks_left = self.__get_row_tracks(Loading.LEFT)
@@ -525,9 +525,9 @@ class PlaylistsWidget(Gtk.Grid):
                 row_tracks_left = self.__get_row_tracks(Loading.LEFT)
                 row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
                 App().player.populate_playlist_by_tracks(
-                                                       row_tracks_left +
-                                                       row_tracks_right,
-                                                       self.__playlist_ids)
+                    row_tracks_left +
+                    row_tracks_right,
+                    self.__playlist_ids)
 
 
 class PlaylistsManagerWidget(Gtk.Bin):
@@ -557,8 +557,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self.__view = builder.get_object("view")
         self.__view.set_model(self.__model)
         self.__view.drag_dest_set(
-                           Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
-                           [], Gdk.DragAction.MOVE)
+            Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+            [], Gdk.DragAction.MOVE)
         self.__view.drag_dest_add_text_targets()
         self.__view.connect("drag-data-received", self.__on_drag_data_received)
 
@@ -706,17 +706,17 @@ class PlaylistsManagerWidget(Gtk.Bin):
                 if isinstance(self.__object, Album) or\
                         isinstance(self.__object, Disc):
                     selected = App().playlists.exists_album(
-                                                       playlist[0],
-                                                       self.__object)
+                        playlist[0],
+                        self.__object)
                 else:
 
                     selected = App().playlists.exists_track(
-                                                       playlist[0],
-                                                       self.__object)
+                        playlist[0],
+                        self.__object)
             else:
                 selected = False
             self.__model.append([selected, playlist[1],
-                                "user-trash-symbolic", playlist[0]])
+                                 "user-trash-symbolic", playlist[0]])
 
     def __show_infobar(self, path):
         """
@@ -990,9 +990,9 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artists = ", ".join(track.album.artists)
             self.__model.append([track.album.id,
-                                "<b>%s</b>\n%s" % (
-                                   GLib.markup_escape_text(artists),
-                                   GLib.markup_escape_text(track.name)),
+                                 "<b>%s</b>\n%s" % (
+                                     GLib.markup_escape_text(artists),
+                                     GLib.markup_escape_text(track.name)),
                                  "checkbox-symbolic", track.id])
             GLib.idle_add(self.__append_track, track_ids)
         else:

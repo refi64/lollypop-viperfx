@@ -77,8 +77,8 @@ class Inotify:
             if d.query_exists():
                 # If a directory, monitor it
                 if changed_file.query_file_type(
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None) == Gio.FileType.DIRECTORY:
+                        Gio.FileQueryInfoFlags.NONE,
+                        None) == Gio.FileType.DIRECTORY:
                     self.add_monitor(uri)
                 # If not an audio file, exit
                 elif is_audio(changed_file):

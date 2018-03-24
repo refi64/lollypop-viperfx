@@ -58,19 +58,19 @@ class TracksDatabase:
                 discnumber, discname, album_id,\
                 year, popularity, rate, ltime, mtime, mb_track_id) VALUES\
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
-                                                        name,
-                                                        uri,
-                                                        duration,
-                                                        tracknumber,
-                                                        discnumber,
-                                                        discname,
-                                                        album_id,
-                                                        year,
-                                                        popularity,
-                                                        rate,
-                                                        ltime,
-                                                        mtime,
-                                                        mb_track_id))
+                    name,
+                    uri,
+                    duration,
+                    tracknumber,
+                    discnumber,
+                    discname,
+                    album_id,
+                    year,
+                    popularity,
+                    rate,
+                    ltime,
+                    mtime,
+                    mb_track_id))
             return result.lastrowid
 
     def add_artist(self, track_id, artist_id):

@@ -68,42 +68,42 @@ class TaskHelper:
                                uri,
                                *args)
         except Exception as e:
-            print("HelperTask::load_uri_content():",  e)
+            print("HelperTask::load_uri_content():", e)
             callback(uri, False, b"", *args)
 
     def load_uri_content_sync(self, uri, cancellable=None):
-            """
-                Load uri
-                @param uri as str
-                @param cancellable as Gio.Cancellable
-                @return (loaded as bool, content as bytes)
-            """
-            try:
-                session = Soup.Session.new()
-                # Post message
-                if self.__headers:
-                    msg = Soup.Message.new("GET", uri)
-                    headers = msg.get_property("request-headers")
-                    for header in self.__headers:
-                        headers.append(header[0],
-                                       header[1])
-                    session.send_message(msg)
-                    body = msg.get_property("response-body")
-                    bytes = body.flatten().get_data()
-                # Get message
-                else:
-                    request = session.request(uri)
-                    stream = request.send(cancellable)
-                    bytes = bytearray(0)
+        """
+            Load uri
+            @param uri as str
+            @param cancellable as Gio.Cancellable
+            @return (loaded as bool, content as bytes)
+        """
+        try:
+            session = Soup.Session.new()
+            # Post message
+            if self.__headers:
+                msg = Soup.Message.new("GET", uri)
+                headers = msg.get_property("request-headers")
+                for header in self.__headers:
+                    headers.append(header[0],
+                                   header[1])
+                session.send_message(msg)
+                body = msg.get_property("response-body")
+                bytes = body.flatten().get_data()
+            # Get message
+            else:
+                request = session.request(uri)
+                stream = request.send(cancellable)
+                bytes = bytearray(0)
+                buf = stream.read_bytes(1024, cancellable).get_data()
+                while buf:
+                    bytes += buf
                     buf = stream.read_bytes(1024, cancellable).get_data()
-                    while buf:
-                        bytes += buf
-                        buf = stream.read_bytes(1024, cancellable).get_data()
-                    stream.close()
-                return (True, bytes)
-            except Exception as e:
-                print("TaskHelper::load_uri_content_sync():",  e)
-                return (False, b"")
+                stream.close()
+            return (True, bytes)
+        except Exception as e:
+            print("TaskHelper::load_uri_content_sync():", e)
+            return (False, b"")
 
 #######################
 # PRIVATE             #
@@ -169,5 +169,5 @@ class TaskHelper:
                                     bytearray(0), cancellable, callback, uri,
                                     *args)
         except Exception as e:
-            print("TaskHelper::__on_soup_msg_finished():",  e)
+            print("TaskHelper::__on_soup_msg_finished():", e)
             callback(uri, False, b"", *args)

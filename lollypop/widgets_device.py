@@ -57,7 +57,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             self.__switch_mp3.set_sensitive(False)
             self.__switch_normalize.set_sensitive(False)
             self.__switch_mp3.set_tooltip_text(_("You need to install " +
-                                               "gstreamer-plugins-ugly"))
+                                                 "gstreamer-plugins-ugly"))
         else:
             convert_mp3 = App().settings.get_value("convert-mp3")
             self.__switch_mp3.set_state(convert_mp3)
@@ -185,7 +185,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         current = App().window.container.progress.get_fraction()
         if self._syncing:
-            progress = (self._fraction-current)/10
+            progress = (self._fraction - current) / 10
         else:
             progress = 0.01
         if current < self._fraction:
@@ -325,15 +325,15 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 try:
                     d = Gio.File.new_for_uri(self._uri)
                     infos = d.enumerate_children(
-                                            "standard::name,standard::type",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
+                        "standard::name,standard::type",
+                        Gio.FileQueryInfoFlags.NONE,
+                        None)
                     for info in infos:
                         if info.get_file_type() != Gio.FileType.DIRECTORY:
                             f = infos.get_child(info)
                             if f.get_uri().endswith(".m3u"):
                                 files_list.append(
-                                          GLib.path_get_basename(f.get_path()))
+                                    GLib.path_get_basename(f.get_path()))
                 except:
                     pass
             playlist = playlists.pop(0)
@@ -356,8 +356,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 else:
                     artists = ", ".join(album.artists)
                     name = "<b>%s</b> - %s" % (
-                            GLib.markup_escape_text(artists),
-                            GLib.markup_escape_text(album.name))
+                        GLib.markup_escape_text(artists),
+                        GLib.markup_escape_text(album.name))
                 self.__model.append([synced, name, album.id])
             GLib.idle_add(self.__append_albums, albums)
 

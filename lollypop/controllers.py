@@ -45,10 +45,10 @@ class PlaybackController:
         """
         if player.prev_track.id == Type.RADIOS:
             self._prev_btn.set_tooltip_text(
-                                    ", ".join(player.prev_track.album_artists))
+                ", ".join(player.prev_track.album_artists))
         elif player.prev_track.id is not None:
             prev_artists = GLib.markup_escape_text(
-                                          ", ".join(player.prev_track.artists))
+                ", ".join(player.prev_track.artists))
             prev_title = GLib.markup_escape_text(player.prev_track.title)
             self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
                                               (prev_artists,
@@ -63,10 +63,10 @@ class PlaybackController:
         """
         if player.next_track.id == Type.RADIOS:
             self._next_btn.set_tooltip_text(
-                                    ", ".join(player.next_track.album_artists))
+                ", ".join(player.next_track.album_artists))
         elif player.next_track.id is not None:
             next_artists = GLib.markup_escape_text(
-                                          ", ".join(player.next_track.artists))
+                ", ".join(player.next_track.artists))
             next_title = GLib.markup_escape_text(player.next_track.title)
             self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
                                               (next_artists,
@@ -331,7 +331,7 @@ class ProgressController:
         if track_id == player.current_track.id:
             self._progress.set_range(0.0, player.current_track.duration)
             self._total_time_label.set_text(
-                    seconds_to_string(player.current_track.duration))
+                seconds_to_string(player.current_track.duration))
 
 
 class InfoController:
@@ -376,9 +376,9 @@ class InfoController:
             self._artist_label.set_text(artist_text)
         else:
             self._artist_label.set_markup(
-                                        "<span font='%s'>%s</span>" %
-                                        (self.__font_size - 2,
-                                         GLib.markup_escape_text(artist_text)))
+                "<span font='%s'>%s</span>" %
+                (self.__font_size - 2,
+                 GLib.markup_escape_text(artist_text)))
         self._artist_label.show()
 
         title_text = player.current_track.title
@@ -386,26 +386,26 @@ class InfoController:
             self._title_label.set_text(title_text)
         else:
             self._title_label.set_markup(
-                                        "<span font='%s'>%s</span>" %
+                "<span font='%s'>%s</span>" %
                                         (self.__font_size,
                                          GLib.markup_escape_text(title_text)))
         self._title_label.show()
 
         if player.current_track.id == Type.RADIOS:
             art = App().art.get_radio_artwork(
-                                   player.current_track.album_artists[0],
-                                   self.__artsize,
-                                   self.get_scale_factor())
+                player.current_track.album_artists[0],
+                self.__artsize,
+                self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = App().art.get_album_artwork2(
-                    player.current_track.uri,
-                    self.__artsize,
-                    self.get_scale_factor())
+                player.current_track.uri,
+                self.__artsize,
+                self.get_scale_factor())
         elif player.current_track.id is not None:
             art = App().art.get_album_artwork(
-                                   player.current_track.album,
-                                   self.__artsize,
-                                   self.get_scale_factor())
+                player.current_track.album,
+                self.__artsize,
+                self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
             del art

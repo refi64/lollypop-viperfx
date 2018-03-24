@@ -57,7 +57,7 @@ class ArtistView(ArtistAlbumsView):
         elif not get_network_available():
             builder.get_object("lastfm-button").set_sensitive(False)
             builder.get_object("lastfm-button").set_tooltip_text(
-                                                  _("Network access disabled"))
+                _("Network access disabled"))
         self._overlay.add_overlay(self.__grid)
         self.__empty = Gtk.Grid()
         self.__empty.show()
@@ -74,14 +74,14 @@ class ArtistView(ArtistAlbumsView):
             artists.append(App().artists.get_name(artist_id))
         if App().settings.get_value("artist-artwork"):
             self.__label.set_markup(
-                                '<span size="x-large" weight="bold">' +
-                                GLib.markup_escape_text(", ".join(artists)) +
-                                "</span>")
+                '<span size="x-large" weight="bold">' +
+                GLib.markup_escape_text(", ".join(artists)) +
+                "</span>")
         else:
             self.__label.set_markup(
-                                '<span size="large" weight="bold">' +
-                                GLib.markup_escape_text(", ".join(artists)) +
-                                "</span>")
+                '<span size="large" weight="bold">' +
+                GLib.markup_escape_text(", ".join(artists)) +
+                "</span>")
 
     def jump_to_current(self):
         """
@@ -95,7 +95,7 @@ class ArtistView(ArtistAlbumsView):
         if widget is not None:
             y = widget.get_current_ordinate(self._albumbox)
             self._scrolled.get_vadjustment().set_value(
-                               y - self.__empty.get_property("height-request"))
+                y - self.__empty.get_property("height-request"))
 
 #######################
 # PROTECTED           #
@@ -248,9 +248,9 @@ class ArtistView(ArtistAlbumsView):
             if pixbuf is None:
                 return
             surface = Gdk.cairo_surface_create_from_pixbuf(
-                                             pixbuf,
-                                             self.__artwork.get_scale_factor(),
-                                             None)
+                pixbuf,
+                self.__artwork.get_scale_factor(),
+                None)
         else:
             surface = image.props.surface
 
@@ -258,7 +258,7 @@ class ArtistView(ArtistAlbumsView):
         size = ArtSize.ARTIST_SMALL * internal_scale_factor - 4
         ctx.new_sub_path()
         radius = size / 2
-        ctx.arc(size/2, size/2, radius, 0, 2 * pi)
+        ctx.arc(size / 2, size / 2, radius, 0, 2 * pi)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill_preserve()
         ctx.set_line_width(2)
@@ -316,29 +316,29 @@ class ArtistView(ArtistAlbumsView):
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                                       stream,
-                                                                       size,
-                                                                       size,
-                                                                       True,
-                                                                       None)
+                            stream,
+                            size,
+                            size,
+                            True,
+                            None)
                         stream.close()
                         surface = Gdk.cairo_surface_create_from_pixbuf(
-                                            pixbuf,
-                                            self.__artwork.get_scale_factor(),
-                                            None)
+                            pixbuf,
+                            self.__artwork.get_scale_factor(),
+                            None)
                         self.__artwork.set_from_surface(surface)
                         artwork_height = ArtSize.ARTIST_SMALL *\
                             internal_scale_factor
                         self.__artwork.get_style_context().remove_class(
-                                                                "artwork-icon")
+                            "artwork-icon")
                         self.__artwork.show()
                         self.__artwork_box.show()
                         break
             # Add a default icon
             if len(self._artist_ids) == 1 and artwork_height == 0:
                 self.__artwork.set_from_icon_name(
-                                            "avatar-default-symbolic",
-                                            Gtk.IconSize.DND)
+                    "avatar-default-symbolic",
+                    Gtk.IconSize.DND)
                 artwork_height = 16 * internal_scale_factor
                 self.__artwork.get_style_context().add_class("artwork-icon")
                 self.__artwork.show()
@@ -379,15 +379,15 @@ class ArtistView(ArtistAlbumsView):
             # Translators: artist context
             self.__add_button.set_tooltip_text(_("Add to current playlist"))
             self.__add_button.get_image().set_from_icon_name(
-                                                           "list-add-symbolic",
-                                                           Gtk.IconSize.MENU)
+                "list-add-symbolic",
+                Gtk.IconSize.MENU)
         else:
             # Translators: artist context
             self.__add_button.set_tooltip_text(
-                                          _("Remove from current playlist"))
+                _("Remove from current playlist"))
             self.__add_button.get_image().set_from_icon_name(
-                                                        "list-remove-symbolic",
-                                                        Gtk.IconSize.MENU)
+                "list-remove-symbolic",
+                Gtk.IconSize.MENU)
 
     def __on_realize(self, widget):
         """

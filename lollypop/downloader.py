@@ -128,7 +128,7 @@ class Downloader:
         """
         try:
             artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(" ", "+")
+                artist, None, True).replace(" ", "+")
             uri = "https://api.deezer.com/search/artist/?" +\
                   "q=%s&output=json&index=0&limit=1&" % artist_formated
             helper = TaskHelper()
@@ -149,7 +149,7 @@ class Downloader:
         """
         try:
             artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(" ", "+")
+                artist, None, True).replace(" ", "+")
             uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
                   "&type=artist"
             token = "Bearer %s" % self.__get_spotify_token(None)
@@ -207,7 +207,7 @@ class Downloader:
         try:
             token = self.__get_spotify_token(None)
             artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(" ", "+")
+                artist, None, True).replace(" ", "+")
             uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
                   "&type=artist"
             token = "Bearer %s" % token
@@ -250,7 +250,7 @@ class Downloader:
         image = None
         try:
             album_formated = GLib.uri_escape_string(
-                                album, None, True).replace(" ", "+")
+                album, None, True).replace(" ", "+")
             uri = "https://itunes.apple.com/search" +\
                   "?entity=album&term=%s" % album_formated
             helper = TaskHelper()
@@ -340,8 +340,8 @@ class Downloader:
                     (uri, content) = method(artist)
                     if uri is not None:
                         (status, data) = TaskHelper().load_uri_content_sync(
-                                                                      uri,
-                                                                      None)
+                            uri,
+                            None)
                         if status:
                             artwork_set = True
                             InfoCache.add(artist, content, data, api)

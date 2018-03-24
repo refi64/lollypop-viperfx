@@ -214,18 +214,18 @@ class RadioPopover(Gtk.Popover):
             width = pixbuf.get_width()
             height = pixbuf.get_height()
             if width > height:
-                height = height*ArtSize.BIG*self.get_scale_factor()/width
-                width = ArtSize.BIG*self.get_scale_factor()
+                height = height * ArtSize.BIG * self.get_scale_factor() / width
+                width = ArtSize.BIG * self.get_scale_factor()
             else:
-                width = width*ArtSize.BIG*self.get_scale_factor()/height
-                height = ArtSize.BIG*self.get_scale_factor()
+                width = width * ArtSize.BIG * self.get_scale_factor() / height
+                height = ArtSize.BIG * self.get_scale_factor()
             scaled_pixbuf = pixbuf.scale_simple(width,
                                                 height,
                                                 GdkPixbuf.InterpType.BILINEAR)
             surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                       scaled_pixbuf,
-                                                       self.get_scale_factor(),
-                                                       None)
+                scaled_pixbuf,
+                self.get_scale_factor(),
+                None)
             image.set_from_surface(surface)
             image.show()
             self.__view.add(image)

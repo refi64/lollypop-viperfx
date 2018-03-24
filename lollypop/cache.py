@@ -97,29 +97,29 @@ class InfoCache:
                         extract = pixbuf
                     if extract is None:
                         extract = GdkPixbuf.Pixbuf.new(
-                                                    GdkPixbuf.Colorspace.RGB,
-                                                    True, 8,
-                                                    size, size)
+                            GdkPixbuf.Colorspace.RGB,
+                            True, 8,
+                            size, size)
                         if vertical:
                             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                                                                      filepath,
-                                                                      size,
-                                                                      -1,
-                                                                      True)
+                                filepath,
+                                size,
+                                -1,
+                                True)
                             diff = pixbuf.get_height() - size
-                            pixbuf.copy_area(0, diff/2,
+                            pixbuf.copy_area(0, diff / 2,
                                              pixbuf.get_width(),
                                              size,
                                              extract,
                                              0, 0)
                         else:
                             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                                                                      filepath,
-                                                                      -1,
-                                                                      size,
-                                                                      True)
+                                filepath,
+                                -1,
+                                size,
+                                True)
                             diff = pixbuf.get_width() - size
-                            pixbuf.copy_area(diff/2, 0,
+                            pixbuf.copy_area(diff / 2, 0,
                                              size,
                                              pixbuf.get_height(),
                                              extract,
@@ -144,12 +144,12 @@ class InfoCache:
                                  suffix)
         content = None
         data = None
-        if path.exists(filepath+".txt"):
-            f = Gio.File.new_for_path(filepath+".txt")
+        if path.exists(filepath + ".txt"):
+            f = Gio.File.new_for_path(filepath + ".txt")
             (status, content, tag) = f.load_contents()
             if not status:
                 content = None
-            image_path = filepath+".jpg"
+            image_path = filepath + ".jpg"
             if path.exists(image_path):
                 f = Gio.File.new_for_path(image_path)
                 (status, data, tag) = f.load_contents()
@@ -169,14 +169,14 @@ class InfoCache:
                                  escape(prefix),
                                  suffix)
         if content is not None:
-            f = Gio.File.new_for_path(filepath+".txt")
+            f = Gio.File.new_for_path(filepath + ".txt")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             if fstream is not None:
                 fstream.write(content, None)
                 fstream.close()
         if data is None:
-            f = Gio.File.new_for_path(filepath+".jpg")
+            f = Gio.File.new_for_path(filepath + ".jpg")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
@@ -228,7 +228,7 @@ class InfoCache:
             filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                             escape(prefix),
                                             suffix,
-                                            ArtSize.ARTIST_SMALL*scale*i)
+                                            ArtSize.ARTIST_SMALL * scale * i)
             f = Gio.File.new_for_path(filepath)
             try:
                 f.delete(None)

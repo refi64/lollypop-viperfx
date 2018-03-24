@@ -46,12 +46,12 @@ class NextPopover(Gtk.Popover):
             Update widget with next track
         """
         self.__artist_label.set_text(
-                                    ", ".join(App().player.next_track.artists))
+            ", ".join(App().player.next_track.artists))
         self.__title_label.set_text(App().player.next_track.title)
         art = App().art.get_album_artwork(
-                               App().player.next_track.album,
-                               ArtSize.MEDIUM,
-                               self.get_scale_factor())
+            App().player.next_track.album,
+            ArtSize.MEDIUM,
+            self.get_scale_factor())
         if art is not None:
             self.__cover.set_from_surface(art)
             del art

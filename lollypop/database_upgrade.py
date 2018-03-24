@@ -83,7 +83,7 @@ class DatabaseUpgrade:
             if v is not None:
                 version = v[0]
             if version < self.version:
-                for i in range(version+1, self.version + 1):
+                for i in range(version + 1, self.version + 1):
                     try:
                         if isinstance(self.__UPGRADES[i], str):
                             sql.execute(self.__UPGRADES[i])

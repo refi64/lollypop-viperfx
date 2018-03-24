@@ -113,12 +113,12 @@ class BaseWidget:
         """
         if App().settings.get_enum("shuffle") == Shuffle.NONE:
             self._play_all_button.set_from_icon_name(
-                                        "media-playlist-consecutive-symbolic",
-                                        Gtk.IconSize.BUTTON)
+                "media-playlist-consecutive-symbolic",
+                Gtk.IconSize.BUTTON)
         else:
             self._play_all_button.set_from_icon_name(
-                                        "media-playlist-shuffle-symbolic",
-                                        Gtk.IconSize.BUTTON)
+                "media-playlist-shuffle-symbolic",
+                Gtk.IconSize.BUTTON)
 
     def _show_overlay_func(self, set):
         """
@@ -138,46 +138,46 @@ class BaseWidget:
             if self._play_button is not None:
                 self._play_button.set_opacity(opacity)
                 self._play_button.get_style_context().add_class(
-                                                           self._rounded_class)
+                    self._rounded_class)
                 self._play_button.show()
             if self._play_all_button is not None:
                 self._play_all_button.set_opacity(opacity)
                 self._play_all_button.get_style_context().add_class(
-                                                           self._squared_class)
+                    self._squared_class)
                 self._set_play_all_image()
                 self._play_all_button.show()
             if self._artwork_button is not None:
                 self._artwork_button.set_opacity(1)
                 self._artwork_button.get_style_context().add_class(
-                                                           self._squared_class)
+                    self._squared_class)
                 self._artwork_button.show()
             if self._action_button is not None:
                 self._show_append(self._album not in App().player.albums)
                 self._action_button.set_opacity(opacity)
                 self._action_button.get_style_context().add_class(
-                                                       self._squared_class)
+                    self._squared_class)
                 self._action_button.show()
         else:
             if self._play_button is not None:
                 self._play_button.set_opacity(0)
                 self._play_button.hide()
                 self._play_button.get_style_context().remove_class(
-                                                           self._rounded_class)
+                    self._rounded_class)
             if self._play_all_button is not None:
                 self._play_all_button.set_opacity(0)
                 self._play_all_button.hide()
                 self._play_all_button.get_style_context().remove_class(
-                                                           self._squared_class)
+                    self._squared_class)
             if self._artwork_button is not None:
                 self._artwork_button.hide()
                 self._artwork_button.set_opacity(0)
                 self._artwork_button.get_style_context().remove_class(
-                                                           self._squared_class)
+                    self._squared_class)
             if self._action_button is not None:
                 self._action_button.hide()
                 self._action_button.set_opacity(0)
                 self._action_button.get_style_context().remove_class(
-                                                           self._squared_class)
+                    self._squared_class)
 
     def _on_eventbox_realize(self, eventbox):
         """
@@ -294,7 +294,7 @@ class BaseWidget:
             self._action_button.set_from_icon_name("list-remove-symbolic",
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(
-                                           _("Remove from current playlist"))
+                _("Remove from current playlist"))
 
 #######################
 # PRIVATE             #
@@ -343,7 +343,7 @@ class AlbumWidget(BaseWidget):
         """
             @return str
         """
-        return " ".join([self._album.name]+self._album.artists)
+        return " ".join([self._album.name] + self._album.artists)
 
     def get_cover(self):
         """
@@ -359,9 +359,9 @@ class AlbumWidget(BaseWidget):
         if self._cover is None:
             return
         surface = App().art.get_album_artwork(
-                            self._album,
-                            self._art_size,
-                            self._cover.get_scale_factor())
+            self._album,
+            self._art_size,
+            self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         if surface.get_height() > surface.get_width():
             self._overlay_orientation = Gtk.Orientation.VERTICAL
@@ -375,9 +375,9 @@ class AlbumWidget(BaseWidget):
         if self._cover is None:
             return
         surface = App().art.get_album_artwork(
-                            self._album,
-                            self._art_size,
-                            self._cover.get_scale_factor())
+            self._album,
+            self._art_size,
+            self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         if surface.get_height() > surface.get_width():
             self._overlay_orientation = Gtk.Orientation.VERTICAL

@@ -136,7 +136,7 @@ class ArtistsDatabase:
                        AND album_artists.artists_id=%s\
                        AND album_artists.album_id=albums.rowid\
                        AND albums.rowid=tracks.album_id AND (1=0 " %\
-                       Type.COMPILATIONS
+                Type.COMPILATIONS
             for artist_id in artist_ids:
                 request += "OR track_artists.artist_id=%s " % artist_id
             request += ") ORDER BY albums.year"
@@ -154,7 +154,7 @@ class ArtistsDatabase:
             if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
                 result = sql.execute(
-                                 "SELECT DISTINCT artists.rowid,\
+                    "SELECT DISTINCT artists.rowid,\
                                   artists.name, artists.sortname\
                                   FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
@@ -187,7 +187,7 @@ class ArtistsDatabase:
             if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
                 result = sql.execute(
-                                 "SELECT DISTINCT artists.rowid\
+                    "SELECT DISTINCT artists.rowid\
                                   FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\

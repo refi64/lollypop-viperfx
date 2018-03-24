@@ -87,8 +87,8 @@ class SearchPopover(Gtk.Popover):
         if self.__current_search != "":
             self.__new_btn.set_sensitive(True)
             self.__timeout_id = GLib.timeout_add(
-                                              500,
-                                              self.__on_search_changed_timeout)
+                500,
+                self.__on_search_changed_timeout)
         else:
             self.__new_btn.set_sensitive(False)
 
@@ -141,7 +141,7 @@ class SearchPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(False)
         height = App().window.get_size()[1]
-        self.set_size_request(450, height*0.7)
+        self.set_size_request(450, height * 0.7)
 
     def __on_unmap(self, widget):
         """

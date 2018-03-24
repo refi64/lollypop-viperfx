@@ -34,6 +34,7 @@ class Container(Gtk.Bin):
     """
         Container for main view
     """
+
     def __init__(self):
         """
             Init container
@@ -98,13 +99,13 @@ class Container(Gtk.Bin):
             Save view state
         """
         App().settings.set_value(
-                            "list-one-ids",
-                            GLib.Variant("ai",
-                                         self.__list_one.selected_ids))
+            "list-one-ids",
+            GLib.Variant("ai",
+                         self.__list_one.selected_ids))
         App().settings.set_value(
-                            "list-two-ids",
-                            GLib.Variant("ai",
-                                         self.__list_two.selected_ids))
+            "list-two-ids",
+            GLib.Variant("ai",
+                         self.__list_two.selected_ids))
 
     def show_playlist_manager(self, object):
         """
@@ -212,10 +213,10 @@ class Container(Gtk.Bin):
         dev.id = self.__devices_index
         dev.name = "Android phone"
         dev.uri = "file:///tmp/android/"
-        d = Gio.File.new_for_uri(dev.uri+"Internal Memory")
+        d = Gio.File.new_for_uri(dev.uri + "Internal Memory")
         if not d.query_exists():
             d.make_directory_with_parents()
-        d = Gio.File.new_for_uri(dev.uri+"SD Card")
+        d = Gio.File.new_for_uri(dev.uri + "SD Card")
         if not d.query_exists():
             d.make_directory_with_parents()
         self.__devices[self.__devices_index] = dev
@@ -412,7 +413,7 @@ class Container(Gtk.Bin):
             if App().playlists.exists(playlist_id):
                 self.__list_two.update_value(playlist_id,
                                              App().playlists.get_name(
-                                                                  playlist_id))
+                                                 playlist_id))
             else:
                 self.__list_two.remove_value(playlist_id)
 
@@ -602,7 +603,7 @@ class Container(Gtk.Bin):
             if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation or\
                         App().settings.get_value(
-                                            "show-compilations-in-album-view"):
+                            "show-compilations-in-album-view"):
                     items = App().albums.get_compilation_ids()
                 if not is_compilation:
                     items += App().albums.get_ids()
@@ -623,7 +624,7 @@ class Container(Gtk.Bin):
             else:
                 if is_compilation or\
                         App().settings.get_value(
-                                            "show-compilations-in-album-view"):
+                            "show-compilations-in-album-view"):
                     items = App().albums.get_compilation_ids(genre_ids)
                 if not is_compilation:
                     items += App().albums.get_ids([], genre_ids)

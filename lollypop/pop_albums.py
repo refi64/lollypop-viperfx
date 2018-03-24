@@ -29,19 +29,19 @@ class AlbumsPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.__clear_button = Gtk.Button.new_from_icon_name(
-                                                    "edit-clear-all-symbolic",
-                                                    Gtk.IconSize.MENU)
+            "edit-clear-all-symbolic",
+            Gtk.IconSize.MENU)
         self.__clear_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__clear_button.set_tooltip_text(_("Clear albums"))
         self.__clear_button.set_sensitive(App().player.albums)
         self.__clear_button.connect("clicked", self.__on_clear_clicked)
         self.__jump_button = Gtk.Button.new_from_icon_name(
-                                                    "go-jump-symbolic",
-                                                    Gtk.IconSize.MENU)
+            "go-jump-symbolic",
+            Gtk.IconSize.MENU)
         self.__jump_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__jump_button.connect("clicked", self.__on_jump_clicked)
         self.__jump_button.set_tooltip_text(_("Go to current track"))
-        label = Gtk.Label.new("<b>"+_("Playing albums")+"</b>")
+        label = Gtk.Label.new("<b>" + _("Playing albums") + "</b>")
         label.set_use_markup(True)
         label.set_hexpand(True)
         label.set_margin_start(2)
@@ -88,7 +88,7 @@ class AlbumsPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         height = App().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
+        self.set_size_request(400, height * 0.7)
 
     def __on_unmap(self, widget):
         """

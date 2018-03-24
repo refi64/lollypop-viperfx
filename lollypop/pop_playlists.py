@@ -56,7 +56,7 @@ class PlaylistsPopover(Gtk.Popover):
         self._stop = False
         self.populate()
         height = App().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
+        self.set_size_request(400, height * 0.7)
 
     def __on_unmap(self, widget):
         """

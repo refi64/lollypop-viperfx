@@ -332,9 +332,9 @@ class TracksView:
         """
         for disc in self._album.discs:
             self._tracks_widget_left[disc.number].set_property(
-                                                          "height-request", -1)
+                "height-request", -1)
             self._tracks_widget_right[disc.number].set_property(
-                                                          "height-request", -1)
+                "height-request", -1)
 
     def _on_size_allocate(self, widget, allocation):
         """
@@ -383,8 +383,8 @@ class TracksView:
                     label.get_style_context().add_class("dim-label")
                     label.show()
                     indicator = Gtk.Button.new_from_icon_name(
-                                                        "go-next-symbolic",
-                                                        Gtk.IconSize.BUTTON)
+                        "go-next-symbolic",
+                        Gtk.IconSize.BUTTON)
                     indicator.get_style_context().add_class("menu-button")
                     indicator.connect("clicked",
                                       self.__on_indicator_button_clicked,

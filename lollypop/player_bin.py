@@ -37,7 +37,7 @@ class BinPlayer(BasePlayer):
         BasePlayer.__init__(self)
         self.__codecs = Codecs()
         self._playbin = self.__playbin1 = Gst.ElementFactory.make(
-                                                           "playbin", "player")
+            "playbin", "player")
         self.__playbin2 = Gst.ElementFactory.make("playbin", "player")
         self.__preview = None
         self._plugins = self._plugins1 = PluginsPlayer(self.__playbin1)
@@ -106,7 +106,7 @@ class BinPlayer(BasePlayer):
            self.is_playing and\
            self._current_track.id != Type.RADIOS:
             duration = App().settings.get_value(
-                                             "transition-duration").get_int32()
+                "transition-duration").get_int32()
             self.__do_crossfade(duration, track, False)
         else:
             self.__load(track)
@@ -204,7 +204,7 @@ class BinPlayer(BasePlayer):
         if self._crossfading and self._current_track.duration > 0:
             duration = self._current_track.duration - position / Gst.SECOND
             if duration < App().settings.get_value(
-                                            "transition-duration").get_int32():
+                    "transition-duration").get_int32():
                 self.__do_crossfade(duration)
         return position
 
@@ -329,7 +329,7 @@ class BinPlayer(BasePlayer):
         if self._current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
             if b:
-                self._current_track.duration = duration/1000000000
+                self._current_track.duration = duration / 1000000000
             # We do not use tagreader as we need to check if value is None
             self._current_track.album_name = tags.get_string_index("album",
                                                                    0)[1]
@@ -401,7 +401,7 @@ class BinPlayer(BasePlayer):
                 # See issue #886
                 # Don"t understand how this can happen!
                 count = App().albums.get_tracks_count(
-                                                 self._current_track.album_id)
+                    self._current_track.album_id)
                 if count:
                     pop_to_add = int(App().albums.max_count / count)
                 else:
@@ -501,7 +501,7 @@ class BinPlayer(BasePlayer):
                 # In normal mode, based on tracks count
                 else:
                     count = App().albums.get_tracks_count(
-                                                 self._current_track.album_id)
+                        self._current_track.album_id)
                     if count:
                         pop_to_add = int(App().albums.max_count / count)
                     else:

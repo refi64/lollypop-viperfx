@@ -365,7 +365,7 @@ class Playlists(GObject.GObject):
                                 walk_uris.append(f.get_uri())
                             else:
                                 track_id = App().tracks.get_id_by_uri(
-                                                                   f.get_uri())
+                                    f.get_uri())
                                 if track_id is not None:
                                     track_ids.append(track_id)
                 else:

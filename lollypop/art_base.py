@@ -80,10 +80,10 @@ class BaseArt(GObject.GObject):
             f = Gio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                                                                cache_path_jpg,
-                                                                size,
-                                                                size,
-                                                                False)
+                    cache_path_jpg,
+                    size,
+                    size,
+                    False)
             else:
                 # get a small pixbuf with the given path
                 icon_size = size / 4
@@ -114,7 +114,7 @@ class BaseArt(GObject.GObject):
                 except:
                     pixbuf.savev(cache_path_jpg, "jpeg",
                                  ["quality"], [str(App().settings.get_value(
-                                              "cover-quality").get_int32())])
+                                     "cover-quality").get_int32())])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             return surface
         except:

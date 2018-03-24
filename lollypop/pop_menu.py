@@ -232,7 +232,7 @@ class PlaylistsMenu(BaseMenu):
             App().playlists.add_tracks(playlist_id, tracks)
             if playlist_id in App().player.get_playlist_ids():
                 App().player.update_playlist(
-                                    App().playlists.get_track_ids(playlist_id))
+                    App().playlists.get_track_ids(playlist_id))
         helper = TaskHelper()
         helper.run(add, playlist_id)
 
@@ -258,7 +258,7 @@ class PlaylistsMenu(BaseMenu):
             App().playlists.remove_tracks(playlist_id, tracks)
             if playlist_id in App().player.get_playlist_ids():
                 App().player.update_playlist(
-                                    App().playlists.get_track_ids(playlist_id))
+                    App().playlists.get_track_ids(playlist_id))
         helper = TaskHelper()
         helper.run(remove, playlist_id)
 

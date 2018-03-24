@@ -50,7 +50,7 @@ class Settings(Gio.Settings):
         uris = self.get_value("music-uris")
         if not uris:
             filename = GLib.get_user_special_dir(
-                                            GLib.UserDirectory.DIRECTORY_MUSIC)
+                GLib.UserDirectory.DIRECTORY_MUSIC)
             if filename:
                 uris = [GLib.filename_to_uri(filename)]
             else:
@@ -86,21 +86,21 @@ class SettingsDialog:
         albums = App().albums.count()
         tracks = App().tracks.count()
         builder.get_object("artists").set_text(
-                        ngettext("%d artist", "%d artists", artists) % artists)
+            ngettext("%d artist", "%d artists", artists) % artists)
         builder.get_object("albums").set_text(
-                            ngettext("%d album", "%d albums", albums) % albums)
+            ngettext("%d album", "%d albums", albums) % albums)
         builder.get_object("tracks").set_text(
-                            ngettext("%d track", "%d tracks", tracks) % tracks)
+            ngettext("%d track", "%d tracks", tracks) % tracks)
 
         self.__popover_transitions = builder.get_object("popover-transitions")
         scale_transition_duration = builder.get_object(
-                                                   "scale_transition_duration")
+            "scale_transition_duration")
         scale_transition_duration.set_range(1, 20)
         scale_transition_duration.set_value(
-                   App().settings.get_value("transition-duration").get_int32())
+            App().settings.get_value("transition-duration").get_int32())
 
         self.__popover_compilations = builder.get_object(
-                                                        "popover-compilations")
+            "popover-compilations")
 
         self.__settings_dialog = builder.get_object("settings_dialog")
         self.__settings_dialog.set_transient_for(App().window)
@@ -123,7 +123,7 @@ class SettingsDialog:
 
         switch_background = builder.get_object("switch_background")
         switch_background.set_state(
-                                   App().settings.get_value("background-mode"))
+            App().settings.get_value("background-mode"))
 
         switch_state = builder.get_object("switch_state")
         switch_state.set_state(App().settings.get_value("save-state"))
@@ -134,7 +134,7 @@ class SettingsDialog:
 
         switch_transitions = builder.get_object("switch_transitions")
         switch_transitions.set_state(
-                                App().settings.get_value("smooth-transitions"))
+            App().settings.get_value("smooth-transitions"))
 
         helper = TouchHelper(switch_transitions, None, None)
         helper.set_long_func(self.__mix_long_func, switch_transitions)
@@ -155,7 +155,7 @@ class SettingsDialog:
         switch_genres.set_state(App().settings.get_value("show-genres"))
 
         switch_compilations_in_album_view = builder.get_object(
-                                           "switch_compilations_in_album_view")
+            "switch_compilations_in_album_view")
         switch_compilations_in_album_view.set_state(
             App().settings.get_value("show-compilations-in-album-view"))
 
@@ -178,7 +178,7 @@ class SettingsDialog:
         scale_coversize = builder.get_object("scale_coversize")
         scale_coversize.set_range(150, 300)
         scale_coversize.set_value(
-                            App().settings.get_value("cover-size").get_int32())
+            App().settings.get_value("cover-size").get_int32())
         self.__settings_dialog.connect("destroy", self.__edit_settings_close)
 
         builder.connect_signals(self)
@@ -206,7 +206,7 @@ class SettingsDialog:
             uri = dirs.pop(0)
         else:
             filename = GLib.get_user_special_dir(
-                                            GLib.UserDirectory.DIRECTORY_MUSIC)
+                GLib.UserDirectory.DIRECTORY_MUSIC)
             if filename:
                 uri = GLib.filename_to_uri(filename)
             else:
@@ -229,7 +229,7 @@ class SettingsDialog:
         # ListenBrainz tab
         #
         token = App().settings.get_value(
-                                        "listenbrainz-user-token").get_string()
+            "listenbrainz-user-token").get_string()
         builder.get_object("listenbrainz_user_token_entry").set_text(token)
 
         from lollypop.helper_passwords import PasswordsHelper
@@ -250,7 +250,7 @@ class SettingsDialog:
         #
         if App().lastfm is not None:
             self.__librefm_test_image = builder.get_object(
-                                                          "librefm_test_image")
+                "librefm_test_image")
             self.__librefm_login = builder.get_object("librefm_login")
             self.__librefm_password = builder.get_object("librefm_password")
             helper.get("librefm",
@@ -476,8 +476,8 @@ class SettingsDialog:
         self.__update_fm_settings("lastfm")
         if not Gio.NetworkMonitor.get_default().get_network_available():
             self.__lastfm_test_image.set_from_icon_name(
-                                               "computer-fail-symbolic",
-                                               Gtk.IconSize.MENU)
+                "computer-fail-symbolic",
+                Gtk.IconSize.MENU)
             return
 
     def _on_librefm_test_btn_clicked(self, button):
@@ -488,8 +488,8 @@ class SettingsDialog:
         self.__update_fm_settings("librefm")
         if not Gio.NetworkMonitor.get_default().get_network_available():
             self.__librefm_test_image.set_from_icon_name(
-                                               "computer-fail-symbolic",
-                                               Gtk.IconSize.MENU)
+                "computer-fail-symbolic",
+                Gtk.IconSize.MENU)
             return
 
     def _hide_popover(self, widget):
@@ -653,7 +653,7 @@ class SettingsDialog:
         # Music uris
         uris = []
         default = GLib.get_user_special_dir(
-                                            GLib.UserDirectory.DIRECTORY_MUSIC)
+            GLib.UserDirectory.DIRECTORY_MUSIC)
         if default is not None:
             default_uri = GLib.filename_to_uri(default)
         else:
@@ -685,12 +685,12 @@ class SettingsDialog:
         """
         if fm.available:
             self.__lastfm_test_image.set_from_icon_name(
-                          "object-select-symbolic",
-                          Gtk.IconSize.MENU)
+                "object-select-symbolic",
+                Gtk.IconSize.MENU)
         else:
             self.__lastfm_test_image.set_from_icon_name(
-                          "computer-fail-symbolic",
-                          Gtk.IconSize.MENU)
+                "computer-fail-symbolic",
+                Gtk.IconSize.MENU)
 
     def __test_librefm_connection(self, result, fm):
         """
@@ -700,12 +700,12 @@ class SettingsDialog:
         """
         if fm.available:
             self.__librefm_test_image.set_from_icon_name(
-                          "object-select-symbolic",
-                          Gtk.IconSize.MENU)
+                "object-select-symbolic",
+                Gtk.IconSize.MENU)
         else:
             self.__librefm_test_image.set_from_icon_name(
-                          "computer-fail-symbolic",
-                          Gtk.IconSize.MENU)
+                "computer-fail-symbolic",
+                Gtk.IconSize.MENU)
 
     def __on_password_store(self, source, result, fm, callback):
         """
@@ -763,7 +763,7 @@ class SettingsDialog:
             grid.attach(label, l, t, w, h)
         else:
             switch_artwork_tags.set_state(
-                                      App().settings.get_value("save-to-tags"))
+                App().settings.get_value("save-to-tags"))
 
     def __on_get_password(self, attributes, password, name):
         """
@@ -804,7 +804,7 @@ class SettingsDialog:
             album_rate = App().albums.get_rate(album_id)
             history.add(name, duration, popularity, rate,
                         ltime, mtime, loved, album_popularity, album_rate)
-            self.__progress.set_fraction((count - len(track_ids))/count)
+            self.__progress.set_fraction((count - len(track_ids)) / count)
             GLib.idle_add(self.__reset_database, track_ids,
                           count, history)
         else:
@@ -813,7 +813,7 @@ class SettingsDialog:
             App().db.drop_db()
             App().db = Database()
             App().window.container.show_genres(
-                                       App().settings.get_value("show-genres"))
+                App().settings.get_value("show-genres"))
             App().scanner.update()
             self.__progress.get_toplevel().set_deletable(True)
 

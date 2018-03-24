@@ -49,7 +49,7 @@ class QueueRow(Gtk.ListBoxRow):
         box = Gtk.Box()
         box.set_homogeneous(True)
         box.add(self.__cover)
-        box.set_property("width-request", ArtSize.MEDIUM+2)
+        box.set_property("width-request", ArtSize.MEDIUM + 2)
         box.show()
         self.__title_label = Gtk.Label()
         self.__title_label.set_margin_start(20)
@@ -58,8 +58,8 @@ class QueueRow(Gtk.ListBoxRow):
         self.__title_label.set_property("halign", Gtk.Align.START)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__menu_button = Gtk.Button.new_from_icon_name(
-                                                         "user-trash-symbolic",
-                                                         Gtk.IconSize.MENU)
+            "user-trash-symbolic",
+            Gtk.IconSize.MENU)
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
@@ -120,8 +120,8 @@ class QueueRow(Gtk.ListBoxRow):
         """
         track = Track(self.__id)
         self.__artist_label.set_markup(
-                                 "<b>" + GLib.markup_escape_text(
-                                        ", ".join(track.album.artists))+"</b>")
+            "<b>" + GLib.markup_escape_text(
+                ", ".join(track.album.artists)) + "</b>")
         self.__album_label.set_text(track.album.name)
         # If we are listening to a compilation, prepend artist name
         title = GLib.markup_escape_text(track.name)
@@ -130,8 +130,8 @@ class QueueRow(Gtk.ListBoxRow):
            track.album.artist_id not in track.artist_ids:
             if track.artist_names != track.album.artist_name:
                 title = "<b>%s</b>\n%s" % (
-                                   GLib.markup_escape_text(track.artist_names),
-                                   title)
+                    GLib.markup_escape_text(track.artist_names),
+                    title)
         self.__title_label.set_markup(title)
 
     def set_cover(self, surface):
@@ -192,7 +192,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param time as int
         """
         height = self.get_allocated_height()
-        if y > height/2:
+        if y > height / 2:
             self.get_style_context().remove_class("drag-up")
             self.get_style_context().add_class("drag-down")
         else:
@@ -314,9 +314,9 @@ class QueuePopover(Gtk.Popover):
             row = self.__row_for_track_id(track_id)
             if album_id != prev_album_id:
                 surface = App().art.get_album_artwork(
-                                        Album(album_id),
-                                        ArtSize.MEDIUM,
-                                        self.get_scale_factor())
+                    Album(album_id),
+                    ArtSize.MEDIUM,
+                    self.get_scale_factor())
                 row.set_cover(surface)
                 row.show_header(True)
             self.__view.add(row)
@@ -340,7 +340,7 @@ class QueuePopover(Gtk.Popover):
         """
         self._stop = False
         height = App().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
+        self.set_size_request(400, height * 0.7)
         self.populate()
         self._signal_id1 = App().player.connect("current-changed",
                                                 self.__on_current_changed)
@@ -378,9 +378,9 @@ class QueuePopover(Gtk.Popover):
                 child.show_header(False)
             else:
                 surface = App().art.get_album_artwork(
-                                        Album(track.album.id),
-                                        ArtSize.MEDIUM,
-                                        self.get_scale_factor())
+                    Album(track.album.id),
+                    ArtSize.MEDIUM,
+                    self.get_scale_factor())
                 child.set_cover(surface)
                 child.show_header(True)
             prev_album_id = track.album.id
@@ -414,7 +414,7 @@ class QueuePopover(Gtk.Popover):
         if row.id == src:
             return
         height = row.get_allocated_height()
-        if y > height/2:
+        if y > height / 2:
             up = False
         else:
             up = True

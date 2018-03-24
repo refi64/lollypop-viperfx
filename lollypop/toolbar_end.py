@@ -45,7 +45,7 @@ class PartyPopover(Gtk.Popover):
         self.add(scrolled)
         size = App().window.get_size()
         self.set_size_request(-1,
-                              size[1]*0.6)
+                              size[1] * 0.6)
 
         genres = App().genres.get()
         genres.insert(0, (Type.POPULARS, _("Populars")))
@@ -69,7 +69,7 @@ class PartyPopover(Gtk.Popover):
             switch.connect("state-set", self.__on_switch_state_set, genre_id)
             switch.show()
             party_grid.attach(label, x, i, 1, 1)
-            party_grid.attach(switch, x+1, i, 1, 1)
+            party_grid.attach(switch, x + 1, i, 1, 1)
             if x == 0:
                 x += 2
             else:
@@ -97,7 +97,7 @@ class PartyPopover(Gtk.Popover):
                 ids.remove(genre_id)
             except:
                 pass
-        App().settings.set_value("party-ids",  GLib.Variant("ai", ids))
+        App().settings.set_value("party-ids", GLib.Variant("ai", ids))
         App().player.set_party_ids()
         App().player.set_next()
 
@@ -328,7 +328,7 @@ class ToolbarEnd(Gtk.Bin):
                 self.__shuffle_image.get_style_context().add_class("selected")
             else:
                 self.__shuffle_image.get_style_context().remove_class(
-                                                                    "selected")
+                    "selected")
 
     def __activate_party_button(self, action=None, param=None):
         """

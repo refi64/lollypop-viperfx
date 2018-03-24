@@ -61,7 +61,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             GLib.timeout_add(250, self.update)
         else:
             self.__disable_compilations = not App().settings.get_value(
-                                                        "show-compilations")
+                "show-compilations")
             uris = App().settings.get_music_uris()
             if not uris:
                 return
@@ -169,7 +169,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__history = History()
         mtimes = App().tracks.get_mtimes()
         (new_tracks, new_dirs, ignore_dirs) = self.__get_objects_for_uris(
-                                                                         uris)
+            uris)
         orig_tracks = App().tracks.get_uris(ignore_dirs)
         was_empty = len(orig_tracks) == 0
 
@@ -201,7 +201,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                                         Gio.FileQueryInfoFlags.NONE,
                                         None)
                     mtime = int(info.get_attribute_as_string(
-                                                         "time::changed"))
+                        "time::changed"))
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if uri in orig_tracks:
@@ -273,7 +273,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         year = self.get_original_year(tags)
         if year is None:
             year = self.get_year(tags)
-        duration = int(info.get_duration()/1000000000)
+        duration = int(info.get_duration() / 1000000000)
 
         # If no artists tag, use album artist
         if artists == "":

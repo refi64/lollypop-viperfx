@@ -57,8 +57,8 @@ class RadioArt(BaseArt):
                     return cache_path_png
                 else:
                     return self._get_default_icon_path(
-                                           size,
-                                           "audio-input-microphone-symbolic")
+                        size,
+                        "audio-input-microphone-symbolic")
         except Exception as e:
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
@@ -91,9 +91,9 @@ class RadioArt(BaseArt):
                                                                     size)
             if pixbuf is None:
                 return self.get_default_icon(
-                                             "audio-input-microphone-symbolic",
-                                             size,
-                                             scale)
+                    "audio-input-microphone-symbolic",
+                    size,
+                    scale)
             pixbuf.savev(cache_path_png, "png", [None], [None])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             return surface
@@ -142,7 +142,7 @@ class RadioArt(BaseArt):
         """
         try:
             artpath = self._RADIOS_PATH + "/" +\
-                      radio.replace("/", "-") + ".png"
+                radio.replace("/", "-") + ".png"
             pixbuf.savev(artpath, "png", [None], [None])
         except Exception as e:
             print("RadioArt::save_radio_artwork(): %s" % e)
@@ -198,7 +198,7 @@ class RadioArt(BaseArt):
             @param album id as int
             @param sql as sqlite cursor
         """
-        return "@@"+name.replace("/", "-")+"@@radio@@"
+        return "@@" + name.replace("/", "-") + "@@radio@@"
 
     def __on_uri_content(self, uri, status, content, name, size):
         """

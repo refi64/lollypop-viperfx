@@ -59,7 +59,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.__title_label.set_property("halign", Gtk.Align.CENTER)
         self.__title_label.set_markup("<b>" +
                                       GLib.markup_escape_text(
-                                                            self._album.name) +
+                                          self._album.name) +
                                       "</b>")
         self.__artist_label = Gtk.Label()
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -136,8 +136,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._play_event.connect("button-press-event",
                                      self._on_play_press_event)
             self._play_button = Gtk.Image.new_from_icon_name(
-                                               "media-playback-start-symbolic",
-                                               Gtk.IconSize.BUTTON)
+                "media-playback-start-symbolic",
+                Gtk.IconSize.BUTTON)
             self._play_button.set_opacity(0)
             # Play all button
             self._play_all_event = Gtk.EventBox()
@@ -158,8 +158,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._artwork_event.connect("button-press-event",
                                         self._on_artwork_press_event)
             self._artwork_button = Gtk.Image.new_from_icon_name(
-                                               "image-x-generic-symbolic",
-                                               Gtk.IconSize.BUTTON)
+                "image-x-generic-symbolic",
+                Gtk.IconSize.BUTTON)
             self._artwork_button.set_opacity(0)
             # Action button
             self._action_event = Gtk.EventBox()
@@ -275,7 +275,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                         GLib.markup_escape_text(self.__title_label.get_text()))
                 else:
                     text = GLib.markup_escape_text(
-                                                 self.__title_label.get_text())
+                        self.__title_label.get_text())
                 eventbox.set_tooltip_markup(text)
                 break
 

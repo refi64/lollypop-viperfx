@@ -197,7 +197,7 @@ class ArtworkSearch(Gtk.Bin):
         """
         self._popover.show()
         self._api_entry.set_text(
-                           App().settings.get_value("cs-api-key").get_string())
+            App().settings.get_value("cs-api-key").get_string())
 
     def _on_api_entry_changed(self, entry):
         """

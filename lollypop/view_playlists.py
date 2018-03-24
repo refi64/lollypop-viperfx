@@ -46,7 +46,7 @@ class PlaylistsView(View):
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
         self.__duration_label = builder.get_object("duration")
         builder.get_object("title").set_label(
-                            ", ".join(App().playlists.get_names(playlist_ids)))
+            ", ".join(App().playlists.get_names(playlist_ids)))
 
         self.__edit_button = builder.get_object("edit-button")
         self.__jump_button = builder.get_object("jump-button")
@@ -266,9 +266,9 @@ class PlaylistsView(View):
             self.__jump_button.set_sensitive(True)
             artists = ", ".join(App().player.current_track.artists)
             self.__jump_button.set_tooltip_markup(
-             "<b>%s</b>\n%s" % (GLib.markup_escape_text(artists),
-                                GLib.markup_escape_text(
-                                             App().player.current_track.name)))
+                "<b>%s</b>\n%s" % (GLib.markup_escape_text(artists),
+                                   GLib.markup_escape_text(
+                    App().player.current_track.name)))
         else:
             self.__jump_button.set_sensitive(False)
             self.__jump_button.set_tooltip_text("")
@@ -389,7 +389,7 @@ class PlaylistEditView(View):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistEditView.ui")
         builder.get_object("title").set_label(
-                                         App().playlists.get_name(playlist_id))
+            App().playlists.get_name(playlist_id))
         builder.connect_signals(self)
         grid = builder.get_object("widget")
         self.add(grid)

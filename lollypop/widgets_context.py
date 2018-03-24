@@ -51,8 +51,8 @@ class ContextWidget(Gtk.EventBox):
 
         if not isinstance(object, Disc):
             edit_button = Gtk.Button.new_from_icon_name(
-                                                "document-properties-symbolic",
-                                                Gtk.IconSize.BUTTON)
+                "document-properties-symbolic",
+                Gtk.IconSize.BUTTON)
             edit_button.connect("clicked", self.__on_edit_button_clicked)
             edit_button.get_style_context().add_class("dim-button")
             edit_button.set_tooltip_text(_("Modify information"))
@@ -102,8 +102,8 @@ class ContextWidget(Gtk.EventBox):
                     string = _("Remove from current playlist")
                     icon = "list-remove-symbolic"
             playback_button = Gtk.Button.new_from_icon_name(
-                                                         icon,
-                                                         Gtk.IconSize.BUTTON)
+                icon,
+                Gtk.IconSize.BUTTON)
             playback_button.connect("clicked",
                                     self.__on_playback_button_clicked,
                                     add_to_playback)

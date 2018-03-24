@@ -36,7 +36,7 @@ class Discoverer:
             Init discover
         """
         GstPbutils.pb_utils_init()
-        self._discoverer = GstPbutils.Discoverer.new(10*Gst.SECOND)
+        self._discoverer = GstPbutils.Discoverer.new(10 * Gst.SECOND)
 
     def get_info(self, uri):
         """
@@ -305,8 +305,8 @@ class TagReader(Discoverer):
                 size = tags.get_tag_size("private-id3v2-frame")
                 for i in range(0, size):
                     (exists, sample) = tags.get_sample_index(
-                                                         "private-id3v2-frame",
-                                                         i)
+                        "private-id3v2-frame",
+                        i)
                     if not exists:
                         continue
                     (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
@@ -325,8 +325,8 @@ class TagReader(Discoverer):
                 size = tags.get_tag_size("extended-comment")
                 for i in range(0, size):
                     (exists, sample) = tags.get_string_index(
-                                                         "extended-comment",
-                                                         i)
+                        "extended-comment",
+                        i)
                     if not exists or not sample.startswith("ORIGINALDATE="):
                         continue
                     # ORIGINALDATE=1999-03-10 => Only year
@@ -383,8 +383,8 @@ class TagReader(Discoverer):
                 size = tags.get_tag_size("private-id3v2-frame")
                 for i in range(0, size):
                     (exists, sample) = tags.get_sample_index(
-                                                         "private-id3v2-frame",
-                                                         i)
+                        "private-id3v2-frame",
+                        i)
                     if not exists:
                         continue
                     (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
@@ -402,8 +402,8 @@ class TagReader(Discoverer):
                 size = tags.get_tag_size("extended-comment")
                 for i in range(0, size):
                     (exists, sample) = tags.get_string_index(
-                                                         "extended-comment",
-                                                         i)
+                        "extended-comment",
+                        i)
                     if not exists or not sample.startswith("LYRICS="):
                         continue
                     return sample[7:]
@@ -547,8 +547,8 @@ class TagReader(Discoverer):
         # Set artist ids based on content
         if not artist_ids:
             App().albums.set_artist_ids(
-                                   album_id,
-                                   App().albums.calculate_artist_ids(album_id))
+                album_id,
+                App().albums.calculate_artist_ids(album_id))
         # Update album genres
         for genre_id in genre_ids:
             App().albums.add_genre(album_id, genre_id)

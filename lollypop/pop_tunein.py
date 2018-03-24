@@ -285,7 +285,7 @@ class TuneinPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(False)
         size = App().window.get_size()
-        self.set_size_request(size[0]*0.5, size[1]*0.7)
+        self.set_size_request(size[0] * 0.5, size[1] * 0.7)
 
     def __on_unmap(self, widget):
         """
@@ -322,11 +322,11 @@ class TuneinPopover(Gtk.Popover):
             bytes.unref()
             if stream is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                       stream,
-                                                       ArtSize.MEDIUM,
-                                                       ArtSize.MEDIUM,
-                                                       True,
-                                                       None)
+                    stream,
+                    ArtSize.MEDIUM,
+                    ArtSize.MEDIUM,
+                    True,
+                    None)
                 stream.close()
                 surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
                                                                0,

@@ -20,6 +20,7 @@ class QuitNotification:
     """
         Special notification to quit app when running in background
     """
+
     def __init__(self):
         """
             Init notification object with lollypop infos

@@ -113,9 +113,9 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         if self._cover is None:
             return
         surface = App().art.get_radio_artwork(
-                    self.__name,
-                    ArtSize.BIG,
-                    self._cover.get_scale_factor())
+            self.__name,
+            ArtSize.BIG,
+            self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
 
     def update_cover(self):
@@ -125,9 +125,9 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         if self._cover is None:
             return
         surface = App().art.get_radio_artwork(
-                    self.__name,
-                    ArtSize.BIG,
-                    self._cover.get_scale_factor())
+            self.__name,
+            ArtSize.BIG,
+            self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
 
     def update_state(self):
@@ -188,8 +188,8 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             self._play_event.connect("button-press-event",
                                      self._on_play_press_event)
             self._play_button = Gtk.Image.new_from_icon_name(
-                                               "media-playback-start-symbolic",
-                                               Gtk.IconSize.DND)
+                "media-playback-start-symbolic",
+                Gtk.IconSize.DND)
             self._play_button.set_opacity(0)
             # Edit button
             self._artwork_event = Gtk.EventBox()
@@ -204,8 +204,8 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             self._artwork_event.set_property("valign", Gtk.Align.END)
             self._artwork_event.set_property("halign", Gtk.Align.END)
             self._artwork_button = Gtk.Image.new_from_icon_name(
-                                               "document-properties-symbolic",
-                                               Gtk.IconSize.BUTTON)
+                "document-properties-symbolic",
+                Gtk.IconSize.BUTTON)
             self._artwork_button.set_opacity(0)
             self._play_event.add(self._play_button)
             self._artwork_event.add(self._artwork_button)

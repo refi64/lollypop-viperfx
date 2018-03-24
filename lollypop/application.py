@@ -69,9 +69,9 @@ class Application(Gtk.Application):
             @param version as str
         """
         Gtk.Application.__init__(
-                            self,
-                            application_id="org.gnome.Lollypop",
-                            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+            self,
+            application_id="org.gnome.Lollypop",
+            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.__version = version
         self.set_property("register-session", True)
         signal(SIGINT, lambda a, b: self.quit())
@@ -157,7 +157,7 @@ class Application(Gtk.Application):
             print("Application::init():", e)
 
         cssProviderFile = Gio.File.new_for_uri(
-                 "resource:///org/gnome/Lollypop/application.css")
+            "resource:///org/gnome/Lollypop/application.css")
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
@@ -189,7 +189,7 @@ class Application(Gtk.Application):
 
         settings = Gtk.Settings.get_default()
         self.__gtk_dark = settings.get_property(
-                                           "gtk-application-prefer-dark-theme")
+            "gtk-application-prefer-dark-theme")
         if not self.__gtk_dark:
             dark = self.settings.get_value("dark-ui")
             settings.set_property("gtk-application-prefer-dark-theme", dark)
@@ -304,7 +304,7 @@ class Application(Gtk.Application):
                 from lollypop.radios import Radios
                 radios = Radios()
                 track_id = radios.get_id(
-                                    self.player.current_track.album_artists[0])
+                    self.player.current_track.album_artists[0])
             else:
                 track_id = self.player.current_track.id
                 # Save albums context

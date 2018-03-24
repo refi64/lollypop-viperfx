@@ -40,8 +40,8 @@ class CommonPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(False)
         size = App().window.get_size()
-        self.set_size_request(size[0]*0.4,
-                              size[1]*0.5)
+        self.set_size_request(size[0] * 0.4,
+                              size[1] * 0.5)
 
     def __on_unmap(self, widget):
         """

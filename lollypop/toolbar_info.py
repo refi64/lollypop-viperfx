@@ -106,9 +106,9 @@ class ToolbarInfo(Gtk.Bin, InfoController):
         """
         if App().player.current_track.album.id == album_id:
             surface = App().art.get_album_artwork(
-                                       App().player.current_track.album,
-                                       self.artsize,
-                                       self._cover.get_scale_factor())
+                App().player.current_track.album,
+                self.artsize,
+                self._cover.get_scale_factor())
             self._cover.set_from_surface(surface)
 
     def __update_logo(self, art, name):
@@ -130,8 +130,8 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             from lollypop.pop_menu import PlaylistsMenu
             from lollypop.pop_menu import TrackMenuPopover
             popover = TrackMenuPopover(
-                        App().player.current_track,
-                        PlaylistsMenu(App().player.current_track))
+                App().player.current_track,
+                PlaylistsMenu(App().player.current_track))
             popover.set_relative_to(self._infobox)
             popover.show()
 

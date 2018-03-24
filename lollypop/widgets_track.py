@@ -68,7 +68,7 @@ class Row(Gtk.ListBoxRow):
             for artist_id in featuring_artist_ids:
                 artists.append(App().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
-                                                           ", ".join(artists)))
+                ", ".join(artists)))
             self._artists_label.set_use_markup(True)
             self._artists_label.set_property("has-tooltip", True)
             self._artists_label.connect("query-tooltip",
@@ -80,7 +80,7 @@ class Row(Gtk.ListBoxRow):
             self._artists_label.set_margin_end(5)
             self._artists_label.show()
         self._duration_label = Gtk.Label.new(
-                                       seconds_to_string(self._track.duration))
+            seconds_to_string(self._track.duration))
         self._duration_label.get_style_context().add_class("dim-label")
         self._num_label = Gtk.Label()
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -242,8 +242,8 @@ class Row(Gtk.ListBoxRow):
                                                  Gtk.IconSize.MENU)
             self.__menu_button.set_image(image)
             self.__menu_button.connect(
-                                      "button-release-event",
-                                      self.__on_indicator_button_release_event)
+                "button-release-event",
+                self.__on_indicator_button_release_event)
             self._indicator.update_button()
 
     def __on_leave_notify_event(self, widget, event):
@@ -266,15 +266,15 @@ class Row(Gtk.ListBoxRow):
             if self.__context is not None and\
                     self.__context_timeout_id is None:
                 self.__context_timeout_id = GLib.timeout_add(
-                                     1000,
-                                     close_indicator)
+                    1000,
+                    close_indicator)
             if App().settings.get_value("preview-output").get_string() != "":
                 if self.__preview_timeout_id is not None:
                     GLib.source_remove(self.__preview_timeout_id)
                     self.__preview_timeout_id = None
                 self.set_indicator(
-                               App().player.current_track.id == self._track.id,
-                               self._track.loved)
+                    App().player.current_track.id == self._track.id,
+                    self._track.loved)
                 App().player.preview.set_state(Gst.State.NULL)
 
     def __on_button_release_event(self, widget, event):
@@ -395,13 +395,13 @@ class PlaylistRow(Row):
         if self._track.album.artist_ids[0] != Type.COMPILATIONS:
             self.__album_artist_label = Gtk.Label()
             self.__album_artist_label.set_markup(
-                                 "<b>" +
-                                 GLib.markup_escape_text(
-                                       ", ".join(self._track.album.artists)) +
-                                 "</b>")
+                "<b>" +
+                GLib.markup_escape_text(
+                    ", ".join(self._track.album.artists)) +
+                "</b>")
             self.__album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
             self.__album_artist_label.get_style_context().add_class(
-                                                                   "dim-label")
+                "dim-label")
             self.__header.add(self.__album_artist_label)
         self.__album_label = Gtk.Label.new(self._track.album.name)
         self.__album_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -461,9 +461,9 @@ class PlaylistRow(Row):
         if show:
             self.__cover.set_tooltip_text(self._track.album.name)
             surface = App().art.get_album_artwork(
-                                        self._track.album,
-                                        ArtSize.MEDIUM,
-                                        self.get_scale_factor())
+                self._track.album,
+                ArtSize.MEDIUM,
+                self.get_scale_factor())
             self.__cover.set_from_surface(surface)
             self.__cover.show()
             self.__header.show_all()
@@ -521,7 +521,7 @@ class PlaylistRow(Row):
         if view is not None:
             view.clear_animation()
         height = self.get_allocated_height()
-        if y > height/2:
+        if y > height / 2:
             down = True
         else:
             down = False
@@ -533,8 +533,8 @@ class PlaylistRow(Row):
         except:
             if len(App().window.container.view.get_ids()) == 1:
                 App().playlists.import_uri(
-                                    App().window.container.view.get_ids()[0],
-                                    data.get_text(), self._track.id, down)
+                    App().window.container.view.get_ids()[0],
+                    data.get_text(), self._track.id, down)
 
 
 class TrackRow(Row):
@@ -640,7 +640,7 @@ class TrackRow(Row):
         if view is not None:
             view.clear_animation()
         height = self.get_allocated_height()
-        if y > height/2:
+        if y > height / 2:
             down = True
         else:
             down = False
@@ -676,11 +676,11 @@ class TracksWidget(Gtk.ListBox):
         self.__queue_signal_id = App().player.connect("queue-changed",
                                                       self.__on_queue_changed)
         self.__loved_signal_id1 = App().playlists.connect(
-                                              "playlist-add",
-                                              self.__on_loved_playlist_changed)
+            "playlist-add",
+            self.__on_loved_playlist_changed)
         self.__loved_signal_id2 = App().playlists.connect(
-                                              "playlist-del",
-                                              self.__on_loved_playlist_changed)
+            "playlist-del",
+            self.__on_loved_playlist_changed)
         self.connect("row-activated", self.__on_activate)
         self.get_style_context().add_class("trackswidget")
         self.set_property("hexpand", True)
@@ -765,8 +765,8 @@ class TracksWidget(Gtk.ListBox):
         except:
             if len(App().window.container.view.get_ids()) == 1:
                 App().playlists.import_uri(
-                                      App().window.container.view.get_ids()[0],
-                                      data.get_text())
+                    App().window.container.view.get_ids()[0],
+                    data.get_text())
 
     def __on_queue_changed(self, unused):
         """

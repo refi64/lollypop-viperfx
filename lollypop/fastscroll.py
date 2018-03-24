@@ -163,7 +163,7 @@ class FastScroll(Gtk.ScrolledWindow):
         chars = sorted(self.__chars, key=strxfrm)
         start_idx = chars.index(start)
         end_idx = chars.index(end)
-        selected = chars[start_idx:end_idx+1]
+        selected = chars[start_idx:end_idx + 1]
         for child in self.__grid.get_children():
             label = child.get_text()
             mark = True if label in selected else False

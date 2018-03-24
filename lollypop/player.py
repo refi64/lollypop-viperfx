@@ -209,7 +209,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             else:
                 if not artist_ids and\
                         App().settings.get_value(
-                                            "show-compilations-in-album-view"):
+                            "show-compilations-in-album-view"):
                     album_ids += App().albums.get_compilation_ids(genre_ids)
                 album_ids += App().albums.get_ids(artist_ids, genre_ids)
         # Create album objects
@@ -252,7 +252,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 track_id = load(open(LOLLYPOP_DATA_PATH +
                                      "/track_id.bin", "rb"))
                 self.set_queue(load(open(LOLLYPOP_DATA_PATH +
-                               "/queue.bin", "rb")))
+                                         "/queue.bin", "rb")))
                 playlist_ids = load(open(LOLLYPOP_DATA_PATH +
                                          "/playlist_ids.bin", "rb"))
                 (is_playing, was_party) = load(open(LOLLYPOP_DATA_PATH +
@@ -285,10 +285,10 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                                 track_ids = App().tracks.get_randoms()
                             else:
                                 track_ids = App().playlists.get_track_ids(
-                                                                   playlist_id)
+                                    playlist_id)
                             self.populate_playlist_by_track_ids(
-                                                          list(set(track_ids)),
-                                                          playlist_ids)
+                                list(set(track_ids)),
+                                playlist_ids)
                     else:
                         if was_party:
                             self.emit("party-changed", True)

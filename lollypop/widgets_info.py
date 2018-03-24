@@ -117,9 +117,9 @@ class InfoContent(Gtk.Stack):
         else:
             error = _("Network access disabled")
         self.__error.set_markup(
-                       '<span font_weight="bold" size="xx-large">' +
-                       error +
-                       "</span>")
+            '<span font_weight="bold" size="xx-large">' +
+            error +
+            "</span>")
         self.set_visible_child_name("notfound")
 
 #######################
@@ -133,7 +133,7 @@ class InfoContent(Gtk.Stack):
         """
         if content is not None:
             self.__content.set_markup(
-                              GLib.markup_escape_text(content.decode("utf-8")))
+                GLib.markup_escape_text(content.decode("utf-8")))
             if data is not None:
                 gbytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(gbytes)
@@ -141,12 +141,12 @@ class InfoContent(Gtk.Stack):
                 # Will happen if cache is broken or when reading empty files
                 try:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                               stream,
-                               App().settings.get_value(
-                                        "cover-size").get_int32() + 50 * scale,
-                               -1,
-                               True,
-                               None)
+                        stream,
+                        App().settings.get_value(
+                            "cover-size").get_int32() + 50 * scale,
+                        -1,
+                        True,
+                        None)
                     stream.close()
                     gbytes.unref()
                     surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,

@@ -17,6 +17,7 @@ class Codecs:
     """
         Handle missing gstreamer codecs
     """
+
     def __init__(self):
         """
             Init installer

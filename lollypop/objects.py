@@ -22,6 +22,7 @@ class Base:
     """
         Base for album and track objects
     """
+
     def __init__(self, db):
         self.db = db
 
@@ -187,17 +188,17 @@ class Disc:
         if not self.__tracks and self.album.id is not None:
             self.__tracks = [Track(track_id, self.album)
                              for track_id in self.db.get_disc_track_ids(
-                                                      self.album.id,
-                                                      self.album.genre_ids,
-                                                      self.album.artist_ids,
-                                                      self.number)]
+                self.album.id,
+                self.album.genre_ids,
+                self.album.artist_ids,
+                self.number)]
             if not self.__tracks:
                 self.__tracks = [Track(track_id, self.album)
                                  for track_id in self.db.get_disc_track_ids(
-                                                          self.album.id,
-                                                          self.album.genre_ids,
-                                                          [],
-                                                          self.number)]
+                    self.album.id,
+                    self.album.genre_ids,
+                    [],
+                    self.number)]
         return self.__tracks
 
 

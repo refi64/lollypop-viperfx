@@ -407,9 +407,9 @@ class SelectionList(Gtk.Overlay):
             return True
 
         (exists, tx, ty, model, path, i) = self.__view.get_tooltip_context(
-                                                x,
-                                                y,
-                                                False)
+            x,
+            y,
+            False)
         if exists:
             ctx = self.__view.get_pango_context()
             layout = Pango.Layout.new(ctx)
@@ -421,7 +421,7 @@ class SelectionList(Gtk.Overlay):
                 if App().settings.get_value("artist-artwork") and\
                         self.__is_artists:
                     width -= ArtSize.ARTIST_SMALL +\
-                             CellRendererArtist.xshift * 2
+                        CellRendererArtist.xshift * 2
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
                 if self.__model.get_value(iterator, 0) < 0:
                     width -= 8
@@ -466,9 +466,9 @@ class SelectionList(Gtk.Overlay):
         if not icon_name and string == _("Unknown"):
             icon_name = "dialog-warning-symbolic"
         i = self.__model.append([value[0],
-                                string,
-                                icon_name,
-                                sort])
+                                 string,
+                                 icon_name,
+                                 sort])
         if value[0] in self.__to_select_ids:
             self.__to_select_ids.remove(value[0])
             self.__selection.select_iter(i)

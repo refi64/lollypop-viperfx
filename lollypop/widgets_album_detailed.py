@@ -121,7 +121,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
                     self.__coverbox.hide()
                 if len(artist_ids) > 1:
                     self.__artist_label.set_text(
-                                                ", ".join(self._album.artists))
+                        ", ".join(self._album.artists))
                     self.__artist_label.show()
             elif art_size == ArtSize.HEADER:
                 # Here we are working around default CoverBox ui

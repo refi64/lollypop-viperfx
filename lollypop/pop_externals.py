@@ -64,7 +64,7 @@ class ExternalsPopover(Gtk.Popover):
         self.__signal_id = App().player.connect("current-changed",
                                                 self.__on_current_changed)
         height = App().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
+        self.set_size_request(400, height * 0.7)
         self.__populate(App().player.get_externals())
 
 #######################
@@ -97,10 +97,10 @@ class ExternalsPopover(Gtk.Popover):
                 try:
                     info = self.__tagreader.get_info(track.uri)
                     track_name = GLib.path_get_basename(
-                                        GLib.filename_from_uri(track.uri)[0])
+                        GLib.filename_from_uri(track.uri)[0])
                     if info is not None:
                         tags = info.get_tags()
-                        track.duration = info.get_duration()/1000000000
+                        track.duration = info.get_duration() / 1000000000
                         track.name = self.__tagreader.get_title(tags,
                                                                 track_name)
                         track.artist_names = self.__tagreader.get_artists(tags)
@@ -119,11 +119,11 @@ class ExternalsPopover(Gtk.Popover):
         """
         if track.uri == App().player.current_track.uri:
             self.__model.append((track.uri, "media-playback-start-symbolic",
-                                track.artist, track.title,
-                                seconds_to_string(track.duration)))
+                                 track.artist, track.title,
+                                 seconds_to_string(track.duration)))
         else:
             self.__model.append((track.uri, "", track.artist, track.title,
-                                seconds_to_string(track.duration)))
+                                 seconds_to_string(track.duration)))
 
     def __on_self_unmap(self, widget):
         """
