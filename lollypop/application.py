@@ -448,7 +448,9 @@ class Application(Gtk.Application):
                 self.__quit_notification = None
             self.window.setup_window()
             if not self.window.is_visible():
-                self.window.present()
+                # https://bugzilla.gnome.org/show_bug.cgi?id=766284
+                monotonic_time = int(GLib.get_monotonic_time() / 1000)
+                self.window.present_with_time(monotonic_time)
                 self.player.emit("status-changed")
                 self.player.emit("current-changed")
         Gdk.notify_startup_complete()
@@ -520,7 +522,9 @@ class Application(Gtk.Application):
             Call default handler
             @param application as Gio.Application
         """
-        self.window.present()
+        # https://bugzilla.gnome.org/show_bug.cgi?id=766284
+        monotonic_time = int(GLib.get_monotonic_time() / 1000)
+        self.window.present_with_time(monotonic_time)
 
     def __settings_dialog(self, action=None, param=None):
         """
