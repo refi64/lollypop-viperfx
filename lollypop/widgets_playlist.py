@@ -130,7 +130,7 @@ class PlaylistsWidget(Gtk.Grid):
         ordinate = None
         for child in self.__tracks_widget_left.get_children() + \
                 self.__tracks_widget_right.get_children():
-            if child.id == App().player.current_track.id:
+            if child.track.id == App().player.current_track.id:
                 ordinate = child.translate_coordinates(self.__grid, 0, 0)[1]
         return ordinate
 
