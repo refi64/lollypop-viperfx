@@ -125,7 +125,8 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self.__setup_pos_size("window")
         if App().settings.get_value("window-maximized"):
-            self.maximize()
+            # Lets resize happen
+            GLib.idle_add(self.maximize)
 
         if self.__signal1 is None:
             self.__signal1 = self.connect("window-state-event",
