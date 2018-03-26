@@ -218,14 +218,16 @@ class InformationStore:
             @param artist as str
             @param scale factor as int
         """
-        # FIXME
-        for i in [1, 2]:
+        # ArtistView::__set_artwork()
+        # InformationPopover::__set_artist_artwork()
+        for i in [1, 2, 3]:
             filepath = "%s/%s_%s.jpg" % (InformationStore._CACHE_PATH,
                                          escape(artist),
                                          ArtSize.ARTIST_SMALL * scale * i)
             f = Gio.File.new_for_path(filepath)
             try:
-                f.delete(None)
+                if f.query_exists():
+                    f.delete(None)
             except Exception as e:
                 print("InformationStore::uncache_artwork(): %s" % e)
 
