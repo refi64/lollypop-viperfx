@@ -16,7 +16,6 @@ from gettext import gettext as _
 from gettext import ngettext as ngettext
 
 from lollypop.define import App
-from lollypop.cache import InfoCache
 from lollypop.database import Database
 from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
@@ -638,11 +637,6 @@ class SettingsDialog:
         value = widget.get_value()
         App().settings.set_value("cover-size", GLib.Variant("i", value))
         App().art.update_art_size()
-        for suffix in ["lastfm", "wikipedia", "spotify"]:
-            for artist in App().artists.get([]):
-                InfoCache.uncache_artwork(artist[1], suffix,
-                                          widget.get_scale_factor())
-                App().art.emit("artist-artwork-changed", artist[1])
         App().window.container.reload_view()
 
     def __edit_settings_close(self, widget):
