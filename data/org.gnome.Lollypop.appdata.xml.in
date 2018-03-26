@@ -27,36 +27,10 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.402" date="2018-03-19">
+    <release version="0.9.403" date="2018-03-26">
       <description>
         <ul>
-          <li>Save state on SIGTERM/SIGINT</li>
-          <li>Bug fixes</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.401" date="2018-03-13">
-      <description>
-        <ul>
-          <li>Fix an issue in Collection scanner</li>
-          <li>Add an option to disable compilations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.400.1" date="2018-03-07">
-      <description>
-        <ul>
-          <li>Fix a packaging issue</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.400" date="2017-12-20">
-      <description>
-        <ul>
-          <li>New responsive design</li>
-          <li>New fullscreen mode</li>
-          <li>New default playback behavior: you can mix albums and tracks!</li>
-          <li>New search widget</li>
+          <li>Fix a crash</li>
         </ul>
       </description>
     </release>
