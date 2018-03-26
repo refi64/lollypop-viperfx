@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 from math import pi
 
 from lollypop.define import App, ArtSize, Type
-from lollypop.cache import InfoCache
+from lollypop.information_store import InformationStore
 from lollypop.objects import Album
 
 
@@ -114,18 +114,16 @@ class CellRendererArtist(Gtk.CellRendererText):
         if self.rowid in self.__surfaces.keys():
             surface = self.__surfaces[self.rowid]
         if surface is None:
-            for suffix in ["lastfm", "deezer", "spotify", "wikipedia"]:
-                uri = InfoCache.get_artwork(self.artist, suffix, size)
-                if uri is not None:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(uri,
-                                                                    size,
-                                                                    size)
-                    surface = Gdk.cairo_surface_create_from_pixbuf(
-                        pixbuf,
-                        self.__scale_factor,
-                        None)
-                    self.__surfaces[self.rowid] = surface
-                    break
+            path = InformationStore.get_artwork_path(self.artist, size)
+            if path is not None:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
+                                                                size,
+                                                                size)
+                surface = Gdk.cairo_surface_create_from_pixbuf(
+                    pixbuf,
+                    self.__scale_factor,
+                    None)
+                self.__surfaces[self.rowid] = surface
         if surface is None:
             surface = Gtk.IconTheme.get_default().load_surface(
                 "avatar-default-symbolic",

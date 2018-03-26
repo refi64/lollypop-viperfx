@@ -13,14 +13,12 @@
 from gi.repository import Gtk, Gdk, Pango, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
-from math import pi
 from random import choice
 
-from lollypop.define import App, ArtSize, Shuffle, Type
-from lollypop.utils import get_network_available
+from lollypop.define import App, ArtSize, Shuffle
+from lollypop.utils import get_network_available, draw_rounded_image
 from lollypop.objects import Album
-from lollypop.pop_info import InfoPopover
-from lollypop.cache import InfoCache
+from lollypop.information_store import InformationStore
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
 
@@ -126,7 +124,7 @@ class ArtistView(ArtistAlbumsView):
             Change cursor on label
             @param eventbox as Gtk.EventBox
         """
-        if InfoPopover.should_be_shown() and self._artist_ids:
+        if self._artist_ids:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
     def _on_artwork_box_realize(self, eventbox):
@@ -142,11 +140,12 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if InfoPopover.should_be_shown() and self._artist_ids:
-            pop = InfoPopover(self._artist_ids)
-            pop.set_view_type(Type.NONE)
-            pop.set_relative_to(eventbox)
-            pop.show()
+        if self._artist_ids:
+            from lollypop.pop_information import InformationPopover
+            self.__pop_info = InformationPopover(True)
+            self.__pop_info.set_relative_to(eventbox)
+            self.__pop_info.populate(self._artist_ids)
+            self.__pop_info.show()
 
     def _on_image_button_release(self, eventbox, event):
         """
@@ -232,41 +231,13 @@ class ArtistView(ArtistAlbumsView):
             @param image as Gtk.Image
             @param ctx as cairo.Context
         """
-        internal_scale_factor = 1
-        scale_factor = image.get_scale_factor()
-        if not App().window.container.is_paned_stack:
-            internal_scale_factor = 2
-        scale_factor = scale_factor * internal_scale_factor
-        # Update image if scale factor changed
-        if self.__scale_factor != scale_factor:
-            self.__set_artwork()
-        if not image.is_drawable():
+        if image.get_style_context().has_class("artwork-icon"):
             return
-
-        if image.props.surface is None:
-            pixbuf = image.get_pixbuf()
-            if pixbuf is None:
-                return
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf,
-                self.__artwork.get_scale_factor(),
-                None)
-        else:
-            surface = image.props.surface
-
-        ctx.translate(2, 2)
-        size = ArtSize.ARTIST_SMALL * internal_scale_factor - 4
-        ctx.new_sub_path()
-        radius = size / 2
-        ctx.arc(size / 2, size / 2, radius, 0, 2 * pi)
-        ctx.set_source_rgb(1, 1, 1)
-        ctx.fill_preserve()
-        ctx.set_line_width(2)
-        ctx.set_source_rgba(0, 0, 0, 0.3)
-        ctx.stroke_preserve()
-        ctx.set_source_surface(surface, 0, 0)
-        ctx.clip()
-        ctx.paint()
+        # Update image if scale factor changed
+        if self.__scale_factor != image.get_scale_factor():
+            self.__scale_factor = image.get_scale_factor()
+            self.__set_artwork()
+        draw_rounded_image(image, ctx)
         return True
 
     def _on_current_changed(self, player):
@@ -295,23 +266,19 @@ class ArtistView(ArtistAlbumsView):
             Set artist artwork
         """
         artwork_height = 0
-        internal_scale_factor = 1
-        self.__scale_factor = self.__artwork.get_scale_factor()
-        if not App().window.container.is_paned_stack:
-            internal_scale_factor = 2
-        self.__scale_factor *= internal_scale_factor
+        scale_factor = self.__artwork.get_scale_factor()
         if App().settings.get_value("artist-artwork"):
             if len(self._artist_ids) == 1 and\
                     App().settings.get_value("artist-artwork"):
                 artist = App().artists.get_name(self._artist_ids[0])
-                size = ArtSize.ARTIST_SMALL * self.__scale_factor
-                for suffix in ["lastfm", "spotify", "wikipedia"]:
-                    uri = InfoCache.get_artwork(artist, suffix, size)
-                    if uri is not None:
-                        f = Gio.File.new_for_path(uri)
-                        (status, data, tag) = f.load_contents(None)
-                        if not status:
-                            continue
+                size = ArtSize.ARTIST_SMALL * scale_factor
+                if not App().window.container.is_paned_stack:
+                    size *= 2
+                path = InformationStore.get_artwork_path(artist, size)
+                if path is not None:
+                    f = Gio.File.new_for_path(path)
+                    (status, data, tag) = f.load_contents(None)
+                    if status:
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
@@ -324,22 +291,20 @@ class ArtistView(ArtistAlbumsView):
                         stream.close()
                         surface = Gdk.cairo_surface_create_from_pixbuf(
                             pixbuf,
-                            self.__artwork.get_scale_factor(),
+                            scale_factor,
                             None)
                         self.__artwork.set_from_surface(surface)
-                        artwork_height = ArtSize.ARTIST_SMALL *\
-                            internal_scale_factor
+                        artwork_height = surface.get_height()
                         self.__artwork.get_style_context().remove_class(
                             "artwork-icon")
                         self.__artwork.show()
                         self.__artwork_box.show()
-                        break
             # Add a default icon
             if len(self._artist_ids) == 1 and artwork_height == 0:
                 self.__artwork.set_from_icon_name(
                     "avatar-default-symbolic",
                     Gtk.IconSize.DND)
-                artwork_height = 16 * internal_scale_factor
+                artwork_height = 16 * scale_factor
                 self.__artwork.get_style_context().add_class("artwork-icon")
                 self.__artwork.show()
                 self.__artwork_box.show()

@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
 
-from lollypop.cache import InfoCache
+from lollypop.information_store import InformationStore
 from lollypop.define import App, ArtSize, Type
 from lollypop.utils import get_network_available
 from lollypop.helper_task import TaskHelper
@@ -152,10 +152,10 @@ class ArtworkSearch(Gtk.Bin):
                 if self.__album is not None:
                     App().art.save_album_artwork(data, self.__album.id)
                 else:
-                    for suffix in ["lastfm", "wikipedia", "spotify"]:
-                        InfoCache.uncache_artwork(self.__artist, suffix,
-                                                  button.get_scale_factor())
-                        InfoCache.add(self.__artist, None, data, suffix)
+                    InformationStore.uncache_artwork(
+                        self.__artist,
+                        button.get_scale_factor())
+                    InformationStore.add_artist_artwork(self.__artist, data)
                     App().art.emit("artist-artwork-changed", self.__artist)
                 self._streams = {}
             except Exception as e:
@@ -173,11 +173,11 @@ class ArtworkSearch(Gtk.Bin):
             App().art.clean_album_cache(self.__album)
             App().art.emit("album-artwork-changed", self.__album.id)
         else:
-            for suffix in ["lastfm", "wikipedia", "spotify", "deezer"]:
-                InfoCache.uncache_artwork(self.__artist, suffix,
-                                          button.get_scale_factor())
-                InfoCache.add(self.__artist, None, None, suffix)
-                App().art.emit("artist-artwork-changed", self.__artist)
+            InformationStore.uncache_artwork(
+                        self.__artist,
+                        button.get_scale_factor())
+            InformationStore.add_artist_artwork(self.__artist, None)
+            App().art.emit("artist-artwork-changed", self.__artist)
         self.__close_popover()
 
     def _on_info_response(self, infobar, response_id):
@@ -351,10 +351,10 @@ class ArtworkSearch(Gtk.Bin):
             if self.__album is not None:
                 App().art.save_album_artwork(data, self.__album.id)
             else:
-                for suffix in ["lastfm", "wikipedia", "spotify"]:
-                    InfoCache.uncache_artwork(self.__artist, suffix,
-                                              flowbox.get_scale_factor())
-                    InfoCache.add(self.__artist, None, data, suffix)
+                InformationStore.uncache_artwork(
+                        self.__artist,
+                        flowbox.get_scale_factor())
+                InformationStore.add_artist_artwork(self.__artist, data)
                 App().art.emit("artist-artwork-changed", self.__artist)
             self._streams = {}
         except:

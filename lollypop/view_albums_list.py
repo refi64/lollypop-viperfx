@@ -319,6 +319,7 @@ class AlbumsListView(LazyLoadingView):
     def __init__(self, responsive_type):
         """
             Init Popover
+            @param responsive_type as ResponsiveType
         """
         LazyLoadingView.__init__(self)
         self.__responsive_type = responsive_type

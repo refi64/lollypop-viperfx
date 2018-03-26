@@ -31,12 +31,6 @@ class NextContext:
     STOP = 2             # Stop after track/album/artist
 
 
-class OpenLink:
-    NONE = 0
-    OPEN = 1
-    NEW = 2
-
-
 class GstPlayFlags:
     GST_PLAY_FLAG_VIDEO = 1 << 0  # We want video output
     GST_PLAY_FLAG_AUDIO = 1 << 1  # We want audio output

@@ -4,7 +4,7 @@
     <file compressed="true">application.css</file>
      <file compressed="true" preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">Appmenu.ui</file>
-     <file compressed="true" preprocess="xml-stripblanks">ArtistInfo.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">ArtistInformation.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ArtistView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ArtworkSearch.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">CoverBox.ui</file>

@@ -15,7 +15,7 @@ from gi.repository import GLib, Soup
 import json
 from base64 import b64encode
 
-from lollypop.cache import InfoCache
+from lollypop.information_store import InformationStore
 from lollypop.define import App, GOOGLE_API_ID, Type
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 from lollypop.utils import debug, get_network_available
@@ -26,10 +26,6 @@ class Downloader:
     """
         Download from the web
     """
-    try:
-        from lollypop.wikipedia import Wikipedia
-    except:
-        Wikipedia = None
 
     def __init__(self):
         """
@@ -61,7 +57,7 @@ class Downloader:
             return
         self.__cache_artists_running = True
         helper = TaskHelper()
-        helper.run(self.__cache_artists_info)
+        helper.run(self.__cache_artists_artwork)
 
     def get_google_search_uri(self, search):
         """
@@ -97,34 +93,22 @@ class Downloader:
 #######################
 # PROTECTED           #
 #######################
-    def _get_lastfm_artist_info(self, artist):
+    def _get_lastfm_artist_artwork_uri(self, artist):
         """
             Return lastfm artist information
             @param artist as str
-            @return (url as str/None, content as str)
+            @return uri as str
         """
         if App().lastfm is not None:
-            return App().lastfm.get_artist_info(artist)
+            return App().lastfm.get_artist_artwork_uri(artist)
         else:
-            return (None, None)
+            return None
 
-    def _get_wp_artist_info(self, artist):
-        """
-            Return wikipedia artist information
-            @param artist as str
-            @return (url as str/None, content as str)
-        """
-        if Downloader.Wikipedia is not None:
-            wp = Downloader.Wikipedia()
-            return wp.get_page_infos(artist)
-        else:
-            return (None, None)
-
-    def _get_deezer_artist_info(self, artist):
+    def _get_deezer_artist_artwork_uri(self, artist):
         """
             Return deezer artist information
             @param artist as str
-            @return (url as str/None, content as None)
+            @return uri as str/None
         """
         try:
             artist_formated = GLib.uri_escape_string(
@@ -135,17 +119,17 @@ class Downloader:
             (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
-                return (decode["data"][0]["picture_xl"], None)
+                return decode["data"][0]["picture_xl"]
         except Exception as e:
             debug("Downloader::_get_deezer_artist_artwork(): %s [%s]" %
                   (e, artist))
-        return (None, None)
+        return None
 
-    def _get_spotify_artist_info(self, artist):
+    def _get_spotify_artist_artwork_uri(self, artist):
         """
             Return spotify artist information
             @param artist as str
-            @return (url as str/None, content as None)
+            @return uri as str/None
         """
         try:
             artist_formated = GLib.uri_escape_string(
@@ -160,11 +144,11 @@ class Downloader:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["artists"]["items"]:
                     if item["name"].lower() == artist.lower():
-                        return (item["images"][0]["url"], None)
+                        return item["images"][0]["url"]
         except Exception as e:
             debug("Downloader::_get_spotify_artist_artwork(): %s [%s]" %
                   (e, artist))
-        return (None, None)
+        return None
 
     def _get_deezer_album_artwork(self, artist, album):
         """
@@ -318,40 +302,45 @@ class Downloader:
         except:
             return ""
 
-    def __cache_artists_info(self):
+    def __cache_artists_artwork(self):
         """
-            Cache info for all artists
+            Cache artwork for all artists
         """
-        # We create cache if needed
-        InfoCache.init()
-        # Then cache for lastfm/wikipedia/spotify/deezer/...
+        # We create store if needed
+        InformationStore.init()
+        # Then cache for lastfm/spotify/deezer/...
         for (artist_id, artist, sort) in App().artists.get([]):
             if not get_network_available() or\
-                    InfoCache.exists(artist):
+                    InformationStore.artwork_exists(artist):
                 continue
             artwork_set = False
-            for (api, helper, unused) in InfoCache.WEBSERVICES:
+            for (api, helper, unused) in InformationStore.WEBSERVICES:
                 debug("Downloader::__cache_artists_info(): %s@%s" % (artist,
                                                                      api))
                 if helper is None:
                     continue
                 try:
                     method = getattr(self, helper)
-                    (uri, content) = method(artist)
+                    uri = method(artist)
                     if uri is not None:
                         (status, data) = TaskHelper().load_uri_content_sync(
                             uri,
                             None)
                         if status:
-                            artwork_set = True
-                            InfoCache.add(artist, content, data, api)
+                            InformationStore.add_artist_artwork(
+                                artist,
+                                data)
                             debug("Downloader::__cache_artists_info(): %s"
                                   % uri)
                         else:
-                            InfoCache.add(artist, None, None, api)
+                            InformationStore.add_artist_artwork(
+                                artist,
+                                None)
                 except Exception as e:
                     print("Downloader::__cache_artists_info():", e, artist)
-                    InfoCache.add(artist, None, None, api)
+                    InformationStore.add_artist_artwork(
+                                artist,
+                                None)
             if artwork_set:
                 GLib.idle_add(App().art.emit, "artist-artwork-changed", artist)
         self.__cache_artists_running = False
@@ -373,7 +362,7 @@ class Downloader:
                     artist = ""
                 else:
                     artist = ", ".join(App().albums.get_artists(album_id))
-                for (api, unused, helper) in InfoCache.WEBSERVICES:
+                for (api, unused, helper) in InformationStore.WEBSERVICES:
                     if helper is None:
                         continue
                     method = getattr(self, helper)

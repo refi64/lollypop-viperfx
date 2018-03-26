@@ -94,14 +94,26 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                        callback,
                        *args)
 
-    def get_artist_info(self, artist):
+    def get_artist_artwork_uri(self, artist):
         """
             Get artist infos
             @param artist as str
-            @return (url as str, content as str)
+            @return uri as str/None
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
+        last_artist = self.get_artist(artist)
+        uri = last_artist.get_cover_image(3)
+        return uri
+
+    def get_artist_bio(self, artist):
+        """
+            Get artist infos
+            @param artist as str
+            @return content as str/None
+        """
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return None
         last_artist = self.get_artist(artist)
         try:
             content = last_artist.get_bio_content(
@@ -109,8 +121,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         except:
             content = last_artist.get_bio_content()
         content = re.sub(r"<.*Last.fm.*>.", "", content)
-        url = last_artist.get_cover_image(3)
-        return (url, content.encode(encoding="UTF-8"))
+        return content.encode(encoding="UTF-8")
 
     def listen(self, track, timestamp):
         """
