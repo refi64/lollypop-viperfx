@@ -346,7 +346,6 @@ class InfoController:
             @param font_size
         """
         self._infobox = None
-        self._spinner = None
         self.__font_size = font_size
         self.__artsize = art_size
 
@@ -362,11 +361,6 @@ class InfoController:
                 self._infobox.hide()
             self._cover.hide()
             return
-
-        # Stop spinner if running
-        if self._spinner is not None:
-            self._spinner.hide()
-            self._spinner.stop()
 
         if player.current_track.id == Type.RADIOS:
             artist_text = player.current_track.album_artists[0]
