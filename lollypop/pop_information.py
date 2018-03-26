@@ -27,26 +27,16 @@ class InformationPopover(Gtk.Popover):
         Popover with artist information
     """
 
-    try:
-        from lollypop.wikipedia import Wikipedia
-    except Exception as e:
-        print(e)
-        print(_("Please install wikipedia support"))
-        print("$ sudo pip3 install wikipedia")
-        Wikipedia = None
-
     def __init__(self, minimal=False):
         """
             Init artist infos
             @param follow_player as bool
         """
         Gtk.Popover.__init__(self)
-        self.__signal_id = None
         self.__scale_factor = 0
         self.__minimal = minimal
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
         self.__grid = Gtk.Grid()
         self.__grid.show()
         self.add(self.__grid)
@@ -208,17 +198,6 @@ class InformationPopover(Gtk.Popover):
         draw_rounded_image(image, ctx)
         return True
 
-    def __on_current_changed(self, player):
-        """
-            Update content on track changed
-            @param player as Player
-        """
-        return
-        if self.__artist_ids:
-            return
-        self.__current_track = App().player.current_track
-        # TODO
-
     def __on_map(self, widget):
         """
             Connect signal and resize
@@ -230,15 +209,3 @@ class InformationPopover(Gtk.Popover):
         else:
             self.set_size_request(min(size[0] * 0.6, 1000),
                                   min(size[1] * 0.7, 800))
-            self.__signal_id = App().player.connect(
-                "current-changed",
-                self.__on_current_changed)
-
-    def __on_unmap(self, widget):
-        """
-            Disconnect signal
-            @param widget as Gtk.Widget
-        """
-        if self.__signal_id is not None:
-            App().player.disconnect(self.__signal_id)
-            self.__signal_id = None
