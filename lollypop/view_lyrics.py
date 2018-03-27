@@ -30,6 +30,7 @@ class LyricsView(View):
             Init view
         """
         View.__init__(self)
+        self.__downloads_running = 0
         self.__lyrics_set = False
         self.__cancellable = Gio.Cancellable()
         scrolled_window = Gtk.ScrolledWindow()
@@ -90,6 +91,7 @@ class LyricsView(View):
         """
             Downloas lyrics from wikia
         """
+        self.__downloads_running += 1
         # Update lyrics
         task_helper = TaskHelper()
         artist = GLib.uri_escape_string(
@@ -112,6 +114,7 @@ class LyricsView(View):
         """
             Download lyrics from genius
         """
+        self.__downloads_running += 1
         # Update lyrics
         task_helper = TaskHelper()
         string = escape("%s %s" % (App().player.current_track.artists[0],
@@ -149,10 +152,10 @@ class LyricsView(View):
             @param cls as str
             @param separator as str
         """
+        self.__downloads_running -= 1
         if self.__lyrics_set:
             return
         self.__update_lyrics_style()
-        self.__lyrics_label.show()
         if status:
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(data, 'html.parser')
@@ -161,7 +164,9 @@ class LyricsView(View):
                     "div", class_=cls)[0].get_text(separator=separator)
                 self.__lyrics_label.set_text(lyrics_text)
                 self.__lyrics_set = True
-            except Exception as e:
-                self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
-        else:
+                self.__lyrics_label.show()
+            except:
+                pass
+        if not self.__lyrics_set and self.__downloads_running == 0:
             self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
+            self.__lyrics_label.show()
