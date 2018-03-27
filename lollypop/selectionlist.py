@@ -135,6 +135,7 @@ class DefaultItemsMenu(Gio.Menu):
                            item[0])
             App().add_action(action)
             shown_menu.append(item[1], "app.%s" % encoded)
+        # Translators: shown => items
         self.insert_section(1, _("Shown"), shown_menu)
 
 #######################
