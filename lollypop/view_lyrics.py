@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
+from re import sub
 
 from lollypop.view import View
 from lollypop.define import App, WindowSize
@@ -156,9 +157,10 @@ class LyricsView(View):
             try:
                 lyrics_text = soup.find_all(
                     "div", class_=cls)[0].get_text(separator="\n")
+                lyrics_text = sub(r"$\n", "", lyrics_text)
                 self.__lyrics_set = True
                 self.__lyrics_label.set_text(lyrics_text)
-            except:
+            except Exception as e:
                 self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
         else:
             self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
