@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
 
@@ -33,10 +33,15 @@ class LyricsView(View):
         self.__lyrics_set = False
         self.__cancellable = Gio.Cancellable()
         scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_vexpand(True)
         scrolled_window.set_hexpand(True)
         scrolled_window.show()
         self.__lyrics_label = Gtk.Label()
+        self.__lyrics_label.set_line_wrap_mode(Pango.WrapMode.WORD)
+        self.__lyrics_label.set_line_wrap(True)
         self.__lyrics_label.set_property("halign", Gtk.Align.CENTER)
         self.__lyrics_label.set_property("valign", Gtk.Align.CENTER)
         self.__lyrics_label.show()
@@ -144,6 +149,7 @@ class LyricsView(View):
         """
         if self.__lyrics_set:
             return
+        self.__update_lyrics_style()
         if status:
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(data, 'html.parser')
@@ -151,7 +157,8 @@ class LyricsView(View):
                 lyrics_text = soup.find_all(
                     "div", class_=cls)[0].get_text(separator="\n")
                 self.__lyrics_set = True
-                self.__update_lyrics_style()
                 self.__lyrics_label.set_text(lyrics_text)
             except:
                 self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
+        else:
+            self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
