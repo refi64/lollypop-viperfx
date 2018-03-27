@@ -77,8 +77,8 @@ class ArtistMenu(BaseMenu):
     def __go_to_artists(self, action, variant):
         """
             Show albums from artists
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
         """
         App().window.container.show_artists_albums(self.__filter_artist_ids())
 
@@ -119,8 +119,8 @@ class QueueMenu(BaseMenu):
     def __append_to_queue(self, action, variant):
         """
             Append track to queue
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
         """
         App().player.append_to_queue(self._object.id, False)
         App().player.emit("queue-changed")
@@ -128,8 +128,8 @@ class QueueMenu(BaseMenu):
     def __del_from_queue(self, action, variant):
         """
             Delete track id from queue
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
         """
         App().player.del_from_queue(self._object.id, False)
         App().player.emit("queue-changed")
@@ -207,16 +207,16 @@ class PlaylistsMenu(BaseMenu):
     def __add_to_playlists(self, action, variant):
         """
             Add to playlists
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
         """
         App().window.container.show_playlist_manager(self._object)
 
     def __add_to_playlist(self, action, variant, playlist_id):
         """
             Add to playlist
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
             @param playlist id as int
         """
         def add(playlist_id):
@@ -239,8 +239,8 @@ class PlaylistsMenu(BaseMenu):
     def __remove_from_playlist(self, action, variant, playlist_id):
         """
             Del from playlist
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
             @param object id as int
             @param is album as bool
             @param playlist id as int
@@ -265,8 +265,8 @@ class PlaylistsMenu(BaseMenu):
     def __add_to_loved(self, action, variant):
         """
             Add to loved
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
             @param playlist name as str
         """
         self._object.set_loved(True)
@@ -274,11 +274,43 @@ class PlaylistsMenu(BaseMenu):
     def __del_from_loved(self, action, variant):
         """
             Remove from loved
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
             @param playlist name as str
         """
         self._object.set_loved(False)
+
+
+class ToolbarMenu(BaseMenu):
+    """
+        Contextual menu for toolbar
+    """
+
+    def __init__(self, track):
+        """
+            Init menu
+            @param track as Track
+        """
+        BaseMenu.__init__(self, track)
+        playlist_menu = PlaylistsMenu(track)
+        lyrics_menu = Gio.Menu()
+        action = Gio.SimpleAction(name="lyrics_action")
+        App().add_action(action)
+        action.connect("activate", self.__show_lyrics)
+        lyrics_menu.append(_("Show lyrics"), "app.lyrics_action")
+        self.insert_section(0, _("Lyrics"), lyrics_menu)
+        self.insert_section(1, _("Playlists"), playlist_menu)
+
+#######################
+# PRIVATE             #
+#######################
+    def __show_lyrics(self, action, variant):
+        """
+            Show lyrics on main window
+            @param Gio.SimpleAction
+            @param GLib.Variant
+        """
+        App().window.container.show_lyrics()
 
 
 class EditMenu(BaseMenu):
@@ -325,8 +357,8 @@ class EditMenu(BaseMenu):
     def __edit_tag(self, action, variant):
         """
             Run tag editor
-            @param SimpleAction
-            @param GVariant
+            @param Gio.SimpleAction
+            @param GLib.Variant
         """
         path = GLib.filename_from_uri(self._object.uri)[0]
         dbus_helper = DBusHelper()

@@ -71,6 +71,12 @@ popover.background separator {
     opacity: 0.95;
 }
 
+.lyrics {
+    font-weight: bold;
+    font-size: xx-large;
+    padding: 12px;
+}
+
 .lollypop-title {
     font-weight: bold;
     font-size: smaller;

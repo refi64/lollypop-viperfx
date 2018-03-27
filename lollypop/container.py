@@ -107,6 +107,19 @@ class Container(Gtk.Bin):
             GLib.Variant("ai",
                          self.__list_two.selected_ids))
 
+    def show_lyrics(self):
+        """
+            Show lyrics for track
+        """
+        from lollypop.view_lyrics import LyricsView
+        current = self.__stack.get_visible_child()
+        view = LyricsView()
+        view.populate()
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        current.disable_overlay()
+
     def show_playlist_manager(self, object):
         """
             Show playlist manager for object_id
