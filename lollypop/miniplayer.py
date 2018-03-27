@@ -101,10 +101,10 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             if event.button == 1:
                 App().window.toolbar.end.show_list_popover(button)
             elif App().player.current_track.id >= 0:
-                from lollypop.pop_menu import TrackMenuPopover, PlaylistsMenu
+                from lollypop.pop_menu import TrackMenuPopover, ToolbarMenu
                 popover = TrackMenuPopover(
                     App().player.current_track,
-                    PlaylistsMenu(App().player.current_track))
+                    ToolbarMenu(App().player.current_track))
                 popover.set_relative_to(self)
                 popover.show()
         return True
