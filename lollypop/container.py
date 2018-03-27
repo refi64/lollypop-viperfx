@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, Gio, GLib
 
-from gettext import gettext as _
 from urllib.parse import urlparse
 
 from lollypop.define import App, Type
@@ -62,11 +61,28 @@ class Container(Gtk.Bin):
                                 self.__update_playlists)
         self.add(self.__paned_main_list)
 
-    def init_list_one(self):
+    def update_list_one(self, updater=None):
         """
-            Init list one
+            Update list one
+            @param updater as GObject
         """
-        self.__update_list_one(None)
+        update = updater is not None
+        if self.__show_genres:
+            self.__update_list_genres(self.__list_one, update)
+        else:
+            self.__update_list_artists(self.__list_one, [Type.ALL], update)
+
+    def update_list_two(self, updater=None):
+        """
+            Update list two
+            @param updater as GObject
+        """
+        update = updater is not None
+        ids = self.__list_one.selected_ids
+        if ids and ids[0] == Type.PLAYLISTS:
+            self.__update_list_playlists(update)
+        elif self.__show_genres and ids:
+            self.__update_list_artists(self.__list_two, ids, update)
 
     def restore_view_state(self):
         """
@@ -172,7 +188,7 @@ class Container(Gtk.Bin):
         """
         self.__show_genres = show
         self.__list_two.hide()
-        self.__update_list_one(None)
+        self.update_list_one()
         self.__list_one.select_ids([Type.POPULARS])
 
     def destroy_current_view(self):
@@ -195,11 +211,11 @@ class Container(Gtk.Bin):
         if not values_one:
             values_one = [Type.POPULARS]
         self.__list_one.select_ids([])
-        self.__update_list_one(None)
+        self.update_list_one()
         self.__list_one.select_ids(values_one)
         if self.__list_two.is_visible():
             self.__list_two.select_ids([])
-            self.__update_list_two(None)
+            self.update_list_two()
             self.__list_two.select_ids(values_two)
 
     def pulse(self, pulse):
@@ -377,10 +393,10 @@ class Container(Gtk.Bin):
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self.__list_one = SelectionList()
+        self.__list_one = SelectionList(SelectionList.Type.LIST_ONE)
         if App().settings.get_value("show-navigation-list"):
             self.__list_one.show()
-        self.__list_two = SelectionList()
+        self.__list_two = SelectionList(SelectionList.Type.LIST_TWO)
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
         self.__list_one.connect("populated", self.__on_list_populated)
         self.__list_one.connect("pass-focus", self.__on_pass_focus)
@@ -435,31 +451,8 @@ class Container(Gtk.Bin):
             Update lists
             @param updater as GObject
         """
-        self.__update_list_one(updater)
-        self.__update_list_two(updater)
-
-    def __update_list_one(self, updater):
-        """
-            Update list one
-            @param updater as GObject
-        """
-        update = updater is not None
-        if self.__show_genres:
-            self.__update_list_genres(self.__list_one, update)
-        else:
-            self.__update_list_artists(self.__list_one, [Type.ALL], update)
-
-    def __update_list_two(self, updater):
-        """
-            Update list two
-            @param updater as GObject
-        """
-        update = updater is not None
-        ids = self.__list_one.selected_ids
-        if ids and ids[0] == Type.PLAYLISTS:
-            self.__update_list_playlists(update)
-        elif self.__show_genres and ids:
-            self.__update_list_artists(self.__list_two, ids, update)
+        self.update_list_one(updater)
+        self.update_list_two(updater)
 
     def __update_list_genres(self, selection_list, update):
         """
@@ -473,10 +466,9 @@ class Container(Gtk.Bin):
             return genres
 
         def setup(genres):
-            items = selection_list.get_headers()
-            items.append((Type.SEPARATOR, ""))
+            selection_list.mark_as(SelectionList.Type.GENRE)
+            items = selection_list.get_headers(False)
             items += genres
-            selection_list.mark_as_artists(False)
             if update:
                 selection_list.update_values(items)
             else:
@@ -499,17 +491,12 @@ class Container(Gtk.Bin):
             return (artists, compilations)
 
         def setup(artists, compilations):
+            selection_list.mark_as(SelectionList.Type.ARTISTS)
             if selection_list == self.__list_one:
-                items = selection_list.get_headers()
-                if not compilations:
-                    items.append((Type.SEPARATOR, ""))
+                items = selection_list.get_headers(compilations)
             else:
                 items = []
-            if compilations:
-                items.append((Type.COMPILATIONS, _("Compilations")))
-                items.append((Type.SEPARATOR, ""))
             items += artists
-            selection_list.mark_as_artists(True)
             if update:
                 selection_list.update_values(items)
             else:
@@ -529,12 +516,12 @@ class Container(Gtk.Bin):
             @param update as bool
             @thread safe
         """
-        items = self.__list_two.get_pl_headers()
+        self.__list_two.mark_as(SelectionList.Type.PLAYLISTS)
+        items = self.__list_two.get_playlist_headers()
         items += App().playlists.get()
         if update:
             self.__list_two.update_values(items)
         else:
-            self.__list_two.mark_as_artists(False)
             self.__list_two.populate(items)
 
     def __stop_current_view(self):
@@ -773,7 +760,7 @@ class Container(Gtk.Bin):
         elif selected_ids[0] == Type.RADIOS:
             self.__list_two.hide()
             view = self.__get_view_radios()
-        elif selection_list.is_marked_as_artists():
+        elif selection_list.type & SelectionList.Type.ARTISTS:
             self.__list_two.hide()
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])

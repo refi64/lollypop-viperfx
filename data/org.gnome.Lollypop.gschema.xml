@@ -43,6 +43,16 @@
             <summary>Mini player position</summary>
             <description>Window position (x and y).</description>
         </key>
+        <key type="ai" name="shown-album-lists">
+            <default>[-2, -997, -3, -5, -11]</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
+        <key type="ai" name="shown-playlists">
+            <default>[-2, -997, -3, -9]</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="b" name="network-access">
             <default>false</default>
             <summary>Access network</summary>
@@ -70,7 +80,7 @@
         </key>
         <key type="as" name="music-path">
             <default>[]</default>
-            <summary></summary>
+            <summary>REMOVE ME LATER</summary>
             <description></description>
         </key>
         <key type="as" name="music-uris">
@@ -101,16 +111,6 @@
         <key type="s" name="tag-editor">
             <default>""</default>
             <summary>Favorite tag editor</summary>
-            <description></description>
-        </key>
-        <key type="s" name="infoswitch">
-            <default>"albums"</default>
-            <summary>INTERNAL</summary>
-            <description></description>
-        </key>
-        <key type="b" name="inforeload">
-            <default>false</default>
-            <summary>INTERNAL</summary>
             <description></description>
         </key>
         <key type="s" name="preview-output">

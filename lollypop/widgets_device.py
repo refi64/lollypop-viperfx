@@ -66,7 +66,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         self.__model = Gtk.ListStore(bool, str, int)
 
-        self.__selection_list = SelectionList(False)
+        self.__selection_list = SelectionList(SelectionList.Type.LIST_DEVICE)
         self.__selection_list.connect("item-selected",
                                       self.__on_item_selected)
         widget.attach(self.__selection_list, 1, 1, 1, 1)
@@ -307,7 +307,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 items.append((Type.COMPILATIONS, _("Compilations")))
                 items.append((Type.SEPARATOR, ""))
             items += artists
-            selection_list.mark_as_artists(True)
+            selection_list.mark_as(SelectionList.Type.ARTISTS)
             selection_list.populate(items)
         loader = Loader(target=load, view=selection_list,
                         on_finished=lambda r: setup(*r))
