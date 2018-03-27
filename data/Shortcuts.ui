@@ -77,6 +77,13 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Show lyrics</property>
+                <property name="accelerator">&lt;Alt&gt;l</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Fullscreen</property>
                 <property name="accelerator">F11</property>
               </object>

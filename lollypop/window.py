@@ -220,6 +220,7 @@ class Window(Gtk.ApplicationWindow, Container):
         App().set_accels_for_action("app.shortcut::locked", ["<Control>l"])
         App().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
         App().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
+        App().set_accels_for_action("app.shortcut::lyrics", ["<Alt>l"])
         App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
         App().set_accels_for_action("app.shortcut::show_genres",
                                     ["<Control>g"])
@@ -521,6 +522,8 @@ class Window(Gtk.ApplicationWindow, Container):
             App().player.prev()
         elif string == "locked":
             App().player.lock()
+        elif string == "lyrics":
+            App().window.container.show_lyrics()
         elif string == "hide_paned":
             self.__container.hide_paned()
         elif string == "filter":
