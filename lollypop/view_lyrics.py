@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio
 from gettext import gettext as _
 
 from lollypop.view import View
-from lollypop.define import App
+from lollypop.define import App, WindowSize
 from lollypop.utils import escape
 from lollypop.helper_task import TaskHelper
 
@@ -118,6 +118,22 @@ class LyricsView(View):
             self.__on_lyrics_downloaded,
             "song_body-lyrics")
 
+    def __update_lyrics_style(self):
+        """
+            Update lyrics style based on current view width
+        """
+        context = self.__lyrics_label.get_style_context()
+        for cls in context.list_classes():
+            context.remove_class(cls)
+        context.add_class("lyrics")
+        width = self.get_allocated_width()
+        if width > WindowSize.XXLARGE:
+            context.add_class("lyrics-xx-large")
+        elif width > WindowSize.MONSTER:
+            context.add_class("lyrics-x-large")
+        elif width > WindowSize.BIG:
+            context.add_class("lyrics-large")
+
     def __on_lyrics_downloaded(self, uri, status, data, cls):
         """
             Show lyrics
@@ -135,6 +151,7 @@ class LyricsView(View):
                 lyrics_text = soup.find_all(
                     "div", class_=cls)[0].get_text(separator="\n")
                 self.__lyrics_set = True
+                self.__update_lyrics_style()
                 self.__lyrics_label.set_text(lyrics_text)
             except:
                 self.__lyrics_label.set_text(_("No lyrics found ") + "😐")

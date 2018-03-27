@@ -82,6 +82,7 @@ class WindowSize:
     MEDIUM = 500
     BIG = 700
     MONSTER = 800
+    XXLARGE = 1000
 
 
 class OrderBy:
