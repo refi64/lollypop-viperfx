@@ -262,9 +262,10 @@ class TagReader(Discoverer):
             @param filename as str
             @return track number as int
         """
-        if tags is None:
-            return 0
-        (exists, tracknumber) = tags.get_uint_index("track-number", 0)
+        if tags is not None:
+            (exists, tracknumber) = tags.get_uint_index("track-number", 0)
+        else:
+            (exists, tracknumber) = (False, 0)
         if not exists:
             # Guess from filename
             m = match("^([0-9]*)[ ]*-", filename)
