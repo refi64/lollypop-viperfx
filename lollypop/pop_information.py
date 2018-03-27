@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.objects import Album
-from lollypop.utils import draw_rounded_image
+from lollypop.utils import draw_rounded_image, escape
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 
@@ -48,16 +48,20 @@ class InformationPopover(Gtk.Popover):
         """
         helper = TaskHelper()
         for artist_id in artist_ids:
+            artist_name = App().artists.get_name(artist_id)
             builder = Gtk.Builder()
             builder.add_from_resource(
                 "/org/gnome/Lollypop/ArtistInformation.ui")
             builder.connect_signals(self)
             widget = builder.get_object("widget")
             self.__grid.add(widget)
+            builder.get_object("eventbox").connect(
+                "button-release-event",
+                self.__on_label_button_release_event,
+                artist_name)
             artist_label = builder.get_object("artist_label")
             artist_artwork = builder.get_object("artist_artwork")
             bio_label = builder.get_object("bio_label")
-            artist_name = App().artists.get_name(artist_id)
             artist_label.set_text(artist_name)
             if self.__minimal:
                 artist_artwork.hide()
@@ -88,6 +92,11 @@ class InformationPopover(Gtk.Popover):
 #######################
 # PROTECTED           #
 #######################
+    def _on_label_realize(self, eventbox):
+        """
+            @param eventbox as Gtk.EventBox
+        """
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
 #######################
 # PRIVATE             #
@@ -181,6 +190,18 @@ class InformationPopover(Gtk.Popover):
         if path is not None:
             return path
         return None
+
+    def __on_label_button_release_event(self, button, event, artist):
+        """
+            Show information cache (for edition)
+            @param button as Gtk.Button
+            @param event as Gdk.Event
+        """
+        uri = "file://%s/%s.txt" % (InformationStore._INFO_PATH,
+                                    escape(artist))
+        Gtk.show_uri_on_window(App().window,
+                               uri,
+                               Gdk.CURRENT_TIME)
 
     def __on_artwork_draw(self, image, ctx, artist_name):
         """
