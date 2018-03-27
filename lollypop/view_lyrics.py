@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio, Pango
 from gettext import gettext as _
 
 from lollypop.view import View
-from lollypop.define import App, WindowSize
+from lollypop.define import App, WindowSize, Type
 from lollypop.utils import escape
 from lollypop.helper_task import TaskHelper
 
@@ -94,14 +94,27 @@ class LyricsView(View):
         self.__downloads_running += 1
         # Update lyrics
         task_helper = TaskHelper()
-        artist = GLib.uri_escape_string(
-            App().player.current_track.artists[0],
-            None,
-            False)
-        title = GLib.uri_escape_string(
-            App().player.current_track.name,
-            None,
-            False)
+        if App().player.current_track.id == Type.RADIOS:
+            split = App().player.current_track.name.split(" - ")
+            if len(split) < 2:
+                return
+            artist = GLib.uri_escape_string(
+                split[0],
+                None,
+                False)
+            title = GLib.uri_escape_string(
+                App().player.current_track.name,
+                None,
+                False)
+        else:
+            artist = GLib.uri_escape_string(
+                split[1],
+                None,
+                False)
+            title = GLib.uri_escape_string(
+                App().player.current_track.name,
+                None,
+                False)
         uri = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
         task_helper.load_uri_content(
             uri,
@@ -117,8 +130,16 @@ class LyricsView(View):
         self.__downloads_running += 1
         # Update lyrics
         task_helper = TaskHelper()
-        string = escape("%s %s" % (App().player.current_track.artists[0],
-                                   App().player.current_track.name))
+        if App().player.current_track.id == Type.RADIOS:
+            split = App().player.current_track.name.split(" - ")
+            if len(split) < 2:
+                return
+            artist = split[0]
+            title = split[1]
+        else:
+            artist = App().player.current_track.artists[0]
+            title = App().player.current_track.name
+        string = escape("%s %s" % (artist, title))
         uri = "https://genius.com/%s-lyrics" % string.replace(" ", "-")
         task_helper.load_uri_content(
             uri,

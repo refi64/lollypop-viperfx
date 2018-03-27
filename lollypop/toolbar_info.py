@@ -130,7 +130,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             from lollypop.pop_menu import TrackMenuPopover
             popover = TrackMenuPopover(App().player.current_track, menu)
             popover.set_relative_to(self._infobox)
-        else:
+        elif App().player.current_track.id == Type.RADIOS:
             popover = Gtk.Popover.new_from_model(self._infobox, menu)
         popover.show()
 
