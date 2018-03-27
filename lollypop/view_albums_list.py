@@ -135,8 +135,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         grid.attach(self.__revealer, 0, 2, 3, 1)
         row_widget.add(grid)
         self.add(row_widget)
-        self.update_playing_indicator(self._album ==
-                                      App().player.current_track.album)
+        self.update_playing_indicator(self._album.id ==
+                                      App().player.current_track.album.id)
         self.show_all()
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
