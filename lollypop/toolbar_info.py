@@ -124,14 +124,15 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Show current track menu
             @param args as []
         """
+        from lollypop.pop_menu import ToolbarMenu
+        menu = ToolbarMenu(App().player.current_track)
         if App().player.current_track.id >= 0:
-            from lollypop.pop_menu import ToolbarMenu
             from lollypop.pop_menu import TrackMenuPopover
-            popover = TrackMenuPopover(
-                App().player.current_track,
-                ToolbarMenu(App().player.current_track))
+            popover = TrackMenuPopover(App().player.current_track, menu)
             popover.set_relative_to(self._infobox)
-            popover.show()
+        else:
+            popover = Gtk.Popover.new_from_model(self._infobox, menu)
+        popover.show()
 
     def __on_info_short(self, args):
         """

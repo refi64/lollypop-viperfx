@@ -292,14 +292,15 @@ class ToolbarMenu(BaseMenu):
             @param track as Track
         """
         BaseMenu.__init__(self, track)
-        playlist_menu = PlaylistsMenu(track)
         lyrics_menu = Gio.Menu()
         action = Gio.SimpleAction(name="lyrics_action")
         App().add_action(action)
         action.connect("activate", self.__show_lyrics)
         lyrics_menu.append(_("Show lyrics"), "app.lyrics_action")
         self.insert_section(0, _("Lyrics"), lyrics_menu)
-        self.insert_section(1, _("Playlists"), playlist_menu)
+        if track.id >= 0:
+            playlist_menu = PlaylistsMenu(track)
+            self.insert_section(1, _("Playlists"), playlist_menu)
 
 #######################
 # PRIVATE             #
