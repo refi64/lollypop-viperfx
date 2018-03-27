@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
-from re import sub
 
 from lollypop.view import View
 from lollypop.define import App, WindowSize
@@ -45,7 +44,6 @@ class LyricsView(View):
         self.__lyrics_label.set_line_wrap(True)
         self.__lyrics_label.set_property("halign", Gtk.Align.CENTER)
         self.__lyrics_label.set_property("valign", Gtk.Align.CENTER)
-        self.__lyrics_label.show()
         self.__lyrics_label.get_style_context().add_class("lyrics")
         scrolled_window.add(self.__lyrics_label)
         self.add(scrolled_window)
@@ -55,7 +53,7 @@ class LyricsView(View):
             Set lyrics
         """
         self.__lyrics_set = False
-        self.__lyrics_label.set_text("")
+        self.__lyrics_label.hide()
         self.__cancellable.cancel()
         self.__cancellable.reset()
         # First try to get lyrics from tags
@@ -107,7 +105,8 @@ class LyricsView(View):
             uri,
             self.__cancellable,
             self.__on_lyrics_downloaded,
-            "lyricbox")
+            "lyricbox",
+            "\n")
 
     def __download_genius_lyrics(self):
         """
@@ -122,7 +121,8 @@ class LyricsView(View):
             uri,
             self.__cancellable,
             self.__on_lyrics_downloaded,
-            "song_body-lyrics")
+            "song_body-lyrics",
+            "")
 
     def __update_lyrics_style(self):
         """
@@ -140,26 +140,27 @@ class LyricsView(View):
         elif width > WindowSize.BIG:
             context.add_class("lyrics-large")
 
-    def __on_lyrics_downloaded(self, uri, status, data, cls):
+    def __on_lyrics_downloaded(self, uri, status, data, cls, separator):
         """
             Show lyrics
             @param uri as str
             @param status as bool
             @param data as bytes
             @param cls as str
+            @param separator as str
         """
         if self.__lyrics_set:
             return
         self.__update_lyrics_style()
+        self.__lyrics_label.show()
         if status:
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(data, 'html.parser')
             try:
                 lyrics_text = soup.find_all(
-                    "div", class_=cls)[0].get_text(separator="\n")
-                lyrics_text = sub(r"$\n", "", lyrics_text)
-                self.__lyrics_set = True
+                    "div", class_=cls)[0].get_text(separator=separator)
                 self.__lyrics_label.set_text(lyrics_text)
+                self.__lyrics_set = True
             except Exception as e:
                 self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
         else:
