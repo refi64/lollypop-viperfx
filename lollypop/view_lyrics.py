@@ -103,12 +103,12 @@ class LyricsView(View):
                 None,
                 False)
             title = GLib.uri_escape_string(
-                App().player.current_track.name,
+                split[1],
                 None,
                 False)
         else:
             artist = GLib.uri_escape_string(
-                split[1],
+                App().player.current_track.name,
                 None,
                 False)
             title = GLib.uri_escape_string(
