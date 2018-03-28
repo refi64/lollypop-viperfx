@@ -87,8 +87,10 @@ class AlbumsPopover(Gtk.Popover):
             Resize
             @param widget as Gtk.Widget
         """
-        height = App().window.get_size()[1]
-        self.set_size_request(500, height * 0.7)
+        window_size = App().window.get_size()
+        height = window_size[1]
+        width = min(500, window_size[0])
+        self.set_size_request(width, height * 0.7)
 
     def __on_unmap(self, widget):
         """

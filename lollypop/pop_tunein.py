@@ -284,8 +284,10 @@ class TuneinPopover(Gtk.Popover):
         """
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(False)
-        size = App().window.get_size()
-        self.set_size_request(size[0] * 0.5, size[1] * 0.7)
+        window_size = App().window.get_size()
+        height = window_size[1]
+        width = min(500, window_size[0])
+        self.set_size_request(width, height * 0.7)
 
     def __on_unmap(self, widget):
         """

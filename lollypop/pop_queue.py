@@ -339,8 +339,10 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._stop = False
-        height = App().window.get_size()[1]
-        self.set_size_request(400, height * 0.7)
+        window_size = App().window.get_size()
+        height = window_size[1]
+        width = min(500, window_size[0])
+        self.set_size_request(width, height * 0.7)
         self.populate()
         self._signal_id1 = App().player.connect("current-changed",
                                                 self.__on_current_changed)
