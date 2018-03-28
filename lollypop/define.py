@@ -49,6 +49,7 @@ class ResponsiveType:
     FIXED = 0
     DND = 1
     SEARCH = 2
+    LIST = 3
 
 
 class ArtSize:

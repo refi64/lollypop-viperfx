@@ -589,7 +589,7 @@ class Container(Gtk.Bin):
         self.__stop_current_view()
         if self.is_paned_stack:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.FIXED)
+            view = AlbumsListView(ResponsiveType.LIST)
         else:
             from lollypop.view_artist import ArtistView
             view = ArtistView(artist_ids, genre_ids)
@@ -641,7 +641,7 @@ class Container(Gtk.Bin):
         self.__stop_current_view()
         if self.is_paned_stack:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.FIXED)
+            view = AlbumsListView(ResponsiveType.LIST)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView(genre_ids, artist_ids)

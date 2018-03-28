@@ -71,7 +71,7 @@ class InformationPopover(Gtk.Popover):
                     self.__on_artwork_draw,
                     artist_name)
                 self.__set_artist_artwork(artist_artwork, artist_name)
-                albums_view = AlbumsListView(ResponsiveType.DND)
+                albums_view = AlbumsListView(ResponsiveType.LIST)
                 albums_view.set_size_request(300, -1)
                 albums_view.show()
                 widget.attach(albums_view, 2, 1, 1, 1)
