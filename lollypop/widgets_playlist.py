@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
 from gettext import gettext as _
 
-from lollypop.define import App, Type, WindowSize, Loading
+from lollypop.define import App, Type, WindowSize, Loading, ResponsiveType
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track, Album, Disc
@@ -57,9 +57,9 @@ class PlaylistsWidget(Gtk.Grid):
 
         self.connect("size-allocate", self.__on_size_allocate)
 
-        self.__tracks_widget_left = TracksWidget(True)
+        self.__tracks_widget_left = TracksWidget(ResponsiveType.DND)
         self.__tracks_widget_left.set_vexpand(True)
-        self.__tracks_widget_right = TracksWidget(True)
+        self.__tracks_widget_right = TracksWidget(ResponsiveType.DND)
         self.__tracks_widget_right.set_vexpand(True)
         self.__tracks_widget_left.connect("activated",
                                           self.__on_activated)

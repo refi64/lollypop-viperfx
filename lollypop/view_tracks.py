@@ -151,7 +151,7 @@ class TracksView:
             @param tracks as [Track]
         """
         for track in tracks:
-            row = TrackRow(track, self._responsive_type == ResponsiveType.DND)
+            row = TrackRow(track, self._responsive_type)
             row.connect("destroy", self.__on_row_destroy)
             row.connect("track-moved", self.__on_track_moved)
             row.connect("album-moved", self.__on_album_moved)
@@ -416,9 +416,10 @@ class TracksView:
             Add disc container to box
             @param disc_number as int
         """
-        dnd = self._responsive_type == ResponsiveType.DND
-        self._tracks_widget_left[disc_number] = TracksWidget(dnd)
-        self._tracks_widget_right[disc_number] = TracksWidget(dnd)
+        self._tracks_widget_left[disc_number] = TracksWidget(
+            self._responsive_type)
+        self._tracks_widget_right[disc_number] = TracksWidget(
+            self._responsive_type)
         self._tracks_widget_left[disc_number].connect("activated",
                                                       self.__on_activated)
         self._tracks_widget_right[disc_number].connect("activated",
@@ -451,7 +452,7 @@ class TracksView:
         if not App().settings.get_value("show-tag-tracknumber"):
             track.set_number(i)
         track.set_featuring_ids(self._album.artist_ids)
-        row = TrackRow(track, self._responsive_type == ResponsiveType.DND)
+        row = TrackRow(track, self._responsive_type)
         row.connect("destroy", self.__on_row_destroy)
         row.connect("track-moved", self.__on_track_moved)
         row.connect("album-moved", self.__on_album_moved)

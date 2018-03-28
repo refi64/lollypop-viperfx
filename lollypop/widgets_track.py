@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Gdk, Pango, GLib, Gst
 
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, ResponsiveType
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
@@ -29,11 +29,11 @@ class Row(Gtk.ListBoxRow):
         "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, str, bool))
     }
 
-    def __init__(self, track, dnd):
+    def __init__(self, track, responsive_type):
         """
             Init row widgets
             @param track as Track
-            @param dnd as bool
+            @param responsive_type as ResponsiveType
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
@@ -42,7 +42,9 @@ class Row(Gtk.ListBoxRow):
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
-        self._indicator = IndicatorWidget(self._track, self if dnd else None)
+        self._indicator = IndicatorWidget(
+            self._track,
+            self if responsive_type == ResponsiveType.DND else None)
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
         self._row_widget = Gtk.EventBox()
@@ -371,7 +373,7 @@ class PlaylistRow(Row):
             @param track as Track
             @param show headers as bool
         """
-        Row.__init__(self, track, True)
+        Row.__init__(self, track, ResponsiveType.DND)
         self.__parent_filter = False
         self.__show_headers = show_headers
         self._grid.insert_row(0)
@@ -559,18 +561,18 @@ class TrackRow(Row):
             height = menu_height
         return height
 
-    def __init__(self, track, dnd):
+    def __init__(self, track, responsive_type):
         """
             Init row widget and show it
             @param track as Track
-            @param dnd as bool
+            @param responsive_type as ResponsiveType
         """
-        Row.__init__(self, track, dnd)
+        Row.__init__(self, track, responsive_type)
         self.__parent_filter = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
-        if dnd:
+        if responsive_type == ResponsiveType.DND:
             self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                                  Gdk.DragAction.MOVE)
             self.drag_source_add_text_targets()
@@ -666,10 +668,10 @@ class TracksWidget(Gtk.ListBox):
                       None, (GObject.TYPE_PYOBJECT,))
     }
 
-    def __init__(self, dnd=False):
+    def __init__(self, responsive_type):
         """
             Init track widget
-            @param drag and drop as bool
+            @param responsive_type as ResponsiveType
         """
         Gtk.ListBox.__init__(self)
         self.connect("destroy", self.__on_destroy)
@@ -685,7 +687,7 @@ class TracksWidget(Gtk.ListBox):
         self.get_style_context().add_class("trackswidget")
         self.set_property("hexpand", True)
         self.set_property("selection-mode", Gtk.SelectionMode.NONE)
-        if dnd:
+        if responsive_type == ResponsiveType.DND:
             self.drag_dest_set(Gtk.DestDefaults.DROP,
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
