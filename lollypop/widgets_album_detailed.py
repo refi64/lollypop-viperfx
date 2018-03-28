@@ -33,17 +33,17 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids, art_size):
+    def __init__(self, album, genre_ids, artist_ids, art_size):
         """
             Init detailed album widget
-            @param album id as int
+            @param album as Album
             @param genre ids as [int]
             @param artist ids as [int]
             @param lazy as LazyLoadingView
             @param art size as ArtSize
         """
         Gtk.Bin.__init__(self)
-        AlbumWidget.__init__(self, album_id, genre_ids, artist_ids, art_size)
+        AlbumWidget.__init__(self, album, genre_ids, artist_ids, art_size)
         TracksView.__init__(self, ResponsiveType.FIXED)
         self._rounded_class = "rounded-icon-small"
         self.__context = None

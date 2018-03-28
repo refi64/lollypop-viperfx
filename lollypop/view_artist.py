@@ -87,7 +87,7 @@ class ArtistView(ArtistAlbumsView):
         """
         widget = None
         for child in self._albumbox.get_children():
-            if child.id == App().player.current_track.album.id:
+            if child.album.id == App().player.current_track.album.id:
                 widget = child
                 break
         if widget is not None:
@@ -327,7 +327,7 @@ class ArtistView(ArtistAlbumsView):
         """
         found = False
         for child in self._get_children():
-            if child.id == App().player.current_track.album.id:
+            if child.album.id == App().player.current_track.album.id:
                 found = True
                 break
         if found:

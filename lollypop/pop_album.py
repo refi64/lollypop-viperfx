@@ -22,11 +22,11 @@ class AlbumPopover(Gtk.Popover):
         Not an AlbumDetailedWidget because we want a lazy loading view
     """
 
-    def __init__(self, album_id, genre_ids,
+    def __init__(self, album, genre_ids,
                  artist_ids, width=None, height=None, art_size=ArtSize.NONE):
         """
             Init popover
-            @param album id as int
+            @param album as Album
             @param genre ids as [int]
             @param artist ids as [int]
             @param width as int (None)
@@ -36,7 +36,7 @@ class AlbumPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
-        view.populate([album_id])
+        view.populate([album])
         if App().window.container.is_paned_stack:
             for child in view.children:
                 child.hide_header_labels()

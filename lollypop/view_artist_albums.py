@@ -63,7 +63,7 @@ class ArtistAlbumsView(LazyLoadingView):
     def populate(self, albums):
         """
             Populate the view
-            @param albums as [int]
+            @param albums as [Album]
         """
         if albums:
             if len(albums) != 1:
@@ -167,11 +167,11 @@ class ArtistAlbumsView(LazyLoadingView):
         """
             Pop an album and add it to the view,
             repeat operation until album list is empty
-            @param [album ids as int]
+            @param albums as [Album]
         """
         if albums and not self._stop:
-            album_id = albums.pop(0)
-            widget = AlbumDetailedWidget(album_id,
+            album = albums.pop(0)
+            widget = AlbumDetailedWidget(album,
                                          self._genre_ids,
                                          self._artist_ids,
                                          self.__art_size)

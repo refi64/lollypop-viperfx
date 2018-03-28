@@ -55,7 +55,7 @@ class AlbumsBoxView(LazyLoadingView):
     def populate(self, albums):
         """
             Populate albums
-            @param is compilation as bool
+            @param albums as [Album]
         """
         GLib.idle_add(self.__add_albums, albums)
 
@@ -131,7 +131,7 @@ class AlbumsBoxView(LazyLoadingView):
             height = bottom_height
         else:
             height = top_height
-        popover = AlbumPopover(album_widget.id,
+        popover = AlbumPopover(album_widget.album,
                                self.__genre_ids,
                                self.__artist_ids,
                                allocation.width,

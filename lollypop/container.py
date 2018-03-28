@@ -14,7 +14,8 @@ from gi.repository import Gtk, Gio, GLib
 
 from urllib.parse import urlparse
 
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ResponsiveType
+from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
@@ -312,14 +313,15 @@ class Container(Gtk.Bin):
             self.__paned_main_list.remove(self.__list_one)
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
-            App().window.toolbar.playback.show_back(True)
-            self.__stack.set_visible_child(self.__list_one)
+            App().window.toolbar.playback.show_back(True, True)
+            self.reload_view()
         elif not b and self.is_paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
             self.__paned_list_view.add1(self.__list_two)
             self.__paned_main_list.add1(self.__list_one)
             App().window.toolbar.playback.show_back(False)
+            self.reload_view()
 
     def hide_paned(self):
         """
@@ -576,16 +578,21 @@ class Container(Gtk.Bin):
         """
         def load():
             if genre_ids and genre_ids[0] == Type.ALL:
-                albums = App().albums.get_ids(artist_ids, [])
+                items = App().albums.get_ids(artist_ids, [])
             else:
-                albums = []
+                items = []
                 if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                    albums += App().albums.get_compilation_ids(genre_ids)
-                albums += App().albums.get_ids(artist_ids, genre_ids)
-            return albums
-        from lollypop.view_artist import ArtistView
+                    items += App().albums.get_compilation_ids(genre_ids)
+                items += App().albums.get_ids(artist_ids, genre_ids)
+            return [Album(album_id, genre_ids, artist_ids)
+                    for album_id in items]
         self.__stop_current_view()
-        view = ArtistView(artist_ids, genre_ids)
+        if self.is_paned_stack:
+            from lollypop.view_albums_list import AlbumsListView
+            view = AlbumsListView(ResponsiveType.FIXED)
+        else:
+            from lollypop.view_artist import ArtistView
+            view = ArtistView(artist_ids, genre_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -628,11 +635,16 @@ class Container(Gtk.Bin):
                     items = App().albums.get_compilation_ids(genre_ids)
                 if not is_compilation:
                     items += App().albums.get_ids([], genre_ids)
-            return items
+            return [Album(album_id, genre_ids, artist_ids)
+                    for album_id in items]
 
-        from lollypop.view_albums_box import AlbumsBoxView
         self.__stop_current_view()
-        view = AlbumsBoxView(genre_ids, artist_ids)
+        if self.is_paned_stack:
+            from lollypop.view_albums_list import AlbumsListView
+            view = AlbumsListView(ResponsiveType.FIXED)
+        else:
+            from lollypop.view_albums_box import AlbumsBoxView
+            view = AlbumsBoxView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()

@@ -16,7 +16,6 @@ from gettext import gettext as _
 
 from lollypop.define import App, ArtSize
 from lollypop.define import Shuffle, Loading
-from lollypop.objects import Album
 from lollypop.pop_artwork import CoversPopover
 
 
@@ -313,12 +312,12 @@ class AlbumWidget(BaseWidget):
         Album widget
     """
 
-    def __init__(self, album_id, genre_ids, artist_ids, art_size):
+    def __init__(self, album, genre_ids, artist_ids, art_size):
         """
             Init Album widget
         """
         BaseWidget.__init__(self)
-        self._album = Album(album_id, genre_ids, artist_ids)
+        self._album = album
         self._art_size = art_size
         self.connect("destroy", self.__on_destroy)
         self._scan_signal = App().scanner.connect("album-updated",
@@ -330,13 +329,6 @@ class AlbumWidget(BaseWidget):
             @return Album
         """
         return self._album
-
-    @property
-    def id(self):
-        """
-            Return widget id
-        """
-        return self._album.id
 
     @property
     def filter(self):

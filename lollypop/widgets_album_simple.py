@@ -28,10 +28,10 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids):
+    def __init__(self, album, genre_ids, artist_ids):
         """
             Init simple album widget
-            @param album id as int
+            @param album as Album
             @param genre ids as [int]
             @param artist_ids as [int]
         """
@@ -39,7 +39,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         Gtk.FlowBoxChild.__init__(self)
         self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class("loading")
-        AlbumWidget.__init__(self, album_id, genre_ids,
+        AlbumWidget.__init__(self, album, genre_ids,
                              artist_ids, ArtSize.BIG)
 
     def populate(self):
