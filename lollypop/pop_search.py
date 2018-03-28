@@ -141,7 +141,7 @@ class SearchPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(False)
         height = App().window.get_size()[1]
-        self.set_size_request(450, height * 0.7)
+        self.set_size_request(500, height * 0.7)
 
     def __on_unmap(self, widget):
         """
