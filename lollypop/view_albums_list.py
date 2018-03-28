@@ -110,24 +110,30 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)
+        self.__action_button = None
         if self.__responsive_type == ResponsiveType.SEARCH:
             action_icon = "media-playback-start-symbolic"
-        else:
+        elif self.__responsive_type == ResponsiveType.DND:
             action_icon = "user-trash-symbolic"
-        self.__action_button = Gtk.Button.new_from_icon_name(
-            action_icon,
-            Gtk.IconSize.MENU)
-        self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__action_button.get_style_context().add_class("album-menu-button")
-        self.__action_button.get_style_context().add_class("track-menu-button")
-        self.__action_button.set_property("valign", Gtk.Align.CENTER)
-        self.__action_button.connect("clicked", self.__on_action_clicked)
+        if self.__responsive_type in [ResponsiveType.SEARCH,
+                                      ResponsiveType.DND]:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                action_icon,
+                Gtk.IconSize.MENU)
+            self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__action_button.get_style_context().add_class(
+                "album-menu-button")
+            self.__action_button.get_style_context().add_class(
+                "track-menu-button")
+            self.__action_button.set_property("valign", Gtk.Align.CENTER)
+            self.__action_button.connect("clicked", self.__on_action_clicked)
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
         vgrid.add(self.__play_indicator)
         vgrid.add(self.__title_label)
         grid.attach(self.__artist_label, 1, 0, 1, 1)
-        grid.attach(self.__action_button, 2, 0, 1, 2)
+        if self.__action_button is not None:
+            grid.attach(self.__action_button, 2, 0, 1, 2)
         grid.attach(cover, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
@@ -162,7 +168,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
-            if self.__responsive_type != ResponsiveType.SEARCH:
+            if self.__responsive_type != ResponsiveType.SEARCH and\
+                    self.__action_button is not None:
                 self.__action_button.set_opacity(1)
                 self.__action_button.set_sensitive(True)
         else:
@@ -172,7 +179,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
             self.__revealer.set_reveal_child(True)
-            if self.__responsive_type != ResponsiveType.SEARCH:
+            if self.__responsive_type != ResponsiveType.SEARCH and\
+                    self.__action_button is not None:
                 self.__action_button.set_opacity(0)
                 self.__action_button.set_sensitive(False)
 
