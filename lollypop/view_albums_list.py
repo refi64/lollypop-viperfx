@@ -455,7 +455,15 @@ class AlbumsListView(LazyLoadingView):
             self._lazy_queue.append(row)
             GLib.idle_add(self.__add_albums, albums)
         else:
-            GLib.idle_add(self.lazy_loading)
+            # If only one album, we want to reveal it
+            # Stop lazy loading and populate
+            children = self.__view.get_children()
+            if len(children) == 1:
+                self.stop()
+                children[0].populate()
+                children[0].reveal(True)
+            else:
+                GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self.__view)
 
