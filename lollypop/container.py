@@ -280,6 +280,8 @@ class Container(Gtk.Bin):
             Go back in stack
         """
         visible_child = self.__stack.get_visible_child()
+        if isinstance(visible_child, View):
+            visible_child.stop()
         if visible_child == self.__list_two:
             self.__stack.set_visible_child(self.__list_one)
             App().window.toolbar.playback.show_back(True)
