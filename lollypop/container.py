@@ -310,6 +310,7 @@ class Container(Gtk.Bin):
             Enable paned stack
             @param bool as b
         """
+        print(b)
         if b and not self.is_paned_stack:
             self.__paned_list_view.remove(self.__list_two)
             self.__paned_main_list.remove(self.__list_one)
