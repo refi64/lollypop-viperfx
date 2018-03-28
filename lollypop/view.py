@@ -286,13 +286,6 @@ class LazyLoadingView(View):
         self._lazy_queue = []
         View.stop(self)
 
-    def append(self, widget):
-        """
-            Append row to lazy queue
-            @param row as Gtk.Widget
-        """
-        self._lazy_queue.append(widget)
-
     def lazy_loading(self, widgets=[], scroll_value=0):
         """
             Load the view in a lazy way
