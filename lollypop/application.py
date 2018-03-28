@@ -48,7 +48,7 @@ from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
-from lollypop.notification import NotificationManager, QuitNotification
+from lollypop.notification import NotificationManager
 from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
 from lollypop.helper_task import TaskHelper
@@ -95,7 +95,6 @@ class Application(Gtk.Application):
                 if GLib.file_test(path, GLib.FileTest.EXISTS):
                     GLib.setenv("SSL_CERT_FILE", path, True)
                     break
-        self.__quit_notification = None
         self.cursors = {}
         self.window = None
         self.notify = None
@@ -234,8 +233,6 @@ class Application(Gtk.Application):
         if vacuum:
             self.__vacuum()
         self.window.destroy()
-        if self.__quit_notification is not None:
-            self.__quit_notification.close()
         Gio.Application.quit(self)
 
     def is_fullscreen(self):
@@ -443,9 +440,6 @@ class Application(Gtk.Application):
                 parser.connect("entry-parsed", self.__on_entry_parsed)
                 parser.parse_async(uri, True, None, None)
         elif self.window is not None:
-            if self.__quit_notification is not None:
-                self.__quit_notification.close()
-                self.__quit_notification = None
             self.window.setup_window()
             if not self.window.is_visible():
                 # https://bugzilla.gnome.org/show_bug.cgi?id=766284
@@ -479,8 +473,6 @@ class Application(Gtk.Application):
         if not self.settings.get_value("background-mode") or\
                 not self.player.is_playing:
             GLib.timeout_add(500, self.quit, True)
-        else:
-            self.__quit_notification = QuitNotification()
         return widget.hide_on_delete()
 
     def __update_db(self, action=None, param=None):
