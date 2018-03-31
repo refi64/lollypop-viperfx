@@ -383,6 +383,7 @@ class Container(Gtk.Bin):
             return True
         else:
             self.__progress.set_fraction(0.0, self)
+            self.__pulse_timeout = None
             return False
 
     def __setup_view(self):
