@@ -566,8 +566,9 @@ class Window(Gtk.ApplicationWindow, Container):
             GLib.timeout_add(2000, App().scanner.update)
         GLib.idle_add(self.__container.update_list_one)
         GLib.idle_add(self.__container.restore_view_state)
-        # Needed because we want setup_window() to be finished
-        GLib.idle_add(self.__connect_state_signals)
+        # Here we ignore initial configure events
+        GLib.timeout_add(500, self.__connect_state_signals)
+        self.responsive_design()
 
     def __on_current_changed(self, player):
         """
