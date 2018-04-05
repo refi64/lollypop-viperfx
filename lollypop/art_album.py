@@ -429,7 +429,10 @@ class AlbumArt(BaseArt, TagReader):
         if can_set_cover:
             dbus_helper = DBusHelper()
             for uri in App().albums.get_track_uris(album_id, [], []):
-                path = GLib.filename_from_uri(uri)[0]
+                try:
+                    path = GLib.filename_from_uri(uri)[0]
+                except:
+                    continue
                 dbus_helper.call("SetCover",
                                  GLib.Variant(
                                      "(ss)",
