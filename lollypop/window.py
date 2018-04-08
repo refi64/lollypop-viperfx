@@ -134,7 +134,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         size = self.get_size()
         self.__toolbar.set_content_width(size[0])
-        if size[0] < WindowSize.BIG and self.__miniplayer is None:
+        if size[0] < WindowSize.BIG:
             self.__show_miniplayer(True)
             self.__container.paned_stack(True)
             self.__main_stack.show()
@@ -142,7 +142,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__toolbar.title.hide()
             self.__toolbar.info.hide()
             self.__toolbar.end.set_minimal(True)
-        elif size[0] >= WindowSize.BIG and self.__miniplayer is not None:
+        elif size[0] >= WindowSize.BIG:
             self.__container.paned_stack(False)
             self.__main_stack.show()
             self.__show_miniplayer(False)
@@ -458,6 +458,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Connect state signals
         """
+        self.responsive_design()
         if self.__signal1 is None:
             self.__signal1 = self.connect("window-state-event",
                                           self.__on_window_state_event)
@@ -565,9 +566,8 @@ class Window(Gtk.ApplicationWindow, Container):
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
         GLib.idle_add(self.__container.update_list_one)
-        GLib.idle_add(self.__container.restore_view_state)
         # Here we ignore initial configure events
-        GLib.idle_add(self.__connect_state_signals)
+        GLib.timeout_add(200, self.__connect_state_signals)
 
     def __on_current_changed(self, player):
         """

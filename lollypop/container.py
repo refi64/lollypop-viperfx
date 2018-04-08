@@ -316,14 +316,22 @@ class Container(Gtk.Bin):
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
             App().window.toolbar.playback.show_back(True, True)
-            self.reload_view()
+            if self.__list_one.selected_ids:
+                self.reload_view()
+            else:
+                self.restore_view_state()
         elif not b and self.is_paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
             self.__paned_list_view.add1(self.__list_two)
             self.__paned_main_list.add1(self.__list_one)
             App().window.toolbar.playback.show_back(False)
-            self.reload_view()
+            if self.__list_one.selected_ids:
+                self.reload_view()
+            else:
+                self.restore_view_state()
+        elif not self.__list_one.selected_ids:
+            self.restore_view_state()
 
     def hide_paned(self):
         """
