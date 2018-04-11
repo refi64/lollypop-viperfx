@@ -79,10 +79,8 @@ class RadiosView(LazyLoadingView):
         helper = TaskHelper()
         helper.run(self.__get_radios, callback=(self.__on_get_radios,))
 
-#######################
-# PROTECTED           #
-#######################
-    def _get_children(self):
+    @property
+    def children(self):
         """
             Return view children
             @return [RadioWidget]
@@ -92,6 +90,9 @@ class RadiosView(LazyLoadingView):
             children.append(child)
         return children
 
+#######################
+# PROTECTED           #
+#######################
     def _on_destroy(self, widget):
         """
             Disconnect signals

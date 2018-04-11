@@ -421,13 +421,12 @@ class TagReader(Discoverer):
             lyrics = get_ogg()
         return lyrics
 
-    def add_artists(self, artists, album_artists, sortnames):
+    def add_artists(self, artists, sortnames):
         """
             Add artists to db
             @param artists as [string]
-            @param album artists as [string]
             @param sortnames as [string]
-            @return artist ids as [int]
+            @return [int]
             @commit needed
         """
         artist_ids = []
@@ -459,9 +458,11 @@ class TagReader(Discoverer):
             @param artists as [string]
             @param sortnames as [string]
             @param artist ids as int
+            @return ([int], [int])
             @commit needed
         """
         artist_ids = []
+        new_artist_ids = []
         sortsplit = sortnames.split(";")
         sortlen = len(sortsplit)
         i = 0
@@ -478,11 +479,12 @@ class TagReader(Discoverer):
                     if sortname is None:
                         sortname = format_artist_name(artist)
                     artist_id = App().artists.add(artist, sortname)
+                    new_artist_ids.append(artist_id)
                 elif sortname is not None:
                     App().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
-        return artist_ids
+        return (artist_ids, new_artist_ids)
 
     def add_genres(self, genres):
         """
@@ -493,6 +495,7 @@ class TagReader(Discoverer):
         """
         # Get all genre ids
         genre_ids = []
+        new_genre_ids = []
         for genre in genres.split(";"):
             genre = genre.strip()
             if genre != "":
@@ -500,8 +503,9 @@ class TagReader(Discoverer):
                 genre_id = App().genres.get_id(genre)
                 if genre_id is None:
                     genre_id = App().genres.add(genre)
+                    new_genre_ids.append(genre_id)
                 genre_ids.append(genre_id)
-        return genre_ids
+        return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, mb_album_id, artist_ids,
                   uri, loved, popularity, rate, mtime):
@@ -535,41 +539,3 @@ class TagReader(Discoverer):
         if App().albums.get_uri(album_id) != parent_uri:
             App().albums.set_uri(album_id, parent_uri)
         return (album_id, new)
-
-    def update_album(self, album_id, artist_ids, genre_ids, year):
-        """
-            Set album artists
-            @param album id as int
-            @param artist ids as [int]
-            @param genre ids as [int]
-            @param year as int
-            @commit needed
-        """
-        # Set artist ids based on content
-        if not artist_ids:
-            App().albums.set_artist_ids(
-                album_id,
-                App().albums.calculate_artist_ids(album_id))
-        # Update album genres
-        for genre_id in genre_ids:
-            App().albums.add_genre(album_id, genre_id)
-
-        # Update year based on tracks
-        year = App().tracks.get_year_for_album(album_id)
-        App().albums.set_year(album_id, year)
-
-    def update_track(self, track_id, artist_ids, genre_ids):
-        """
-            Set track artists/genres
-            @param track id as int
-            @param artist ids as [int]
-            @param genre ids as [int]
-            @param mtime as int
-            @param popularity as int
-            @commit needed
-        """
-        # Set artists/genres for track
-        for artist_id in artist_ids:
-            App().tracks.add_artist(track_id, artist_id)
-        for genre_id in genre_ids:
-            App().tracks.add_genre(track_id, genre_id)

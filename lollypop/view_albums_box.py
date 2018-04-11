@@ -59,10 +59,8 @@ class AlbumsBoxView(LazyLoadingView):
         """
         GLib.idle_add(self.__add_albums, albums)
 
-#######################
-# PROTECTED           #
-#######################
-    def _get_children(self):
+    @property
+    def children(self):
         """
             Return view children
             @return [AlbumWidget]
@@ -71,6 +69,10 @@ class AlbumsBoxView(LazyLoadingView):
         for child in self._box.get_children():
             children.append(child)
         return children
+
+#######################
+# PROTECTED           #
+#######################
 
 #######################
 # PRIVATE             #

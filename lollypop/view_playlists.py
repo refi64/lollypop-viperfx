@@ -142,15 +142,17 @@ class PlaylistsView(View):
         """
         self.__playlists_widget.stop()
 
-#######################
-# PROTECTED           #
-#######################
-    def _get_children(self):
+    @property
+    def children(self):
         """
             Return view children
+            @return [PlaylistsWidget]
         """
         return [self.__playlists_widget]
 
+#######################
+# PROTECTED           #
+#######################
     def _on_search_changed(self, entry):
         """
             Update filter

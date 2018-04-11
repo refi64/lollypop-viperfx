@@ -213,7 +213,7 @@ class SelectionList(Gtk.Overlay):
         self.__modifier = False
         self.__populating = False
         self.__updating = False       # Sort disabled if False
-        self.__type = None
+        self.__type = 0
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SelectionList.ui")
         builder.connect_signals(self)

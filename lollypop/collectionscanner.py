@@ -17,7 +17,7 @@ from threading import Thread
 from time import time
 
 from lollypop.inotify import Inotify
-from lollypop.define import App
+from lollypop.define import App, Type
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.database_history import History
@@ -29,7 +29,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         Scan user music collection
     """
     __gsignals__ = {
-        "scan-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "scan-finished": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
         "artist-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         "genre-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         "album-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
@@ -147,13 +147,14 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         App().window.container.progress.set_fraction(current / total, self)
 
-    def __finish(self):
+    def __finish(self, modifications):
         """
             Notify from main thread when scan finished
+            @param modifications as bool
         """
         App().window.container.progress.set_fraction(1.0, self)
         self.stop()
-        self.emit("scan-finished")
+        self.emit("scan-finished", modifications)
         # Update max count value
         App().albums.update_max_count()
         if App().settings.get_value("artist-artwork"):
@@ -165,6 +166,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as [string], uris to scan
             @thread safe
         """
+        modifications = False
         if self.__history is None:
             self.__history = History()
         mtimes = App().tracks.get_mtimes()
@@ -220,6 +222,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     to_add.append((uri, mtime))
                 except Exception as e:
                     print("CollectionScanner::__scan(mtime):", e)
+            if to_add or orig_tracks:
+                modifications = True
             # Clean deleted files
             # Now because we need to populate history
             for uri in orig_tracks:
@@ -239,7 +243,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             SqlCursor.remove(App().db)
         except Exception as e:
             print("CollectionScanner::__scan():", e)
-        GLib.idle_add(self.__finish)
+        GLib.idle_add(self.__finish, modifications)
         del self.__history
         self.__history = None
 
@@ -297,17 +301,16 @@ class CollectionScanner(GObject.GObject, TagReader):
             album_mtime = mtime
 
         debug("CollectionScanner::add2db(): Add artists %s" % artists)
-        artist_ids = self.add_artists(artists, album_artists, a_sortnames)
+        artist_ids = self.add_artists(artists, a_sortnames)
 
         debug("CollectionScanner::add2db(): "
               "Add album artists %s" % album_artists)
-        album_artist_ids = self.add_album_artists(album_artists, aa_sortnames)
+        (album_artist_ids,
+         new_artist_ids) = self.add_album_artists(album_artists, aa_sortnames)
 
         # User does not want compilations
         if self.__disable_compilations and not album_artist_ids:
             album_artist_ids = artist_ids
-
-        new_artist_ids = list(set(album_artist_ids) | set(artist_ids))
 
         missing_artist_ids = list(set(album_artist_ids) - set(artist_ids))
         # https://github.com/gnumdk/lollypop/issues/507#issuecomment-200526942
@@ -323,7 +326,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                                                uri, loved, album_pop,
                                                album_rate, mtime)
 
-        genre_ids = self.add_genres(genres)
+        (genre_ids,
+         new_genre_ids) = self.add_genres(genres)
 
         # Add track to db
         debug("CollectionScanner::add2db(): Add track")
@@ -333,12 +337,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                                     track_ltime, mtime, mb_track_id)
 
         debug("CollectionScanner::add2db(): Update track")
-        self.update_track(track_id, artist_ids, genre_ids)
+        self.__update_track(track_id, artist_ids, genre_ids)
         debug("CollectionScanner::add2db(): Update album")
-        self.update_album(album_id, album_artist_ids, genre_ids, year)
+        self.__update_album(album_id, album_artist_ids, genre_ids, year)
         if new_album:
             SqlCursor.commit(App().db)
-        for genre_id in genre_ids:
+        for genre_id in new_genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         for artist_id in new_artist_ids:
             GLib.idle_add(self.emit, "artist-updated", artist_id, True)
@@ -390,3 +394,53 @@ class CollectionScanner(GObject.GObject, TagReader):
                                   genre_id, False)
         except Exception as e:
             print("CollectionScanner::__del_from_db:", e)
+
+    def __update_album(self, album_id, artist_ids, genre_ids, year):
+        """
+            Set album artists
+            @param album id as int
+            @param artist ids as [int]
+            @param genre ids as [int]
+            @param year as int
+            @commit needed
+        """
+        album_artist_ids = []
+        add = True
+        # Set artist ids based on content
+        if not artist_ids:
+            new_artist_ids = App().albums.calculate_artist_ids(album_id)
+            current_artist_ids = App().albums.get_artist_ids(album_id)
+            if new_artist_ids != current_artist_ids:
+                album_artist_ids = new_artist_ids
+                if Type.COMPILATIONS in new_artist_ids:
+                    add = False
+                    album_artist_ids = current_artist_ids
+                else:
+                    album_artist_ids = new_artist_ids
+                App().albums.set_artist_ids(album_id, new_artist_ids)
+        # Update UI based on previous artist calculation
+        for artist_id in album_artist_ids:
+            GLib.idle_add(self.emit, "artist-updated", artist_id, add)
+        # Update album genres
+        for genre_id in genre_ids:
+            App().albums.add_genre(album_id, genre_id)
+
+        # Update year based on tracks
+        year = App().tracks.get_year_for_album(album_id)
+        App().albums.set_year(album_id, year)
+
+    def __update_track(self, track_id, artist_ids, genre_ids):
+        """
+            Set track artists/genres
+            @param track id as int
+            @param artist ids as [int]
+            @param genre ids as [int]
+            @param mtime as int
+            @param popularity as int
+            @commit needed
+        """
+        # Set artists/genres for track
+        for artist_id in artist_ids:
+            App().tracks.add_artist(track_id, artist_id)
+        for genre_id in genre_ids:
+            App().tracks.add_genre(track_id, genre_id)

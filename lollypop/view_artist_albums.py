@@ -120,7 +120,11 @@ class ArtistAlbumsView(LazyLoadingView):
             View children
             @return [AlbumDetailedWidget]
         """
-        return self._get_children()
+        children = []
+        for child in self._albumbox.get_children():
+            if isinstance(child, AlbumDetailedWidget):
+                children.append(child)
+        return children
 
 #######################
 # PROTECTED           #
@@ -131,7 +135,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @param entry as Gtk.Entry
         """
         self._filter = entry.get_text()
-        for child in self._get_children():
+        for child in self.children:
             for box in child.boxes:
                 box.invalidate_filter()
 
@@ -148,17 +152,6 @@ class ArtistAlbumsView(LazyLoadingView):
             GLib.idle_add(self.lazy_loading, widgets, scroll_value)
         else:
             self._stop = False
-
-    def _get_children(self):
-        """
-            Return view children
-            @return [AlbumDetailedWidget]
-        """
-        children = []
-        for child in self._albumbox.get_children():
-            if isinstance(child, AlbumDetailedWidget):
-                children.append(child)
-        return children
 
 #######################
 # PRIVATE             #

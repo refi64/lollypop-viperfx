@@ -326,7 +326,7 @@ class ArtistView(ArtistAlbumsView):
             Update jump button status
         """
         found = False
-        for child in self._get_children():
+        for child in self.children:
             if child.album.id == App().player.current_track.album.id:
                 found = True
                 break

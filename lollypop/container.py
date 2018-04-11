@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, Gio, GLib
 
+from gettext import gettext as _
+
 from urllib.parse import urlparse
 
 from lollypop.define import App, Type, ResponsiveType
@@ -30,7 +32,7 @@ class Device:
     uri = None
 
 
-class Container(Gtk.Bin):
+class Container(Gtk.Overlay):
     """
         Container for main view
     """
@@ -39,12 +41,11 @@ class Container(Gtk.Bin):
         """
             Init container
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Overlay.__init__(self)
         self.__pulse_timeout = None
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
-        self.__show_genres = App().settings.get_value("show-genres")
         self.__stack = ViewContainer(500)
         self.__stack.show()
 
@@ -68,7 +69,7 @@ class Container(Gtk.Bin):
             @param updater as GObject
         """
         update = updater is not None
-        if self.__show_genres:
+        if App().settings.get_value("show-genres"):
             self.__update_list_genres(self.__list_one, update)
         else:
             self.__update_list_artists(self.__list_one, [Type.ALL], update)
@@ -82,7 +83,7 @@ class Container(Gtk.Bin):
         ids = self.__list_one.selected_ids
         if ids and ids[0] == Type.PLAYLISTS:
             self.__update_list_playlists(update)
-        elif self.__show_genres and ids:
+        elif App().settings.get_value("show-genres") and ids:
             self.__update_list_artists(self.__list_two, ids, update)
 
     def restore_view_state(self):
@@ -187,7 +188,6 @@ class Container(Gtk.Bin):
             Show/Hide genres
             @param bool
         """
-        self.__show_genres = show
         self.__list_two.hide()
         self.update_list_one()
         self.__list_one.select_ids([Type.POPULARS])
@@ -258,7 +258,7 @@ class Container(Gtk.Bin):
         """
         GLib.idle_add(self.__list_one.select_ids, [])
         GLib.idle_add(self.__list_two.select_ids, [])
-        if self.__show_genres:
+        if App().settings.get_value("show-genres"):
             # Get artist genres
             genre_ids = []
             for artist_id in artist_ids:
@@ -439,8 +439,7 @@ class Container(Gtk.Bin):
             Run collection update if needed
             @return True if hard scan is running
         """
-        App().scanner.connect("scan-finished",
-                              lambda x: self.__update_lists(App().scanner))
+        App().scanner.connect("scan-finished", self.__on_scan_finished)
         App().scanner.connect("genre-updated", self.__on_genre_updated)
         App().scanner.connect("artist-updated", self.__on_artist_updated)
 
@@ -851,6 +850,20 @@ class Container(Gtk.Bin):
         else:
             self.__list_one.grab_focus()
 
+    def __on_scan_finished(self, scanner, modifications):
+        """
+            Update lists
+        """
+        if modifications:
+            self.__update_lists(App().scanner)
+            from lollypop.app_notification import AppNotification
+            notification = AppNotification(_("New tracks available"),
+                                           _("Refresh"),
+                                           lambda: self.reload_view())
+            self.add_overlay(notification)
+            notification.show()
+            notification.set_reveal_child(True)
+
     def __on_genre_updated(self, scanner, genre_id, add):
         """
             Add genre to genre list
@@ -858,7 +871,7 @@ class Container(Gtk.Bin):
             @param genre id as int
             @param add as bool
         """
-        if self.__show_genres:
+        if App().settings.get_value("show-genres"):
             if add:
                 genre_name = App().genres.get_name(genre_id)
                 self.__list_one.add_value((genre_id, genre_name))
@@ -874,18 +887,14 @@ class Container(Gtk.Bin):
         """
         artist_name = App().artists.get_name(artist_id)
         sortname = App().artists.get_sortname(artist_id)
-        if self.__show_genres:
+        if App().settings.get_value("show-genres"):
             l = self.__list_two
-            artist_ids = App().artists.get_ids(self.__list_one.selected_ids)
         else:
             l = self.__list_one
-            artist_ids = App().artists.get_ids()
         if add:
-            if artist_id in artist_ids:
-                l.add_value((artist_id, artist_name, sortname))
+            l.add_value((artist_id, artist_name, sortname))
         else:
-            if artist_id not in artist_ids:
-                l.remove_value(artist_id)
+            l.remove_value(artist_id)
 
     def __on_mount_added(self, vm, mount):
         """

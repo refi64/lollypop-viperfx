@@ -79,7 +79,7 @@ class View(Gtk.Grid):
             Stop populating
         """
         self._stop = True
-        for child in self._get_children():
+        for child in self.children:
             child.stop()
 
     def disable_overlay(self):
@@ -93,7 +93,7 @@ class View(Gtk.Grid):
         """
             Update children
         """
-        GLib.idle_add(self.__update_widgets, self._get_children())
+        GLib.idle_add(self.__update_widgets, self.children)
 
     def enable_filter(self):
         """
@@ -107,6 +107,9 @@ class View(Gtk.Grid):
             if enable:
                 self.__search_entry.grab_focus()
 
+    def populate(self):
+        pass
+
     @property
     def filtered(self):
         """
@@ -115,8 +118,12 @@ class View(Gtk.Grid):
         """
         return self._filter is not None and self._filter != ""
 
-    def populate(self):
-        pass
+    @property
+    def children(self):
+        """
+            Return view children
+        """
+        return []
 
 #######################
 # PROTECTED           #
@@ -134,12 +141,6 @@ class View(Gtk.Grid):
             return True
         child.set_filtered(True)
         return False
-
-    def _get_children(self):
-        """
-            Return view children
-        """
-        return []
 
     def _on_overlayed(self, widget, value):
         """
@@ -159,7 +160,7 @@ class View(Gtk.Grid):
             Current song changed
             @param player as Player
         """
-        GLib.idle_add(self.__update_widgets, self._get_children())
+        GLib.idle_add(self.__update_widgets, self.children)
 
     def _on_duration_changed(self, player, track_id):
         """
@@ -167,7 +168,7 @@ class View(Gtk.Grid):
             @param player as Player
             @param track id as int
         """
-        GLib.idle_add(self.__update_duration, self._get_children(), track_id)
+        GLib.idle_add(self.__update_duration, self.children, track_id)
 
     def _on_search_changed(self, entry):
         """
@@ -257,7 +258,7 @@ class View(Gtk.Grid):
             @param art as Art
             @param album id as int
         """
-        for widget in self._get_children():
+        for widget in self.children:
             if album_id == widget.id:
                 widget.update_cover()
 
