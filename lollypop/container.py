@@ -889,6 +889,9 @@ class Container(Gtk.Overlay):
         sortname = App().artists.get_sortname(artist_id)
         if App().settings.get_value("show-genres"):
             l = self.__list_two
+            artist_ids = App().artists.get_ids(self.__list_one.selected_ids)
+            if artist_id not in artist_ids:
+                return
         else:
             l = self.__list_one
         if add:
