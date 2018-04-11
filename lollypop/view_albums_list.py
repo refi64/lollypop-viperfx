@@ -197,6 +197,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         if self.__revealer.get_reveal_child():
             TracksView.update_playing_indicator(self)
 
+    def stop(self):
+        """
+            Do nothing
+        """
+        pass
+
     @property
     def album(self):
         """
