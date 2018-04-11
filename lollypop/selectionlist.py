@@ -33,25 +33,26 @@ class ShownAlbumlists:
         """
         wanted = App().settings.get_value("shown-album-lists")
         lists = []
-        if get_all or Type.POPULARS in wanted:
-            lists.append((Type.POPULARS, _("Popular albums")))
-        if get_all or (App().albums.has_loves() and Type.LOVED in wanted):
-            lists.append((Type.LOVED, _("Loved albums")))
-        if get_all or Type.RECENTS in wanted:
-            lists.append((Type.RECENTS, _("Recently added albums")))
-        if get_all or Type.RANDOMS in wanted:
-            lists.append((Type.RANDOMS, _("Random albums")))
-        if get_all or Type.NEVER in wanted:
-            lists.append((Type.NEVER, _("Never played albums")))
-        if get_all or Type.PLAYLISTS in wanted:
-            lists.append((Type.PLAYLISTS, _("Playlists")))
-        if get_all or Type.RADIOS in wanted:
-            lists.append((Type.RADIOS, _("Radios")))
-        if get_all or Type.ALL in wanted:
-            if mask & SelectionList.Type.ARTISTS:
-                lists.append((Type.ALL, _("All albums")))
-            else:
-                lists.append((Type.ALL, _("All artists")))
+        if mask & SelectionList.Type.LIST_ONE:
+            if get_all or Type.POPULARS in wanted:
+                lists.append((Type.POPULARS, _("Popular albums")))
+            if get_all or (App().albums.has_loves() and Type.LOVED in wanted):
+                lists.append((Type.LOVED, _("Loved albums")))
+            if get_all or Type.RECENTS in wanted:
+                lists.append((Type.RECENTS, _("Recently added albums")))
+            if get_all or Type.RANDOMS in wanted:
+                lists.append((Type.RANDOMS, _("Random albums")))
+            if get_all or Type.NEVER in wanted:
+                lists.append((Type.NEVER, _("Never played albums")))
+            if get_all or Type.PLAYLISTS in wanted:
+                lists.append((Type.PLAYLISTS, _("Playlists")))
+            if get_all or Type.RADIOS in wanted:
+                lists.append((Type.RADIOS, _("Radios")))
+            if get_all or Type.ALL in wanted:
+                if mask & SelectionList.Type.ARTISTS:
+                    lists.append((Type.ALL, _("All albums")))
+                else:
+                    lists.append((Type.ALL, _("All artists")))
         if get_all or (mask & SelectionList.Type.COMPILATIONS and
                        Type.COMPILATIONS in wanted):
             lists.append((Type.COMPILATIONS, _("Compilations")))
@@ -279,7 +280,7 @@ class SelectionList(Gtk.Overlay):
             @param type as SelectionList.Type
         """
         self.__type = self.__base_type | type
-        self.__renderer0.set_is_artists(type == self.Type.ARTISTS)
+        self.__renderer0.set_is_artists(type & self.Type.ARTISTS)
 
     def populate(self, values):
         """
@@ -432,16 +433,12 @@ class SelectionList(Gtk.Overlay):
             self.__fast_scroll.hide()
         self.__updating = False
 
-    def get_headers(self, compilations):
+    def get_headers(self):
         """
             Return headers
-            @param compilations as int
             @return items as [(int, str)]
         """
-        mask = self.__type & self.Type.ARTISTS
-        if compilations:
-            mask |= self.Type.COMPILATIONS
-        lists = ShownAlbumlists.get(mask)
+        lists = ShownAlbumlists.get(self.__type)
         lists.append((Type.SEPARATOR, ""))
         return lists
 

@@ -479,7 +479,7 @@ class Container(Gtk.Overlay):
 
         def setup(genres):
             selection_list.mark_as(SelectionList.Type.GENRE)
-            items = selection_list.get_headers(False)
+            items = selection_list.get_headers()
             items += genres
             if update:
                 selection_list.update_values(items)
@@ -503,11 +503,11 @@ class Container(Gtk.Overlay):
             return (artists, compilations)
 
         def setup(artists, compilations):
-            selection_list.mark_as(SelectionList.Type.ARTISTS)
-            if selection_list == self.__list_one:
-                items = selection_list.get_headers(compilations)
-            else:
-                items = []
+            mask = SelectionList.Type.ARTISTS
+            if compilations:
+                mask |= SelectionList.Type.COMPILATIONS
+            selection_list.mark_as(mask)
+            items = selection_list.get_headers()
             items += artists
             if update:
                 selection_list.update_values(items)
