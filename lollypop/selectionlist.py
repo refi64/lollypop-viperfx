@@ -100,7 +100,7 @@ class DefaultItemsMenu(Gio.Menu):
         self.__rowid = rowid
         self.__list_type = list_type
         # Startup menu
-        if rowid in [Type.POPULARS, Type.RADIOS,
+        if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
                      Type.ALL, Type.RECENTS,
                      Type.RANDOMS, Type.NEVER,
                      Type.PLAYLISTS]:
