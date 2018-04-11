@@ -19,7 +19,7 @@ from lollypop.helper_task import TaskHelper
 from lollypop.utils import is_unity
 
 
-class Window(Gtk.ApplicationWindow, Container):
+class Window(Gtk.ApplicationWindow):
     """
         Main window
     """
@@ -531,8 +531,8 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "hide_paned":
             self.__container.hide_paned()
         elif string == "filter":
-            if self.view is not None:
-                self.view.set_search_mode()
+            if self.container.view is not None:
+                self.container.view.enable_filter()
         elif string == "volume":
             self.__toolbar.title.show_hide_volume_control()
         elif string == "show_genres":
