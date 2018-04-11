@@ -121,8 +121,7 @@ class DefaultItemsMenu(Gio.Menu):
             lists = ShownPlaylists.get(True)
             wanted = App().settings.get_value("shown-playlists")
         else:
-            lists = ShownAlbumlists.get(list_type & SelectionList.Type.ARTISTS,
-                                        True)
+            lists = ShownAlbumlists.get(list_type, True)
             wanted = App().settings.get_value("shown-album-lists")
         for item in lists:
             exists = item[0] in wanted
