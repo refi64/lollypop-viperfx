@@ -41,12 +41,12 @@ class TracksView:
             @param responsive_type as ResponsiveType
         """
         self._responsive_type = responsive_type
-        self._loading = Loading.NONE
+        self.__loading = Loading.NONE
         self._width = None
         self._orientation = None
         self._child_height = TrackRow.get_best_height(self)
         # Header + separator + spacing + margin
-        self._height = self._child_height + 6
+        self.__height = self._child_height + 6
         self._locked_widget_right = True
 
         self._responsive_widget = Gtk.Grid()
@@ -247,11 +247,17 @@ class TracksView:
                 return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self.__loading = Loading.STOP
+
     def height(self):
         """
             Widget height
         """
-        return self._height
+        return self.__height
 
     @property
     def children(self):
@@ -295,9 +301,9 @@ class TracksView:
         right_height = self._child_height * (count_tracks - mid_tracks)
         # Add self._child_height for disc label
         if left_height > right_height:
-            self._height += left_height + self._child_height
+            self.__height += left_height + self._child_height
         else:
-            self._height += right_height + self._child_height
+            self.__height += right_height + self._child_height
         self._tracks_widget_left[disc_number].set_property("height-request",
                                                            left_height)
         self._tracks_widget_right[disc_number].set_property("height-request",
@@ -435,15 +441,15 @@ class TracksView:
             @param disc number as int
             @param i as int
         """
-        if self._loading == Loading.STOP:
-            self._loading = Loading.NONE
+        if self.__loading == Loading.STOP:
+            self.__loading = Loading.NONE
             return
         if not tracks:
             if widget == self._tracks_widget_right:
-                self._loading |= Loading.RIGHT
+                self.__loading |= Loading.RIGHT
             elif widget == self._tracks_widget_left:
-                self._loading |= Loading.LEFT
-            if self._loading == Loading.ALL:
+                self.__loading |= Loading.LEFT
+            if self.__loading == Loading.ALL:
                 self._on_populated()
             self._locked_widget_right = False
             return

@@ -28,7 +28,7 @@ class BaseWidget:
         """
             Init widget
         """
-        self._loading = Loading.NONE
+        self.__loading = Loading.NONE
         self._cover = None
         self._widget = None
         self._play_all_button = None
@@ -59,7 +59,7 @@ class BaseWidget:
         """
             Stop populating
         """
-        self._loading = Loading.STOP
+        self.__loading = Loading.STOP
 
     def set_filtered(self, b):
         """
