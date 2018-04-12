@@ -546,9 +546,9 @@ class Window(Gtk.ApplicationWindow):
                 track.set_loved(not track.loved)
                 if App().notify is not None:
                     if track.loved:
-                        heart = "♡"
-                    else:
                         heart = "❤"
+                    else:
+                        heart = "♡"
                     App().notify.send("%s - %s: %s" %
                                       (", ".join(track.artists),
                                        track.name,

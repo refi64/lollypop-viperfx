@@ -15,9 +15,8 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gst", "1.0")
 gi.require_version("GstAudio", "1.0")
 gi.require_version("GstPbutils", "1.0")
-gi.require_version("Notify", "0.7")
 gi.require_version("TotemPlParser", "1.0")
-from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
+from gi.repository import Gtk, Gio, GLib, Gdk, TotemPlParser
 
 from threading import current_thread
 from pickle import dump
@@ -202,7 +201,6 @@ class Application(Gtk.Application):
             Init application
         """
         Gtk.Application.do_startup(self)
-        Notify.init("Lollypop")
 
         if self.window is None:
             self.init()
