@@ -48,15 +48,14 @@ class SqlCursor:
         name = current_thread().getName() + obj.__class__.__name__
         App().cursors[name].commit()
 
-    def allow_main_thread_execution(obj):
+    def allow_thread_execution(obj):
         """
-            Release thread lock allowing main thread execution
+            Release thread lock allowing others threads execution
         """
-        name = "MainThread" + obj.__class__.__name__
-        if name in App().cursors.keys():
+        name = current_thread().getName() + obj.__class__.__name__
+        if name in App().cursors.keys() and len(App().cursors.keys()) > 1:
             obj.thread_lock.release()
-            while name in App().cursors.keys():
-                sleep(0.1)
+            sleep(0.01)
             obj.thread_lock.acquire()
 
     def __init__(self, obj):

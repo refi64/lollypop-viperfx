@@ -213,7 +213,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             i += 1
                             continue
                         else:
-                            SqlCursor.allow_main_thread_execution(App().db)
+                            SqlCursor.allow_thread_execution(App().db)
                             self.__del_from_db(uri)
                     # On first scan, use modification time
                     # Else, use current time
@@ -237,7 +237,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
                     self.__add2db(uri, mtime)
-                    SqlCursor.allow_main_thread_execution(App().db)
+                    SqlCursor.allow_thread_execution(App().db)
                 except Exception as e:
                     print("CollectionScanner::__scan(add):", e, uri)
             SqlCursor.remove(App().db)
