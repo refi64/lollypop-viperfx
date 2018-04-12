@@ -199,11 +199,18 @@ class CollectionScanner(GObject.GObject, TagReader):
                     f = Gio.File.new_for_uri(uri)
                     # We do not use time::modified because many tag editors
                     # just preserve this setting
-                    info = f.query_info("time::changed",
-                                        Gio.FileQueryInfoFlags.NONE,
-                                        None)
-                    mtime = int(info.get_attribute_as_string(
-                        "time::changed"))
+                    try:
+                        info = f.query_info("time::changed",
+                                            Gio.FileQueryInfoFlags.NONE,
+                                            None)
+                        mtime = int(info.get_attribute_as_string(
+                            "time::changed"))
+                    except:  # Fallback for remote fs
+                        info = f.query_info("time::modified",
+                                            Gio.FileQueryInfoFlags.NONE,
+                                            None)
+                        mtime = int(info.get_attribute_as_string(
+                            "time::modified"))
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if uri in orig_tracks:
