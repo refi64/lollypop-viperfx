@@ -158,11 +158,11 @@ class LyricsView(View):
         context.add_class("lyrics")
         width = self.get_allocated_width()
         if width > WindowSize.XXLARGE:
-            context.add_class("lyrics-xx-large")
-        elif width > WindowSize.MONSTER:
             context.add_class("lyrics-x-large")
-        elif width > WindowSize.BIG:
+        elif width > WindowSize.MONSTER:
             context.add_class("lyrics-large")
+        elif width > WindowSize.BIG:
+            context.add_class("lyrics-medium")
 
     def __on_lyrics_downloaded(self, uri, status, data, cls, separator):
         """
