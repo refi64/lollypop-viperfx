@@ -237,7 +237,7 @@ class Album(Base):
             Merge discs into one
         """
         tracks = self.tracks
-        self._discs = [Disc(self, -1)]
+        self._discs = [Disc(self, 0)]
         self._discs[0].set_tracks(tracks)
 
     def move_track(self, track, index):
