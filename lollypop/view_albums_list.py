@@ -141,8 +141,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         grid.attach(self.__revealer, 0, 2, 3, 1)
         row_widget.add(grid)
         self.add(row_widget)
-        self.update_playing_indicator(self._album.id ==
-                                      App().player.current_track.album.id)
+        self.update_playing_indicator()
         self.show_all()
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
@@ -184,18 +183,22 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
                 self.__action_button.set_opacity(0)
                 self.__action_button.set_sensitive(False)
 
-    def update_playing_indicator(self, show):
+    def update_playing_indicator(self):
         """
             Show play indicator
+            @param show as bool
         """
         if self.__play_indicator is None:
             return
-        if show:
+        if self.album.id == App().player.current_track.album.id:
             self.__play_indicator.set_opacity(1)
         else:
             self.__play_indicator.set_opacity(0)
         if self.__revealer.get_reveal_child():
             TracksView.update_playing_indicator(self)
+
+    def update_state(self, *ignore):
+        pass
 
     @property
     def album(self):
@@ -336,8 +339,6 @@ class AlbumsListView(LazyLoadingView):
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
         self.__height = AlbumRow.get_best_height(self)
-        self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
         self.__view = Gtk.ListBox()
         self.__view.get_style_context().add_class("trackswidget")
         self.__view.set_vexpand(True)
@@ -404,15 +405,6 @@ class AlbumsListView(LazyLoadingView):
             ctx = row.get_style_context()
             ctx.remove_class("drag-up")
             ctx.remove_class("drag-down")
-
-    def on_current_changed(self, player):
-        """
-            Show tracks in a popover
-            @param player object
-        """
-        for child in self.__view.get_children():
-            child.update_playing_indicator(child.album ==
-                                           App().player.current_track.album)
 
     def jump_to_current(self):
         """
@@ -530,23 +522,6 @@ class AlbumsListView(LazyLoadingView):
             if child.album == App().player.current_track.album:
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
-
-    def __on_map(self, widget):
-        """
-            Connect signals
-            @param widget as Gtk.Widget
-        """
-        self._signal_id1 = App().player.connect("current-changed",
-                                                self.on_current_changed)
-
-    def __on_unmap(self, widget):
-        """
-            Disconnect signals
-            @param widget as Gtk.Widget
-        """
-        if self._signal_id1 is not None:
-            App().player.disconnect(self._signal_id1)
-            self._signal_id1 = None
 
     def __on_child_destroyed(self, row):
         """

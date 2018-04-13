@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.define import App
-from lollypop.widgets_album import BaseWidget
 
 
 class View(Gtk.Grid):
@@ -203,9 +202,8 @@ class View(Gtk.Grid):
         """
         if widgets:
             widget = widgets.pop(0)
-            if isinstance(widget, BaseWidget):
-                widget.update_state()
-                widget.update_playing_indicator()
+            widget.update_state()
+            widget.update_playing_indicator()
             GLib.idle_add(self.__update_widgets, widgets)
 
     def __update_duration(self, widgets, track_id):
