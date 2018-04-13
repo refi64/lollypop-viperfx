@@ -578,4 +578,4 @@ class Window(Gtk.ApplicationWindow):
             self.set_title("Lollypop")
         else:
             artists = ", ".join(player.current_track.artists)
-            self.set_titme("%s - %s" % (artists, "Lollypop"))
+            self.set_title("%s - %s" % (artists, "Lollypop"))
