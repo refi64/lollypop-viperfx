@@ -27,6 +27,13 @@
     </ul>
   </description>
   <releases>
+    <release version="0.9.503" date="2018-04-13">
+      <description>
+        <ul>
+          <li>Information popover was mostly broken :-/</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.9.501" date="2018-04-12">
       <description>
         <ul>
@@ -39,13 +46,6 @@
         <ul>
           <li>Rework information popover</li>
           <li>New lyrics widget</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.403" date="2018-03-26">
-      <description>
-        <ul>
-          <li>Fix a crash</li>
         </ul>
       </description>
     </release>
