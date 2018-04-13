@@ -803,10 +803,11 @@ class Container(Gtk.Overlay):
             if view not in self.__stack.get_children():
                 self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
-            if self.is_paned_stack and\
-                    self.__list_two.is_visible() and (
-                    selected_ids[0] >= 0 or
-                    selected_ids[0] in [Type.PLAYLISTS, Type.ALL]):
+            if self.is_paned_stack\
+                    and self.__list_two.is_visible()\
+                    and (
+                        selected_ids[0] >= 0 or
+                        selected_ids[0] in [Type.PLAYLISTS, Type.ALL]):
                 self.__stack.set_visible_child(self.__list_two)
             else:
                 self.__stack.set_visible_child(view)

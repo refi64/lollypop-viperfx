@@ -335,9 +335,8 @@ class AlbumArt(BaseArt, TagReader):
                 None)
             for info in infos:
                 f = infos.get_child(info)
-                f = infos.get_child(info)
                 basename = f.get_basename()
-                if re.search("%s_.*\.jpg" % re.escape(cache_name), basename):
+                if re.search(r"%s_.*\.jpg" % re.escape(cache_name), basename):
                     f.delete()
         except Exception as e:
             print("Art::clean_album_cache(): ", e, cache_name)

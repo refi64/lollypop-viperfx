@@ -433,7 +433,8 @@ class PlaylistRow(Row):
         """
             @return str
         """
-        return " ".join(self._track.album.artists + self._track.artists +
+        return " ".join(self._track.album.artists +
+                        self._track.artists +
                         [self._track.name] +
                         [self._track.album.name])
 

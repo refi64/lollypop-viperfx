@@ -80,14 +80,16 @@ class InformationPopover(Gtk.Popover):
                     albums.append(Album(album_id))
                 albums_view.populate(albums)
             content = InformationStore.get_bio(artist_name)
-            if content is None:
+            if content is not None:
+                bio_label.set_markup(
+                    GLib.markup_escape_text(content.decode("utf-8")))
+            elif not App().settings.get_value("network-access"):
+                bio_label.set_text(_("Network access disabled"))
+            else:
                 bio_label.set_text(_("Loading information"))
                 helper.run(
                     self.__get_bio_content, artist_name,
                     callback=(self.__set_bio_content, bio_label, artist_name))
-            else:
-                bio_label.set_markup(
-                    GLib.markup_escape_text(content.decode("utf-8")))
 
 #######################
 # PROTECTED           #
@@ -110,7 +112,7 @@ class InformationPopover(Gtk.Popover):
         content = None
         try:
             if App().lastfm is not None:
-                content = None
+                content = App().lastfm.get_artist_bio(artist_name)
         except Exception as e:
             print("InformationPopover::__get_bio_content(): %s" % e)
         if content is None:
@@ -131,7 +133,7 @@ class InformationPopover(Gtk.Popover):
                         pass
                 content = page.content.encode(encoding="UTF-8")
             except Exception as e:
-                print("WikipediaContent::__get_bio_content(): %s" % e)
+                print("InformationPopover::__get_bio_content(): %s" % e)
         return content
 
     def __set_bio_content(self, content, label, artist_name):

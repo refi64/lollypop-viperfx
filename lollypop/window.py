@@ -577,5 +577,5 @@ class Window(Gtk.ApplicationWindow):
         if App().player.current_track.id is None:
             self.set_title("Lollypop")
         else:
-            self.set_title(", ".join(player.current_track.artists) + " - " +
-                           player.current_track.title + " - Lollypop")
+            artists = ", ".join(player.current_track.artists)
+            self.set_titme("%s - %s" % (artists, "Lollypop"))

@@ -201,7 +201,6 @@ class InformationStore:
             @param artist as str
             @param content as str
         """
-        return
         filepath = "%s/%s.txt" % (InformationStore._INFO_PATH,
                                   escape(artist))
         if content is not None:

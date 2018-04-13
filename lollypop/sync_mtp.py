@@ -440,7 +440,7 @@ class MtpSync:
                 f = Gio.File.new_for_uri(track.uri)
                 track_name = escape(f.get_basename())
                 # Check extension, if not mp3, convert
-                m = match(".*(\.[^.]*)", track.uri)
+                m = match(r".*(\.[^.]*)", track.uri)
                 ext = m.group(1)
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
@@ -552,7 +552,7 @@ class MtpSync:
             f = Gio.File.new_for_uri(track.uri)
             track_name = escape(f.get_basename())
             # Check extension, if not mp3, convert
-            m = match(".*(\.[^.]*)", track.uri)
+            m = match(r".*(\.[^.]*)", track.uri)
             ext = m.group(1)
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
