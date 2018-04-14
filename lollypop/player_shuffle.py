@@ -59,7 +59,7 @@ class ShufflePlayer(BasePlayer):
             Next shuffle track
             @return Track
         """
-        track = None
+        track = Track()
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_next:
                 track = self.__history.next.value
@@ -67,20 +67,20 @@ class ShufflePlayer(BasePlayer):
                 track = self.__shuffle_next()
             else:
                 track = self._current_track
-        return track or Track()
+        return track
 
     def prev(self):
         """
             Prev track based on history
             @return Track
         """
-        track = None
+        track = Track()
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_prev:
                 track = self.__history.prev.value
             else:
                 track = self._current_track
-        return track or Track()
+        return track
 
     def get_party_ids(self):
         """
