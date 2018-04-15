@@ -258,7 +258,10 @@ class ShufflePlayer(BasePlayer):
             self.__already_played_albums.append(album)
             for album in sorted(
                     self._albums, key=lambda *args: random.random()):
-                if album not in self.__already_played_albums:
+                # Ignore current album, not an issue if playing one album
+                # in shuffle because LinearPlayer will handle next()
+                if album not in self.__already_played_albums and\
+                        album != App().player.current_track.album:
                     track = album.tracks[0]
                     break
         # next track
