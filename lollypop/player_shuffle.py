@@ -41,8 +41,6 @@ class ShufflePlayer(BasePlayer):
         """
         # Tracks already played
         self.__history = []
-        # Used by shuffle albums to restore playlist before shuffle
-        self._albums_backup = []
         # Albums already played
         self.__already_played_albums = []
         # Tracks already played for albums
@@ -51,7 +49,7 @@ class ShufflePlayer(BasePlayer):
         helper = TaskHelper()
         helper.run(self.__init_party_blacklist)
         # Reset user playlist
-        self._playlist_track_ids = []
+        self._playlist_tracks = []
         self._playlist_ids = []
 
     def next(self):
@@ -60,13 +58,12 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._shuffle == Shuffle.TRACKS or self.__is_party:
+        if self._shuffle != Shuffle.NONE or self.__is_party:
             if self.shuffle_has_next:
                 track = self.__history.next.value
-            elif self._albums:
-                track = self.__shuffle_next()
-            else:
-                track = self._current_track
+            elif self._albums or (self._playlist_tracks and
+                                  self._shuffle == Shuffle.TRACKS):
+                track = self.__get_next()
         return track
 
     def prev(self):
@@ -75,7 +72,7 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._shuffle == Shuffle.TRACKS or self.__is_party:
+        if self._shuffle != Shuffle.NONE or self.__is_party:
             if self.shuffle_has_prev:
                 track = self.__history.prev.value
             else:
@@ -105,7 +102,6 @@ class ShufflePlayer(BasePlayer):
             @param party as bool
         """
         self.__is_party = party
-        albums_backup = self._albums_backup
         self.reset_history()
 
         if self._plugins1.rgvolume is not None and\
@@ -118,41 +114,22 @@ class ShufflePlayer(BasePlayer):
                 self._plugins2.rgvolume.props.album_mode = 1
 
         if party:
-            self._albums_backup = self._albums
             self._external_tracks = []
             self.set_party_ids()
             # Start a new song if not playing
             if (self._current_track.id in [None, Type.RADIOS])\
                     and self._albums:
-                track = self.__get_random()
+                track = self.__get_tracks_random()
                 self.load(track)
             elif not self.is_playing:
                 self.play()
         else:
-            self._albums = albums_backup
             # We want current album to continue playback
             if self._current_track.album not in self._albums:
                 self._albums.insert(0, self._current_track.album)
             self.set_next()
             self.set_prev()
         self.emit("party-changed", party)
-
-    def shuffle_albums(self, shuffle):
-        """
-            Shuffle album list
-            @param shuffle as bool
-        """
-        if shuffle and self._shuffle == Shuffle.ALBUMS:
-            if self._albums:
-                self._albums_backup = list(self._albums)
-                random.shuffle(self._albums)
-                # In album shuffle, keep current album on top
-                if self._current_track.album in self._albums:
-                    self._albums.remove(self._current_track.album)
-                    self._albums.insert(0, self._current_track.album)
-        elif self._albums_backup:
-            self._albums = self._albums_backup
-            self._albums_backup = []
 
     def set_party_ids(self):
         """
@@ -197,7 +174,7 @@ class ShufflePlayer(BasePlayer):
             On stream start add to shuffle history
         """
         # Add track to shuffle history if needed
-        if self._shuffle == Shuffle.TRACKS or self.__is_party:
+        if self._shuffle != Shuffle.NONE or self.__is_party:
             if self.__history:
                 next = self.__history.next
                 prev = self.__history.prev
@@ -236,39 +213,73 @@ class ShufflePlayer(BasePlayer):
 
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
-            if self._shuffle == Shuffle.TRACKS or self._playlist_track_ids:
+            if self._shuffle == Shuffle.TRACKS or self._playlist_tracks:
                 self._plugins1.rgvolume.props.album_mode = 0
                 self._plugins2.rgvolume.props.album_mode = 0
             else:
                 self._plugins1.rgvolume.props.album_mode = 1
                 self._plugins2.rgvolume.props.album_mode = 1
-
-        if self._playlist_track_ids:
-            self._shuffle_playlist()
-        elif self._shuffle == Shuffle.NONE:
-            self.shuffle_albums(False)
-        elif self._shuffle == Shuffle.ALBUMS:
-            self.shuffle_albums(True)
         if self._current_track.id is not None:
             self.set_next()
 
-    def __shuffle_next(self):
+    def __get_next(self):
         """
             Next track in shuffle mode
             @return track as Track
         """
         try:
-            track = self.__get_random()
-            # Need to clear history
+            if self._shuffle == Shuffle.TRACKS or self.__is_party:
+                if self._albums:
+                    track = self.__get_tracks_random()
+                else:
+                    track = self.__get_playlists_random()
+            else:
+                track = self.__get_albums_random()
+            # Try to get another one track after reseting history
             if track.id is None:
-                self._albums = self.__already_played_albums
-                self.reset_history()
-                return self.__shuffle_next()
+                self.__already_played_albums = []
+                self.__already_played_tracks = {}
+                self.__history = []
+                return self.__get_next()
             return track
         except:  # Recursion error
-            return None
+            return Track()
 
-    def __get_random(self):
+    def __get_albums_random(self):
+        """
+            Return a track for current album or if finished
+            from a random album
+            @return Track
+        """
+        album = self._current_track.album
+        new_track_position = self._current_track.position + 1
+        # next album
+        if new_track_position >= len(album.track_ids):
+            self.__already_played_albums.append(album)
+            for album in sorted(
+                    self._albums, key=lambda *args: random.random()):
+                if album not in self.__already_played_albums:
+                    track = album.tracks[0]
+                    break
+        # next track
+        else:
+            track = album.tracks[new_track_position]
+        return track
+
+    def __get_playlists_random(self):
+        """
+            Return a track from current playlist
+            @return Track
+        """
+        for track in sorted(
+                self._playlist_tracks, key=lambda *args: random.random()):
+            if track.album not in self.__already_played_tracks.keys() or\
+                   track not in self.__already_played_tracks[track.album]:
+                return track
+        self._next_context = NextContext.STOP
+        return Track()
+
+    def __get_tracks_random(self):
         """
             Return a random track and make sure it has never been played
             @return Track
@@ -279,8 +290,6 @@ class ShufflePlayer(BasePlayer):
                 if album not in self.__already_played_tracks.keys() or\
                    track not in self.__already_played_tracks[album]:
                     return track
-            # Remove album from current albums
-            self._albums.remove(album)
             if album in self.__already_played_tracks.keys():
                 self.__already_played_tracks.pop(album)
                 self.__already_played_albums.append(album)

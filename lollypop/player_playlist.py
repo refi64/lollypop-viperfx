@@ -10,9 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import random
 
-from lollypop.define import Shuffle, NextContext
+from lollypop.define import NextContext
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
@@ -27,7 +26,6 @@ class PlaylistPlayer(BasePlayer):
             Init user playlist
         """
         BasePlayer.__init__(self)
-        self.__playlist_backup = []
 
     def get_playlist_ids(self):
         """
@@ -42,8 +40,11 @@ class PlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @param playlist ids as [int]
         """
-        self.populate_playlist_by_track_ids([track.id for track in tracks],
-                                            playlist_ids)
+        if self.is_party:
+            self.set_party(False)
+        self._albums = []
+        self._playlist_tracks = tracks
+        self._playlist_ids = playlist_ids
 
     def populate_playlist_by_track_ids(self, track_ids, playlist_ids):
         """
@@ -51,13 +52,8 @@ class PlaylistPlayer(BasePlayer):
             @param array of track_ids as [int]
             @param playlist ids as [int]
         """
-        if self.is_party:
-            self.set_party(False)
-        self._albums = []
-        self.__playlist_backup = []
-        self._playlist_track_ids = track_ids
-        self._playlist_ids = playlist_ids
-        self._shuffle_playlist()
+        tracks = [Track(track_id) for track_id in track_ids]
+        self.populate_playlist_by_tracks(tracks, playlist_ids)
 
     def update_playlist(self, tracks):
         """
@@ -66,19 +62,14 @@ class PlaylistPlayer(BasePlayer):
         """
         if self._albums:
             return
-        self._playlist_track_ids = [track.id for track in tracks]
-        self.__playlist_backup = []
-        self._shuffle_playlist()
+        self._playlist_tracks = tracks
 
-    def get_playlist(self):
+    def get_playlist_tracks(self):
         """
-            Get user playlist
-            @return track id as [int]
+            Get user playlist tracks
+            @return [Track]
         """
-        if self.__playlist_backup:
-            return self.__playlist_backup
-        else:
-            return self._playlist_track_ids
+        return self._playlist_tracks
 
     def next(self, force):
         """
@@ -91,15 +82,15 @@ class PlaylistPlayer(BasePlayer):
             current_track = self._next_track
         else:
             current_track = self._current_track
-        if self._playlist_track_ids and\
-           current_track.id in self._playlist_track_ids:
-            idx = self._playlist_track_ids.index(current_track.id)
-            if idx + 1 >= len(self._playlist_track_ids):
+        if self._playlist_tracks and\
+           current_track in self._playlist_tracks:
+            idx = self._playlist_tracks.index(current_track)
+            if idx + 1 >= len(self._playlist_tracks):
                 self._next_context = NextContext.STOP
                 idx = 0
             else:
                 idx += 1
-            track = Track(self._playlist_track_ids[idx])
+            track = self._playlist_tracks[idx]
         return track
 
     def prev(self):
@@ -108,32 +99,16 @@ class PlaylistPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._playlist_track_ids and\
-           self._current_track.id in self._playlist_track_ids:
-            idx = self._playlist_track_ids.index(self._current_track.id)
+        if self._playlist_tracks and\
+           self._current_track in self._playlist_tracks:
+            idx = self._playlist_tracks.index(self._current_track)
             if idx - 1 < 0:
-                idx = len(self._playlist_track_ids) - 1
+                idx = len(self._playlist_tracks) - 1
             else:
                 idx -= 1
-            track = Track(self._playlist_track_ids[idx])
+            track = self._playlist_tracks[idx]
         return track
 
 #######################
 # PROTECTED           #
 #######################
-    def _shuffle_playlist(self):
-        """
-            Shuffle/Un-shuffle playlist based on shuffle setting
-        """
-        if self._shuffle == Shuffle.TRACKS:
-            # Shuffle user playlist
-            if self._playlist_track_ids:
-                self.__playlist_backup = list(self._playlist_track_ids)
-                random.shuffle(self._playlist_track_ids)
-        # Unshuffle
-        else:
-            if self.__playlist_backup:
-                self._playlist_track_ids = self.__playlist_backup
-                self.__playlist_backup = []
-        self.set_next()
-        self.set_prev()

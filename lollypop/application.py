@@ -304,7 +304,6 @@ class Application(Gtk.Application):
                 track_id = self.player.current_track.id
                 # Save albums context
                 try:
-                    self.player.shuffle_albums(False)
                     with open(LOLLYPOP_DATA_PATH + "/Albums.bin", "wb") as f:
                         dump(list(self.player.albums), f)
                 except Exception as e:

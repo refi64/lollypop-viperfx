@@ -100,7 +100,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param index as int
         """
         # We are not playing a user playlist anymore
-        self._playlist_track_ids = []
+        self._playlist_tracks = []
         self._playlist_ids = []
         # We do not shuffle when user add an album
         self._albums_backup = []
@@ -148,7 +148,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.set_party(False)
         self.reset_history()
         # We are not playing a user playlist anymore
-        self._playlist_track_ids = []
+        self._playlist_tracks = []
         self._playlist_ids = []
         if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(album.tracks)
@@ -166,10 +166,10 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         self._albums = []
         album_ids = []
-        ShufflePlayer.reset_history(self)
+        self.reset_history()
 
         # We are not playing a user playlist anymore
-        self._playlist_track_ids = []
+        self._playlist_tracks = []
         self._playlist_ids = []
         # We are in all artists
         if (genre_ids and genre_ids[0] == Type.ALL) or\
@@ -221,8 +221,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             if album.id == track.album.id:
                 index = album.track_ids.index(track.id)
                 track = album.tracks[index]
-        # Shuffle album list if needed
-        self.shuffle_albums(True)
         self.load(track)
 
     def clear_albums(self):
@@ -334,13 +332,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             if self._prev_track.id is None:
                 self._prev_track = RadioPlayer.prev(self)
 
-            # Look at user playlist then
-            if self._prev_track.id is None:
-                self._prev_track = PlaylistPlayer.prev(self)
-
             # Look at shuffle
             if self._prev_track.id is None:
                 self._prev_track = ShufflePlayer.prev(self)
+
+            # Look at user playlist then
+            if self._prev_track.id is None:
+                self._prev_track = PlaylistPlayer.prev(self)
 
             # Get a linear track then
             if self._prev_track.id is None:
@@ -373,13 +371,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             if next_track.id is None:
                 next_track = QueuePlayer.next(self)
 
+            # Look at shuffle
+            if next_track.id is None:
+                next_track = ShufflePlayer.next(self)
+
             # Look at user playlist then
             if next_track.id is None:
                 next_track = PlaylistPlayer.next(self, force)
-
-            # Get a random album/track then
-            if next_track.id is None:
-                next_track = ShufflePlayer.next(self)
 
             # Get a linear track then
             if next_track.id is None:
