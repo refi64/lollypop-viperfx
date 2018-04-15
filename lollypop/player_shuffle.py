@@ -276,8 +276,11 @@ class ShufflePlayer(BasePlayer):
         """
         for track in sorted(
                 self._playlist_tracks, key=lambda *args: random.random()):
-            if track.album not in self.__already_played_tracks.keys() or\
-                   track not in self.__already_played_tracks[track.album]:
+            # Ignore current track, not an issue if playing one track
+            # in shuffle because LinearPlayer will handle next()
+            if track != App().player.current_track and (
+                   track.album not in self.__already_played_tracks.keys() or
+                   track not in self.__already_played_tracks[track.album]):
                 return track
         self._next_context = NextContext.STOP
         return Track()
@@ -288,10 +291,13 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         for album in sorted(self._albums, key=lambda *args: random.random()):
-            tracks = album.tracks
-            for track in sorted(tracks, key=lambda *args: random.random()):
-                if album not in self.__already_played_tracks.keys() or\
-                   track not in self.__already_played_tracks[album]:
+            for track in sorted(album.tracks,
+                                key=lambda *args: random.random()):
+                # Ignore current track, not an issue if playing one track
+                # in shuffle because LinearPlayer will handle next()
+                if track != App().player.current_track and (
+                        album not in self.__already_played_tracks.keys() or
+                        track not in self.__already_played_tracks[album]):
                     return track
             if album in self.__already_played_tracks.keys():
                 self.__already_played_tracks.pop(album)
