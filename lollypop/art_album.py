@@ -176,7 +176,6 @@ class AlbumArt(BaseArt, TagReader):
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         bytes.unref()
-                        print("plp")
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
                             size,
