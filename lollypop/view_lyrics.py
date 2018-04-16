@@ -194,10 +194,10 @@ class LyricsView(View, InfoController):
          self.__current_height) = (allocation.width,
                                    allocation.height)
         self.__update_lyrics_style()
-        if allocation.width > allocation.height:
-            InfoController.__init__(self, allocation.width, None, True)
+        if self.__current_width > self.__current_height:
+            InfoController.__init__(self, self.__current_width, None, True)
         else:
-            InfoController.__init__(self, allocation.height, None, True)
+            InfoController.__init__(self, self.__current_height, None, True)
         InfoController.update_artwork(self, App().player)
 
     def __on_lyrics_downloaded(self, uri, status, data, cls, separator):
