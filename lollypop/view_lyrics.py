@@ -32,6 +32,7 @@ class LyricsView(View, InfoController):
         """
         View.__init__(self)
         InfoController.__init__(self, 0, None, True)
+        self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_set = False
         self.__current_width = 0
@@ -173,6 +174,18 @@ class LyricsView(View, InfoController):
         elif width > WindowSize.BIG:
             context.add_class("lyrics-medium")
 
+    def __handle_size_allocation(self):
+        """
+            Update style and resize cover
+        """
+        self.__size_allocate_timeout_id = None
+        self.__update_lyrics_style()
+        if self.__current_width > self.__current_height:
+            InfoController.__init__(self, self.__current_width, None, True)
+        else:
+            InfoController.__init__(self, self.__current_height, None, True)
+        InfoController.update_artwork(self, App().player)
+
     def __on_current_changed(self, player):
         """
             Update cover
@@ -193,12 +206,10 @@ class LyricsView(View, InfoController):
         (self.__current_width,
          self.__current_height) = (allocation.width,
                                    allocation.height)
-        self.__update_lyrics_style()
-        if self.__current_width > self.__current_height:
-            InfoController.__init__(self, self.__current_width, None, True)
-        else:
-            InfoController.__init__(self, self.__current_height, None, True)
-        InfoController.update_artwork(self, App().player)
+        if self.__size_allocate_timeout_id is not None:
+            GLib.source_remove(self.__size_allocate_timeout_id)
+        self.__size_allocate_timeout_id = GLib.idle_add(
+            self.__handle_size_allocation)
 
     def __on_lyrics_downloaded(self, uri, status, data, cls, separator):
         """
