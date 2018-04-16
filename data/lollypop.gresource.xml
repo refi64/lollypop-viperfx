@@ -15,6 +15,7 @@
      <file compressed="true" preprocess="xml-stripblanks">FullScreen.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LastfmPopover.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LovedWidget.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">LyricsView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">MiniPlayer.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">NextPopover.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">PlaylistEditView.ui</file>

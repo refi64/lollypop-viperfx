@@ -10,17 +10,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, Pango
+from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 
 from lollypop.view import View
 from lollypop.define import App, WindowSize, Type
+from lollypop.controllers import InfoController
 from lollypop.utils import escape
 from lollypop.helper_task import TaskHelper
 
 
-class LyricsView(View):
+class LyricsView(View, InfoController):
     """
         Show lyrics for track
     """
@@ -30,31 +31,30 @@ class LyricsView(View):
             Init view
         """
         View.__init__(self)
+        InfoController.__init__(self, 200)
         self.__downloads_running = 0
         self.__lyrics_set = False
+        self.__current_width = 0
+        self.__current_height = 0
         self.__cancellable = Gio.Cancellable()
-        scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_policy(
-            Gtk.PolicyType.NEVER,
-            Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.set_vexpand(True)
-        scrolled_window.set_hexpand(True)
-        scrolled_window.show()
-        self.__lyrics_label = Gtk.Label()
-        self.__lyrics_label.set_line_wrap_mode(Pango.WrapMode.WORD)
-        self.__lyrics_label.set_line_wrap(True)
-        self.__lyrics_label.set_property("halign", Gtk.Align.CENTER)
-        self.__lyrics_label.set_property("valign", Gtk.Align.CENTER)
-        self.__lyrics_label.get_style_context().add_class("lyrics")
-        scrolled_window.add(self.__lyrics_label)
-        self.add(scrolled_window)
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/LyricsView.ui")
+        builder.connect_signals(self)
+        self._cover = builder.get_object("cover")
+        self.__lyrics_label = builder.get_object("lyrics_label")
+        self.add(builder.get_object("widget"))
+        self.__signal_id1 = App().player.connect("current-changed",
+                                                 self.__on_current_changed)
+        self.connect("size-allocate", self.__on_size_allocate)
 
     def populate(self):
         """
             Set lyrics
         """
+        InfoController.update_artwork(self, App().player)
         self.__lyrics_set = False
-        self.__lyrics_label.hide()
+        self.__update_lyrics_style()
+        self.__lyrics_label.set_text(_("Loading…"))
         self.__cancellable.cancel()
         self.__cancellable.reset()
         # First try to get lyrics from tags
@@ -70,13 +70,18 @@ class LyricsView(View):
             lyrics = reader.get_lyrics(tags)
         if lyrics:
             self.__lyrics_label.set_label(lyrics)
-            self.__lyrics_label.show()
         elif App().settings.get_value("network-access"):
             self.__download_wikia_lyrics()
             self.__download_genius_lyrics()
         else:
             self.__lyrics_label.set_label(_("Network access disabled"))
-            self.__lyrics_label.show()
+
+    def do_destroy(self):
+        """
+            Remove signal
+        """
+        App().player.disconnect(self.__signal_id1)
+        Gtk.Bin.do_destroy(self)
 
 ##############
 # PROTECTED  #
@@ -156,7 +161,7 @@ class LyricsView(View):
         """
             Update lyrics style based on current view width
         """
-        context = self.__lyrics_label.get_style_context()
+        context = self.get_style_context()
         for cls in context.list_classes():
             context.remove_class(cls)
         context.add_class("lyrics")
@@ -167,6 +172,33 @@ class LyricsView(View):
             context.add_class("lyrics-large")
         elif width > WindowSize.BIG:
             context.add_class("lyrics-medium")
+
+    def __on_current_changed(self, player):
+        """
+            Update cover
+            @param player as Player
+        """
+        InfoController.update_artwork(self, player)
+
+    def __on_size_allocate(self, widget, allocation):
+        """
+            Update cover size
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if (self.__current_width,
+                self.__current_height) == (allocation.width,
+                                           allocation.height):
+            return
+        (self.__current_width,
+         self.__current_height) = (allocation.width,
+                                   allocation.height)
+        self.__update_lyrics_style()
+        if allocation.width > allocation.height:
+            InfoController.__init__(self, allocation.width)
+        else:
+            InfoController.__init__(self, allocation.height)
+        InfoController.update_artwork(self, App().player)
 
     def __on_lyrics_downloaded(self, uri, status, data, cls, separator):
         """
@@ -180,7 +212,6 @@ class LyricsView(View):
         self.__downloads_running -= 1
         if self.__lyrics_set:
             return
-        self.__update_lyrics_style()
         if status:
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(data, 'html.parser')
@@ -189,9 +220,7 @@ class LyricsView(View):
                     "div", class_=cls)[0].get_text(separator=separator)
                 self.__lyrics_label.set_text(lyrics_text)
                 self.__lyrics_set = True
-                self.__lyrics_label.show()
             except:
                 pass
         if not self.__lyrics_set and self.__downloads_running == 0:
             self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
-            self.__lyrics_label.show()

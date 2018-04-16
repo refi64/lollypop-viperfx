@@ -73,11 +73,7 @@ popover.background separator {
 
 .lyrics {
     font-weight: bold;
-    margin: 20px;
-    padding: 10px;
-    border: 1px solid shade(@theme_bg_color, 0.9);
-    border-radius: 4px;
-    background-color: shade(@theme_bg_color, 1.5);
+    background-color: alpha(@theme_bg_color, 0.95);
     min-width: 200px;
 }
 

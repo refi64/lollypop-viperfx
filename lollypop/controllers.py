@@ -351,17 +351,24 @@ class InfoController:
 
     def on_current_changed(self, player):
         """
-            Update toolbar on current changed
+            Update labels and cover and handles widget visibility
             @param player as Player
         """
-        art = None
-
         if player.current_track.id is None:
             if self._infobox is not None:
                 self._infobox.hide()
             self._cover.hide()
             return
+        elif self._infobox is not None:
+            self._infobox.show()
+        self.update_labels(player)
+        self.update_artwork(player)
 
+    def update_labels(self, player):
+        """
+            Update labels
+            @param player as Player
+        """
         if player.current_track.id == Type.RADIOS:
             artist_text = player.current_track.album_artists[0]
         else:
@@ -385,30 +392,33 @@ class InfoController:
                                          GLib.markup_escape_text(title_text)))
         self._title_label.show()
 
+    def update_artwork(self, player):
+        """
+            Update artwork
+            @param player as Player
+        """
+        artwork = None
         if player.current_track.id == Type.RADIOS:
-            art = App().art.get_radio_artwork(
+            artwork = App().art.get_radio_artwork(
                 player.current_track.album_artists[0],
                 self.__artsize,
                 self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
-            art = App().art.get_album_artwork2(
+            artwork = App().art.get_album_artwork2(
                 player.current_track.uri,
                 self.__artsize,
                 self.get_scale_factor())
         elif player.current_track.id is not None:
-            art = App().art.get_album_artwork(
+            artwork = App().art.get_album_artwork(
                 player.current_track.album,
                 self.__artsize,
                 self.get_scale_factor())
-        if art is not None:
-            self._cover.set_from_surface(art)
-            del art
+        if artwork is not None:
+            self._cover.set_from_surface(artwork)
             self._cover.set_tooltip_text(player.current_track.album.name)
             self._cover.show()
         else:
             self._cover.hide()
-        if self._infobox is not None:
-            self._infobox.show()
 
     def set_artsize(self, artsize):
         """
