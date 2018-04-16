@@ -399,6 +399,8 @@ class InfoController:
             Update artwork
             @param player as Player
         """
+        if self.__artsize < 1:
+            return
         artwork = None
         if player.current_track.id == Type.RADIOS:
             artwork = App().art.get_radio_artwork(

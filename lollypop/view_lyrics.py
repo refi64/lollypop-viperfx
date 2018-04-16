@@ -44,8 +44,6 @@ class LyricsView(View, InfoController):
         self._cover = builder.get_object("cover")
         self.__lyrics_label = builder.get_object("lyrics_label")
         self.add(builder.get_object("widget"))
-        self.__signal_id1 = App().player.connect("current-changed",
-                                                 self.__on_current_changed)
         self.connect("size-allocate", self.__on_size_allocate)
 
     def populate(self):
@@ -76,13 +74,6 @@ class LyricsView(View, InfoController):
             self.__download_genius_lyrics()
         else:
             self.__lyrics_label.set_label(_("Network access disabled"))
-
-    def do_destroy(self):
-        """
-            Remove signal
-        """
-        App().player.disconnect(self.__signal_id1)
-        Gtk.Bin.do_destroy(self)
 
 ##############
 # PROTECTED  #
@@ -185,13 +176,6 @@ class LyricsView(View, InfoController):
         else:
             InfoController.__init__(self, self.__current_height, None, True)
         InfoController.update_artwork(self, App().player)
-
-    def __on_current_changed(self, player):
-        """
-            Update cover
-            @param player as Player
-        """
-        InfoController.update_artwork(self, player)
 
     def __on_size_allocate(self, widget, allocation):
         """
