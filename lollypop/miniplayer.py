@@ -28,7 +28,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
         self.__width = width
         Gtk.Bin.__init__(self)
-        InfoController.__init__(self, width)
+        InfoController.__init__(self, width, None, False)
         ProgressController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
@@ -60,7 +60,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             @param width as int
         """
         self.__width = width
-        InfoController.__init__(self, width)
+        InfoController.__init__(self, width, None, False)
         InfoController.on_current_changed(self, App().player)
 
     def do_get_preferred_width(self):

@@ -27,7 +27,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        InfoController.__init__(self, ArtSize.SMALL)
+        InfoController.__init__(self, ArtSize.SMALL, None, False)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)

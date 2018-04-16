@@ -56,7 +56,7 @@ class FullScreen(Gtk.Window, InfoController,
         else:
             artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
-        InfoController.__init__(self, artsize, self.__font_size)
+        InfoController.__init__(self, artsize, self.__font_size, False)
         widget = builder.get_object("widget")
         grid = builder.get_object("grid")
         self._play_btn = builder.get_object("play_btn")

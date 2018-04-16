@@ -31,7 +31,7 @@ class LyricsView(View, InfoController):
             Init view
         """
         View.__init__(self)
-        InfoController.__init__(self, 200)
+        InfoController.__init__(self, 0, None, True)
         self.__downloads_running = 0
         self.__lyrics_set = False
         self.__current_width = 0
@@ -195,9 +195,9 @@ class LyricsView(View, InfoController):
                                    allocation.height)
         self.__update_lyrics_style()
         if allocation.width > allocation.height:
-            InfoController.__init__(self, allocation.width)
+            InfoController.__init__(self, allocation.width, None, True)
         else:
-            InfoController.__init__(self, allocation.height)
+            InfoController.__init__(self, allocation.height, None, True)
         InfoController.update_artwork(self, App().player)
 
     def __on_lyrics_downloaded(self, uri, status, data, cls, separator):

@@ -12,11 +12,43 @@
 
 from gi.repository import Gio, GLib, Gdk
 
+import cairo
+
 from math import pi
 from gettext import gettext as _
 import unicodedata
 
+from lollypop.helper_task import TaskHelper
 from lollypop.define import App
+
+
+def blur(surface, image):
+    """
+        Blur surface using PIL
+        @param surface as cairo.Surface
+        @param image as Gtk.Image
+    """
+    def do_blur(surface):
+        try:
+            from PIL import Image, ImageFilter
+            from array import array
+            width = surface.get_width()
+            height = surface.get_height()
+            data = surface.get_data()
+            tmp = Image.frombuffer("RGBA", (width, height),
+                                   data, "raw", "RGBA", 0, 1)
+
+            tmp = tmp.filter(ImageFilter.GaussianBlur(15))
+
+            imgd = tmp.tobytes()
+            a = array('B', imgd)
+            stride = width * 4
+            surface = cairo.ImageSurface.create_for_data(
+                a, cairo.FORMAT_ARGB32, width, height, stride)
+        except Exception as e:
+            print("blur():", e)
+        return surface
+    TaskHelper().run(do_blur, surface, callback=(image.set_from_surface,))
 
 
 def draw_rounded_image(image, ctx):

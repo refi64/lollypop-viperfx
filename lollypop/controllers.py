@@ -339,15 +339,17 @@ class InfoController:
         Infos controller (for toolbars)
     """
 
-    def __init__(self, art_size, font_size=None):
+    def __init__(self, art_size, font_size, blur):
         """
             Init controller
             @param art_size as int
-            @param font_size
+            @param font_size as int/None
+            @param blur as bool
         """
         self._infobox = None
         self.__font_size = font_size
         self.__artsize = art_size
+        self.__blur = blur
 
     def on_current_changed(self, player):
         """
@@ -414,7 +416,11 @@ class InfoController:
                 self.__artsize,
                 self.get_scale_factor())
         if artwork is not None:
-            self._cover.set_from_surface(artwork)
+            if self.__blur:
+                from lollypop.utils import blur
+                blur(artwork, self._cover)
+            else:
+                self._cover.set_from_surface(artwork)
             self._cover.set_tooltip_text(player.current_track.album.name)
             self._cover.show()
         else:
