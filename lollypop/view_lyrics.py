@@ -31,12 +31,11 @@ class LyricsView(View, InfoController):
             Init view
         """
         View.__init__(self)
-        InfoController.__init__(self, 0, None, True)
+        InfoController.__init__(self)
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_set = False
-        self.__current_width = 0
-        self.__current_height = 0
+        self.__current_width = self.__current_height = 0
         self.__cancellable = Gio.Cancellable()
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/LyricsView.ui")
@@ -50,7 +49,9 @@ class LyricsView(View, InfoController):
         """
             Set lyrics
         """
-        InfoController.update_artwork(self, App().player)
+        self.update_artwork(self.__current_width,
+                            self.__current_height,
+                            True)
         self.__lyrics_set = False
         self.__update_lyrics_style()
         self.__lyrics_label.set_text(_("Loading…"))
@@ -171,11 +172,9 @@ class LyricsView(View, InfoController):
         """
         self.__size_allocate_timeout_id = None
         self.__update_lyrics_style()
-        if self.__current_width > self.__current_height:
-            InfoController.__init__(self, self.__current_width, None, True)
-        else:
-            InfoController.__init__(self, self.__current_height, None, True)
-        InfoController.update_artwork(self, App().player)
+        self.update_artwork(self.__current_width,
+                            self.__current_height,
+                            True)
 
     def __on_size_allocate(self, widget, allocation):
         """

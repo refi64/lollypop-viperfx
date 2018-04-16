@@ -339,91 +339,88 @@ class InfoController:
         Infos controller (for toolbars)
     """
 
-    def __init__(self, art_size, font_size, blur):
+    def __init__(self):
         """
             Init controller
-            @param art_size as int
-            @param font_size as int/None
-            @param blur as bool
         """
         self._infobox = None
-        self.__font_size = font_size
-        self.__artsize = art_size
-        self.__blur = blur
 
-    def on_current_changed(self, player):
+    def on_current_changed(self, art_size, font_size):
         """
             Update labels and cover and handles widget visibility
-            @param player as Player
+            @param art_size as int
+            @param font_size as int
         """
-        if player.current_track.id is None:
+        if App().player.current_track.id is None:
             if self._infobox is not None:
                 self._infobox.hide()
             self._cover.hide()
             return
         elif self._infobox is not None:
             self._infobox.show()
-        self.update_labels(player)
-        self.update_artwork(player)
+        self.update_labels(font_size)
+        self.update_artwork(art_size, art_size, False)
 
-    def update_labels(self, player):
+    def update_labels(self, font_size):
         """
             Update labels
-            @param player as Player
+            @param font_size as int
         """
-        if player.current_track.id == Type.RADIOS:
-            artist_text = player.current_track.album_artists[0]
+        if App().player.current_track.id == Type.RADIOS:
+            artist_text = App().player.current_track.album_artists[0]
         else:
-            artist_text = ", ".join(player.current_track.artists)
-        if self.__font_size is None:
+            artist_text = ", ".join(App().player.current_track.artists)
+        if font_size is None:
             self._artist_label.set_text(artist_text)
         else:
             self._artist_label.set_markup(
                 "<span font='%s'>%s</span>" %
-                (self.__font_size - 2,
+                (font_size - 2,
                  GLib.markup_escape_text(artist_text)))
         self._artist_label.show()
 
-        title_text = player.current_track.title
-        if self.__font_size is None:
+        title_text = App().player.current_track.title
+        if font_size is None:
             self._title_label.set_text(title_text)
         else:
             self._title_label.set_markup(
                 "<span font='%s'>%s</span>" %
-                                        (self.__font_size,
+                                        (font_size,
                                          GLib.markup_escape_text(title_text)))
         self._title_label.show()
 
-    def update_artwork(self, player):
+    def update_artwork(self, width, height, enable_blur):
         """
             Update artwork
-            @param player as Player
+            @param width as int
+            @param height as int
+            @param enable_blur as bool
         """
-        if self.__artsize < 1:
+        if width < 1 or height < 1:
             return
         artwork = None
-        if player.current_track.id == Type.RADIOS:
+        if App().player.current_track.id == Type.RADIOS:
             artwork = App().art.get_radio_artwork(
-                player.current_track.album_artists[0],
-                self.__artsize,
+                App().player.current_track.album_artists[0],
+                width,
                 self.get_scale_factor())
-        elif player.current_track.id == Type.EXTERNALS:
+        elif App().player.current_track.id == Type.EXTERNALS:
             artwork = App().art.get_album_artwork2(
-                player.current_track.uri,
-                self.__artsize,
+                App().player.current_track.uri,
+                width,
                 self.get_scale_factor())
-        elif player.current_track.id is not None:
+        elif App().player.current_track.id is not None:
             artwork = App().art.get_album_artwork(
-                player.current_track.album,
-                self.__artsize,
+                App().player.current_track.album,
+                width,
                 self.get_scale_factor())
         if artwork is not None:
-            if self.__blur:
+            if enable_blur:
                 from lollypop.utils import blur
-                blur(artwork, self._cover)
+                blur(artwork, self._cover, width, height)
             else:
                 self._cover.set_from_surface(artwork)
-            self._cover.set_tooltip_text(player.current_track.album.name)
+            self._cover.set_tooltip_text(App().player.current_track.album.name)
             self._cover.show()
         else:
             self._cover.hide()

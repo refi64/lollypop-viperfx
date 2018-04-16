@@ -22,13 +22,15 @@ from lollypop.helper_task import TaskHelper
 from lollypop.define import App
 
 
-def blur(surface, image):
+def blur(surface, image, w, h):
     """
         Blur surface using PIL
         @param surface as cairo.Surface
         @param image as Gtk.Image
+        @param w as int
+        @param h as int
     """
-    def do_blur(surface):
+    def do_blur(surface, w, h):
         try:
             from PIL import Image, ImageFilter
             from array import array
@@ -38,17 +40,37 @@ def blur(surface, image):
             tmp = Image.frombuffer("RGBA", (width, height),
                                    data, "raw", "RGBA", 0, 1)
 
-            tmp = tmp.filter(ImageFilter.GaussianBlur(15))
+            tmp = tmp.filter(ImageFilter.GaussianBlur(10))
 
             imgd = tmp.tobytes()
             a = array('B', imgd)
             stride = width * 4
             surface = cairo.ImageSurface.create_for_data(
                 a, cairo.FORMAT_ARGB32, width, height, stride)
+            # Special check for non square images
+            if w > width or h > height:
+                size = max(w, h)
+                resized = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                                             size,
+                                             size)
+                if w > h:
+                    factor = size / height
+                    start_w = width / 2
+                    start_h = 0
+                else:
+                    factor = size / width
+                    start_w = 0
+                    start_h = height / 2
+                context = cairo.Context(resized)
+                context.scale(factor, factor)
+                context.set_source_surface(surface, -start_w, -start_h)
+                context.paint()
+                surface = resized
         except Exception as e:
             print("blur():", e)
         return surface
-    TaskHelper().run(do_blur, surface, callback=(image.set_from_surface,))
+    TaskHelper().run(do_blur, surface, w, h,
+                     callback=(image.set_from_surface,))
 
 
 def draw_rounded_image(image, ctx):

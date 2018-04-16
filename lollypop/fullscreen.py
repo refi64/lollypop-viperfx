@@ -36,6 +36,7 @@ class FullScreen(Gtk.Window, InfoController,
         self.set_title("Lollypop")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
+        InfoController.__init__(self)
         self.set_application(app)
         self.__timeout1 = self.__timeout2 = None
         self.__signal1_id = self.__signal2_id = self.__signal3_id = None
@@ -52,11 +53,10 @@ class FullScreen(Gtk.Window, InfoController,
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
-            artsize = int(ArtSize.FULLSCREEN * geometry.height / 1080)
+            self.__artsize = int(ArtSize.FULLSCREEN * geometry.height / 1080)
         else:
-            artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
+            self.__artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
-        InfoController.__init__(self, artsize, self.__font_size, False)
         widget = builder.get_object("widget")
         grid = builder.get_object("grid")
         self._play_btn = builder.get_object("play_btn")
@@ -166,7 +166,9 @@ class FullScreen(Gtk.Window, InfoController,
             Update infos and show/hide popover
             @param player as Player
         """
-        InfoController.on_current_changed(self, player)
+        InfoController.on_current_changed(self,
+                                          self.__artsize,
+                                          self.__font_size)
         ProgressController.on_current_changed(self, player)
         if player.current_track.id is not None:
             album_name = player.current_track.album.name
