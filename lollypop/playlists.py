@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib, Gio
+from gi.repository import GObject, GLib, Gio, TotemPlParser
 
 from gettext import gettext as _
 import itertools
@@ -66,6 +66,7 @@ class Playlists(GObject.GObject):
         """
             Add a playlist
             @param playlist name as str
+            @return playlist_id as int
             @thread safe
         """
         with SqlCursor(self) as sql:
@@ -73,6 +74,7 @@ class Playlists(GObject.GObject):
                                  " VALUES (?, ?)",
                                  (name, datetime.now().strftime("%s")))
             GLib.idle_add(self.emit, "playlists-changed", result.lastrowid)
+            return result.lastrowid
 
     def exists(self, playlist_id):
         """
@@ -317,6 +319,21 @@ class Playlists(GObject.GObject):
                              WHERE rowid=?", (datetime.now().strftime("%s"),
                                               playlist_id))
 
+    def add_uris(self, playlist_id, uris):
+        """
+            Add uris to playlists (even if exists)
+            @param playlist id as int
+            @param uris as [str]
+        """
+        with SqlCursor(self) as sql:
+            for uri in uris:
+                sql.execute("INSERT INTO tracks"
+                            " VALUES (?, ?)",
+                            (playlist_id, uri))
+            sql.execute("UPDATE playlists SET mtime=?\
+                         WHERE rowid=?", (datetime.now().strftime("%s"),
+                                          playlist_id))
+
     def remove_tracks(self, playlist_id, tracks, notify=True):
         """
             Remove tracks from playlist
@@ -441,6 +458,24 @@ class Playlists(GObject.GObject):
         track_uris = album.track_uris
         return len(set(playlist_uris) & set(track_uris)) == len(track_uris)
 
+    def import_tracks(self, f):
+        """
+            Import file as playlist
+            @param f as Gio.File
+        """
+        basename = f.get_basename()
+        parser = TotemPlParser.Parser.new()
+        playlist_id = self.get_id(basename)
+        # FIXME Why Type.NONE? Need to check old code
+        if playlist_id == Type.NONE:
+            playlist_id = self.add(basename)
+        tracks = []
+        parser.connect("entry-parsed", self.__on_entry_parsed,
+                       playlist_id, tracks)
+        parser.parse_async(f.get_uri(), True,
+                           None, self.__on_parse_finished,
+                           playlist_id, tracks)
+
     def get_cursor(self):
         """
             Return a new sqlite cursor
@@ -456,3 +491,23 @@ class Playlists(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    def __on_parse_finished(self, parser, result, playlist_id, uris):
+        """
+            Add tracks to playlists
+            @param parser as TotemPlParser.Parser
+            @param result as Gio.AsyncResult
+            @param playlist_id as int
+            @param uris as [str]
+        """
+        self.add_uris(playlist_id, uris)
+
+    def __on_entry_parsed(self, parser, uri, metadata, playlist_id, uris):
+        """
+            Play stream
+            @param parser as TotemPlParser.Parser
+            @param track uri as str
+            @param metadata as GLib.HastTable
+            @param playlist_id as int
+            @param uris as [str]
+        """
+        uris.append(uri)

@@ -125,7 +125,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     try:
                         f = Gio.File.new_for_uri(child_uri)
                         if is_pls(f):
-                            pass
+                            App().playlists.import_tracks(f)
                         elif is_audio(f):
                             tracks.append(child_uri)
                         else:
