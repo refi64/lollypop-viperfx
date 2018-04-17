@@ -213,11 +213,8 @@ class PlaylistsView(View):
         filter.set_name("audio/x-mpegurl")
         filter.add_mime_type("audio/x-mpegurl")
         filechooser.add_filter(filter)
-        if len(self.__playlist_ids) > 1:
-            filechooser.set_current_name(".m3u")
-        else:
-            name = App().playlists.get_name(self.__playlist_ids[0])
-            filechooser.set_current_name("%s.m3u" % name)
+        name = ", ".join(App().playlists.get_names(self.__playlist_ids))
+        filechooser.set_current_name("%s.m3u" % name)
         filechooser.connect("response", self.__on_save_response)
         filechooser.run()
 
