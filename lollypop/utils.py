@@ -53,21 +53,17 @@ def blur(surface, image, w, h):
                 resized = cairo.ImageSurface(cairo.FORMAT_ARGB32,
                                              size,
                                              size)
-                if w > h:
-                    factor = size / height
-                    start_w = width / 2
-                    start_h = 0
-                else:
-                    factor = size / width
-                    start_w = 0
-                    start_h = height / 2
+                factor1 = size / width
+                factor2 = size / height
+                factor = max(factor1, factor2)
                 context = cairo.Context(resized)
                 context.scale(factor, factor)
-                context.set_source_surface(surface, -start_w, -start_h)
+                context.set_source_surface(surface, 0, 0)
                 context.paint()
                 surface = resized
         except Exception as e:
             print("blur():", e)
+            return None
         return surface
     TaskHelper().run(do_blur, surface, w, h,
                      callback=(image.set_from_surface,))
