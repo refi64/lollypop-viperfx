@@ -213,10 +213,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         """
             Update widget state
         """
+        child = self.get_child()
         if self.__cover is None:
             return
         selected = self._album.id == App().player.current_track.album.id
-        style_context = self.get_child().get_style_context()
+        style_context = child.get_style_context()
         if selected:
             style_context.add_class("album-row-selected")
         else:
