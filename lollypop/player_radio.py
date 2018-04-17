@@ -146,9 +146,7 @@ class RadioPlayer(BasePlayer):
 
     def __on_parse_finished(self, parser, result, track, play):
         """
-            Sometimes, TotemPlparse fails to add
-            the playlist URI to the end of the playlist on parse failure
-            So, do the job here
+            Play stream
             @param parser as TotemPlParser.Parser
             @param result as Gio.AsyncResult
             @param track as Track
@@ -171,4 +169,3 @@ class RadioPlayer(BasePlayer):
         # Only start playing if context always True
         if self.__current == track:
             track.set_radio(track.album_artists[0], uri)
-            self.__start_playback(track, play)
