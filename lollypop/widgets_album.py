@@ -362,7 +362,7 @@ class AlbumWidget(BaseWidget):
 
     def update_cover(self):
         """
-            Update cover for album id id needed
+            Update cover for current album
         """
         if self._cover is None:
             return

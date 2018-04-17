@@ -99,14 +99,14 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label = Gtk.Label.new(self._album.name)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        cover = Gtk.Image()
-        cover.get_style_context().add_class("small-cover-frame")
+        self.__cover = Gtk.Image()
+        self.__cover.get_style_context().add_class("small-cover-frame")
         surface = App().art.get_album_artwork(
             self._album,
             ArtSize.MEDIUM,
             self.get_scale_factor())
-        cover.set_from_surface(surface)
-        cover.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
+        self.__cover.set_from_surface(surface)
+        self.__cover.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)
@@ -134,7 +134,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         grid.attach(self.__artist_label, 1, 0, 1, 1)
         if self.__action_button is not None:
             grid.attach(self.__action_button, 2, 0, 1, 2)
-        grid.attach(cover, 0, 0, 1, 2)
+        grid.attach(self.__cover, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
@@ -196,6 +196,18 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             self.__play_indicator.set_opacity(0)
         if self.__revealer.get_reveal_child():
             TracksView.update_playing_indicator(self)
+
+    def update_cover(self):
+        """
+            Update cover for current album
+        """
+        if self._cover is None:
+            return
+        surface = App().art.get_album_artwork(
+            self._album,
+            ArtSize.MEDIUM,
+            self.get_scale_factor())
+        self._cover.set_from_surface(surface)
 
     def update_state(self, *ignore):
         pass
