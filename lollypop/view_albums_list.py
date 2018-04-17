@@ -216,11 +216,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         if self.__cover is None:
             return
         selected = self._album.id == App().player.current_track.album.id
-        style_context = self.__cover.get_style_context()
+        style_context = self.get_child().get_style_context()
         if selected:
-            style_context.add_class("cover-frame-selected")
+            style_context.add_class("album-row-selected")
         else:
-            style_context.remove_class("cover-frame-selected")
+            style_context.remove_class("album-row-selected")
 
     @property
     def album(self):
