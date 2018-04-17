@@ -214,7 +214,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             Update widget state
         """
         child = self.get_child()
-        if self.__cover is None:
+        if self.__cover is None or child is None:
             return
         selected = self._album.id == App().player.current_track.album.id
         style_context = child.get_style_context()
