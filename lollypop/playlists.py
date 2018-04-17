@@ -463,12 +463,11 @@ class Playlists(GObject.GObject):
             Import file as playlist
             @param f as Gio.File
         """
-        basename = f.get_basename()
+        basename = ".".join(f.get_basename().split(".")[:-1])
         parser = TotemPlParser.Parser.new()
         playlist_id = self.get_id(basename)
         # FIXME Why Type.NONE? Need to check old code
         if playlist_id == Type.NONE:
-            print("create", basename)
             playlist_id = self.add(basename)
             tracks = []
             parser.connect("entry-parsed", self.__on_entry_parsed,
