@@ -468,13 +468,14 @@ class Playlists(GObject.GObject):
         playlist_id = self.get_id(basename)
         # FIXME Why Type.NONE? Need to check old code
         if playlist_id == Type.NONE:
+            print("create", basename)
             playlist_id = self.add(basename)
-        tracks = []
-        parser.connect("entry-parsed", self.__on_entry_parsed,
-                       playlist_id, tracks)
-        parser.parse_async(f.get_uri(), True,
-                           None, self.__on_parse_finished,
+            tracks = []
+            parser.connect("entry-parsed", self.__on_entry_parsed,
                            playlist_id, tracks)
+            parser.parse_async(f.get_uri(), True,
+                               None, self.__on_parse_finished,
+                               playlist_id, tracks)
 
     def get_cursor(self):
         """
