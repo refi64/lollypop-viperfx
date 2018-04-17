@@ -285,14 +285,8 @@ class PlaylistsView(View):
         """
         if App().player.current_track.id in self.__tracks:
             self.__jump_button.set_sensitive(True)
-            artists = ", ".join(App().player.current_track.artists)
-            self.__jump_button.set_tooltip_markup(
-                "<b>%s</b>\n%s" % (GLib.markup_escape_text(artists),
-                                   GLib.markup_escape_text(
-                    App().player.current_track.name)))
         else:
             self.__jump_button.set_sensitive(False)
-            self.__jump_button.set_tooltip_text("")
 
     def __on_save_response(self, dialog, response_id):
         """
