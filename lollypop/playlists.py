@@ -161,7 +161,7 @@ class Playlists(GObject.GObject):
             Return availables tracks for playlist
             If playlist name == Type.ALL, then return all tracks from db
             @param playlist name as str
-            @return array of paths as [str]
+            @return [str]
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT uri\

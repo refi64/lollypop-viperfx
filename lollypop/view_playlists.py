@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib, Gdk, Gio
 
 from gettext import gettext as _
 
@@ -199,6 +199,28 @@ class PlaylistsView(View):
         """
         App().window.container.show_playlist_editor(self.__playlist_ids[0])
 
+    def _on_save_button_clicked(self, button):
+        """
+            Save playlist as file
+            @param button as Gtk.Button
+        """
+        filechooser = Gtk.FileChooserNative.new(_("Save playlist"),
+                                                App().window,
+                                                Gtk.FileChooserAction.SAVE,
+                                                _("Save"),
+                                                _("Cancel"))
+        filter = Gtk.FileFilter.new()
+        filter.set_name("audio/x-mpegurl")
+        filter.add_mime_type("audio/x-mpegurl")
+        filechooser.add_filter(filter)
+        if len(self.__playlist_ids) > 1:
+            filechooser.set_current_name(".m3u")
+        else:
+            name = App().playlists.get_name(self.__playlist_ids[0])
+            filechooser.set_current_name("%s.m3u" % name)
+        filechooser.connect("response", self.__on_save_response)
+        filechooser.run()
+
     def _on_current_changed(self, player):
         """
             Current song changed, update playing button
@@ -274,6 +296,30 @@ class PlaylistsView(View):
         else:
             self.__jump_button.set_sensitive(False)
             self.__jump_button.set_tooltip_text("")
+
+    def __on_save_response(self, dialog, response_id):
+        """
+            Save playlist
+            @param dialog as Gtk.NativeDialog
+            @param response_id as int
+        """
+        try:
+            if response_id == Gtk.ResponseType.ACCEPT:
+                uris = []
+                for playlist_id in self.__playlist_ids:
+                    uris += App().playlists.get_tracks(playlist_id)
+                stream = dialog.get_file().replace(
+                    None,
+                    False,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    None)
+                stream.write("#EXTM3U\n".encode("utf-8"))
+                for uri in uris:
+                    string = "%s\n" % uri
+                    stream.write(string.encode("utf-8"))
+                stream.close()
+        except:
+            pass
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
