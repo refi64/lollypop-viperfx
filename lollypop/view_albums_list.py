@@ -201,16 +201,26 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         """
             Update cover for current album
         """
-        if self._cover is None:
+        if self.__cover is None:
             return
         surface = App().art.get_album_artwork(
             self._album,
             ArtSize.MEDIUM,
             self.get_scale_factor())
-        self._cover.set_from_surface(surface)
+        self.__cover.set_from_surface(surface)
 
-    def update_state(self, *ignore):
-        pass
+    def update_state(self):
+        """
+            Update widget state
+        """
+        if self.__cover is None:
+            return
+        selected = self._album.id == App().player.current_track.album.id
+        style_context = self.__cover.get_style_context()
+        if selected:
+            style_context.add_class("cover-frame-selected")
+        else:
+            style_context.remove_class("cover-frame-selected")
 
     @property
     def album(self):
