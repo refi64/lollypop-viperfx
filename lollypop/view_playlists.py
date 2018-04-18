@@ -213,6 +213,7 @@ class PlaylistsView(View):
         filter.set_name("audio/x-mpegurl")
         filter.add_mime_type("audio/x-mpegurl")
         filechooser.add_filter(filter)
+        filechooser.set_do_overwrite_confirmation(True)
         name = ", ".join(App().playlists.get_names(self.__playlist_ids))
         filechooser.set_current_name("%s.m3u" % name)
         filechooser.connect("response", self.__on_save_response)
@@ -297,8 +298,9 @@ class PlaylistsView(View):
         try:
             if response_id == Gtk.ResponseType.ACCEPT:
                 uris = []
-                for playlist_id in self.__playlist_ids:
-                    uris += App().playlists.get_tracks(playlist_id)
+                for box in self.__playlists_widget.boxes:
+                    for child in box.get_children():
+                        uris.append(child.track.uri)
                 stream = dialog.get_file().replace(
                     None,
                     False,

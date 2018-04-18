@@ -75,21 +75,6 @@ class PlaylistsWidget(Gtk.Grid):
 
         self.add(self.__grid)
 
-    @property
-    def id(self):
-        """
-            Return playlist widget id
-            @return int
-        """
-        return Type.PLAYLISTS
-
-    @property
-    def boxes(self):
-        """
-            @return [Gtk.ListBox]
-        """
-        return [self.__tracks_widget_left, self.__tracks_widget_right]
-
     def set_filter_func(self, func):
         """
             Set filter function
@@ -264,6 +249,21 @@ class PlaylistsWidget(Gtk.Grid):
                 row.get_style_context().add_class("drag-down")
                 return row
         return None
+
+    @property
+    def id(self):
+        """
+            Return playlist widget id
+            @return int
+        """
+        return Type.PLAYLISTS
+
+    @property
+    def boxes(self):
+        """
+            @return [Gtk.ListBox]
+        """
+        return [self.__tracks_widget_left, self.__tracks_widget_right]
 
 #######################
 # PRIVATE             #
