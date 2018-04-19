@@ -35,6 +35,7 @@ class Downloader:
         self.__albums_history = []
         self.__in_albums_download = False
         self.__cache_artists_running = False
+        InformationStore.init()
 
     def cache_album_art(self, album_id):
         """
@@ -306,8 +307,6 @@ class Downloader:
         """
             Cache artwork for all artists
         """
-        # We create store if needed
-        InformationStore.init()
         # Then cache for lastfm/spotify/deezer/...
         for (artist_id, artist, sort) in App().artists.get([]):
             if not get_network_available() or\
