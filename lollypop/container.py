@@ -726,8 +726,7 @@ class Container(Gtk.Overlay):
             return
         parsed = urlparse(uri)
         is_removable = parsed.scheme == "file" and\
-            mount.can_eject() and\
-            App().settings.get_value("sync-to-usb-disks")
+            Type.USB_DISKS in App().settings.get_value("shown-album-lists")
         if is_removable or parsed.scheme == "mtp":
             self.__devices_index -= 1
             dev = Device()

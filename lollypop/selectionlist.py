@@ -56,6 +56,8 @@ class ShownAlbumlists:
         if get_all or (mask & SelectionList.Type.COMPILATIONS and
                        Type.COMPILATIONS in wanted):
             lists.append((Type.COMPILATIONS, _("Compilations")))
+        if get_all:
+            lists.append((Type.USB_DISKS, _("Usb disks")))
         return lists
 
 
