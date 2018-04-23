@@ -43,7 +43,7 @@ class ShownAlbumlists:
             if get_all or Type.RANDOMS in wanted:
                 lists.append((Type.RANDOMS, _("Random albums")))
             if get_all or Type.NEVER in wanted:
-                lists.append((Type.NEVER, _("Never played albums")))
+                lists.append((Type.NEVER, _("Unplayed albums")))
             if get_all or Type.PLAYLISTS in wanted:
                 lists.append((Type.PLAYLISTS, _("Playlists")))
             if get_all or Type.RADIOS in wanted:
@@ -57,7 +57,7 @@ class ShownAlbumlists:
                        Type.COMPILATIONS in wanted):
             lists.append((Type.COMPILATIONS, _("Compilations")))
         if get_all:
-            lists.append((Type.USB_DISKS, _("Usb disks")))
+            lists.append((Type.USB_DISKS, _("USB disks")))
         return lists
 
 
@@ -79,7 +79,7 @@ class ShownPlaylists:
         if get_all or Type.RECENTS in wanted:
             lists.append((Type.RECENTS, _("Recently played")))
         if get_all or Type.NEVER in wanted:
-            lists.append((Type.NEVER, _("Never played")))
+            lists.append((Type.NEVER, _("Unplayed")))
         if get_all or Type.RANDOMS in wanted:
             lists.append((Type.RANDOMS, _("Random tracks")))
         if get_all or Type.NOPARTY in wanted:
