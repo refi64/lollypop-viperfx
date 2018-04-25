@@ -176,7 +176,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__history = History()
         mtimes = App().tracks.get_mtimes()
         (new_tracks, new_dirs) = self.__get_objects_for_uris(uris)
-        print(new_tracks, new_dirs)
         orig_tracks = App().tracks.get_uris()
         was_empty = len(orig_tracks) == 0
 
