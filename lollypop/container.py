@@ -573,10 +573,10 @@ class Container(Gtk.Overlay):
             if files:
                 device_view = DeviceView(device)
                 device_view.populate()
-                self.__stack.add_named(child, device.uri)
+                self.__stack.add_named(device_view, device.uri)
             else:
                 device_view = DeviceLocked()
-                self.__stack.add(child)
+                self.__stack.add(device_view)
             device_view.show()
         return device_view
 
