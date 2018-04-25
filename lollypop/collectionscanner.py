@@ -18,6 +18,7 @@ from time import time
 
 from lollypop.inotify import Inotify
 from lollypop.define import App, Type
+from lollypop.objects import Track, Album
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.database_history import History
@@ -255,7 +256,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             SqlCursor.remove(App().db)
         except Exception as e:
             print("CollectionScanner::__scan():", e)
-        GLib.idle_add(self.__finish, modifications)
+        GLib.idle_add(self.__finish, modifications and not saved)
+        if not saved:
+            self.__play_new_tracks(new_tracks)
         del self.__history
         self.__history = None
 
@@ -456,3 +459,30 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().tracks.add_artist(track_id, artist_id)
         for genre_id in genre_ids:
             App().tracks.add_genre(track_id, genre_id)
+
+    def __play_new_tracks(self, uris):
+        """
+            Play new tracks
+            @param uri as [str]
+        """
+        # First get tracks
+        tracks = []
+        for uri in uris:
+            track_id = App().tracks.get_id_by_uri(uri)
+            tracks.append(Track(track_id))
+        # Then get album ids
+        album_ids = {}
+        for track in tracks:
+            if track.album.id in album_ids.keys():
+                album_ids[track.album.id].append(track)
+            else:
+                album_ids[track.album.id] = [track]
+        # Create albums with tracks
+        play = True
+        for album_id in album_ids.keys():
+            album = Album(album_id)
+            album.set_tracks(album_ids[album_id])
+            if play:
+                App().player.play_album(album)
+            else:
+                App().player.add_album(album)
