@@ -37,8 +37,6 @@ class CommonPopover(Gtk.Popover):
             Resize
             @param widget as Gtk.Widget
         """
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(False)
         size = App().window.get_size()
         self.set_size_request(size[0] * 0.4,
                               size[1] * 0.5)
@@ -48,8 +46,6 @@ class CommonPopover(Gtk.Popover):
             Stop loading
             @param widget as Gtk.Widget
         """
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(True)
         if self._widget is not None:
             self._widget.stop()
 

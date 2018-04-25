@@ -247,17 +247,12 @@ class RadioPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         GLib.idle_add(self.__name_entry.grab_focus)
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(False)
 
     def __on_unmap(self, widget):
         """
             Enable global shortcuts, destroy
             @param widget as Gtk.Widget
         """
-        self._thread = False
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(True)
         # Save radio
         self.__save_radio()
         GLib.idle_add(self.destroy)

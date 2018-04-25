@@ -282,8 +282,6 @@ class TuneinPopover(Gtk.Popover):
             Resize and disable global shortcuts
             @param widget as Gtk.Widget
         """
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(False)
         window_size = App().window.get_size()
         height = window_size[1]
         width = min(500, window_size[0])
@@ -295,8 +293,6 @@ class TuneinPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self.__cancellable.cancel()
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(True)
 
     def __on_item_content(self, uri, status, content, name):
         """

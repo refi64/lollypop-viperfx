@@ -101,7 +101,6 @@ class View(Gtk.Grid):
         """
         if self._filter is not None:
             enable = not self.__search_bar.get_search_mode()
-            App().window.enable_global_shortcuts(not enable)
             self.__search_bar.show() if enable else self.__search_bar.hide()
             self.__search_bar.set_search_mode(enable)
             if enable:

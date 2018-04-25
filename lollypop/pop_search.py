@@ -138,8 +138,6 @@ class SearchPopover(Gtk.Popover):
             Disable global shortcuts and resize
             @param widget as Gtk.Widget
         """
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(False)
         window_size = App().window.get_size()
         height = window_size[1]
         width = min(500, window_size[0])
@@ -150,8 +148,6 @@ class SearchPopover(Gtk.Popover):
             Enable global shortcuts
             @param widget as Gtk.Widget
         """
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(True)
         self.__cancellable.cancel()
         self.__view.stop()
         self.__header_stack.set_visible_child(self.__new_btn)
