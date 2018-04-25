@@ -580,6 +580,10 @@ class PlaylistsManagerWidget(Gtk.Bin):
         renderer1.set_property("editable", True)
         renderer1.connect("edited",
                           self.__on_playlist_edited)
+        renderer1.connect("editing-started",
+                          self.__on_playlist_editing_start)
+        renderer1.connect("editing-canceled",
+                          self.__on_playlist_editing_cancel)
         column1 = Gtk.TreeViewColumn(_("Playlists"), renderer1, text=1)
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column1.set_expand(True)
@@ -796,6 +800,24 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self.__model.remove(iterator)
         self.__model.append([True, name, "user-trash-symbolic", playlist_id])
         App().playlists.rename(name, old_name)
+
+    def __on_playlist_editing_start(self, widget, editable, path):
+        """
+            Disable global shortcuts
+            @param widget as cell renderer
+            @param editable as Gtk.CellEditable
+            @param path as str representation of Gtk.TreePath
+        """
+        # FIXME Not needed with GTK >= 3.18
+        App().window.enable_global_shortcuts(False)
+
+    def __on_playlist_editing_cancel(self, widget):
+        """
+            Enable global shortcuts
+            @param widget as cell renderer
+        """
+        # FIXME Not needed with GTK >= 3.18
+        App().window.enable_global_shortcuts(True)
 
     def __on_column0_clicked(self, column):
         """
