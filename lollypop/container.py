@@ -65,8 +65,9 @@ class Container(Gtk.Overlay):
         self.add(self.__paned_main_list)
 
         # Show donation notification
-        GLib.timeout_add_seconds(randint(10, 1000),
-                                 self.__show_donation)
+        if App().settings.get_value("show-donation"):
+            GLib.timeout_add_seconds(randint(10, 1000),
+                                     self.__show_donation)
 
     def update_list_one(self, updater=None):
         """
@@ -761,8 +762,6 @@ class Container(Gtk.Overlay):
         """
             Show a notification telling user to donate a little
         """
-        if not App().settings.get_value("show-donation"):
-            return
         from lollypop.app_notification import AppNotification
         notification = AppNotification(
             _("Please consider a donation to the project"),
