@@ -18,33 +18,42 @@ class AppNotification(Gtk.Revealer):
         Show a notification to user with a button connected to an action
     """
 
-    def __init__(self, label, button_label, action, *args):
+    def __init__(self, label, button_labels, actions):
         """
             Init notification
             @param label as str
-            @param button_label as str
-            @param action as callback
+            @param button_label as [str]
+            @param action as [callback]
         """
         Gtk.Revealer.__init__(self)
-        self.__action = action
-        self.__args = args
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/AppNotification.ui")
-        builder.connect_signals(self)
-        builder.get_object("label").set_text(label)
-        builder.get_object("button").set_label(button_label)
-        self.add(builder.get_object("widget"))
+        widget = Gtk.Grid()
+        widget.get_style_context().add_class("app-notification")
+        widget.set_column_spacing(5)
+        widget.add(Gtk.Label.new(label))
+        for i in range(0, len(button_labels)):
+            button = Gtk.Button.new()
+            button.set_label(button_labels[i])
+            button.connect("clicked", self.__on_button_clicked, actions[i])
+            widget.add(button)
+        button = Gtk.Button.new_from_icon_name("window-close-symbolic",
+                                               Gtk.IconSize.BUTTON)
+        button.connect("clicked", self.__on_button_clicked, None)
+        widget.add(button)
+        widget.show_all()
+        self.add(widget)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.START)
 
 #######################
-# PROTECTED           #
+# PRIVATE             #
 #######################
-    def _on_button_clicked(self, button):
+    def __on_button_clicked(self, button, action=None):
         """
             Execute action
             @param button as Gtk.Button
+            @param action as callback
         """
         self.set_reveal_child(False)
         GLib.timeout_add(1000, self.destroy)
-        self.__action(*self.__args)
+        if action is not None:
+            action()

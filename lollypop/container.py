@@ -10,11 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib
+from gi.repository import Gtk, Gio, GLib, Gdk
 
 from gettext import gettext as _
 
 from urllib.parse import urlparse
+from random import randint
 
 from lollypop.define import App, Type, ResponsiveType
 from lollypop.objects import Album
@@ -62,6 +63,10 @@ class Container(Gtk.Overlay):
         App().playlists.connect("playlists-changed",
                                 self.__update_playlists)
         self.add(self.__paned_main_list)
+
+        # Show donation notification
+        GLib.timeout_add_seconds(randint(10, 1000),
+                                 self.__show_donation)
 
     def update_list_one(self, updater=None):
         """
@@ -752,6 +757,30 @@ class Container(Gtk.Overlay):
                 del self.__devices[dev.id]
             break
 
+    def __show_donation(self):
+        """
+            Show a notification telling user to donate a little
+        """
+        if not App().settings.get_value("show-donation"):
+            return
+        from lollypop.app_notification import AppNotification
+        notification = AppNotification(
+            _("Please consider a donation to the project"),
+            [_("Paypal"), _("Liberapay")],
+            [lambda: Gtk.show_uri_on_window(
+                App().window,
+                "https://www.paypal.me/lollypopgnome",
+                Gdk.CURRENT_TIME),
+             lambda: Gtk.show_uri_on_window(
+                App().window,
+                "https://liberapay.com/gnumdk",
+                Gdk.CURRENT_TIME)])
+        self.add_overlay(notification)
+        notification.show()
+        notification.set_reveal_child(True)
+        App().settings.set_value("show-donation",
+                                 GLib.Variant("b", False))
+
     def __on_list_one_selected(self, selection_list):
         """
             Update view based on selected object
@@ -854,12 +883,12 @@ class Container(Gtk.Overlay):
         """
             Update lists
         """
-        if modifications:
+        if not modifications:
             self.__update_lists(App().scanner)
             from lollypop.app_notification import AppNotification
             notification = AppNotification(_("New tracks available"),
-                                           _("Refresh"),
-                                           lambda: self.reload_view())
+                                           [_("Refresh")],
+                                           [lambda: self.reload_view()])
             self.add_overlay(notification)
             notification.show()
             notification.set_reveal_child(True)
