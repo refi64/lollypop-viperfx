@@ -256,7 +256,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             SqlCursor.remove(App().db)
         except Exception as e:
             print("CollectionScanner::__scan():", e)
-        GLib.idle_add(self.__finish, modifications and not saved)
+        GLib.idle_add(self.__finish, modifications and saved)
         if not saved:
             self.__play_new_tracks(new_tracks)
         del self.__history
