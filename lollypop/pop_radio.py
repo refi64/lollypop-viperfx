@@ -83,7 +83,7 @@ class RadioPopover(Gtk.Popover):
             builder.get_object("btn_add_modify").set_label(_("Add"))
         else:
             # Translators: radio context
-            builder.get_object("btn_add_modify").set_label(_("Modify"))
+            builder.get_object("btn_add_modify").set_label(_("Image"))
             builder.get_object("btn_delete").show()
             self.__name_entry.set_text(self.__name)
             url = self.__radios_manager.get_url(self.__name)
@@ -98,25 +98,13 @@ class RadioPopover(Gtk.Popover):
             Add/Modify a radio
             @param widget as Gtk.Widget
         """
-        uri = self.__uri_entry.get_text()
-        new_name = self.__name_entry.get_text()
-        rename = self.__name != "" and self.__name != new_name
-
-        if uri != "" and new_name != "":
-            self.__stack.get_visible_child().hide()
-            if rename:
-                self.__radios_manager.rename(self.__name, new_name)
-                App().art.rename_radio(self.__name, new_name)
-            else:
-                self.__radios_manager.add(new_name, uri.lstrip().rstrip())
-            self.__stack.set_visible_child_name("spinner")
-            self.__name = new_name
-            uri = App().art.get_google_search_uri(self.__name + "+logo+radio")
-            helper = TaskHelper()
-            helper.load_uri_content(uri,
-                                    self.__cancellable,
-                                    self.__on_google_content_loaded)
-            self.set_size_request(700, 400)
+        self.__save_radio()
+        uri = App().art.get_google_search_uri(self.__name + "+logo+radio")
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                self.__cancellable,
+                                self.__on_google_content_loaded)
+        self.set_size_request(700, 400)
 
     def _on_btn_delete_clicked(self, widget):
         """
@@ -169,6 +157,24 @@ class RadioPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __save_radio(self):
+        """
+            Save radio based on current widget content
+        """
+        uri = self.__uri_entry.get_text()
+        new_name = self.__name_entry.get_text()
+        rename = self.__name != "" and self.__name != new_name
+
+        if uri != "" and new_name != "":
+            self.__stack.get_visible_child().hide()
+            if rename:
+                self.__radios_manager.rename(self.__name, new_name)
+                App().art.rename_radio(self.__name, new_name)
+            else:
+                self.__radios_manager.add(new_name, uri.lstrip().rstrip())
+            self.__stack.set_visible_child_name("spinner")
+            self.__name = new_name
+
     def __populate(self, uris):
         """
             Add uris to view
@@ -252,6 +258,8 @@ class RadioPopover(Gtk.Popover):
         self._thread = False
         # FIXME Not needed with GTK >= 3.18
         App().window.enable_global_shortcuts(True)
+        # Save radio
+        self.__save_radio()
         GLib.idle_add(self.destroy)
 
     def __on_google_content_loaded(self, uri, loaded, content):
