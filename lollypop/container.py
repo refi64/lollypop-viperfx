@@ -883,7 +883,7 @@ class Container(Gtk.Overlay):
         """
             Update lists
         """
-        if not modifications:
+        if modifications:
             self.__update_lists(App().scanner)
             from lollypop.app_notification import AppNotification
             notification = AppNotification(_("New tracks available"),
