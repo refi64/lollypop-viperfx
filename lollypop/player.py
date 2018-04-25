@@ -320,14 +320,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             Set previous track
         """
         try:
+            # Same track
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 prev_track = self._current_track
-            # Look at radio
-            else:
-                prev_track = RadioPlayer.prev(self)
-
             # Look at shuffle
-            if prev_track.id is None:
+            else:
                 prev_track = ShufflePlayer.prev(self)
 
             # Look at user playlist then
@@ -352,14 +349,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             # Reset finished context
             self._next_context = NextContext.NONE
 
+            # Same track
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 next_track = self._current_track
-            # Look at radio
-            else:
-                next_track = RadioPlayer.next(self)
-
             # Look first at user queue
-            if next_track.id is None:
+            else:
                 next_track = QueuePlayer.next(self)
 
             # Look at shuffle

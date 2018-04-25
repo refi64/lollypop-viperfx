@@ -18,7 +18,7 @@ from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
-from lollypop.define import App, Type
+from lollypop.define import App
 
 
 class RadiosView(LazyLoadingView):
@@ -72,10 +72,6 @@ class RadiosView(LazyLoadingView):
         """
             Populate view with tracks from playlist
         """
-        App().player.set_radios(self.__radios_manager.get())
-        if App().player.current_track.id == Type.RADIOS:
-            App().player.set_next()  # We force next update
-            App().player.set_prev()  # We force prev update
         helper = TaskHelper()
         helper.run(self.__get_radios, callback=(self.__on_get_radios,))
 
@@ -172,17 +168,6 @@ class RadiosView(LazyLoadingView):
             old_child.destroy()
             if not self._box.get_children():
                 self.__show_stack([])
-
-        # Update player state based on current view
-        radios = []
-        for child in self._box.get_children():
-            name = child.title
-            url = manager.get_url(name)
-            radios.append((name, url))
-        App().player.set_radios(radios)
-        if App().player.current_track.id == Type.RADIOS:
-            App().player.set_next()  # We force next update
-            App().player.set_prev()  # We force prev update
 
     def __show_stack(self, radios):
         """

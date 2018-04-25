@@ -14,8 +14,7 @@ from gi.repository import TotemPlParser, Gst, Gio
 
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
-from lollypop.define import Type, App
-from lollypop.objects import Track
+from lollypop.define import App
 
 
 class RadioPlayer(BasePlayer):
@@ -33,7 +32,6 @@ class RadioPlayer(BasePlayer):
         """
         BasePlayer.__init__(self)
         self.__current = None
-        self.__radios = []
 
     def load(self, track, play=True):
         """
@@ -56,65 +54,6 @@ class RadioPlayer(BasePlayer):
                 print("RadioPlayer::load(): ", e)
             if self.is_party:
                 self.set_party(False)
-            self._next_track = Track()
-            self.emit("next-changed")
-
-    def next(self):
-        """
-            Return next radio name, uri
-            @return Track
-        """
-        track = Track()
-        if self._current_track.id != Type.RADIOS or not self.__radios:
-            return track
-
-        i = 0
-        for (name, url) in self.__radios:
-            i += 1
-            if self._current_track.album_artists[0] == name:
-                break
-
-        # Get next radio
-        if i >= len(self.__radios):
-            i = 0
-
-        name = self.__radios[i][0]
-        url = self.__radios[i][1]
-        if url:
-            track.set_radio(name, url)
-        return track
-
-    def prev(self):
-        """
-            Return prev radio name, uri
-            @return Track
-        """
-        track = Track()
-        if self._current_track.id != Type.RADIOS or not self.__radios:
-            return track
-
-        i = len(self.__radios) - 1
-        for (name, url) in reversed(self.__radios):
-            i -= 1
-            if self._current_track.album_artists[0] == name:
-                break
-
-        # Get prev radio
-        if i < 0:
-            i = len(self.__radios) - 1
-
-        name = self.__radios[i][0]
-        url = self.__radios[i][1]
-        if url:
-            track.set_radio(name, url)
-        return track
-
-    def set_radios(self, radios):
-        """
-            Set available radios
-            @param radios as (name, url)
-        """
-        self.__radios = radios
 
 #######################
 # PROTECTED           #
@@ -141,8 +80,6 @@ class RadioPlayer(BasePlayer):
         else:
             self.emit("current-changed")
             App().window.container.pulse(False)
-        if not self.__radios:
-            self.__radios = Radios().get()
 
     def __on_parse_finished(self, parser, result, track, play):
         """
