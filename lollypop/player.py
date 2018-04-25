@@ -321,23 +321,23 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         try:
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
-                self._prev_track = self._current_track
-
+                prev_track = self._current_track
             # Look at radio
-            if self._prev_track.id is None:
-                self._prev_track = RadioPlayer.prev(self)
+            else:
+                prev_track = RadioPlayer.prev(self)
 
             # Look at shuffle
-            if self._prev_track.id is None:
-                self._prev_track = ShufflePlayer.prev(self)
+            if prev_track.id is None:
+                prev_track = ShufflePlayer.prev(self)
 
             # Look at user playlist then
-            if self._prev_track.id is None:
-                self._prev_track = PlaylistPlayer.prev(self)
+            if prev_track.id is None:
+                prev_track = PlaylistPlayer.prev(self)
 
             # Get a linear track then
-            if self._prev_track.id is None:
-                self._prev_track = LinearPlayer.prev(self)
+            if prev_track.id is None:
+                prev_track = LinearPlayer.prev(self)
+            self._prev_track = prev_track
             self.emit("prev-changed")
         except Exception as e:
             print("Player::set_prev():", e)
@@ -353,27 +353,27 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self._next_context = NextContext.NONE
 
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
-                self._next_track = self._current_track
-
+                next_track = self._current_track
             # Look at radio
-            if self._next_track.id is None:
-                self._next_track = RadioPlayer.next(self)
+            else:
+                next_track = RadioPlayer.next(self)
 
             # Look first at user queue
-            if self._next_track.id is None:
-                self._next_track = QueuePlayer.next(self)
+            if next_track.id is None:
+                next_track = QueuePlayer.next(self)
 
             # Look at shuffle
-            if self._next_track.id is None:
-                self._next_track = ShufflePlayer.next(self)
+            if next_track.id is None:
+                next_track = ShufflePlayer.next(self)
 
             # Look at user playlist then
-            if self._next_track.id is None:
-                self._next_track = PlaylistPlayer.next(self, force)
+            if next_track.id is None:
+                next_track = PlaylistPlayer.next(self, force)
 
             # Get a linear track then
-            if self._next_track.id is None:
-                self._next_track = LinearPlayer.next(self)
+            if next_track.id is None:
+                next_track = LinearPlayer.next(self)
+            self._next_track = next_track
             self.emit("next-changed")
         except Exception as e:
             print("Player::set_next():", e)
