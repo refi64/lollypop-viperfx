@@ -20,7 +20,6 @@ from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
-from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_playlist import PlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track, Album
@@ -28,7 +27,7 @@ from lollypop.define import App, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
-             LinearPlayer, ShufflePlayer, ExternalsPlayer):
+             LinearPlayer, ShufflePlayer):
     """
         Player object used to manage playback and playlists
     """
@@ -43,7 +42,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         ShufflePlayer.__init__(self)
         PlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
-        ExternalsPlayer.__init__(self)
         self.update_crossfading()
         self.__do_not_update_next = False
         App().settings.connect("changed::playback", self.__on_playback_changed)
@@ -324,9 +322,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         try:
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 self._prev_track = self._current_track
-            else:
-                # Look at externals
-                self._prev_track = ExternalsPlayer.prev(self)
 
             # Look at radio
             if self._prev_track.id is None:
@@ -358,31 +353,27 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self._next_context = NextContext.NONE
 
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
-                next_track = self._current_track
-            else:
-                # Look at externals
-                next_track = ExternalsPlayer.next(self)
+                self._next_track = self._current_track
 
             # Look at radio
-            if next_track.id is None:
-                next_track = RadioPlayer.next(self)
+            if self._next_track.id is None:
+                self._next_track = RadioPlayer.next(self)
 
             # Look first at user queue
-            if next_track.id is None:
-                next_track = QueuePlayer.next(self)
+            if self._next_track.id is None:
+                self._next_track = QueuePlayer.next(self)
 
             # Look at shuffle
-            if next_track.id is None:
-                next_track = ShufflePlayer.next(self)
+            if self._next_track.id is None:
+                self._next_track = ShufflePlayer.next(self)
 
             # Look at user playlist then
-            if next_track.id is None:
-                next_track = PlaylistPlayer.next(self, force)
+            if self._next_track.id is None:
+                self._next_track = PlaylistPlayer.next(self, force)
 
             # Get a linear track then
-            if next_track.id is None:
-                next_track = LinearPlayer.next(self)
-            self._next_track = next_track
+            if self._next_track.id is None:
+                self._next_track = LinearPlayer.next(self)
             self.emit("next-changed")
         except Exception as e:
             print("Player::set_next():", e)

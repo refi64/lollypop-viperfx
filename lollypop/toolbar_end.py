@@ -213,10 +213,7 @@ class ToolbarEnd(Gtk.Bin):
             Show a popover with current playlist
             @param button as Gtk.Button
         """
-        if App().player.current_track.id == Type.EXTERNALS:
-            from lollypop.pop_externals import ExternalsPopover
-            popover = ExternalsPopover()
-        elif App().player.queue:
+        if App().player.queue:
             from lollypop.pop_queue import QueuePopover
             popover = QueuePopover()
         elif App().player.get_playlist_ids():
@@ -414,9 +411,7 @@ class ToolbarEnd(Gtk.Bin):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        if App().player.current_track.id == Type.EXTERNALS:
-            widget.set_tooltip_text(_("External tracks"))
-        elif App().player.queue:
+        if App().player.queue:
             widget.set_tooltip_text(_("Queue"))
         elif App().player.get_playlist_ids():
             widget.set_tooltip_text(_("Playing playlists"))

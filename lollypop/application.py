@@ -35,6 +35,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity, set_proxy_from_gnome
+from lollypop.utils import is_audio, is_pls
 from lollypop.define import Type, LOLLYPOP_DATA_PATH
 from lollypop.window import Window
 from lollypop.database import Database
@@ -100,7 +101,6 @@ class Application(Gtk.Application):
         self.scrobblers = []
         self.debug = False
         self.__fs = None
-        self.__externals_count = 0
         GLib.set_application_name("Lollypop")
         GLib.set_prgname("lollypop")
         self.add_main_option("play-ids", b"a", GLib.OptionFlags.NONE,
@@ -338,6 +338,7 @@ class Application(Gtk.Application):
             self.scanner.stop()
             GLib.idle_add(self.__vacuum)
             return
+        self.db.del_tracks(self.tracks.get_non_persistent())
         try:
             from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:
@@ -387,7 +388,6 @@ class Application(Gtk.Application):
             @param app as Gio.Application
             @param options as Gio.ApplicationCommandLine
         """
-        self.__externals_count = 0
         args = app_cmd_line.get_arguments()
         options = app_cmd_line.get_options_dict()
         if options.contains("debug"):
@@ -427,15 +427,25 @@ class Application(Gtk.Application):
         elif options.contains("emulate-phone"):
             self.window.container.add_fake_phone()
         elif len(args) > 1:
-            self.player.clear_externals()
+            uris = []
+            pls = []
             for uri in args[1:]:
                 try:
                     uri = GLib.filename_to_uri(uri)
                 except:
                     pass
+                f = Gio.File.new_for_uri(uri)
+                if is_audio(f):
+                    uris.append(uri)
+                elif is_pls(f):
+                    pls.append(uri)
+            if pls:
                 parser = TotemPlParser.Parser.new()
-                parser.connect("entry-parsed", self.__on_entry_parsed)
-                parser.parse_async(uri, True, None, None)
+                parser.connect("entry-parsed", self.__on_entry_parsed, uris)
+                parser.parse_async(uri, True, None,
+                                   self.__on_parse_finished, uris)
+            else:
+                self.__on_parse_finished(None, None, uris)
         elif self.window is not None:
             self.window.setup_window()
             if not self.window.is_visible():
@@ -447,19 +457,24 @@ class Application(Gtk.Application):
         Gdk.notify_startup_complete()
         return 0
 
-    def __on_entry_parsed(self, parser, uri, metadata):
+    def __on_parse_finished(self, parser, result, uris):
+        """
+            Play stream
+            @param parser as TotemPlParser.Parser
+            @param result as Gio.AsyncResult
+            @param uris as [str]
+        """
+        self.scanner.update(uris, False)
+
+    def __on_entry_parsed(self, parser, uri, metadata, uris):
         """
             Add playlist entry to external files
             @param parser as TotemPlParser.Parser
-            @param track uri as str
+            @param uri as str
             @param metadata as GLib.HastTable
+            @param uris as str
         """
-        self.player.load_external(uri)
-        if self.__externals_count == 0:
-            if self.player.is_party:
-                self.player.set_party(False)
-            self.player.play_first_external()
-        self.__externals_count += 1
+        uris.append(uri)
 
     def __hide_on_delete(self, widget, event):
         """

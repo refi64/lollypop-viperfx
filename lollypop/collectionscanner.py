@@ -51,9 +51,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__inotify = None
         App().albums.update_max_count()
 
-    def update(self, *ignore):
+    def update(self, uris=[], saved=True):
         """
             Update database
+            @param uris as [str]
+            @param saved as bool
         """
         # Stop previous scan
         if self.is_locked():
@@ -62,14 +64,16 @@ class CollectionScanner(GObject.GObject, TagReader):
         else:
             self.__disable_compilations = not App().settings.get_value(
                 "show-compilations")
-            uris = App().settings.get_music_uris()
+
             if not uris:
-                return
+                uris = App().settings.get_music_uris()
+                if not uris:
+                    return
 
             App().window.container.progress.add(self)
             App().window.container.progress.set_fraction(0.0, self)
 
-            self.__thread = Thread(target=self.__scan, args=(uris,))
+            self.__thread = Thread(target=self.__scan, args=(uris, saved))
             self.__thread.daemon = True
             self.__thread.start()
 
@@ -92,53 +96,53 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Return all tracks/dirs for uris
             @param uris as string
-            @return (track uri as [str], track dirs as [str],
-                     ignore dirs as [str])
+            @return (track uri as [str], track dirs as [str])
         """
         tracks = []
-        ignore_dirs = []
-        track_dirs = list(uris)
+        files = []
+        track_dirs = []
         walk_uris = list(uris)
         while walk_uris:
             uri = walk_uris.pop(0)
-            empty = True
             try:
-                d = Gio.File.new_for_uri(uri)
-                infos = d.enumerate_children(
+                # Directly add files, walk through directories
+                f = Gio.File.new_for_uri(uri)
+                info = f.query_info(
                     "standard::name,standard::type,standard::is-hidden",
                     Gio.FileQueryInfoFlags.NONE,
                     None)
+                if info.get_file_type() == Gio.FileType.DIRECTORY:
+                    track_dirs.append(uri)
+                    infos = f.enumerate_children(
+                        "standard::name,standard::type,standard::is-hidden",
+                        Gio.FileQueryInfoFlags.NONE,
+                        None)
+                    for info in infos:
+                        f = infos.get_child(info)
+                        child_uri = f.get_uri()
+                        if info.get_is_hidden():
+                            continue
+                        elif info.get_file_type() == Gio.FileType.DIRECTORY:
+                            track_dirs.append(child_uri)
+                            walk_uris.append(child_uri)
+                        else:
+                            files.append(f)
+                else:
+                    files.append(f)
             except Exception as e:
                 print("CollectionScanner::__get_objects_for_uris():", e)
-                ignore_dirs.append(uri)
-                continue
-            for info in infos:
-                f = infos.get_child(info)
-                child_uri = f.get_uri()
-                empty = False
-                if info.get_is_hidden():
-                    continue
-                elif info.get_file_type() == Gio.FileType.DIRECTORY:
-                    track_dirs.append(child_uri)
-                    walk_uris.append(child_uri)
+                return ([], [])
+        for f in files:
+            try:
+                if is_pls(f):
+                    App().playlists.import_tracks(f)
+                elif is_audio(f):
+                    tracks.append(f.get_uri())
                 else:
-                    try:
-                        f = Gio.File.new_for_uri(child_uri)
-                        if is_pls(f):
-                            App().playlists.import_tracks(f)
-                        elif is_audio(f):
-                            tracks.append(child_uri)
-                        else:
-                            debug("%s not detected as a music file" %
-                                  child_uri)
-                    except Exception as e:
-                        print("CollectionScanner::"
-                              "__get_objects_for_uris():", e)
-            # If a root uri is empty
-            # Ensure user is not doing something bad
-            if empty and uri in uris:
-                ignore_dirs.append(uri)
-        return (tracks, track_dirs, ignore_dirs)
+                    debug("%s not detected as a music file" % f.get_uri())
+            except Exception as e:
+                print("CollectionScanner::__get_objects_for_uris():", e)
+        return (tracks, track_dirs)
 
     def __update_progress(self, current, total):
         """
@@ -160,25 +164,22 @@ class CollectionScanner(GObject.GObject, TagReader):
         if App().settings.get_value("artist-artwork"):
             App().art.cache_artists_info()
 
-    def __scan(self, uris):
+    def __scan(self, uris, saved):
         """
             Scan music collection for music files
-            @param uris as [string], uris to scan
+            @param uris as [str]
+            @param saved as bool
             @thread safe
         """
         modifications = False
         if self.__history is None:
             self.__history = History()
         mtimes = App().tracks.get_mtimes()
-        (new_tracks, new_dirs, ignore_dirs) = self.__get_objects_for_uris(
-            uris)
-        orig_tracks = App().tracks.get_uris(ignore_dirs)
+        (new_tracks, new_dirs) = self.__get_objects_for_uris(uris)
+        print(new_tracks, new_dirs)
+        orig_tracks = App().tracks.get_uris()
         was_empty = len(orig_tracks) == 0
 
-        if ignore_dirs:
-            if App().notify is not None:
-                App().notify.send(_("Lollypop is detecting an empty folder."),
-                                  _("Check your music settings."))
         count = len(new_tracks) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:
@@ -216,15 +217,18 @@ class CollectionScanner(GObject.GObject, TagReader):
                     if uri in orig_tracks:
                         orig_tracks.remove(uri)
                         i += 1
-                        if mtime <= mtimes.get(uri, mtime + 1):
+                        if not saved or mtime <= mtimes.get(uri, mtime + 1):
                             i += 1
                             continue
                         else:
                             SqlCursor.allow_thread_execution(App().db)
                             self.__del_from_db(uri)
+                    # If not saved, use 0 as mtime, easy delete on quit
+                    if not saved:
+                        mtime = 0
                     # On first scan, use modification time
                     # Else, use current time
-                    if not was_empty:
+                    elif not was_empty:
                         mtime = int(time())
                     to_add.append((uri, mtime))
                 except Exception as e:
@@ -233,10 +237,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                 modifications = True
             # Clean deleted files
             # Now because we need to populate history
-            for uri in orig_tracks:
-                i += 1
-                GLib.idle_add(self.__update_progress, i, count)
-                self.__del_from_db(uri)
+            # Only if we are saving
+            if saved:
+                for uri in orig_tracks:
+                    i += 1
+                    GLib.idle_add(self.__update_progress, i, count)
+                    self.__del_from_db(uri)
             # Add files to db
             for (uri, mtime) in to_add:
                 try:

@@ -369,21 +369,23 @@ class TracksDatabase:
                 mtimes.update((row,))
             return mtimes
 
-    def get_uris(self, exclude=[]):
+    def get_non_persistent(self):
         """
-            Get all tracks uri
-            @param exclude as [str]
-            @return Array of uri as string
+            Return non persistent tracks
+            @return track ids as [int]
         """
         with SqlCursor(App().db) as sql:
-            filters = ()
-            for e in exclude:
-                filters += ("%" + e + "%",)
-            request = "SELECT uri FROM tracks\
-                       WHERE 1=1"
-            for e in exclude:
-                request += " AND uri not like ?"
-            result = sql.execute(request, filters)
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE mtime=0")
+            return list(itertools.chain(*result))
+
+    def get_uris(self):
+        """
+            Get all tracks uri
+            @return [str]
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT uri FROM tracks")
             return list(itertools.chain(*result))
 
     def get_number(self, track_id):

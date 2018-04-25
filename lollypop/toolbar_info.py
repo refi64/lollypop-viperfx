@@ -146,11 +146,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Show track information popover
             @param args as []
         """
-        if App().player.current_track.id == Type.EXTERNALS:
-            from lollypop.pop_externals import ExternalsPopover
-            popover = ExternalsPopover()
-            popover.populate()
-        elif App().player.current_track.id == Type.RADIOS:
+        if App().player.current_track.id == Type.RADIOS:
             from lollypop.pop_tunein import TuneinPopover
             popover = TuneinPopover()
             popover.populate()

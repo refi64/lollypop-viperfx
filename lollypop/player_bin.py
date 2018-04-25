@@ -325,18 +325,6 @@ class BinPlayer(BasePlayer):
         if not self._current_track.artists:
             self._current_track.artists = self._current_track.album_artists
             changed = True
-
-        if self._current_track.id == Type.EXTERNALS:
-            (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
-            if b:
-                self._current_track.duration = duration / 1000000000
-            # We do not use tagreader as we need to check if value is None
-            self._current_track.album_name = tags.get_string_index("album",
-                                                                   0)[1]
-            if self._current_track.album_name is None:
-                self._current_track.album_name = ""
-            self._current_track.genres = reader.get_genres(tags).split(",")
-            changed = True
         if changed:
             self.emit("current-changed")
 

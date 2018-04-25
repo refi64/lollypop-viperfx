@@ -60,7 +60,7 @@ class Base:
             Get popularity
             @return int between 0 and 5
         """
-        if self.id is None or self.id == Type.EXTERNALS:
+        if self.id is None:
             return 0
 
         popularity = 0
@@ -80,7 +80,7 @@ class Base:
             Set popularity
             @param new_rate as int between 0 and 5
         """
-        if self.id is None or self.id == Type.EXTERNALS:
+        if self.id is None:
             return
         try:
             if self.id >= 0:
@@ -106,7 +106,7 @@ class Base:
             Get rate
             @return int
         """
-        if self.id is None or self.id == Type.EXTERNALS:
+        if self.id is None:
             return 0
 
         rate = 0
@@ -539,7 +539,7 @@ class Track(Base):
     def album_artists(self):
         """
             Get track album artists, can be != than album.artists as track
-            may not have any album (radio, externals, ...)
+            may not have any album
             @return str
         """
         if getattr(self, "_album_artists") is None:

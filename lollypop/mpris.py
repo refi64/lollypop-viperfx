@@ -424,14 +424,6 @@ class MPRIS(Server):
                 cover_path = App().art.get_radio_cache_path(
                     ", ".join(App().player.current_track.artists),
                     ArtSize.MONSTER)
-            elif App().player.current_track.id == Type.EXTERNALS:
-                cover_path = "/tmp/lollypop_mpris.jpg"
-                pixbuf = App().art.pixbuf_from_tags(
-                    GLib.filename_from_uri(App().player.current_track.uri)[0],
-                    ArtSize.MONSTER)
-                if pixbuf is not None:
-                    pixbuf.savev(cover_path, "jpeg",
-                                 ["quality"], ["90"])
             else:
                 cover_path = App().art.get_album_cache_path(
                     App().player.current_track.album, ArtSize.MONSTER)
