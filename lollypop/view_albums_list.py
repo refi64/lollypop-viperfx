@@ -167,6 +167,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
+            self.update_state()
             if self.__responsive_type != ResponsiveType.SEARCH and\
                     self.__action_button is not None:
                 self.__action_button.set_opacity(1)
@@ -178,6 +179,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
             self.__revealer.set_reveal_child(True)
+            self.update_state()
             if self.__responsive_type != ResponsiveType.SEARCH and\
                     self.__action_button is not None:
                 self.__action_button.set_opacity(0)
@@ -209,18 +211,20 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             self.get_scale_factor())
         self.__cover.set_from_surface(surface)
 
-    def update_state(self):
+    def update_state(self, force=False):
         """
             Update widget state
+            @param force as bool
         """
         child = self.get_child()
         if child is None:
             return
         selected = self._album.id == App().player.current_track.album.id
         style_context = child.get_style_context()
-        if selected:
+        revealed = self.__revealer.get_reveal_child()
+        if selected and not revealed:
             style_context.add_class("album-row-selected")
-        else:
+        elif not selected or revealed:
             style_context.remove_class("album-row-selected")
 
     @property
