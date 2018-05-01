@@ -214,6 +214,8 @@ class Window(Gtk.ApplicationWindow):
         App().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
         App().set_accels_for_action("app.shortcut::lyrics", ["<Alt>l"])
         App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
+        App().set_accels_for_action("app.shortcut::current_artist",
+                                    ["<Alt>a"])
         App().set_accels_for_action("app.shortcut::show_genres",
                                     ["<Control>g"])
         App().set_accels_for_action("app.shortcut::hide_paned", ["<Control>h"])
@@ -535,6 +537,10 @@ class Window(Gtk.ApplicationWindow):
                 self.container.view.enable_filter()
         elif string == "volume":
             self.__toolbar.title.show_hide_volume_control()
+        elif string == "current_artist":
+            if App().player.current_track.id > 0:
+                artist_ids = App().player.current_track.album.artist_ids
+                self.container.show_artists_albums(artist_ids)
         elif string == "show_genres":
             state = not App().settings.get_value("show-genres")
             App().settings.set_value("show-genres",

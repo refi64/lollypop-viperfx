@@ -351,7 +351,6 @@ class Track(Base):
     """
     DEFAULTS = {"name": "",
                 "album_id": None,
-                "album_artist_ids": [],
                 "artist_ids": [],
                 "genre_ids": [],
                 "popularity": 0,
