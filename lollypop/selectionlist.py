@@ -389,6 +389,7 @@ class SelectionList(Gtk.Overlay):
             @param object id as int
         """
         self.__to_select_ids = []
+        _ids = list(ids)
         if ids:
             try:
                 # Check if items are available for selection
@@ -397,10 +398,10 @@ class SelectionList(Gtk.Overlay):
                     for item in self.__model:
                         if item[0] == i:
                             items.append(item)
-                            ids.remove(i)
+                            _ids.remove(i)
                 # Select later
-                if ids:
-                    self.__to_select_ids = ids
+                if _ids:
+                    self.__to_select_ids = _ids
                 else:
                     for item in items:
                         self.__selection.select_iter(item.iter)
@@ -412,7 +413,7 @@ class SelectionList(Gtk.Overlay):
                                                    0, 0)
             except:
                 self.__last_motion_event = None
-                self.__to_select_ids = ids
+                self.__to_select_ids = _ids
         else:
             self.__selection.unselect_all()
 
