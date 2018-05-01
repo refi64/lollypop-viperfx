@@ -538,7 +538,8 @@ class Window(Gtk.ApplicationWindow):
         elif string == "volume":
             self.__toolbar.title.show_hide_volume_control()
         elif string == "current_artist":
-            if App().player.current_track.id > 0:
+            if App().player.current_track.id is not None and\
+                    App().player.current_track.id > 0:
                 artist_ids = App().player.current_track.album.artist_ids
                 self.container.show_artists_albums(artist_ids)
         elif string == "show_genres":
