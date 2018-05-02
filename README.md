@@ -40,7 +40,7 @@ It provides:
 - `appstream-glib`
 - `gir1.2-gstreamer-1.0 (Debian)`
 - `python3`
-- `meson >= 0.41`
+- `meson >= 0.40`
 - `ninja`
 - `totem-plparser`
 - `python-cairo`
