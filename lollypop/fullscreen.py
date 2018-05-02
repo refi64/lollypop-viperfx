@@ -196,8 +196,9 @@ class FullScreen(Gtk.Window, InfoController,
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        reveal = event.x > widget.get_allocated_width() / 2
-        self.__revealer.set_reveal_child(reveal)
+        if event.window == widget.get_window():
+            reveal = event.x > widget.get_allocated_width() / 2
+            self.__revealer.set_reveal_child(reveal)
 
 #######################
 # PRIVATE             #
