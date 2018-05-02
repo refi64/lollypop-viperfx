@@ -27,10 +27,13 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.507" date="2018-04-25">
+    <release version="0.9.508" date="2018-05-02">
       <description>
         <ul>
-          <li>Fix a crash</li>
+          <li>Add Alt-a shortcut</li>
+          <li>Donation popup (beer, beer, beer)</li>
+          <li>Simpler radio widget</li>
+          <li>Handle external tracks as internal</li>
         </ul>
       </description>
     </release>
