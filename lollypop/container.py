@@ -44,6 +44,8 @@ class Container(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__pulse_timeout = None
+        self.__list_one_restored = False
+        self.__list_two_restored = False
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
@@ -91,32 +93,6 @@ class Container(Gtk.Overlay):
             self.__update_list_playlists(update)
         elif App().settings.get_value("show-genres") and ids:
             self.__update_list_artists(self.__list_two, ids, update)
-
-    def restore_view_state(self):
-        """
-            Restore view state
-        """
-        # Get list one ids (always)
-        list_one_ids = []
-        ids = App().settings.get_value("list-one-ids")
-        for i in ids:
-            if isinstance(i, int):
-                list_one_ids.append(i)
-        if not list_one_ids:
-            list_one_ids = [Type.POPULARS]
-
-        # Get list two ids (only on save state)
-        list_two_ids = [Type.NONE]
-        if App().settings.get_value("save-state"):
-            list_two_ids = []
-            ids = App().settings.get_value("list-two-ids")
-            for i in ids:
-                if isinstance(i, int):
-                    list_two_ids.append(i)
-        if list_one_ids and list_one_ids[0] != Type.NONE:
-            self.__list_one.select_ids(list_one_ids)
-        if list_two_ids and list_two_ids[0] != Type.NONE:
-            self.__list_two.select_ids(list_two_ids)
 
     def save_view_state(self):
         """
@@ -324,8 +300,6 @@ class Container(Gtk.Overlay):
             App().window.toolbar.playback.show_back(True, True)
             if self.__list_one.selected_ids:
                 self.reload_view()
-            else:
-                self.restore_view_state()
         elif not b and self.is_paned_stack:
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
@@ -334,10 +308,6 @@ class Container(Gtk.Overlay):
             App().window.toolbar.playback.show_back(False)
             if self.__list_one.selected_ids:
                 self.reload_view()
-            else:
-                self.restore_view_state()
-        elif not self.__list_one.selected_ids:
-            self.restore_view_state()
 
     def hide_paned(self):
         """
@@ -449,6 +419,42 @@ class Container(Gtk.Overlay):
         App().scanner.connect("genre-updated", self.__on_genre_updated)
         App().scanner.connect("artist-updated", self.__on_artist_updated)
 
+    def __restore_list_one_state(self):
+        """
+            Restore saved state for list
+        """
+        if self.__list_one_restored:
+            return
+        self.__list_one_restored = True
+        # Get list one ids (always)
+        list_one_ids = []
+        ids = App().settings.get_value("list-one-ids")
+        for i in ids:
+            if isinstance(i, int):
+                list_one_ids.append(i)
+        if not list_one_ids:
+            list_one_ids = [Type.POPULARS]
+        if list_one_ids[0] != Type.NONE:
+            self.__list_one.select_ids(list_one_ids)
+
+    def __restore_list_two_state(self):
+        """
+            Restore saved state for list
+        """
+        if self.__list_two_restored:
+            return
+        self.__list_two_restored = True
+        # Get list two ids (only on save state)
+        list_two_ids = [Type.NONE]
+        if App().settings.get_value("save-state"):
+            list_two_ids = []
+            ids = App().settings.get_value("list-two-ids")
+            for i in ids:
+                if isinstance(i, int):
+                    list_two_ids.append(i)
+        if list_two_ids and list_two_ids[0] != Type.NONE:
+            self.__list_two.select_ids(list_two_ids)
+
     def __update_playlists(self, playlists, playlist_id):
         """
             Update playlists in second list
@@ -491,6 +497,7 @@ class Container(Gtk.Overlay):
                 selection_list.update_values(items)
             else:
                 selection_list.populate(items)
+                self.__restore_list_one_state()
 
         loader = Loader(target=load, view=selection_list, on_finished=setup)
         loader.start()
@@ -519,7 +526,10 @@ class Container(Gtk.Overlay):
                 selection_list.update_values(items)
             else:
                 selection_list.populate(items)
-
+                if selection_list == self.__list_one:
+                    self.__restore_list_one_state()
+                else:
+                    self.__restore_list_two_state()
         if selection_list == self.__list_one:
             if self.__list_two.is_visible():
                 self.__list_two.hide()
@@ -541,6 +551,7 @@ class Container(Gtk.Overlay):
             self.__list_two.update_values(items)
         else:
             self.__list_two.populate(items)
+            self.__restore_list_two_state()
 
     def __stop_current_view(self):
         """

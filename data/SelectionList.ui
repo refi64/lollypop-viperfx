@@ -28,7 +28,6 @@
     <child internal-child="selection">
       <object class="GtkTreeSelection" id="selection">
         <property name="mode">multiple</property>
-        <signal name="changed" handler="_on_selection_changed" swapped="no"/>
       </object>
     </child>
   </object>

@@ -211,7 +211,6 @@ class SelectionList(Gtk.Overlay):
         self.__base_type = base_type
         self.__was_visible = False
         self.__timeout = None
-        self.__to_select_ids = []
         self.__modifier = False
         self.__populating = False
         self.__updating = False       # Sort disabled if False
@@ -221,6 +220,7 @@ class SelectionList(Gtk.Overlay):
         builder.connect_signals(self)
         self.__selection = builder.get_object("selection")
         self.__selection.set_select_function(self.__selection_validation)
+        self.__selection.connect("changed", self.__on_selection_changed)
         self.__model = builder.get_object("model")
         self.__model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.__model.set_sort_func(0, self.__sort_items)
@@ -267,13 +267,6 @@ class SelectionList(Gtk.Overlay):
         """
         self.__was_visible = self.is_visible()
         Gtk.Bin.hide(self)
-
-    @property
-    def was_visible(self):
-        """
-            True if widget was visible on previous hide
-        """
-        return self.__was_visible
 
     def mark_as(self, type):
         """
@@ -381,8 +374,6 @@ class SelectionList(Gtk.Overlay):
             Make treeview select first default item
             @param object id as int
         """
-        self.__to_select_ids = []
-        _ids = list(ids)
         if ids:
             try:
                 # Check if items are available for selection
@@ -391,22 +382,21 @@ class SelectionList(Gtk.Overlay):
                     for item in self.__model:
                         if item[0] == i:
                             items.append(item)
-                            _ids.remove(i)
-                # Select later
-                if _ids:
-                    self.__to_select_ids = _ids
-                else:
-                    for item in items:
-                        self.__selection.select_iter(item.iter)
-                    # Scroll to first item
-                    if items:
-                        self.__view.scroll_to_cell(items[0].path,
-                                                   None,
-                                                   True,
-                                                   0, 0)
+                self.__selection.disconnect_by_func(
+                                         self.__on_selection_changed)
+                for item in items:
+                    self.__selection.select_iter(item.iter)
+                self.__selection.connect("changed",
+                                         self.__on_selection_changed)
+                self.emit("item-selected")
+                # Scroll to first item
+                if items:
+                    self.__view.scroll_to_cell(items[0].path,
+                                               None,
+                                               True,
+                                               0, 0)
             except:
                 self.__last_motion_event = None
-                self.__to_select_ids = _ids
         else:
             self.__selection.unselect_all()
 
@@ -466,6 +456,13 @@ class SelectionList(Gtk.Overlay):
             for item in items:
                 selected_ids.append(model[item][0])
         return selected_ids
+
+    @property
+    def was_visible(self):
+        """
+            True if widget was visible on previous hide
+        """
+        return self.__was_visible
 
 #######################
 # PROTECTED           #
@@ -554,14 +551,6 @@ class SelectionList(Gtk.Overlay):
                     return True
         return False
 
-    def _on_selection_changed(self, selection):
-        """
-            Forward as "item-selected"
-            @param view as Gtk.TreeSelection
-        """
-        if not self.__updating and not self.__to_select_ids:
-            self.emit("item-selected")
-
 #######################
 # PRIVATE             #
 #######################
@@ -587,17 +576,10 @@ class SelectionList(Gtk.Overlay):
         icon_name = self.__get_icon_name(value[0])
         if not icon_name and string == _("Unknown"):
             icon_name = "dialog-warning-symbolic"
-        i = self.__model.append([value[0],
-                                 string,
-                                 icon_name,
-                                 sort])
-        if value[0] in self.__to_select_ids:
-            self.__to_select_ids.remove(value[0])
-            self.__selection.select_iter(i)
-            self.__view.scroll_to_cell(self.__model.get_path(i),
-                                       None,
-                                       True,
-                                       0, 0)
+        self.__model.append([value[0],
+                            string,
+                            icon_name,
+                            sort])
 
     def __add_values(self, values):
         """
@@ -609,7 +591,6 @@ class SelectionList(Gtk.Overlay):
             self.__add_value(value)
         if self.__type & self.Type.ARTISTS and self.__fast_scroll is not None:
             self.__fast_scroll.populate()
-        self.__to_select_ids = []
 
     def __get_icon_name(self, object_id):
         """
@@ -753,3 +734,10 @@ class SelectionList(Gtk.Overlay):
                 if item[1] == artist:
                     item[1] = artist
                     break
+
+    def __on_selection_changed(self, selection):
+        """
+            Forward as "item-selected"
+            @param view as Gtk.TreeSelection
+        """
+        self.emit("item-selected")
