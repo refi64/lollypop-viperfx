@@ -44,7 +44,8 @@ class Container(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__pulse_timeout = None
-        self.__list_one_state = App().settings.get_value("list-one-ids")
+        self.__list_one_state = App().settings.get_value("list-one-ids") or\
+            [Type.POPULARS]
         self.__list_two_state = App().settings.get_value("list-two-ids")
         # Index will start at -VOLUMES
         self.__devices = {}
