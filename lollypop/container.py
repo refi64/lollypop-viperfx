@@ -422,7 +422,7 @@ class Container(Gtk.Overlay):
         """
             Restore saved state for list
         """
-        if self.__list_one_state is None:
+        if not self.__list_one_state:
             return
         # Get list one ids (always)
         list_one_ids = []
@@ -433,13 +433,13 @@ class Container(Gtk.Overlay):
             list_one_ids = [Type.POPULARS]
         if list_one_ids[0] != Type.NONE:
             self.__list_one.select_ids(list_one_ids)
-        self.__list_one_state = None
+        self.__list_one_state = []
 
     def __restore_list_two_state(self):
         """
             Restore saved state for list
         """
-        if self.__list_two_state is None:
+        if not self.__list_two_state:
             return
         # Get list two ids (only on save state)
         list_two_ids = [Type.NONE]
@@ -450,7 +450,7 @@ class Container(Gtk.Overlay):
                     list_two_ids.append(i)
         if list_two_ids and list_two_ids[0] != Type.NONE:
             self.__list_two.select_ids(list_two_ids)
-        self.__list_two_state = None
+        self.__list_two_state = []
 
     def __update_playlists(self, playlists, playlist_id):
         """
