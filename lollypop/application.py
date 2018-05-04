@@ -498,20 +498,6 @@ class Application(Gtk.Application):
             helper.run(self.art.clean_all_cache)
             self.scanner.update()
 
-    def __fullscreen(self, action=None, param=None):
-        """
-            Show a fullscreen window with cover and artist information
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        if self.window and not self.is_fullscreen():
-            from lollypop.fullscreen import FullScreen
-            self.__fs = FullScreen(self, self.window)
-            self.__fs.connect("destroy", self.__on_fs_destroyed)
-            self.__fs.show()
-        elif self.window and self.is_fullscreen():
-            self.__fs.destroy()
-
     def __on_fs_destroyed(self, widget):
         """
             Mark fullscreen as False
@@ -530,40 +516,7 @@ class Application(Gtk.Application):
         monotonic_time = int(GLib.get_monotonic_time() / 1000)
         self.window.present_with_time(monotonic_time)
 
-    def __settings_dialog(self, action=None, param=None):
-        """
-            Show settings dialog
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        dialog = SettingsDialog()
-        dialog.show()
-
-    def __about(self, action, param):
-        """
-            Setup about dialog
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/AboutDialog.ui")
-        about = builder.get_object("about_dialog")
-        about.set_transient_for(self.window)
-        about.connect("response", self.__about_response)
-        about.show()
-
-    def __shortcuts(self, action, param):
-        """
-            Show shorctus
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/Shortcuts.ui")
-        builder.get_object("shortcuts").set_transient_for(self.window)
-        builder.get_object("shortcuts").show()
-
-    def __about_response(self, dialog, response_id):
+    def __on_about_activate_response(self, dialog, response_id):
         """
             Destroy about dialog when closed
             @param dialog as Gtk.Dialog
@@ -581,7 +534,7 @@ class Application(Gtk.Application):
         menu = builder.get_object("app-menu")
 
         settings_action = Gio.SimpleAction.new("settings", None)
-        settings_action.connect("activate", self.__settings_dialog)
+        settings_action.connect("activate", self.__on_settings_activate)
         self.add_action(settings_action)
 
         update_action = Gio.SimpleAction.new("update_db", None)
@@ -589,7 +542,7 @@ class Application(Gtk.Application):
         self.add_action(update_action)
 
         fs_action = Gio.SimpleAction.new("fullscreen", None)
-        fs_action.connect("activate", self.__fullscreen)
+        fs_action.connect("activate", self.__on_fs_activate)
         self.add_action(fs_action)
 
         show_sidebar = self.settings.get_value("show-sidebar")
@@ -605,11 +558,11 @@ class Application(Gtk.Application):
         self.add_action(mini_action)
 
         about_action = Gio.SimpleAction.new("about", None)
-        about_action.connect("activate", self.__about)
+        about_action.connect("activate", self.__on_about_activate)
         self.add_action(about_action)
 
         shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
-        shortcuts_action.connect("activate", self.__shortcuts)
+        shortcuts_action.connect("activate", self.__on_shortcuts_activate)
         self.add_action(shortcuts_action)
 
         quit_action = Gio.SimpleAction.new("quit", None)
@@ -626,3 +579,50 @@ class Application(Gtk.Application):
         """
         action.set_state(value)
         self.window.container.show_sidebar()
+
+    def __on_fs_activate(self, action, param):
+        """
+            Show a fullscreen window with cover and artist information
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        if self.window and not self.is_fullscreen():
+            from lollypop.fullscreen import FullScreen
+            self.__fs = FullScreen(self, self.window)
+            self.__fs.connect("destroy", self.__on_fs_destroyed)
+            self.__fs.show()
+        elif self.window and self.is_fullscreen():
+            self.__fs.destroy()
+
+    def __on_settings_activate(self, action, param):
+        """
+            Show settings dialog
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        dialog = SettingsDialog()
+        dialog.show()
+
+    def __on_about_activate(self, action, param):
+        """
+            Setup about dialog
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/AboutDialog.ui")
+        about = builder.get_object("about_dialog")
+        about.set_transient_for(self.window)
+        about.connect("response", self.__on_about_activate_response)
+        about.show()
+
+    def __on_shortcuts_activate(self, action, param):
+        """
+            Show shorctus
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/Shortcuts.ui")
+        builder.get_object("shortcuts").set_transient_for(self.window)
+        builder.get_object("shortcuts").show()
