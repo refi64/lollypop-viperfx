@@ -794,6 +794,7 @@ class Container(Gtk.Overlay):
             @param list as SelectionList
         """
         view = None
+        list_two_about_to_do_selection = list(self.__list_two_state)
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
@@ -808,7 +809,8 @@ class Container(Gtk.Overlay):
             self.__list_two.hide()
         # Update view
         if selected_ids[0] == Type.PLAYLISTS:
-            view = self.__get_view_playlists()
+            if not list_two_about_to_do_selection:
+                view = self.__get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             view = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
