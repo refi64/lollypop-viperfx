@@ -272,7 +272,7 @@ class SelectionList(Gtk.Overlay):
         """
             Show widget if wanted
         """
-        if App().settings.get_value("show-navigation-list"):
+        if App().settings.get_value("show-sidebar"):
             Gtk.Bin.show(self)
 
     def mark_as(self, type):

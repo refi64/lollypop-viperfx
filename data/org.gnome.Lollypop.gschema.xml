@@ -178,9 +178,9 @@
             <summary>Show list of genres</summary>
             <description></description>
         </key>
-         <key type="b" name="show-navigation-list">
+         <key type="b" name="show-sidebar">
             <default>true</default>
-            <summary>Show navigation list</summary>
+            <summary>Show sidebar</summary>
             <description></description>
         </key>
         <key type="b" name="artist-artwork">

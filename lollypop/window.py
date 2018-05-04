@@ -218,7 +218,7 @@ class Window(Gtk.ApplicationWindow):
                                     ["<Alt>a"])
         App().set_accels_for_action("app.shortcut::show_genres",
                                     ["<Control>g"])
-        App().set_accels_for_action("app.shortcut::hide_paned", ["<Control>h"])
+        App().set_accels_for_action("app.shortcut::show_sidebar", ["F9"])
         App().set_accels_for_action("app.update_db", ["<Control>u"])
         App().set_accels_for_action("app.settings", ["<Control>s"])
         App().set_accels_for_action("app.fullscreen", ["F11", "F7"])
@@ -530,8 +530,8 @@ class Window(Gtk.ApplicationWindow):
             App().player.lock()
         elif string == "lyrics":
             App().window.container.show_lyrics()
-        elif string == "hide_paned":
-            self.__container.hide_paned()
+        elif string == "show_sidebar":
+            self.__container.show_sidebar()
         elif string == "filter":
             if self.container.view is not None:
                 self.container.view.enable_filter()

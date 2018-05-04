@@ -580,32 +580,49 @@ class Application(Gtk.Application):
         builder.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
         menu = builder.get_object("app-menu")
 
-        settingsAction = Gio.SimpleAction.new("settings", None)
-        settingsAction.connect("activate", self.__settings_dialog)
-        self.add_action(settingsAction)
+        settings_action = Gio.SimpleAction.new("settings", None)
+        settings_action.connect("activate", self.__settings_dialog)
+        self.add_action(settings_action)
 
-        updateAction = Gio.SimpleAction.new("update_db", None)
-        updateAction.connect("activate", self.__update_db)
-        self.add_action(updateAction)
+        update_action = Gio.SimpleAction.new("update_db", None)
+        update_action.connect("activate", self.__update_db)
+        self.add_action(update_action)
 
-        fsAction = Gio.SimpleAction.new("fullscreen", None)
-        fsAction.connect("activate", self.__fullscreen)
-        self.add_action(fsAction)
+        fs_action = Gio.SimpleAction.new("fullscreen", None)
+        fs_action.connect("activate", self.__fullscreen)
+        self.add_action(fs_action)
+
+        show_sidebar = self.settings.get_value("show-sidebar")
+        sidebar_action = Gio.SimpleAction.new_stateful(
+            "sidebar",
+            None,
+            GLib.Variant.new_boolean(show_sidebar))
+        sidebar_action.connect("change-state", self.__on_sidebar_change_state)
+        self.add_action(sidebar_action)
 
         mini_action = Gio.SimpleAction.new("mini", None)
         mini_action.connect("activate", self.set_mini)
         self.add_action(mini_action)
 
-        aboutAction = Gio.SimpleAction.new("about", None)
-        aboutAction.connect("activate", self.__about)
-        self.add_action(aboutAction)
+        about_action = Gio.SimpleAction.new("about", None)
+        about_action.connect("activate", self.__about)
+        self.add_action(about_action)
 
-        shortcutsAction = Gio.SimpleAction.new("shortcuts", None)
-        shortcutsAction.connect("activate", self.__shortcuts)
-        self.add_action(shortcutsAction)
+        shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
+        shortcuts_action.connect("activate", self.__shortcuts)
+        self.add_action(shortcuts_action)
 
-        quitAction = Gio.SimpleAction.new("quit", None)
-        quitAction.connect("activate", lambda x, y: self.quit(True))
-        self.add_action(quitAction)
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", lambda x, y: self.quit(True))
+        self.add_action(quit_action)
 
         return menu
+
+    def __on_sidebar_change_state(self, action, value):
+        """
+            Show/hide sidebar
+            @param action as Gio.SimpleAction
+            @param value as bool
+        """
+        action.set_state(value)
+        self.window.container.show_sidebar()
