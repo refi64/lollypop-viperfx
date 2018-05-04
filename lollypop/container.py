@@ -44,8 +44,8 @@ class Container(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__pulse_timeout = None
-        self.__list_one_restored = False
-        self.__list_two_restored = False
+        self.__list_one_state = App().settings.get_value("list-one-ids")
+        self.__list_two_state = App().settings.get_value("list-two-ids")
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
@@ -383,8 +383,7 @@ class Container(Gtk.Overlay):
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__list_one = SelectionList(SelectionList.Type.LIST_ONE)
-        if App().settings.get_value("show-navigation-list"):
-            self.__list_one.show()
+        self.__list_one.show()
         self.__list_two = SelectionList(SelectionList.Type.LIST_TWO)
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
         self.__list_one.connect("populated", self.__on_list_populated)
@@ -423,37 +422,35 @@ class Container(Gtk.Overlay):
         """
             Restore saved state for list
         """
-        if self.__list_one_restored:
+        if self.__list_one_state is None:
             return
-        self.__list_one_restored = True
         # Get list one ids (always)
         list_one_ids = []
-        ids = App().settings.get_value("list-one-ids")
-        for i in ids:
+        for i in self.__list_one_state:
             if isinstance(i, int):
                 list_one_ids.append(i)
         if not list_one_ids:
             list_one_ids = [Type.POPULARS]
         if list_one_ids[0] != Type.NONE:
             self.__list_one.select_ids(list_one_ids)
+        self.__list_one_state = None
 
     def __restore_list_two_state(self):
         """
             Restore saved state for list
         """
-        if self.__list_two_restored:
+        if self.__list_two_state is None:
             return
-        self.__list_two_restored = True
         # Get list two ids (only on save state)
         list_two_ids = [Type.NONE]
         if App().settings.get_value("save-state"):
             list_two_ids = []
-            ids = App().settings.get_value("list-two-ids")
-            for i in ids:
+            for i in self.__list_two_state:
                 if isinstance(i, int):
                     list_two_ids.append(i)
         if list_two_ids and list_two_ids[0] != Type.NONE:
             self.__list_two.select_ids(list_two_ids)
+        self.__list_two_state = None
 
     def __update_playlists(self, playlists, playlist_id):
         """
@@ -800,26 +797,29 @@ class Container(Gtk.Overlay):
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
+        # Update lists
         if selected_ids[0] == Type.PLAYLISTS:
-            if App().settings.get_value("show-navigation-list"):
-                self.__list_two.show()
-            view = self.__get_view_playlists()
             self.__update_list_playlists(False)
-        elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
+            self.__list_two.show()
+        elif selected_ids[0] > 0:
+            self.__update_list_artists(self.__list_two, selected_ids, False)
+            self.__list_two.show()
+        else:
             self.__list_two.hide()
+        # Update view
+        if selected_ids[0] == Type.PLAYLISTS:
+            view = self.__get_view_playlists()
+        elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             view = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
                                  Type.NEVER,
                                  Type.RANDOMS]:
-            self.__list_two.hide()
             view = self.__get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
-            self.__list_two.hide()
             view = self.__get_view_radios()
         elif selection_list.type & SelectionList.Type.ARTISTS:
-            self.__list_two.hide()
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:
@@ -827,9 +827,6 @@ class Container(Gtk.Overlay):
             else:
                 view = self.__get_view_artists([], selected_ids)
         else:
-            self.__update_list_artists(self.__list_two, selected_ids, False)
-            if App().settings.get_value("show-navigation-list"):
-                self.__list_two.show()
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
             if self.is_paned_stack:

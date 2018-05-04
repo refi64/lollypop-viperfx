@@ -268,6 +268,13 @@ class SelectionList(Gtk.Overlay):
         self.__was_visible = self.is_visible()
         Gtk.Bin.hide(self)
 
+    def show(self):
+        """
+            Show widget if wanted
+        """
+        if App().settings.get_value("show-navigation-list"):
+            Gtk.Bin.show(self)
+
     def mark_as(self, type):
         """
             Mark list as artists list
