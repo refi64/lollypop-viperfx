@@ -792,13 +792,11 @@ class Container(Gtk.Overlay):
         if selected_ids[0] == Type.PLAYLISTS:
             if App().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
-            if not self.__list_two.will_be_selected():
-                view = self.__get_view_playlists()
+            view = self.__get_view_playlists()
             self.__update_list_playlists(False)
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self.__list_two.hide()
-            if not self.__list_two.will_be_selected():
-                view = self.__get_view_device(selected_ids[0])
+            view = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
@@ -821,8 +819,7 @@ class Container(Gtk.Overlay):
             self.__update_list_artists(self.__list_two, selected_ids, False)
             if App().settings.get_value("show-navigation-list"):
                 self.__list_two.show()
-            if not self.__list_two.will_be_selected():
-                view = self.__get_view_albums(selected_ids, [])
+            view = self.__get_view_albums(selected_ids, [])
         if view is not None:
             if self.is_paned_stack:
                 # Just to make it sensitive

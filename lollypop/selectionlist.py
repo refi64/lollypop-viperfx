@@ -376,13 +376,6 @@ class SelectionList(Gtk.Overlay):
                 return item[1]
         return ""
 
-    def will_be_selected(self):
-        """
-            Return True if list will select items on populate
-            @return selected as bool
-        """
-        return self.__to_select_ids
-
     def select_ids(self, ids):
         """
             Make treeview select first default item
