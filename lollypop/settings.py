@@ -17,7 +17,6 @@ from gettext import ngettext as ngettext
 
 from lollypop.define import App
 from lollypop.database import Database
-from lollypop.touch_helper import TouchHelper
 from lollypop.database_history import History
 from lollypop.helper_dbus import DBusHelper
 
@@ -132,12 +131,10 @@ class SettingsDialog:
         switch_network_access.set_state(network_access)
 
         switch_transitions = builder.get_object("switch_transitions")
-        switch_transitions.set_state(
-            App().settings.get_value("smooth-transitions"))
-
-        helper = TouchHelper(switch_transitions, None, None)
-        helper.set_long_func(self.__mix_long_func, switch_transitions)
-        helper.set_short_func(self.__mix_short_func, switch_transitions)
+        smooth_transitions = App().settings.get_value("smooth-transitions")
+        switch_transitions.set_state(smooth_transitions)
+        builder.get_object("transitions_button").set_sensitive(
+            smooth_transitions)
 
         switch_mix_party = builder.get_object("switch_mix_party")
         switch_mix_party.set_state(App().settings.get_value("party-mix"))
@@ -159,12 +156,10 @@ class SettingsDialog:
             App().settings.get_value("show-compilations-in-album-view"))
 
         switch_compilations = builder.get_object("switch_compilations")
-        switch_compilations.set_state(
-            App().settings.get_value("show-compilations"))
-
-        helper = TouchHelper(switch_compilations, None, None)
-        helper.set_long_func(self.__mix_long_func, switch_compilations)
-        helper.set_short_func(self.__mix_short_func, switch_compilations)
+        show_compilations = App().settings.get_value("show-compilations")
+        switch_compilations.set_state(show_compilations)
+        builder.get_object("compilations_button").set_sensitive(
+            show_compilations)
 
         switch_artwork = builder.get_object("switch_artwork")
         switch_artwork.set_state(App().settings.get_value("artist-artwork"))
@@ -180,12 +175,12 @@ class SettingsDialog:
             App().settings.get_value("cover-size").get_int32())
         self.__settings_dialog.connect("destroy", self.__edit_settings_close)
 
-        builder.connect_signals(self)
-
         main_chooser_box = builder.get_object("main_chooser_box")
         self.__chooser_box = builder.get_object("chooser_box")
 
         self.__set_outputs(combo_preview)
+
+        builder.connect_signals(self)
 
         #
         # Music tab
@@ -340,19 +335,23 @@ class SettingsDialog:
         App().settings.set_value("show-genres",
                                  GLib.Variant("b", state))
 
+    def _on_transitions_button_clicked(self, widget):
+        """
+            Show popover
+            @param widget as Gtk.Button
+        """
+        self.__popover_transitions.popup()
+
     def _on_switch_transitions_state_set(self, widget, state):
         """
             Update smooth transitions setting
-            @param widget as Gtk.Switch
+            @param widget as Gtk.Button
             @param state as bool
         """
+        widget.set_sensitive(state)
         App().settings.set_value("smooth-transitions",
                                  GLib.Variant("b", state))
         App().player.update_crossfading()
-        if state:
-            self.__popover_transitions.popup()
-        else:
-            self.__popover_transitions.popdown()
 
     def _on_switch_mix_party_state_set(self, widget, state):
         """
@@ -379,18 +378,22 @@ class SettingsDialog:
         """
         App().settings.set_value("save-to-tags", GLib.Variant("b", state))
 
+    def _on_compilations_button_clicked(self, widget):
+        """
+            Show compilations popover
+            @param widget as Gtk.Button
+        """
+        self.__popover_compilations.popup()
+
     def _on_switch_compilations_state_set(self, widget, state):
         """
             Update show compilations setting
-            @param widget as Gtk.Switch
+            @param widget as Gtk.Button
             @param state as bool
         """
+        widget.set_sensitive(state)
         App().settings.set_value("show-compilations",
                                  GLib.Variant("b", state))
-        if state:
-            self.__popover_compilations.popup()
-        else:
-            self.__popover_compilations.popdown()
 
     def _on_switch_compilations_in_album_view_state_set(self, widget, state):
         """
@@ -586,13 +589,8 @@ class SettingsDialog:
             Show popover
             @param args as []
         """
-        # FIXME use *args in TouchHelper (now I know how it works)
-        if App().settings.get_value("smooth-transitions"):
-            if self.__popover_transitions.get_relative_to() == args[0]:
-                self.__popover_transitions.popup()
         if App().settings.get_value("show-compilations"):
-            if self.__popover_compilations.get_relative_to() == args[0]:
-                self.__popover_compilations.popup()
+            self.__popover_compilations.popup()
 
     def __mix_short_func(self, args):
         """

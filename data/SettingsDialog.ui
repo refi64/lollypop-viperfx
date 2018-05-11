@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.4 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkHeaderBar" id="header_bar">
@@ -10,14 +10,12 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">window-close-symbolic</property>
-    <property name="icon_size">1</property>
+    <property name="icon_name">preferences-system-symbolic</property>
   </object>
-  <object class="GtkImage" id="image2">
+  <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">window-close-symbolic</property>
-    <property name="icon_size">1</property>
+    <property name="icon_name">preferences-system-symbolic</property>
   </object>
   <object class="GtkWindow" id="settings_dialog">
     <property name="can_focus">False</property>
@@ -29,6 +27,9 @@
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <signal name="key-release-event" handler="_on_key_release_event" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkNotebook" id="content">
         <property name="visible">True</property>
@@ -119,9 +120,9 @@
               <object class="GtkSwitch" id="switch_compilations">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Long press to show options</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_on_switch_compilations_state_set" swapped="no"/>
+                <property name="valign">center</property>
+                <signal name="state-set" handler="_on_switch_compilations_state_set" object="compilations_button" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -209,6 +210,35 @@
                 <property name="left_attach">1</property>
                 <property name="top_attach">4</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="compilations_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">image3</property>
+                <property name="relief">none</property>
+                <signal name="clicked" handler="_on_compilations_button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
         </child>
@@ -332,9 +362,9 @@
               <object class="GtkSwitch" id="switch_transitions">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Long press to show options</property>
                 <property name="halign">end</property>
-                <signal name="state-set" handler="_on_switch_transitions_state_set" swapped="no"/>
+                <property name="valign">center</property>
+                <signal name="state-set" handler="_on_switch_transitions_state_set" object="transitions_button" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -418,6 +448,38 @@
                 <property name="left_attach">1</property>
                 <property name="top_attach">5</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="transitions_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">image1</property>
+                <property name="relief">none</property>
+                <signal name="clicked" handler="_on_transitions_button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -1144,15 +1206,11 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
   <object class="GtkPopover" id="popover-compilations">
     <property name="can_focus">False</property>
-    <property name="relative_to">switch_compilations</property>
+    <property name="relative_to">compilations_button</property>
     <property name="position">bottom</property>
-    <property name="modal">False</property>
     <property name="constrain_to">none</property>
     <child>
       <object class="GtkGrid">
@@ -1203,22 +1261,6 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button2">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="halign">end</property>
-            <property name="valign">start</property>
-            <property name="image">image2</property>
-            <property name="relief">none</property>
-            <signal name="clicked" handler="_hide_popover" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="label11">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -1247,13 +1289,15 @@ and with different artists.</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
+        <child>
+          <placeholder/>
+        </child>
       </object>
     </child>
   </object>
   <object class="GtkPopover" id="popover-transitions">
     <property name="can_focus">False</property>
-    <property name="relative_to">switch_transitions</property>
-    <property name="modal">False</property>
+    <property name="relative_to">transitions_button</property>
     <property name="constrain_to">none</property>
     <child>
       <object class="GtkGrid">
@@ -1318,22 +1362,6 @@ and with different artists.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button1">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="halign">end</property>
-            <property name="valign">start</property>
-            <property name="image">image1</property>
-            <property name="relief">none</property>
-            <signal name="clicked" handler="_hide_popover" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="label8">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -1343,6 +1371,9 @@ and with different artists.</property>
             <property name="left_attach">0</property>
             <property name="top_attach">0</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
