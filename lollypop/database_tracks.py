@@ -685,7 +685,7 @@ class TracksDatabase:
         """
             Search for tracks looking like searched
             @param searched as string
-            return: list of [id as int, name as string]
+            @return [int]
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
