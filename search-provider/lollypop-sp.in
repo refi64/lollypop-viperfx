@@ -221,7 +221,7 @@ class SearchLollypopService(Server, Gio.Application):
                     if str(album_id) not in ids:
                         ids.append("a:"+str(album_id))
             # Search for tracks
-            for (track_id, name) in self.tracks.search(search):
+            for track_id in self.tracks.search(search):
                 ids.append("t:"+str(track_id))
         except Exception as e:
             print("SearchLollypopService::__search():", e)
