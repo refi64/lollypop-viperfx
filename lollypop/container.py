@@ -190,9 +190,9 @@ class Container(Gtk.Overlay):
         """
             Reload current view
         """
-        if self.__list_two.is_visible():
+        if self.__list_two.selected_ids:
             self.__on_list_two_selected(self.__list_two)
-        else:
+        elif self.__list_one.selected_ids:
             self.__on_list_one_selected(self.__list_one)
 
     def pulse(self, pulse):
@@ -294,8 +294,7 @@ class Container(Gtk.Overlay):
             self.show_sidebar(True)
             self.__list_one.show()
             App().window.toolbar.playback.show_back(True, True)
-            if self.__list_one.selected_ids:
-                self.reload_view()
+            self.reload_view()
         elif not b and self.is_paned_stack:
             value = App().settings.get_value("show-sidebar")
             self.show_sidebar(value)
@@ -304,8 +303,7 @@ class Container(Gtk.Overlay):
             self.__paned_list_view.add1(self.__list_two)
             self.__paned_main_list.add1(self.__list_one)
             App().window.toolbar.playback.show_back(False)
-            if self.__list_one.selected_ids:
-                self.reload_view()
+            self.reload_view()
 
     def show_sidebar(self, value):
         """
