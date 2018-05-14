@@ -292,7 +292,6 @@ class Container(Gtk.Overlay):
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
             self.show_sidebar(True)
-            self.__list_one.show()
             App().window.toolbar.playback.show_back(True, True)
             self.reload_view()
         elif not b and self.is_paned_stack:
@@ -311,8 +310,6 @@ class Container(Gtk.Overlay):
             @param value as bool
             Internally hide list one and list two
         """
-        App().settings.set_value("show-sidebar",
-                                 GLib.Variant("b", value))
         if value:
             self.__list_one.show()
             if self.__list_two.was_visible:
