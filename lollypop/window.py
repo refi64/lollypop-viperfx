@@ -531,7 +531,8 @@ class Window(Gtk.ApplicationWindow):
         elif string == "lyrics":
             App().window.container.show_lyrics()
         elif string == "show_sidebar":
-            self.__container.show_sidebar()
+            value = App().settings.get_value("show-sidebar")
+            self.__container.show_sidebar(not value)
         elif string == "filter":
             if self.container.view is not None:
                 self.container.view.enable_filter()

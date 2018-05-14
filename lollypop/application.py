@@ -578,7 +578,7 @@ class Application(Gtk.Application):
             @param value as bool
         """
         action.set_state(value)
-        self.window.container.show_sidebar()
+        self.window.container.show_sidebar(value)
 
     def __on_fs_activate(self, action, param):
         """

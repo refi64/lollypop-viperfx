@@ -298,10 +298,14 @@ class Container(Gtk.Overlay):
             self.__paned_main_list.remove(self.__list_one)
             self.__stack.add(self.__list_one)
             self.__stack.add(self.__list_two)
+            self.show_sidebar(True)
+            self.__list_one.show()
             App().window.toolbar.playback.show_back(True, True)
             if self.__list_one.selected_ids:
                 self.reload_view()
         elif not b and self.is_paned_stack:
+            value = App().settings.get_value("show-sidebar")
+            self.show_sidebar(value)
             self.__stack.remove(self.__list_two)
             self.__stack.remove(self.__list_one)
             self.__paned_list_view.add1(self.__list_two)
@@ -310,21 +314,21 @@ class Container(Gtk.Overlay):
             if self.__list_one.selected_ids:
                 self.reload_view()
 
-    def show_sidebar(self):
+    def show_sidebar(self, value):
         """
             Show/Hide navigation sidebar
+            @param value as bool
             Internally hide list one and list two
         """
-        value = App().settings.get_value("show-sidebar")
         App().settings.set_value("show-sidebar",
-                                 GLib.Variant("b", not value))
+                                 GLib.Variant("b", value))
         if value:
-            self.__list_two.hide()
-            self.__list_one.hide()
-        else:
             self.__list_one.show()
             if self.__list_two.was_visible:
                 self.__list_two.show()
+        else:
+            self.__list_two.hide()
+            self.__list_one.hide()
 
     @property
     def view(self):
