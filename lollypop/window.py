@@ -573,7 +573,8 @@ class Window(Gtk.ApplicationWindow):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
-        GLib.idle_add(self.__container.update_list_one)
+        # We delay update_list_one() to be sure inital stacked mode is set
+        GLib.timeout_add(250, self.__container.update_list_one)
         # Here we ignore initial configure events
         GLib.timeout_add(200, self.__connect_state_signals)
 
