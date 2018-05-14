@@ -198,7 +198,6 @@ class Container(Gtk.Overlay):
         self.__list_one.select_ids(values_one)
         if self.__list_two.is_visible():
             self.__list_two.select_ids([])
-            self.update_list_two()
             self.__list_two.select_ids(values_two)
 
     def pulse(self, pulse):
