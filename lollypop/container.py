@@ -195,7 +195,6 @@ class Container(Gtk.Overlay):
         if not values_one:
             values_one = [Type.POPULARS]
         self.__list_one.select_ids([])
-        self.update_list_one()
         self.__list_one.select_ids(values_one)
         if self.__list_two.is_visible():
             self.__list_two.select_ids([])
