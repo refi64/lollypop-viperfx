@@ -213,7 +213,6 @@ class SelectionList(Gtk.Overlay):
         self.__timeout = None
         self.__modifier = False
         self.__populating = False
-        self.__updating = False       # Sort disabled if False
         self.__type = 0
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SelectionList.ui")
@@ -291,13 +290,14 @@ class SelectionList(Gtk.Overlay):
         """
         if self.__populating:
             return
-        self.clear()
         self.__populating = True
-        if len(self.__model) > 0:
-            self.__updating = True
+        self.__selection.disconnect_by_func(
+                                         self.__on_selection_changed)
+        self.clear()
         self.__add_values(values)
+        self.__selection.connect("changed",
+                                 self.__on_selection_changed)
         self.emit("populated")
-        self.__updating = False
         self.__populating = False
 
     def remove_value(self, object_id):
@@ -319,9 +319,7 @@ class SelectionList(Gtk.Overlay):
         for item in self.__model:
             if item[0] == value[0]:
                 return
-        self.__updating = True
         self.__add_value(value)
-        self.__updating = False
 
     def update_value(self, object_id, name):
         """
@@ -329,7 +327,6 @@ class SelectionList(Gtk.Overlay):
             @param object id as int
             @param name as str
         """
-        self.__updating = True
         found = False
         for item in self.__model:
             if item[0] == object_id:
@@ -338,7 +335,6 @@ class SelectionList(Gtk.Overlay):
                 break
         if not found:
             self.__add_value((object_id, name))
-        self.__updating = False
 
     def update_values(self, values):
         """
@@ -346,7 +342,6 @@ class SelectionList(Gtk.Overlay):
             @param [(int, str, optional str)]
             @thread safe
         """
-        self.__updating = True
         update_fast_scroll = self.__type & self.Type.ARTISTS and\
             self.__fast_scroll is not None
         if update_fast_scroll:
@@ -363,7 +358,6 @@ class SelectionList(Gtk.Overlay):
                 self.__add_value(value)
         if update_fast_scroll:
             self.__fast_scroll.populate()
-        self.__updating = False
 
     def get_value(self, object_id):
         """
@@ -417,13 +411,11 @@ class SelectionList(Gtk.Overlay):
         """
             Clear treeview
         """
-        self.__updating = True
         self.__model.clear()
         if self.__type & self.Type.ARTISTS and self.__fast_scroll is not None:
             self.__fast_scroll.clear()
             self.__fast_scroll.clear_chars()
             self.__fast_scroll.hide()
-        self.__updating = False
 
     def get_headers(self):
         """
@@ -636,7 +628,7 @@ class SelectionList(Gtk.Overlay):
         """
             Sort model
         """
-        if not self.__updating:
+        if self.__populating:
             return False
 
         a_index = model.get_value(itera, 0)
