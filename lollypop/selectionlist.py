@@ -267,11 +267,12 @@ class SelectionList(Gtk.Overlay):
         self.__was_visible = self.is_visible()
         Gtk.Bin.hide(self)
 
-    def show(self):
+    def show(self, force=False):
         """
             Show widget if wanted
+            @param force as bool
         """
-        if App().settings.get_value("show-sidebar"):
+        if force or App().settings.get_value("show-sidebar"):
             Gtk.Bin.show(self)
 
     def mark_as(self, type):
