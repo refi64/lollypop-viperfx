@@ -190,15 +190,10 @@ class Container(Gtk.Overlay):
         """
             Reload current view
         """
-        values_two = self.__list_two.selected_ids
-        values_one = self.__list_one.selected_ids
-        if not values_one:
-            values_one = [Type.POPULARS]
-        self.__list_one.select_ids([])
-        self.__list_one.select_ids(values_one)
         if self.__list_two.is_visible():
-            self.__list_two.select_ids([])
-            self.__list_two.select_ids(values_two)
+            self.__on_list_two_selected(self.__list_two)
+        else:
+            self.__on_list_one_selected(self.__list_one)
 
     def pulse(self, pulse):
         """
