@@ -186,12 +186,11 @@ class Container(Gtk.Overlay):
                 self.__stack.clean_old_views(child)
                 break
 
-    def reload_view(self, full=False):
+    def reload_view(self):
         """
             Reload current view
-            @param full as bool
         """
-        if not full and self.__list_two.selected_ids:
+        if self.__list_two.selected_ids:
             self.__on_list_two_selected(self.__list_two)
         elif self.__list_one.selected_ids:
             self.__on_list_one_selected(self.__list_one)
@@ -797,7 +796,8 @@ class Container(Gtk.Overlay):
         if selected_ids[0] == Type.PLAYLISTS:
             self.__update_list_playlists(False)
             self.__list_two.show()
-        elif selected_ids[0] > 0:
+        elif selected_ids[0] > 0 and\
+                self.__list_one.type & SelectionList.Type.GENRE:
             self.__update_list_artists(self.__list_two, selected_ids, False)
             self.__list_two.show()
         else:
