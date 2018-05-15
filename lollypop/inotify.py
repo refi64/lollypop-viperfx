@@ -27,7 +27,7 @@ class Inotify:
         """
             Init inode notification
         """
-        self.__monitors = []
+        self.__monitors = {}
         self.__timeout = None
 
     def add_monitor(self, uri):
@@ -36,7 +36,7 @@ class Inotify:
             @param uri as string
         """
         # Check if there is already a monitor for this uri
-        if uri in self.__monitors:
+        if uri in self.__monitors.keys():
             return
         try:
             f = Gio.File.new_for_uri(uri)
@@ -44,7 +44,7 @@ class Inotify:
                                           None)
             if monitor is not None:
                 monitor.connect("changed", self.__on_dir_changed)
-                self.__monitors.append(uri)
+                self.__monitors[uri] = monitor
         except Exception as e:
             print("Inotify::add_monitor():", e)
 
