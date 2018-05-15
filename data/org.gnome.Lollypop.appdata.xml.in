@@ -27,11 +27,12 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.509" date="2018-05-15">
+    <release version="0.9.510" date="2018-05-15">
       <description>
         <ul>
           <li>Fix fullscreen on multihead</li>
           <li>Rework sidebar</li>
+          <li>Fix inotify support</li>
         </ul>
       </description>
     </release>
