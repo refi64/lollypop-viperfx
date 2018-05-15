@@ -186,11 +186,12 @@ class Container(Gtk.Overlay):
                 self.__stack.clean_old_views(child)
                 break
 
-    def reload_view(self):
+    def reload_view(self, full=False):
         """
             Reload current view
+            @param full as bool
         """
-        if self.__list_two.selected_ids:
+        if not full and self.__list_two.selected_ids:
             self.__on_list_two_selected(self.__list_two)
         elif self.__list_one.selected_ids:
             self.__on_list_one_selected(self.__list_one)
