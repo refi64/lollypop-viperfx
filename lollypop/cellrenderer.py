@@ -78,6 +78,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         Gtk.CellRendererText.__init__(self)
         self.__is_artists = False
         self.__surfaces = {}
+        self.__draw_artwork = False
         self.__scale_factor = None
 
     def set_is_artists(self, is_artists):
@@ -89,10 +90,7 @@ class CellRendererArtist(Gtk.CellRendererText):
             self.__surfaces = {}
 
         size = ArtSize.ARTIST_SMALL * self.__scale_factor
-        draw_artwork = self.__is_artists and\
-            self.rowid >= 0 and\
-            App().settings.get_value("artist-artwork")
-        if draw_artwork:
+        if self.__draw_artwork:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = ArtSize.ARTIST_SMALL + self.xshift * 2
                 cell_area.width -= ArtSize.ARTIST_SMALL
@@ -101,7 +99,7 @@ class CellRendererArtist(Gtk.CellRendererText):
                 cell_area.width -= ArtSize.ARTIST_SMALL + self.xshift
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
-        if draw_artwork:
+        if self.__draw_artwork:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = self.xshift
             else:
@@ -146,10 +144,10 @@ class CellRendererArtist(Gtk.CellRendererText):
         ctx.paint()
 
     def do_get_preferred_height_for_width(self, widget, width):
-        draw_artwork = self.__is_artists and\
+        self.__draw_artwork = self.__is_artists and\
             self.rowid >= 0 and\
             App().settings.get_value("artist-artwork")
-        if draw_artwork:
+        if self.__draw_artwork:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
