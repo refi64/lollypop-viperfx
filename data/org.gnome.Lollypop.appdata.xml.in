@@ -27,31 +27,11 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.508" date="2018-05-02">
+    <release version="0.9.509" date="2018-05-15">
       <description>
         <ul>
-          <li>Add Alt-a shortcut</li>
-          <li>Donation popup (beer, beer, beer)</li>
-          <li>Simpler radio widget</li>
-          <li>Handle external tracks as internal</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.505" date="2018-04-18">
-      <description>
-        <ul>
-          <li>Rework all Shuffle code</li>
-          <li>Add some blur to lyrics view</li>
-          <li>Import playlists from disk</li>
-          <li>Allow exporting playlists to disk</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.504" date="2018-04-13">
-      <description>
-        <ul>
-          <li>Information popover was mostly broken :-/</li>
-          <li>Same for indicator code</li>
+          <li>Fix fullscreen on multihead</li>
+          <li>Rework sidebar</li>
         </ul>
       </description>
     </release>
