@@ -196,7 +196,7 @@ class DeviceView(View):
         """
             Stop syncing
         """
-        self.__device_widget.cancel_sync()
+        pass
 
     def __on_sync_finished(self, device_widget):
         """
