@@ -25,9 +25,9 @@ PATH_SUBMIT = "/1/submit-listens"
 
 class ListenBrainz(GObject.GObject):
     """
-    Submit listens to ListenBrainz.org.
+        Submit listens to ListenBrainz.org.
 
-    See https://listenbrainz.readthedocs.io/en/latest/dev/api.html
+        See https://listenbrainz.readthedocs.io/en/latest/dev/api.html
     """
 
     user_token = GObject.Property(type=str, default=None)
