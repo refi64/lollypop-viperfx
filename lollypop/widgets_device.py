@@ -45,24 +45,16 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self.__stop = False
         self._uri = None
 
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerWidget.ui")
-        widget = builder.get_object("widget")
-        self.__error_label = builder.get_object("error-label")
-        self.__switch_albums = builder.get_object("switch_albums")
+        self.__builder = Gtk.Builder()
+        self.__builder.add_from_resource(
+            "/org/gnome/Lollypop/DeviceManagerWidget.ui")
+        widget = self.__builder.get_object("widget")
+        self.__error_label = self.__builder.get_object("error-label")
+        self.__switch_albums = self.__builder.get_object("switch_albums")
         self.__switch_albums.set_state(App().settings.get_value("sync-albums"))
-        self.__switch_mp3 = builder.get_object("switch_mp3")
-        self.__switch_normalize = builder.get_object("switch_normalize")
-        if not self._check_encoder_status():
-            self.__switch_mp3.set_sensitive(False)
-            self.__switch_normalize.set_sensitive(False)
-            self.__switch_mp3.set_tooltip_text(_("You need to install " +
-                                                 "gstreamer-plugins-ugly"))
-        else:
-            convert_mp3 = App().settings.get_value("convert-mp3")
-            self.__switch_mp3.set_state(convert_mp3)
-        self.__menu_items = builder.get_object("menu-items")
-        self.__menu = builder.get_object("menu")
+
+        self.__menu_items = self.__builder.get_object("menu-items")
+        self.__menu = self.__builder.get_object("menu")
 
         self.__model = Gtk.ListStore(bool, str, int)
 
@@ -72,15 +64,15 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         widget.attach(self.__selection_list, 1, 1, 1, 1)
         self.__selection_list.set_hexpand(True)
 
-        self.__view = builder.get_object("view")
+        self.__view = self.__builder.get_object("view")
         self.__view.set_model(self.__model)
 
-        builder.connect_signals(self)
+        self.__builder.connect_signals(self)
 
         self.add(widget)
 
-        self.__infobar = builder.get_object("infobar")
-        self.__infobar_label = builder.get_object("infobarlabel")
+        self.__infobar = self.__builder.get_object("infobar")
+        self.__infobar_label = self.__builder.get_object("infobarlabel")
 
         renderer0 = Gtk.CellRendererToggle()
         renderer0.set_property("activatable", True)
@@ -129,6 +121,16 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Set uri
             @param uri as str
         """
+        self._load_db_uri(uri)
+        encoder = self.mtp_syncdb.encoder
+        normalize = self.mtp_syncdb.normalize
+        self.__switch_normalize = self.__builder.get_object("switch_normalize")
+        self.__switch_normalize.set_sensitive(False)
+        self.__switch_normalize.set_active(normalize)
+        self.__builder.get_object(encoder).set_active(True)
+        for encoder in self._GST_ENCODER.keys():
+            if not self._check_encoder_status(encoder):
+                self.__builder.get_object(encoder).set_sensitive(False)
         self._uri = uri
         d = Gio.File.new_for_uri(uri)
         try:
@@ -160,9 +162,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             playlists.append(Type.NONE)
 
         helper = TaskHelper()
-        helper.run(self._sync, playlists,
-                   self.__switch_mp3.get_active(),
-                   self.__switch_normalize.get_active())
+        helper.run(self._sync, playlists)
 
     def cancel_sync(self):
         """
@@ -254,17 +254,20 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         App().settings.set_value("sync-albums", GLib.Variant("b", state))
         GLib.idle_add(self.populate)
 
-    def _on_mp3_state_set(self, widget, state):
+    def _on_convert_toggled(self, widget):
         """
             Save option
-            @param widget as Gtk.Switch
-            @param state as bool
+            @param widget as Gtk.RadioButton
         """
-        App().settings.set_value("convert-mp3", GLib.Variant("b", state))
-        if not state:
-            self.__switch_normalize.set_active(False)
-            App().settings.set_value("normalize-mp3",
-                                     GLib.Variant("b", False))
+        if widget.get_active():
+            encoder = widget.get_name()
+            if encoder == "convert_none":
+                self.__switch_normalize.set_sensitive(False)
+                self.mtp_syncdb.set_normalize(False)
+                self.mtp_syncdb.set_encoder("convert_none")
+            else:
+                self.__switch_normalize.set_sensitive(True)
+                self.mtp_syncdb.set_encoder(encoder)
 
     def _on_normalize_state_set(self, widget, state):
         """
@@ -272,10 +275,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
-        App().settings.set_value("normalize-mp3", GLib.Variant("b", state))
-        if state:
-            self.__switch_mp3.set_active(True)
-            App().settings.set_value("convert-mp3", GLib.Variant("b", True))
+        self.mtp_syncdb.set_normalize(state)
 
     def _on_response(self, infobar, response_id):
         """

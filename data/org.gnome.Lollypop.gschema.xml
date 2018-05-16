@@ -148,19 +148,9 @@
             <summary>Sync all albums(MTP)</summary>
             <description></description>
         </key>
-         <key type="b" name="convert-mp3">
-            <default>false</default>
-            <summary>Encode to MP3(MTP)</summary>
-            <description></description>
-        </key>
-        <key type="i" name="mp3-quality">
-            <default>4</default>
-            <summary>Quality of MP3 encoding</summary>
-            <description></description>
-        </key>
-         <key type="b" name="normalize-mp3">
-            <default>false</default>
-            <summary>Normalize MP3(MTP)</summary>
+        <key type="i" name="convert-bitrate">
+            <default>192</default>
+            <summary>Quality of encoding</summary>
             <description></description>
         </key>
          <key type="b" name="auto-update">

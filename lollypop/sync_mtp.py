@@ -41,7 +41,69 @@ class MtpSyncDb:
         """
         self.__base_uri = base_uri
         self.__db_uri = self.__base_uri + "/lollypop-sync.db"
+        self.__encoder = "convert_none"
+        self.__normalize = False
         self.__metadata = {}
+
+    def load_db(self):
+        """
+            Loads the metadata db from the MTP device
+        """
+        debug("MtpSyncDb::__load_db()")
+        try:
+            dbfile = Gio.File.new_for_uri(self.__db_uri)
+            (status, jsonraw, tags) = dbfile.load_contents(None)
+            if status:
+                jsondb = json.loads(jsonraw.decode("utf-8"))
+                if "encoder" in jsondb:
+                    self.__encoder = jsondb["encoder"]
+                else:
+                    self.__encoder = "convert_none"
+                if "normalize" in jsondb:
+                    self.__normalize = jsondb["normalize"]
+                else:
+                    self.__normalize = False
+                if "version" in jsondb and jsondb["version"] == 1:
+                    for m in jsondb["tracks_metadata"]:
+                        self.__metadata[m["uri"]] = m["metadata"]
+                else:
+                    print("MtpSyncDb::__load_db() unknown sync db version")
+        except Exception as e:
+            print("MtpSyncDb::load_db():", e)
+
+    def save_db(self):
+        """
+            Saves the metadata db to the MTP device
+        """
+        debug("MtpSyncDb::__save_db()")
+        jsondb = json.dumps({"version": 1,
+                             "encoder": self.__encoder,
+                             "normalize": self.__normalize,
+                             "tracks_metadata": [
+                                 {"uri": x, "metadata": y}
+                                 for x, y in sorted(self.__metadata.items())]})
+        dbfile = Gio.File.new_for_uri(self.__db_uri)
+        ok, _ = dbfile.replace_contents(
+            jsondb.encode("utf-8"),
+            None, False,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            None)
+        if not ok:
+            print("MtpSyncDb::save_db() failed")
+
+    def set_encoder(self, encoder):
+        """
+            Set encoder
+            @param encoder as str
+        """
+        self.__encoder = encoder
+
+    def set_normalize(self, normalize):
+        """
+            Set normalize
+            @param normalize as bool
+        """
+        self.__normalize = normalize
 
     def get_mtime(self, uri):
         """
@@ -68,6 +130,22 @@ class MtpSyncDb:
         if self.__get_reluri(uri) in self.__metadata:
             del self.__metadata[self.__get_reluri(uri)]
 
+    @property
+    def encoder(self):
+        """
+            Get encoder
+            @return str
+        """
+        return self.__encoder
+
+    @property
+    def normalize(self):
+        """
+            Get normalize
+            @return bool
+        """
+        return self.__normalize
+
 ############
 # Private  #
 ############
@@ -83,55 +161,6 @@ class MtpSyncDb:
             uri = uri[len(self.__base_uri) + 1:]
         return uri
 
-    def __load_db(self):
-        """
-            Loads the metadata db from the MTP device
-        """
-        debug("MtpSyncDb::__load_db()")
-        try:
-            dbfile = Gio.File.new_for_uri(self.__db_uri)
-            (status, jsonraw, tags) = dbfile.load_contents(None)
-            if status:
-                jsondb = json.loads(jsonraw.decode("utf-8"))
-                if "version" in jsondb and jsondb["version"] == 1:
-                    for m in jsondb["tracks_metadata"]:
-                        self.__metadata[m["uri"]] = m["metadata"]
-                else:
-                    print("MtpSyncDb::__load_db() unknown sync db version")
-        except Exception as e:
-            print("MtpSyncDb::__load_db():", e)
-
-    def __save_db(self):
-        """
-            Saves the metadata db to the MTP device
-        """
-        debug("MtpSyncDb::__save_db()")
-        jsondb = json.dumps({"version": 1,
-                             "tracks_metadata": [
-                                 {"uri": x, "metadata": y}
-                                 for x, y in sorted(self.__metadata.items())]})
-        dbfile = Gio.File.new_for_uri(self.__db_uri)
-        ok, _ = dbfile.replace_contents(
-            jsondb.encode("utf-8"),
-            None, False,
-            Gio.FileCreateFlags.REPLACE_DESTINATION,
-            None)
-        if not ok:
-            print("MtpSyncDb::__save_db() failed")
-
-    def __enter__(self):
-        """
-            Context manager implementation
-        """
-        self.__load_db()
-        return self
-
-    def __exit__(self, *args):
-        """
-            Context manager implementation
-        """
-        self.__save_db()
-
 
 # TODO Rework this code: was designed
 # for playlists and then for albums, it sucks!
@@ -140,31 +169,56 @@ class MtpSync:
         Synchronisation to MTP devices
     """
 
+    __ENCODE_START = 'filesrc location="%s" ! decodebin\
+                            ! audioconvert\
+                            ! audioresample\
+                            ! audio/x-raw,rate=44100,channels=2'
+    __ENCODE_END = ' ! filesink location="%s"'
+    __NORMALIZE = " ! rgvolume pre-amp=6.0 headroom=10.0\
+                    ! rglimiter ! audioconvert"
+    __EXTENSION = {"convert_none": None,
+                   "convert_mp3": ".mp3",
+                   "convert_vorbis": ".ogg"}
+    __ENCODERS = {"convert_none": None,
+                  "convert_mp3": " ! lamemp3enc target=bitrate\
+                                   cbr=true bitrate=%s ! id3v2mux",
+                  "convert_vorbis": " ! vorbisenc max-bitrate=%s\
+                                      ! oggmux"}
+    _GST_ENCODER = {"convert_mp3": "lamemp3enc",
+                    "convert_ogg": "vorbisenc"}
+
     def __init__(self):
         """
             Init MTP synchronisation
         """
         self._syncing = False
         self.__errors = False
-        self.__convert = False
-        self.__normalize = False
         self.__errors_count = 0
         self._uri = ""
         self.__total = 0  # Total files to sync
         self.__done = 0   # Handled files on sync
         self._fraction = 0.0
         self.__copied_art_uris = []
-        self.__mtpmetadata = None
+        self.__mtp_syncdb = MtpSyncDb("")
 
 #######################
 # PROTECTED           #
 #######################
-    def _check_encoder_status(self):
+    def _load_db_uri(self, uri):
         """
-            Check MP3 encode status
+            Load mtp db at URI
+            @param uri as str
+        """
+        self.__mtp_syncdb = MtpSyncDb(uri)
+        self.__mtp_syncdb.load_db()
+
+    def _check_encoder_status(self, encoder):
+        """
+            Check encoder status
+            @param encoder as str
             @return bool
         """
-        if Gst.ElementFactory.find("lamemp3enc"):
+        if Gst.ElementFactory.find(self._GST_ENCODER[encoder]):
             return True
         return False
 
@@ -180,19 +234,16 @@ class MtpSync:
         """
         pass
 
-    def _sync(self, playlists, convert, normalize):
+    def _sync(self, playlists):
         """
             Sync playlists with device. If playlists contains Type.NONE,
             sync albums marked as to be synced
             @param playlists as [str]
-            @param convert as bool
-            @param normalize as bool
         """
         try:
             self.__in_thread = True
-            self.__convert = convert
-            self.__quality = App().settings.get_value("mp3-quality")
-            self.__normalize = normalize
+            self.__convert_bitrate = App().settings.get_value(
+                "convert-bitrate").get_int32()
             self.__errors = False
             self.__errors_count = 0
             self.__copied_art_uris = []
@@ -224,15 +275,13 @@ class MtpSync:
                 pass
             GLib.idle_add(self._update_progress)
 
-            with MtpSyncDb(self._uri) as db:
-                self.__mtpmetadata = db
-                # Copy new tracks to device
-                if self._syncing:
-                    self.__copy_to_device(playlists)
+            # Copy new tracks to device
+            if self._syncing:
+                self.__copy_to_device(playlists)
 
-                # Remove old tracks from device
-                if self._syncing:
-                    self.__remove_from_device(playlists)
+            # Remove old tracks from device
+            if self._syncing:
+                self.__remove_from_device(playlists)
 
             # Remove empty dirs
             self.__remove_empty_dirs()
@@ -254,11 +303,20 @@ class MtpSync:
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
+        finally:
+            self.__mtp_syncdb.save_db()
         self._fraction = 1.0
         self._syncing = False
         self.__in_thread = False
         if self.__errors:
             GLib.idle_add(self.__on_errors)
+
+    @property
+    def mtp_syncdb(self):
+        """
+            Get sync db
+        """
+        return self.__mtp_syncdb
 
 ############
 # Private  #
@@ -442,9 +500,10 @@ class MtpSync:
                 # Check extension, if not mp3, convert
                 m = match(r".*(\.[^.]*)", track.uri)
                 ext = m.group(1)
-                if (ext != ".mp3" or self.__normalize) and self.__convert:
+                convert_ext = self.__EXTENSION[self.mtp_syncdb.encoder]
+                if convert_ext is not None and ext != convert_ext:
                     convertion_needed = True
-                    track_name = track_name.replace(ext, ".mp3")
+                    track_name = track_name.replace(ext, convert_ext)
                 else:
                     convertion_needed = False
                 src_track = Gio.File.new_for_uri(track.uri)
@@ -469,12 +528,13 @@ class MtpSync:
                                  (line.encode(encoding="UTF-8"), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists() or\
-                    self.__mtpmetadata.get_mtime(
+                    self.__mtp_syncdb.get_mtime(
                         dst_track.get_uri()) < mtime:
                     if convertion_needed:
-                        mp3_uri = "file:///tmp/%s" % track_name
-                        mp3_file = Gio.File.new_for_uri(mp3_uri)
-                        pipeline = self.__convert_to_mp3(src_track, mp3_file)
+                        convert_uri = "file:///tmp/%s" % track_name
+                        convert_file = Gio.File.new_for_uri(convert_uri)
+                        pipeline = self.__convert(src_track,
+                                                  convert_file)
                         # Check if encoding is finished
                         if pipeline is not None:
                             bus = pipeline.get_bus()
@@ -488,19 +548,19 @@ class MtpSync:
                             pipeline.set_state(Gst.State.READY)
                             pipeline.set_state(Gst.State.NULL)
                             self.__retry(
-                                mp3_file.move,
+                                convert_file.move,
                                 (dst_track, Gio.FileCopyFlags.OVERWRITE,
                                  None, None))
                             # To be sure
                             try:
-                                mp3_file.delete(None)
+                                convert_file.delete(None)
                             except:
                                 pass
                     else:
                         self.__retry(src_track.copy,
                                      (dst_track, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
-                    self.__mtpmetadata.set_mtime(dst_track.get_uri(), mtime)
+                    self.__mtp_syncdb.set_mtime(dst_track.get_uri(), mtime)
                 else:
                     self.__done += 1
                 self.__done += 1
@@ -551,11 +611,12 @@ class MtpSync:
                                                     album_name)
             f = Gio.File.new_for_uri(track.uri)
             track_name = escape(f.get_basename())
-            # Check extension, if not mp3, convert
+            # Check extension, if converted, remove
             m = match(r".*(\.[^.]*)", track.uri)
             ext = m.group(1)
-            if ext != ".mp3" and self.__convert:
-                track_name = track_name.replace(ext, ".mp3")
+            convert_ext = self.__EXTENSION[self.mtp_syncdb.encoder]
+            if convert_ext is not None and ext != convert_ext:
+                track_name = track_name.replace(ext, convert_ext)
             dst_uri = "%s/%s" % (on_device_album_uri, track_name)
             # To be sure to get uri correctly escaped for Gio
             f = Gio.File.new_for_uri(dst_uri)
@@ -574,11 +635,11 @@ class MtpSync:
                 debug("MtpSync::__remove_from_device(): deleting %s" % uri)
                 to_delete = Gio.File.new_for_uri(uri)
                 self.__retry(to_delete.delete, (None,))
-                self.__mtpmetadata.delete_uri(uri)
+                self.__mtp_syncdb.delete_uri(uri)
             self.__done += 1
             self._fraction = self.__done / self.__total
 
-    def __convert_to_mp3(self, src, dst):
+    def __convert(self, src, dst):
         """
             Convert file to mp3
             @param src as Gio.File
@@ -589,31 +650,21 @@ class MtpSync:
             # We need to escape \ in path
             src_path = src.get_path().replace("\\", "\\\\\\")
             dst_path = dst.get_path().replace("\\", "\\\\\\")
-            if self.__normalize:
-                pipeline = Gst.parse_launch(
-                    'filesrc location="%s" ! decodebin\
-                            ! audioconvert\
-                            ! audioresample\
-                            ! audio/x-raw,rate=44100,channels=2\
-                            ! rgvolume pre-amp=6.0 headroom=10.0\
-                            ! rglimiter ! audioconvert\
-                            ! lamemp3enc target=quality quality=%s ! id3v2mux\
-                            ! filesink location="%s"'
-                    % (src_path, self.__quality, dst_path))
+            pipeline_str = self.__ENCODE_START % src_path
+            if self.mtp_syncdb.normalize:
+                pipeline_str += self.__NORMALIZE
+            if self.mtp_syncdb.encoder == "convert_vorbis":
+                convert_bitrate = self.__convert_bitrate * 1000
             else:
-                pipeline = Gst.parse_launch(
-                    'filesrc location="%s" ! decodebin\
-                            ! audioconvert\
-                            ! audioresample\
-                            ! audio/x-raw,rate=44100,channels=2\
-                            ! lamemp3enc target=quality quality=%s\
-                            ! id3v2mux\
-                            ! filesink location="%s"'
-                    % (src_path, self.__quality, dst_path))
+                convert_bitrate = self.__convert_bitrate
+            pipeline_str += self.__ENCODERS[self.mtp_syncdb.encoder] %\
+                convert_bitrate
+            pipeline_str += self.__ENCODE_END % dst_path
+            pipeline = Gst.parse_launch(pipeline_str)
             pipeline.set_state(Gst.State.PLAYING)
             return pipeline
         except Exception as e:
-            print("MtpSync::_convert_to_mp3(): %s" % e)
+            print("MtpSync::__convert(): %s" % e)
             return None
 
     def __on_bus_eos(self, bus, message):
