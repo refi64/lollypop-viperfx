@@ -844,7 +844,7 @@ class Container(Gtk.Overlay):
 
     def __on_list_populated(self, selection_list):
         """
-            Add device to list one and update db
+            Add device to list one
             @param selection_list as SelectionList
         """
         for dev in self.__devices.values():

@@ -298,8 +298,8 @@ class SelectionList(Gtk.Overlay):
         self.__add_values(values)
         self.__selection.connect("changed",
                                  self.__on_selection_changed)
-        self.emit("populated")
         self.__populating = False
+        self.emit("populated")
 
     def remove_value(self, object_id):
         """
