@@ -179,16 +179,19 @@ class MtpSync:
     __EXTENSION = {"convert_none": None,
                    "convert_mp3": ".mp3",
                    "convert_vorbis": ".ogg",
-                   "convert_flac": ".flac"}
+                   "convert_flac": ".flac",
+                   "convert_aac": ".m4a"}
     __ENCODERS = {"convert_none": None,
                   "convert_mp3": " ! lamemp3enc target=bitrate\
                                    cbr=true bitrate=%s ! id3v2mux",
                   "convert_vorbis": " ! vorbisenc max-bitrate=%s\
                                       ! oggmux",
-                  "convert_flac": " ! flacenc"}
+                  "convert_flac": " ! flacenc",
+                  "convert_aac": " ! faac bitrate=%s ! mp4mux"}
     _GST_ENCODER = {"convert_mp3": "lamemp3enc",
                     "convert_ogg": "vorbisenc",
-                    "convert_flac": "flacenc"}
+                    "convert_flac": "flacenc",
+                    "convert_aac": "faac"}
 
     def __init__(self):
         """
@@ -656,7 +659,7 @@ class MtpSync:
             pipeline_str = self.__ENCODE_START % src_path
             if self.mtp_syncdb.normalize:
                 pipeline_str += self.__NORMALIZE
-            if self.mtp_syncdb.encoder == "convert_vorbis":
+            if self.mtp_syncdb.encoder in ["convert_vorbis", "convert_aac"]:
                 convert_bitrate = self.__convert_bitrate * 1000
             else:
                 convert_bitrate = self.__convert_bitrate

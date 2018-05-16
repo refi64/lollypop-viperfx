@@ -310,9 +310,10 @@
       </packing>
     </child>
     <child>
-      <object class="GtkRadioButton" id="convert_mp4">
-        <property name="label" translatable="yes">MP4</property>
-        <property name="name">convert_mp4</property>
+      <object class="GtkRadioButton" id="convert_aac">
+        <property name="label" translatable="yes">AAC</property>
+        <property name="name">convert_aac</property>
+        <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="margin_left">20</property>
