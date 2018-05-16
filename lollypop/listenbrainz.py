@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Soup, GObject, Gio
+from gi.repository import Soup, GObject, Gio, GLib
 
 import json
 import time
@@ -37,6 +37,7 @@ class ListenBrainz(GObject.GObject):
             Init ListenBrainz object
         """
         GObject.GObject.__init__(self)
+        self.__queue = []
         self.__next_request_time = 0
 
     def listen(self, track, time):
@@ -76,6 +77,16 @@ class ListenBrainz(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    def __clean_queue(self):
+        """
+            Send tracks in queue
+        """
+        if self.__queue:
+            (listen_type, payload) = self.__queue.pop(0)
+            helper = TaskHelper()
+            helper.run(self.__request, listen_type, payload)
+            GLib.timeout_add(1000, self.__clean_queue)
+
     def __submit(self, listen_type, payload):
         """
             Submit payload to service in a thread
@@ -84,7 +95,10 @@ class ListenBrainz(GObject.GObject):
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
             helper = TaskHelper()
+            self.__clean_queue()
             helper.run(self.__request, listen_type, payload)
+        else:
+            self.__queue.append((listen_type, payload))
 
     def __request(self, listen_type, payload, retry=0):
         """

@@ -12,7 +12,7 @@
 
 import gi
 gi.require_version("Secret", "1")
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
 from gettext import gettext as _
 
@@ -58,6 +58,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.session_key = ""
         self.__password = None
         self.__goa = None
+        self.__queue = []
         if name == "librefm":
             LibreFMNetwork.__init__(self)
         else:
@@ -131,6 +132,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
                 self.available:
+            self.__clean_queue()
             helper = TaskHelper()
             helper.run(self.__scrobble,
                        ", ".join(track.artists),
@@ -138,6 +140,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                        track.title,
                        timestamp,
                        track.mb_track_id)
+        else:
+            self.__queue.append((track, timestamp))
 
     def playing_now(self, track):
         """
@@ -253,6 +257,21 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
 #######################
 # PRIVATE             #
 #######################
+    def __clean_queue(self):
+        """
+            Send tracks in queue
+        """
+        if self.__queue:
+            (track, timestamp) = self.__queue.pop(0)
+            helper = TaskHelper()
+            helper.run(self.__scrobble,
+                       ", ".join(track.artists),
+                       track.album_name,
+                       track.title,
+                       timestamp,
+                       track.mb_track_id)
+            GLib.timeout_add(1000, self.__clean_queue)
+
     def __connect(self, full_sync=False):
         """
             Connect service
