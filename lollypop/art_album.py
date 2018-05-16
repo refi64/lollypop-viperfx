@@ -144,12 +144,13 @@ class AlbumArt(BaseArt, TagReader):
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, size, scale):
+    def get_album_artwork(self, album, size, scale, disable_cache=False):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param pixbuf size as int
             @param scale factor as int
+            @param disable_cache as bool
             @return cairo surface
         """
         size *= scale
@@ -215,7 +216,7 @@ class AlbumArt(BaseArt, TagReader):
                     return self.get_default_icon("folder-music-symbolic",
                                                  size,
                                                  scale)
-                else:
+                elif not disable_cache:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
                                      "cover-quality").get_int32())])

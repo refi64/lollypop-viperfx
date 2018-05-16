@@ -58,6 +58,11 @@
             <summary>Allow user to donate to the project</summary>
             <description></description>
         </key>
+        <key type="b" name="allow-per-track-cover">
+            <default>false</default>
+            <summary>Allow using a cover per track</summary>
+            <description></description>
+        </key>
         <key type="b" name="network-access">
             <default>false</default>
             <summary>Access network</summary>

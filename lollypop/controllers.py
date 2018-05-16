@@ -414,7 +414,8 @@ class InfoController:
             artwork = App().art.get_album_artwork(
                 App().player.current_track.album,
                 width,
-                self.get_scale_factor())
+                self.get_scale_factor(),
+                App().settings.get_value("allow-per-track-cover"))
         if artwork is not None:
             if enable_blur:
                 from lollypop.utils import blur
