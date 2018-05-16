@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album
+from lollypop.logger import Logger
 from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
 
 
@@ -295,7 +296,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             elif type_id == "a":
                 self.emit("album-moved", object_str, down)
         except Exception as e:
-            print("AlbumRow::__on_drag_data_received()", e)
+            Logger.error("AlbumRow::__on_drag_data_received(): %s" % e)
 
     def __on_drag_leave(self, widget, context, time):
         """
@@ -629,7 +630,7 @@ class AlbumsListView(LazyLoadingView):
             self.__view.insert(album_row, row_index)
             App().player.add_album(new_album, row_index)
         except Exception as e:
-            print("AlbumsListView::__on_track_moved()", e)
+            Logger.error("AlbumsListView::__on_track_moved(): %s" % e)
 
     def __on_album_moved(self, row, src, down):
         """
@@ -713,4 +714,4 @@ class AlbumsListView(LazyLoadingView):
                 self.__on_track_moved(self.__view.get_children()[-1],
                                       object_str, album_str, True)
         except Exception as e:
-            print("AlbumsListView::__on_drag_data_received():", e)
+            Logger.error("AlbumsListView::__on_drag_data_received(): %s" % e)

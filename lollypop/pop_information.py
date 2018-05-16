@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.objects import Album
+from lollypop.logger import Logger
 from lollypop.utils import draw_rounded_image, escape
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
@@ -114,7 +115,7 @@ class InformationPopover(Gtk.Popover):
             if App().lastfm is not None:
                 content = App().lastfm.get_artist_bio(artist_name)
         except Exception as e:
-            print("InformationPopover::__get_bio_content(): %s" % e)
+            Logger.info("InformationPopover::__get_bio_content(): %s" % e)
         if content is None:
             try:
                 from locale import getdefaultlocale
@@ -133,7 +134,7 @@ class InformationPopover(Gtk.Popover):
                         pass
                 content = page.content.encode(encoding="UTF-8")
             except Exception as e:
-                print("InformationPopover::__get_bio_content(): %s" % e)
+                Logger.info("InformationPopover::__get_bio_content(): %s" % e)
         return content
 
     def __set_bio_content(self, content, label, artist_name):

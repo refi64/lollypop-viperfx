@@ -14,7 +14,7 @@ import gi
 gi.require_version('Secret', '1')
 from gi.repository import Secret, GLib
 
-from lollypop.utils import debug
+from lollypop.logger import Logger
 
 
 class PasswordsHelper:
@@ -56,7 +56,7 @@ class PasswordsHelper:
                                  callback,
                                  *args)
         except Exception as e:
-            debug("PasswordsHelper::get(): %s" % e)
+            Logger.debug("PasswordsHelper::get(): %s" % e)
 
     def store(self, service, login, password, callback, *args):
         """
@@ -93,7 +93,7 @@ class PasswordsHelper:
                                   callback,
                                   *args)
         except Exception as e:
-            debug("PasswordsHelper::store(): %s" % e)
+            Logger.debug("PasswordsHelper::store(): %s" % e)
 
     def clear(self, service, callback=None, *args):
         """
@@ -120,7 +120,7 @@ class PasswordsHelper:
                                  callback,
                                  *args)
         except Exception as e:
-            debug("PasswordsHelper::clear(): %s" % e)
+            Logger.debug("PasswordsHelper::clear(): %s" % e)
 
 #######################
 # PRIVATE             #
@@ -152,7 +152,7 @@ class PasswordsHelper:
             if callback is not None:
                 callback(*args)
         except Exception as e:
-            debug("PasswordsHelper::__on_clear_search(): %s" % e)
+            Logger.debug("PasswordsHelper::__on_clear_search(): %s" % e)
 
     def __on_load_secret(self, source, result, service, callback, *args):
         """
@@ -197,7 +197,7 @@ class PasswordsHelper:
             else:
                 callback(None, None, service, *args)
         except Exception as e:
-            debug("PasswordsHelper::__on_secret_search(): %s" % e)
+            Logger.debug("PasswordsHelper::__on_secret_search(): %s" % e)
             callback(None, None, service, *args)
 
     def __on_get_secret(self, source, result):
@@ -210,4 +210,4 @@ class PasswordsHelper:
             self.__secret = Secret.Service.get_finish(result)
         except Exception as e:
             self.__secret = -1
-            debug("PasswordsHelper::__on_get_secret(): %s" % e)
+            Logger.debug("PasswordsHelper::__on_get_secret(): %s" % e)

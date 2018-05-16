@@ -16,6 +16,7 @@ import re
 
 from lollypop.art_base import BaseArt
 from lollypop.helper_task import TaskHelper
+from lollypop.logger import Logger
 
 
 class RadioArt(BaseArt):
@@ -34,7 +35,7 @@ class RadioArt(BaseArt):
             try:
                 d.make_directory_with_parents()
             except Exception as e:
-                print("RadioArt.__init__(): %s" % e)
+                Logger.error("RadioArt.__init__(): %s" % e)
 
     def get_radio_cache_path(self, name, size):
         """
@@ -60,7 +61,8 @@ class RadioArt(BaseArt):
                         size,
                         "audio-input-microphone-symbolic")
         except Exception as e:
-            print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
+            Logger.error("RadioArt::get_radio_cache_path(): %s, %s" %
+                         (e, ascii(filename)))
             return None
 
     def get_radio_artwork(self, name, size, scale):
@@ -99,7 +101,7 @@ class RadioArt(BaseArt):
             return surface
 
         except Exception as e:
-            print(e)
+            Logger.error("RadioArt::get_radio_artwork(): %s" % e)
             return self.get_default_icon("audio-input-microphone-symbolic",
                                          size,
                                          scale)
@@ -132,7 +134,7 @@ class RadioArt(BaseArt):
             dst = Gio.File.new_for_path(new)
             src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
-            print("RadioArt::rename_radio(): %s" % e)
+            Logger.error("RadioArt::rename_radio(): %s" % e)
 
     def save_radio_artwork(self, pixbuf, radio):
         """
@@ -145,7 +147,7 @@ class RadioArt(BaseArt):
                 radio.replace("/", "-") + ".png"
             pixbuf.savev(artpath, "png", [None], [None])
         except Exception as e:
-            print("RadioArt::save_radio_artwork(): %s" % e)
+            Logger.error("RadioArt::save_radio_artwork(): %s" % e)
 
     def radio_artwork_update(self, name):
         """
@@ -172,7 +174,8 @@ class RadioArt(BaseArt):
                 if re.search(r"%s_.*\.png" % re.escape(cache_name), basename):
                     f.delete()
         except Exception as e:
-            print("RadioArt::clean_radio_cache(): ", e, cache_name)
+            Logger.error("RadioArt::clean_radio_cache(): %s, %s" %
+                         (e, cache_name))
 
 #######################
 # PRIVATE             #
@@ -190,7 +193,7 @@ class RadioArt(BaseArt):
                 return self._RADIOS_PATH + "/" + name + ".png"
             return None
         except Exception as e:
-            print("Art::__get_radio_art_path(): %s" % e)
+            Logger.error("Art::__get_radio_art_path(): %s" % e)
 
     def __get_radio_cache_name(self, name):
         """

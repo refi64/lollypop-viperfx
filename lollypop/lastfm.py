@@ -32,7 +32,7 @@ import re
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, Type
 from lollypop.objects import Track
-from lollypop.utils import debug
+from lollypop.logger import Logger
 from lollypop.goa import GoaSyncedAccount
 
 
@@ -172,7 +172,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             try:
                 track.love()
             except Exception as e:
-                print("Lastfm::love(): %s" % e)
+                Logger.error("Lastfm::love(): %s" % e)
 
     def unlove(self, artist, title):
         """
@@ -188,7 +188,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             try:
                 track.unlove()
             except Exception as e:
-                print("Lastfm::unlove(): %s" % e)
+                Logger.error("Lastfm::unlove(): %s" % e)
 
     def get_similars(self, artist):
         """
@@ -250,7 +250,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             return False
         if self.is_goa:
             music_disabled = self.__goa.account.props.music_disabled
-            debug("Last.fm GOA scrobbling disabled: %s" % music_disabled)
+            Logger.debug("Last.fm GOA scrobbling disabled: %s" %
+                         music_disabled)
             return not music_disabled
         return True
 
@@ -294,7 +295,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                 helper = TaskHelper()
                 helper.run(self.__populate_loved_tracks)
         except Exception as e:
-            debug("LastFM::__connect(): %s" % e)
+            Logger.debug("LastFM::__connect(): %s" % e)
 
     def __scrobble(self, artist, album, title, timestamp, mb_track_id,
                    first=True):
@@ -309,7 +310,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param first is internal
             @thread safe
         """
-        debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (artist,
+        Logger.debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (
+                                                            artist,
                                                             album,
                                                             title,
                                                             timestamp,
@@ -323,7 +325,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         except WSError:
             pass
         except Exception as e:
-            print("LastFM::__scrobble():", e)
+            Logger.error("LastFM::__scrobble(): %s" % e)
             # Scrobble sometimes fails
             if first:
                 self.__connect()
@@ -347,12 +349,12 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                                     title=title,
                                     duration=duration,
                                     mbid=mb_track_id)
-            debug("LastFM::__now_playing(): %s, %s, %s, %s, %s" % (
+            Logger.debug("LastFM::__now_playing(): %s, %s, %s, %s, %s" % (
                 artist, album, title, duration, mb_track_id))
         except WSError:
             pass
         except Exception as e:
-            print("LastFM::__now_playing():", e)
+            Logger.error("LastFM::__now_playing(): %s" % e)
             # now playing sometimes fails
             if first:
                 self.__connect()
@@ -376,7 +378,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                     tracks.append(Track(track_id))
             App().playlists.add_tracks(Type.LOVED, tracks)
         except Exception as e:
-            print("LastFM::__populate_loved_tracks: %s" % e)
+            Logger.error("LastFM::__populate_loved_tracks: %s" % e)
 
     def __on_get_password(self, attributes, password,
                           name, full_sync, callback, *args):

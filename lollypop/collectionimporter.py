@@ -17,6 +17,7 @@ from gettext import gettext as _
 
 from lollypop.define import App
 from lollypop.tagreader import TagReader
+from lollypop.logger import Logger
 from lollypop.utils import is_audio
 
 
@@ -63,9 +64,9 @@ class CollectionImporter:
                 elif is_audio(f):
                     self.__add_file(f)
                 else:
-                    print("CollectionImporter: not an audio file", uri)
+                    Logger.info("Not an audio file %s" % uri)
             except Exception as e:
-                print("CollectionImporter::add():", e)
+                Logger.error("CollectionImporter::add(): %s" % e)
         GLib.idle_add(App().window.container.pulse, False)
 
 #######################
@@ -82,7 +83,7 @@ class CollectionImporter:
             if music_uris:
                 music_uri = music_uris[0]
             else:
-                print("CollectionImporter::__add_file(): No collection")
+                Logger.error("CollectionImporter::__add_file(): No collection")
                 return
             info = self.__tag_reader.get_info(f.get_uri())
             tags = info.get_tags()
@@ -112,4 +113,4 @@ class CollectionImporter:
             dest = Gio.File.new_for_uri(dest_uri)
             f.copy(dest, Gio.FileCopyFlags.NONE, None, None, None)
         except Exception as e:
-            print("CollectionImporter::__add_file():", e)
+            Logger.error("CollectionImporter::__add_file(): %s" % e)

@@ -14,6 +14,7 @@ from gi.repository import TotemPlParser, Gst, Gio
 
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
+from lollypop.logger import Logger
 from lollypop.define import App
 
 
@@ -51,7 +52,7 @@ class RadioPlayer(BasePlayer):
                                    None, self.__on_parse_finished,
                                    track, play)
             except Exception as e:
-                print("RadioPlayer::load(): ", e)
+                Logger.error("RadioPlayer::load(): %s" % e)
             if self.is_party:
                 self.set_party(False)
 

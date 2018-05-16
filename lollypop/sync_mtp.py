@@ -16,7 +16,8 @@ from time import sleep
 from re import match
 import json
 
-from lollypop.utils import escape, debug
+from lollypop.logger import Logger
+from lollypop.utils import escape
 from lollypop.define import App, Type
 from lollypop.objects import Track
 
@@ -49,7 +50,7 @@ class MtpSyncDb:
         """
             Loads the metadata db from the MTP device
         """
-        debug("MtpSyncDb::__load_db()")
+        Logger.debug("MtpSyncDb::__load_db()")
         try:
             dbfile = Gio.File.new_for_uri(self.__db_uri)
             (status, jsonraw, tags) = dbfile.load_contents(None)
@@ -67,15 +68,16 @@ class MtpSyncDb:
                     for m in jsondb["tracks_metadata"]:
                         self.__metadata[m["uri"]] = m["metadata"]
                 else:
-                    print("MtpSyncDb::__load_db() unknown sync db version")
+                    Logger.info("MtpSyncDb::__load_db():"
+                                " unknown sync db version")
         except Exception as e:
-            print("MtpSyncDb::load_db():", e)
+            Logger.error("MtpSyncDb::load_db(): %s" % e)
 
     def save_db(self):
         """
             Saves the metadata db to the MTP device
         """
-        debug("MtpSyncDb::__save_db()")
+        Logger.debug("MtpSyncDb::__save_db()")
         jsondb = json.dumps({"version": 1,
                              "encoder": self.__encoder,
                              "normalize": self.__normalize,
@@ -89,7 +91,7 @@ class MtpSyncDb:
             Gio.FileCreateFlags.REPLACE_DESTINATION,
             None)
         if not ok:
-            print("MtpSyncDb::save_db() failed")
+            Logger.error("MtpSyncDb::save_db() failed")
 
     def set_encoder(self, encoder):
         """
@@ -308,7 +310,7 @@ class MtpSync:
             if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
-            print("DeviceManagerWidget::_sync(): %s" % e)
+            Logger.error("DeviceManagerWidget::_sync(): %s" % e)
         finally:
             self.__mtp_syncdb.save_db()
         self._fraction = 1.0
@@ -344,10 +346,10 @@ class MtpSync:
         try:
             func(*args)
         except Exception as e:
-            print("MtpSync::_retry(%s, %s): %s" % (func, args, e))
+            Logger.error("MtpSync::_retry(%s, %s): %s" % (func, args, e))
             for a in args:
                 if isinstance(a, Gio.File):
-                    print(a.get_uri())
+                    Logger.info(a.get_uri())
             sleep(5)
             self.__retry(func, args, t - 1)
 
@@ -392,7 +394,7 @@ class MtpSync:
                 except:
                     pass
         except Exception as e:
-            print("MtpSync::__remove_empty_dirs():", e, uri)
+            Logger.error("MtpSync::__remove_empty_dirs(): %s, %s" % (e, uri))
 
     def __get_track_files(self):
         """
@@ -424,7 +426,7 @@ class MtpSync:
                         if not f.get_uri().endswith(".m3u"):
                             children.append(f.get_uri())
             except Exception as e:
-                print("MtpSync::__get_track_files():", e, uri)
+                Logger.error("MtpSync::__get_track_files(): %s, %s" % (e, uri))
         return children
 
     def __copy_to_device(self, playlists):
@@ -450,7 +452,7 @@ class MtpSync:
                          None))
                     stream = m3u.open_readwrite(None)
                 except Exception as e:
-                    print("DeviceWidget::_copy_to_device(): %s" % e)
+                    Logger.error("DeviceWidget::_copy_to_device(): %s" % e)
             # Get tracks
             if playlist == Type.NONE:
                 track_ids = []
@@ -470,7 +472,7 @@ class MtpSync:
                 track = Track(track_id)
                 if track.uri.startswith("https:"):
                     continue
-                debug("MtpSync::__copy_to_device(): %s" % track.uri)
+                Logger.debug("MtpSync::__copy_to_device(): %s" % track.uri)
                 album_name = escape(track.album_name.lower())
                 is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
                 if is_compilation:
@@ -489,7 +491,7 @@ class MtpSync:
                     self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
                 art = App().art.get_album_artwork_uri(track.album)
-                debug("MtpSync::__copy_to_device(): %s" % art)
+                Logger.debug("MtpSync::__copy_to_device(): %s" % art)
                 if art is not None:
                     src_art = Gio.File.new_for_uri(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
@@ -636,9 +638,10 @@ class MtpSync:
                 self._fraction = 1.0
                 self.__in_thread = False
                 return
-            debug("MtpSync::__remove_from_device(): %s" % uri)
+            Logger.debug("MtpSync::__remove_from_device(): %s" % uri)
             if uri not in track_uris and uri not in self.__copied_art_uris:
-                debug("MtpSync::__remove_from_device(): deleting %s" % uri)
+                Logger.debug("MtpSync::__remove_from_device(): deleting %s" %
+                             uri)
                 to_delete = Gio.File.new_for_uri(uri)
                 self.__retry(to_delete.delete, (None,))
                 self.__mtp_syncdb.delete_uri(uri)
@@ -673,7 +676,7 @@ class MtpSync:
             pipeline.set_state(Gst.State.PLAYING)
             return pipeline
         except Exception as e:
-            print("MtpSync::__convert(): %s" % e)
+            Logger.error("MtpSync::__convert(): %s" % e)
             return None
 
     def __on_bus_eos(self, bus, message):

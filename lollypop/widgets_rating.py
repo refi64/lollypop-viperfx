@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.objects import Track
 from lollypop.define import App, Type
+from lollypop.logger import Logger
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -186,4 +187,4 @@ class RatingWidget(Gtk.Bin):
                                  GLib.Variant("(is)", (value, path)),
                                  None, None)
         except Exception as e:
-            print("RatingWidget::__on_can_set_popularity():", e)
+            Logger.error("RatingWidget::__on_can_set_popularity(): %s" % e)

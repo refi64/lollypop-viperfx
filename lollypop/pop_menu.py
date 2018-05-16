@@ -18,6 +18,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.define import App, Type, TAG_EDITORS
 from lollypop.objects import Track, Album
+from lollypop.logger import Logger
 from lollypop.helper_dbus import DBusHelper
 from lollypop.helper_task import TaskHelper
 
@@ -379,7 +380,7 @@ class EditMenu(BaseMenu):
             if source_result is not None and source_result[0]:
                 self.__set_edit_actions()
         except Exception as e:
-            print("EditMenu::__on_can_launch_tag_editor():", e)
+            Logger.error("EditMenu::__on_can_launch_tag_editor(): %s" % e)
 
 
 class AlbumMenu(Gio.Menu):

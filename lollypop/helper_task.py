@@ -16,6 +16,8 @@ from gi.repository import GLib, Soup
 
 from threading import Thread
 
+from lollypop.logger import Logger
+
 
 class TaskHelper:
     """
@@ -68,7 +70,7 @@ class TaskHelper:
                                uri,
                                *args)
         except Exception as e:
-            print("HelperTask::load_uri_content():", e)
+            Logger.error("HelperTask::load_uri_content(): %s" % e)
             callback(uri, False, b"", *args)
 
     def load_uri_content_sync(self, uri, cancellable=None):
@@ -102,7 +104,7 @@ class TaskHelper:
                 stream.close()
             return (True, bytes)
         except Exception as e:
-            print("TaskHelper::load_uri_content_sync():", e)
+            Logger.error("TaskHelper::load_uri_content_sync(): %s" % e)
             return (False, b"")
 
 #######################
@@ -122,7 +124,7 @@ class TaskHelper:
                 if callback is not None:
                     GLib.idle_add(callback, result, *callback_args)
         except Exception as e:
-            print("TaskHelper::__run():", e)
+            Logger.error("TaskHelper::__run(): %s" % e)
 
     def __on_read_bytes_async(self, stream, result, content,
                               cancellable, callback, uri, *args):
@@ -148,7 +150,7 @@ class TaskHelper:
             else:
                 callback(uri, True, bytes(content), *args)
         except Exception as e:
-            print("TaskHelper::__on_read_bytes_async():", e)
+            Logger.error("TaskHelper::__on_read_bytes_async(): %s" % e)
             callback(uri, False, b"", *args)
 
     def __on_request_send_async(self, source, result, callback,
@@ -169,5 +171,5 @@ class TaskHelper:
                                     bytearray(0), cancellable, callback, uri,
                                     *args)
         except Exception as e:
-            print("TaskHelper::__on_soup_msg_finished():", e)
+            Logger.error("TaskHelper::__on_soup_msg_finished(): %s" % e)
             callback(uri, False, b"", *args)

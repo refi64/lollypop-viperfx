@@ -14,6 +14,7 @@ from gi.repository import Gio, GLib, GdkPixbuf
 
 from lollypop.utils import escape
 from lollypop.define import ArtSize, App
+from lollypop.logger import Logger
 
 
 class InformationStore:
@@ -39,13 +40,13 @@ class InformationStore:
             if not d.query_exists():
                 d.make_directory_with_parents()
         except:
-            print("Can't create %s" % InformationStore._INFO_PATH)
+            Logger.info("Can't create %s" % InformationStore._INFO_PATH)
         try:
             d = Gio.File.new_for_path(InformationStore._CACHE_PATH)
             if not d.query_exists():
                 d.make_directory_with_parents()
         except:
-            print("Can't create %s" % InformationStore._CACHE_PATH)
+            Logger.info("Can't create %s" % InformationStore._CACHE_PATH)
 
     def artwork_exists(artist):
         """
@@ -129,7 +130,7 @@ class InformationStore:
                                             "cover-quality").get_int32())])
             return filepath_at_size
         except Exception as e:
-            print("InformationStore::get_artwork_path():", e)
+            Logger.error("InformationStore::get_artwork_path(): %s" % e)
             return None
 
     def get_bio(artist):
@@ -228,7 +229,7 @@ class InformationStore:
                 if f.query_exists():
                     f.delete(None)
             except Exception as e:
-                print("InformationStore::uncache_artwork(): %s" % e)
+                Logger.error("InformationStore::uncache_artwork(): %s" % e)
 
     def migrate_store(artist, filepath):
         """

@@ -22,6 +22,7 @@ from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_playlist import PlaylistPlayer
 from lollypop.radios import Radios
+from lollypop.logger import Logger
 from lollypop.objects import Track, Album
 from lollypop.define import App, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
 
@@ -135,7 +136,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.set_prev()
             self.emit("album-added", album.id)
         except Exception as e:
-            print("Player::remove_album():", e)
+            Logger.error("Player::remove_album(): %s" % e)
 
     def play_album(self, album):
         """
@@ -300,9 +301,9 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     else:
                         self.pause()
                 else:
-                    print("Player::restore_state(): track missing")
+                    Logger.info("Player::restore_state(): track missing")
         except Exception as e:
-            print("Player::restore_state()", e)
+            Logger.error("Player::restore_state(): %s" % e)
 
     def set_party(self, party):
         """
@@ -337,7 +338,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self._prev_track = prev_track
             self.emit("prev-changed")
         except Exception as e:
-            print("Player::set_prev():", e)
+            Logger.error("Player::set_prev(): %s" % e)
 
     def set_next(self, force=False):
         """
@@ -370,7 +371,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self._next_track = next_track
             self.emit("next-changed")
         except Exception as e:
-            print("Player::set_next():", e)
+            Logger.error("Player::set_next(): %s" % e)
 
     def skip_album(self):
         """

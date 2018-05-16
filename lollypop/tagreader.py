@@ -17,6 +17,7 @@ from re import match
 from gettext import gettext as _
 
 from lollypop.define import App, ENCODING
+from lollypop.logger import Logger
 from lollypop.utils import format_artist_name
 
 
@@ -376,7 +377,7 @@ class TagReader(Discoverer):
                 if exists:
                     return sample
             except Exception as e:
-                print("TagReader::get_mp4()", e)
+                Logger.error("TagReader::get_mp4(): %s" % e)
             return ""
 
         def get_id3():
@@ -395,7 +396,7 @@ class TagReader(Discoverer):
                     if string is not None:
                         return string
             except Exception as e:
-                print("TagReader::get_id3()", e)
+                Logger.error("TagReader::get_id3(): %s" % e)
             return ""
 
         def get_ogg():
@@ -409,7 +410,7 @@ class TagReader(Discoverer):
                         continue
                     return sample[7:]
             except Exception as e:
-                print("TagReader::get_ogg()", e)
+                Logger.error("TagReader::get_ogg(): %s" % e)
             return ""
 
         if tags is None:

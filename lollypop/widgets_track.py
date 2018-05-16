@@ -18,6 +18,7 @@ from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
 from lollypop.utils import seconds_to_string
 from lollypop.objects import Track
+from lollypop.logger import Logger
 
 
 class Row(Gtk.ListBoxRow):
@@ -656,7 +657,7 @@ class TrackRow(Row):
             elif type_id == "a":
                 self.emit("album-moved", object_str, down)
         except Exception as e:
-            print("Row::__on_drag_data_received():", e)
+            Logger.error("Row::__on_drag_data_received(): %s" % e)
 
 
 class TracksWidget(Gtk.ListBox):

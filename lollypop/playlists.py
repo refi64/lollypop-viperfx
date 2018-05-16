@@ -21,6 +21,7 @@ from threading import Lock
 from lollypop.database import Database
 from lollypop.define import App, Type
 from lollypop.objects import Track
+from lollypop.logger import Logger
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
 
@@ -374,7 +375,7 @@ class Playlists(GObject.GObject):
                                 Gio.FileQueryInfoFlags.NONE,
                                 None)
                         except Exception as e:
-                            print("Playlists::import_uri():", e)
+                            Logger.info("Playlists::import_uri(): %s" % e)
                             continue
                         for info in infos:
                             f = infos.get_child(info)

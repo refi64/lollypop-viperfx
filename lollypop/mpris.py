@@ -18,6 +18,7 @@ from gi.repository import Gio, Gst, GLib, Gtk
 
 from random import randint
 
+from lollypop.logger import Logger
 from lollypop.define import App, ArtSize, Type, Shuffle, NextContext
 
 
@@ -490,7 +491,7 @@ class MPRIS(Server):
         try:
             self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
         except Exception as e:
-            print("MPRIS::__on_current_changed(): %s" % e)
+            Logger.error("MPRIS::__on_current_changed(): %s" % e)
 
     def __on_status_changed(self, data=None):
         properties = {"PlaybackStatus": GLib.Variant("s", self.__get_status())}

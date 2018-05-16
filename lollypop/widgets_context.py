@@ -18,6 +18,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album, Track, Disc
 from lollypop.define import App, TAG_EDITORS
+from lollypop.logger import Logger
 from lollypop.helper_dbus import DBusHelper
 
 
@@ -213,4 +214,4 @@ class ContextWidget(Gtk.EventBox):
             if source_result is not None and source_result[0]:
                 button.show()
         except Exception as e:
-            print("EditMenu::__on_can_launch_tag_editor():", e)
+            Logger.error("ContextWidget::__on_can_launch_tag_editor(): %s" % e)

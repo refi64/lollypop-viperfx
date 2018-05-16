@@ -20,6 +20,7 @@ from lollypop.selectionlist import SelectionList
 from lollypop.define import App, Type
 from lollypop.objects import Album
 from lollypop.loader import Loader
+from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
 
@@ -239,7 +240,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             if free is None or int(free) < 1024:
                 error_text = _("No free space available on device")
         except Exception as e:
-            print("DeviceWidget::_on_errors(): %s" % e)
+            Logger.error("DeviceWidget::_on_errors(): %s" % e)
         self.__error_label.set_text(error_text)
         self.__infobar.show()
 

@@ -21,8 +21,9 @@ from lollypop.define import App, Type
 from lollypop.objects import Track, Album
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
+from lollypop.logger import Logger
 from lollypop.database_history import History
-from lollypop.utils import is_audio, is_pls, debug
+from lollypop.utils import is_audio, is_pls
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -131,7 +132,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                 else:
                     files.append(f)
             except Exception as e:
-                print("CollectionScanner::__get_objects_for_uris():", e)
+                Logger.error("""CollectionScanner::
+                             __get_objects_for_uris(): %s""" % e)
                 return ([], [])
         for f in files:
             try:
@@ -140,9 +142,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                 elif is_audio(f):
                     tracks.append(f.get_uri())
                 else:
-                    debug("%s not detected as a music file" % f.get_uri())
+                    Logger.debug("""%s not detected
+                                 as a music file""" % f.get_uri())
             except Exception as e:
-                print("CollectionScanner::__get_objects_for_uris():", e)
+                Logger.error("""CollectionScanner::
+                             __get_objects_for_uris(): %s""" % e)
         return (tracks, track_dirs)
 
     def __update_progress(self, current, total):
@@ -232,7 +236,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                         mtime = int(time())
                     to_add.append((uri, mtime))
                 except Exception as e:
-                    print("CollectionScanner::__scan(mtime):", e)
+                    Logger.error("CollectionScanner::__scan(mtime): %s" % e)
             if to_add or orig_tracks:
                 modifications = True
             # Clean deleted files
@@ -246,16 +250,17 @@ class CollectionScanner(GObject.GObject, TagReader):
             # Add files to db
             for (uri, mtime) in to_add:
                 try:
-                    debug("Adding file: %s" % uri)
+                    Logger.debug("Adding file: %s" % uri)
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
                     self.__add2db(uri, mtime)
                     SqlCursor.allow_thread_execution(App().db)
                 except Exception as e:
-                    print("CollectionScanner::__scan(add):", e, uri)
+                    Logger.error("CollectionScanner::__scan(add): %s, %s",
+                                 (e, uri))
             SqlCursor.remove(App().db)
         except Exception as e:
-            print("CollectionScanner::__scan():", e)
+            Logger.error("CollectionScanner::__scan(): %s" % e)
         GLib.idle_add(self.__finish, modifications and saved)
         if not saved:
             self.__play_new_tracks(new_tracks)
@@ -271,7 +276,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @warning, be sure SqlCursor is available for App().db
         """
         f = Gio.File.new_for_uri(uri)
-        debug("CollectionScanner::add2db(): Read tags")
+        Logger.debug("CollectionScanner::add2db(): Read tags")
         info = self.get_info(uri)
         tags = info.get_tags()
         name = f.get_basename()
@@ -307,7 +312,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             if artists == "":
                 artists = _("Unknown")
 
-        debug("CollectionScanner::add2db(): Restore stats")
+        Logger.debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
         (track_pop, track_rate, track_ltime, album_mtime,
          loved, album_pop, album_rate) = self.__history.get(name, duration)
@@ -315,11 +320,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         if album_mtime == 0:
             album_mtime = mtime
 
-        debug("CollectionScanner::add2db(): Add artists %s" % artists)
+        Logger.debug("CollectionScanner::add2db(): Add artists %s" % artists)
         artist_ids = self.add_artists(artists, a_sortnames)
 
-        debug("CollectionScanner::add2db(): "
-              "Add album artists %s" % album_artists)
+        Logger.debug("CollectionScanner::add2db(): "
+                     "Add album artists %s" % album_artists)
         (album_artist_ids,
          new_artist_ids) = self.add_album_artists(album_artists, aa_sortnames)
 
@@ -334,8 +339,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         if len(missing_artist_ids) == len(album_artist_ids):
             artist_ids += missing_artist_ids
 
-        debug("CollectionScanner::add2db(): Add album: "
-              "%s, %s" % (album_name, album_artist_ids))
+        Logger.debug("CollectionScanner::add2db(): Add album: "
+                     "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, mb_album_id,
                                                album_artist_ids,
                                                uri, loved, album_pop,
@@ -345,15 +350,15 @@ class CollectionScanner(GObject.GObject, TagReader):
          new_genre_ids) = self.add_genres(genres)
 
         # Add track to db
-        debug("CollectionScanner::add2db(): Add track")
+        Logger.debug("CollectionScanner::add2db(): Add track")
         track_id = App().tracks.add(title, uri, duration,
                                     tracknumber, discnumber, discname,
                                     album_id, year, track_pop, track_rate,
                                     track_ltime, mtime, mb_track_id)
 
-        debug("CollectionScanner::add2db(): Update track")
+        Logger.debug("CollectionScanner::add2db(): Update track")
         self.__update_track(track_id, artist_ids, genre_ids)
-        debug("CollectionScanner::add2db(): Update album")
+        Logger.debug("CollectionScanner::add2db(): Update album")
         self.__update_album(album_id, album_artist_ids, genre_ids, year)
         if new_album:
             SqlCursor.commit(App().db)
@@ -408,7 +413,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     GLib.idle_add(self.emit, "genre-updated",
                                   genre_id, False)
         except Exception as e:
-            print("CollectionScanner::__del_from_db:", e)
+            Logger.error("CollectionScanner::__del_from_db: %s" % e)
 
     def __update_album(self, album_id, artist_ids, genre_ids, year):
         """

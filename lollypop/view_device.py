@@ -17,6 +17,7 @@ import re
 
 from lollypop.view import View
 from lollypop.define import App
+from lollypop.logger import Logger
 from lollypop.widgets_device import DeviceManagerWidget
 
 
@@ -77,7 +78,7 @@ class DeviceView(View):
                     files.append(info.get_name())
             infos.close(None)
         except Exception as e:
-            print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
+            Logger.error("DeviceManagerView::_get_files: %s: %s" % (uri, e))
             files = []
         return files
 

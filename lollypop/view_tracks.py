@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Album
+from lollypop.logger import Logger
 from lollypop.define import App, Type, ResponsiveType, Shuffle, NextContext
 
 
@@ -78,7 +79,7 @@ class TracksView:
                 self._tracks_widget_right[disc.number].update_playing(
                     App().player.current_track.id)
         except Exception as e:
-            print("TrackView::update_playing_indicator()", e)
+            Logger.error("TrackView::update_playing_indicator(): %s" % e)
 
     def update_duration(self, track_id):
         """
@@ -582,7 +583,7 @@ class TracksView:
                     self.emit("album-added", album_index + 2, split_album)
             self.recalculate_tracks_position()
         except Exception as e:
-            print("TracksView::__on_track_moved():", e)
+            Logger.error("TracksView::__on_track_moved(): %s" % e)
 
     def __on_album_moved(self, row, src_album_str, down):
         """
@@ -618,7 +619,7 @@ class TracksView:
             self.emit("album-added", album_index + 2, split_album)
             self.recalculate_tracks_position()
         except Exception as e:
-            print("TracksView::__on_album_moved():", e)
+            Logger.error("TracksView::__on_album_moved(): %s" % e)
 
     def __on_row_destroy(self, widget):
         """

@@ -19,6 +19,7 @@ from lollypop.define import App
 from lollypop.objects import Album
 from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
+from lollypop.logger import Logger
 from lollypop.localized import LocalizedCollation
 from lollypop.utils import noaccents
 
@@ -115,7 +116,7 @@ class Database:
                     sql.execute(self.__create_track_genres_idx)
                     sql.execute("PRAGMA user_version=%s" % upgrade.version)
             except Exception as e:
-                print("Database::__init__(): %s" % e)
+                Logger.error("Database::__init__(): %s" % e)
         else:
             upgrade.upgrade(self)
 
@@ -139,7 +140,7 @@ class Database:
             f = Gio.File.new_for_path(self.DB_PATH)
             f.trash()
         except Exception as e:
-            print("Database::drop_db():", e)
+            Logger.error("Database::drop_db():", e)
 
     def del_tracks(self, track_ids):
         """

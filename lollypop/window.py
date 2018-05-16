@@ -16,6 +16,7 @@ from lollypop.container import Container
 from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
+from lollypop.logger import Logger
 from lollypop.utils import is_unity
 
 
@@ -299,7 +300,7 @@ class Window(Gtk.ApplicationWindow):
                 )
 
             except Exception as e:
-                print("Window::__setup_media_keys():", e)
+                Logger.error("Window::__setup_media_keys(): %s" % e)
 
     # FIXME Remove this, handled by MPRIS in GNOME 3.26
     def __on_get_proxy(self, source, result):
@@ -307,7 +308,7 @@ class Window(Gtk.ApplicationWindow):
             self.__mediakeys = source.new_finish(result)
         except Exception as e:
             self.__mediakeys = None
-            print("Window::__on_get_proxy():", e)
+            Logger.error("Window::__on_get_proxy(): %s" % e)
         else:
             if self.__mediakeys.get_name_owner():
                 self.__grab_media_keys()

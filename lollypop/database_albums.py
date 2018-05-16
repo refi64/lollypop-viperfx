@@ -15,6 +15,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, Type, OrderBy
+from lollypop.logger import Logger
 from lollypop.utils import remove_static_genres, noaccents
 
 
@@ -948,7 +949,7 @@ class AlbumsDatabase:
                         return [Type.COMPILATIONS]
                 ret = artist_ids
         except Exception as e:
-            print("AlbumsDatabase::calculate_artist_ids()", e)
+            Logger.error("AlbumsDatabase::calculate_artist_ids(): %s" % e)
         return ret
 
     def count(self):

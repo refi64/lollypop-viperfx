@@ -17,7 +17,7 @@ import json
 import time
 
 from lollypop.helper_task import TaskHelper
-from lollypop.utils import debug
+from lollypop.logger import Logger
 
 HOST_NAME = "api.listenbrainz.org"
 PATH_SUBMIT = "/1/submit-listens"
@@ -108,7 +108,7 @@ class ListenBrainz(GObject.GObject):
             @param retry as int (internal)
         """
         self.__wait_for_ratelimit()
-        debug("ListenBrainz %s: %r" % (listen_type, payload))
+        Logger.debug("ListenBrainz %s: %r" % (listen_type, payload))
         data = {
             "listen_type": listen_type,
             "payload": payload
@@ -139,7 +139,7 @@ class ListenBrainz(GObject.GObject):
         now = time.time()
         if self.__next_request_time > now:
             delay = self.__next_request_time - now
-            debug("ListenBrainz rate limit applies, delay %d" % delay)
+            Logger.debug("ListenBrainz rate limit applies, delay %d" % delay)
             time.sleep(delay)
 
     def __handle_ratelimit(self, response):
@@ -151,8 +151,8 @@ class ListenBrainz(GObject.GObject):
         reset_in = response.get("X-RateLimit-Reset-In")
         if remaining is None or reset_in is None:
             return
-        debug("ListenBrainz X-RateLimit-Remaining: %s" % remaining)
-        debug("ListenBrainz X-RateLimit-Reset-In: %s" % reset_in)
+        Logger.debug("ListenBrainz X-RateLimit-Remaining: %s" % remaining)
+        Logger.debug("ListenBrainz X-RateLimit-Reset-In: %s" % reset_in)
         if (int(remaining) == 0):
             self.__next_request_time = time.time() + int(reset_in)
 

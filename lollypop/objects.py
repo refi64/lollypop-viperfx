@@ -15,6 +15,7 @@ from gi.repository import GLib
 
 from lollypop.helper_task import TaskHelper
 from lollypop.radios import Radios
+from lollypop.logger import Logger
 from lollypop.define import App, Type
 
 
@@ -99,7 +100,7 @@ class Base:
                     popularity = (popularity + best_popularity) / 2
                 radios.set_popularity(self._album_artists[0], popularity)
         except Exception as e:
-            print("Base::set_popularity(): %s" % e)
+            Logger.error("Base::set_popularity(): %s" % e)
 
     def get_rate(self):
         """

@@ -14,6 +14,7 @@
 from gi.repository import Gst
 
 from lollypop.define import App
+from lollypop.logger import Logger
 
 
 class PluginsPlayer:
@@ -47,8 +48,8 @@ class PluginsPlayer:
         if not bin or not rg_audioconvert1 or\
            not rg_audioconvert2 or not self.rgvolume or\
            not rglimiter or not rg_audiosink:
-            print("Replay Gain not available, ")
-            print("please check your gstreamer installation...")
+            Logger.info("Replay Gain not available, ")
+            Logger.info("please check your gstreamer installation...")
             return
 
         if self.rgvolume is not None:

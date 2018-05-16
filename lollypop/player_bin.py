@@ -20,8 +20,8 @@ from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, App
 from lollypop.codecs import Codecs
 from lollypop.define import Type
+from lollypop.logger import Logger
 from lollypop.objects import Track
-from lollypop.utils import debug
 
 
 class BinPlayer(BasePlayer):
@@ -252,12 +252,12 @@ class BinPlayer(BasePlayer):
             return False
         if init_volume:
             self._plugins.volume.props.volume = 1.0
-        debug("BinPlayer::_load_track(): %s" % track.uri)
+        Logger.debug("BinPlayer::_load_track(): %s" % track.uri)
         try:
             self._current_track = track
             self._playbin.set_property("uri", track.uri)
         except Exception as e:  # Gstreamer error
-            print("BinPlayer::_load_track(): ", e)
+            Logger.error("BinPlayer::_load_track(): %s" % e)
             return False
         return True
 
@@ -286,7 +286,8 @@ class BinPlayer(BasePlayer):
             @param message as Gst.Message
         """
         self._start_time = time()
-        debug("Player::_on_stream_start(): %s" % self._current_track.uri)
+        Logger.debug("Player::_on_stream_start(): %s" %
+                     self._current_track.uri)
         self.emit("current-changed")
         for scrobbler in App().scrobblers:
             if scrobbler.available:
@@ -308,7 +309,8 @@ class BinPlayer(BasePlayer):
         changed = False
         if self._current_track.id >= 0 or self._current_track.duration > 0.0:
             return
-        debug("Player::__on_bus_message_tag(): %s" % self._current_track.uri)
+        Logger.debug("Player::__on_bus_message_tag(): %s" %
+                     self._current_track.uri)
         reader = TagReader()
         tags = message.parse_tag()
         title = reader.get_title(tags, "")
@@ -343,7 +345,7 @@ class BinPlayer(BasePlayer):
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
-        print("Player::_on_bus_error():", message.parse_error()[1])
+        Logger.info("Player::_on_bus_error(): %s" % message.parse_error()[1])
         App().window.container.pulse(False)
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
@@ -357,7 +359,7 @@ class BinPlayer(BasePlayer):
             On end of stream, stop playback
             go next otherwise
         """
-        debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
+        Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
             self.stop()
             self._next_context = NextContext.NONE
@@ -370,7 +372,7 @@ class BinPlayer(BasePlayer):
             When stream is about to finish, switch to next track without gap
             @param playbin as Gst bin
         """
-        debug("Player::__on_stream_about_to_finish(): %s" % playbin)
+        Logger.debug("Player::__on_stream_about_to_finish(): %s" % playbin)
         # Don"t do anything if crossfade on, track already changed
         if self._crossfading:
             return

@@ -14,6 +14,7 @@ from gi.repository import Gio, GLib
 
 from lollypop.define import App
 from lollypop.utils import is_audio
+from lollypop.logger import Logger
 
 
 class Inotify:
@@ -46,7 +47,7 @@ class Inotify:
                 monitor.connect("changed", self.__on_dir_changed)
                 self.__monitors[uri] = monitor
         except Exception as e:
-            print("Inotify::add_monitor():", e)
+            Logger.error("Inotify::add_monitor(): %s" % e)
 
 #######################
 # PRIVATE             #

@@ -18,7 +18,8 @@ from base64 import b64encode
 from lollypop.information_store import InformationStore
 from lollypop.define import App, GOOGLE_API_ID, Type
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
-from lollypop.utils import debug, get_network_available
+from lollypop.utils import get_network_available
+from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
 
@@ -88,7 +89,8 @@ class Downloader:
             for item in decode["items"]:
                 uris.append(item["link"])
         except Exception as e:
-            print("Downloader::get_google_artwork():", e, decode)
+            Logger.error("Downloader::get_google_artwork(): %s, %s" %
+                         (e, decode))
         return uris or None
 
 #######################
@@ -122,8 +124,8 @@ class Downloader:
                 decode = json.loads(data.decode("utf-8"))
                 return decode["data"][0]["picture_xl"]
         except Exception as e:
-            debug("Downloader::_get_deezer_artist_artwork(): %s [%s]" %
-                  (e, artist))
+            Logger.debug("Downloader::_get_deezer_artist_artwork(): %s [%s]" %
+                         (e, artist))
         return None
 
     def _get_spotify_artist_artwork_uri(self, artist):
@@ -147,8 +149,8 @@ class Downloader:
                     if item["name"].lower() == artist.lower():
                         return item["images"][0]["url"]
         except Exception as e:
-            debug("Downloader::_get_spotify_artist_artwork(): %s [%s]" %
-                  (e, artist))
+            Logger.debug("Downloader::_get_spotify_artist_artwork(): %s [%s]" %
+                         (e, artist))
         return None
 
     def _get_deezer_album_artwork(self, artist, album):
@@ -176,7 +178,7 @@ class Downloader:
                 if uri is not None:
                     (status, image) = helper.load_uri_content_sync(uri, None)
         except Exception as e:
-            print("Downloader::__get_deezer_album_artwork: %s" % e)
+            Logger.error("Downloader::__get_deezer_album_artwork: %s" % e)
         return image
 
     def _get_spotify_album_artwork(self, artist, album):
@@ -220,8 +222,8 @@ class Downloader:
                                                                        None)
                     break
         except Exception as e:
-            print("Downloader::_get_album_art_spotify: %s [%s/%s]" %
-                  (e, artist, album))
+            Logger.error("Downloader::_get_album_art_spotify: %s [%s/%s]" %
+                         (e, artist, album))
         return image
 
     def _get_itunes_album_artwork(self, artist, album):
@@ -250,8 +252,8 @@ class Downloader:
                                                                        None)
                         break
         except Exception as e:
-            print("Downloader::_get_album_art_itunes: %s [%s/%s]" %
-                  (e, artist, album))
+            Logger.error("Downloader::_get_album_art_itunes: %s [%s/%s]" %
+                         (e, artist, album))
         return image
 
     def _get_lastfm_album_artwork(self, artist, album):
@@ -271,8 +273,8 @@ class Downloader:
                 if uri is not None:
                     (status, image) = helper.load_uri_content_sync(uri, None)
             except Exception as e:
-                print("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
-                      (e, artist, album))
+                Logger.error("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
+                             (e, artist, album))
         return image
 
 #######################
@@ -314,8 +316,8 @@ class Downloader:
                 continue
             artwork_set = False
             for (api, helper, unused) in InformationStore.WEBSERVICES:
-                debug("Downloader::__cache_artists_info(): %s@%s" % (artist,
-                                                                     api))
+                Logger.debug("Downloader::__cache_artists_info(): %s@%s" %
+                             (artist, api))
                 if helper is None:
                     continue
                 try:
@@ -329,14 +331,15 @@ class Downloader:
                             InformationStore.add_artist_artwork(
                                 artist,
                                 data)
-                            debug("Downloader::__cache_artists_info(): %s"
-                                  % uri)
+                            Logger.debug("""Downloader::
+                                         __cache_artists_info(): %s""" % uri)
                         else:
                             InformationStore.add_artist_artwork(
                                 artist,
                                 None)
                 except Exception as e:
-                    print("Downloader::__cache_artists_info():", e, artist)
+                    Logger.error("Downloader::__cache_artists_info(): %s, %s" %
+                                 (e, artist))
                     InformationStore.add_artist_artwork(
                                 artist,
                                 None)
@@ -371,6 +374,6 @@ class Downloader:
                         App().art.save_album_artwork(data, album_id)
                         break
         except Exception as e:
-            print("Downloader::__cache_albums_art: %s" % e)
+            Logger.error("Downloader::__cache_albums_art: %s" % e)
         self.__albums_history.append(album_id)
         self.__in_albums_download = False

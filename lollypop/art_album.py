@@ -18,6 +18,7 @@ from lollypop.art_base import BaseArt
 from lollypop.tagreader import TagReader
 from lollypop.define import App, ArtSize
 from lollypop.objects import Album
+from lollypop.logger import Logger
 from lollypop.utils import escape, is_readonly
 from lollypop.helper_dbus import DBusHelper
 from lollypop.helper_task import TaskHelper
@@ -224,7 +225,7 @@ class AlbumArt(BaseArt, TagReader):
             return surface
 
         except Exception as e:
-            print("AlbumArt::get_album_artwork()", e)
+            Logger.error("AlbumArt::get_album_artwork(): %s" % e)
             return self.get_default_icon("folder-music-symbolic", size, scale)
 
     def get_album_artwork2(self, uri, size, scale):
@@ -294,7 +295,7 @@ class AlbumArt(BaseArt, TagReader):
                 self.clean_album_cache(album)
                 GLib.idle_add(self.album_artwork_update, album.id)
         except Exception as e:
-            print("Art::save_album_artwork(): %s" % e)
+            Logger.error("AlbumArt::save_album_artwork(): %s" % e)
 
     def album_artwork_update(self, album_id):
         """
@@ -313,11 +314,11 @@ class AlbumArt(BaseArt, TagReader):
             try:
                 f.trash()
             except Exception as e:
-                print("AlbumArt::remove_album_artwork():", e)
+                Logger.error("AlbumArt::remove_album_artwork(): %s" % e)
                 try:
                     f.delete(None)
                 except Exception as e:
-                    print("AlbumArt::remove_album_artwork():", e)
+                    Logger.error("AlbumArt::remove_album_artwork(): %s" % e)
         dbus_helper = DBusHelper()
         dbus_helper.call("CanSetCover", None,
                          self.__on_remove_album_artwork, album.id)
@@ -340,7 +341,7 @@ class AlbumArt(BaseArt, TagReader):
                 if re.search(r"%s_.*\.jpg" % re.escape(cache_name), basename):
                     f.delete()
         except Exception as e:
-            print("Art::clean_album_cache(): ", e, cache_name)
+            Logger.error("AlbumArt::clean_album_cache(): %s" % e)
 
     def pixbuf_from_tags(self, uri, size):
         """
@@ -373,7 +374,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                    None)
                 stream.close()
         except Exception as e:
-            print("AlbumArt::pixbuf_from_tags():", e)
+            Logger.error("AlbumArt::pixbuf_from_tags(): %s" % e)
         return pixbuf
 
     def get_album_cache_name(self, album):
@@ -467,7 +468,8 @@ class AlbumArt(BaseArt, TagReader):
                                      GLib.Variant("(ss)", (path, "")),
                                      None, None)
                 except Exception as e:
-                    print("AlbumArt::__on_remove_album_artwork():", e)
+                    Logger.error("AlbumArt::__on_remove_album_artwork(): %s" %
+                                 e)
         else:
             # Lollypop-portal or kid3-cli removed?
             App().settings.set_value("save-to-tags", GLib.Variant("b", False))

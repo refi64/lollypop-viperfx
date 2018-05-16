@@ -12,6 +12,8 @@
 
 from gi.repository import Gst, GstPbutils
 
+from lollypop.logger import Logger
+
 
 class Codecs:
     """
@@ -48,7 +50,7 @@ class Codecs:
                 context,
                 self.__null)
         except Exception as e:
-            print("Codecs::__init__(): %s" % e)
+            Logger.error("Codecs::__init__(): %s" % e)
 
     def append(self, message):
         """

@@ -42,6 +42,7 @@ from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.inhibitor import Inhibitor
 from lollypop.art import Art
+from lollypop.logger import Logger
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.database_albums import AlbumsDatabase
@@ -152,7 +153,7 @@ class Application(Gtk.Application):
                                          None,
                                          None)
         except Exception as e:
-            print("Application::init():", e)
+            Logger.error("Application::init(): %s" % e)
 
         cssProviderFile = Gio.File.new_for_uri(
             "resource:///org/gnome/Lollypop/application.css")
@@ -307,7 +308,7 @@ class Application(Gtk.Application):
                     with open(LOLLYPOP_DATA_PATH + "/Albums.bin", "wb") as f:
                         dump(list(self.player.albums), f)
                 except Exception as e:
-                    print("Application::__save_state()", e)
+                    Logger.error("Application::__save_state(): %s" % e)
             dump(track_id, open(LOLLYPOP_DATA_PATH + "/track_id.bin", "wb"))
             dump([self.player.is_playing, self.player.is_party],
                  open(LOLLYPOP_DATA_PATH + "/player.bin", "wb"))
@@ -354,7 +355,7 @@ class Application(Gtk.Application):
                 sql.execute("VACUUM")
                 sql.isolation_level = ""
         except Exception as e:
-            print("Application::__vacuum(): ", e)
+            Logger.error("Application::__vacuum(): %s" % e)
 
     def __preload_portal(self):
         """
@@ -367,9 +368,9 @@ class Application(Gtk.Application):
                               "/org/gnome/LollypopPortal",
                               "org.gnome.Lollypop.Portal", None, None)
         except Exception as e:
-            print("You are missing lollypop-portal: "
-                  "https://github.com/gnumdk/lollypop-portal")
-            print("Application::__preload_portal():", e)
+            Logger.info("You are missing lollypop-portal: "
+                        "https://github.com/gnumdk/lollypop-portal")
+            Logger.error("Application::__preload_portal(): %s", e)
 
     def __on_handle_local_options(self, app, options):
         """
@@ -378,7 +379,7 @@ class Application(Gtk.Application):
             @param options as GLib.VariantDict
         """
         if options.contains("version"):
-            print("Lollypop %s" % self.__version)
+            Logger.info("Lollypop %s" % self.__version)
             exit(0)
         return -1
 
@@ -399,7 +400,7 @@ class Application(Gtk.Application):
                 if self.player.current_track.id is not None:
                     self.player.current_track.set_rate(value)
             except Exception as e:
-                print(e)
+                Logger.error("Application::__on_command_line(): %s", e)
                 pass
         elif options.contains("play-pause"):
             self.player.play_pause()
@@ -418,7 +419,7 @@ class Application(Gtk.Application):
                 self.player.populate_playlist_by_tracks(tracks,
                                                         [Type.SEARCH])
             except Exception as e:
-                print(e)
+                Logger.error("Application::__on_command_line(): %s", e)
                 pass
         elif options.contains("next"):
             self.player.next()

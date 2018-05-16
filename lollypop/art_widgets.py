@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.information_store import InformationStore
 from lollypop.define import App, ArtSize, Type
 from lollypop.utils import get_network_available
+from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
 
@@ -104,7 +105,7 @@ class ArtworkSearch(Gtk.Bin):
                     (status, content, tag) = f.load_contents()
                     self.__add_pixbuf(uri, status, content, print)
                 except Exception as e:
-                    print("ArtworkSearch::populate()", e)
+                    Logger.error("ArtworkSearch::populate(): %s" % e)
         # Then google
         uri = App().art.get_google_search_uri(self.__get_current_search())
         helper = TaskHelper()
@@ -159,7 +160,7 @@ class ArtworkSearch(Gtk.Bin):
                     App().art.emit("artist-artwork-changed", self.__artist)
                 self._streams = {}
             except Exception as e:
-                print("ArtworkSearch::_on_button_clicked():", e)
+                Logger.error("ArtworkSearch::_on_button_clicked(): %s" % e)
         dialog.destroy()
 
     def _on_reset_confirm(self, button):
@@ -285,7 +286,7 @@ class ArtworkSearch(Gtk.Bin):
                 image.show()
                 self._view.add(image)
         except Exception as e:
-            print("ArtworkSearch::__add_pixbuf: %s" % e)
+            Logger.error("ArtworkSearch::__add_pixbuf: %s" % e)
         callback(*args)
 
     def __extract_links(self, uri, loaded, content):
@@ -308,7 +309,7 @@ class ArtworkSearch(Gtk.Bin):
                     except:
                         pass
         except Exception as e:
-            print("ArtworkSearch::__extract_links: %s" % e)
+            Logger.error("ArtworkSearch::__extract_links: %s" % e)
         self.__populate(uris)
 
     def __close_popover(self):

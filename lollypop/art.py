@@ -12,6 +12,7 @@
 
 from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
+from lollypop.logger import Logger
 from lollypop.downloader import Downloader
 
 from shutil import rmtree
@@ -40,4 +41,4 @@ class Art(AlbumArt, RadioArt, Downloader):
             rmtree(self._CACHE_PATH)
             self._create_cache()
         except Exception as e:
-            print("Art::clean_all_cache(): ", e)
+            Logger.error("Art::clean_all_cache(): %s", e)

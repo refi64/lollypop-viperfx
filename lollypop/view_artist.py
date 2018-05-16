@@ -21,6 +21,7 @@ from lollypop.objects import Album
 from lollypop.information_store import InformationStore
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
+from lollypop.logger import Logger
 
 
 class ArtistView(ArtistAlbumsView):
@@ -188,7 +189,7 @@ class ArtistView(ArtistAlbumsView):
                                              self._artist_ids)
             self.__update_icon(False)
         except Exception as e:
-            print("ArtistView::_on_play_clicked:", e)
+            Logger.error("ArtistView::_on_play_clicked: %s" % e)
 
     def _on_add_clicked(self, widget):
         """

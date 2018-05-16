@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.define import App, ArtSize
+from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 from lollypop.art import Art
 
@@ -151,7 +152,7 @@ class RadioPopover(Gtk.Popover):
                 App().art.radio_artwork_update(self.__name)
                 self._streams = {}
             except Exception as e:
-                print("RadioPopover::_on_button_clicked():", e)
+                Logger.error("RadioPopover::_on_button_clicked(): %s" % e)
         dialog.destroy()
 
 #######################

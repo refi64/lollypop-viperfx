@@ -13,6 +13,7 @@
 from gi.repository import Gio
 
 from lollypop.define import PROXY_BUS, PROXY_PATH, PROXY_INTERFACE, App
+from lollypop.logger import Logger
 
 
 class DBusHelper:
@@ -39,7 +40,7 @@ class DBusHelper:
                               PROXY_INTERFACE, None,
                               self.__on_get_proxy, call, args, callback, data)
         except Exception as e:
-            print("DBusHelper::call():", e)
+            Logger.error("DBusHelper::call(): %s" % e)
 
 #######################
 # PRIVATE             #
@@ -59,4 +60,4 @@ class DBusHelper:
             proxy.call(call, args, Gio.DBusCallFlags.NO_AUTO_START,
                        500, None, callback, data)
         except Exception as e:
-            print("DBusHelper::__on_get_proxy():", e)
+            Logger.error("DBusHelper::__on_get_proxy(): %s" % e)

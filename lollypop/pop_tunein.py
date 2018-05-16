@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk, Pango
 from gettext import gettext as _
 
 from lollypop.radios import Radios
+from lollypop.logger import Logger
 from lollypop.define import App, ArtSize, WindowSize
 from lollypop.art import Art
 from lollypop.utils import get_network_available
@@ -253,7 +254,7 @@ class TuneinPopover(Gtk.Popover):
                                     self.__on_logo_uri_content,
                                     item.TEXT)
         except Exception as e:
-            print("TuneinPopover::__add_radio: %s" % e)
+            Logger.error("TuneinPopover::__add_radio: %s" % e)
         # Tunein in embbed uri in ashx files, so get content if possible
         helper = TaskHelper()
         helper.load_uri_content(item.URL, self.__cancellable,
@@ -394,7 +395,7 @@ class TuneinPopover(Gtk.Popover):
                 else:
                     self.__show_not_found(_("No result…"))
         except Exception as e:
-            print("TuneinPopover::__on_uri_content():", e)
+            Logger.error("TuneinPopover::__on_uri_content(): %s" % e)
             self.__show_not_found(_("Can't connect to TuneIn…"))
 
     def __on_button_clicked(self, button, item):

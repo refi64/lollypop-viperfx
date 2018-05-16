@@ -16,6 +16,7 @@ from gettext import gettext as _
 from gettext import ngettext as ngettext
 
 from lollypop.define import App
+from lollypop.logger import Logger
 from lollypop.database import Database
 from lollypop.database_history import History
 from lollypop.helper_dbus import DBusHelper
@@ -52,8 +53,8 @@ class Settings(Gio.Settings):
             if filename:
                 uris = [GLib.filename_to_uri(filename)]
             else:
-                print("You need to add a music uri"
-                      " to org.gnome.Lollypop in dconf")
+                Logger.info("You need to add a music uri"
+                            " to org.gnome.Lollypop in dconf")
         return list(uris)
 
 
@@ -531,7 +532,8 @@ class SettingsDialog:
             self.__infobar.hide()
             self.__reset_database(track_ids, len(track_ids), history)
         except Exception as e:
-            print("Application::_on_confirm_button_clicked():", e)
+            Logger.error("SettingsDialog::_on_confirm_button_clicked(): %s" %
+                         e)
 
     def _on_reset_button_clicked(self, widget):
         """
@@ -582,7 +584,7 @@ class SettingsDialog:
                              fm,
                              callback)
         except Exception as e:
-            print("Settings::__update_fm_settings(): %s" % e)
+            Logger.error("SettingsDialog::__update_fm_settings(): %s" % e)
 
     def __mix_long_func(self, args):
         """

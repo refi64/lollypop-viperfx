@@ -20,6 +20,7 @@ from lollypop.utils import translate_artist_name
 from lollypop.database_history import History
 from lollypop.radios import Radios
 from lollypop.define import App, Type
+from lollypop.logger import Logger
 
 
 class DatabaseUpgrade:
@@ -90,7 +91,8 @@ class DatabaseUpgrade:
                         else:
                             self.__UPGRADES[i](db)
                     except Exception as e:
-                        print("History DB upgrade %s failed: %s" % (i, e))
+                        Logger.error("History DB upgrade %s failed: %s" %
+                                     (i, e))
                 sql.execute("PRAGMA user_version=%s" % self.version)
 
     @property

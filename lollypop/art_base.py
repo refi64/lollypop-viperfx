@@ -19,6 +19,7 @@
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, GLib
 
 from lollypop.define import ArtSize, App
+from lollypop.logger import Logger
 
 
 class BaseArt(GObject.GObject):
@@ -63,7 +64,7 @@ class BaseArt(GObject.GObject):
             if f.query_exists():
                 f.delete()
         except Exception as e:
-            print("Art::clean_store()", e)
+            Logger.error("Art::clean_store(): %s" % e)
 
     def get_default_icon(self, icon_name, size, scale):
         """
@@ -161,7 +162,7 @@ class BaseArt(GObject.GObject):
             try:
                 d.make_directory_with_parents()
             except:
-                print("Can't create %s" % self._STORE_PATH)
+                Logger.info("Can't create %s" % self._STORE_PATH)
 
     def _create_cache(self):
         """
@@ -172,7 +173,7 @@ class BaseArt(GObject.GObject):
             try:
                 d.make_directory_with_parents()
             except:
-                print("Can't create %s" % self._CACHE_PATH)
+                Logger.info("Can't create %s" % self._CACHE_PATH)
 
     def _get_default_icon_path(self, size, icon_name):
         """
