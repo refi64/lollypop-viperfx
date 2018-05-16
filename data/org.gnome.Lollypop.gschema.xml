@@ -148,11 +148,6 @@
             <summary>Replay gain value in dB</summary>
             <description>Between -15 and 15</description>
         </key>
-         <key type="b" name="sync-albums">
-            <default>false</default>
-            <summary>Sync all albums(MTP)</summary>
-            <description></description>
-        </key>
         <key type="i" name="convert-bitrate">
             <default>192</default>
             <summary>Quality of encoding</summary>

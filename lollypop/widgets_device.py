@@ -52,7 +52,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         widget = self.__builder.get_object("widget")
         self.__error_label = self.__builder.get_object("error-label")
         self.__switch_albums = self.__builder.get_object("switch_albums")
-        self.__switch_albums.set_state(App().settings.get_value("sync-albums"))
 
         self.__menu_items = self.__builder.get_object("menu-items")
         self.__menu = self.__builder.get_object("menu")
@@ -102,7 +101,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         self.__model.clear()
         self.__stop = False
-        if App().settings.get_value("sync-albums"):
+        if self.mtp_syncdb.albums:
             self.__selection_list.clear()
             self.__setup_list_artists(self.__selection_list)
             self.__column1.set_visible(True)
@@ -122,12 +121,19 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Set uri
             @param uri as str
         """
+        try:
+            self.__switch_albums.disconnect_by_func(self.__on_albums_state_set)
+        except:
+            pass
         self._load_db_uri(uri)
         encoder = self.mtp_syncdb.encoder
         normalize = self.mtp_syncdb.normalize
+        albums = self.mtp_syncdb.albums
         self.__switch_normalize = self.__builder.get_object("switch_normalize")
         self.__switch_normalize.set_sensitive(False)
         self.__switch_normalize.set_active(normalize)
+        self.__switch_albums.set_state(albums)
+        self.__switch_albums.connect("state-set", self.__on_albums_state_set)
         self.__builder.get_object(encoder).set_active(True)
         for encoder in self._GST_ENCODER.keys():
             if not self._check_encoder_status(encoder):
@@ -154,7 +160,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         App().window.container.progress.add(self)
         self.__menu.set_sensitive(False)
         playlists = []
-        if not App().settings.get_value("sync-albums"):
+        if not self.mtp_syncdb.albums:
             self.__view.set_sensitive(False)
             for item in self.__model:
                 if item[0]:
@@ -243,17 +249,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Logger.error("DeviceWidget::_on_errors(): %s" % e)
         self.__error_label.set_text(error_text)
         self.__infobar.show()
-
-    def _on_albums_state_set(self, widget, state):
-        """
-            Enable or disable playlist selection
-            Save option
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        self.__stop = True
-        App().settings.set_value("sync-albums", GLib.Variant("b", state))
-        GLib.idle_add(self.populate)
 
     def _on_convert_toggled(self, widget):
         """
@@ -368,8 +363,19 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param album_id as int
             @param toggle as bool
         """
-        if App().settings.get_value("sync-albums"):
+        if self.mtp_syncdb.albums:
             App().albums.set_synced(album_id, toggle)
+
+    def __on_albums_state_set(self, widget, state):
+        """
+            Enable or disable playlist selection
+            Save option
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        self.__stop = True
+        self.mtp_syncdb.set_albums(state)
+        GLib.idle_add(self.populate)
 
     def __on_item_selected(self, selection_list):
         """

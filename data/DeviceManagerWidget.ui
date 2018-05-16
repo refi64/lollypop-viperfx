@@ -210,7 +210,6 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="halign">start</property>
-        <signal name="state-set" handler="_on_albums_state_set" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>

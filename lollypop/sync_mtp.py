@@ -44,6 +44,7 @@ class MtpSyncDb:
         self.__db_uri = self.__base_uri + "/lollypop-sync.db"
         self.__encoder = "convert_none"
         self.__normalize = False
+        self.__albums = True
         self.__metadata = {}
 
     def load_db(self):
@@ -58,12 +59,10 @@ class MtpSyncDb:
                 jsondb = json.loads(jsonraw.decode("utf-8"))
                 if "encoder" in jsondb:
                     self.__encoder = jsondb["encoder"]
-                else:
-                    self.__encoder = "convert_none"
+                if "albums" in jsondb:
+                    self.__albums = jsondb["albums"]
                 if "normalize" in jsondb:
                     self.__normalize = jsondb["normalize"]
-                else:
-                    self.__normalize = False
                 if "version" in jsondb and jsondb["version"] == 1:
                     for m in jsondb["tracks_metadata"]:
                         self.__metadata[m["uri"]] = m["metadata"]
@@ -81,6 +80,7 @@ class MtpSyncDb:
         jsondb = json.dumps({"version": 1,
                              "encoder": self.__encoder,
                              "normalize": self.__normalize,
+                             "albums": self.__albums,
                              "tracks_metadata": [
                                  {"uri": x, "metadata": y}
                                  for x, y in sorted(self.__metadata.items())]})
@@ -99,6 +99,13 @@ class MtpSyncDb:
             @param encoder as str
         """
         self.__encoder = encoder
+
+    def set_albums(self, albums):
+        """
+            Set sync type
+            @param albums as bool
+        """
+        self.__albums = albums
 
     def set_normalize(self, normalize):
         """
@@ -139,6 +146,14 @@ class MtpSyncDb:
             @return str
         """
         return self.__encoder
+
+    @property
+    def albums(self):
+        """
+            Get sync type
+            @return str
+        """
+        return self.__albums
 
     @property
     def normalize(self):
