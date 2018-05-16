@@ -178,14 +178,17 @@ class MtpSync:
                     ! rglimiter ! audioconvert"
     __EXTENSION = {"convert_none": None,
                    "convert_mp3": ".mp3",
-                   "convert_vorbis": ".ogg"}
+                   "convert_vorbis": ".ogg",
+                   "convert_flac": ".flac"}
     __ENCODERS = {"convert_none": None,
                   "convert_mp3": " ! lamemp3enc target=bitrate\
                                    cbr=true bitrate=%s ! id3v2mux",
                   "convert_vorbis": " ! vorbisenc max-bitrate=%s\
-                                      ! oggmux"}
+                                      ! oggmux",
+                  "convert_flac": " ! flacenc"}
     _GST_ENCODER = {"convert_mp3": "lamemp3enc",
-                    "convert_ogg": "vorbisenc"}
+                    "convert_ogg": "vorbisenc",
+                    "convert_flac": "flacenc"}
 
     def __init__(self):
         """
@@ -657,8 +660,11 @@ class MtpSync:
                 convert_bitrate = self.__convert_bitrate * 1000
             else:
                 convert_bitrate = self.__convert_bitrate
-            pipeline_str += self.__ENCODERS[self.mtp_syncdb.encoder] %\
-                convert_bitrate
+            try:
+                pipeline_str += self.__ENCODERS[self.mtp_syncdb.encoder] %\
+                    convert_bitrate
+            except:
+                pipeline_str += self.__ENCODERS[self.mtp_syncdb.encoder]
             pipeline_str += self.__ENCODE_END % dst_path
             pipeline = Gst.parse_launch(pipeline_str)
             pipeline.set_state(Gst.State.PLAYING)

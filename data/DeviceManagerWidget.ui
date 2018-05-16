@@ -331,6 +331,7 @@
       <object class="GtkRadioButton" id="convert_flac">
         <property name="label" translatable="yes">FLAC</property>
         <property name="name">convert_flac</property>
+        <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="margin_left">20</property>
