@@ -13,7 +13,6 @@
 from gi.repository import Gtk, Gdk, GLib
 
 from lollypop.controllers import InfoController
-from lollypop.touch_helper import TouchHelper
 from lollypop.define import App, Type
 
 
@@ -35,11 +34,14 @@ class ToolbarInfo(Gtk.Bin, InfoController):
         self.__width = 0
 
         self._infobox = builder.get_object("info")
+        self._infobox.connect("button-press-event",
+                              self.__on_infobox_button_press_event)
+        self._infobox.connect("button-release-event",
+                              self.__on_infobox_button_release_event)
         self.add(self._infobox)
 
-        self.__helper = TouchHelper(self._infobox, None, None)
-        self.__helper.set_long_func(self.__on_info_long)
-        self.__helper.set_short_func(self.__on_info_short)
+        self.__gesture = Gtk.GestureLongPress.new(self._infobox)
+        self.__gesture.connect("pressed", self.__on_infobox_pressed)
 
         self._spinner = builder.get_object("spinner")
 
@@ -126,10 +128,12 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             pixbuf = App().art.get_radio_artwork(name, self.artsize)
             self._cover.set_from_surface(pixbuf)
 
-    def __on_info_long(self, args):
+    def __on_infobox_pressed(self, gesture, x, y):
         """
             Show current track menu
-            @param args as []
+            @param gesture as Gtk.GestureLongPress
+            @param x as float
+            @param y as float
         """
         from lollypop.pop_menu import ToolbarMenu
         menu = ToolbarMenu(App().player.current_track)
@@ -141,21 +145,34 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             popover = Gtk.Popover.new_from_model(self._infobox, menu)
         popover.show()
 
-    def __on_info_short(self, args):
+    def __on_infobox_button_press_event(self, eventbox, event):
+        """
+            Block event if button is not left click
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if event.button != 1:
+            return True
+
+    def __on_infobox_button_release_event(self, eventbox, event):
         """
             Show track information popover
-            @param args as []
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
         """
-        if App().player.current_track.id == Type.RADIOS:
-            from lollypop.pop_tunein import TuneinPopover
-            popover = TuneinPopover()
-            popover.populate()
-        elif App().player.current_track.id is not None:
-            from lollypop.pop_information import InformationPopover
-            popover = InformationPopover()
-            popover.populate(App().player.current_track.artist_ids)
-        popover.set_relative_to(self._infobox)
-        popover.show()
+        if event.button == 1:
+            if App().player.current_track.id == Type.RADIOS:
+                from lollypop.pop_tunein import TuneinPopover
+                popover = TuneinPopover()
+                popover.populate()
+            elif App().player.current_track.id is not None:
+                from lollypop.pop_information import InformationPopover
+                popover = InformationPopover()
+                popover.populate(App().player.current_track.artist_ids)
+            popover.set_relative_to(self._infobox)
+            popover.show()
+        else:
+            self.__on_infobox_pressed(self.__gesture, 0, 0)
 
     def __on_loading_changed(self, player, show):
         """

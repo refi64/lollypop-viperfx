@@ -18,7 +18,6 @@ from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
 from lollypop.widgets_album import BaseWidget
 from lollypop.pop_radio import RadioPopover
-from lollypop.touch_helper import TouchHelper
 
 
 class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
@@ -49,9 +48,6 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
-        self.__helper = TouchHelper(self._widget, None, None)
-        self.__helper.set_long_func(self.__on_click_long)
-        self.__helper.set_short_func(self.__on_click_short)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._cover = Gtk.Image()
@@ -227,20 +223,6 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
 #######################
 # PRIVATE             #
 #######################
-    def __on_click_long(self, args):
-        """
-            Show overlay
-            @param args as []
-        """
-        self._show_overlay_func(True)
-
-    def __on_click_short(self, args):
-        """
-            Show overlay
-            @param args as []
-        """
-        self._show_overlay_func(True)
-
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed

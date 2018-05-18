@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
-from lollypop.touch_helper import TouchHelper
 from lollypop.define import App, Shuffle, Type, NextContext
 
 
@@ -141,10 +140,13 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover.set_relative_to(self.__party_button)
 
         self.__search_button = builder.get_object("search-button")
-        self.__helper = TouchHelper(self.__search_button,
-                                    "search", "<Control>f")
-        self.__helper.set_long_func(self.__on_search_long)
-        self.__helper.set_short_func(self.__on_search_short)
+        self.__gesture = Gtk.GestureLongPress.new(self.__search_button)
+        self.__gesture.connect("pressed", self.__on_search_button_pressed)
+        self.__gesture.connect("cancelled", self.__on_search_button_cancelled)
+        search_action = Gio.SimpleAction.new("search", None)
+        search_action.connect("activate", self.__activate_party_button)
+        App().add_action(search_action)
+        App().set_accels_for_action("app.search", ["<Control>f"])
 
         self.__settings_button = builder.get_object("settings-button")
 
@@ -274,18 +276,20 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def __on_search_long(self, args):
+    def __on_search_button_pressed(self, gesture, x, y):
         """
-            Filter view
-            @param args as []
+            Show filtering
+            @param gesture as Gtk.GestureLongPress
+            @param x as float
+            @param y as float
         """
         if App().window.container.view is not None:
             App().window.container.view.enable_filter()
 
-    def __on_search_short(self, args):
+    def __on_search_button_cancelled(self, gesture):
         """
             Show search popover
-            @param args as []
+            @param gesture as Gtk.GestureLongPress
         """
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)

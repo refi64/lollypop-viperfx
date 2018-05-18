@@ -586,23 +586,6 @@ class SettingsDialog:
         except Exception as e:
             Logger.error("SettingsDialog::__update_fm_settings(): %s" % e)
 
-    def __mix_long_func(self, args):
-        """
-            Show popover
-            @param args as []
-        """
-        if App().settings.get_value("show-compilations"):
-            self.__popover_compilations.popup()
-
-    def __mix_short_func(self, args):
-        """
-            Activate switch
-            @param args as []
-        """
-        # FIXME use *args in TouchHelper (now I know how it works)
-        args[0].set_active(not args[0].get_active())
-        return True
-
     def __set_outputs(self, combo):
         """
             Set outputs in combo
