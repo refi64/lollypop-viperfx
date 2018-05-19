@@ -150,7 +150,7 @@
         </key>
         <key type="i" name="convert-bitrate">
             <default>192</default>
-            <summary>Quality of encoding</summary>
+            <summary>encoding quality</summary>
             <description></description>
         </key>
          <key type="b" name="auto-update">
