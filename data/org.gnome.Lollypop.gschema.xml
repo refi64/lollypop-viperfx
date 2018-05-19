@@ -150,7 +150,7 @@
         </key>
         <key type="i" name="convert-bitrate">
             <default>192</default>
-            <summary>Quality of encoding</summary>
+            <summary>encoding quality</summary>
             <description></description>
         </key>
          <key type="b" name="auto-update">
@@ -258,7 +258,7 @@
         </key>
         <key type="b" name="smooth-transitions">
             <default>false</default>
-            <summary>Smooth transitions between tracks</summary>
+            <summary>Smooth track transitions</summary>
             <description></description>
         </key>
         <key type="b" name="party-mix">
@@ -268,7 +268,7 @@
         </key>
         <key type="i" name="transition-duration">
             <default>3</default>
-            <summary>Smooth transition duration</summary>
+            <summary>Smoothing duration</summary>
             <description></description>
         </key>
         <key type="b" name="smart-previous">

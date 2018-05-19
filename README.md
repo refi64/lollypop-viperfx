@@ -16,9 +16,9 @@ For translators: https://hosted.weblate.org/projects/gnumdk/
 
 It provides:
 
-- mp3/4, ogg and flac.
-- Genre/Cover browsing
-- Genre/Artist/Cover browsing
+- MP3/4, ogg and FLAC.
+- Genre/cover browsing
+- Genre/artist/cover browsing
 - Search
 - Main playlist (called queue in other apps)
 - Party mode
@@ -31,7 +31,7 @@ It provides:
 - Last.fm support
 - Auto install codecs
 - HiDPI support
-- Tunein support
+- TuneIn support
 
 ## Depends on
 
