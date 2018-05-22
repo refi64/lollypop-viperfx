@@ -77,8 +77,9 @@ class SettingsDialog:
         self.__progress = builder.get_object("progress")
         self.__infobar = builder.get_object("infobar")
         self.__reset_button = builder.get_object("reset_button")
-        if App().lastfm is None or App().lastfm.is_goa:
-            builder.get_object("lastfm_grid").hide()
+        if App().lastfm is not None and App().lastfm.is_goa:
+            builder.get_object("lastfm_error_label").set_text(
+                _('Using "Gnome Online Accounts" settings'))
         if App().scanner.is_locked():
             builder.get_object("reset_button").set_sensitive(False)
         artists = App().artists.count()
@@ -238,8 +239,9 @@ class SettingsDialog:
             self.__lastfm_password = builder.get_object("lastfm_password")
             helper.get("lastfm",
                        self.__on_get_password)
-            builder.get_object("lastfm_grid").set_sensitive(True)
-            builder.get_object("lastfm_error_label").hide()
+            if not App().lastfm.is_goa:
+                builder.get_object("lastfm_grid").set_sensitive(True)
+                builder.get_object("lastfm_error_label").hide()
         #
         # Libre.fm tab
         #
