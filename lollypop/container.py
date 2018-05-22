@@ -893,6 +893,8 @@ class Container(Gtk.Overlay):
             self.add_overlay(notification)
             notification.show()
             notification.set_reveal_child(True)
+            GLib.timeout_add(5000, notification.set_reveal_child, False)
+            GLib.timeout_add(10000, notification.destroy)
 
     def __on_genre_updated(self, scanner, genre_id, add):
         """
