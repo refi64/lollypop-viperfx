@@ -144,7 +144,9 @@ class ToolbarEnd(Gtk.Bin):
         self.__gesture.connect("pressed", self.__on_search_button_pressed)
         self.__gesture.connect("cancelled", self.__on_search_button_cancelled)
         search_action = Gio.SimpleAction.new("search", None)
-        search_action.connect("activate", self.__activate_party_button)
+        search_action.connect(
+            "activate",
+            lambda x, y: self.__on_search_button_cancelled(self.__gesture))
         App().add_action(search_action)
         App().set_accels_for_action("app.search", ["<Control>f"])
 
