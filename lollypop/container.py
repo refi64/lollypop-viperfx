@@ -883,6 +883,8 @@ class Container(Gtk.Overlay):
     def __on_scan_finished(self, scanner, modifications):
         """
             Update lists
+            @param scanner as CollectionScanner
+            @param modifications as bool
         """
         if modifications:
             self.__update_lists(App().scanner)
