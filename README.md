@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/gnumdk/lollypop](https://badges.gitter.im/gnumdk/lollypop.svg)](https://gitter.im/gnumdk/lollypop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-![Lollypop logo](https://raw.github.com/gnumdk/lollypop/master/data/icons/hicolor/256x256/apps/org.gnome.Lollypop.png)
+![Lollypop logo](https://gitlab.gnome.org/gnumdk/lollypop/raw/master/data/icons/hicolor/256x256/apps/org.gnome.Lollypop.png)
 
 Lollypop is a new GNOME music playing application.
 
