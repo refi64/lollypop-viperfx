@@ -79,7 +79,7 @@ class SettingsDialog:
         self.__reset_button = builder.get_object("reset_button")
         if App().lastfm is not None and App().lastfm.is_goa:
             builder.get_object("lastfm_error_label").set_text(
-                _('Using "Gnome Online Accounts" settings'))
+                _('Using "GNOME Online Accounts" settings'))
         if App().scanner.is_locked():
             builder.get_object("reset_button").set_sensitive(False)
         artists = App().artists.count()
