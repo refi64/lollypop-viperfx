@@ -27,12 +27,12 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.510" date="2018-05-15">
+    <release version="0.9.513" date="2018-05-23">
       <description>
         <ul>
-          <li>Fix fullscreen on multihead</li>
-          <li>Rework sidebar</li>
-          <li>Fix inotify support</li>
+          <li>Workaround a crash in Pango</li>
+          <li>Enable new encoders in MTP sync</li>
+          <li>Use Gtk.Gesture</li>
         </ul>
       </description>
     </release>
