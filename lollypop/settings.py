@@ -93,10 +93,10 @@ class SettingsDialog:
             ngettext("%d track", "%d tracks", tracks) % tracks)
 
         self.__popover_transitions = builder.get_object("popover-transitions")
-        scale_transition_duration = builder.get_object(
+        self.__scale_transition_duration = builder.get_object(
             "scale_transition_duration")
-        scale_transition_duration.set_range(1, 20)
-        scale_transition_duration.set_value(
+        self.__scale_transition_duration.set_range(1, 20)
+        self.__scale_transition_duration.set_value(
             App().settings.get_value("transition-duration").get_int32())
 
         self.__popover_compilations = builder.get_object(
@@ -344,6 +344,8 @@ class SettingsDialog:
             @param widget as Gtk.Button
         """
         self.__popover_transitions.popup()
+        # https://gitlab.gnome.org/GNOME/pango/issues/309
+        self.__scale_transition_duration.set_draw_value(True)
 
     def _on_switch_transitions_state_set(self, widget, state):
         """

@@ -1355,6 +1355,7 @@ and with different artists.</property>
             <property name="hexpand">True</property>
             <property name="round_digits">0</property>
             <property name="digits">0</property>
+            <property name="draw_value">False</property>
             <property name="value_pos">left</property>
             <signal name="value-changed" handler="_on_scale_transition_duration_value_changed" swapped="no"/>
           </object>
