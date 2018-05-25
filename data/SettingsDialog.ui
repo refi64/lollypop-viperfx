@@ -26,7 +26,7 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
-    <signal name="key-release-event" handler="_on_key_release_event" swapped="no"/>
+    <signal name="key-press-event" handler="_on_key_press_event" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>

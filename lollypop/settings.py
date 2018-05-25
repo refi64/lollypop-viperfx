@@ -465,7 +465,7 @@ class SettingsDialog:
         """
         combo.set_tooltip_text(combo.get_active_text())
 
-    def _on_key_release_event(self, widget, event):
+    def _on_key_press_event(self, widget, event):
         """
             Destroy window if Esc
             @param widget as Gtk.Widget
