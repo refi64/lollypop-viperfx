@@ -817,6 +817,10 @@ class ChooserWidget(Gtk.Grid):
         self.__chooser_btn.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         self.__chooser_btn.set_property("margin", 5)
         self.__chooser_btn.show()
+        for child in self.__chooser_btn.get_children():
+            if isinstance(child, Gtk.ComboBox):
+                child.connect("scroll-event", self.__on_scroll_event)
+                break
         self.add(self.__chooser_btn)
         self.__action_btn = Gtk.Button()
         self.__action_btn.set_property("margin", 5)
@@ -857,6 +861,14 @@ class ChooserWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __on_scroll_event(self, widget, event):
+        """
+            Block scroll event on combobox
+            @param widget as Gtk.ComboBox
+            @param event as Gdk.ScrollEvent
+        """
+        return True
+
     def ___do_action(self, widget):
         """
             If action defined, execute, else, remove widget
