@@ -41,7 +41,7 @@ class FastScroll(Gtk.ScrolledWindow):
                         Gtk.PolicyType.EXTERNAL)
         self.set_property("halign", Gtk.Align.END)
         self.get_vscrollbar().hide()
-        self.__chars = []
+        self.__chars = ["⮝"]
         self.__view = view
         self.__model = model
         self.__scrolled = scrolled
@@ -68,7 +68,7 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Clear chars
         """
-        self.__chars = []
+        self.__chars = ["⮝"]
 
     def add_char(self, c):
         """
@@ -163,7 +163,7 @@ class FastScroll(Gtk.ScrolledWindow):
         chars = sorted(self.__chars, key=strxfrm)
         start_idx = chars.index(start)
         end_idx = chars.index(end)
-        selected = chars[start_idx:end_idx + 1]
+        selected = chars[start_idx:end_idx + 1] + ["⮝"]
         for child in self.__grid.get_children():
             label = child.get_text()
             mark = True if label in selected else False
@@ -201,13 +201,19 @@ class FastScroll(Gtk.ScrolledWindow):
                 char = child.get_text()
                 break
         if char is not None:
-            for row in self.__model:
-                if row[0] < 0:
-                    continue
-                if noaccents(index_of(row[3]))[0].upper() == char:
-                    self.__view.scroll_to_cell(self.__model.get_path(row.iter),
-                                               None, True, 0, 0)
-                    break
+            if char == "⮝":
+                self.__view.scroll_to_cell(
+                                self.__model.get_path(self.__model[0].iter),
+                                None, True, 0, 0)
+            else:
+                for row in self.__model:
+                    if row[0] < 0:
+                        continue
+                    if noaccents(index_of(row[3]))[0].upper() == char:
+                        self.__view.scroll_to_cell(
+                            self.__model.get_path(row.iter),
+                            None, True, 0, 0)
+                        break
 
     def __on_leave_notify(self, widget, event):
         """
