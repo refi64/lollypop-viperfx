@@ -41,7 +41,7 @@ class FastScroll(Gtk.ScrolledWindow):
                         Gtk.PolicyType.EXTERNAL)
         self.set_property("halign", Gtk.Align.END)
         self.get_vscrollbar().hide()
-        self.__chars = ["⮝"]
+        self.__chars = []
         self.__view = view
         self.__model = model
         self.__scrolled = scrolled
@@ -68,7 +68,7 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Clear chars
         """
-        self.__chars = ["⮝"]
+        self.__chars = []
 
     def add_char(self, c):
         """
@@ -83,11 +83,19 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Populate widget based on current chars
         """
+        label = Gtk.Label()
+        label.set_markup('<span font="Monospace"><b>%s</b></span>' % "⮝")
+        label.show()
+        self.__grid.add(label)
         for c in sorted(self.__chars, key=strxfrm):
             label = Gtk.Label()
             label.set_markup('<span font="Monospace"><b>%s</b></span>' % c)
             label.show()
             self.__grid.add(label)
+        label = Gtk.Label()
+        label.set_markup('<span font="Monospace"><b>%s</b></span>' % "⮟")
+        label.show()
+        self.__grid.add(label)
         GLib.idle_add(self.__check_value_to_mark)
         GLib.idle_add(self.__set_margin)
 
@@ -163,7 +171,7 @@ class FastScroll(Gtk.ScrolledWindow):
         chars = sorted(self.__chars, key=strxfrm)
         start_idx = chars.index(start)
         end_idx = chars.index(end)
-        selected = chars[start_idx:end_idx + 1] + ["⮝"]
+        selected = chars[start_idx:end_idx + 1] + ["⮝", "⮟"]
         for child in self.__grid.get_children():
             label = child.get_text()
             mark = True if label in selected else False
@@ -204,6 +212,10 @@ class FastScroll(Gtk.ScrolledWindow):
             if char == "⮝":
                 self.__view.scroll_to_cell(
                                 self.__model.get_path(self.__model[0].iter),
+                                None, True, 0, 0)
+            elif char == "⮟":
+                self.__view.scroll_to_cell(
+                                self.__model.get_path(self.__model[-1].iter),
                                 None, True, 0, 0)
             else:
                 for row in self.__model:
