@@ -177,8 +177,7 @@ class SettingsDialog:
             App().settings.get_value("cover-size").get_int32())
         self.__settings_dialog.connect("destroy", self.__edit_settings_close)
 
-        main_chooser_box = builder.get_object("main_chooser_box")
-        self.__chooser_box = builder.get_object("chooser_box")
+        self.__flowbox = builder.get_object("flowbox")
 
         self.__set_outputs(combo_preview)
 
@@ -197,7 +196,7 @@ class SettingsDialog:
                                              Gtk.IconSize.MENU)
         self.__main_chooser.set_icon(image)
         self.__main_chooser.set_action(self.__add_chooser)
-        main_chooser_box.pack_start(self.__main_chooser, False, True, 0)
+        self.__flowbox.add(self.__main_chooser)
         if len(dirs) > 0:
             uri = dirs.pop(0)
         else:
@@ -613,7 +612,7 @@ class SettingsDialog:
         chooser.set_icon(image)
         if directory:
             chooser.set_dir(directory)
-        self.__chooser_box.add(chooser)
+        self.__flowbox.add(chooser)
 
     def __really_update_coversize(self, widget):
         """
@@ -640,7 +639,7 @@ class SettingsDialog:
         else:
             default_uri = None
         main_uri = self.__main_chooser.get_dir()
-        choosers = self.__chooser_box.get_children()
+        choosers = self.__flowbox.get_children()
         if main_uri != default_uri or choosers:
             uris.append(main_uri)
             for chooser in choosers:
@@ -799,7 +798,7 @@ class SettingsDialog:
             self.__progress.get_toplevel().set_deletable(True)
 
 
-class ChooserWidget(Gtk.Grid):
+class ChooserWidget(Gtk.FlowBoxChild):
     """
         Widget used to let user select a collection folder
     """
@@ -808,10 +807,11 @@ class ChooserWidget(Gtk.Grid):
         """
             Init widget
         """
-        Gtk.Grid.__init__(self)
+        Gtk.FlowBoxChild.__init__(self)
         self.__action = None
-        self.set_property("orientation", Gtk.Orientation.HORIZONTAL)
-        self.set_property("halign", Gtk.Align.CENTER)
+        grid = Gtk.Grid()
+        grid.set_property("orientation", Gtk.Orientation.HORIZONTAL)
+        grid.show()
         self.__chooser_btn = Gtk.FileChooserButton()
         self.__chooser_btn.set_local_only(False)
         self.__chooser_btn.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
@@ -821,13 +821,14 @@ class ChooserWidget(Gtk.Grid):
             if isinstance(child, Gtk.ComboBox):
                 child.connect("scroll-event", self.__on_scroll_event)
                 break
-        self.add(self.__chooser_btn)
+        grid.add(self.__chooser_btn)
         self.__action_btn = Gtk.Button()
         self.__action_btn.set_property("margin", 5)
         self.__action_btn.show()
-        self.add(self.__action_btn)
+        grid.add(self.__action_btn)
         self.__action_btn.connect("clicked", self.___do_action)
         self.show()
+        self.add(grid)
 
     def set_dir(self, uri):
         """
