@@ -256,7 +256,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     self.__add2db(uri, mtime)
                     SqlCursor.allow_thread_execution(App().db)
                 except Exception as e:
-                    Logger.error("CollectionScanner::__scan(add): %s, %s",
+                    Logger.error("CollectionScanner::__scan(add): %s, %s" %
                                  (e, uri))
             SqlCursor.remove(App().db)
         except Exception as e:
