@@ -127,6 +127,7 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
             @return [paths]
         """
+        uris = []
         try:
             f = Gio.File.new_for_uri(album.uri)
             infos = f.enumerate_children(
@@ -137,7 +138,6 @@ class AlbumArt(BaseArt, TagReader):
             for info in infos:
                 f = infos.get_child(info)
                 all_uris.append(f.get_uri())
-            uris = []
             for uri in filter(lambda p: p.lower().endswith(self._MIMES),
                               all_uris):
                 uris.append(uri)
