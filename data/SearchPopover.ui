@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
   <object class="GtkImage" id="image2">
@@ -42,7 +42,7 @@
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Create a new playlist based on search</property>
+            <property name="tooltip_text" translatable="yes">Create a new playlist</property>
             <property name="margin_end">2</property>
             <property name="image">image2</property>
             <property name="relief">none</property>
@@ -69,9 +69,6 @@
         <property name="left_attach">1</property>
         <property name="top_attach">0</property>
       </packing>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
 </interface>

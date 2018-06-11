@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
+from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.define import App, ResponsiveType
 
@@ -35,6 +36,13 @@ class AlbumsPopover(Gtk.Popover):
         self.__clear_button.set_tooltip_text(_("Clear albums"))
         self.__clear_button.set_sensitive(App().player.albums)
         self.__clear_button.connect("clicked", self.__on_clear_clicked)
+        self.__save_button = Gtk.Button.new_from_icon_name(
+            "document-new-symbolic",
+            Gtk.IconSize.MENU)
+        self.__save_button.set_relief(Gtk.ReliefStyle.NONE)
+        self.__save_button.set_tooltip_text(_("Create a new playlist"))
+        self.__save_button.set_sensitive(App().player.albums)
+        self.__save_button.connect("clicked", self.__on_save_clicked)
         self.__jump_button = Gtk.Button.new_from_icon_name(
             "go-jump-symbolic",
             Gtk.IconSize.MENU)
@@ -55,8 +63,9 @@ class AlbumsPopover(Gtk.Popover):
         grid.set_row_spacing(2)
         grid.add(label)
         grid.add(self.__jump_button)
+        grid.add(self.__save_button)
         grid.add(self.__clear_button)
-        grid.attach(self.__view, 0, 1, 3, 1)
+        grid.attach(self.__view, 0, 1, 4, 1)
         grid.show_all()
 
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -67,16 +76,41 @@ class AlbumsPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __on_jump_clicked(self, widget):
+    def __albums_to_playlist(self):
+        """
+            Create a new playlist based on search
+        """
+        tracks = []
+        for child in self.__view.children:
+            tracks += child.album.tracks
+        if tracks:
+            import datetime
+            now = datetime.datetime.now()
+            date_string = now.strftime("%Y-%m-%d-%H:%M:%S")
+            App().playlists.add(date_string)
+            playlist_id = App().playlists.get_id(date_string)
+            App().playlists.add_tracks(playlist_id, tracks)
+
+    def __on_jump_clicked(self, button):
         """
             Scroll to album
+            @param button as Gtk.Button
         """
         self.__view.jump_to_current()
 
-    def __on_clear_clicked(self, widget):
+    def __on_save_clicked(self, button):
+        """
+            Save to playlist
+            @param button as Gtk.Button
+        """
+        button.set_sensitive(False)
+        helper = TaskHelper()
+        helper.run(self.__albums_to_playlist)
+
+    def __on_clear_clicked(self, button):
         """
             Clear albums
-            @param widget as Gtk.Button
+            @param button as Gtk.Button
         """
         self._stop = True
         GLib.idle_add(self.__view.clear, True)
