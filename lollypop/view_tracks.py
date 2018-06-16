@@ -47,7 +47,7 @@ class TracksView:
         self._orientation = None
         self._child_height = TrackRow.get_best_height(self)
         # Header + separator + spacing + margin
-        self.__height = self._child_height + 6
+        self.__height = self.__total_height = self._child_height + 6
         self._locked_widget_right = True
 
         self._responsive_widget = Gtk.Grid()
@@ -254,11 +254,15 @@ class TracksView:
         """
         self.__loading = Loading.STOP
 
+    @property
     def height(self):
         """
             Widget height
         """
-        return self.__height
+        if self._orientation == Gtk.Orientation.VERTICAL:
+            return self.__total_height
+        else:
+            return self.__height
 
     @property
     def children(self):
@@ -298,13 +302,16 @@ class TracksView:
         count_tracks = len(tracks)
         mid_tracks = int(0.5 + count_tracks / 2)
         left_height = self._child_height * mid_tracks
-        # +1 is disc label
         right_height = self._child_height * (count_tracks - mid_tracks)
-        # Add self._child_height for disc label
         if left_height > right_height:
-            self.__height += left_height + self._child_height
+            self.__height += left_height
         else:
-            self.__height += right_height + self._child_height
+            self.__height += right_height
+        self.__total_height += left_height + right_height
+        # Add self._child_height for disc label
+        if len(self._album.discs) > 1:
+            self.__height += self._child_height
+            self.__total_height += self._child_height
         self._tracks_widget_left[disc_number].set_property("height-request",
                                                            left_height)
         self._tracks_widget_right[disc_number].set_property("height-request",

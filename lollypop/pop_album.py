@@ -23,17 +23,19 @@ class AlbumPopover(Gtk.Popover):
     """
 
     def __init__(self, album, genre_ids,
-                 artist_ids, width=None, height=None, art_size=ArtSize.NONE):
+                 artist_ids, width, height, art_size=ArtSize.NONE):
         """
             Init popover
             @param album as Album
             @param genre ids as [int]
             @param artist ids as [int]
-            @param width as int (None)
-            @param height as int (None)
+            @param width as int
+            @param height as int
             @param art size as int
         """
         Gtk.Popover.__init__(self)
+        self.__height = height
+        self.__width = width
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
         view.populate([album])
@@ -41,17 +43,11 @@ class AlbumPopover(Gtk.Popover):
             for child in view.children:
                 child.hide_header_labels()
 
-        # Get width/height from main window if None
-        if height is None:
-            height = App().window.get_size()[1] * 0.8
-        if width is None:
-            self.__width = App().window.get_size()[0] * 0.8
-        else:
-            self.__width = width
         # Get height requested by child
-        requested_height = view.children[0].requested_height
-        wanted_height = min(400, min(height, requested_height))
-        view.set_property("height-request", wanted_height)
+        album_widget = view.children[0]
+        album_widget.connect("size-allocate",
+                             self.__on_album_size_allocate,
+                             view)
         view.show()
         self.add(view)
 
@@ -65,3 +61,13 @@ class AlbumPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __on_album_size_allocate(self, widget, allocation, view):
+        """
+            Update view height
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+            @param view as ArtistAlbumsView
+        """
+        requested_height = widget.requested_height
+        wanted_height = min(600, min(self.__height, requested_height))
+        view.set_property("height-request", wanted_height)

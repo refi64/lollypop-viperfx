@@ -193,11 +193,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         """
             Requested height: Internal tracks or at least cover
         """
-        boxes_height = TracksView.height(self)
-        if boxes_height < self.__height:
+        if self.height < self.__height:
             return self.__height
         else:
-            return boxes_height
+            return self.height
 
 #######################
 # PROTECTED           #
