@@ -41,7 +41,7 @@
   </categories>
   <screenshots>
     <screenshot type="default">
-      <image type="source" width="800" height="439">https://gnumdk.github.io/lollypop-web/images/screenshot.jpg</image>
+      <image type="source" width="800" height="439">https://wiki.gnome.org/Apps/Lollypop?action=AttachFile&do=get&target=screenshot.jpg</image>
     </screenshot>
   </screenshots>
   <url type="homepage">https://gnumdk.github.io/lollypop-web/</url>
