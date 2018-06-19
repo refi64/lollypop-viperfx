@@ -49,6 +49,7 @@ class AlbumsPopover(Gtk.Popover):
         self.__jump_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__jump_button.connect("clicked", self.__on_jump_clicked)
         self.__jump_button.set_tooltip_text(_("Go to current track"))
+        self.__jump_button.set_sensitive(App().player.albums)
         label = Gtk.Label.new("<b>" + _("Playing albums") + "</b>")
         label.set_use_markup(True)
         label.set_hexpand(True)
@@ -115,6 +116,8 @@ class AlbumsPopover(Gtk.Popover):
         self._stop = True
         GLib.idle_add(self.__view.clear, True)
         self.__clear_button.set_sensitive(False)
+        self.__jump_button.set_sensitive(False)
+        self.__save_button.set_sensitive(False)
 
     def __on_map(self, widget):
         """
