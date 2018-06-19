@@ -492,6 +492,8 @@ class SelectionList(Gtk.Overlay):
                                   SelectionList.Type.LIST_TWO]:
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None and self.__type & SelectionList.Type.LIST_ONE:
+                App().settings.set_value("shown-sidebar-tooltip",
+                                         GLib.Variant("b", True))
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
@@ -524,7 +526,9 @@ class SelectionList(Gtk.Overlay):
         """
         if keyboard:
             return True
-
+        elif not App().settings.get_value("shown-sidebar-tooltip"):
+            tooltip.set_markup(_("Right click to configure"))
+            return True
         (exists, tx, ty, model, path, i) = self.__view.get_tooltip_context(
             x,
             y,

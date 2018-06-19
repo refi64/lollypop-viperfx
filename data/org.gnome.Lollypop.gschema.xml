@@ -53,6 +53,11 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
+        <key type="b" name="shown-sidebar-tooltip">
+            <default>false</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="b" name="show-donation">
             <default>true</default>
             <summary>Allow user to donate to the project</summary>
