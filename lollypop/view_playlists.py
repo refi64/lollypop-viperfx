@@ -35,7 +35,7 @@ class PlaylistsView(View):
         View.__init__(self, True)
         self.__autoscroll_timeout_id = None
         self.__prev_animated_rows = []
-        self.__tracks = []
+        self.__track_ids = []
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect("playlist-add",
                                                     self.__on_playlist_add)
@@ -83,9 +83,10 @@ class PlaylistsView(View):
         if playlist_ids[0] > 0:
             self.__set_duration()
 
-    def populate(self, tracks):
+    def populate(self, track_ids):
         """
             Populate view with tracks from playlist
+            @param track_ids as [int]
         """
         # We are looking for middle
         # Ponderate with this:
@@ -95,7 +96,7 @@ class PlaylistsView(View):
         heights = {}
         total = 0
         idx = 0
-        for track_id in tracks:
+        for track_id in track_ids:
             track = Track(track_id)
             if track.album_id != prev_album_id:
                 heights[idx] = 2
@@ -113,11 +114,11 @@ class PlaylistsView(View):
             if count >= half:
                 break
             mid_tracks += 1
-        self.__tracks = tracks
+        self.__track_ids = track_ids
         self.__update_jump_button()
-        self.__playlists_widget.populate_list_left(tracks[:mid_tracks],
+        self.__playlists_widget.populate_list_left(track_ids[:mid_tracks],
                                                    1)
-        self.__playlists_widget.populate_list_right(tracks[mid_tracks:],
+        self.__playlists_widget.populate_list_right(track_ids[mid_tracks:],
                                                     mid_tracks + 1)
 
     def clear_animation(self):
@@ -284,7 +285,7 @@ class PlaylistsView(View):
         """
             Update jump button status
         """
-        if App().player.current_track.id in self.__tracks:
+        if App().player.current_track.id in self.__track_ids:
             self.__jump_button.set_sensitive(True)
         else:
             self.__jump_button.set_sensitive(False)

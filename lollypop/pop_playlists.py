@@ -41,7 +41,7 @@ class PlaylistsPopover(Gtk.Popover):
             Populate view
         """
         def load():
-            return App().player.get_playlist_tracks()
+            return [track.id for track in App().player.get_playlist_tracks()]
         loader = Loader(target=load, view=self._widget)
         loader.start()
 
