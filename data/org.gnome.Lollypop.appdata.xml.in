@@ -41,7 +41,7 @@
   </categories>
   <screenshots>
     <screenshot type="default">
-      <image type="source" width="1920" height="1053">https://adishatz.org/lollypop.jpg</image>
+      <image type="source" width="1920" height="1050">https://adishatz.org/lollypop.jpg</image>
     </screenshot>
   </screenshots>
   <url type="homepage">https://gnumdk.github.io/lollypop-web/</url>

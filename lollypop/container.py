@@ -232,6 +232,9 @@ class Container(Gtk.Overlay):
             Show albums from artists
             @param artist id as int
         """
+        def select_list_two(selection_list, artist_ids):
+            GLib.idle_add(self.__list_two.select_ids, artist_ids)
+            self.__list_two.disconnect_by_func(select_list_two)
         GLib.idle_add(self.__list_one.select_ids, [])
         GLib.idle_add(self.__list_two.select_ids, [])
         if App().settings.get_value("show-genres"):
@@ -244,9 +247,8 @@ class Container(Gtk.Overlay):
                         if genre_id not in genre_ids:
                             genre_ids.append(genre_id)
             # Select genres on list one
+            self.__list_two.connect("populated", select_list_two, artist_ids)
             GLib.idle_add(self.__list_one.select_ids, genre_ids)
-            # Select artists on list two
-            GLib.idle_add(self.__list_two.select_ids, artist_ids)
         else:
             # Select artists on list one
             GLib.idle_add(self.__list_one.select_ids, artist_ids)
