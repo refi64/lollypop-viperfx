@@ -62,7 +62,7 @@ class LyricsView(View, InfoController):
         lyrics = None
         reader = TagReader()
         try:
-            info = reader.get_info(self.__current_track.uri)
+            info = reader.get_info(App().player.current_track.uri)
         except:
             info = None
         if info is not None:
