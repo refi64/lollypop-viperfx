@@ -69,13 +69,6 @@ class Window(Gtk.ApplicationWindow):
         self.connect("destroy", self.__on_destroyed_window)
         self.connect("realize", self.__on_realize)
 
-    def setup_menu(self, menu):
-        """
-            Add an application menu to window
-            @parma: menu as Gio.Menu
-        """
-        self.__toolbar.setup_menu(menu)
-
     def enable_global_shortcuts(self, enable):
         """
             Enable/Disable special global shortcuts

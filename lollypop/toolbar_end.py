@@ -178,7 +178,6 @@ class ToolbarEnd(Gtk.Bin):
             Add an application menu to menu button
             @parma: menu as Gio.Menu
         """
-        self.__settings_button.show()
         self.__settings_button.set_menu_model(menu)
 
     def on_status_changed(self, player):
