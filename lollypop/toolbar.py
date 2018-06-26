@@ -179,4 +179,3 @@ class Toolbar(Gtk.HeaderBar):
         """
         self.__toolbar_playback.on_status_changed(player)
         self.__toolbar_title.on_status_changed(player)
-        self.__toolbar_end.on_status_changed(player)

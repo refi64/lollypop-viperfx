@@ -193,10 +193,6 @@ class Application(Gtk.Application):
             dark = self.settings.get_value("dark-ui")
             settings.set_property("gtk-application-prefer-dark-theme", dark)
 
-        # Map some settings to actions
-        self.add_action(self.settings.create_action("playback"))
-        self.add_action(self.settings.create_action("shuffle"))
-
     def do_startup(self):
         """
             Init application
