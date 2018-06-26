@@ -119,7 +119,8 @@ class Container(Gtk.Overlay):
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
-        current.disable_overlay()
+        if hasattr(current, "disable_overlay"):
+            current.disable_overlay()
 
     def show_playlist_manager(self, object):
         """
