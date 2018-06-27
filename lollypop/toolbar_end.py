@@ -15,90 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
-from lollypop.define import App, Shuffle, Type, NextContext
-
-
-class PartyPopover(Gtk.Popover):
-    """
-        Show party options
-    """
-
-    def __init__(self):
-        """
-            Init popover
-        """
-        Gtk.Popover.__init__(self)
-
-        party_grid = Gtk.Grid()
-        party_grid.set_property("margin-start", 10)
-        party_grid.set_property("margin-end", 10)
-        party_grid.set_property("margin-bottom", 5)
-        party_grid.set_property("margin-top", 5)
-        party_grid.set_column_spacing(10)
-        party_grid.set_row_spacing(7)
-        party_grid.show()
-        scrolled = Gtk.ScrolledWindow()
-        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled.add(party_grid)
-        scrolled.show()
-        self.add(scrolled)
-        size = App().window.get_size()
-        self.set_size_request(-1,
-                              size[1] * 0.6)
-
-        genres = App().genres.get()
-        genres.insert(0, (Type.POPULARS, _("Populars")))
-        genres.insert(1, (Type.RECENTS, _("Recently added")))
-        ids = App().player.get_party_ids()
-        i = 0
-        x = 0
-        for genre_id, genre in genres:
-            label = Gtk.Label()
-            label.set_property("halign", Gtk.Align.START)
-            # Hack as ellipsize not working as I want, help welcome ;)
-            label_text = genre[0:20]
-            if len(label_text) != len(genre):
-                label_text += "..."
-            label.set_text(label_text)
-            label.set_tooltip_text(genre)
-            label.show()
-            switch = Gtk.Switch()
-            if genre_id in ids:
-                switch.set_state(True)
-            switch.connect("state-set", self.__on_switch_state_set, genre_id)
-            switch.show()
-            party_grid.attach(label, x, i, 1, 1)
-            party_grid.attach(switch, x + 1, i, 1, 1)
-            if x == 0:
-                x += 2
-            else:
-                label.set_property("margin-start", 15)
-                i += 1
-                x = 0
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_switch_state_set(self, widget, state, genre_id):
-        """
-            Update party ids when use change a switch in dialog
-            @param widget as Gtk.Switch
-            @param state as bool, genre id as int
-        """
-        ids = App().player.get_party_ids()
-        if state:
-            try:
-                ids.append(genre_id)
-            except:
-                pass
-        else:
-            try:
-                ids.remove(genre_id)
-            except:
-                pass
-        App().settings.set_value("party-ids", GLib.Variant("ai", ids))
-        App().player.set_party_ids()
-        App().player.set_next()
+from lollypop.define import App, Shuffle, NextContext
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -118,6 +35,7 @@ class ToolbarEnd(Gtk.Bin):
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
         builder.connect_signals(self)
 
+        self.__party_submenu = builder.get_object("party_submenu")
         self.add(builder.get_object("end"))
 
         # Map some settings to actions, can't use Gio.Settings.create_action()
@@ -261,9 +179,87 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_popover.connect("closed", self.__on_list_popover_closed)
         return True
 
+    def _on_shuffle_button_toggled(self, button):
+        """
+           Create submenu
+           @param button as Gtk.MenuButton
+        """
+        # Create submenu "Configure party mode"
+        self.__party_submenu.remove_all()
+        self.__init_party_submenu()
+
 #######################
 # PRIVATE             #
 #######################
+    def __init_party_submenu(self):
+        """
+            Init party submenu with current ids
+        """
+        def on_change_state(action, value, genre_id):
+            action.set_state(value)
+            ids = App().player.get_party_ids()
+            genre_ids = App().genres.get_ids()
+            # Select all
+            if genre_id is None:
+                # Update others
+                for genre_id in genre_ids:
+                    action = App().lookup_action("genre_%s" % genre_id)
+                    if action.get_state() != value:
+                        action.set_state(value)
+                if value:
+                    ids = []
+                else:
+                    ids = App().genres.get_ids()
+            # Party id added
+            elif value:
+                ids.append(genre_id)
+            # Party id removed
+            elif ids and len(party_ids) > 1:
+                ids.remove(genre_id)
+            # Initial value
+            else:
+                genre_ids.remove(genre_id)
+            App().settings.set_value("party-ids", GLib.Variant("ai", ids))
+            App().player.set_party_ids()
+            App().player.set_next()
+
+        party_ids = App().settings.get_value("party-ids")
+        all_ids = App().genres.get_ids()
+        all_selected = len(set(all_ids) & set(party_ids)) == len(all_ids) or\
+            not party_ids
+        action = Gio.SimpleAction.new_stateful(
+                    "all_party_ids",
+                    None,
+                    GLib.Variant.new_boolean(all_selected))
+        action.connect("change-state", on_change_state, None)
+        App().add_action(action)
+        item = Gio.MenuItem.new(_("All genres"), "app.all_party_ids")
+        self.__party_submenu.append_item(item)
+        i = 0
+        # Hack, hack, hack
+        submenu_name = _("Next")
+        menu = self.__party_submenu
+        for (genre_id, name) in App().genres.get():
+            in_party_ids = not party_ids or genre_id in party_ids
+            action_name = "genre_%s" % genre_id
+            action = Gio.SimpleAction.new_stateful(
+                action_name,
+                None,
+                GLib.Variant.new_boolean(in_party_ids))
+            action.connect("change-state", on_change_state, genre_id)
+            App().add_action(action)
+            item = Gio.MenuItem.new(name, "app.%s" % action_name)
+            menu.append_item(item)
+            if i > 10:
+                submenu = Gio.Menu()
+                item = Gio.MenuItem.new(submenu_name, None)
+                submenu_name += " "
+                item.set_submenu(submenu)
+                menu.append_item(item)
+                menu = submenu
+                i = 0
+            i += 1
+
     def __on_search_button_pressed(self, gesture, x, y):
         """
             Show filtering

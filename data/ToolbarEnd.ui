@@ -9,6 +9,9 @@
               <attribute name="label" translatable="yes">Enable party mode</attribute>
               <attribute name="action">app.party</attribute>
             </item>
+            <submenu id="party_submenu">
+                <attribute name="label">Configure</attribute>
+            </submenu>
         </section>
         <section>
             <attribute name="label" translatable="yes">Shuffle</attribute>
@@ -88,6 +91,7 @@
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Playback type</property>
         <property name="menu_model">shuffle-menu</property>
+        <signal name="toggled" handler="_on_shuffle_button_toggled" swapped="no"/>
         <child>
           <object class="GtkImage" id="shuffle-button-image">
             <property name="visible">True</property>
