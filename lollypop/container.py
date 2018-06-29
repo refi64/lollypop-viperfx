@@ -799,7 +799,7 @@ class Container(Gtk.Overlay):
         if selected_ids[0] == Type.PLAYLISTS:
             self.__update_list_playlists(False)
             self.__list_two.show()
-        elif selected_ids[0] > 0 or selected_ids[0] == Type.ALL and\
+        elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
                 self.__list_one.type & SelectionList.Type.GENRE:
             self.__update_list_artists(self.__list_two, selected_ids, False)
             self.__list_two.show()
