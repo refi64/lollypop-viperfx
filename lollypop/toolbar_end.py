@@ -65,7 +65,6 @@ class ToolbarEnd(Gtk.Bin):
         App().settings.connect("changed::shuffle", self.__on_playback_changed)
         App().settings.connect("changed::playback", self.__on_playback_changed)
 
-        self.__party_button = builder.get_object("party-button")
         party_action = Gio.SimpleAction.new_stateful(
             "party",
             None,
@@ -74,7 +73,7 @@ class ToolbarEnd(Gtk.Bin):
         App().add_action(party_action)
         App().set_accels_for_action("app.party", ["<Control>p"])
         self.__next_popover = NextPopover()
-        self.__next_popover.set_relative_to(self.__party_button)
+        self.__next_popover.set_relative_to(self.__shuffle_button)
 
         self.__search_button = builder.get_object("search-button")
         self.__gesture = Gtk.GestureLongPress.new(self.__search_button)
@@ -187,6 +186,8 @@ class ToolbarEnd(Gtk.Bin):
         # Create submenu "Configure party mode"
         self.__party_submenu.remove_all()
         self.__init_party_submenu()
+        self.__next_popover.inhibit(True)
+        button.connect("toggled", self.__on_popover_closed)
 
 #######################
 # PRIVATE             #
