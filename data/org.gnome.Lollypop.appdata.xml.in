@@ -27,6 +27,13 @@
     </ul>
   </description>
   <releases>
+    <release version="0.9.518" date="2018-07-01">
+      <description>
+        <ul>
+          <li>Restore Next Popover</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.9.517" date="2018-06-29">
       <description>
         <ul>
