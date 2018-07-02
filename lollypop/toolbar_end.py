@@ -183,11 +183,29 @@ class ToolbarEnd(Gtk.Bin):
            Create submenu
            @param button as Gtk.MenuButton
         """
-        # Create submenu "Configure party mode"
-        self.__party_submenu.remove_all()
-        self.__init_party_submenu()
-        self.__next_popover.inhibit(True)
-        button.connect("toggled", self.__on_popover_closed)
+        if button.get_active():
+            # Create submenu "Configure party mode"
+            self.__party_submenu.remove_all()
+            self.__init_party_submenu()
+            self.__next_popover.hide()
+            self.__next_popover.inhibit(True)
+        else:
+            self.__next_popover.inhibit(False)
+            if self.__next_popover.should_be_shown():
+                self.__next_popover.show()
+
+    def _on_settings_button_toggled(self, button):
+        """
+           Create submenu
+           @param button as Gtk.MenuButton
+        """
+        if button.get_active():
+            self.__next_popover.hide()
+            self.__next_popover.inhibit(True)
+        else:
+            self.__next_popover.inhibit(False)
+            if self.__next_popover.should_be_shown():
+                self.__next_popover.show()
 
 #######################
 # PRIVATE             #

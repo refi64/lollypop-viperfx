@@ -61,6 +61,7 @@
 	<property name="visible">True</property>
         <property name="receives_default">True</property>
         <property name="valign">center</property>
+        <signal name="toggled" handler="_on_settings_button_toggled" swapped="no"/>
         <child>
           <object class="GtkImage" id="settings-button-image">
             <property name="visible">True</property>
