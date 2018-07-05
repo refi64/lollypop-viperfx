@@ -125,7 +125,7 @@ class ArtistView(ArtistAlbumsView):
             Change cursor on label
             @param eventbox as Gtk.EventBox
         """
-        if self._artist_ids:
+        if len(self._artist_ids) == 1:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
     def _on_artwork_box_realize(self, eventbox):
@@ -141,11 +141,11 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if self._artist_ids:
+        if len(self._artist_ids) == 1:
             from lollypop.pop_information import InformationPopover
             self.__pop_info = InformationPopover(True)
             self.__pop_info.set_relative_to(eventbox)
-            self.__pop_info.populate(self._artist_ids)
+            self.__pop_info.populate(self._artist_ids[0])
             self.__pop_info.show()
 
     def _on_image_button_release(self, eventbox, event):

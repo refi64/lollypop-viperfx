@@ -168,7 +168,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             elif App().player.current_track.id is not None:
                 from lollypop.pop_information import InformationPopover
                 popover = InformationPopover()
-                popover.populate(App().player.current_track.artist_ids)
+                popover.populate(App().player.current_track.artist_ids[0])
             popover.set_relative_to(self._infobox)
             popover.show()
         else:
