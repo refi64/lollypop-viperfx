@@ -57,6 +57,10 @@ class InformationPopover(Gtk.Popover):
         bio_label = builder.get_object("bio_label")
         if artist_id is None and App().player.current_track.id is not None:
             builder.get_object("lyrics_button").show()
+            builder.get_object("lyrics_button").connect(
+                "clicked",
+                self.__on_lyrics_button_clicked,
+                App().player.current_track)
             artist_id = App().player.current_track.artist_ids[0]
             title_label.set_text(App().player.current_track.title)
         artist_name = App().artists.get_name(artist_id)
@@ -101,14 +105,6 @@ class InformationPopover(Gtk.Popover):
             @param eventbox as Gtk.EventBox
         """
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-
-    def _on_lyrics_button_clicked(self, button):
-        """
-            Show lyrics
-            @param button as Gtk.Button
-        """
-        self.hide()
-        App().window.container.show_lyrics()
 
 #######################
 # PRIVATE             #
@@ -202,6 +198,15 @@ class InformationPopover(Gtk.Popover):
         if path is not None:
             return path
         return None
+
+    def __on_lyrics_button_clicked(self, button, track):
+        """
+            Show lyrics
+            @param button as Gtk.Button
+            @param track as Track
+        """
+        self.hide()
+        App().window.container.show_lyrics(track)
 
     def __on_label_button_release_event(self, button, event, artist):
         """

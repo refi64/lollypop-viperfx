@@ -108,14 +108,15 @@ class Container(Gtk.Overlay):
             GLib.Variant("ai",
                          self.__list_two.selected_ids))
 
-    def show_lyrics(self):
+    def show_lyrics(self, track=None):
         """
             Show lyrics for track
+            @pram track as Track
         """
         from lollypop.view_lyrics import LyricsView
         current = self.__stack.get_visible_child()
         view = LyricsView()
-        view.populate()
+        view.populate(track or App().player.current_track)
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)

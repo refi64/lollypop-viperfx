@@ -108,7 +108,6 @@
             <property name="tooltip_text" translatable="yes">Show lyrics</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
-            <signal name="clicked" handler="_on_lyrics_button_clicked" swapped="no"/>
             <style>
               <class name="dim-label"/>
             </style>
