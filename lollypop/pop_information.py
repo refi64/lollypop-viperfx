@@ -39,27 +39,32 @@ class InformationPopover(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
 
-    def populate(self, artist_id):
+    def populate(self, artist_id=None):
         """
             Show information for artists
             @param artist_id as int
         """
         helper = TaskHelper()
-        artist_name = App().artists.get_name(artist_id)
         builder = Gtk.Builder()
         builder.add_from_resource(
             "/org/gnome/Lollypop/ArtistInformation.ui")
         builder.connect_signals(self)
         widget = builder.get_object("widget")
         self.add(widget)
+        artist_label = builder.get_object("artist_label")
+        title_label = builder.get_object("title_label")
+        artist_artwork = builder.get_object("artist_artwork")
+        bio_label = builder.get_object("bio_label")
+        if artist_id is None and App().player.current_track.id is not None:
+            builder.get_object("lyrics_button").show()
+            artist_id = App().player.current_track.artist_ids[0]
+            title_label.set_text(App().player.current_track.title)
+        artist_name = App().artists.get_name(artist_id)
+        artist_label.set_text(artist_name)
         builder.get_object("eventbox").connect(
             "button-release-event",
             self.__on_label_button_release_event,
             artist_name)
-        artist_label = builder.get_object("artist_label")
-        artist_artwork = builder.get_object("artist_artwork")
-        bio_label = builder.get_object("bio_label")
-        artist_label.set_text(artist_name)
         if self.__minimal:
             artist_artwork.hide()
         else:
@@ -71,7 +76,7 @@ class InformationPopover(Gtk.Popover):
             albums_view = AlbumsListView(ResponsiveType.LIST)
             albums_view.set_size_request(300, -1)
             albums_view.show()
-            widget.attach(albums_view, 2, 1, 1, 1)
+            widget.attach(albums_view, 2, 1, 1, 2)
             albums = []
             for album_id in App().albums.get_ids([artist_id]):
                 albums.append(Album(album_id))
@@ -96,6 +101,14 @@ class InformationPopover(Gtk.Popover):
             @param eventbox as Gtk.EventBox
         """
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+
+    def _on_lyrics_button_clicked(self, button):
+        """
+            Show lyrics
+            @param button as Gtk.Button
+        """
+        self.hide()
+        App().window.container.show_lyrics()
 
 #######################
 # PRIVATE             #
