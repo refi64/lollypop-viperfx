@@ -287,7 +287,7 @@
             <description></description>
         </key>
         <key enum="org.gnome.Lollypop.PowerManagement" name="power-management">
-            <default>'none'</default>
+            <default>'both'</default>
             <summary>Possibilities for powermanagement options</summary>
             <description>This option inhibits screensaver and suspend during Lollypop playback.</description>
         </key>
