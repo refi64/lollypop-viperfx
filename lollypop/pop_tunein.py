@@ -20,6 +20,7 @@ from lollypop.define import App, ArtSize, WindowSize
 from lollypop.art import Art
 from lollypop.utils import get_network_available
 from lollypop.list import LinkedList
+from lollypop.objects import Track
 from lollypop.helper_task import TaskHelper
 
 
@@ -355,8 +356,9 @@ class TuneinPopover(Gtk.Popover):
                 # Cache for miniplayer
                 helper.run(App().art.copy_uri_to_cache,
                            item.LOGO, item.TEXT, WindowSize.SMALL)
-            App().player.load_external(item.URL, item.TEXT)
-            App().player.play_this_external(item.URL)
+            track = Track()
+            track.set_radio(item.TEXT, item.URL)
+            App().player.load(track)
         return True
 
     def __on_uri_content(self, uri, status, content):
