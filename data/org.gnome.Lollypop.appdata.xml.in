@@ -27,18 +27,18 @@
     </ul>
   </description>
   <releases>
+    <release version="0.9.519" date="2018-07-09">
+      <description>
+        <ul>
+          <li>Fix a crash in Tunein</li>
+          <li>Add a button for lyrics</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.9.518" date="2018-07-01">
       <description>
         <ul>
           <li>Restore Next Popover</li>
-        </ul>
-      </description>
-    </release>
-    <release version="0.9.517" date="2018-06-29">
-      <description>
-        <ul>
-          <li>Bug fixes</li>
-          <li>Bye bye appmenu</li>
         </ul>
       </description>
     </release>
