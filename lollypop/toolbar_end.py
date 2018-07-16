@@ -44,6 +44,7 @@ class ToolbarEnd(Gtk.Bin):
             "shuffle",
             GLib.VariantType.new("s"),
             GLib.Variant("s", "none"))
+        self.__shuffle_action.set_state(App().settings.get_value("shuffle"))
         self.__shuffle_action.connect("change-state",
                                       self.__on_shuffle_change_state)
         self.__playback_action = Gio.SimpleAction.new_stateful(
