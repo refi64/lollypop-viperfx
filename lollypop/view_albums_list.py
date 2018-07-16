@@ -316,7 +316,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         """
         if self.__responsive_type == ResponsiveType.SEARCH:
             App().player.play_album(Album(self._album.id))
-            App().lookup_action("party").change_state(GLib.Variant("b", False))
+            if App().player.is_party:
+                App().lookup_action("party").change_state(
+                    GLib.Variant("b", False))
         else:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it

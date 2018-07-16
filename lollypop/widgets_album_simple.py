@@ -238,7 +238,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             return True
         self._show_append(False)
         if App().player.is_party:
-            App().player.set_party(False)
+            App().lookup_action("party").change_state(GLib.Variant("b", False))
         App().player.clear_albums()
         if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(self._album.tracks)

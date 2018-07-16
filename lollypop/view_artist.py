@@ -165,7 +165,8 @@ class ArtistView(ArtistAlbumsView):
         """
         try:
             if App().player.is_party:
-                App().player.set_party(False)
+                App().lookup_action("party").change_state(
+                    GLib.Variant("b", False))
             album_ids = App().albums.get_ids(self._artist_ids,
                                              self._genre_ids)
             if album_ids:
