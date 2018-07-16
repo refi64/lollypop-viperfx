@@ -572,7 +572,7 @@ class Window(Gtk.ApplicationWindow):
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
         # We delay update_list_one() to be sure inital stacked mode is set
-        GLib.timeout_add(100, self.__container.update_list_one)
+        GLib.timeout_add(200, self.__container.update_list_one)
         # Here we ignore initial configure events
         GLib.timeout_add(200, self.__connect_state_signals)
 
