@@ -51,6 +51,7 @@ class ToolbarEnd(Gtk.Bin):
             "playback",
             GLib.VariantType.new("s"),
             GLib.Variant("s", "none"))
+        self.__playback_action.set_state(App().settings.get_value("playback"))
         self.__playback_action.connect("change-state",
                                        self.__on_playback_change_state)
         App().add_action(self.__shuffle_action)
