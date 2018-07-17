@@ -27,6 +27,13 @@
     </ul>
   </description>
   <releases>
+    <release version="0.9.521" date="2018-07-17">
+      <description>
+        <ul>
+          <li>Fix issues with party mode"</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.9.520" date="2018-07-16">
       <description>
         <ul>
