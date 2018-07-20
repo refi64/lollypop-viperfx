@@ -42,6 +42,7 @@ class LyricsView(View, InfoController):
         builder.connect_signals(self)
         self._cover = builder.get_object("cover")
         self.__lyrics_label = builder.get_object("lyrics_label")
+        self.__translate_button = builder.get_object("translate_button")
         self.add(builder.get_object("widget"))
         self.connect("size-allocate", self.__on_size_allocate)
 
@@ -87,10 +88,35 @@ class LyricsView(View, InfoController):
             @param player as Player
         """
         self.populate(App().player.current_track)
+        self.__translate_button.set_sensitive(True)
+
+    def _on_translate_clicked(self, button):
+        """
+            Translate lyrics
+            @param button as Gtk.Button
+        """
+        button.set_sensitive(False)
+        task_helper = TaskHelper()
+        task_helper.run(self.__get_blob, self.__lyrics_label.get_text(),
+                        callback=(self.__lyrics_label.set_text,))
 
 ############
 # PRIVATE  #
 ############
+    def __get_blob(self, text):
+        """
+            Translate text with current user locale
+            @param text as str
+        """
+        try:
+            locales = GLib.get_language_names()
+            user_code = locales[0].split(".")[0]
+            from textblob.blob import TextBlob
+            blob = TextBlob(text)
+            return str(blob.translate(to=user_code))
+        except Exception as e:
+            return str(e)
+
     def __download_wikia_lyrics(self):
         """
             Downloas lyrics from wikia
