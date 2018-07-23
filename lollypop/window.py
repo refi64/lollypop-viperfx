@@ -128,23 +128,20 @@ class Window(Gtk.ApplicationWindow):
         """
         size = self.get_size()
         self.__toolbar.set_content_width(size[0])
+        self.__toolbar.end.set_minimal(size[0])
         if size[0] < WindowSize.BIG:
             self.__container.paned_stack(True)
-        else:
-            self.__container.paned_stack(False)
-        if size[0] < WindowSize.XXLARGE:
             self.__show_miniplayer(True)
             self.__main_stack.show()
             self.__miniplayer.set_vexpand(False)
             self.__toolbar.title.hide()
             self.__toolbar.info.hide()
-            self.__toolbar.end.set_minimal(True)
         else:
+            self.__container.paned_stack(False)
             self.__main_stack.show()
             self.__show_miniplayer(False)
             self.__toolbar.title.show()
             self.__toolbar.info.show()
-            self.__toolbar.end.set_minimal(False)
         if size[1] < WindowSize.MEDIUM and\
                 self.__miniplayer is not None and\
                 self.__miniplayer.is_visible():
