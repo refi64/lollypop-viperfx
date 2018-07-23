@@ -228,9 +228,9 @@ class ToolbarEnd(Gtk.Bin):
                     if action.get_state() != value:
                         action.set_state(value)
                 if value:
-                    ids = []
-                else:
                     ids = App().genres.get_ids()
+                else:
+                    ids = []
             # Party id added
             elif value:
                 ids.append(genre_id)
