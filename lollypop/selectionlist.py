@@ -48,6 +48,8 @@ class ShownAlbumlists:
                 lists.append((Type.PLAYLISTS, _("Playlists")))
             if get_all or Type.RADIOS in wanted:
                 lists.append((Type.RADIOS, _("Radios")))
+            if get_all or Type.YEARS in wanted:
+                lists.append((Type.YEARS, _("Years")))
             if get_all or Type.ALL in wanted:
                 if mask & SelectionList.Type.ARTISTS:
                     lists.append((Type.ALL, _("All albums")))
@@ -104,7 +106,7 @@ class DefaultItemsMenu(Gio.Menu):
         self.__list_type = list_type
         # Startup menu
         if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
-                     Type.ALL, Type.RECENTS,
+                     Type.ALL, Type.RECENTS, Type.YEARS,
                      Type.RANDOMS, Type.NEVER,
                      Type.PLAYLISTS]:
             startup_menu = Gio.Menu()
@@ -627,6 +629,8 @@ class SelectionList(Gtk.Overlay):
             icon = "audio-speakers-symbolic"
         elif object_id == Type.NOPARTY:
             icon = "emblem-music-symbolic"
+        elif object_id == Type.YEARS:
+            icon = "view-sort-ascending-symbolic"
         return icon
 
     def __sort_items(self, model, itera, iterb, data):

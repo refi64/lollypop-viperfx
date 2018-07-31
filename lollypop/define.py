@@ -105,8 +105,9 @@ class Type:
     SEARCH = -8
     NOPARTY = -9
     ALBUMS = -10
-    ALL = -11
-    USB_DISKS = -12
+    YEARS = -11
+    ALL = -100
+    USB_DISKS = -200
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

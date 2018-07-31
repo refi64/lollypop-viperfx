@@ -897,6 +897,18 @@ class AlbumsDatabase:
                                   ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
+    def get_decade(self, decade):
+        """
+            Return album between decade and decade + 9
+            @return album ids as [int]
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums\
+                                  WHERE albums.year >= ? AND\
+                                  albums.year < ?", (decade, decade + 10))
+            return list(itertools.chain(*result))
+
     def has_loves(self):
         """
             True if db has loved albums

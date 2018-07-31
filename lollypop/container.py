@@ -90,7 +90,7 @@ class Container(Gtk.Overlay):
         """
         update = updater is not None
         ids = self.__list_one.selected_ids
-        if ids and ids[0] == Type.PLAYLISTS:
+        if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
             self.__update_list_playlists(update)
         elif App().settings.get_value("show-genres") and ids:
             self.__update_list_artists(self.__list_two, ids, update)
@@ -478,7 +478,6 @@ class Container(Gtk.Overlay):
             Setup list for genres
             @param list as SelectionList
             @param update as bool, if True, just update entries
-            @thread safe
         """
         def load():
             genres = App().genres.get()
@@ -503,7 +502,6 @@ class Container(Gtk.Overlay):
             @param list as SelectionList
             @param genre ids as [int]
             @param update as bool, if True, just update entries
-            @thread safe
         """
         def load():
             artists = App().artists.get(genre_ids)
@@ -533,15 +531,26 @@ class Container(Gtk.Overlay):
                         on_finished=lambda r: setup(*r))
         loader.start()
 
-    def __update_list_playlists(self, update):
+    def __update_list_playlists(self, update, type):
         """
             Setup list for playlists
             @param update as bool
-            @thread safe
+            @param type as int
         """
         self.__list_two.mark_as(SelectionList.Type.PLAYLISTS)
-        items = self.__list_two.get_playlist_headers()
-        items += App().playlists.get()
+        if type == Type.PLAYLISTS:
+            items = self.__list_two.get_playlist_headers()
+            items += App().playlists.get()
+        else:
+            items = [(2010, _("10's")),
+                     (2000, _("00's")),
+                     (1990, _("90's")),
+                     (1980, _("80's")),
+                     (1970, _("70's")),
+                     (1960, _("60's")),
+                     (1950, _("50's")),
+                     (1940, _("40's")),
+                     (1930, _("30's"))]
         if update:
             self.__list_two.update_values(items)
         else:
@@ -648,6 +657,8 @@ class Container(Gtk.Overlay):
                 items = App().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.NEVER:
                 items = App().albums.get_never_listened_to()
+            elif genre_ids and genre_ids[0] == Type.YEARS:
+                items = App().albums.get_decade(artist_ids[0])
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 items = App().albums.get_randoms()
             else:
@@ -797,8 +808,8 @@ class Container(Gtk.Overlay):
         if not selected_ids:
             return
         # Update lists
-        if selected_ids[0] == Type.PLAYLISTS:
-            self.__update_list_playlists(False)
+        if selected_ids[0] in [Type.PLAYLISTS, Type.YEARS]:
+            self.__update_list_playlists(False, selected_ids[0])
             self.__list_two.show()
         elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
                 self.__list_one.type & SelectionList.Type.GENRE:
@@ -827,6 +838,8 @@ class Container(Gtk.Overlay):
                 view = self.__get_view_albums([], selected_ids)
             else:
                 view = self.__get_view_artists([], selected_ids)
+        elif selected_ids[0] == Type.YEARS:
+            self.__list_two.select_ids([2010])
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
@@ -865,6 +878,8 @@ class Container(Gtk.Overlay):
             return
         if genre_ids[0] == Type.PLAYLISTS:
             view = self.__get_view_playlists(selected_ids)
+        elif genre_ids[0] == Type.YEARS:
+            view = self.__get_view_albums(genre_ids, selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
             view = self.__get_view_albums(genre_ids, selected_ids)
         else:
