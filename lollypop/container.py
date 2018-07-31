@@ -91,7 +91,7 @@ class Container(Gtk.Overlay):
         update = updater is not None
         ids = self.__list_one.selected_ids
         if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
-            self.__update_list_playlists(update)
+            self.__update_list_playlists(update, ids[0])
         elif App().settings.get_value("show-genres") and ids:
             self.__update_list_artists(self.__list_two, ids, update)
 
@@ -542,15 +542,7 @@ class Container(Gtk.Overlay):
             items = self.__list_two.get_playlist_headers()
             items += App().playlists.get()
         else:
-            items = [(2010, _("10's")),
-                     (2000, _("00's")),
-                     (1990, _("90's")),
-                     (1980, _("80's")),
-                     (1970, _("70's")),
-                     (1960, _("60's")),
-                     (1950, _("50's")),
-                     (1940, _("40's")),
-                     (1930, _("30's"))]
+            items = App().albums.get_years(False)
         if update:
             self.__list_two.update_values(items)
         else:
@@ -629,6 +621,28 @@ class Container(Gtk.Overlay):
         view.show()
         return view
 
+    def __get_view_albums_years(self, start, end):
+        """
+            Get album view for years
+            @param start as int
+            @param end as int
+        """
+        def load():
+            items = App().albums.get_albums_for_years(start, end)
+            return [Album(album_id, [], [])
+                    for album_id in items]
+        self.__stop_current_view()
+        if self.is_paned_stack:
+            from lollypop.view_albums_list import AlbumsListView
+            view = AlbumsListView(ResponsiveType.LIST)
+        else:
+            from lollypop.view_albums_box import AlbumsBoxView
+            view = AlbumsBoxView([], [])
+        loader = Loader(target=load, view=view)
+        loader.start()
+        view.show()
+        return view
+
     def __get_view_albums(self, genre_ids, artist_ids):
         """
             Get albums view for genres/artists
@@ -657,8 +671,6 @@ class Container(Gtk.Overlay):
                 items = App().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.NEVER:
                 items = App().albums.get_never_listened_to()
-            elif genre_ids and genre_ids[0] == Type.YEARS:
-                items = App().albums.get_decade(artist_ids[0])
             elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 items = App().albums.get_randoms()
             else:
@@ -839,7 +851,8 @@ class Container(Gtk.Overlay):
             else:
                 view = self.__get_view_artists([], selected_ids)
         elif selected_ids[0] == Type.YEARS:
-            self.__list_two.select_ids([2010])
+            view = Gtk.Grid()
+            view.show()
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
@@ -879,7 +892,9 @@ class Container(Gtk.Overlay):
         if genre_ids[0] == Type.PLAYLISTS:
             view = self.__get_view_playlists(selected_ids)
         elif genre_ids[0] == Type.YEARS:
-            view = self.__get_view_albums(genre_ids, selected_ids)
+            start = selected_ids[0]
+            end = selected_ids[0]
+            view = self.__get_view_albums_years(start, end)
         elif selected_ids[0] == Type.COMPILATIONS:
             view = self.__get_view_albums(genre_ids, selected_ids)
         else:
