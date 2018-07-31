@@ -143,15 +143,23 @@ class ProgressController:
         # Update pogress position
         self.__timeout_id = None
         # Show volume control
-        self._show_volume_control = False
+        self.__show_volume_control = False
         App().player.connect("duration-changed", self.__on_duration_changed)
+
+    def show_hide_volume_control(self):
+        """
+            Show/Hide volume control
+        """
+        self._progress.clear_marks()
+        self.__show_volume_control = not self.__show_volume_control
+        self._update_state()
 
     def on_current_changed(self, player):
         """
             Update scale on current changed
             @param player as Player
         """
-        if self._show_volume_control:
+        if self.__show_volume_control:
             return
         self._progress.clear_marks()
         if player.current_track.id is None:
@@ -202,16 +210,16 @@ class ProgressController:
         """
             Update controller state volume vs progress
         """
-        if self._show_volume_control:
+        if self.__show_volume_control:
             self._timelabel.set_text(_("Volume"))
             # Inhibit _on_value_changed()
-            self._show_volume_control = False
+            self.__show_volume_control = False
             self._progress.set_range(0.0, 1.0)
-            self._show_volume_control = True
+            self.__show_volume_control = True
             self._progress.set_sensitive(True)
             self._update_position()
         else:
-            self.on_current_changed(App().player)
+            ProgressController.on_current_changed(self, App().player)
             if App().player.current_track.id is None:
                 self._timelabel.set_text("")
                 self._progress.set_value(0.0)
@@ -224,7 +232,7 @@ class ProgressController:
         """
             Adjust volume
         """
-        if not self._show_volume_control:
+        if not self.__show_volume_control:
             return
         App().player.set_volume(scale.get_value())
         self._update_position(scale.get_value())
@@ -248,7 +256,7 @@ class ProgressController:
         if event.button != 1:
             self.show_hide_volume_control()
             return True
-        if self._show_volume_control:
+        if self.__show_volume_control:
             return
         if App().player.locked:
             return True
@@ -261,7 +269,7 @@ class ProgressController:
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
-        if self._show_volume_control or event.button != 1:
+        if self.__show_volume_control or event.button != 1:
             return
         value = scale.get_value()
         App().player.seek(value)
@@ -276,7 +284,7 @@ class ProgressController:
         """
         (smooth, x, y) = event.get_scroll_deltas()
         if smooth:
-            if self._show_volume_control:
+            if self.__show_volume_control:
                 volume = App().player.volume
                 if y > 0:
                     volume -= 0.1
@@ -306,7 +314,7 @@ class ProgressController:
             Update progress bar position
             @param value as int
         """
-        if self._show_volume_control:
+        if self.__show_volume_control:
             if value is None:
                 value = App().player.volume
             self._progress.set_value(value)

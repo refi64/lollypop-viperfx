@@ -46,14 +46,6 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         """
         self.set_property("width_request", width)
 
-    def show_hide_volume_control(self):
-        """
-            Show/Hide volume control
-        """
-        self._progress.clear_marks()
-        self._show_volume_control = not self._show_volume_control
-        self._update_state()
-
     def add_mark(self, position):
         """
             Add a mark at position
