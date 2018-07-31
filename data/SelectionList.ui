@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkListStore" id="model">
-    <columns>
-      <!-- column-name id -->
-      <column type="gint"/>
-      <!-- column-name label -->
-      <column type="gchararray"/>
-      <!-- column-name icon -->
-      <column type="gchararray"/>
-      <!-- column-name sort -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkTreeView" id="view">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <property name="model">model</property>
     <property name="headers_visible">False</property>
     <property name="headers_clickable">False</property>
     <property name="search_column">1</property>

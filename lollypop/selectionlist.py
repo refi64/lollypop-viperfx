@@ -222,10 +222,11 @@ class SelectionList(Gtk.Overlay):
         self.__selection = builder.get_object("selection")
         self.__selection.set_select_function(self.__selection_validation)
         self.__selection.connect("changed", self.__on_selection_changed)
-        self.__model = builder.get_object("model")
+        self.__model = Gtk.ListStore(int, str, str, str)
         self.__model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.__model.set_sort_func(0, self.__sort_items)
         self.__view = builder.get_object("view")
+        self.__view.set_model(self.__model)
         if base_type in [SelectionList.Type.LIST_ONE,
                          SelectionList.Type.LIST_TWO]:
             self.__view.get_style_context().add_class("sidebar")
