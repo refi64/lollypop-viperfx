@@ -340,11 +340,13 @@ class InfoController:
         Infos controller (for toolbars)
     """
 
-    def __init__(self):
+    def __init__(self, tooltip=True):
         """
             Init controller
+            @param tooltip as bool => Show album name over cover
         """
         self._infobox = None
+        self.__tooltip = tooltip
 
     def on_current_changed(self, art_size, font_size):
         """
@@ -422,7 +424,9 @@ class InfoController:
                 blur(artwork, self._cover, width, height)
             else:
                 self._cover.set_from_surface(artwork)
-            self._cover.set_tooltip_text(App().player.current_track.album.name)
+            if self.__tooltip:
+                self._cover.set_tooltip_text(
+                    App().player.current_track.album.name)
             self._cover.show()
         else:
             self._cover.hide()

@@ -27,10 +27,10 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.521" date="2018-07-17">
+    <release version="0.9.522" date="2018-07-31">
       <description>
         <ul>
-          <li>Fix issues with party mode"</li>
+          <li>Allow lyrics translation</li>
         </ul>
       </description>
     </release>

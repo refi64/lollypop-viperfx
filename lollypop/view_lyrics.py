@@ -31,7 +31,7 @@ class LyricsView(View, InfoController):
             Init view
         """
         View.__init__(self)
-        InfoController.__init__(self)
+        InfoController.__init__(self, False)
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_set = False
