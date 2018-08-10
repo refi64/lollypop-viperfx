@@ -390,7 +390,6 @@ class ToolbarEnd(Gtk.Bin):
             Lock toolbar
             @param player as Player
         """
-        self.__party_button.set_sensitive(not player.locked)
         self.__list_button.set_sensitive(not player.locked)
         self.__shuffle_button.set_sensitive(not player.locked)
 
