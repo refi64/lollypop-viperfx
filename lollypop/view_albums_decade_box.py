@@ -34,7 +34,6 @@ class AlbumsDecadeBoxView(LazyLoadingView):
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._box.connect("child-activated", self.__on_decade_activated)
         # Allow lazy loading to not jump up and down
         self._box.set_homogeneous(True)
         self._box.set_max_children_per_line(1000)
