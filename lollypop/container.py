@@ -912,7 +912,9 @@ class Container(Gtk.Overlay):
                     and self.__list_two.is_visible()\
                     and (
                         selected_ids[0] >= 0 or
-                        selected_ids[0] in [Type.PLAYLISTS, Type.ALL]):
+                        selected_ids[0] in [Type.PLAYLISTS,
+                                            Type.YEARS,
+                                            Type.ALL]):
                 self.__stack.set_visible_child(self.__list_two)
             else:
                 self.__stack.set_visible_child(view)
