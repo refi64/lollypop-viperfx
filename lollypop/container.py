@@ -655,6 +655,8 @@ class Container(Gtk.Overlay):
                     decade = []
                 current_d = d
                 decade.append(year)
+            if decade:
+                decades.append(decade)
             return decades
         self.__stop_current_view()
         if self.is_paned_stack:
