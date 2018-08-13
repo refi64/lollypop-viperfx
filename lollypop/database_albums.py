@@ -911,16 +911,15 @@ class AlbumsDatabase:
             if not decades:
                 return [(year, str(year)) for year in sorted(years)]
 
-    def get_albums_for_years(self, start, end):
+    def get_albums_for_year(self, year):
         """
-            Return album between start and end
+            Return album for year
             @return album ids as [int]
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT albums.rowid\
                                   FROM albums\
-                                  WHERE albums.year >= ? AND\
-                                  albums.year <= ?", (start, end))
+                                  WHERE albums.year=?", (year,))
             return list(itertools.chain(*result))
 
     def has_loves(self):

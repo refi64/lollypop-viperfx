@@ -621,14 +621,15 @@ class Container(Gtk.Overlay):
         view.show()
         return view
 
-    def __get_view_albums_years(self, start, end):
+    def __get_view_albums_years(self, years):
         """
             Get album view for years
-            @param start as int
-            @param end as int
+            @param years as [int]
         """
         def load():
-            items = App().albums.get_albums_for_years(start, end)
+            items = []
+            for year in years:
+                items += App().albums.get_albums_for_year(year)
             return [Album(album_id, [], [])
                     for album_id in items]
         self.__stop_current_view()
@@ -892,9 +893,7 @@ class Container(Gtk.Overlay):
         if genre_ids[0] == Type.PLAYLISTS:
             view = self.__get_view_playlists(selected_ids)
         elif genre_ids[0] == Type.YEARS:
-            start = selected_ids[0]
-            end = selected_ids[0]
-            view = self.__get_view_albums_years(start, end)
+            view = self.__get_view_albums_years(selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
             view = self.__get_view_albums(genre_ids, selected_ids)
         else:
