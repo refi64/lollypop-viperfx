@@ -917,10 +917,24 @@ class AlbumsDatabase:
             @param limit as int
         """
         with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT albums.rowid\
-                                  FROM albums\
-                                  WHERE albums.year=? LIMIT ?",
-                                 (year, limit))
+            if limit != -1:
+                result = sql.execute("SELECT albums.rowid\
+                                      FROM albums\
+                                      WHERE albums.year=? LIMIT ?",
+                                     (year, limit))
+            else:
+                order = " ORDER BY artists.sortname\
+                         COLLATE NOCASE COLLATE LOCALIZED,\
+                         albums.year,\
+                         albums.name\
+                         COLLATE NOCASE COLLATE LOCALIZED"
+                request = "SELECT DISTINCT albums.rowid\
+                           FROM albums, album_artists, artists\
+                           WHERE albums.rowid=album_artists.album_id AND\
+                           artists.rowid=album_artists.artist_id AND\
+                           albums.year=?"
+                request += order
+                result = sql.execute(request, (year,))
             return list(itertools.chain(*result))
 
     def has_loves(self):
