@@ -352,6 +352,22 @@ class Container(Gtk.Overlay):
         """
         return self.__list_one in self.__stack.get_children()
 
+    @property
+    def list_one(self):
+        """
+            Get first SelectionList
+            @return SelectionList
+        """
+        return self.__list_one
+
+    @property
+    def list_two(self):
+        """
+            Get second SelectionList
+            @return SelectionList
+        """
+        return self.__list_two
+
 ############
 # PRIVATE  #
 ############
@@ -542,7 +558,8 @@ class Container(Gtk.Overlay):
             items = self.__list_two.get_playlist_headers()
             items += App().playlists.get()
         else:
-            items = App().albums.get_years(False)
+            years = App().albums.get_years()
+            items = [(year, str(year)) for year in sorted(years)]
         if update:
             self.__list_two.update_values(items)
         else:
@@ -618,6 +635,35 @@ class Container(Gtk.Overlay):
             view = ArtistView(artist_ids, genre_ids)
         loader = Loader(target=load, view=view)
         loader.start()
+        view.show()
+        return view
+
+    def __get_view_albums_decades(self):
+        """
+            Get album view for decades
+        """
+        def load():
+            years = sorted(App().albums.get_years())
+            decades = []
+            decade = []
+            current_d = None
+            for year in years:
+                d = year // 10
+                if current_d is not None and current_d != d:
+                    current_d = d
+                    decades.append(decade)
+                    decade = []
+                current_d = d
+                decade.append(year)
+            return decades
+        self.__stop_current_view()
+        if self.is_paned_stack:
+            view = Gtk.Grid()
+        else:
+            from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
+            view = AlbumsDecadeBoxView()
+            loader = Loader(target=load, view=view)
+            loader.start()
         view.show()
         return view
 
@@ -852,8 +898,7 @@ class Container(Gtk.Overlay):
             else:
                 view = self.__get_view_artists([], selected_ids)
         elif selected_ids[0] == Type.YEARS:
-            view = Gtk.Grid()
-            view.show()
+            view = self.__get_view_albums_decades()
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:

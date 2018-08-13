@@ -897,10 +897,10 @@ class AlbumsDatabase:
                                   ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
-    def get_years(self, decades):
+    def get_years(self):
         """
-            Return all albums years or decades
-            @return [(int, str])
+            Return all albums years
+            @return [int]
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT albums.year FROM albums")
@@ -908,18 +908,19 @@ class AlbumsDatabase:
             for year in list(itertools.chain(*result)):
                 if year is not None and year not in years:
                     years.append(year)
-            if not decades:
-                return [(year, str(year)) for year in sorted(years)]
+            return years
 
-    def get_albums_for_year(self, year):
+    def get_albums_for_year(self, year, limit=-1):
         """
             Return album for year
             @return album ids as [int]
+            @param limit as int
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT albums.rowid\
                                   FROM albums\
-                                  WHERE albums.year=?", (year,))
+                                  WHERE albums.year=? LIMIT ?",
+                                 (year, limit))
             return list(itertools.chain(*result))
 
     def has_loves(self):

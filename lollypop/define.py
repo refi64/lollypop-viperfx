@@ -59,6 +59,7 @@ class ArtSize:
     ARTIST_SMALL = 60
     HEADER = 100
     BIG = 200
+    YEAR = 300
     FULLSCREEN = 500
     ARTIST = 800
     MONSTER = 900
