@@ -84,7 +84,7 @@ class FastScroll(Gtk.ScrolledWindow):
             Populate widget based on current chars
         """
         label = Gtk.Label()
-        label.set_markup('<span font="Monospace"><b>%s</b></span>' % "⮝")
+        label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▲")
         label.show()
         self.__grid.add(label)
         for c in sorted(self.__chars, key=strxfrm):
@@ -93,7 +93,7 @@ class FastScroll(Gtk.ScrolledWindow):
             label.show()
             self.__grid.add(label)
         label = Gtk.Label()
-        label.set_markup('<span font="Monospace"><b>%s</b></span>' % "⮟")
+        label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▼")
         label.show()
         self.__grid.add(label)
         GLib.idle_add(self.__check_value_to_mark)
@@ -171,7 +171,7 @@ class FastScroll(Gtk.ScrolledWindow):
         chars = sorted(self.__chars, key=strxfrm)
         start_idx = chars.index(start)
         end_idx = chars.index(end)
-        selected = chars[start_idx:end_idx + 1] + ["⮝", "⮟"]
+        selected = chars[start_idx:end_idx + 1] + ["▲", "▼"]
         for child in self.__grid.get_children():
             label = child.get_text()
             mark = True if label in selected else False
@@ -209,11 +209,11 @@ class FastScroll(Gtk.ScrolledWindow):
                 char = child.get_text()
                 break
         if char is not None:
-            if char == "⮝":
+            if char == "▲":
                 self.__view.scroll_to_cell(
                                 self.__model.get_path(self.__model[0].iter),
                                 None, True, 0, 0)
-            elif char == "⮟":
+            elif char == "▼":
                 self.__view.scroll_to_cell(
                                 self.__model.get_path(self.__model[-1].iter),
                                 None, True, 0, 0)
