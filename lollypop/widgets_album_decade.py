@@ -81,6 +81,9 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
     def update_state(self):
         pass
 
+    def update_playing_indicator(self):
+        pass
+
 #######################
 # PROTECTED           #
 #######################
