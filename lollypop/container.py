@@ -678,7 +678,7 @@ class Container(Gtk.Overlay):
             items = []
             for year in years:
                 items += App().albums.get_albums_for_year(year)
-            return [Album(album_id, [], [])
+            return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]
         self.__stop_current_view()
         if self.is_paned_stack:
@@ -686,7 +686,7 @@ class Container(Gtk.Overlay):
             view = AlbumsListView(ResponsiveType.LIST)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView([], [])
+            view = AlbumsBoxView([Type.YEARS], [])
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()

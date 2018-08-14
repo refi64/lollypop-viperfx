@@ -166,7 +166,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self._albums = []
         album_ids = []
         self.reset_history()
-
         # We are not playing a user playlist anymore
         self._playlist_tracks = []
         self._playlist_ids = []
@@ -199,6 +198,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
             album_ids = App().albums.get_compilation_ids()
+        # We are in years view
+        elif genre_ids and genre_ids[0] == Type.YEARS:
+            # Only way to get years
+            years = App().window.container.list_two.selected_ids
+            album_ids = []
+            for year in years:
+                album_ids += App().albums.get_albums_for_year(year)
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
