@@ -14,6 +14,7 @@ from gi.repository import GLib, Gdk, Gtk, Pango
 
 from random import sample
 import cairo
+from math import pi
 
 from lollypop.define import App, ArtSize
 from lollypop.objects import Album
@@ -38,8 +39,6 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         """
             Populate widget content
         """
-        self.get_style_context().remove_class("loading")
-        self._rounded_class = "rounded-icon-small"
         self.__widget = Gtk.EventBox()
         self.__widget.connect("button-press-event",
                               self.__on_eventbox_button_press_event)
@@ -56,15 +55,9 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         self.__widget.set_property("has-tooltip", True)
         self.__widget.add(grid)
         self.__cover = Gtk.Image.new_from_surface(self.__get_surface())
-        self.__cover.get_style_context().add_class("cover-frame")
         self.__cover.set_size_request(ArtSize.YEAR, ArtSize.YEAR)
         self.__cover.show()
-        color = Gtk.Grid()
-        color.set_property("halign", Gtk.Align.CENTER)
-        color.set_property("valign", Gtk.Align.CENTER)
-        color.get_style_context().add_class("white")
-        color.add(self.__cover)
-        grid.add(color)
+        grid.add(self.__cover)
         grid.add(decade_label)
         self.add(self.__widget)
         self.__widget.set_property("halign", Gtk.Align.CENTER)
@@ -104,6 +97,14 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
                                    ArtSize.YEAR,
                                    ArtSize.YEAR)
         ctx = cairo.Context(cover)
+        width = ArtSize.YEAR - 4
+        ctx.translate(2, 2)
+        ctx.new_sub_path()
+        radius = width / 2
+        ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill_preserve()
+        ctx.clip()
         ctx.scale(0.5, 0.5)
         album_ids = []
         for year in self.__decade:
