@@ -36,12 +36,12 @@ class ShownAlbumlists:
         if mask & SelectionList.Type.LIST_ONE:
             if get_all or Type.POPULARS in wanted:
                 lists.append((Type.POPULARS, _("Popular albums")))
+            if get_all or Type.RANDOMS in wanted:
+                lists.append((Type.RANDOMS, _("Random albums")))
             if get_all or Type.LOVED in wanted:
                 lists.append((Type.LOVED, _("Loved albums")))
             if get_all or Type.RECENTS in wanted:
                 lists.append((Type.RECENTS, _("Recently added albums")))
-            if get_all or Type.RANDOMS in wanted:
-                lists.append((Type.RANDOMS, _("Random albums")))
             if get_all or Type.NEVER in wanted:
                 lists.append((Type.NEVER, _("Unplayed albums")))
             if get_all or Type.PLAYLISTS in wanted:
@@ -164,9 +164,9 @@ class DefaultItemsMenu(Gio.Menu):
             wanted.remove(rowid)
         App().settings.set_value(option, GLib.Variant("ai", wanted))
         if self.__list_type & SelectionList.Type.LIST_ONE:
-            App().window.container.update_list_one()
+            App().window.container.update_list_one(True)
         elif self.__list_type & SelectionList.Type.LIST_TWO:
-            App().window.container.update_list_two()
+            App().window.container.update_list_two(True)
 
     def __on_action_clicked(self, action, variant, rowid):
         """
