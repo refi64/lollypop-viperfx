@@ -72,23 +72,21 @@ class Container(Gtk.Overlay):
             GLib.timeout_add_seconds(randint(3600, 7200),
                                      self.__show_donation)
 
-    def update_list_one(self, updater=None):
+    def update_list_one(self, update=False):
         """
             Update list one
-            @param updater as GObject
+            @param update as bool
         """
-        update = updater is not None
         if App().settings.get_value("show-genres"):
             self.__update_list_genres(self.__list_one, update)
         else:
             self.__update_list_artists(self.__list_one, [Type.ALL], update)
 
-    def update_list_two(self, updater=None):
+    def update_list_two(self, update=False):
         """
             Update list two
-            @param updater as GObject
+            @param update as bool
         """
-        update = updater is not None
         ids = self.__list_one.selected_ids
         if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
             self.__update_list_playlists(update, ids[0])
@@ -481,13 +479,13 @@ class Container(Gtk.Overlay):
             else:
                 self.__list_two.remove_value(playlist_id)
 
-    def __update_lists(self, updater=None):
+    def __update_lists(self, update=False):
         """
             Update lists
-            @param updater as GObject
+            @param update as bool
         """
-        self.update_list_one(updater)
-        self.update_list_two(updater)
+        self.update_list_one(update)
+        self.update_list_two(update)
 
     def __update_list_genres(self, selection_list, update):
         """
@@ -969,7 +967,7 @@ class Container(Gtk.Overlay):
             @param modifications as bool
         """
         if modifications:
-            self.__update_lists(App().scanner)
+            self.__update_lists(True)
             from lollypop.app_notification import AppNotification
             notification = AppNotification(_("New tracks available"),
                                            [_("Refresh")],
