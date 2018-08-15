@@ -36,7 +36,7 @@ class ShownAlbumlists:
         if mask & SelectionList.Type.LIST_ONE:
             if get_all or Type.POPULARS in wanted:
                 lists.append((Type.POPULARS, _("Popular albums")))
-            if get_all or (App().albums.has_loves() and Type.LOVED in wanted):
+            if get_all or Type.LOVED in wanted:
                 lists.append((Type.LOVED, _("Loved albums")))
             if get_all or Type.RECENTS in wanted:
                 lists.append((Type.RECENTS, _("Recently added albums")))
