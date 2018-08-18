@@ -928,13 +928,22 @@ class AlbumsDatabase:
                          albums.year,\
                          albums.name\
                          COLLATE NOCASE COLLATE LOCALIZED"
-                request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists, artists\
-                           WHERE albums.rowid=album_artists.album_id AND\
-                           artists.rowid=album_artists.artist_id AND\
-                           albums.year=?"
+                if year == Type.NONE:
+                    request = "SELECT DISTINCT albums.rowid\
+                               FROM albums, album_artists, artists\
+                               WHERE albums.rowid=album_artists.album_id AND\
+                               artists.rowid=album_artists.artist_id AND\
+                               albums.year is null"
+                    filter = ()
+                else:
+                    request = "SELECT DISTINCT albums.rowid\
+                               FROM albums, album_artists, artists\
+                               WHERE albums.rowid=album_artists.album_id AND\
+                               artists.rowid=album_artists.artist_id AND\
+                               albums.year=?"
+                    filter = (year,)
                 request += order
-                result = sql.execute(request, (year,))
+                result = sql.execute(request, filter)
             return list(itertools.chain(*result))
 
     def search(self, string, limit=25):

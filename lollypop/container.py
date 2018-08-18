@@ -558,6 +558,7 @@ class Container(Gtk.Overlay):
         else:
             years = App().albums.get_years()
             items = [(year, str(year)) for year in sorted(years)]
+            items.insert(0, (Type.NONE, _("Unknown")))
         if update:
             self.__list_two.update_values(items)
         else:
