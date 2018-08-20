@@ -59,16 +59,6 @@ Bilal Elmoussaoui
               </object>
             </child>
             <child>
-              <object class="GtkLinkButton" id="flattr">
-                <property name="label" translatable="yes">Flattr</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="relief">none</property>
-                <property name="uri">https://flattr.com/profile/lollypop</property>
-              </object>
-            </child>
-            <child>
               <object class="GtkLinkButton" id="liberapay">
                 <property name="label" translatable="yes">Liberapay</property>
                 <property name="visible">True</property>
