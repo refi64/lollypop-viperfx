@@ -56,5 +56,6 @@
   <url type="bugtracker">https://gitlab.gnome.org/gnumdk/lollypop/issues</url>
   <url type="donation">https://flattr.com/@lollypop</url>
   <url type="translate">https://hosted.weblate.org/projects/gnumdk/</url>
+  <content_rating type="oars-1.1" />
   <update_contact>cedric.bellegarde@adishatz.org</update_contact>
 </component>
