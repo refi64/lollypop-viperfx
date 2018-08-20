@@ -203,6 +203,14 @@ class ProgressController:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
 
+    @property
+    def show_volume_control(self):
+        """
+            True if volume control is shown
+            @return bool
+        """
+        return self.__show_volume_control
+
 #######################
 # PROTECTED           #
 #######################
@@ -315,6 +323,8 @@ class ProgressController:
             @param value as int
         """
         if self.__show_volume_control:
+            # We need this to allow crossfade while volume is shown
+            App().player.position
             if value is None:
                 value = App().player.volume
             self._progress.set_value(value)

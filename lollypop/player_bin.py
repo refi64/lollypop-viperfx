@@ -196,7 +196,7 @@ class BinPlayer(BasePlayer):
     def position(self):
         """
             Return bin playback position
-            @HACK handle crossefade here, as we know we"re going to be
+            @HACK handle crossefade here, as we know we're going to be
             called every seconds
             @return position in Gst.SECOND
         """
@@ -373,7 +373,7 @@ class BinPlayer(BasePlayer):
             @param playbin as Gst bin
         """
         Logger.debug("Player::__on_stream_about_to_finish(): %s" % playbin)
-        # Don"t do anything if crossfade on, track already changed
+        # Don't do anything if crossfade on, track already changed
         if self._crossfading:
             return
         if self._current_track.id == Type.RADIOS:
