@@ -7,6 +7,11 @@
     <property name="can_focus">False</property>
     <property name="icon_name">accessories-dictionary-symbolic</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">window-close-symbolic</property>
+  </object>
   <object class="GtkOverlay" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -55,18 +60,43 @@
       </object>
     </child>
     <child type="overlay">
-      <object class="GtkButton" id="translate_button">
+      <object class="GtkGrid">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Translate</property>
+        <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="valign">start</property>
         <property name="margin_right">15</property>
         <property name="margin_top">15</property>
-        <property name="image">image1</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_translate_clicked" swapped="no"/>
+        <property name="column_spacing">5</property>
+        <child>
+          <object class="GtkButton" id="translate_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Translate</property>
+            <property name="image">image1</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_translate_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">image2</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_close_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="index">1</property>

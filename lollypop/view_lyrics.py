@@ -90,6 +90,13 @@ class LyricsView(View, InfoController):
         self.populate(App().player.current_track)
         self.__translate_button.set_sensitive(True)
 
+    def _on_close_clicked(self, button):
+        """
+            Close lyrics view
+            @param button as Gtk.Button
+        """
+        App().window.container.destroy_current_view()
+
     def _on_translate_clicked(self, button):
         """
             Translate lyrics
