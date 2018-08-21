@@ -126,7 +126,9 @@ class FullScreen(Gtk.Window, InfoController,
         self.fullscreen_on_monitor(screen, monitor)
 
         # Disable screensaver (idle)
-        App().inhibitor.manual_inhibit(suspend=False, idle=True)
+        App().inhibitor.manual_inhibit(
+                Gtk.ApplicationInhibitFlags.IDLE |
+                Gtk.ApplicationInhibitFlags.SUSPEND)
         self.__signal3_id = App().player.connect("party-changed",
                                                  self.__on_party_changed)
 

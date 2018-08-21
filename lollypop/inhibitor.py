@@ -15,14 +15,15 @@
 
 from gi.repository import Gtk, Gst
 
+from gettext import gettext as _
+
 from lollypop.define import App, PowerManagement
 
 
 class Inhibitor:
 
     def __init__(self):
-        self.__cookie_suspend = 0
-        self.__cookie_idle = 0
+        self.__cookie = 0
         self.__status_handler_id = None      # The playback listener
         self.__current_player_state = None
         self.__manual_inhibit = False
@@ -77,37 +78,27 @@ class Inhibitor:
             Update the inhibit flags according to the settings in dconf
         """
         power_management = App().settings.get_enum("power-management")
+        if power_management == PowerManagement.BOTH:
+            self.__inhibit(Gtk.ApplicationInhibitFlags.IDLE |
+                           Gtk.ApplicationInhibitFlags.SUSPEND)
+        elif power_management == PowerManagement.SUSPEND:
+            self.__inhibit(Gtk.ApplicationInhibitFlags.SUSPEND)
+        elif power_management == PowerManagement.IDLE:
+            self.__inhibit(Gtk.ApplicationInhibitFlags.IDLE)
 
-        if power_management in [PowerManagement.SUSPEND, PowerManagement.BOTH]:
-            self.__inhibit_suspend()
-        if power_management in [PowerManagement.IDLE, PowerManagement.BOTH]:
-            self.__inhibit_idle()
-
-    def __inhibit_suspend(self):
+    def __inhibit(self, flags):
         """
-            Disable the suspend behaviour of the OS
+            Disable flags
+            @param flags as Gtk.ApplicationInhibitFlags
         """
         if self.__manual_inhibit:
             # temporary blocked inhibit changes
             return
-        if not self.__cookie_suspend:
-            self.__cookie_suspend = App().inhibit(
+        if not self.__cookie:
+            self.__cookie = App().inhibit(
                 App().window,
-                Gtk.ApplicationInhibitFlags.SUSPEND,
-                "Playing music")
-
-    def __inhibit_idle(self):
-        """
-            Disable the screensaver (idle)
-        """
-        if self.__manual_inhibit:
-            # temporary blocked inhibit changes
-            return
-        if not self.__cookie_idle:
-            self.__cookie_idle = App().inhibit(
-                App().window,
-                Gtk.ApplicationInhibitFlags.IDLE,
-                "Playing music")
+                flags,
+                _("Playing music"))
 
     def __uninhibit(self):
         """
@@ -116,32 +107,21 @@ class Inhibitor:
         if self.__manual_inhibit:
             # temporary blocked inhibit changes
             return
-        if self.__cookie_suspend and self.__cookie_suspend != 0:
-            App().uninhibit(self.__cookie_suspend)
-            self.__cookie_suspend = 0
-        if self.__cookie_idle and self.__cookie_idle != 0:
-            App().uninhibit(self.__cookie_idle)
-            self.__cookie_idle = 0
-
+        if self.__cookie:
+            App().uninhibit(self.__cookie)
+            self.__cookie = 0
         self.__current_player_state = None
 
-    def manual_inhibit(self, suspend, idle):
+    def manual_inhibit(self, flags):
         """
             Inhibit suspend or idle manually.
             The settings values from dconf are not applied while a
-            manual_inhibt() call is active. Disable the manual override with
-            manual_uninhibit().
-            By giving manual_inhibit(False, False) screensaver and suspend are
-            activated (with their timeouts) despite other settings in dconf.
-
-            @param suspend as bool
-            @param idle as bool
+            manual_inhibit() call is active.
+            Disable the manual override with manual_uninhibit().
+            @param flags as Gtk.ApplicationInhibitFlags
         """
         self.__uninhibit()
-        if suspend:
-            self.__inhibit_suspend()
-        if idle:
-            self.__inhibit_idle()
+        self.__inhibit(flags)
         self.__manual_inhibit = True
 
     def manual_uninhibit(self):
