@@ -96,7 +96,7 @@ class Toolbar(Gtk.HeaderBar):
             Update progress bar position
             @param value as int
         """
-        if not self.__toolbar_title._show_volume_control:
+        if not self.__toolbar_title.show_volume_control:
             self.__toolbar_title._update_position(value)
 
     def set_mark(self):
