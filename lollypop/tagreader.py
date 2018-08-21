@@ -116,7 +116,7 @@ class TagReader(Discoverer):
         """
         if tags is None:
             return ""
-        (exists, album_id) = tags.get_string_index('musicbrainz-albumid', 0)
+        (exists, album_id) = tags.get_string_index("musicbrainz-albumid", 0)
         return album_id or ""
 
     def get_mb_track_id(self, tags):
@@ -127,9 +127,20 @@ class TagReader(Discoverer):
         """
         if tags is None:
             return ""
-        (exists, recording_id) = tags.get_string_index('musicbrainz-trackid',
+        (exists, recording_id) = tags.get_string_index("musicbrainz-trackid",
                                                        0)
         return recording_id or ""
+
+    def get_version(self, tags):
+        """
+            Get recording version
+            @param tags as Gst.TagList
+            @return str
+        """
+        if tags is None:
+            return ""
+        (exists, version) = tags.get_string_index("version", 0)
+        return version or ""
 
     def get_performers(self, tags):
         """

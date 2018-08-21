@@ -281,6 +281,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         tags = info.get_tags()
         name = f.get_basename()
         title = self.get_title(tags, name)
+        version = self.get_version(tags)
         artists = self.get_artists(tags)
         composers = self.get_composers(tags)
         performers = self.get_performers(tags)
@@ -298,6 +299,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         if year is None:
             year = self.get_year(tags)
         duration = int(info.get_duration() / 1000000000)
+
+        if version != "":
+            title += " (%s)" % version
 
         # If no artists tag, use album artist
         if artists == "":
