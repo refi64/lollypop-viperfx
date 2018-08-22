@@ -352,7 +352,7 @@ class ToolbarEnd(Gtk.Bin):
                 not App().settings.get_value("dark-ui"):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", value)
-        App().player.set_party(value)
+        App().player.set_party(value.get_boolean())
         action.set_state(value)
         self.__shuffle_action.set_enabled(not value)
         self.__playback_action.set_enabled(not value)
