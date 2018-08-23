@@ -416,7 +416,7 @@ class SelectionList(Gtk.Overlay):
             Clear treeview
         """
         self.__model.clear()
-        if self.__type & self.Type.ARTISTS and self.__fast_scroll is not None:
+        if self.__fast_scroll is not None:
             self.__fast_scroll.clear()
             self.__fast_scroll.clear_chars()
             self.__fast_scroll.hide()
