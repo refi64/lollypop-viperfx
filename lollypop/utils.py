@@ -206,7 +206,7 @@ def is_audio(f):
              "audio/x-vorbis", "audio/x-vorbis+ogg", "audio/x-wav",
              "x-content/audio-player", "audio/x-aac", "audio/m4a",
              "audio/x-m4a", "audio/mp3", "audio/ac3", "audio/flac",
-             "audio/x-opus+ogg", "application/x-extension-mp4",
+             "audio/x-opus+ogg", "application/x-extension-mp4", "audio/x-ape",
              "audio/x-pn-aiff", "audio/x-pn-au", "audio/x-pn-wav",
              "audio/x-pn-windows-acm", "application/x-matroska",
              "audio/x-matroska", "audio/x-wavpack", "video/mp4"]
