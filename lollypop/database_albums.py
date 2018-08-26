@@ -899,20 +899,23 @@ class AlbumsDatabase:
 
     def get_years(self):
         """
-            Return all albums years
-            @return [int]
+            Return all albums years and if unknown album exists
+            @return ([int], bool)
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT albums.year FROM albums")
             years = []
+            unknown = False
             for year in list(itertools.chain(*result)):
-                if year is not None and year not in years:
+                if year is None:
+                    unknown = True
+                elif year not in years:
                     years.append(year)
-            return years
+            return (years, unknown)
 
     def get_albums_for_year(self, year, limit=-1):
         """
-            Return album for year
+            Return albums for year
             @return album ids as [int]
             @param limit as int
         """
@@ -942,6 +945,41 @@ class AlbumsDatabase:
                                artists.rowid=album_artists.artist_id AND\
                                albums.year=?"
                     filter = (year,)
+                request += order
+                result = sql.execute(request, filter)
+            return list(itertools.chain(*result))
+
+    def get_compilations_for_year(self, year, limit=-1):
+        """
+            Return compilations for year
+            @return album ids as [int]
+            @param limit as int
+        """
+        with SqlCursor(App().db) as sql:
+            if limit != -1:
+                result = sql.execute("SELECT albums.rowid\
+                                      FROM albums\
+                                      WHERE album_artists.artist_id=?\
+                                      AND album_artists.album_id=albums.rowid\
+                                      AND albums.year=? LIMIT ?",
+                                     (Type.COMPILATIONS, year, limit))
+            else:
+                order = " ORDER BY albums.year, albums.name\
+                         COLLATE NOCASE COLLATE LOCALIZED"
+                if year == Type.NONE:
+                    request = "SELECT DISTINCT albums.rowid\
+                               FROM albums, album_artists\
+                               WHERE album_artists.artist_id=?\
+                               AND album_artists.album_id=albums.rowid\
+                               AND albums.year is null"
+                    filter = (Type.COMPILATIONS,)
+                else:
+                    request = "SELECT DISTINCT albums.rowid\
+                               FROM albums, album_artists\
+                               WHERE album_artists.artist_id=?\
+                               AND album_artists.album_id=albums.rowid\
+                               AND albums.year=?"
+                    filter = (Type.COMPILATIONS, year)
                 request += order
                 result = sql.execute(request, filter)
             return list(itertools.chain(*result))

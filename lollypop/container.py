@@ -556,9 +556,10 @@ class Container(Gtk.Overlay):
             items = self.__list_two.get_playlist_headers()
             items += App().playlists.get()
         else:
-            years = App().albums.get_years()
+            (years, unknown) = App().albums.get_years()
             items = [(year, str(year)) for year in sorted(years)]
-            items.insert(0, (Type.NONE, _("Unknown")))
+            if unknown:
+                items.insert(0, (Type.NONE, _("Unknown")))
         if update:
             self.__list_two.update_values(items)
         else:
@@ -642,11 +643,11 @@ class Container(Gtk.Overlay):
             Get album view for decades
         """
         def load():
-            years = sorted(App().albums.get_years())
+            (years, unknown) = App().albums.get_years()
             decades = []
             decade = []
             current_d = None
-            for year in years:
+            for year in sorted(years):
                 d = year // 10
                 if current_d is not None and current_d != d:
                     current_d = d
@@ -676,6 +677,7 @@ class Container(Gtk.Overlay):
         def load():
             items = []
             for year in years:
+                items += App().albums.get_compilations_for_year(year)
                 items += App().albums.get_albums_for_year(year)
             return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]

@@ -112,6 +112,9 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         album_ids = []
         for year in self.__decade:
             album_ids += App().albums.get_albums_for_year(year, 4)
+            l = len(album_ids)
+            if l < 4:
+                album_ids += App().albums.get_compilations_for_year(year, l)
         if len(album_ids) >= 4:
             album_ids = sample(album_ids, 4)
         while album_ids:
