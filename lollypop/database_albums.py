@@ -750,7 +750,7 @@ class AlbumsDatabase:
             order = " ORDER BY albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         elif orderby == OrderBy.YEAR:
-            order = " ORDER BY albums.year,\
+            order = " ORDER BY albums.year DESC,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         else:
