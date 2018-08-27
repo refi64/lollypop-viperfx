@@ -958,7 +958,7 @@ class AlbumsDatabase:
         with SqlCursor(App().db) as sql:
             if limit != -1:
                 result = sql.execute("SELECT albums.rowid\
-                                      FROM albums\
+                                      FROM albums, album_artists\
                                       WHERE album_artists.artist_id=?\
                                       AND album_artists.album_id=albums.rowid\
                                       AND albums.year=? LIMIT ?",
