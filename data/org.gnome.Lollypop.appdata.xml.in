@@ -44,7 +44,7 @@
       <image type="source" width="1920" height="1053">https://adishatz.org/lollypop.jpg</image>
     </screenshot>
   </screenshots>
-  <url type="homepage">https://gnumdk.github.io/lollypop-web/</url>
+  <url type="homepage">https://wiki.gnome.org/Apps/Lollypop</url>
   <url type="bugtracker">https://gitlab.gnome.org/gnumdk/lollypop/issues</url>
   <url type="donation">https://www.paypal.me/lollypopgnome</url>
   <url type="translate">https://hosted.weblate.org/projects/gnumdk/</url>
