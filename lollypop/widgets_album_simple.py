@@ -281,7 +281,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
 
     def __on_button_press(self, eventbox, event):
         """
-            Store pressed button
+            Handle album mouse click
             @param eventbox as Gtk.EventBox
             @param event as Gdk.EventButton
         """
