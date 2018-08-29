@@ -279,12 +279,7 @@ class AlbumArt(BaseArt, TagReader):
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 bytes.unref()
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                    stream,
-                    ArtSize.MONSTER,
-                    ArtSize.MONSTER,
-                    True,
-                    None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
                 stream.close()
                 pixbuf.savev(store_path, "jpeg", ["quality"],
                              [str(App().settings.get_value(
