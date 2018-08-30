@@ -78,18 +78,6 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
-    def stop(self):
-        pass
-
-    def update_cover(self):
-        pass
-
-    def update_state(self):
-        pass
-
-    def update_playing_indicator(self):
-        pass
-
 #######################
 # PROTECTED           #
 #######################

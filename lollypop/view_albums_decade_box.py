@@ -52,17 +52,6 @@ class AlbumsDecadeBoxView(LazyLoadingView):
         """
         GLib.idle_add(self.__add_decade, decades)
 
-    @property
-    def children(self):
-        """
-            Return view children
-            @return [AlbumWidget]
-        """
-        children = []
-        for child in self._box.get_children():
-            children.append(child)
-        return children
-
 #######################
 # PROTECTED           #
 #######################
