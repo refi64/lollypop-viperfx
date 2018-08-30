@@ -425,11 +425,6 @@ class InfoController:
                 App().player.current_track.album_artists[0],
                 width,
                 self.get_scale_factor())
-        elif App().player.current_track.id == Type.EXTERNALS:
-            artwork = App().art.get_album_artwork2(
-                App().player.current_track.uri,
-                width,
-                self.get_scale_factor())
         elif App().player.current_track.id is not None:
             artwork = App().art.get_album_artwork(
                 App().player.current_track.album,

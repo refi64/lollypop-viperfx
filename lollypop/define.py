@@ -104,7 +104,7 @@ class Type:
     NEVER = -6
     PLAYLISTS = -7
     RADIOS = -8
-    EXTERNALS = -9
+    UNUSED_FIXME = -9
     SEARCH = -10
     NOPARTY = -11
     YEARS = -12

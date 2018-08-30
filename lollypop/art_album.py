@@ -228,23 +228,6 @@ class AlbumArt(BaseArt, TagReader):
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)
             return self.get_default_icon("folder-music-symbolic", size, scale)
 
-    def get_album_artwork2(self, uri, size, scale):
-        """
-            Return a cairo surface with borders for uri
-            No cache usage
-            @param uri as string
-            @param size as int
-            @param scale as int
-            @return cairo surface
-        """
-        size *= scale
-        pixbuf = self.pixbuf_from_tags(uri, size)
-        if pixbuf is not None:
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-            return surface
-        else:
-            return self.get_default_icon("folder-music-symbolic", size, scale)
-
     def save_album_artwork(self, data, album_id):
         """
             Save data for album id
