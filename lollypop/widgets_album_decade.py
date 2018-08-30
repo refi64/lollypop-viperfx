@@ -14,6 +14,7 @@ from gi.repository import GLib, Gdk, Gtk, Pango
 
 import cairo
 from math import pi
+from random import sample
 
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize
@@ -111,8 +112,9 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
             if l < self.__ALBUMS_COUNT:
                 album_ids += App().albums.get_compilations_for_year(
                                                        year,
-                                                       self.__ALBUMS_COUNT - l)
+                                                       self.__ALBUMS_COUNT)
         x = 0
+        album_ids = sample(album_ids, self.__ALBUMS_COUNT)
         while album_ids:
             album_id = album_ids.pop(0)
             surface = App().art.get_album_artwork(Album(album_id),
