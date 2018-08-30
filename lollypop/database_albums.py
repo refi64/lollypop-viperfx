@@ -923,7 +923,8 @@ class AlbumsDatabase:
             if limit != -1:
                 result = sql.execute("SELECT albums.rowid\
                                       FROM albums\
-                                      WHERE albums.year=? LIMIT ?",
+                                      WHERE albums.year=?\
+                                      ORDER BY random() LIMIT ?",
                                      (year, limit))
             else:
                 order = " ORDER BY artists.sortname\

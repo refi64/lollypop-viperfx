@@ -12,10 +12,10 @@
 
 from gi.repository import GLib, Gdk, Gtk, Pango
 
-from random import sample
 import cairo
 from math import pi
 
+from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize
 from lollypop.objects import Album
 
@@ -25,6 +25,8 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         Decade widget showing cover for 5 albums
     """
 
+    __ALBUMS_COUNT = 9
+
     def __init__(self, decade):
         """
             Init widget
@@ -33,6 +35,7 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
         self.__decade = decade
+        self.__cover_size = App().settings.get_value("cover-size").get_int32()
         self.set_size_request(ArtSize.YEAR, ArtSize.YEAR)
 
     def populate(self):
@@ -54,10 +57,13 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
                                 "</b>")
         self.__widget.set_property("has-tooltip", True)
         self.__widget.add(grid)
-        self.__cover = Gtk.Image.new_from_surface(self.__get_surface())
-        self.__cover.set_size_request(ArtSize.YEAR, ArtSize.YEAR)
-        self.__cover.show()
-        grid.add(self.__cover)
+        cover = Gtk.Image.new()
+        task_helper = TaskHelper()
+        task_helper.run(self.__get_surface,
+                        callback=(cover.set_from_surface,))
+        cover.set_size_request(ArtSize.YEAR, ArtSize.YEAR)
+        cover.show()
+        grid.add(cover)
         grid.add(decade_label)
         self.add(self.__widget)
         self.__widget.set_property("halign", Gtk.Align.CENTER)
@@ -111,24 +117,28 @@ class AlbumDecadeWidget(Gtk.FlowBoxChild):
         ctx.scale(0.5, 0.5)
         album_ids = []
         for year in self.__decade:
-            album_ids += App().albums.get_albums_for_year(year, 4)
+            album_ids += App().albums.get_albums_for_year(year,
+                                                          self.__ALBUMS_COUNT)
             l = len(album_ids)
-            if l < 4:
-                album_ids += App().albums.get_compilations_for_year(year, l)
-        if len(album_ids) >= 4:
-            album_ids = sample(album_ids, 4)
+            if l < self.__ALBUMS_COUNT:
+                album_ids += App().albums.get_compilations_for_year(
+                                                       year,
+                                                       self.__ALBUMS_COUNT - l)
+        x = 0
         while album_ids:
             album_id = album_ids.pop(0)
             surface = App().art.get_album_artwork(Album(album_id),
-                                                  ArtSize.YEAR,
+                                                  self.__cover_size,
                                                   self.get_scale_factor())
             if surface is not None:
                 ctx.set_source_surface(surface, 0, 0)
                 ctx.paint()
-            if len(album_ids) in [3, 1]:
-                ctx.translate(ArtSize.YEAR, 0)
-            elif len(album_ids) == 2:
-                ctx.translate(-ArtSize.YEAR, ArtSize.YEAR)
+            if x < ArtSize.YEAR:
+                x += self.__cover_size
+                ctx.translate(self.__cover_size, 0)
+            else:
+                ctx.translate(-x, self.__cover_size)
+                x = 0
         return cover
 
     def __on_eventbox_button_press_event(self, eventbox, event):
