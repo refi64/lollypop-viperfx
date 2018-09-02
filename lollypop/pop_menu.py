@@ -473,15 +473,11 @@ class TrackMenuPopover(Gtk.Popover):
         hgrid.get_style_context().add_class("popover-rating-loved-grid")
         rating = RatingWidget(track)
         rating.set_property("halign", Gtk.Align.START)
-        rating.set_property("hexpand", True)
+        rating.set_margin_end(10)
         rating.show()
 
         loved = LovedWidget(track)
-        loved.set_margin_end(5)
-        if track_year == "":
-            loved.set_property("halign", Gtk.Align.END)
-        else:
-            loved.set_property("halign", Gtk.Align.CENTER)
+        loved.set_property("halign", Gtk.Align.START)
         loved.set_property("hexpand", True)
         loved.show()
 
