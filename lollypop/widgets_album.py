@@ -19,7 +19,7 @@ from lollypop.define import Shuffle, Loading
 from lollypop.pop_artwork import CoversPopover
 
 
-class BaseWidget:
+class AlbumBaseWidget:
     """
         Base album widget
     """
@@ -307,7 +307,7 @@ class BaseWidget:
             self._show_overlay_func(True)
 
 
-class AlbumWidget(BaseWidget):
+class AlbumWidget(AlbumBaseWidget):
     """
         Album widget
     """
@@ -316,7 +316,7 @@ class AlbumWidget(BaseWidget):
         """
             Init Album widget
         """
-        BaseWidget.__init__(self)
+        AlbumBaseWidget.__init__(self)
         self._album = album
         self._art_size = art_size
         self.connect("destroy", self.__on_destroy)

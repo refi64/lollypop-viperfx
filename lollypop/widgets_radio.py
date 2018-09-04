@@ -16,11 +16,11 @@ from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
-from lollypop.widgets_album import BaseWidget
+from lollypop.widgets_album import AlbumBaseWidget
 from lollypop.pop_radio import RadioPopover
 
 
-class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
+class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
     """
         Widget with radio cover and title
     """
@@ -35,7 +35,7 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             @param radios_manager as RadiosManager
         """
         Gtk.FlowBoxChild.__init__(self)
-        BaseWidget.__init__(self)
+        AlbumBaseWidget.__init__(self)
         self.get_style_context().add_class("loading")
         self.__name = name
         self.__radios_manager = radios_manager
@@ -208,9 +208,9 @@ class RadioWidget(Gtk.FlowBoxChild, BaseWidget):
             self.__overlay.add_overlay(self._play_event)
             self.__overlay.add_overlay(self._artwork_event)
             self.__overlay.show_all()
-            BaseWidget._show_overlay_func(self, True)
+            AlbumBaseWidget._show_overlay_func(self, True)
         else:
-            BaseWidget._show_overlay_func(self, False)
+            AlbumBaseWidget._show_overlay_func(self, False)
             self._play_event.destroy()
             self._play_event = None
             self._play_button.destroy()
