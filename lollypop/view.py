@@ -172,8 +172,6 @@ class View(Gtk.Grid):
             Remove signals on unamp
             @param widget as Gtk.Widget
         """
-        if self.__duration_signal is not None:
-            App().player.disconnect(self.__duration_signal)
         if self.__current_signal is not None:
             App().player.disconnect(self.__current_signal)
             self.__current_signal = None
