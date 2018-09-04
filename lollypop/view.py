@@ -33,8 +33,6 @@ class View(Gtk.Grid):
         player = App().player
         self.__current_signal = player.connect("current-changed",
                                                self._on_current_changed)
-        self.__duration_signal = player.connect("duration-changed",
-                                                self._on_duration_changed)
         self.__cover_signal = App().art.connect("album-artwork-changed",
                                                 self.__on_cover_changed)
 
@@ -161,14 +159,6 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self.__update_widgets, self.children)
 
-    def _on_duration_changed(self, player, track_id):
-        """
-            Update duration for current track
-            @param player as Player
-            @param track id as int
-        """
-        GLib.idle_add(self.__update_duration, self.children, track_id)
-
     def _on_search_changed(self, entry):
         """
             Update filter
@@ -204,16 +194,6 @@ class View(Gtk.Grid):
             widget.update_state()
             widget.update_playing_indicator()
             GLib.idle_add(self.__update_widgets, widgets)
-
-    def __update_duration(self, widgets, track_id):
-        """
-            Update duration on all widgets
-            @param widgets as AlbumWidget/PlaylistWidget
-        """
-        if widgets:
-            widget = widgets.pop(0)
-            widget.update_duration(track_id)
-            GLib.idle_add(self.__update_duration, widgets, track_id)
 
     def __on_button_clicked(self, widget):
         """

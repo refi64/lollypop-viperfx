@@ -144,7 +144,6 @@ class ProgressController:
         self.__timeout_id = None
         # Show volume control
         self.__show_volume_control = False
-        App().player.connect("duration-changed", self.__on_duration_changed)
 
     def show_hide_volume_control(self):
         """
@@ -341,16 +340,6 @@ class ProgressController:
 #######################
 # PRIVATE             #
 #######################
-    def __on_duration_changed(self, player, track_id):
-        """
-            Update duration
-            @param player as Player
-            @param track id as int
-        """
-        if track_id == player.current_track.id:
-            self._progress.set_range(0.0, player.current_track.duration)
-            self._total_time_label.set_text(
-                seconds_to_string(player.current_track.duration))
 
 
 class InfoController:
