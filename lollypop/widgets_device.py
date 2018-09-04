@@ -22,11 +22,12 @@ from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
+from lollypop.widgets_base import BaseWidget
 
 
 # FIXME This class should not inherit MtpSync
 # TODO Rework MtpSync code
-class DeviceManagerWidget(Gtk.Bin, MtpSync):
+class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
     """
         Widget for synchronize mtp devices
     """
@@ -176,12 +177,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Cancel synchronisation
         """
         self._syncing = False
-
-    def show_overlay(self, bool):
-        """
-            No overlay here now
-        """
-        pass
 
 #######################
 # PROTECTED           #

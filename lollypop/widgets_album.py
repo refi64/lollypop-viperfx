@@ -17,9 +17,10 @@ from gettext import gettext as _
 from lollypop.define import App, ArtSize
 from lollypop.define import Shuffle, Loading
 from lollypop.pop_artwork import CoversPopover
+from lollypop.widgets_base import BaseWidget
 
 
-class AlbumBaseWidget:
+class AlbumBaseWidget(BaseWidget):
     """
         Base album widget
     """
@@ -41,19 +42,6 @@ class AlbumBaseWidget:
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
-
-    def update_playing_indicator(self):
-        """
-            Update playing indicator
-        """
-        pass
-
-    def update_duration(self, track_id):
-        """
-            Update duration for current track
-            @param track id as int
-        """
-        pass
 
     def stop(self):
         """
@@ -360,11 +348,11 @@ class AlbumWidget(AlbumBaseWidget):
         else:
             self._overlay_orientation = Gtk.Orientation.HORIZONTAL
 
-    def update_cover(self):
+    def update_cover(self, album_id):
         """
             Update cover for current album
         """
-        if self._cover is None:
+        if self._cover is None or album_id != self._album.id:
             return
         surface = App().art.get_album_artwork(
             self._album,

@@ -133,14 +133,6 @@ class Row(Gtk.ListBoxRow):
             else:
                 self._indicator.empty()
 
-    def update_duration(self):
-        """
-            Update duration for row
-        """
-        # Get a new track to get new duration (cache)
-        track = Track(self._track.id)
-        self._duration_label.set_text(seconds_to_string(track.duration))
-
     def update_num_label(self):
         """
             Update position label for row
@@ -725,15 +717,6 @@ class TracksWidget(Gtk.ListBox):
         for row in self.get_children():
             row.set_indicator(row.track.id == track_id,
                               Track(row.track.id).loved)
-
-    def update_duration(self, track_id):
-        """
-            Update playing track
-            @param track id as int
-        """
-        for row in self.get_children():
-            if row.id == track_id:
-                row.update_duration()
 
     def show_spinner(self, track_id):
         """

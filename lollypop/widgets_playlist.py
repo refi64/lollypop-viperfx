@@ -19,9 +19,10 @@ from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track, Album, Disc
 from lollypop.helper_task import TaskHelper
+from lollypop.widgets_base import BaseWidget
 
 
-class PlaylistsWidget(Gtk.Grid):
+class PlaylistsWidget(Gtk.Grid, BaseWidget):
     """
         Show playlist tracks/albums
     """
@@ -82,24 +83,6 @@ class PlaylistsWidget(Gtk.Grid):
         self.__tracks_widget_left.set_filter_func(func)
         self.__tracks_widget_right.set_filter_func(func)
 
-    def show_overlay(self, bool):
-        """
-            No overlay here now
-        """
-        pass
-
-    def update_state(self):
-        """
-            No state to update
-        """
-        pass
-
-    def update_cover(self):
-        """
-            No update cover for now
-        """
-        pass
-
     def update_allocation(self):
         """
             Update widget allocation
@@ -159,15 +142,6 @@ class PlaylistsWidget(Gtk.Grid):
         track_id = App().player.current_track.id
         self.__tracks_widget_left.update_playing(track_id)
         self.__tracks_widget_right.update_playing(track_id)
-
-    # FIXME track_id needed? See update_playing_indicator()
-    def update_duration(self, track_id):
-        """
-            Update duration for current track
-            @param track id as int
-        """
-        self.__tracks_widget_left.update_duration(track_id)
-        self.__tracks_widget_right.update_duration(track_id)
 
     def stop(self):
         """

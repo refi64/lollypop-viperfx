@@ -81,15 +81,6 @@ class TracksView:
         except Exception as e:
             Logger.error("TrackView::update_playing_indicator(): %s" % e)
 
-    def update_duration(self, track_id):
-        """
-            Update duration for current track
-            @param track id as int
-        """
-        for disc in self._album.discs:
-            self._tracks_widget_left[disc.number].update_duration(track_id)
-            self._tracks_widget_right[disc.number].update_duration(track_id)
-
     def populate(self):
         """
             Populate tracks
