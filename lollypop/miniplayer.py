@@ -83,7 +83,6 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         ProgressController.do_destroy(self)
         App().player.disconnect(self.__signal_id1)
         App().player.disconnect(self.__signal_id2)
-        Gtk.Bin.do_destroy(self)
 
 #######################
 # PROTECTED           #

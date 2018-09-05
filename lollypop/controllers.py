@@ -187,12 +187,33 @@ class ProgressController:
         if player.is_playing:
             if self.__timeout_id is None:
                 self.__timeout_id = GLib.timeout_add(1000,
-                                                     self._update_position)
+                                                     self.update_position)
         else:
-            self._update_position()
+            self.update_position()
             if self.__timeout_id is not None:
                 GLib.source_remove(self.__timeout_id)
                 self.__timeout_id = None
+
+    def update_position(self, value=None):
+        """
+            Update progress bar position
+            @param value as int
+        """
+        if self.__show_volume_control:
+            # We need this to allow crossfade while volume is shown
+            App().player.position
+            if value is None:
+                value = App().player.volume
+            self._progress.set_value(value)
+            volume = str(int(value * 100)) + " %"
+            self._total_time_label.set_text(volume)
+        elif not self.__seeking:
+            if value is None and App().player.get_status() != Gst.State.PAUSED:
+                value = App().player.position / Gst.SECOND
+            if value is not None:
+                self._progress.set_value(value)
+                self._timelabel.set_text(seconds_to_string(value))
+        return True
 
     def do_destroy(self):
         """
@@ -315,27 +336,6 @@ class ProgressController:
                     seek = App().player.current_track.duration - 2
                 App().player.seek(seek)
                 self._update_position(seek)
-
-    def _update_position(self, value=None):
-        """
-            Update progress bar position
-            @param value as int
-        """
-        if self.__show_volume_control:
-            # We need this to allow crossfade while volume is shown
-            App().player.position
-            if value is None:
-                value = App().player.volume
-            self._progress.set_value(value)
-            volume = str(int(value * 100)) + " %"
-            self._total_time_label.set_text(volume)
-        elif not self.__seeking:
-            if value is None and App().player.get_status() != Gst.State.PAUSED:
-                value = App().player.position / Gst.SECOND
-            if value is not None:
-                self._progress.set_value(value)
-                self._timelabel.set_text(seconds_to_string(value))
-        return True
 
 #######################
 # PRIVATE             #
