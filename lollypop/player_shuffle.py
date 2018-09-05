@@ -114,7 +114,6 @@ class ShufflePlayer(BasePlayer):
                 self._plugins2.rgvolume.props.album_mode = 1
 
         if party:
-            self._external_tracks = []
             self.set_party_ids()
             # Start a new song if not playing
             if (self._current_track.id in [None, Type.RADIOS])\
