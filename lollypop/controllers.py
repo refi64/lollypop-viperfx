@@ -245,7 +245,7 @@ class ProgressController:
             self._progress.set_range(0.0, 1.0)
             self.__show_volume_control = True
             self._progress.set_sensitive(True)
-            self._update_position()
+            self.update_position()
         else:
             ProgressController.on_current_changed(self, App().player)
             if App().player.current_track.id is None:
@@ -254,7 +254,7 @@ class ProgressController:
                 self._progress.set_range(0.0, 0.0)
                 self._progress.set_sensitive(False)
             else:
-                self._update_position()
+                self.update_position()
 
     def _on_value_changed(self, scale):
         """
@@ -263,7 +263,7 @@ class ProgressController:
         if not self.__show_volume_control:
             return
         App().player.set_volume(scale.get_value())
-        self._update_position(scale.get_value())
+        self.update_position(scale.get_value())
 
     def _on_title_press_button(self, widget, event):
         """
@@ -302,7 +302,7 @@ class ProgressController:
         value = scale.get_value()
         App().player.seek(value)
         self.__seeking = False
-        self._update_position(value)
+        self.update_position(value)
 
     def _on_scroll_event(self, scale, event):
         """
@@ -323,7 +323,7 @@ class ProgressController:
                 elif volume > 1:
                     volume = 1.0
                 App().player.set_volume(volume)
-                self._update_position(volume)
+                self.update_position(volume)
             elif App().player.is_playing:
                 position = App().player.position
                 if y > 0:
@@ -335,7 +335,7 @@ class ProgressController:
                 if seek > App().player.current_track.duration:
                     seek = App().player.current_track.duration - 2
                 App().player.seek(seek)
-                self._update_position(seek)
+                self.update_position(seek)
 
 #######################
 # PRIVATE             #
