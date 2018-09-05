@@ -205,8 +205,9 @@ class ArtistView(ArtistAlbumsView):
                 if add and album_id not in player_album_ids:
                     App().player.add_album(Album(album_id))
                 elif not add and album_id in player_album_ids:
-                    if len(App().player.albums) > 1:
-                        App().player.skip_album()
+                    if len(App().player.albums) > len(album_ids):
+                        if App().player.current_track.album.id == album_id:
+                            App().player.skip_album()
                     else:
                         App().player.stop()
                     App().player.remove_album_by_id(album_id)
