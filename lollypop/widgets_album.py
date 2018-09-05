@@ -139,7 +139,7 @@ class AlbumBaseWidget(BaseWidget):
                     self._squared_class)
                 self._artwork_button.show()
             if self._action_button is not None:
-                self._show_append(self._album not in App().player.albums)
+                self._show_append(self._album.id not in App().player.album_ids)
                 self._action_button.set_opacity(opacity)
                 self._action_button.get_style_context().add_class(
                     self._squared_class)

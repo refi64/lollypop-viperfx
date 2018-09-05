@@ -459,6 +459,14 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         return self._albums
 
+    @property
+    def album_ids(self):
+        """
+            Return albums ids
+            @return albums ids as [int]
+        """
+        return [album.id for album in self._albums]
+
 #######################
 # PROTECTED           #
 #######################
