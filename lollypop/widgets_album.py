@@ -248,8 +248,7 @@ class AlbumBaseWidget(BaseWidget):
                 # remove it and stop playback by going to next track
                 else:
                     App().player.remove_album(self._album)
-                    App().player.set_next()
-                    App().player.next()
+                    App().player.stop()
             else:
                 App().player.remove_album(self._album)
             self._show_append(True)

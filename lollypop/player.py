@@ -46,6 +46,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self.update_crossfading()
         self.__do_not_update_next = False
         App().settings.connect("changed::playback", self.__on_playback_changed)
+        self._albums_backup = []
 
     def prev(self):
         """
