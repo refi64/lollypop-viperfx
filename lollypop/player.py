@@ -135,9 +135,27 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             if not self.is_party or self._next_track.album_id == album.id:
                 self.set_next()
             self.set_prev()
-            self.emit("album-added", album.id)
+            self.emit("album-removed", album.id)
         except Exception as e:
             Logger.error("Player::remove_album(): %s" % e)
+
+    def remove_album_by_id(self, album_id):
+        """
+            Remove album id from albums
+            @param album_id as int
+        """
+        try:
+            idx = self.album_ids.index(album_id)
+            album = self._albums[idx]
+            self._albums.remove(album)
+            if album in self._albums_backup:
+                self._albums_backup.remove(album)
+            if not self.is_party or self._next_track.album_id == album.id:
+                self.set_next()
+            self.set_prev()
+            self.emit("album-removed", album.id)
+        except Exception as e:
+            Logger.error("Player::remove_album_by_id(): %s" % e)
 
     def play_album(self, album):
         """

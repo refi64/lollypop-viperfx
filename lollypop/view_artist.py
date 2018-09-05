@@ -198,15 +198,18 @@ class ArtistView(ArtistAlbumsView):
         """
         try:
             album_ids = App().albums.get_ids(self._artist_ids, self._genre_ids)
-            player_ids = [album.id for album in App().player.albums]
+            player_album_ids = App().player.album_ids
             icon_name = self.__add_button.get_image().get_icon_name()[0]
             add = icon_name == "list-add-symbolic"
             for album_id in album_ids:
-                in_player = album_id in player_ids
-                if add and not in_player:
+                if add and album_id not in player_album_ids:
                     App().player.add_album(Album(album_id))
-                elif not add and in_player:
-                    App().player.remove_album(Album(album_id))
+                elif not add and album_id in player_album_ids:
+                    if len(App().player.albums) > 1:
+                        App().player.skip_album()
+                    else:
+                        App().player.stop()
+                    App().player.remove_album_by_id(album_id)
             self.__update_icon(not add)
         except:
             pass  # Artist not available anymore for this context
@@ -402,7 +405,7 @@ class ArtistView(ArtistAlbumsView):
             @param album_id as int
         """
         albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
-        album_ids = [album.id for album in App().player.albums]
+        album_ids = App().player.album_ids
         self.__update_icon(len(set(albums) & set(album_ids)) != len(albums))
 
     def __on_lock_changed(self, player):

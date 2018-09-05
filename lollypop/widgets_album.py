@@ -239,18 +239,18 @@ class AlbumBaseWidget(BaseWidget):
         """
         if App().player.locked:
             return True
-        if self._album in App().player.albums:
+        if self._album.id in App().player.album_ids:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(App().player.albums) > 1:
                     App().player.skip_album()
-                    App().player.remove_album(self._album)
+                    App().player.remove_album_by_id(self._album.id)
                 # remove it and stop playback by going to next track
                 else:
-                    App().player.remove_album(self._album)
+                    App().player.remove_album_by_id(self._album.id)
                     App().player.stop()
             else:
-                App().player.remove_album(self._album)
+                App().player.remove_album_by_id(self._album.id)
             self._show_append(True)
         else:
             if App().player.is_playing and not App().player.albums:
