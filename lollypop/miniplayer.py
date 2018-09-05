@@ -50,8 +50,8 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
                                                  self.__on_status_changed)
         self.__on_current_changed(App().player)
         if App().player.current_track.id is not None:
-            self._update_position()
-            self.__on_status_changed(App().player)
+            self.update_position()
+            ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
 
     def update_cover(self, width):
@@ -80,10 +80,10 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
             Remove signal
         """
-        Gtk.Bin.do_destroy(self)
         ProgressController.do_destroy(self)
         App().player.disconnect(self.__signal_id1)
         App().player.disconnect(self.__signal_id2)
+        Gtk.Bin.do_destroy(self)
 
 #######################
 # PROTECTED           #
