@@ -19,9 +19,10 @@ from lollypop.view import LazyLoadingView
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
+from lollypop.widgets_base import BaseWidget
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksView):
+class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
     """
         Album row
     """
@@ -205,7 +206,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             Update cover for current album
             @param album_id as int
         """
-        if self._cover is None or album_id != self._album.id:
+        if self.__cover is None or album_id != self._album.id:
             return
         surface = App().art.get_album_artwork(
             self._album,
