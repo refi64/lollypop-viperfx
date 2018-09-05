@@ -311,20 +311,6 @@ class AlbumWidget(AlbumBaseWidget):
         self._scan_signal = App().scanner.connect("album-updated",
                                                   self._on_album_updated)
 
-    @property
-    def album(self):
-        """
-            @return Album
-        """
-        return self._album
-
-    @property
-    def filter(self):
-        """
-            @return str
-        """
-        return " ".join([self._album.name] + self._album.artists)
-
     def get_cover(self):
         """
             Get album cover
@@ -377,6 +363,20 @@ class AlbumWidget(AlbumBaseWidget):
             style_context.add_class("cover-frame-selected")
         else:
             style_context.remove_class("cover-frame-selected")
+
+    @property
+    def album(self):
+        """
+            @return Album
+        """
+        return self._album
+
+    @property
+    def filter(self):
+        """
+            @return str
+        """
+        return " ".join([self._album.name] + self._album.artists)
 
 #######################
 # PROTECTED           #

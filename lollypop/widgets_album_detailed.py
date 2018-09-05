@@ -174,6 +174,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         for widget in self._tracks_widget_right.values():
             widget.set_filter_func(func)
 
+    def update_playing_indicator(self):
+        """
+            Update playing indicator
+        """
+        TracksView.update_playing_indicator(self)
+
     def hide_header_labels(self):
         """
             Hide header labels
