@@ -390,7 +390,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.set_next()
             # We send this signal to update next popover
             self.emit("queue-changed")
-        elif self._current_track.id is not None:
+        elif self._current_track.id is not None and\
+                self._current_track.album in self._albums:
             pos = self._albums.index(self._current_track.album)
             if pos + 1 >= len(self._albums):
                 next_album = self._albums[0]
