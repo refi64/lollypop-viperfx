@@ -351,6 +351,7 @@ class AlbumWidget(AlbumBaseWidget):
     def update_cover(self, album_id):
         """
             Update cover for current album
+            @param album_id as int
         """
         if self._cover is None or album_id != self._album.id:
             return

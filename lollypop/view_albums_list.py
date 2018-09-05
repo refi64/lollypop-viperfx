@@ -200,11 +200,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         if self.__revealer.get_reveal_child():
             TracksView.update_playing_indicator(self)
 
-    def update_cover(self):
+    def update_cover(self, album_id):
         """
             Update cover for current album
+            @param album_id as int
         """
-        if self.__cover is None:
+        if self._cover is None or album_id != self._album.id:
             return
         surface = App().art.get_album_artwork(
             self._album,
