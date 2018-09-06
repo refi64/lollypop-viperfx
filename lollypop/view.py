@@ -185,7 +185,7 @@ class View(Gtk.Grid):
     def __update_widgets(self, widgets):
         """
             Update all widgets
-            @param widgets as AlbumWidget/PlaylistWidget
+            @param widgets as BaseWidget
         """
         if widgets:
             widget = widgets.pop(0)
