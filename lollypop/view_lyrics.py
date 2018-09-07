@@ -16,12 +16,12 @@ from gettext import gettext as _
 
 from lollypop.view import View
 from lollypop.define import App, WindowSize, Type
-from lollypop.controllers import InfoController
+from lollypop.controller_information import InformationController
 from lollypop.utils import escape
 from lollypop.helper_task import TaskHelper
 
 
-class LyricsView(View, InfoController):
+class LyricsView(View, InformationController):
     """
         Show lyrics for track
     """
@@ -31,7 +31,7 @@ class LyricsView(View, InfoController):
             Init view
         """
         View.__init__(self)
-        InfoController.__init__(self, False)
+        InformationController.__init__(self, False)
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_set = False

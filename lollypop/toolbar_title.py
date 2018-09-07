@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.controllers import ProgressController
+from lollypop.controller_progress import ProgressController
 
 
 class ToolbarTitle(Gtk.Bin, ProgressController):

@@ -12,11 +12,11 @@
 
 from gi.repository import Gtk, Gdk, GLib
 
-from lollypop.controllers import InfoController
+from lollypop.controller_information import InformationController
 from lollypop.define import App, Type
 
 
-class ToolbarInfo(Gtk.Bin, InfoController):
+class ToolbarInfo(Gtk.Bin, InformationController):
     """
         Informations toolbar
     """
@@ -26,7 +26,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        InfoController.__init__(self)
+        InformationController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)
@@ -91,7 +91,7 @@ class ToolbarInfo(Gtk.Bin, InfoController):
             Update widgets
             player as Player
         """
-        InfoController.on_current_changed(self, self.artsize, None)
+        InformationController.on_current_changed(self, self.artsize, None)
 
 #######################
 # PROTECTED           #

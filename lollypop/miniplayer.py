@@ -12,11 +12,12 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.controllers import InfoController, ProgressController
+from lollypop.controller_information import InformationController
+from lollypop.controller_progress import ProgressController
 from lollypop.define import App, WindowSize
 
 
-class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
+class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
     """
         Toolbar end
     """
@@ -28,7 +29,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
         self.__width = width
         Gtk.Bin.__init__(self)
-        InfoController.__init__(self)
+        InformationController.__init__(self)
         ProgressController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
@@ -60,7 +61,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
             @param width as int
         """
         self.__width = width
-        InfoController.on_current_changed(self, width, None)
+        InformationController.on_current_changed(self, width, None)
 
     def do_get_preferred_width(self):
         """
@@ -124,7 +125,7 @@ class MiniPlayer(Gtk.Bin, InfoController, ProgressController):
         """
         if App().player.current_track.id is not None:
             self.show()
-        InfoController.on_current_changed(self, self.__width, None)
+        InformationController.on_current_changed(self, self.__width, None)
         ProgressController.on_current_changed(self, player)
 
     def __on_status_changed(self, player):
