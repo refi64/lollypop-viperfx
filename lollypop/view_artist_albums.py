@@ -37,6 +37,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         """
         LazyLoadingView.__init__(self, True)
         ViewController.__init__(self)
+        self.__current_loading_widget = None
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self.__art_size = art_size
@@ -93,18 +94,27 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             @param widgets as [AlbumSimpleWidgets]
             @param scroll_value as float
         """
-        widget = None
+        self.__current_loading_widget = None
         if self._lazy_queue is None or self._scroll_value != scroll_value:
             return
         if widgets:
-            widget = widgets.pop(0)
-            self._lazy_queue.remove(widget)
+            self.__current_loading_widget = widgets.pop(0)
+            self._lazy_queue.remove(self.__current_loading_widget)
         elif self._lazy_queue:
-            widget = self._lazy_queue.pop(0)
-        if widget is not None:
-            widget.connect("populated", self._on_populated,
-                           widgets, scroll_value)
-            widget.populate()
+            self.__current_loading_widget = self._lazy_queue.pop(0)
+        if self.__current_loading_widget is not None:
+            self.__current_loading_widget.connect("populated",
+                                                  self._on_populated,
+                                                  widgets,
+                                                  scroll_value)
+            self.__current_loading_widget.populate()
+
+    def stop(self):
+        """
+            Stop current loading widget
+        """
+        if self.__current_loading_widget is not None:
+            self.__current_loading_widget.stop()
 
     def jump_to_current(self):
         """
@@ -169,9 +179,11 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             @param widgets as pending AlbumDetailedWidgets
             @param scroll value as float
         """
+        if self._lazy_queue is None:
+            return
         if not widget.is_populated():
             widget.populate()
-        elif self._lazy_queue is not None:
+        else:
             GLib.idle_add(self.lazy_loading, widgets, scroll_value)
 
 #######################
