@@ -173,7 +173,8 @@ class AlbumBaseWidget:
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
-        self._artwork.set_opacity(0.9)
+        if self._artwork is not None:
+            self._artwork.set_opacity(0.9)
         if self._timeout_id is None:
             self._timeout_id = GLib.timeout_add(250,
                                                 self.__on_enter_notify_timeout)
@@ -189,7 +190,8 @@ class AlbumBaseWidget:
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            self._artwork.set_opacity(1)
+            if self._artwork is not None:
+                self._artwork.set_opacity(1)
             # Remove enter notify timeout
             if self._timeout_id is not None:
                 GLib.source_remove(self._timeout_id)
