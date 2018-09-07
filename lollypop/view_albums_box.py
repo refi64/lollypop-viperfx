@@ -16,9 +16,10 @@ from lollypop.view import LazyLoadingView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.define import ArtSize
+from lollypop.controller_view import ViewController
 
 
-class AlbumsBoxView(LazyLoadingView):
+class AlbumsBoxView(LazyLoadingView, ViewController):
     """
         Show albums in a box
     """
@@ -30,12 +31,9 @@ class AlbumsBoxView(LazyLoadingView):
             @param artist ids as [int]
         """
         LazyLoadingView.__init__(self, True)
-        self.__signal = None
-        self.__current = None
-        self.__context_album_id = None
+        ViewController.__init__(self)
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
-        self.__press_rect = None
 
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
@@ -51,6 +49,8 @@ class AlbumsBoxView(LazyLoadingView):
         self._scrolled.set_property("expand", True)
 
         self.add(self._scrolled)
+        self.connect_current_changed_signal()
+        self.connect_artwork_changed_signal("album")
 
     def populate(self, albums):
         """
@@ -59,20 +59,25 @@ class AlbumsBoxView(LazyLoadingView):
         """
         GLib.idle_add(self.__add_albums, albums)
 
-    @property
-    def children(self):
-        """
-            Return view children
-            @return [AlbumWidget]
-        """
-        children = []
-        for child in self._box.get_children():
-            children.append(child)
-        return children
-
 #######################
 # PROTECTED           #
 #######################
+    def _on_current_changed(self, player):
+        """
+            Update children state
+            @param player as Player
+        """
+        for child in self._box.get_children():
+            child.set_selection()
+
+    def _on_artwork_changed(self, artwork, album_id):
+        """
+            Update children artwork if matching album id
+            @param artwork as Artwork
+            @param album_id as int
+        """
+        for child in self._box.get_children():
+            child.set_artwork(album_id)
 
 #######################
 # PRIVATE             #
@@ -83,8 +88,7 @@ class AlbumsBoxView(LazyLoadingView):
             Start lazy loading
             @param [album ids as int]
         """
-        if self._stop:
-            self._stop = False
+        if self._lazy_queue is None:
             return
         if albums:
             widget = AlbumSimpleWidget(albums.pop(0),
@@ -114,8 +118,8 @@ class AlbumsBoxView(LazyLoadingView):
         if not album_widget.is_overlay:
             album_widget.show_overlay(True)
             return
-        cover = album_widget.get_cover()
-        if cover is None:
+        artwork = album_widget.get_artwork()
+        if artwork is None:
             return
         # If widget top not on screen, popover will fail to show
         # FIXME: Report a bug and check always true
@@ -139,14 +143,13 @@ class AlbumsBoxView(LazyLoadingView):
                                allocation.width,
                                height,
                                ArtSize.NONE)
-        popover.set_relative_to(cover)
+        popover.set_relative_to(artwork)
         popover.set_position(Gtk.PositionType.BOTTOM)
         album_widget.show_overlay(False)
         album_widget.lock_overlay(True)
         popover.connect("closed", self.__on_album_popover_closed, album_widget)
         popover.show()
-        self.__current = album_widget
-        cover.set_opacity(0.9)
+        artwork.set_opacity(0.9)
 
     def __on_album_popover_closed(self, popover, album_widget):
         """
@@ -155,4 +158,4 @@ class AlbumsBoxView(LazyLoadingView):
             @param album_widget as AlbumWidget
         """
         album_widget.lock_overlay(False)
-        album_widget.get_cover().set_opacity(1)
+        album_widget.get_artwork().set_opacity(1)

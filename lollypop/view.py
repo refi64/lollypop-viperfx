@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import App
-
 
 class View(Gtk.Grid):
     """
@@ -26,18 +24,9 @@ class View(Gtk.Grid):
             @param filtered as bool
         """
         Gtk.Grid.__init__(self)
-        self.connect("destroy", self._on_destroy)
         self.__overlayed = None
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        player = App().player
-        self.__current_signal = player.connect("current-changed",
-                                               self._on_current_changed)
-        self.__cover_signal = App().art.connect("album-artwork-changed",
-                                                self.__on_cover_changed)
-
-        # Stop populate thread
-        self._stop = False
         self.__new_ids = []
 
         if filtered:
@@ -74,11 +63,9 @@ class View(Gtk.Grid):
 
     def stop(self):
         """
-            Stop populating
+            Stop view loading
         """
-        self._stop = True
-        for child in self.children:
-            child.stop()
+        pass
 
     def disable_overlay(self):
         """
@@ -86,12 +73,6 @@ class View(Gtk.Grid):
         """
         if self.__overlayed is not None:
             self.__overlayed.show_overlay(False)
-
-    def update_children(self):
-        """
-            Update children
-        """
-        GLib.idle_add(self.__update_widgets, self.children)
 
     def enable_filter(self):
         """
@@ -104,9 +85,6 @@ class View(Gtk.Grid):
             if enable:
                 self.__search_entry.grab_focus()
 
-    def populate(self):
-        pass
-
     @property
     def filtered(self):
         """
@@ -114,13 +92,6 @@ class View(Gtk.Grid):
             @return bool
         """
         return self._filter is not None and self._filter != ""
-
-    @property
-    def children(self):
-        """
-            Return view children
-        """
-        return []
 
 #######################
 # PROTECTED           #
@@ -152,13 +123,6 @@ class View(Gtk.Grid):
         elif self.__overlayed == widget:
             self.__overlayed = None
 
-    def _on_current_changed(self, player):
-        """
-            Current song changed
-            @param player as Player
-        """
-        GLib.idle_add(self.__update_widgets, self.children)
-
     def _on_search_changed(self, entry):
         """
             Update filter
@@ -166,18 +130,6 @@ class View(Gtk.Grid):
         """
         self._filter = self.__search_entry.get_text()
         self._box.invalidate_filter()
-
-    def _on_destroy(self, widget):
-        """
-            Remove signals on unamp
-            @param widget as Gtk.Widget
-        """
-        if self.__current_signal is not None:
-            App().player.disconnect(self.__current_signal)
-            self.__current_signal = None
-        if self.__cover_signal is not None:
-            App().art.disconnect(self.__cover_signal)
-            self.__cover_signal = None
 
 #######################
 # PRIVATE             #
@@ -229,15 +181,6 @@ class View(Gtk.Grid):
            event.y >= allocation.height:
             self.disable_overlay()
 
-    def __on_cover_changed(self, art, album_id):
-        """
-            Update album cover in view
-            @param art as Art
-            @param album id as int
-        """
-        for widget in self.children:
-            widget.update_cover(album_id)
-
 
 class LazyLoadingView(View):
     """
@@ -260,7 +203,7 @@ class LazyLoadingView(View):
         """
             Stop loading
         """
-        self._lazy_queue = []
+        self._lazy_queue = None
         View.stop(self)
 
     def lazy_loading(self, widgets=[], scroll_value=0):
@@ -295,7 +238,7 @@ class LazyLoadingView(View):
             @param scroll_value as float
         """
         widget = None
-        if self._stop or self._scroll_value != scroll_value:
+        if self._lazy_queue is None or self._scroll_value != scroll_value:
             return False
         if widgets:
             widget = widgets.pop(0)
@@ -331,11 +274,11 @@ class LazyLoadingView(View):
         """
         self._scroll_value = scroll_value
         widgets = []
+        if self._lazy_queue is None:
+            return
         for child in self._lazy_queue:
-            if self._stop or self._scroll_value != scroll_value:
-                return
             if self.__is_visible(child):
                 widgets.append(child)
-        if self._stop or self._scroll_value != scroll_value:
+        if self._scroll_value != scroll_value:
             return
         GLib.idle_add(self.lazy_loading, widgets, self._scroll_value)

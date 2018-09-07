@@ -67,7 +67,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         self.__context_button = builder.get_object("context")
 
         if art_size == ArtSize.NONE:
-            self._cover = None
+            self._artwork = None
             rating = RatingWidget(self._album)
             rating.set_hexpand(True)
             rating.set_property("halign", Gtk.Align.END)
@@ -95,12 +95,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             self._play_button = builder.get_object("play-button")
             self._action_button = builder.get_object("action-button")
             self._action_event = builder.get_object("action-event")
-            self._cover = builder.get_object("cover")
+            self._artwork = builder.get_object("cover")
             self.__coverbox = builder.get_object("coverbox")
             # 6 for 2*3px (application.css)
             self.__coverbox.set_property("width-request", art_size + 6)
             if art_size == ArtSize.BIG:
-                self._cover.get_style_context().add_class("cover-frame")
+                self._artwork.get_style_context().add_class("cover-frame")
                 self._artwork_button = builder.get_object("artwork-button")
                 if self._album.year is not None:
                     self.__year_label.set_label(str(self._album.year))
@@ -127,7 +127,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
                 # Here we are working around default CoverBox ui
                 # Do we really need to have another ui file?
                 # So just hack values on the fly
-                self._cover.get_style_context().add_class("small-cover-frame")
+                self._artwork.get_style_context().add_class(
+                    "small-cover-frame")
                 overlay_grid = builder.get_object("overlay-grid")
                 overlay_grid.set_margin_bottom(2)
                 overlay_grid.set_margin_end(2)
@@ -143,8 +144,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
 
         album_info.add(self._responsive_widget)
 
-        self.set_cover()
-        self.update_state()
+        self.set_artwork()
+        self.set_selection()
 
         self.__title_label.set_label(self._album.name)
 
@@ -174,11 +175,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         for widget in self._tracks_widget_right.values():
             widget.set_filter_func(func)
 
-    def update_playing_indicator(self):
+    def set_playing_indicator(self):
         """
             Update playing indicator
         """
-        TracksView.update_playing_indicator(self)
+        TracksView.set_playing_indicator(self)
 
     def hide_header_labels(self):
         """

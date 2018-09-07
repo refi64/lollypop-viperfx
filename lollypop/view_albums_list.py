@@ -19,10 +19,10 @@ from lollypop.view import LazyLoadingView
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
-from lollypop.widgets_base import BaseWidget
+from lollypop.controller_view import ViewController
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
+class AlbumRow(Gtk.ListBoxRow, TracksView):
     """
         Album row
     """
@@ -65,6 +65,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
             @param responsive_type as ResponsiveType
         """
         Gtk.ListBoxRow.__init__(self)
+        # Later => TracksView.__init__(self)
         self._responsive_widget = None
         self._album = album
         self.__responsive_type = responsive_type
@@ -143,7 +144,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
         grid.attach(self.__revealer, 0, 2, 3, 1)
         row_widget.add(grid)
         self.add(row_widget)
-        self.update_playing_indicator()
+        self.set_playing_indicator()
         self.show_all()
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
@@ -169,7 +170,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
-            self.update_state()
+            self.set_selection()
             if self.__responsive_type != ResponsiveType.SEARCH and\
                     self.__action_button is not None:
                 self.__action_button.set_opacity(1)
@@ -181,13 +182,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
             self.__revealer.set_reveal_child(True)
-            self.update_state()
+            self.set_selection()
             if self.__responsive_type != ResponsiveType.SEARCH and\
                     self.__action_button is not None:
                 self.__action_button.set_opacity(0)
                 self.__action_button.set_sensitive(False)
 
-    def update_playing_indicator(self):
+    def set_playing_indicator(self):
         """
             Show play indicator
             @param show as bool
@@ -199,25 +200,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
         else:
             self.__play_indicator.set_opacity(0)
         if self.__revealer.get_reveal_child():
-            TracksView.update_playing_indicator(self)
+            TracksView.set_playing_indicator(self)
 
-    def update_cover(self, album_id):
-        """
-            Update cover for current album
-            @param album_id as int
-        """
-        if self.__cover is None or album_id != self._album.id:
-            return
-        surface = App().art.get_album_artwork(
-            self._album,
-            ArtSize.MEDIUM,
-            self.get_scale_factor())
-        self.__cover.set_from_surface(surface)
-
-    def update_state(self, force=False):
+    def set_selection(self):
         """
             Update widget state
-            @param force as bool
         """
         child = self.get_child()
         if child is None:
@@ -230,6 +217,24 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
         elif not selected or revealed:
             style_context.remove_class("album-row-selected")
 
+    def set_artwork(self, album_id):
+        """
+            Update cover for current album
+            @param album_id as int
+        """
+        if self.__cover is None or album_id != self._album.id:
+            return
+        surface = App().art.get_album_artwork(
+            self._album,
+            ArtSize.MEDIUM,
+            self.get_scale_factor())
+        self.__cover.set_from_surface(surface)
+
+    def stop(self):
+        """
+            Stop view loading
+        """
+
     @property
     def album(self):
         """
@@ -239,8 +244,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
         return self._album
 
 #######################
+# PROTECTED           #
+#######################
+
+#######################
 # PRIVATE             #
 #######################
+
     def __on_button_release_event(self, widget, event):
         """
             Show revealer with tracks
@@ -354,7 +364,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, BaseWidget):
             self.set_tooltip_text("")
 
 
-class AlbumsListView(LazyLoadingView):
+class AlbumsListView(LazyLoadingView, ViewController):
     """
         View showing albums
     """
@@ -365,6 +375,7 @@ class AlbumsListView(LazyLoadingView):
             @param responsive_type as ResponsiveType
         """
         LazyLoadingView.__init__(self)
+        ViewController.__init__(self)
         self.__responsive_type = responsive_type
         self.__autoscroll_timeout_id = None
         self.__prev_animated_rows = []
@@ -385,13 +396,14 @@ class AlbumsListView(LazyLoadingView):
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-motion", self.__on_drag_motion)
+        self.connect_current_changed_signal()
+        self.connect_artwork_changed_signal("album")
 
     def populate(self, albums):
         """
             Populate widget with album rows
             @param albums as [Album]
         """
-        self._stop = False
         for child in self.__view.get_children():
             GLib.idle_add(child.destroy)
         self.__add_albums(list(albums))
@@ -464,6 +476,27 @@ class AlbumsListView(LazyLoadingView):
         return self.__view.get_children()
 
 #######################
+# PROTECTED           #
+#######################
+    def _on_current_changed(self, player):
+        """
+            Update children state
+            @param player as Player
+        """
+        for child in self.__view.get_children():
+            child.set_selection()
+            child.set_playing_indicator()
+
+    def _on_artwork_changed(self, artwork, album_id):
+        """
+            Update children artwork if matching album id
+            @param artwork as Artwork
+            @param album_id as int
+        """
+        for child in self.__view.get_children():
+            child.set_artwork(album_id)
+
+#######################
 # PRIVATE             #
 #######################
     def __reveal_row(self, row):
@@ -479,7 +512,9 @@ class AlbumsListView(LazyLoadingView):
             Add items to the view
             @param albums ids as [Album]
         """
-        if albums and not self._stop:
+        if self._lazy_queue is None:
+            return
+        if albums:
             album = albums.pop(0)
             row = self.__row_for_album(album)
             row.show()

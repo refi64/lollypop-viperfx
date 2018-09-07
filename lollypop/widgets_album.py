@@ -15,12 +15,11 @@ from gi.repository import Gtk, GLib, Gdk
 from gettext import gettext as _
 
 from lollypop.define import App, ArtSize
-from lollypop.define import Shuffle, Loading
+from lollypop.define import Shuffle
 from lollypop.pop_artwork import CoversPopover
-from lollypop.widgets_base import BaseWidget
 
 
-class AlbumBaseWidget(BaseWidget):
+class AlbumBaseWidget:
     """
         Base album widget
     """
@@ -29,8 +28,7 @@ class AlbumBaseWidget(BaseWidget):
         """
             Init widget
         """
-        self.__loading = Loading.NONE
-        self._cover = None
+        self._artwork = None
         self._widget = None
         self._play_all_button = None
         self._artwork_button = None
@@ -43,35 +41,11 @@ class AlbumBaseWidget(BaseWidget):
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
 
-    def stop(self):
-        """
-            Stop populating
-        """
-        self.__loading = Loading.STOP
-
     def set_filtered(self, b):
         """
             Set widget filtered
         """
         self.__parent_filter = b
-
-    @property
-    def filter(self):
-        return ""
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-        """
-        return self.__parent_filter
-
-    @property
-    def is_overlay(self):
-        """
-            True if overlayed or going to be
-        """
-        return self._show_overlay or self._timeout_id is not None
 
     def lock_overlay(self, lock):
         """
@@ -90,6 +64,24 @@ class AlbumBaseWidget(BaseWidget):
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
         self._show_overlay_func(set)
+
+    @property
+    def filter(self):
+        return ""
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__parent_filter
+
+    @property
+    def is_overlay(self):
+        """
+            True if overlayed or going to be
+        """
+        return self._show_overlay or self._timeout_id is not None
 
 #######################
 # PROTECTED           #
@@ -181,7 +173,7 @@ class AlbumBaseWidget(BaseWidget):
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
-        self._cover.set_opacity(0.9)
+        self._artwork.set_opacity(0.9)
         if self._timeout_id is None:
             self._timeout_id = GLib.timeout_add(250,
                                                 self.__on_enter_notify_timeout)
@@ -197,7 +189,7 @@ class AlbumBaseWidget(BaseWidget):
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            self._cover.set_opacity(1)
+            self._artwork.set_opacity(1)
             # Remove enter notify timeout
             if self._timeout_id is not None:
                 GLib.source_remove(self._timeout_id)
@@ -225,7 +217,7 @@ class AlbumBaseWidget(BaseWidget):
         """
         popover = CoversPopover(self._album)
         popover.set_relative_to(widget)
-        popover.connect("closed", self._on_pop_cover_closed)
+        popover.connect("closed", self._on_pop_artwork_closed)
         self._lock_overlay = True
         popover.show()
         return True
@@ -260,7 +252,7 @@ class AlbumBaseWidget(BaseWidget):
             self._show_append(False)
         return True
 
-    def _on_pop_cover_closed(self, widget):
+    def _on_pop_artwork_closed(self, widget):
         """
             Remove selected style
             @param widget as Gtk.Popover
@@ -310,54 +302,39 @@ class AlbumWidget(AlbumBaseWidget):
         self._scan_signal = App().scanner.connect("album-updated",
                                                   self._on_album_updated)
 
-    def get_cover(self):
+    def get_artwork(self):
         """
-            Get album cover
-            @return cover as Gtk.Image
+            Get album artwork
+            @return Gtk.Image
         """
-        return self._cover
+        return self._artwork
 
-    def set_cover(self):
+    def set_artwork(self, album_id=None):
         """
-            Set cover for album if state changed
-        """
-        if self._cover is None:
-            return
-        surface = App().art.get_album_artwork(
-            self._album,
-            self._art_size,
-            self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
-        else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-
-    def update_cover(self, album_id):
-        """
-            Update cover for current album
+            Set cover for album id
             @param album_id as int
         """
-        if self._cover is None or album_id != self._album.id:
+        if self._artwork is None or\
+                (album_id is not None and album_id != self._album.id):
             return
         surface = App().art.get_album_artwork(
             self._album,
             self._art_size,
-            self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
+            self._artwork.get_scale_factor())
+        self._artwork.set_from_surface(surface)
         if surface.get_height() > surface.get_width():
             self._overlay_orientation = Gtk.Orientation.VERTICAL
         else:
             self._overlay_orientation = Gtk.Orientation.HORIZONTAL
 
-    def update_state(self):
+    def set_selection(self):
         """
-            Update widget state
+            Mark widget as selected if currently playing
         """
-        if self._cover is None or self._art_size != ArtSize.BIG:
+        if self._artwork is None or self._art_size != ArtSize.BIG:
             return
         selected = self._album.id == App().player.current_track.album.id
-        style_context = self._cover.get_style_context()
+        style_context = self._artwork.get_style_context()
         if selected:
             style_context.add_class("cover-frame-selected")
         else:

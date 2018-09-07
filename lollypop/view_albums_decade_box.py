@@ -26,11 +26,6 @@ class AlbumsDecadeBoxView(LazyLoadingView):
             Init album view
         """
         LazyLoadingView.__init__(self, True)
-        self.__signal = None
-        self.__current = None
-        self.__context_album_id = None
-        self.__press_rect = None
-
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -65,8 +60,7 @@ class AlbumsDecadeBoxView(LazyLoadingView):
             Start lazy loading
             @param decades as [[int]]
         """
-        if self._stop:
-            self._stop = False
+        if self._lazy_queue is None:
             return
         if decades:
             widget = AlbumDecadeWidget(decades.pop(0))

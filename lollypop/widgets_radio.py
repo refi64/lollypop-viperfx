@@ -73,8 +73,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
         self.add(self._widget)
-        self.set_cover()
-        self.update_state()
+        self.set_artwork()
+        self.set_selection()
         self.show_all()
         self._lock_overlay = False
 
@@ -102,11 +102,12 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         self.__name = name
         self.__title_label.set_label(name)
 
-    def set_cover(self):
+    def set_artwork(self, name=None):
         """
-            Set cover for album if state changed
+            Set artwork for radio matching name
         """
-        if self._cover is None:
+        if self._cover is None or\
+                (name is not None and name != self.__name):
             return
         surface = App().art.get_radio_artwork(
             self.__name,
@@ -114,21 +115,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
 
-    def update_cover(self):
+    def set_selection(self):
         """
-            Update cover for radio
-        """
-        if self._cover is None:
-            return
-        surface = App().art.get_radio_artwork(
-            self.__name,
-            ArtSize.BIG,
-            self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
-
-    def update_state(self):
-        """
-            Update widget state
+            Mark widget as selected if currently playing
         """
         if self._cover is None:
             return

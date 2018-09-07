@@ -53,7 +53,6 @@ class PlaylistsPopover(Gtk.Popover):
             Connect signals, populate and resize
             @param widget as Gtk.Widget
         """
-        self._stop = False
         self.populate()
         window_size = App().window.get_size()
         height = window_size[1]
@@ -65,5 +64,4 @@ class PlaylistsPopover(Gtk.Popover):
             Disconnect signals, clear view
             @param widget as Gtk.Widget
         """
-        self._stop = True
         self.destroy()

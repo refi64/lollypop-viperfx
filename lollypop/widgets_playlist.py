@@ -135,9 +135,9 @@ class PlaylistsWidget(Gtk.Grid, BaseWidget):
                           self.__tracks_widget_right,
                           pos)
 
-    def update_playing_indicator(self):
+    def set_playing_indicator(self):
         """
-            Update playing indicator
+            Set playing indicator
         """
         track_id = App().player.current_track.id
         self.__tracks_widget_left.update_playing(track_id)

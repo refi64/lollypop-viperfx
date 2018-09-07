@@ -113,7 +113,6 @@ class AlbumsPopover(Gtk.Popover):
             Clear albums
             @param button as Gtk.Button
         """
-        self._stop = True
         GLib.idle_add(self.__view.clear, True)
         self.__clear_button.set_sensitive(False)
         self.__jump_button.set_sensitive(False)

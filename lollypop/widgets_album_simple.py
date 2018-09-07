@@ -51,9 +51,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._cover = Gtk.Image()
-        self._cover.set_property("halign", Gtk.Align.CENTER)
-        self._cover.get_style_context().add_class("cover-frame")
+        self._artwork = Gtk.Image()
+        self._artwork.set_property("halign", Gtk.Align.CENTER)
+        self._artwork.get_style_context().add_class("cover-frame")
         self.__title_label = Gtk.Label()
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label.set_property("halign", Gtk.Align.CENTER)
@@ -85,7 +85,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.__overlay_grid.set_margin_bottom(6)
         self.__overlay_grid.set_margin_start(6)
         self.__overlay_grid.set_margin_end(6)
-        self.__overlay.add(self._cover)
+        self.__overlay.add(self._artwork)
         self.__overlay.add_overlay(self.__overlay_grid)
         color = Gtk.Grid()
         color.set_property("halign", Gtk.Align.CENTER)
@@ -96,8 +96,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         grid.add(self.__title_label)
         grid.add(artist_eventbox)
         self.add(self._widget)
-        self.set_cover()
-        self.update_state()
+        self.set_artwork()
+        self.set_selection()
         self._widget.set_property("halign", Gtk.Align.CENTER)
         self._widget.set_property("valign", Gtk.Align.CENTER)
         self.show_all()
@@ -286,7 +286,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param event as Gdk.EventButton
         """
         if event.button != 1:
-            popover = Gtk.Popover.new_from_model(self._cover,
+            popover = Gtk.Popover.new_from_model(self._artwork,
                                                  AlbumMenu(self._album,
                                                            True))
             popover.set_position(Gtk.PositionType.BOTTOM)
@@ -314,4 +314,4 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param album_widget as AlbumWidget
         """
         self.lock_overlay(False)
-        self.get_cover().set_opacity(1)
+        self.get_artwork().set_opacity(1)

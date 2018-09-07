@@ -287,7 +287,7 @@ class QueuePopover(Gtk.Popover):
             Clear queue
             @param widget as Gtk.Button
         """
-        self._stop = True
+        self.__stop = True
         self.__clear(True)
         self.hide()
 
@@ -308,7 +308,7 @@ class QueuePopover(Gtk.Popover):
             Add items to the view
             @param item ids as [int]
         """
-        if items and not self._stop:
+        if items and not self.__stop:
             track_id = items.pop(0)
             album_id = App().tracks.get_album_id(track_id)
             row = self.__row_for_track_id(track_id)
@@ -338,7 +338,7 @@ class QueuePopover(Gtk.Popover):
             Connect signals, populate, and resize
             @param widget as Gtk.Widget
         """
-        self._stop = False
+        self.__stop = False
         window_size = App().window.get_size()
         height = window_size[1]
         width = min(500, window_size[0])
@@ -353,7 +353,7 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self.__clear()
-        self._stop = True
+        self.__stop = True
         if self._signal_id1 is not None:
             App().player.disconnect(self._signal_id1)
             self._signal_id1 = None

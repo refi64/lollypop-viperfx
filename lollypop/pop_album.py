@@ -40,14 +40,11 @@ class AlbumPopover(Gtk.Popover):
         view = ArtistAlbumsView(artist_ids, genre_ids, art_size)
         view.populate([album])
         if App().window.container.is_paned_stack:
-            for child in view.children:
-                child.hide_header_labels()
-
-        # Get height requested by child
-        album_widget = view.children[0]
-        album_widget.connect("size-allocate",
-                             self.__on_album_size_allocate,
-                             view)
+            view.hide_header_labels()
+        wanted_height = min(600,
+                            min(self.__height,
+                                view.children[0].requested_height))
+        view.set_property("height-request", wanted_height)
         view.show()
         self.add(view)
 
@@ -61,13 +58,3 @@ class AlbumPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __on_album_size_allocate(self, widget, allocation, view):
-        """
-            Update view height
-            @param widget as Gtk.Widget
-            @param allocation as Gtk.Allocation
-            @param view as ArtistAlbumsView
-        """
-        requested_height = widget.requested_height
-        wanted_height = min(600, min(self.__height, requested_height))
-        view.set_property("height-request", wanted_height)

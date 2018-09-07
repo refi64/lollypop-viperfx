@@ -60,8 +60,8 @@ class ArtistView(ArtistAlbumsView):
         self._overlay.add_overlay(self.__grid)
         self.__empty = Gtk.Grid()
         self.__empty.show()
-        self._albumbox.add(self.__empty)
-        self._albumbox.set_row_spacing(20)
+        self._album_box.add(self.__empty)
+        self._album_box.set_row_spacing(20)
 
         self.__scale_factor = self.__artwork.get_scale_factor()
         self.__set_artwork()
@@ -87,12 +87,12 @@ class ArtistView(ArtistAlbumsView):
             Jump to current album
         """
         widget = None
-        for child in self._albumbox.get_children():
+        for child in self._album_box.get_children():
             if child.album.id == App().player.current_track.album.id:
                 widget = child
                 break
         if widget is not None:
-            y = widget.get_current_ordinate(self._albumbox)
+            y = widget.get_current_ordinate(self._album_box)
             self._scrolled.get_vadjustment().set_value(
                 y - self.__empty.get_property("height-request"))
 

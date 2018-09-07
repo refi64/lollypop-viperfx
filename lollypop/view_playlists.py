@@ -19,9 +19,10 @@ from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
 from lollypop.define import App, Type, ArtSize
 from lollypop.objects import Track
+from lollypop.controller_view import ViewController
 
 
-class PlaylistsView(View):
+class PlaylistsView(View, ViewController):
     """
         Show playlist tracks
     """
@@ -33,6 +34,7 @@ class PlaylistsView(View):
             @param editable as bool
         """
         View.__init__(self, True)
+        ViewController.__init__(self)
         self.__autoscroll_timeout_id = None
         self.__prev_animated_rows = []
         self.__track_ids = []
@@ -77,6 +79,7 @@ class PlaylistsView(View):
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-motion", self.__on_drag_motion)
+        self.connect_current_changed_signal()
 
         # No duration for non user playlists
         # FIXME
@@ -143,17 +146,17 @@ class PlaylistsView(View):
         """
         self.__playlists_widget.stop()
 
-    @property
-    def children(self):
-        """
-            Return view children
-            @return [PlaylistsWidget]
-        """
-        return [self.__playlists_widget]
-
 #######################
 # PROTECTED           #
 #######################
+    def _on_current_changed(self, player):
+        """
+            Update children state
+            @param player as Player
+        """
+        self.__update_jump_button()
+        self.__playlists_widget.set_playing_indicator()
+
     def _on_search_changed(self, entry):
         """
             Update filter
@@ -219,14 +222,6 @@ class PlaylistsView(View):
         filechooser.set_current_name("%s.m3u" % name)
         filechooser.connect("response", self.__on_save_response)
         filechooser.run()
-
-    def _on_current_changed(self, player):
-        """
-            Current song changed, update playing button
-            @param player as Player
-        """
-        View._on_current_changed(self, player)
-        self.__update_jump_button()
 
 #######################
 # PRIVATE             #

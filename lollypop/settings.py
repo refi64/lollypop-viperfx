@@ -654,8 +654,6 @@ class SettingsDialog:
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
             App().scanner.update()
-        if App().window.container.view is not None:
-            App().window.container.view.update_children()
 
     def __test_lastfm_connection(self, result, fm):
         """

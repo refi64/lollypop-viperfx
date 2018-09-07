@@ -18,10 +18,10 @@ from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
-from lollypop.define import App
+from lollypop.controller_view import ViewController
 
 
-class RadiosView(LazyLoadingView):
+class RadiosView(LazyLoadingView, ViewController):
     """
         Show radios in a grid
     """
@@ -31,8 +31,7 @@ class RadiosView(LazyLoadingView):
             Init view
         """
         LazyLoadingView.__init__(self, True)
-        self.__signal = App().art.connect("radio-artwork-changed",
-                                          self.__on_logo_changed)
+        ViewController.__init__(self)
 
         self.__radios_manager = Radios()
         self.__radios_manager.connect("radios-changed",
@@ -67,6 +66,7 @@ class RadiosView(LazyLoadingView):
 
         self.add(widget)
         self.add(self.__stack)
+        self.connect_artwork_changed_signal("radio")
 
     def populate(self):
         """
@@ -75,29 +75,9 @@ class RadiosView(LazyLoadingView):
         helper = TaskHelper()
         helper.run(self.__get_radios, callback=(self.__on_get_radios,))
 
-    @property
-    def children(self):
-        """
-            Return view children
-            @return [RadioWidget]
-        """
-        children = []
-        for child in self._box.get_children():
-            children.append(child)
-        return children
-
 #######################
 # PROTECTED           #
 #######################
-    def _on_destroy(self, widget):
-        """
-            Disconnect signals
-            @param widget as Gtk.Widget
-        """
-        LazyLoadingView._on_destroy(self, widget)
-        if self.__signal is not None:
-            App().art.disconnect(self.__signal)
-
     def _on_new_clicked(self, widget):
         """
             Show popover for adding a new radio
@@ -114,6 +94,15 @@ class RadiosView(LazyLoadingView):
         """
         self.__pop_tunein.populate()
         self.__pop_tunein.show()
+
+    def _on_artwork_changed(self, artwork, name):
+        """
+            Update children artwork if matching name
+            @param artwork as Artwork
+            @param name as str
+        """
+        for child in self._box.get_children():
+            child.set_artwork(name)
 
 #######################
 # PRIVATE             #
@@ -187,8 +176,7 @@ class RadiosView(LazyLoadingView):
             @param [radio names as string]
             @param first as bool
         """
-        if self._stop:
-            self._stop = False
+        if self._lazy_queue is None:
             return
         if radios:
             radio = radios.pop(0)

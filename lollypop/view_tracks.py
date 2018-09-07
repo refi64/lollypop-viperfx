@@ -68,9 +68,9 @@ class TracksView:
             self.__add_disc_container(disc.number)
             self.__set_disc_height(disc.number, disc.tracks)
 
-    def update_playing_indicator(self):
+    def set_playing_indicator(self):
         """
-            Update playing indicator
+            Set playing indicator
         """
         try:
             for disc in self._album.discs:
@@ -79,7 +79,7 @@ class TracksView:
                 self._tracks_widget_right[disc.number].update_playing(
                     App().player.current_track.id)
         except Exception as e:
-            Logger.error("TrackView::update_playing_indicator(): %s" % e)
+            Logger.error("TrackView::set_playing_indicator(): %s" % e)
 
     def populate(self):
         """
