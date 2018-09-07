@@ -27,11 +27,10 @@ class FullScreen(Gtk.Window, InformationController,
         Show a fullscreen window showing current track context
     """
 
-    def __init__(self, app, parent):
+    def __init__(self, app):
         """
-            Init window and set transient for parent
+            Init window for app
             @param app as Gio.Application
-            @param parent as Gtk.window
         """
         Gtk.Window.__init__(self)
         self.set_title("Lollypop")
@@ -42,7 +41,6 @@ class FullScreen(Gtk.Window, InformationController,
         self.__timeout1 = self.__timeout2 = None
         self.__signal1_id = self.__signal2_id = self.__signal3_id = None
         self.set_decorated(False)
-        self.__parent = parent
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/FullScreen.ui")
@@ -50,7 +48,7 @@ class FullScreen(Gtk.Window, InformationController,
 
         # Calculate cover size
         screen = Gdk.Screen.get_default()
-        monitor = screen.get_monitor_at_window(parent.get_window())
+        monitor = screen.get_monitor_at_window(App().window.get_window())
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
@@ -96,21 +94,17 @@ class FullScreen(Gtk.Window, InformationController,
         """
             Init signals, set color and go party mode if nothing is playing
         """
+        App().window.hide()
         self.__signal1_id = App().player.connect("current-changed",
                                                  self.on_current_changed)
         self.__signal2_id = App().player.connect("status-changed",
                                                  self.on_status_changed)
-        if App().player.current_track.id is None:
-            App().player.set_party(True)
-        else:
-            self.on_status_changed(App().player)
-            self.on_current_changed(App().player)
+        self.on_status_changed(App().player)
+        self.on_current_changed(App().player)
         self.__view.populate(App().player.albums)
         if self.__timeout1 is None:
-            self.__timeout1 = GLib.timeout_add(1000, self._update_position)
+            self.__timeout1 = GLib.timeout_add(1000, self.update_position)
         Gtk.Window.do_show(self)
-        self.__parent.set_skip_pager_hint(True)
-        self.__parent.set_skip_taskbar_hint(True)
         if self.__timeout2 is None:
             try:
                 interface = Gio.Settings.new("org.gnome.desktop.interface")
@@ -121,9 +115,9 @@ class FullScreen(Gtk.Window, InformationController,
             self.__timeout2 = GLib.timeout_add(1000,
                                                self.__update_datetime,
                                                show_seconds)
-        self._update_position(App().player.position / Gst.SECOND)
+        self.update_position(App().player.position / Gst.SECOND)
         screen = Gdk.Screen.get_default()
-        monitor = screen.get_monitor_at_window(self.__parent.get_window())
+        monitor = screen.get_monitor_at_window(App().window.get_window())
         self.fullscreen_on_monitor(screen, monitor)
 
         # Disable screensaver (idle)
@@ -137,9 +131,8 @@ class FullScreen(Gtk.Window, InformationController,
         """
             Remove signals and unset color
         """
+        App().window.show()
         self.__view.stop()
-        self.__parent.set_skip_pager_hint(False)
-        self.__parent.set_skip_taskbar_hint(False)
         Gtk.Window.do_hide(self)
         if self.__signal1_id is not None:
             App().player.disconnect(self.__signal1_id)

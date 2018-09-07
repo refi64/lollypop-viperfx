@@ -35,6 +35,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import set_proxy_from_gnome
+from lollypop.application_actions import ApplicationActions
 from lollypop.utils import is_audio, is_pls
 from lollypop.define import Type, LOLLYPOP_DATA_PATH
 from lollypop.window import Window
@@ -44,7 +45,7 @@ from lollypop.inhibitor import Inhibitor
 from lollypop.art import Art
 from lollypop.logger import Logger
 from lollypop.sqlcursor import SqlCursor
-from lollypop.settings import Settings, SettingsDialog
+from lollypop.settings import Settings
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
@@ -52,7 +53,6 @@ from lollypop.database_tracks import TracksDatabase
 from lollypop.notification import NotificationManager
 from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
-from lollypop.helper_task import TaskHelper
 from lollypop.collectionscanner import CollectionScanner
 
 
@@ -192,6 +192,7 @@ class Application(Gtk.Application):
         if not self.__gtk_dark:
             dark = self.settings.get_value("dark-ui")
             settings.set_property("gtk-application-prefer-dark-theme", dark)
+        ApplicationActions()
 
     def do_startup(self):
         """
@@ -201,9 +202,7 @@ class Application(Gtk.Application):
 
         if self.window is None:
             self.init()
-            menu = self.__get_application_menu()
             self.window = Window()
-            self.window.toolbar.end.setup_menu(menu)
             self.window.connect("delete-event", self.__hide_on_delete)
             self.window.show()
             self.player.restore_state()
@@ -479,26 +478,6 @@ class Application(Gtk.Application):
             GLib.timeout_add(500, self.quit, True)
         return widget.hide_on_delete()
 
-    def __update_db(self, action=None, param=None):
-        """
-            Search for new music
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        if self.window:
-            helper = TaskHelper()
-            helper.run(self.art.clean_all_cache)
-            self.scanner.update()
-
-    def __on_fs_destroyed(self, widget):
-        """
-            Mark fullscreen as False
-            @param widget as Fullscreen
-        """
-        self.__fs = None
-        if not self.window.is_visible():
-            self.quit(True)
-
     def __on_activate(self, application):
         """
             Call default handler
@@ -507,116 +486,3 @@ class Application(Gtk.Application):
         # https://bugzilla.gnome.org/show_bug.cgi?id=766284
         monotonic_time = int(GLib.get_monotonic_time() / 1000)
         self.window.present_with_time(monotonic_time)
-
-    def __on_about_activate_response(self, dialog, response_id):
-        """
-            Destroy about dialog when closed
-            @param dialog as Gtk.Dialog
-            @param response id as int
-        """
-        dialog.destroy()
-
-    def __get_application_menu(self):
-        """
-            Setup application menu
-            @return menu as Gio.Menu
-        """
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
-        menu = builder.get_object("app-menu")
-
-        settings_action = Gio.SimpleAction.new("settings", None)
-        settings_action.connect("activate", self.__on_settings_activate)
-        self.add_action(settings_action)
-
-        update_action = Gio.SimpleAction.new("update_db", None)
-        update_action.connect("activate", self.__update_db)
-        self.add_action(update_action)
-
-        fs_action = Gio.SimpleAction.new("fullscreen", None)
-        fs_action.connect("activate", self.__on_fs_activate)
-        self.add_action(fs_action)
-
-        show_sidebar = self.settings.get_value("show-sidebar")
-        sidebar_action = Gio.SimpleAction.new_stateful(
-            "sidebar",
-            None,
-            GLib.Variant.new_boolean(show_sidebar))
-        sidebar_action.connect("change-state", self.__on_sidebar_change_state)
-        self.add_action(sidebar_action)
-
-        mini_action = Gio.SimpleAction.new("mini", None)
-        mini_action.connect("activate", self.set_mini)
-        self.add_action(mini_action)
-
-        about_action = Gio.SimpleAction.new("about", None)
-        about_action.connect("activate", self.__on_about_activate)
-        self.add_action(about_action)
-
-        shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
-        shortcuts_action.connect("activate", self.__on_shortcuts_activate)
-        self.add_action(shortcuts_action)
-
-        quit_action = Gio.SimpleAction.new("quit", None)
-        quit_action.connect("activate", lambda x, y: self.quit(True))
-        self.add_action(quit_action)
-
-        return menu
-
-    def __on_sidebar_change_state(self, action, value):
-        """
-            Show/hide sidebar
-            @param action as Gio.SimpleAction
-            @param value as bool
-        """
-        action.set_state(value)
-        self.settings.set_value("show-sidebar",
-                                GLib.Variant("b", value))
-        self.window.container.show_sidebar(value)
-
-    def __on_fs_activate(self, action, param):
-        """
-            Show a fullscreen window with cover and artist information
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        if self.window and not self.is_fullscreen():
-            from lollypop.fullscreen import FullScreen
-            self.__fs = FullScreen(self, self.window)
-            self.__fs.connect("destroy", self.__on_fs_destroyed)
-            self.__fs.show()
-        elif self.window and self.is_fullscreen():
-            self.__fs.destroy()
-
-    def __on_settings_activate(self, action, param):
-        """
-            Show settings dialog
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        dialog = SettingsDialog()
-        dialog.show()
-
-    def __on_about_activate(self, action, param):
-        """
-            Setup about dialog
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/AboutDialog.ui")
-        about = builder.get_object("about_dialog")
-        about.set_transient_for(self.window)
-        about.connect("response", self.__on_about_activate_response)
-        about.show()
-
-    def __on_shortcuts_activate(self, action, param):
-        """
-            Show shorctus
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/Shortcuts.ui")
-        builder.get_object("shortcuts").set_transient_for(self.window)
-        builder.get_object("shortcuts").show()

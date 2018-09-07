@@ -88,7 +88,10 @@ class ToolbarEnd(Gtk.Bin):
         App().add_action(search_action)
         App().set_accels_for_action("app.search", ["<Control>f"])
 
-        self.__settings_button = builder.get_object("settings-button")
+        builder_menu = Gtk.Builder()
+        builder_menu.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
+        builder.get_object("settings-button").set_menu_model(
+            builder_menu.get_object("app-menu"))
 
         self.__list_button = builder.get_object("list-button")
         self.__list_button.set_property("has-tooltip", True)
@@ -123,13 +126,6 @@ class ToolbarEnd(Gtk.Bin):
             self.__list_button.hide()
         else:
             self.__list_button.show()
-
-    def setup_menu(self, menu):
-        """
-            Add an application menu to menu button
-            @parma: menu as Gio.Menu
-        """
-        self.__settings_button.set_menu_model(menu)
 
     def on_next_changed(self, player):
         """
