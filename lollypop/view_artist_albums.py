@@ -183,7 +183,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             repeat operation until album list is empty
             @param albums as [Album]
         """
-        if self.__lazy_queue is None:
+        if self._lazy_queue is None:
             return
         if albums:
             album = albums.pop(0)
