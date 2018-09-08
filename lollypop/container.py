@@ -586,7 +586,6 @@ class Container(Gtk.Overlay):
             items += artists
             selection_list.mark_as(SelectionList.Type.ARTISTS)
             selection_list.populate(items)
-            selection_list.select_ids([Type.ALL])
         loader = Loader(target=load, view=selection_list,
                         on_finished=lambda r: setup(*r))
         loader.start()
@@ -974,6 +973,7 @@ class Container(Gtk.Overlay):
             for view in self.__stack.get_children():
                 if isinstance(view, DeviceView):
                     view.populate(selection_list.selected_ids)
+                    self.__stack.set_visible_child(view)
             view = self.__get_view_device(genre_ids[0])
             return
         if genre_ids[0] == Type.PLAYLISTS:

@@ -95,7 +95,9 @@ class DeviceView(View):
         builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
         self.__memory_combo = builder.get_object("memory_combo")
         self.__syncing_btn = builder.get_object("sync_btn")
-        self.__syncing_btn.set_label(_("Synchronize %s") % device.name)
+        # FIXME Wait for translation
+        _("Synchronize")
+        self.__syncing_btn.set_label(_("Synchronize %s") % "")
         builder.connect_signals(self)
         grid = builder.get_object("device")
         self.__warning = builder.get_object("warning")
