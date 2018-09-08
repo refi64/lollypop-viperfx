@@ -90,6 +90,7 @@ class DeviceView(View):
         View.__init__(self)
         self.__timeout_id = None
         self.__device = device
+        self.__selected_ids = []
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
         self.__memory_combo = builder.get_object("memory_combo")
@@ -106,11 +107,13 @@ class DeviceView(View):
         self.add(self._scrolled)
         self.__sanitize_non_mtp()
 
-    def populate(self):
+    def populate(self, selected_ids=[]):
         """
             Populate combo box
+            @param selected_ids as [int]
             @thread safe
         """
+        self.__selected_ids = selected_ids
         files = DeviceView.get_files(self.__device.uri)
         if files:
             GLib.idle_add(self.__set_combo_text, files)
@@ -171,7 +174,7 @@ class DeviceView(View):
         else:
             self.__warning.show()
         self.__device_widget.set_uri(uri)
-        self.__device_widget.populate()
+        self.__device_widget.populate(self.__selected_ids)
 
 #######################
 # PRIVATE             #
@@ -216,7 +219,7 @@ class DeviceView(View):
         # Just update device widget if already populated
         if self.__memory_combo.get_active_text() is not None:
             if not self.__device_widget.is_syncing():
-                self.__device_widget.populate()
+                self.__device_widget.populate(self.__selected_ids)
             return
         for text in text_list:
             self.__memory_combo.append_text(text)

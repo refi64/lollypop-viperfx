@@ -44,7 +44,6 @@ class MtpSyncDb:
         self.__db_uri = self.__base_uri + "/lollypop-sync.db"
         self.__encoder = "convert_none"
         self.__normalize = False
-        self.__albums = True
         self.__metadata = {}
 
     def load_db(self):
@@ -59,8 +58,6 @@ class MtpSyncDb:
                 jsondb = json.loads(jsonraw.decode("utf-8"))
                 if "encoder" in jsondb:
                     self.__encoder = jsondb["encoder"]
-                if "albums" in jsondb:
-                    self.__albums = jsondb["albums"]
                 if "normalize" in jsondb:
                     self.__normalize = jsondb["normalize"]
                 if "version" in jsondb and jsondb["version"] == 1:
@@ -80,7 +77,6 @@ class MtpSyncDb:
         jsondb = json.dumps({"version": 1,
                              "encoder": self.__encoder,
                              "normalize": self.__normalize,
-                             "albums": self.__albums,
                              "tracks_metadata": [
                                  {"uri": x, "metadata": y}
                                  for x, y in sorted(self.__metadata.items())]})
@@ -99,13 +95,6 @@ class MtpSyncDb:
             @param encoder as str
         """
         self.__encoder = encoder
-
-    def set_albums(self, albums):
-        """
-            Set sync type
-            @param albums as bool
-        """
-        self.__albums = albums
 
     def set_normalize(self, normalize):
         """
@@ -146,14 +135,6 @@ class MtpSyncDb:
             @return str
         """
         return self.__encoder
-
-    @property
-    def albums(self):
-        """
-            Get sync type
-            @return str
-        """
-        return self.__albums
 
     @property
     def normalize(self):
@@ -279,16 +260,14 @@ class MtpSync:
             GLib.idle_add(App().window.container.progress.set_fraction,
                           0, self)
 
-            if playlists and playlists[0] == Type.NONE:
-                # New tracks for synced albums
-                album_ids = App().albums.get_synced_ids()
-                for album_id in album_ids:
-                    self.__total += len(App().albums.get_track_ids(album_id))
-            else:
-                # New tracks for playlists
-                for playlist in playlists:
-                    plnames.append(App().playlists.get_name(playlist))
-                    self.__total += len(App().playlists.get_tracks(playlist))
+            # New tracks for synced albums
+            album_ids = App().albums.get_synced_ids()
+            for album_id in album_ids:
+                self.__total += len(App().albums.get_track_ids(album_id))
+            # New tracks for playlists
+            for playlist in playlists:
+                plnames.append(App().playlists.get_name(playlist))
+                self.__total += len(App().playlists.get_tracks(playlist))
 
             # Old tracks
             try:
@@ -300,7 +279,8 @@ class MtpSync:
 
             # Copy new tracks to device
             if self._syncing:
-                self.__copy_to_device(playlists)
+                self.__sync_albums()
+                self.__sync_playlists(playlists)
 
             # Remove old tracks from device
             if self._syncing:
@@ -444,99 +424,147 @@ class MtpSync:
                 Logger.error("MtpSync::__get_track_files(): %s, %s" % (e, uri))
         return children
 
-    def __copy_to_device(self, playlists):
+    def __sync_track_id(self, track):
         """
-            Copy file from playlist to device
+            Sync track to device
+            @param track as Track
+            @return (str, str, str, bool)
+        """
+        if not self._syncing:
+            self._fraction = 1.0
+            self.__in_thread = False
+            return
+        Logger.debug("MtpSync::__copy_to_device(): %s" % track.uri)
+        album_name = escape(track.album_name.lower())
+        is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
+        if is_compilation:
+            on_device_album_uri = "%s/%s" %\
+                                  (self._uri,
+                                   album_name)
+        else:
+            artists = escape(", ".join(track.album.artists).lower())
+            on_device_album_uri = "%s/%s_%s" %\
+                                  (self._uri,
+                                   artists,
+                                   album_name)
+
+        d = Gio.File.new_for_uri(on_device_album_uri)
+        if not d.query_exists():
+            self.__retry(d.make_directory_with_parents, (None,))
+        # Copy album art
+        art = App().art.get_album_artwork_uri(track.album)
+        Logger.debug("MtpSync::__copy_to_device(): %s" % art)
+        if art is not None:
+            src_art = Gio.File.new_for_uri(art)
+            art_uri = "%s/cover.jpg" % on_device_album_uri
+            # To be sure to get uri correctly escaped for Gio
+            f = Gio.File.new_for_uri(art_uri)
+            self.__copied_art_uris.append(f.get_uri())
+            dst_art = Gio.File.new_for_uri(art_uri)
+            if not dst_art.query_exists():
+                self.__retry(src_art.copy,
+                             (dst_art, Gio.FileCopyFlags.OVERWRITE,
+                              None, None))
+        f = Gio.File.new_for_uri(track.uri)
+        track_name = escape(f.get_basename())
+        # Check extension, if not mp3, convert
+        m = match(r".*(\.[^.]*)", track.uri)
+        ext = m.group(1)
+        convert_ext = self.__EXTENSION[self.mtp_syncdb.encoder]
+        if convert_ext is not None and ext != convert_ext:
+            convertion_needed = True
+            track_name = track_name.replace(ext, convert_ext)
+        else:
+            convertion_needed = False
+        src_track = Gio.File.new_for_uri(track.uri)
+        info = src_track.query_info("time::modified",
+                                    Gio.FileQueryInfoFlags.NONE,
+                                    None)
+        # Prefix track with mtime to make sure updating it later
+        mtime = info.get_attribute_uint64("time::modified")
+        dst_uri = "%s/%s" % (on_device_album_uri,
+                             track_name)
+        dst_track = Gio.File.new_for_uri(dst_uri)
+        if not dst_track.query_exists() or\
+            self.__mtp_syncdb.get_mtime(
+                dst_track.get_uri()) < mtime:
+            if convertion_needed:
+                convert_uri = "file:///tmp/%s" % track_name
+                convert_file = Gio.File.new_for_uri(convert_uri)
+                pipeline = self.__convert(src_track,
+                                          convert_file)
+                # Check if encoding is finished
+                if pipeline is not None:
+                    bus = pipeline.get_bus()
+                    bus.add_signal_watch()
+                    bus.connect("message::eos", self.__on_bus_eos)
+                    self.__encoding = True
+                    while self.__encoding and self._syncing:
+                        sleep(1)
+                    bus.disconnect_by_func(self.__on_bus_eos)
+                    pipeline.set_state(Gst.State.PAUSED)
+                    pipeline.set_state(Gst.State.READY)
+                    pipeline.set_state(Gst.State.NULL)
+                    self.__retry(
+                        convert_file.move,
+                        (dst_track, Gio.FileCopyFlags.OVERWRITE,
+                         None, None))
+                    # To be sure
+                    try:
+                        convert_file.delete(None)
+                    except:
+                        pass
+            else:
+                self.__retry(src_track.copy,
+                             (dst_track, Gio.FileCopyFlags.OVERWRITE,
+                              None, None))
+            self.__mtp_syncdb.set_mtime(dst_track.get_uri(), mtime)
+        else:
+            self.__done += 1
+        self.__done += 1
+        self._fraction = self.__done / self.__total
+        return (track_name, artists, album_name, is_compilation)
+
+    def __sync_albums(self):
+        """
+            Sync albums to device
+        """
+        album_ids = App().albums.get_synced_ids()
+        for album_id in album_ids:
+            for track_id in App().albums.get_track_ids(album_id):
+                self.__sync_track_id(Track(track_id))
+
+    def __sync_playlists(self, playlists):
+        """
+            Sync file from playlist to device
             @param playlists as [str]
         """
         for playlist in playlists:
             m3u = None
             stream = None
-            if playlist != Type.NONE:
-                try:
-                    playlist_name = App().playlists.get_name(playlist)
-                    # Create playlist
-                    m3u = Gio.File.new_for_path(
-                        "/tmp/lollypop_%s.m3u" % (playlist_name,))
-                    self.__retry(
-                        m3u.replace_contents,
-                        (b"#EXTM3U\n",
-                         None,
-                         False,
-                         Gio.FileCreateFlags.REPLACE_DESTINATION,
-                         None))
-                    stream = m3u.open_readwrite(None)
-                except Exception as e:
-                    Logger.error("DeviceWidget::_copy_to_device(): %s" % e)
-            # Get tracks
-            if playlist == Type.NONE:
-                track_ids = []
-                album_ids = App().albums.get_synced_ids()
-                for album_id in album_ids:
-                    track_ids += App().albums.get_track_ids(album_id)
-            else:
-                track_ids = App().playlists.get_track_ids(playlist)
+            try:
+                playlist_name = App().playlists.get_name(playlist)
+                # Create playlist
+                m3u = Gio.File.new_for_path(
+                    "/tmp/lollypop_%s.m3u" % (playlist_name,))
+                self.__retry(
+                    m3u.replace_contents,
+                    (b"#EXTM3U\n",
+                     None,
+                     False,
+                     Gio.FileCreateFlags.REPLACE_DESTINATION,
+                     None))
+                stream = m3u.open_readwrite(None)
+            except Exception as e:
+                Logger.error("DeviceWidget::_copy_to_device(): %s" % e)
+            track_ids = App().playlists.get_track_ids(playlist)
             # Start copying
             for track_id in track_ids:
                 if track_id is None:
                     continue
-                if not self._syncing:
-                    self._fraction = 1.0
-                    self.__in_thread = False
-                    return
                 track = Track(track_id)
-                if track.uri.startswith("https:"):
-                    continue
-                Logger.debug("MtpSync::__copy_to_device(): %s" % track.uri)
-                album_name = escape(track.album_name.lower())
-                is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
-                if is_compilation:
-                    on_device_album_uri = "%s/%s" %\
-                                          (self._uri,
-                                           album_name)
-                else:
-                    artists = escape(", ".join(track.album.artists).lower())
-                    on_device_album_uri = "%s/%s_%s" %\
-                                          (self._uri,
-                                           artists,
-                                           album_name)
-
-                d = Gio.File.new_for_uri(on_device_album_uri)
-                if not d.query_exists():
-                    self.__retry(d.make_directory_with_parents, (None,))
-                # Copy album art
-                art = App().art.get_album_artwork_uri(track.album)
-                Logger.debug("MtpSync::__copy_to_device(): %s" % art)
-                if art is not None:
-                    src_art = Gio.File.new_for_uri(art)
-                    art_uri = "%s/cover.jpg" % on_device_album_uri
-                    # To be sure to get uri correctly escaped for Gio
-                    f = Gio.File.new_for_uri(art_uri)
-                    self.__copied_art_uris.append(f.get_uri())
-                    dst_art = Gio.File.new_for_uri(art_uri)
-                    if not dst_art.query_exists():
-                        self.__retry(src_art.copy,
-                                     (dst_art, Gio.FileCopyFlags.OVERWRITE,
-                                      None, None))
-                f = Gio.File.new_for_uri(track.uri)
-                track_name = escape(f.get_basename())
-                # Check extension, if not mp3, convert
-                m = match(r".*(\.[^.]*)", track.uri)
-                ext = m.group(1)
-                convert_ext = self.__EXTENSION[self.mtp_syncdb.encoder]
-                if convert_ext is not None and ext != convert_ext:
-                    convertion_needed = True
-                    track_name = track_name.replace(ext, convert_ext)
-                else:
-                    convertion_needed = False
-                src_track = Gio.File.new_for_uri(track.uri)
-                info = src_track.query_info("time::modified",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
-                # Prefix track with mtime to make sure updating it later
-                mtime = info.get_attribute_uint64("time::modified")
-                dst_uri = "%s/%s" % (on_device_album_uri,
-                                     track_name)
+                (track_name, artists, album_name, is_compilation) =\
+                    self.__sync_track_id(track)
                 if stream is not None:
                     if is_compilation:
                         line = "%s/%s\n" %\
@@ -549,45 +577,6 @@ class MtpSync:
                              track_name)
                     self.__retry(stream.get_output_stream().write,
                                  (line.encode(encoding="UTF-8"), None))
-                dst_track = Gio.File.new_for_uri(dst_uri)
-                if not dst_track.query_exists() or\
-                    self.__mtp_syncdb.get_mtime(
-                        dst_track.get_uri()) < mtime:
-                    if convertion_needed:
-                        convert_uri = "file:///tmp/%s" % track_name
-                        convert_file = Gio.File.new_for_uri(convert_uri)
-                        pipeline = self.__convert(src_track,
-                                                  convert_file)
-                        # Check if encoding is finished
-                        if pipeline is not None:
-                            bus = pipeline.get_bus()
-                            bus.add_signal_watch()
-                            bus.connect("message::eos", self.__on_bus_eos)
-                            self.__encoding = True
-                            while self.__encoding and self._syncing:
-                                sleep(1)
-                            bus.disconnect_by_func(self.__on_bus_eos)
-                            pipeline.set_state(Gst.State.PAUSED)
-                            pipeline.set_state(Gst.State.READY)
-                            pipeline.set_state(Gst.State.NULL)
-                            self.__retry(
-                                convert_file.move,
-                                (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                                 None, None))
-                            # To be sure
-                            try:
-                                convert_file.delete(None)
-                            except:
-                                pass
-                    else:
-                        self.__retry(src_track.copy,
-                                     (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                                      None, None))
-                    self.__mtp_syncdb.set_mtime(dst_track.get_uri(), mtime)
-                else:
-                    self.__done += 1
-                self.__done += 1
-                self._fraction = self.__done / self.__total
             if stream is not None:
                 stream.close()
             if m3u is not None:
@@ -604,15 +593,11 @@ class MtpSync:
         track_uris = []
         track_ids = []
 
-        # Get tracks
-        if playlists and playlists[0] == Type.NONE:
-            track_ids = []
-            album_ids = App().albums.get_synced_ids()
-            for album_id in album_ids:
-                track_ids += App().albums.get_track_ids(album_id)
-        else:
-            for playlist in playlists:
-                track_ids += App().playlists.get_track_ids(playlist)
+        album_ids = App().albums.get_synced_ids()
+        for album_id in album_ids:
+            track_ids += App().albums.get_track_ids(album_id)
+        for playlist in playlists:
+            track_ids += App().playlists.get_track_ids(playlist)
 
         # Get tracks uris
         for track_id in track_ids:
@@ -621,8 +606,6 @@ class MtpSync:
                 self.__in_thread = False
                 return
             track = Track(track_id)
-            if track.uri.startswith("https:"):
-                continue
             album_name = escape(track.album_name.lower())
             if track.album.artist_ids[0] == Type.COMPILATIONS:
                 on_device_album_uri = "%s/%s" % (self._uri,

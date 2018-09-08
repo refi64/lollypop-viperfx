@@ -566,6 +566,31 @@ class Container(Gtk.Overlay):
             self.__list_two.populate(items)
             self.__restore_list_two_state()
 
+    def __update_list_device(self, selection_list):
+        """
+            Setup list for device
+            @param list as SelectionList
+            @thread safe
+        """
+        def load():
+            artists = App().artists.get()
+            compilations = App().albums.get_compilation_ids()
+            return (artists, compilations)
+
+        def setup(artists, compilations):
+            items = [(Type.ALL, _("Synced albums"))]
+            items.append((Type.PLAYLISTS, _("Playlists")))
+            if compilations:
+                items.append((Type.COMPILATIONS, _("Compilations")))
+                items.append((Type.SEPARATOR, ""))
+            items += artists
+            selection_list.mark_as(SelectionList.Type.ARTISTS)
+            selection_list.populate(items)
+            selection_list.select_ids([Type.ALL])
+        loader = Loader(target=load, view=selection_list,
+                        on_finished=lambda r: setup(*r))
+        loader.start()
+
     def __stop_current_view(self):
         """
             Stop current view
@@ -602,7 +627,6 @@ class Container(Gtk.Overlay):
             files = DeviceView.get_files(device.uri)
             if files:
                 device_view = DeviceView(device)
-                device_view.populate()
                 self.__stack.add_named(device_view, device.uri)
             else:
                 device_view = DeviceLocked()
@@ -884,6 +908,8 @@ class Container(Gtk.Overlay):
             if not list_two_about_to_do_selection:
                 view = self.__get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
+            self.__update_list_device(self.__list_two)
+            self.__list_two.show()
             view = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
@@ -939,6 +965,11 @@ class Container(Gtk.Overlay):
         genre_ids = self.__list_one.selected_ids
         selected_ids = self.__list_two.selected_ids
         if not selected_ids or not genre_ids:
+            return
+        # Just update the view
+        if Type.DEVICES - 999 < genre_ids[0] < Type.DEVICES:
+            view = self.__stack.get_visible_child()
+            view.populate(selection_list.selected_ids)
             return
         if genre_ids[0] == Type.PLAYLISTS:
             view = self.__get_view_playlists(selected_ids)
