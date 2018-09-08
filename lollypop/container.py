@@ -941,6 +941,7 @@ class Container(Gtk.Overlay):
                     and self.__list_two.is_visible()\
                     and (
                         selected_ids[0] >= 0 or
+                        Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES or
                         selected_ids[0] in [Type.PLAYLISTS,
                                             Type.YEARS,
                                             Type.ALL]):
@@ -968,8 +969,12 @@ class Container(Gtk.Overlay):
             return
         # Just update the view
         if Type.DEVICES - 999 < genre_ids[0] < Type.DEVICES:
-            view = self.__stack.get_visible_child()
-            view.populate(selection_list.selected_ids)
+            from lollypop.view_device import DeviceView
+            # Search for an existing view
+            for view in self.__stack.get_children():
+                if isinstance(view, DeviceView):
+                    view.populate(selection_list.selected_ids)
+            view = self.__get_view_device(genre_ids[0])
             return
         if genre_ids[0] == Type.PLAYLISTS:
             view = self.__get_view_playlists(selected_ids)
