@@ -10,65 +10,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
-
-from lollypop.view import LazyLoadingView
+from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_decade import AlbumDecadeWidget
 
 
-class AlbumsDecadeBoxView(LazyLoadingView):
+class AlbumsDecadeBoxView(FlowBoxView):
     """
-        Show decades in a box
+        Show decades in a FlowBox
     """
 
     def __init__(self):
         """
-            Init album view
+            Init decade view
         """
-        LazyLoadingView.__init__(self, True)
-        self._box = Gtk.FlowBox()
-        self._box.set_filter_func(self._filter_func)
-        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
-        # Allow lazy loading to not jump up and down
-        self._box.set_homogeneous(True)
-        self._box.set_max_children_per_line(1000)
-        self._box.show()
-
-        self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.set_property("margin", 5)
-        self._scrolled.set_property("expand", True)
-
-        self.add(self._scrolled)
-
-    def populate(self, decades):
-        """
-            Populate decades
-            @param decades as [[int]]
-        """
-        GLib.idle_add(self.__add_decade, decades)
-
-#######################
-# PROTECTED           #
-#######################
-
-#######################
-# PRIVATE             #
-#######################
-    def __add_decade(self, decades):
-        """
-            Add decade to the view
-            Start lazy loading
-            @param decades as [[int]]
-        """
-        if self._lazy_queue is None:
-            return
-        if decades:
-            widget = AlbumDecadeWidget(decades.pop(0))
-            self._box.insert(widget, -1)
-            widget.show()
-            self._lazy_queue.append(widget)
-            GLib.idle_add(self.__add_decade, decades)
-        else:
-            GLib.idle_add(self.lazy_loading)
-            if self._viewport.get_child() is None:
-                self._viewport.add(self._box)
+        FlowBoxView.__init__(self)
+        self._widget_class = AlbumDecadeWidget

@@ -10,16 +10,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
-from lollypop.view import LazyLoadingView
+from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.define import ArtSize
 from lollypop.controller_view import ViewController
 
 
-class AlbumsBoxView(LazyLoadingView, ViewController):
+class AlbumsBoxView(FlowBoxView, ViewController):
     """
         Show albums in a box
     """
@@ -30,34 +30,14 @@ class AlbumsBoxView(LazyLoadingView, ViewController):
             @param genre ids as [int]
             @param artist ids as [int]
         """
-        LazyLoadingView.__init__(self, True)
+        FlowBoxView.__init__(self)
         ViewController.__init__(self)
+        self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
-
-        self._box = Gtk.FlowBox()
-        self._box.set_filter_func(self._filter_func)
-        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.connect("child-activated", self.__on_album_activated)
-        # Allow lazy loading to not jump up and down
-        self._box.set_homogeneous(True)
-        self._box.set_max_children_per_line(1000)
-        self._box.show()
-
-        self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.set_property("margin", 5)
-        self._scrolled.set_property("expand", True)
-
-        self.add(self._scrolled)
         self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("album")
-
-    def populate(self, albums):
-        """
-            Populate albums
-            @param albums as [Album]
-        """
-        GLib.idle_add(self.__add_albums, albums)
 
 #######################
 # PROTECTED           #
@@ -79,31 +59,20 @@ class AlbumsBoxView(LazyLoadingView, ViewController):
         for child in self._box.get_children():
             child.set_artwork(album_id)
 
-#######################
-# PRIVATE             #
-#######################
-    def __add_albums(self, albums):
+    def _add_items(self, albums, *args):
         """
             Add albums to the view
             Start lazy loading
             @param [album ids as int]
         """
-        if self._lazy_queue is None:
-            return
-        if albums:
-            widget = AlbumSimpleWidget(albums.pop(0),
-                                       self.__genre_ids,
-                                       self.__artist_ids)
+        widget = FlowBoxView._add_items(self, albums,
+                                        self.__genre_ids, self.__artist_ids)
+        if widget is not None:
             widget.connect("overlayed", self._on_overlayed)
-            self._box.insert(widget, -1)
-            widget.show()
-            self._lazy_queue.append(widget)
-            GLib.idle_add(self.__add_albums, albums)
-        else:
-            GLib.idle_add(self.lazy_loading)
-            if self._viewport.get_child() is None:
-                self._viewport.add(self._box)
 
+#######################
+# PRIVATE             #
+#######################
     def __on_album_activated(self, flowbox, album_widget):
         """
             Show Context view for activated album

@@ -118,8 +118,7 @@ class Container(Gtk.Overlay):
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
-        if hasattr(current, "disable_overlay"):
-            current.disable_overlay()
+        current.disable_overlay()
 
     def show_playlist_manager(self, object):
         """
@@ -324,10 +323,12 @@ class Container(Gtk.Overlay):
     @property
     def view(self):
         """
-            Disable overlays
+            Get current view
         """
         view = self.__stack.get_visible_child()
         if view is not None and not isinstance(view, View):
+            # Should have commented this, why?
+            # FIXME
             for child in self.__stack.get_children():
                 if isinstance(child, View):
                     view = child
