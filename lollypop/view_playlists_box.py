@@ -11,10 +11,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.view_flowbox import FlowBoxView
-from lollypop.widgets_albums_decade import AlbumsDecadeWidget
+# from lollypop.widgets_album_decade import AlbumDecadeWidget
 
 
-class AlbumsDecadeBoxView(FlowBoxView):
+class PlaylistsBoxView(FlowBoxView):
     """
         Show decades in a FlowBox
     """
@@ -24,4 +24,4 @@ class AlbumsDecadeBoxView(FlowBoxView):
             Init decade view
         """
         FlowBoxView.__init__(self)
-        self._widget_class = AlbumsDecadeWidget
+        self._widget_class = None
