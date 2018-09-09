@@ -99,13 +99,10 @@
                   </object>
                 </child>
                 <style>
-                  <class name="device-widget"/>
+                  <class name="invisible-widget"/>
                 </style>
               </object>
             </child>
-            <style>
-              <class name="device-widget"/>
-            </style>
           </object>
           <packing>
             <property name="index">-1</property>

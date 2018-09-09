@@ -538,7 +538,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
         builder.connect_signals(self)
 
-        self.add(builder.get_object("widget"))
+        widget = builder.get_object("widget")
+        self.add(widget)
+        self.connect("size-allocate", self.__on_size_allocate, widget)
 
         if object is not None:
             renderer0 = Gtk.CellRendererToggle()
@@ -805,6 +807,16 @@ class PlaylistsManagerWidget(Gtk.Bin):
         for item in self.__model:
             item[0] = not selected
             self.__set_current_object(item[3], item[0])
+
+    def __on_size_allocate(self, widget, allocation, child_widget):
+        """
+            Set child widget size
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+            @param child_widget as Gtk.Widget
+        """
+        width = max(400, allocation.width / 2)
+        child_widget.set_size_request(width, -1)
 
 
 class PlaylistEditWidget(Gtk.Bin):
