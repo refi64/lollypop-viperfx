@@ -118,7 +118,7 @@ class DeviceView(View):
         if selected_ids:
             if child is not None and isinstance(child, Gtk.Label):
                 child.destroy()
-            self._viewport.add(self.__device_widget)
+                self._viewport.add(self.__device_widget)
         elif child is None:
             label = Gtk.Label.new(
                 _("This will remove some files on your device!"))
