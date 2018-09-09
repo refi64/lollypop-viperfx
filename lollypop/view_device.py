@@ -99,13 +99,11 @@ class DeviceView(View):
         _("Synchronize")
         self.__syncing_btn.set_label(_("Synchronize %s") % "")
         builder.connect_signals(self)
-        grid = builder.get_object("device")
-        self.__warning = builder.get_object("warning")
-        self.add(grid)
         self.__device_widget = DeviceManagerWidget(self)
         self.__device_widget.connect("sync-finished", self.__on_sync_finished)
         self.__device_widget.show()
-        self._viewport.add(self.__device_widget)
+        grid = builder.get_object("device")
+        self.add(grid)
         self.add(self._scrolled)
         self.__sanitize_non_mtp()
 
@@ -115,7 +113,20 @@ class DeviceView(View):
             @param selected_ids as [int]
             @thread safe
         """
+        child = self._viewport.get_child()
         self.__selected_ids = selected_ids
+        if selected_ids:
+            if child is not None and isinstance(child, Gtk.Label):
+                child.destroy()
+            self._viewport.add(self.__device_widget)
+        elif child is None:
+            label = Gtk.Label.new(
+                _("This will remove some files on your device!"))
+            label.get_style_context().add_class("lyrics-x-large")
+            label.get_style_context().add_class("lyrics")
+            label.set_vexpand(True)
+            label.show()
+            self._viewport.add(label)
         files = DeviceView.get_files(self.__device.uri)
         if files:
             GLib.idle_add(self.__set_combo_text, files)
@@ -170,13 +181,9 @@ class DeviceView(View):
         self.__timeout_id = None
         text = combo.get_active_text()
         uri = "%s%s/Music" % (self.__device.uri, text)
-        already_synced = Gio.File.new_for_uri(uri + "/unsync")
-        if already_synced.query_exists():
-            self.__warning.hide()
-        else:
-            self.__warning.show()
         self.__device_widget.set_uri(uri)
-        self.__device_widget.populate(self.__selected_ids)
+        if self.__selected_ids:
+            self.__device_widget.populate(self.__selected_ids)
 
 #######################
 # PRIVATE             #

@@ -630,6 +630,7 @@ class Container(Gtk.Overlay):
             else:
                 device_view = DeviceLocked()
                 self.__stack.add(device_view)
+            device_view.populate()
             device_view.show()
         return device_view
 
