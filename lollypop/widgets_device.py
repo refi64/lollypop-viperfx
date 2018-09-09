@@ -49,6 +49,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
         self.__builder.add_from_resource(
             "/org/gnome/Lollypop/DeviceManagerWidget.ui")
         widget = self.__builder.get_object("widget")
+        self.connect("size-allocate", self.__on_size_allocate, widget)
+
         self.__error_label = self.__builder.get_object("error-label")
         self.__switch_albums = self.__builder.get_object("switch_albums")
 
@@ -348,3 +350,13 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
         self.__model.set_value(iterator, 0, toggle)
         album_id = self.__model.get_value(iterator, 2)
         self.__populate_albums_playlist(album_id, toggle)
+
+    def __on_size_allocate(self, widget, allocation, child_widget):
+        """
+            Set child widget size
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+            @param child_widget as Gtk.Widget
+        """
+        width = max(400, allocation.width / 2)
+        child_widget.set_size_request(width, -1)
