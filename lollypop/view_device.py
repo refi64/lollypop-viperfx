@@ -125,6 +125,7 @@ class DeviceView(View):
             label.get_style_context().add_class("lyrics-x-large")
             label.get_style_context().add_class("lyrics")
             label.set_vexpand(True)
+            label.set_hexpand(True)
             label.show()
             self._viewport.add(label)
         files = DeviceView.get_files(self.__device.uri)
