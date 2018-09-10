@@ -70,7 +70,7 @@ class PlaylistsManagerView(FlowBoxView):
         """
         widget = FlowBoxView._add_items(self, playlist_ids)
         if widget is not None:
-            widget.connect("overlayed", self._on_overlayed)
+            widget.connect("overlayed", self.on_overlayed)
 
     def __on_button_clicked(self, button):
         """

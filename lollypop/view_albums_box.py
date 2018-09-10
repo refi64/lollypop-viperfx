@@ -68,7 +68,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         widget = FlowBoxView._add_items(self, album_ids,
                                         self.__genre_ids, self.__artist_ids)
         if widget is not None:
-            widget.connect("overlayed", self._on_overlayed)
+            widget.connect("overlayed", self.on_overlayed)
 
 #######################
 # PRIVATE             #

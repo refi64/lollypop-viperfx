@@ -182,8 +182,7 @@ class Window(Gtk.ApplicationWindow):
         """
         if event.type == Gdk.EventType.FOCUS_CHANGE and\
                 self.__container.view is not None:
-            if hasattr(self.__container.view, "disable_overlay"):
-                self.__container.view.disable_overlay()
+            self.__container.view.disable_overlay()
             App().player.preview.set_state(Gst.State.NULL)
         Gtk.ApplicationWindow.do_event(self, event)
 

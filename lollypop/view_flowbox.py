@@ -26,7 +26,6 @@ class FlowBoxView(LazyLoadingView):
         """
         LazyLoadingView.__init__(self, True)
         self._widget_class = None
-        self.__overlayed = None
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -47,13 +46,6 @@ class FlowBoxView(LazyLoadingView):
             @param items
         """
         GLib.idle_add(self._add_items, items)
-
-    def disable_overlay(self):
-        """
-            Disable overlay widget
-        """
-        if self.__overlayed is not None:
-            self.__overlayed.show_overlay(False)
 
 #######################
 # PROTECTED           #
@@ -79,19 +71,6 @@ class FlowBoxView(LazyLoadingView):
             if self._viewport.get_child() is None:
                 self._viewport.add(self._box)
         return None
-
-    def _on_overlayed(self, widget, value):
-        """
-            Keep overlayed widget, clean previously overlayed
-            @param widget as AlbumWidget
-            @param value as bool
-        """
-        if value:
-            if self.__overlayed is not None:
-                self.__overlayed.show_overlay(False)
-            self.__overlayed = widget
-        elif self.__overlayed == widget:
-            self.__overlayed = None
 #######################
 # PRIVATE             #
 #######################

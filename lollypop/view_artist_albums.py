@@ -204,7 +204,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
                                          self._artist_ids,
                                          self.__art_size)
             widget.set_filter_func(self._filter_func)
-            widget.connect("overlayed", self._on_overlayed)
+            widget.connect("overlayed", self.on_overlayed)
             self._lazy_queue.append(widget)
             widget.show()
             self._album_box.add(widget)

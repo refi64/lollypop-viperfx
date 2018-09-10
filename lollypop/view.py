@@ -24,6 +24,7 @@ class View(Gtk.Grid):
             @param filtered as bool
         """
         Gtk.Grid.__init__(self)
+        self.__overlayed = None
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
@@ -76,6 +77,26 @@ class View(Gtk.Grid):
             self.__search_bar.set_search_mode(enable)
             if enable:
                 self.__search_entry.grab_focus()
+
+    def disable_overlay(self):
+        """
+            Disable overlay widget
+        """
+        if self.__overlayed is not None:
+            self.__overlayed.show_overlay(False)
+
+    def on_overlayed(self, widget, value):
+        """
+            Disable overlay on previous overlayed widget
+            @param widget as AlbumWidget
+            @param value as bool
+        """
+        if value:
+            if self.__overlayed is not None:
+                self.__overlayed.show_overlay(False)
+            self.__overlayed = widget
+        elif self.__overlayed == widget:
+            self.__overlayed = None
 
     @property
     def filtered(self):
@@ -158,8 +179,7 @@ class View(Gtk.Grid):
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            if hasattr(self, "disable_overlay"):
-                self.disable_overlay()
+            self.disable_overlay()
 
 
 class LazyLoadingView(View):
