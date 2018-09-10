@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App, Type, ArtSize
+from lollypop.define import App, ArtSize
 from lollypop.objects import Track
 from lollypop.controller_view import ViewController
 
@@ -49,19 +49,12 @@ class PlaylistsView(View, ViewController):
         builder.get_object("title").set_label(
             ", ".join(App().playlists.get_names(playlist_ids)))
 
-        self.__edit_button = builder.get_object("edit-button")
         self.__jump_button = builder.get_object("jump-button")
         split_button = builder.get_object("split-button")
         if editable:
             split_button.set_active(not App().settings.get_value("split-view"))
         else:
             split_button.hide()
-
-        if len(playlist_ids) > 1 or (
-           playlist_ids[0] < 0 and playlist_ids[0] not in [Type.LOVED,
-                                                           Type.NOPARTY]) or\
-                not editable:
-            self.__edit_button.hide()
 
         self.__playlists_widget = PlaylistsWidget(playlist_ids)
         self.__playlists_widget.set_filter_func(self._filter_func)
