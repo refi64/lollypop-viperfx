@@ -262,3 +262,20 @@ class LazyLoadingView(View):
         if self._scroll_value != scroll_value:
             return
         GLib.idle_add(self.lazy_loading, widgets, self._scroll_value)
+
+
+class MessageView(View):
+    """
+        Show a message to user
+    """
+
+    def __init__(self, text):
+        """
+            Init view
+            @param text as str
+        """
+        View.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
+        self.add(builder.get_object("message"))
+        builder.get_object("label").set_text(text)

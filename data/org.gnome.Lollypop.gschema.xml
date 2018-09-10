@@ -49,7 +49,7 @@
             <description></description>
         </key>
         <key type="ai" name="shown-playlists">
-            <default>[-2, -997, -3, -9]</default>
+            <default>[-2, -3]</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>

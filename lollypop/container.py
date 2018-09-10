@@ -22,7 +22,7 @@ from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
-from lollypop.view import View
+from lollypop.view import View, MessageView
 from lollypop.progressbar import ProgressBar
 
 
@@ -589,7 +589,7 @@ class Container(Gtk.Overlay):
             @param device id as int
             @return View
         """
-        from lollypop.view_device import DeviceView, DeviceLocked
+        from lollypop.view_device import DeviceView
         self.__stop_current_view()
         device = self.__devices[device_id]
         device_view = None
@@ -600,9 +600,6 @@ class Container(Gtk.Overlay):
                 if child.device.uri == device.uri:
                     device_view = child
                     break
-            elif isinstance(child, DeviceLocked):
-                device_view = child
-                break
 
         # If no view available, get a new one
         if device_view is None:
@@ -611,7 +608,7 @@ class Container(Gtk.Overlay):
                 device_view = DeviceView(device)
                 self.__stack.add_named(device_view, device.uri)
             else:
-                device_view = DeviceLocked()
+                device_view = MessageView(_("Please unlock your device"))
                 self.__stack.add(device_view)
             device_view.populate()
             device_view.show()
@@ -798,8 +795,12 @@ class Container(Gtk.Overlay):
         from lollypop.radios import Radios
         self.__stop_current_view()
         radios = Radios()
-        view = RadiosView(radios)
-        view.populate(radios.get_ids())
+        radio_ids = radios.get_ids()
+        if radio_ids:
+            view = RadiosView(radios)
+            view.populate(radio_ids)
+        else:
+            view = MessageView(_("No favorite radios"))
         view.show()
         return view
 

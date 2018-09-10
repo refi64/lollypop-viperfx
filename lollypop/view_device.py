@@ -21,22 +21,6 @@ from lollypop.logger import Logger
 from lollypop.widgets_device import DeviceManagerWidget
 
 
-class DeviceLocked(View):
-    """
-        Show a message about locked device to users
-    """
-
-    def __init__(self):
-        """
-            Init view
-        """
-        View.__init__(self)
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
-        self.add(builder.get_object("message"))
-        builder.get_object("label").set_text(_("Please unlock your device"))
-
-
 class DeviceView(View):
     """
         Playlist synchronisation to MTP
