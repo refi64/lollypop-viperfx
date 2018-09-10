@@ -462,8 +462,12 @@ class PlaylistRow(Row):
                 self.get_scale_factor())
             self.__cover.set_from_surface(surface)
             self.__cover.show()
+            self.__cover.set_margin_top(2)
+            self.set_margin_bottom(2)
             self.__header.show_all()
         else:
+            self.__cover.set_margin_top(0)
+            self.set_margin_bottom(0)
             self.__cover.set_tooltip_text("")
             self.__cover.clear()
             self.__cover.hide()
