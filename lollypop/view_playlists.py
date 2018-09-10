@@ -195,13 +195,6 @@ class PlaylistsView(View, ViewController):
         if y is not None:
             self._scrolled.get_vadjustment().set_value(y)
 
-    def _on_edit_button_clicked(self, button):
-        """
-            Edit playlist
-            @param button as Gtk.Button
-        """
-        App().window.container.show_playlist_editor(self.__playlist_ids[0])
-
     def _on_save_button_clicked(self, button):
         """
             Save playlist as file

@@ -135,21 +135,6 @@ class Container(Gtk.Overlay):
         self.__stack.set_visible_child(view)
         current.disable_overlay()
 
-    def show_playlist_editor(self, playlist_id):
-        """
-            Show playlist editor for playlist
-            Current view stay present in ViewContainer
-            @param playlist id as int
-            @param playlist name as str
-        """
-        from lollypop.view_playlists import PlaylistEditView
-        view = PlaylistEditView(playlist_id)
-        view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
-        view.populate()
-
     def get_view_width(self):
         """
             Return view width
