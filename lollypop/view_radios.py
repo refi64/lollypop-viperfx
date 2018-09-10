@@ -33,8 +33,6 @@ class RadiosView(FlowBoxView, ViewController):
         ViewController.__init__(self)
         self._widget_class = RadioWidget
         self.__radios = radios
-        self.__radios.connect("radios-changed",
-                              self.__on_radios_changed)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/RadiosView.ui")
         builder.connect_signals(self)
@@ -62,7 +60,7 @@ class RadiosView(FlowBoxView, ViewController):
             Show popover for adding a new radio
             @param widget as Gtk.Widget
         """
-        popover = RadioPopover("", self.__radios_manager)
+        popover = RadioPopover("", self.__radios)
         popover.set_relative_to(widget)
         popover.show()
 
@@ -86,41 +84,6 @@ class RadiosView(FlowBoxView, ViewController):
 #######################
 # PRIVATE             #
 #######################
-    def __on_radios_changed(self, manager):
-        """
-            Update radios
-            @param manager as PlaylistManager
-        """
-        radios_name = []
-        currents = []
-        new_name = None
-        old_child = None
-
-        # Get radios name
-        for (name, url) in manager.get():
-            radios_name.append(name)
-
-        # Get currents widget less removed
-        for child in self._box.get_children():
-            if child.title not in radios_name:
-                old_child = child
-            else:
-                currents.append(child.title)
-
-        # Add the new radio
-        for name in radios_name:
-            if name not in currents:
-                new_name = name
-                break
-
-        # Rename widget
-        if new_name is not None:
-            if old_child is not None:
-                old_child.set_name(new_name)
-        # Delete widget
-        elif old_child is not None:
-            old_child.destroy()
-
     def __on_logo_changed(self, player, name):
         """
             Update radio logo

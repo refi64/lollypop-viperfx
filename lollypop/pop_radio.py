@@ -120,6 +120,7 @@ class RadioPopover(Gtk.Popover):
             f = Gio.File.new_for_path(store + "/%s.png" % self.__name)
             if f.query_exists():
                 f.delete()
+            App().window.container.reload_view()
 
     def _on_entry_changed(self, entry):
         """
@@ -256,7 +257,7 @@ class RadioPopover(Gtk.Popover):
         """
         # Save radio
         self.__save_radio()
-        GLib.idle_add(self.destroy)
+        App().window.container.reload_view()
 
     def __on_google_content_loaded(self, uri, loaded, content):
         """
@@ -279,5 +280,5 @@ class RadioPopover(Gtk.Popover):
         App().art.save_radio_artwork(pixbuf, self.__name)
         App().art.clean_radio_cache(self.__name)
         App().art.radio_artwork_update(self.__name)
-        self.hide()
         self._streams = {}
+        self.popdown()

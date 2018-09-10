@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
   <object class="GtkImage" id="image2">
@@ -153,6 +153,7 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
+        <property name="width">2</property>
       </packing>
     </child>
     <child>
@@ -171,9 +172,6 @@
         <property name="left_attach">1</property>
         <property name="top_attach">0</property>
       </packing>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
   <object class="GtkGrid" id="widget">
