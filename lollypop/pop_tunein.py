@@ -295,6 +295,7 @@ class TuneinPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self.__cancellable.cancel()
+        GLib.timeout_add(500, App().window.container.reload_view)
 
     def __on_item_content(self, uri, status, content, name):
         """
