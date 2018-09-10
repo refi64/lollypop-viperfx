@@ -25,6 +25,7 @@ from lollypop.logger import Logger
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
 from lollypop.shown import ShownPlaylists
+from lollypop.database_upgrade import DatabasePlaylistsUpgrade
 
 
 class Playlists(GObject.GObject):
@@ -56,13 +57,19 @@ class Playlists(GObject.GObject):
         self.thread_lock = Lock()
         GObject.GObject.__init__(self)
         self.LOVED = _("Loved tracks")
+        upgrade = DatabasePlaylistsUpgrade()
         # Create db schema
-        try:
-            with SqlCursor(self) as sql:
-                sql.execute(self.__create_playlists)
-                sql.execute(self.__create_tracks)
-        except:
-            pass
+        f = Gio.File.new_for_path(self._DB_PATH)
+        if not f.query_exists():
+            try:
+                with SqlCursor(self) as sql:
+                    sql.execute(self.__create_playlists)
+                    sql.execute(self.__create_tracks)
+                    sql.execute("PRAGMA user_version=%s" % upgrade.version)
+            except:
+                pass
+        else:
+            upgrade.upgrade(self)
 
     def add(self, name):
         """
@@ -314,6 +321,45 @@ class Playlists(GObject.GObject):
             else:
                 names.append(self.get_name(playlist_id))
         return names
+
+    def get_synced(self, playlist_id):
+        """
+            True if playlist synced
+            @param playlist_id as int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT synced\
+                                 FROM playlists\
+                                 WHERE rowid=?", (playlist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return False
+
+    def get_synced_ids(self):
+        """
+            Return availables synced playlists
+            @return [int]
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM playlists\
+                                  WHERE synced=1\
+                                  ORDER BY name\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
+            return list(itertools.chain(*result))
+
+    def set_synced(self, playlist_id, synced):
+        """
+            Mark playlist as synced
+            @param playlist_id as int
+            @param synced as bool
+        """
+        with SqlCursor(self) as sql:
+            sql.execute("UPDATE playlists\
+                        SET synced=?\
+                        WHERE rowid=?",
+                        (synced, playlist_id))
 
     def clear(self, playlist_id, notify=True):
         """

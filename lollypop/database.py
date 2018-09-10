@@ -17,7 +17,7 @@ from threading import Lock
 
 from lollypop.define import App
 from lollypop.objects import Album
-from lollypop.database_upgrade import DatabaseUpgrade
+from lollypop.database_upgrade import DatabaseAlbumsUpgrade
 from lollypop.sqlcursor import SqlCursor
 from lollypop.logger import Logger
 from lollypop.localized import LocalizedCollation
@@ -94,7 +94,7 @@ class Database:
         """
         self.thread_lock = Lock()
         f = Gio.File.new_for_path(self.DB_PATH)
-        upgrade = DatabaseUpgrade()
+        upgrade = DatabaseAlbumsUpgrade()
         if not f.query_exists():
             try:
                 d = Gio.File.new_for_path(self.__LOCAL_PATH)

@@ -238,11 +238,10 @@ class MtpSync:
         """
         pass
 
-    def _sync(self, playlists):
+    def _sync(self):
         """
             Sync playlists with device. If playlists contains Type.NONE,
             sync albums marked as to be synced
-            @param playlists as [str]
         """
         try:
             self.__in_thread = True
@@ -255,7 +254,7 @@ class MtpSync:
             self.__total = 1
             self.__done = 0
             self._fraction = 0.0
-            plnames = []
+            playlists = []
 
             GLib.idle_add(App().window.container.progress.set_fraction,
                           0, self)
@@ -265,9 +264,9 @@ class MtpSync:
             for album_id in album_ids:
                 self.__total += len(App().albums.get_track_ids(album_id))
             # New tracks for playlists
-            for playlist in playlists:
-                plnames.append(App().playlists.get_name(playlist))
-                self.__total += len(App().playlists.get_tracks(playlist))
+            for playlist_id in App().playlists.get_synced_ids():
+                playlists.append(App().playlists.get_name(playlist_id))
+                self.__total += len(App().playlists.get_tracks(playlist_id))
 
             # Old tracks
             try:
@@ -297,7 +296,7 @@ class MtpSync:
                 None)
             for info in infos:
                 name = info.get_name()
-                if name.endswith(".m3u") and name[:-4] not in plnames:
+                if name.endswith(".m3u") and name[:-4] not in playlists:
                     f = infos.get_child(info)
                     self.__retry(f.delete, (None,))
 
@@ -434,7 +433,7 @@ class MtpSync:
             self._fraction = 1.0
             self.__in_thread = False
             return
-        Logger.debug("MtpSync::__copy_to_device(): %s" % track.uri)
+        Logger.debug("MtpSync::__sync_track_id(): %s" % track.uri)
         album_name = escape(track.album_name.lower())
         is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
         if is_compilation:
@@ -453,7 +452,7 @@ class MtpSync:
             self.__retry(d.make_directory_with_parents, (None,))
         # Copy album art
         art = App().art.get_album_artwork_uri(track.album)
-        Logger.debug("MtpSync::__copy_to_device(): %s" % art)
+        Logger.debug("MtpSync::__sync_track_id(): %s" % art)
         if art is not None:
             src_art = Gio.File.new_for_uri(art)
             art_uri = "%s/cover.jpg" % on_device_album_uri
@@ -543,10 +542,9 @@ class MtpSync:
             m3u = None
             stream = None
             try:
-                playlist_name = App().playlists.get_name(playlist)
                 # Create playlist
                 m3u = Gio.File.new_for_path(
-                    "/tmp/lollypop_%s.m3u" % (playlist_name,))
+                    "/tmp/lollypop_%s.m3u" % (playlist,))
                 self.__retry(
                     m3u.replace_contents,
                     (b"#EXTM3U\n",
@@ -556,7 +554,7 @@ class MtpSync:
                      None))
                 stream = m3u.open_readwrite(None)
             except Exception as e:
-                Logger.error("DeviceWidget::_copy_to_device(): %s" % e)
+                Logger.error("DeviceWidget::__sync_playlists(): %s" % e)
             track_ids = App().playlists.get_track_ids(playlist)
             # Start copying
             for track_id in track_ids:
@@ -580,9 +578,9 @@ class MtpSync:
             if stream is not None:
                 stream.close()
             if m3u is not None:
-                playlist_name = escape(playlist_name)
+                playlist = escape(playlist)
                 dst = Gio.File.new_for_uri(
-                    self._uri + "/" + playlist_name + ".m3u")
+                    self._uri + "/" + playlist + ".m3u")
                 self.__retry(m3u.move,
                              (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 

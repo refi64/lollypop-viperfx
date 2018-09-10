@@ -100,7 +100,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
         if selected_ids[0] == Type.PLAYLISTS:
             playlists = [(Type.LOVED, App().playlists.LOVED)]
             playlists += App().playlists.get()
-            self.__append_playlists(playlists)
+            synced_ids = App().playlists.get_synced_ids()
+            self.__append_playlists(playlists, synced_ids)
             self.__column1.set_visible(False)
             self.__column2.set_title(_("Playlists"))
         else:
@@ -155,13 +156,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
         self._syncing = True
         App().window.container.progress.add(self)
         self.__menu.set_sensitive(False)
-        playlists = []
         self.__view.set_sensitive(False)
-        for item in self.__model:
-            if item[0]:
-                playlists.append(item[2])
         helper = TaskHelper()
-        helper.run(self._sync, playlists)
+        helper.run(self._sync)
 
     def cancel_sync(self):
         """
@@ -270,33 +267,17 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
 #######################
 # PRIVATE             #
 #######################
-    def __append_playlists(self, playlists, files_list=[]):
+    def __append_playlists(self, playlists, synced_ids):
         """
             Append a playlist
             @param playlists as [(int, str)]
-            @internal files_list
+            @param synced_ids as [int]
         """
         if playlists and not self.__stop:
-            # Cache directory playlists
-            if not files_list:
-                try:
-                    d = Gio.File.new_for_uri(self._uri)
-                    infos = d.enumerate_children(
-                        "standard::name,standard::type",
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
-                    for info in infos:
-                        if info.get_file_type() != Gio.FileType.DIRECTORY:
-                            f = infos.get_child(info)
-                            if f.get_uri().endswith(".m3u"):
-                                files_list.append(
-                                    GLib.path_get_basename(f.get_path()))
-                except:
-                    pass
             playlist = playlists.pop(0)
-            selected = playlist[1] + ".m3u" in files_list
+            selected = playlist[0] in synced_ids
             self.__model.append([selected, playlist[1], playlist[0]])
-            GLib.idle_add(self.__append_playlists, playlists, files_list)
+            GLib.idle_add(self.__append_playlists, playlists, synced_ids)
 
     def __append_albums(self, albums):
         """
@@ -337,7 +318,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
                 selected = True
         for item in self.__model:
             item[0] = not selected
-            self.__populate_albums_playlist(item[2], item[0])
+            if self.__column1.get_visible():
+                self.__populate_albums_playlist(item[2], item[0])
+            else:
+                App().playlists.set_synced(item[2], item[0])
 
     def __on_item_toggled(self, view, path):
         """
@@ -348,8 +332,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
         iterator = self.__model.get_iter(path)
         toggle = not self.__model.get_value(iterator, 0)
         self.__model.set_value(iterator, 0, toggle)
-        album_id = self.__model.get_value(iterator, 2)
-        self.__populate_albums_playlist(album_id, toggle)
+        item_id = self.__model.get_value(iterator, 2)
+        if self.__column1.get_visible():
+            self.__populate_albums_playlist(item_id, toggle)
+        else:
+            App().playlists.set_synced(item_id, toggle)
 
     def __on_size_allocate(self, widget, allocation, child_widget):
         """

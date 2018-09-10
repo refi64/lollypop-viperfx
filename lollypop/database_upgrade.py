@@ -34,7 +34,73 @@ class DatabaseUpgrade:
         """
         # Here are schema upgrade, key is database version,
         # value is sql request
-        self.__UPGRADES = {
+        self._UPGRADES = {
+        }
+
+    def upgrade(self, db):
+        """
+            Upgrade db
+            @param db as Database
+        """
+        # Migration from gsettings
+        gsettings_version = App().settings.get_value("db-version").get_int32()
+        if gsettings_version != -1:
+            with SqlCursor(db) as sql:
+                sql.execute("PRAGMA user_version=%s" % gsettings_version)
+                App().settings.set_value("db-version",
+                                         GLib.Variant("i", -1))
+        version = 0
+        with SqlCursor(db) as sql:
+            result = sql.execute("PRAGMA user_version")
+            v = result.fetchone()
+            if v is not None:
+                version = v[0]
+            if version < self.version:
+                for i in range(version + 1, self.version + 1):
+                    try:
+                        if isinstance(self._UPGRADES[i], str):
+                            sql.execute(self._UPGRADES[i])
+                        else:
+                            self._UPGRADES[i](db)
+                    except Exception as e:
+                        Logger.error("DB upgrade %s failed: %s" %
+                                     (i, e))
+                sql.execute("PRAGMA user_version=%s" % self.version)
+
+    @property
+    def version(self):
+        """
+            Current wanted version
+        """
+        return len(self._UPGRADES)
+
+
+class DatabasePlaylistsUpgrade(DatabaseUpgrade):
+    """
+        Manage database schema upgrades
+    """
+
+    def __init__(self):
+        """
+            Init upgrade
+        """
+        DatabaseUpgrade.__init__(self)
+        self._UPGRADES = {
+            1: "ALTER TABLE playlists ADD synced INT NOT NULL DEFAULT 0",
+        }
+
+
+class DatabaseAlbumsUpgrade(DatabaseUpgrade):
+    """
+        Manage database schema upgrades
+    """
+
+    def __init__(self):
+        """
+            Init upgrade
+        """
+        DatabaseUpgrade.__init__(self)
+        self._UPGRADES = {
             1: "UPDATE tracks SET duration=CAST(duration as INTEGER);",
             2: "UPDATE albums SET artist_id=-2001 where artist_id=-999;",
             3: self.__upgrade_3,
@@ -64,43 +130,6 @@ class DatabaseUpgrade:
             27: "UPDATE tracks SET duration=CAST(duration AS INT)",
             28: self.__upgrade_28,
         }
-
-    def upgrade(self, db):
-        """
-            Upgrade db
-            @param db as Database
-        """
-        # Migration from gsettings
-        gsettings_version = App().settings.get_value("db-version").get_int32()
-        if gsettings_version != -1:
-            with SqlCursor(db) as sql:
-                sql.execute("PRAGMA user_version=%s" % gsettings_version)
-                App().settings.set_value("db-version",
-                                         GLib.Variant("i", -1))
-        version = 0
-        with SqlCursor(db) as sql:
-            result = sql.execute("PRAGMA user_version")
-            v = result.fetchone()
-            if v is not None:
-                version = v[0]
-            if version < self.version:
-                for i in range(version + 1, self.version + 1):
-                    try:
-                        if isinstance(self.__UPGRADES[i], str):
-                            sql.execute(self.__UPGRADES[i])
-                        else:
-                            self.__UPGRADES[i](db)
-                    except Exception as e:
-                        Logger.error("History DB upgrade %s failed: %s" %
-                                     (i, e))
-                sql.execute("PRAGMA user_version=%s" % self.version)
-
-    @property
-    def version(self):
-        """
-            Current wanted version
-        """
-        return len(self.__UPGRADES)
 
 #######################
 # PRIVATE             #
