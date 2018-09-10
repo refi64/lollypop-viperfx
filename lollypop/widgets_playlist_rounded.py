@@ -182,7 +182,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             self._artwork_button = None
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _on_play_press_event(self, widget, event):
         """
@@ -209,6 +209,9 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         self._lock_overlay = True
         popover.show()
 
+#######################
+# PRIVATE             #
+#######################
     def __on_eventbox_realize(self, eventbox):
         """
             Change cursor over eventbox

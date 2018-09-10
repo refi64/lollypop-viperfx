@@ -59,13 +59,13 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         for child in self._box.get_children():
             child.set_artwork(album_id)
 
-    def _add_items(self, albums, *args):
+    def _add_items(self, album_ids, *args):
         """
             Add albums to the view
             Start lazy loading
-            @param [album ids as int]
+            @param album ids as [int]
         """
-        widget = FlowBoxView._add_items(self, albums,
+        widget = FlowBoxView._add_items(self, album_ids,
                                         self.__genre_ids, self.__artist_ids)
         if widget is not None:
             widget.connect("overlayed", self._on_overlayed)
