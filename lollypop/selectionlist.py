@@ -112,6 +112,9 @@ class DefaultItemsMenu(Gio.Menu):
             App().settings.set_value(
                 "list-one-ids",
                 GLib.Variant("ai", [rowid]))
+            App().settings.set_value(
+                "list-two-ids",
+                GLib.Variant("ai", []))
         elif self.__list_type & SelectionListType.LIST_TWO:
             App().settings.set_value(
                 "list-two-ids",

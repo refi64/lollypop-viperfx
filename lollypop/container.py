@@ -439,13 +439,10 @@ class Container(Gtk.Overlay):
         """
         if not self.__list_two_state:
             return
-        # Get list two ids (only on save state)
-        list_two_ids = [Type.NONE]
-        if App().settings.get_value("save-state"):
-            list_two_ids = []
-            for i in self.__list_two_state:
-                if isinstance(i, int):
-                    list_two_ids.append(i)
+        list_two_ids = []
+        for i in self.__list_two_state:
+            if isinstance(i, int):
+                list_two_ids.append(i)
         if list_two_ids and list_two_ids[0] != Type.NONE:
             self.__list_two.select_ids(list_two_ids)
         self.__list_two_state = []
