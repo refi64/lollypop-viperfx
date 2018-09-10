@@ -758,11 +758,18 @@ class Container(Gtk.Overlay):
             @param playlist ids as [int]
             @return View
         """
+        from lollypop.view_playlists_manager import PlaylistsManagerView
+
         def load():
             track_ids = []
             for playlist_id in playlist_ids:
                 if playlist_id == Type.LOVED:
                     _track_ids = App().playlists.get_track_ids_sorted(
+                        playlist_id)
+                # We want track_ids from manager
+                # to show same albums for Type.RANDOMS
+                elif isinstance(self.view, PlaylistsManagerView):
+                    _track_ids = self.view.get_track_ids_for_playlist_id(
                         playlist_id)
                 else:
                     _track_ids = App().playlists.get_track_ids(playlist_id)
@@ -778,7 +785,6 @@ class Container(Gtk.Overlay):
             loader = Loader(target=load, view=view)
             loader.start()
         else:
-            from lollypop.view_playlists_manager import PlaylistsManagerView
             view = PlaylistsManagerView()
             view.populate(App().playlists.get_ids())
         view.show()

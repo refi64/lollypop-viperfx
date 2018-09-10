@@ -78,6 +78,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         """
         AlbumBaseWidget.__init__(self)
         RoundedFlowBoxWidget.__init__(self, playlist_id)
+        self.__track_ids = []
 
     def populate(self):
         """
@@ -89,6 +90,22 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._lock_overlay = False
 
+    @property
+    def playlist_id(self):
+        """
+            Get playlist id
+            @return int
+        """
+        return self._data
+
+    @property
+    def track_ids(self):
+        """
+            Get current track ids
+            @return [int]
+        """
+        return self.__track_ids
+
 #######################
 # PROTECTED           #
 #######################
@@ -98,9 +115,9 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @return [int]
         """
         album_ids = []
-        track_ids = App().playlists.get_track_ids(self._data)
-        shuffle(track_ids)
-        for track_id in track_ids:
+        self.__track_ids = App().playlists.get_track_ids(self._data)
+        shuffle(self.__track_ids)
+        for track_id in self.__track_ids:
             track = Track(track_id)
             if track.album.id not in album_ids:
                 album_ids.append(track.album.id)
@@ -174,11 +191,10 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         """
         if App().player.locked:
             return True
-        track_ids = App().playlists.get_track_ids(self._data)
-        if track_ids:
-            App().player.populate_playlist_by_track_ids(track_ids,
+        if self.__track_ids:
+            App().player.populate_playlist_by_track_ids(self.__track_ids,
                                                         [self._data])
-            App().player.load(Track(track_ids[0]))
+            App().player.load(Track(self.__track_ids[0]))
 
     def _on_edit_press_event(self, widget, event):
         """

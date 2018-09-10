@@ -48,6 +48,16 @@ class PlaylistsManagerView(FlowBoxView):
         items = [i[0] for i in ShownPlaylists.get()] + items
         FlowBoxView.populate(self, items)
 
+    def get_track_ids_for_playlist_id(self, playlist_id):
+        """
+            Get track_ids for current playlist id (even random)
+            @return [int]
+        """
+        for child in self._box.get_children():
+            if child.playlist_id == playlist_id:
+                return child.track_ids
+        return []
+
 #######################
 # PRIVATE             #
 #######################
