@@ -97,7 +97,7 @@ class Toolbar(Gtk.HeaderBar):
             @param value as int
         """
         if not self.__toolbar_title.show_volume_control:
-            self.__toolbar_title._update_position(value)
+            self.__toolbar_title.update_position(value)
 
     def set_mark(self):
         """
