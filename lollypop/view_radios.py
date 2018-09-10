@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.helper_task import TaskHelper
-from lollypop.view import LazyLoadingView
+from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
@@ -21,16 +21,16 @@ from lollypop.pop_tunein import TuneinPopover
 from lollypop.controller_view import ViewController
 
 
-class RadiosView(LazyLoadingView, ViewController):
+class RadiosView(FlowBoxView, ViewController):
     """
-        Show radios in a grid
+        Show radios flow box
     """
 
     def __init__(self):
         """
             Init view
         """
-        LazyLoadingView.__init__(self, True)
+        FlowBoxView.__init__(self)
         ViewController.__init__(self)
 
         self.__radios_manager = Radios()
@@ -39,33 +39,13 @@ class RadiosView(LazyLoadingView, ViewController):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/RadiosView.ui")
         builder.connect_signals(self)
-        widget = builder.get_object("widget")
+        self.__widget = builder.get_object("widget")
         self.__empty = builder.get_object("empty")
+        self._viewport.add(self.__empty)
 
         self.__pop_tunein = TuneinPopover(self.__radios_manager)
         self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
 
-        self._box = Gtk.FlowBox()
-        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
-        # Allow lazy loading to not jump up and down
-        self._box.set_homogeneous(True)
-        self._box.set_max_children_per_line(1000)
-        self._box.set_filter_func(self._filter_func)
-        self._box.show()
-
-        self.__stack = Gtk.Stack()
-        self.__stack.set_transition_duration(500)
-        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self.__stack.add(self._scrolled)
-        self.__stack.add(self.__empty)
-        self.__stack.show()
-
-        self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.set_property("margin", 5)
-        self._scrolled.set_property("expand", True)
-
-        self.add(widget)
-        self.add(self.__stack)
         self.connect_artwork_changed_signal("radio")
 
     def populate(self):
@@ -149,25 +129,9 @@ class RadiosView(LazyLoadingView, ViewController):
         if new_name is not None:
             if old_child is not None:
                 old_child.set_name(new_name)
-            else:
-                radios = [new_name]
-                self.__show_stack(radios)
         # Delete widget
         elif old_child is not None:
             old_child.destroy()
-            if not self._box.get_children():
-                self.__show_stack([])
-
-    def __show_stack(self, radios):
-        """
-            Switch empty/radios view based on radios
-            @param [radio names as string]
-        """
-        if radios:
-            self.__stack.set_visible_child(self._scrolled)
-            self.__add_radios(radios, True)
-        else:
-            self.__stack.set_visible_child(self.__empty)
 
     def __add_radios(self, radios, first=False):
         """
@@ -211,7 +175,5 @@ class RadiosView(LazyLoadingView, ViewController):
             @param [radio names as string]
         """
         if radios:
-            self.__stack.set_visible_child(self._scrolled)
+            self._viewport.get_child().destroy()
             self.__add_radios(radios, True)
-        else:
-            self.__stack.set_visible_child(self.__empty)
