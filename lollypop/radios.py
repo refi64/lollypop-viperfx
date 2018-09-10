@@ -13,6 +13,7 @@
 from gi.repository import GObject, GLib
 
 import sqlite3
+import itertools
 from threading import Lock
 
 from lollypop.sqlcursor import SqlCursor
@@ -120,6 +121,32 @@ class Radios(GObject.GObject):
                                   popularity DESC, name")
             return list(result)
 
+    def get_ids(self):
+        """
+            Return availables radios
+            @return [int]
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM radios\
+                                  ORDER BY rate DESC,\
+                                  popularity DESC, name")
+            return list(itertools.chain(*result))
+
+    def get_name(self, radio_id):
+        """
+            Get radio name for id
+            @param radio_id as int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT name\
+                                  FROM radios\
+                                  WHERE rowid=?", (radio_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return ""
+
     def get_url(self, name):
         """
             Return url for name
@@ -218,20 +245,6 @@ class Radios(GObject.GObject):
             result = sql.execute("SELECT id\
                                  FROM radios WHERE\
                                  name=?", (name,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return 0
-
-    def get_name(self, radio_id):
-        """
-            Get name by id
-            @param radio id as int
-        """
-        with SqlCursor(self) as sql:
-            result = sql.execute("SELECT name\
-                                 FROM radios WHERE\
-                                 id=?", (radio_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]

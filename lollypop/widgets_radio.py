@@ -28,17 +28,18 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, name, radios_manager):
+    def __init__(self, radio_id, radios):
         """
             Init radio widget
-            @param name as string
-            @param radios_manager as RadiosManager
+            @param radio_id as int
+            @param radios as Radios
         """
         Gtk.FlowBoxChild.__init__(self)
         AlbumBaseWidget.__init__(self)
         self.get_style_context().add_class("loading")
-        self.__name = name
-        self.__radios_manager = radios_manager
+        self.__radio_id = radio_id
+        self.__name = radios.get_name(radio_id)
+        self.__radios = radios
 
     def populate(self):
         """
@@ -234,7 +235,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         """
         if App().player.locked:
             return True
-        url = self.__radios_manager.get_url(self.__name)
+        url = self.__radios.get_url(self.__name)
         if url:
             track = Track()
             track.set_radio(self.__name, url)
@@ -246,7 +247,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        popover = RadioPopover(self.__name, self.__radios_manager)
+        popover = RadioPopover(self.__name, self.__radios)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_pop_artwork_closed)
         self._lock_overlay = True

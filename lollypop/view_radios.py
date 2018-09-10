@@ -10,12 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
-from lollypop.helper_task import TaskHelper
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_radio import RadioWidget
-from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.controller_view import ViewController
@@ -26,38 +24,39 @@ class RadiosView(FlowBoxView, ViewController):
         Show radios flow box
     """
 
-    def __init__(self):
+    def __init__(self, radios):
         """
             Init view
+            @param radios as Radios
         """
         FlowBoxView.__init__(self)
         ViewController.__init__(self)
-
-        self.__radios_manager = Radios()
-        self.__radios_manager.connect("radios-changed",
-                                      self.__on_radios_changed)
+        self._widget_class = RadioWidget
+        self.__radios = radios
+        self.__radios.connect("radios-changed",
+                              self.__on_radios_changed)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/RadiosView.ui")
         builder.connect_signals(self)
-        self.__widget = builder.get_object("widget")
-        self.__empty = builder.get_object("empty")
-        self._viewport.add(self.__empty)
+        self.insert_row(0)
+        self.attach(builder.get_object("widget"), 0, 0, 1, 1)
 
-        self.__pop_tunein = TuneinPopover(self.__radios_manager)
+        self.__pop_tunein = TuneinPopover(self.__radios)
         self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
 
         self.connect_artwork_changed_signal("radio")
 
-    def populate(self):
-        """
-            Populate view with tracks from playlist
-        """
-        helper = TaskHelper()
-        helper.run(self.__get_radios, callback=(self.__on_get_radios,))
-
 #######################
 # PROTECTED           #
 #######################
+    def _add_items(self, radio_ids):
+        """
+            Add radios to the view
+            Start lazy loading
+            @param radio ids as [int]
+        """
+        FlowBoxView._add_items(self, radio_ids, self.__radios)
+
     def _on_new_clicked(self, widget):
         """
             Show popover for adding a new radio
@@ -87,17 +86,6 @@ class RadiosView(FlowBoxView, ViewController):
 #######################
 # PRIVATE             #
 #######################
-    def __get_radios(self):
-        """
-            Get radios
-            @return [name]
-        """
-        radios = []
-        # Get radios name
-        for (name, url) in self.__radios_manager.get():
-            radios.append(name)
-        return radios
-
     def __on_radios_changed(self, manager):
         """
             Update radios
@@ -133,32 +121,6 @@ class RadiosView(FlowBoxView, ViewController):
         elif old_child is not None:
             old_child.destroy()
 
-    def __add_radios(self, radios, first=False):
-        """
-            Pop a radio and add it to the view,
-            repeat operation until radio list is empty
-            @param [radio names as string]
-            @param first as bool
-        """
-        if self._lazy_queue is None:
-            return
-        if radios:
-            radio = radios.pop(0)
-            widget = RadioWidget(radio,
-                                 self.__radios_manager)
-            widget.connect("overlayed", self._on_overlayed)
-            widget.show()
-            self._lazy_queue.append(widget)
-            if first:
-                self._box.insert(widget, 0)
-            else:
-                self._box.insert(widget, -1)
-            GLib.idle_add(self.__add_radios, radios)
-        else:
-            GLib.idle_add(self.lazy_loading)
-            if self._viewport.get_child() is None:
-                self._viewport.add(self._box)
-
     def __on_logo_changed(self, player, name):
         """
             Update radio logo
@@ -168,12 +130,3 @@ class RadiosView(FlowBoxView, ViewController):
         for child in self._box.get_children():
             if child.title == name:
                 child.update_cover()
-
-    def __on_get_radios(self, radios):
-        """
-            Switch empty/radios view based on radios
-            @param [radio names as string]
-        """
-        if radios:
-            self._viewport.get_child().destroy()
-            self.__add_radios(radios, True)

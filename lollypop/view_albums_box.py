@@ -59,7 +59,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         for child in self._box.get_children():
             child.set_artwork(album_id)
 
-    def _add_items(self, album_ids, *args):
+    def _add_items(self, album_ids):
         """
             Add albums to the view
             Start lazy loading
