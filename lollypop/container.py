@@ -806,9 +806,9 @@ class Container(Gtk.Overlay):
             loader = Loader(target=load, view=view)
             loader.start()
         else:
-            from lollypop.view_playlists import PlaylistsManageView
-            view = PlaylistsManageView(None)
-            view.populate()
+            from lollypop.view_playlists_manager import PlaylistsManagerView
+            view = PlaylistsManagerView()
+            view.populate(App().playlists.get_ids())
         view.show()
         return view
 

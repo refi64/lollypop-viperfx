@@ -182,7 +182,6 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             self._artwork_event.set_margin_end(5)
             self._artwork_event.set_property("has-tooltip", True)
             self._artwork_event.set_tooltip_text(_("Modify radio"))
-            self._artwork_event.set_property("halign", Gtk.Align.END)
             self._artwork_event.connect("realize", self._on_eventbox_realize)
             self._artwork_event.connect("button-press-event",
                                         self._on_edit_press_event)

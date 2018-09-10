@@ -94,11 +94,11 @@ class Playlists(GObject.GObject):
             else:
                 return False
 
-    def rename(self, new_name, old_name):
+    def rename(self, old_name, new_name):
         """
             Rename playlist
-            @param new playlist name as str
-            @param old playlist name as str
+            @param old_name as str
+            @param new_name as str
         """
         with SqlCursor(self) as sql:
             playlist_id = self.get_id(old_name)
@@ -144,6 +144,18 @@ class Playlists(GObject.GObject):
                                   ORDER BY name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(result)
+
+    def get_ids(self):
+        """
+            Return availables playlists
+            @return [int]
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM playlists\
+                                  ORDER BY name\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
+            return list(itertools.chain(*result))
 
     def get_last(self):
         """

@@ -10,11 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gdk
+
 from lollypop.define import App
-from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
+from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 
 
-class AlbumsDecadeWidget(RoundedAlbumsWidget):
+class AlbumsDecadeWidget(RoundedFlowBoxWidget):
     """
         Decade widget showing cover for 9 albums
     """
@@ -24,14 +26,14 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget):
             Init widget
             @param decade as [int]
         """
-        RoundedAlbumsWidget.__init__(self, item_ids)
+        RoundedFlowBoxWidget.__init__(self, item_ids)
 
     def populate(self):
         """
             Populate widget content
         """
-        decade_str = "%s - %s" % (self._item_ids[0], self._item_ids[-1])
-        RoundedAlbumsWidget.populate(self, decade_str)
+        decade_str = "%s - %s" % (self._data[0], self._data[-1])
+        RoundedFlowBoxWidget.populate(self, decade_str)
 
 #######################
 # PROTECTED           #
@@ -42,7 +44,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget):
             @return [int]
         """
         album_ids = []
-        for year in self._item_ids:
+        for year in self._data:
             album_ids += App().albums.get_albums_for_year(year,
                                                           self._ALBUMS_COUNT)
             l = len(album_ids)
@@ -52,6 +54,25 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget):
                                                        self._ALBUMS_COUNT)
         return album_ids
 
+    def _on_eventbox_button_press_event(self, eventbox, event):
+        """
+            Select items in list
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if isinstance(self._data, list):
+            App().window.container.list_two.select_ids(self._data)
+        else:
+            App().window.container.list_two.select_ids([self._data])
+
+    def _on_eventbox_realize(self, eventbox):
+        """
+            Change cursor over eventbox
+            @param eventbox as Gdk.Eventbox
+        """
+        window = eventbox.get_window()
+        if window is not None:
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 #######################
 # PRIVATE             #
 #######################

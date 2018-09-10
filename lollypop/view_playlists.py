@@ -15,8 +15,7 @@ from gi.repository import Gtk, GLib, Gdk, Gio
 from gettext import gettext as _
 
 from lollypop.view import View
-from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
-from lollypop.widgets_playlist import PlaylistsManagerWidget
+from lollypop.widgets_playlist import PlaylistsWidget
 from lollypop.define import App, Type, ArtSize
 from lollypop.objects import Track
 from lollypop.controller_view import ViewController
@@ -361,92 +360,3 @@ class PlaylistsView(View, ViewController):
         """
         if playlist_id in self.__playlist_ids:
             self.__playlists_widget.remove(track_id)
-
-
-class PlaylistsManageView(View):
-    """
-        Playlist view used to manage playlists
-    """
-
-    def __init__(self, object):
-        """
-            Init View
-            @param object as Track/Album/Disc
-        """
-        View.__init__(self)
-        builder = Gtk.Builder()
-        builder.add_from_resource(
-            "/org/gnome/Lollypop/PlaylistsManagerView.ui")
-        if object is not None:
-            builder.get_object("back_btn").show()
-        builder.connect_signals(self)
-        self.__manage_widget = PlaylistsManagerWidget(object)
-        self.__manage_widget.show()
-        self._viewport.add(self.__manage_widget)
-        self.add(builder.get_object("widget"))
-        self.add(self._scrolled)
-
-    def populate(self):
-        """
-            Populate the view
-        """
-        self.__manage_widget.populate()
-
-#######################
-# PROTECTED           #
-#######################
-    def _on_new_clicked(self, widget):
-        """
-            Add new playlist
-            @param widget as Gtk.Button
-        """
-        self.__manage_widget.add_new_playlist()
-
-    def _on_back_btn_clicked(self, button):
-        """
-            Restore previous view
-            @param button as Gtk.Button
-        """
-        App().window.container.destroy_current_view()
-
-
-class PlaylistEditView(View):
-    """
-        Playlist view used to edit playlists
-    """
-
-    def __init__(self, playlist_id):
-        """
-            Init view
-            @param playlist id as int
-            @param playlist name as int
-            @param width as int
-        """
-        View.__init__(self)
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/PlaylistEditView.ui")
-        builder.get_object("title").set_label(
-            App().playlists.get_name(playlist_id))
-        builder.connect_signals(self)
-        grid = builder.get_object("widget")
-        self.add(grid)
-        self.__edit_widget = PlaylistEditWidget(playlist_id)
-        self.__edit_widget.show()
-        self._viewport.add(self.__edit_widget)
-        self.add(self._scrolled)
-
-    def populate(self):
-        """
-            Populate view
-        """
-        self.__edit_widget.populate()
-
-#######################
-# PROTECTED           #
-#######################
-    def _on_back_btn_clicked(self, button):
-        """
-            Restore previous view
-            @param button as Gtk.Button
-        """
-        App().window.container.reload_view()
