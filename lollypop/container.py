@@ -17,7 +17,7 @@ from gettext import gettext as _
 from urllib.parse import urlparse
 from random import randint
 
-from lollypop.define import App, Type, ResponsiveType
+from lollypop.define import App, Type, ResponsiveType, SelectionListType
 from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
@@ -380,9 +380,9 @@ class Container(Gtk.Overlay):
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self.__list_one = SelectionList(SelectionList.Type.LIST_ONE)
+        self.__list_one = SelectionList(SelectionListType.LIST_ONE)
         self.__list_one.show()
-        self.__list_two = SelectionList(SelectionList.Type.LIST_TWO)
+        self.__list_two = SelectionList(SelectionListType.LIST_TWO)
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
         self.__list_one.connect("populated", self.__on_list_populated)
         self.__list_one.connect("pass-focus", self.__on_pass_focus)
@@ -484,7 +484,7 @@ class Container(Gtk.Overlay):
             return genres
 
         def setup(genres):
-            selection_list.mark_as(SelectionList.Type.GENRE)
+            selection_list.mark_as(SelectionListType.GENRE)
             items = selection_list.get_headers()
             items += genres
             if update:
@@ -509,9 +509,9 @@ class Container(Gtk.Overlay):
             return (artists, compilations)
 
         def setup(artists, compilations):
-            mask = SelectionList.Type.ARTISTS
+            mask = SelectionListType.ARTISTS
             if compilations:
-                mask |= SelectionList.Type.COMPILATIONS
+                mask |= SelectionListType.COMPILATIONS
             selection_list.mark_as(mask)
             items = selection_list.get_headers()
             items += artists
@@ -537,7 +537,7 @@ class Container(Gtk.Overlay):
             @param update as bool
             @param type as int
         """
-        self.__list_two.mark_as(SelectionList.Type.PLAYLISTS)
+        self.__list_two.mark_as(SelectionListType.PLAYLISTS)
         if type == Type.PLAYLISTS:
             items = self.__list_two.get_playlist_headers()
             items += App().playlists.get()
@@ -570,7 +570,7 @@ class Container(Gtk.Overlay):
                 items.append((Type.COMPILATIONS, _("Compilations")))
                 items.append((Type.SEPARATOR, ""))
             items += artists
-            selection_list.mark_as(SelectionList.Type.ARTISTS)
+            selection_list.mark_as(SelectionListType.ARTISTS)
             selection_list.populate(items)
         loader = Loader(target=load, view=selection_list,
                         on_finished=lambda r: setup(*r))
@@ -764,27 +764,17 @@ class Container(Gtk.Overlay):
         def load():
             track_ids = []
             for playlist_id in playlist_ids:
-                if playlist_id == Type.POPULARS:
-                    tracks = App().tracks.get_rated()
-                    for track in App().tracks.get_populars():
-                        tracks.append(track)
-                elif playlist_id == Type.RECENTS:
-                    tracks = App().tracks.get_recently_listened_to()
-                elif playlist_id == Type.NEVER:
-                    tracks = App().tracks.get_never_listened_to()
-                elif playlist_id == Type.RANDOMS:
-                    tracks = App().tracks.get_randoms()
-                elif playlist_id == Type.LOVED:
-                    tracks = App().playlists.get_track_ids_sorted(playlist_id)
+                if playlist_id == Type.LOVED:
+                    _track_ids = App().playlists.get_track_ids_sorted(
+                        playlist_id)
                 else:
-                    tracks = App().playlists.get_track_ids(playlist_id)
-                for track_id in tracks:
+                    _track_ids = App().playlists.get_track_ids(playlist_id)
+                for track_id in _track_ids:
                     if track_id not in track_ids:
                         track_ids.append(track_id)
             return track_ids
 
         self.__stop_current_view()
-        view = None
         if playlist_ids:
             from lollypop.view_playlists import PlaylistsView
             view = PlaylistsView(playlist_ids)
@@ -884,7 +874,7 @@ class Container(Gtk.Overlay):
             self.__update_list_playlists(False, selected_ids[0])
             self.__list_two.show()
         elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
-                self.__list_one.type & SelectionList.Type.GENRE:
+                self.__list_one.type & SelectionListType.GENRE:
             self.__update_list_artists(self.__list_two, selected_ids, False)
             self.__list_two.show()
         else:
@@ -905,7 +895,7 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
             view = self.__get_view_radios()
-        elif selection_list.type & SelectionList.Type.ARTISTS:
+        elif selection_list.type & SelectionListType.ARTISTS:
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:

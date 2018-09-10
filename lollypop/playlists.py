@@ -24,6 +24,7 @@ from lollypop.objects import Track
 from lollypop.logger import Logger
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
+from lollypop.shown import ShownPlaylists
 
 
 class Playlists(GObject.GObject):
@@ -189,14 +190,27 @@ class Playlists(GObject.GObject):
             @param playlist id as int
             @return array of track id as int
         """
-        with SqlCursor(self) as sql:
-            result = sql.execute("SELECT music.tracks.rowid\
-                                  FROM tracks, music.tracks\
-                                  WHERE tracks.playlist_id=?\
-                                  AND music.tracks.uri=\
-                                  main.tracks.uri",
-                                 (playlist_id,))
-            return list(itertools.chain(*result))
+        track_ids = []
+        if playlist_id == Type.POPULARS:
+            track_ids = App().tracks.get_rated()
+            for track in App().tracks.get_populars():
+                track_ids.append(track)
+        elif playlist_id == Type.RECENTS:
+            track_ids = App().tracks.get_recently_listened_to()
+        elif playlist_id == Type.NEVER:
+            track_ids = App().tracks.get_never_listened_to()
+        elif playlist_id == Type.RANDOMS:
+            track_ids = App().tracks.get_randoms()
+        else:
+            with SqlCursor(self) as sql:
+                result = sql.execute("SELECT music.tracks.rowid\
+                                      FROM tracks, music.tracks\
+                                      WHERE tracks.playlist_id=?\
+                                      AND music.tracks.uri=\
+                                      main.tracks.uri",
+                                     (playlist_id,))
+                track_ids = list(itertools.chain(*result))
+        return track_ids
 
     def get_duration(self, playlist_id):
         """
@@ -265,6 +279,10 @@ class Playlists(GObject.GObject):
         """
         if playlist_id == Type.LOVED:
             return self.LOVED
+        elif playlist_id < 0:
+            for (id, name) in ShownPlaylists.get(True):
+                if id == playlist_id:
+                    return name
 
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name\

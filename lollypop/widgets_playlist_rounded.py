@@ -36,6 +36,8 @@ class PlayListPopover(Gtk.Popover):
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistPopover.ui")
         builder.connect_signals(self)
         self.__name_entry = builder.get_object("name")
+        if playlist_id < 0:
+            self.set_sensitive(False)
         self.__name_entry.set_text(App().playlists.get_name(playlist_id))
         self.add(builder.get_object("widget"))
 

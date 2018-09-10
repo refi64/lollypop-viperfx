@@ -18,75 +18,8 @@ from hashlib import sha256
 
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
-from lollypop.define import Type, App, ArtSize
-
-
-class ShownAlbumlists:
-    """
-        Handle shown album lists
-    """
-    def get(mask, get_all=False):
-        """
-            Get list
-            @param mask as bit mask
-            @param get_all as bool
-        """
-        wanted = App().settings.get_value("shown-album-lists")
-        lists = []
-        if mask & SelectionList.Type.LIST_ONE:
-            if get_all or Type.POPULARS in wanted:
-                lists.append((Type.POPULARS, _("Popular albums")))
-            if get_all or Type.RANDOMS in wanted:
-                lists.append((Type.RANDOMS, _("Random albums")))
-            if get_all or Type.LOVED in wanted:
-                lists.append((Type.LOVED, _("Loved albums")))
-            if get_all or Type.RECENTS in wanted:
-                lists.append((Type.RECENTS, _("Recently added albums")))
-            if get_all or Type.NEVER in wanted:
-                lists.append((Type.NEVER, _("Unplayed albums")))
-            if get_all or Type.PLAYLISTS in wanted:
-                lists.append((Type.PLAYLISTS, _("Playlists")))
-            if get_all or Type.RADIOS in wanted:
-                lists.append((Type.RADIOS, _("Radios")))
-            if get_all or Type.YEARS in wanted:
-                lists.append((Type.YEARS, _("Years")))
-            if get_all or Type.ALL in wanted:
-                if mask & SelectionList.Type.ARTISTS:
-                    lists.append((Type.ALL, _("All albums")))
-                else:
-                    lists.append((Type.ALL, _("All artists")))
-        if get_all or (mask & SelectionList.Type.COMPILATIONS and
-                       Type.COMPILATIONS in wanted):
-            lists.append((Type.COMPILATIONS, _("Compilations")))
-        if get_all:
-            lists.append((Type.USB_DISKS, _("USB disks")))
-        return lists
-
-
-class ShownPlaylists:
-    """
-        Handle shown playlists
-    """
-    def get(get_all=False):
-        """
-            get list
-            @param get_all as bool
-        """
-        wanted = App().settings.get_value("shown-playlists")
-        lists = []
-        if get_all or Type.POPULARS in wanted:
-            lists.append((Type.POPULARS, _("Popular tracks")))
-        if get_all or Type.LOVED in wanted:
-            lists.append((Type.LOVED, App().playlists.LOVED))
-        if get_all or Type.RECENTS in wanted:
-            lists.append((Type.RECENTS, _("Recently played")))
-        if get_all or Type.NEVER in wanted:
-            lists.append((Type.NEVER, _("Unplayed")))
-        if get_all or Type.RANDOMS in wanted:
-            lists.append((Type.RANDOMS, _("Random tracks")))
-        if get_all or Type.NOPARTY in wanted:
-            lists.append((Type.NOPARTY, _("Not in party")))
-        return lists
+from lollypop.define import Type, App, ArtSize, SelectionListType
+from lollypop.shown import ShownAlbumlists, ShownPlaylists
 
 
 class DefaultItemsMenu(Gio.Menu):
@@ -99,7 +32,7 @@ class DefaultItemsMenu(Gio.Menu):
             Init menu
             @param rowid as int
             @param lists as [int]
-            @param list_type as SelectionList.Type
+            @param list_type as SelectionListType
         """
         Gio.Menu.__init__(self)
         self.__rowid = rowid
@@ -121,7 +54,7 @@ class DefaultItemsMenu(Gio.Menu):
             self.insert_section(0, _("Startup"), startup_menu)
         # Shown menu
         shown_menu = Gio.Menu()
-        if list_type & SelectionList.Type.PLAYLISTS:
+        if list_type & SelectionListType.PLAYLISTS:
             lists = ShownPlaylists.get(True)
             wanted = App().settings.get_value("shown-playlists")
         else:
@@ -153,7 +86,7 @@ class DefaultItemsMenu(Gio.Menu):
             @param rowid as int
         """
         action.set_state(param)
-        if self.__list_type & SelectionList.Type.PLAYLISTS:
+        if self.__list_type & SelectionListType.PLAYLISTS:
             option = "shown-playlists"
         else:
             option = "shown-album-lists"
@@ -163,9 +96,9 @@ class DefaultItemsMenu(Gio.Menu):
         else:
             wanted.remove(rowid)
         App().settings.set_value(option, GLib.Variant("ai", wanted))
-        if self.__list_type & SelectionList.Type.LIST_ONE:
+        if self.__list_type & SelectionListType.LIST_ONE:
             App().window.container.update_list_one(True)
-        elif self.__list_type & SelectionList.Type.LIST_TWO:
+        elif self.__list_type & SelectionListType.LIST_TWO:
             App().window.container.update_list_two(True)
 
     def __on_action_clicked(self, action, variant, rowid):
@@ -175,11 +108,11 @@ class DefaultItemsMenu(Gio.Menu):
             @param GVariant
             @param rowid as int
         """
-        if self.__list_type & SelectionList.Type.LIST_ONE:
+        if self.__list_type & SelectionListType.LIST_ONE:
             App().settings.set_value(
                 "list-one-ids",
                 GLib.Variant("ai", [rowid]))
-        elif self.__list_type & SelectionList.Type.LIST_TWO:
+        elif self.__list_type & SelectionListType.LIST_TWO:
             App().settings.set_value(
                 "list-two-ids",
                 GLib.Variant("ai", [rowid]))
@@ -195,19 +128,10 @@ class SelectionList(Gtk.Overlay):
         "pass-focus": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    class Type:
-        LIST_ONE = 1 << 1
-        LIST_TWO = 1 << 2
-        LIST_DEVICE = 1 << 3
-        ARTISTS = 1 << 4
-        GENRE = 1 << 5
-        PLAYLISTS = 1 << 6
-        COMPILATIONS = 1 << 7
-
     def __init__(self, base_type):
         """
             Init Selection list ui
-            @param base_type as SelectionList.Type
+            @param base_type as SelectionListType
         """
         Gtk.Overlay.__init__(self)
         self.__base_type = base_type
@@ -227,8 +151,8 @@ class SelectionList(Gtk.Overlay):
         self.__model.set_sort_func(0, self.__sort_items)
         self.__view = builder.get_object("view")
         self.__view.set_model(self.__model)
-        if base_type in [SelectionList.Type.LIST_ONE,
-                         SelectionList.Type.LIST_TWO]:
+        if base_type in [SelectionListType.LIST_ONE,
+                         SelectionListType.LIST_TWO]:
             self.__view.get_style_context().add_class("sidebar")
         self.__view.set_row_separator_func(self.__row_separator_func)
         self.__renderer0 = CellRendererArtist()
@@ -281,10 +205,10 @@ class SelectionList(Gtk.Overlay):
     def mark_as(self, type):
         """
             Mark list as artists list
-            @param type as SelectionList.Type
+            @param type as SelectionListType
         """
         self.__type = self.__base_type | type
-        self.__renderer0.set_is_artists(type & self.Type.ARTISTS)
+        self.__renderer0.set_is_artists(type & SelectionListType.ARTISTS)
 
     def populate(self, values):
         """
@@ -346,7 +270,7 @@ class SelectionList(Gtk.Overlay):
             @param [(int, str, optional str)]
             @thread safe
         """
-        update_fast_scroll = self.__type & self.Type.ARTISTS and\
+        update_fast_scroll = self.__type & SelectionListType.ARTISTS and\
             self.__fast_scroll is not None
         if update_fast_scroll:
             self.__fast_scroll.clear()
@@ -491,10 +415,10 @@ class SelectionList(Gtk.Overlay):
             if state & Gdk.ModifierType.CONTROL_MASK or\
                state & Gdk.ModifierType.SHIFT_MASK:
                 self.__modifier = True
-        elif self.__base_type in [SelectionList.Type.LIST_ONE,
-                                  SelectionList.Type.LIST_TWO]:
+        elif self.__base_type in [SelectionListType.LIST_ONE,
+                                  SelectionListType.LIST_TWO]:
             info = view.get_dest_row_at_pos(event.x, event.y)
-            if info is not None and self.__type & SelectionList.Type.LIST_ONE:
+            if info is not None:
                 App().settings.set_value("shown-sidebar-tooltip",
                                          GLib.Variant("b", True))
                 (path, position) = info
@@ -545,7 +469,7 @@ class SelectionList(Gtk.Overlay):
                 column = self.__view.get_column(0)
                 (position, width) = column.cell_get_position(self.__renderer0)
                 if App().settings.get_value("artist-artwork") and\
-                        self.__type & self.Type.ARTISTS:
+                        self.__type & SelectionListType.ARTISTS:
                     width -= ArtSize.ARTIST_SMALL +\
                         CellRendererArtist.xshift * 2
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
@@ -577,7 +501,8 @@ class SelectionList(Gtk.Overlay):
             else:
                 sort = value[1]
 
-        if value[0] > 0 and sort and self.__type & self.Type.ARTISTS and\
+        if value[0] > 0 and sort and\
+                self.__type & SelectionListType.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.add_char(sort[0])
         icon_name = self.__get_icon_name(value[0])
@@ -596,7 +521,8 @@ class SelectionList(Gtk.Overlay):
         """
         for value in values:
             self.__add_value(value)
-        if self.__type & self.Type.ARTISTS and self.__fast_scroll is not None:
+        if self.__type & SelectionListType.ARTISTS and\
+                self.__fast_scroll is not None:
             self.__fast_scroll.populate()
 
     def __get_icon_name(self, object_id):
@@ -610,7 +536,7 @@ class SelectionList(Gtk.Overlay):
         elif object_id == Type.PLAYLISTS:
             icon = "emblem-documents-symbolic"
         elif object_id == Type.ALL:
-            if self.__type & self.Type.ARTISTS:
+            if self.__type & SelectionListType.ARTISTS:
                 icon = "media-optical-cd-audio-symbolic"
             else:
                 icon = "avatar-default-symbolic"
@@ -655,7 +581,7 @@ class SelectionList(Gtk.Overlay):
             return False
         # String comparaison for non static
         else:
-            if self.__type & self.Type.ARTISTS:
+            if self.__type & SelectionListType.ARTISTS:
                 a = App().artists.get_sortname(a_index)
                 b = App().artists.get_sortname(b_index)
             else:
@@ -710,7 +636,7 @@ class SelectionList(Gtk.Overlay):
         """
         if widget.get_vadjustment().get_upper() >\
                 widget.get_allocated_height() and\
-                self.__type & self.Type.ARTISTS and\
+                self.__type & SelectionListType.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.show()
         # FIXME Not needed with GTK >= 3.18
@@ -727,7 +653,7 @@ class SelectionList(Gtk.Overlay):
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            if self.__type & self.Type.ARTISTS\
+            if self.__type & SelectionListType.ARTISTS\
                     and self.__fast_scroll is not None:
                 self.__fast_scroll.hide()
         # FIXME Not needed with GTK >= 3.18
@@ -737,7 +663,7 @@ class SelectionList(Gtk.Overlay):
         """
             Update row
         """
-        if self.__type & self.Type.ARTISTS:
+        if self.__type & SelectionListType.ARTISTS:
             self.__renderer0.on_artist_artwork_changed(artist)
             for item in self.__model:
                 if item[1] == artist:

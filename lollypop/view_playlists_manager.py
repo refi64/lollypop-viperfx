@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.define import App
 from lollypop.widgets_playlist_rounded import PlaylistRoundedWidget
+from lollypop.shown import ShownPlaylists
 
 
 class PlaylistsManagerView(FlowBoxView):
@@ -38,6 +39,14 @@ class PlaylistsManagerView(FlowBoxView):
         self.insert_row(0)
         self.attach(button, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
+
+    def populate(self, items):
+        """
+            Populate items
+            @param items
+        """
+        items = [i[0] for i in ShownPlaylists.get()] + items
+        FlowBoxView.populate(self, items)
 
 #######################
 # PRIVATE             #
