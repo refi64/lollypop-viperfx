@@ -12,10 +12,10 @@
 
 from gi.repository import Gtk, Gdk
 
-from random import shuffle
+from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App
+from lollypop.define import App, Shuffle
 from lollypop.objects import Track
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 from lollypop.widgets_album import AlbumBaseWidget
@@ -117,7 +117,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         """
         album_ids = []
         self.__track_ids = App().playlists.get_track_ids(self._data)
-        shuffle(self.__track_ids)
+        sample(self.__track_ids, len(self.__track_ids))
         for track_id in self.__track_ids:
             track = Track(track_id)
             if track.album.id not in album_ids:
@@ -195,7 +195,11 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         if self.__track_ids:
             App().player.populate_playlist_by_track_ids(self.__track_ids,
                                                         [self._data])
-            App().player.load(Track(self.__track_ids[0]))
+            if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
+                track_id = choice(self.__track_ids)
+            else:
+                track_id = self.__track_ids[0]
+            App().player.load(Track(track_id))
 
     def _on_edit_press_event(self, widget, event):
         """
