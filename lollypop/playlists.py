@@ -388,7 +388,7 @@ class Playlists(GObject.GObject):
                     sql.execute("INSERT INTO tracks"
                                 " VALUES (?, ?)",
                                 (playlist_id, track.uri))
-                if notify:
+                if notify and changed:
                     GLib.idle_add(self.emit, "playlist-add",
                                   playlist_id, track.id, -1)
             if changed:
