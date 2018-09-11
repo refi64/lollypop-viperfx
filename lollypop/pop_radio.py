@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
-from gettext import gettext as _
-
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.define import App, ArtSize
@@ -37,7 +35,6 @@ class RadioPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
         self.__name = name
         self.__radios_manager = radios_manager
         self.__start = 0
@@ -64,7 +61,7 @@ class RadioPopover(Gtk.Popover):
 
         self.__name_entry = builder.get_object("name")
         self.__uri_entry = builder.get_object("uri")
-        self.__btn_add_modify = builder.get_object("btn_add_modify")
+        self.__image_button = builder.get_object("image_button")
         self.__spinner = builder.get_object("spinner")
         self.__stack.add_named(builder.get_object("spinner-grid"), "spinner")
         self.__stack.add_named(builder.get_object("notfound"), "notfound")
@@ -79,13 +76,8 @@ class RadioPopover(Gtk.Popover):
         rating.show()
         builder.get_object("widget").attach(rating, 0, 2, 2, 1)
 
-        if self.__name == "":
-            # Translators: radio context
-            builder.get_object("btn_add_modify").set_label(_("Add"))
-        else:
-            # Translators: radio context
-            builder.get_object("btn_add_modify").set_label(_("Image"))
-            builder.get_object("btn_delete").show()
+        if self.__name != "":
+            builder.get_object("delete_button").show()
             self.__name_entry.set_text(self.__name)
             url = self.__radios_manager.get_url(self.__name)
             if url:
@@ -94,9 +86,9 @@ class RadioPopover(Gtk.Popover):
 #######################
 # PROTECTED           #
 #######################
-    def _on_btn_add_modify_clicked(self, widget):
+    def _on_image_button_clicked(self, widget):
         """
-            Add/Modify a radio
+            Update radio image
             @param widget as Gtk.Widget
         """
         self.__save_radio()
@@ -107,12 +99,21 @@ class RadioPopover(Gtk.Popover):
                                 self.__on_google_content_loaded)
         self.set_size_request(700, 400)
 
-    def _on_btn_delete_clicked(self, widget):
+    def _on_save_button_clicked(self, widget):
+        """
+            Save radio
+            @param widget as Gtk.Widget
+        """
+        self.popdown()
+        self.__save_radio()
+        App().window.container.reload_view()
+
+    def _on_delete_button_clicked(self, widget):
         """
             Delete a radio
             @param widget as Gtk.Widget
         """
-        self.hide()
+        self.popdown()
         if self.__name != "":
             store = Art._RADIOS_PATH
             self.__radios_manager.delete(self.__name)
@@ -130,9 +131,9 @@ class RadioPopover(Gtk.Popover):
         uri = self.__uri_entry.get_text()
         name = self.__name_entry.get_text()
         if name != "" and uri.find("://") != -1:
-            self.__btn_add_modify.set_sensitive(True)
+            self.__image_button.set_sensitive(True)
         else:
-            self.__btn_add_modify.set_sensitive(False)
+            self.__image_button.set_sensitive(False)
 
     def _on_button_clicked(self, button):
         """
@@ -249,15 +250,6 @@ class RadioPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         GLib.idle_add(self.__name_entry.grab_focus)
-
-    def __on_unmap(self, widget):
-        """
-            Enable global shortcuts, destroy
-            @param widget as Gtk.Widget
-        """
-        # Save radio
-        self.__save_radio()
-        App().window.container.reload_view()
 
     def __on_google_content_loaded(self, uri, loaded, content):
         """

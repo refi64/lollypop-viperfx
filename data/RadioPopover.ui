@@ -174,6 +174,16 @@
       </packing>
     </child>
   </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">user-trash-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">image-x-generic-symbolic</property>
+  </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -233,15 +243,30 @@
       <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">center</property>
         <property name="column_spacing">10</property>
         <child>
-          <object class="GtkButton" id="btn_add_modify">
+          <object class="GtkButton" id="image_button">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <signal name="clicked" handler="_on_btn_add_modify_clicked" swapped="no"/>
+            <property name="image">image6</property>
+            <signal name="clicked" handler="_on_image_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="delete_button">
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">image5</property>
+            <signal name="clicked" handler="_on_delete_button_clicked" swapped="no"/>
+            <style>
+              <class name="destructive-action"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -249,14 +274,21 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="btn_delete">
-            <property name="label" translatable="yes">Delete</property>
+          <object class="GtkButton" id="save_button">
+            <property name="label" translatable="yes">Save</property>
+            <property name="width_request">100</property>
+            <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <signal name="clicked" handler="_on_btn_delete_clicked" swapped="no"/>
+            <property name="halign">end</property>
+            <property name="hexpand">True</property>
+            <signal name="clicked" handler="_on_save_button_clicked" swapped="no"/>
+            <style>
+              <class name="suggested-action"/>
+            </style>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
