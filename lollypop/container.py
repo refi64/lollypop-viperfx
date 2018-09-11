@@ -760,12 +760,9 @@ class Container(Gtk.Overlay):
         def load():
             track_ids = []
             for playlist_id in playlist_ids:
-                if playlist_id == Type.LOVED:
-                    _track_ids = App().playlists.get_track_ids_sorted(
-                        playlist_id)
                 # We want track_ids from manager
                 # to show same albums for Type.RANDOMS
-                elif isinstance(self.view, PlaylistsManagerView):
+                if isinstance(self.view, PlaylistsManagerView):
                     _track_ids = self.view.get_track_ids_for_playlist_id(
                         playlist_id)
                 else:

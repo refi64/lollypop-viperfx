@@ -208,6 +208,8 @@ class Playlists(GObject.GObject):
             track_ids = App().tracks.get_never_listened_to()
         elif playlist_id == Type.RANDOMS:
             track_ids = App().tracks.get_randoms()
+        elif playlist_id == Type.LOVED:
+            track_ids = App().playlists.get_track_ids_sorted(playlist_id)
         else:
             with SqlCursor(self) as sql:
                 result = sql.execute("SELECT music.tracks.rowid\
@@ -240,7 +242,6 @@ class Playlists(GObject.GObject):
     def get_track_ids_sorted(self, playlist_id):
         """
             Return availables track ids for playlist sorted by artist/album
-            If playlist name == Type.ALL, then return all tracks from db
             @param playlist id as int
             @return array of track id as int
         """
