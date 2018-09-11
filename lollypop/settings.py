@@ -19,7 +19,6 @@ from lollypop.define import App
 from lollypop.logger import Logger
 from lollypop.database import Database
 from lollypop.database_history import History
-from lollypop.helper_dbus import DBusHelper
 
 
 class Settings(Gio.Settings):
@@ -143,11 +142,8 @@ class SettingsDialog:
 
         switch_artwork_tags = builder.get_object("switch_artwork_tags")
         grid_behaviour = builder.get_object("grid_behaviour")
-        # Check portal for kid3-cli
-        dbus_helper = DBusHelper()
-        dbus_helper.call("CanSetCover", None,
-                         self.__on_can_set_cover,
-                         (switch_artwork_tags, grid_behaviour))
+        # Check for kid3-cli
+        self.__check_for_kid3(switch_artwork_tags, grid_behaviour)
 
         switch_genres = builder.get_object("switch_genres")
         switch_genres.set_state(App().settings.get_value("show-genres"))
@@ -597,9 +593,19 @@ class SettingsDialog:
         renderer = combo.get_cells()[0]
         renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
         renderer.set_property("max-width-chars", 60)
-        dbus_helper = DBusHelper()
-        dbus_helper.call("PaListSinks", None,
-                         self.__on_pa_list_sinks, combo)
+        if GLib.find_program_in_path("flatpak-spawn") is not None:
+            argv = ["flatpak-spawn", "--host", "pacmd", "list-sinks"]
+        else:
+            argv = ["pacmd", "list-sinks"]
+        (pid, stdin, stdout, stderr) = GLib.spawn_async(
+            argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+            GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+            standard_input=False,
+            standard_output=True,
+            standard_error=False
+        )
+        GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE, pid,
+                             self.__on_pacmd_result, stdout, combo)
 
     def __add_chooser(self, directory=None):
         """
@@ -685,6 +691,31 @@ class SettingsDialog:
                 "computer-fail-symbolic",
                 Gtk.IconSize.MENU)
 
+    def __on_pacmd_result(self, pid, status, stdout, combo):
+        """
+            Read output and set combobox
+            @param pid as int
+            @param status as bool
+            @param stdout as int
+            @param combo as Gtk.ComboBox
+        """
+        from re import findall, DOTALL
+        GLib.spawn_close_pid(pid)
+        io = GLib.IOChannel.unix_new(stdout)
+        [status, data] = io.read_to_end()
+        if data:
+            string = data.decode("utf-8")
+            current = App().settings.get_value("preview-output").get_string()
+            devices = findall('name: <([^>]*)>', string, DOTALL)
+            names = findall('device.description = "([^"]*)"', string, DOTALL)
+            if names:
+                for i in range(0, len(names)):
+                    combo.append(devices[i], names[i])
+                    if devices[i] == current:
+                        combo.set_active_id(devices[i])
+            else:
+                combo.set_sensitive(False)
+
     def __on_password_store(self, source, result, fm, callback):
         """
             Connect service
@@ -695,53 +726,25 @@ class SettingsDialog:
         """
         fm.connect(True, callback, fm)
 
-    def __on_pa_list_sinks(self, source, result, combo):
-        """
-            Populate combo
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param combo as Gtk.ComboBoxText
-        """
-        current = App().settings.get_value("preview-output").get_string()
-        try:
-            outputs = source.call_finish(result)[0]
-        except:
-            outputs = []
-        if outputs:
-            for output in outputs:
-                combo.append(output[1], output[0])
-                if output[1] == current:
-                    combo.set_active_id(output[1])
-        else:
-            combo.set_sensitive(False)
-
-    def __on_can_set_cover(self, source, result, data):
+    def __check_for_kid3(self, switch, grid):
         """
             Update grid/switch based on result
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param data as (Gtk.Switch, Gtk.Grid)
+            @param switch as Gtk.Switch
+            @param grid as Gtk.Grid
         """
-        try:
-            can_set_cover = source.call_finish(result)
-        except:
-            can_set_cover = False
-        switch_artwork_tags = data[0]
-        if not can_set_cover:
-            grid = data[1]
-            h = grid.child_get_property(switch_artwork_tags, "height")
-            w = grid.child_get_property(switch_artwork_tags, "width")
-            l = grid.child_get_property(switch_artwork_tags, "left-attach")
-            t = grid.child_get_property(switch_artwork_tags, "top-attach")
-            switch_artwork_tags.destroy()
+        if not App().art.kid3_available:
+            h = grid.child_get_property(switch, "height")
+            w = grid.child_get_property(switch, "width")
+            l = grid.child_get_property(switch, "left-attach")
+            t = grid.child_get_property(switch, "top-attach")
+            switch.destroy()
             label = Gtk.Label.new(_("You need to install kid3-cli"))
             label.get_style_context().add_class("dim-label")
             label.set_property("halign", Gtk.Align.END)
             label.show()
             grid.attach(label, l, t, w, h)
         else:
-            switch_artwork_tags.set_state(
-                App().settings.get_value("save-to-tags"))
+            switch.set_state(App().settings.get_value("save-to-tags"))
 
     def __on_get_password(self, attributes, password, name):
         """

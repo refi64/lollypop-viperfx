@@ -125,9 +125,9 @@ class Type:
     COMPILATIONS = -2001
 
 
-PROXY_BUS = "org.gnome.Lollypop.Portal"
-PROXY_PATH = "/org/gnome/LollypopPortal"
-PROXY_INTERFACE = "org.gnome.Lollypop.Portal"
+PROXY_BUS = "org.freedesktop.Flatpak"
+PROXY_PATH = "/org/freedesktop/Flatpak/Development"
+PROXY_INTERFACE = "org.freedesktop.Flatpak.Development"
 
 
 SPOTIFY_CLIENT_ID = "0b144843878a46b2b12e0958c342c3ac"

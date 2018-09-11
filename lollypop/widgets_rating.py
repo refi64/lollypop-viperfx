@@ -17,7 +17,6 @@ from gettext import gettext as _
 from lollypop.objects import Track
 from lollypop.define import App, Type
 from lollypop.logger import Logger
-from lollypop.helper_dbus import DBusHelper
 
 
 class RatingWidget(Gtk.Bin):
@@ -142,9 +141,7 @@ class RatingWidget(Gtk.Bin):
         if App().settings.get_value("save-to-tags") and\
                 isinstance(self.__object, Track) and\
                 self.__object.id >= 0:
-            dbus_helper = DBusHelper()
-            dbus_helper.call("CanSetCover", None,
-                             self.__on_can_set_popularity, pop)
+            self.__set_popularity(pop)
         return True
 
 #######################
@@ -159,16 +156,13 @@ class RatingWidget(Gtk.Bin):
         star = min(5, int(rate))
         return star
 
-    def __on_can_set_popularity(self, source, result, pop):
+    def __set_popularity(self, pop):
         """
             Set popularity as kid3 is installed
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
             @param pop as int
         """
         try:
-            can_set_cover = source.call_finish(result)
-            if can_set_cover:
+            if App().art.kid3_available:
                 if pop == 0:
                     value = 0
                 elif pop == 1:
@@ -182,9 +176,17 @@ class RatingWidget(Gtk.Bin):
                 else:
                     value = 255
                 path = GLib.filename_from_uri(self.__object.uri)[0]
-                dbus_helper = DBusHelper()
-                dbus_helper.call("SetPopularity",
-                                 GLib.Variant("(is)", (value, path)),
-                                 None, None)
+                if GLib.find_program_in_path("flatpak-spawn") is not None:
+                    argv = ["flatpak-spawn", "--host", "kid3-cli", "-c",
+                            "set POPM %s" % value, path]
+                else:
+                    argv = ["kid3-cli", "-c", "set POPM %s" % value, path]
+                (pid, stdin, stdout, stderr) = GLib.spawn_async(
+                    argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+                    GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
+                    standard_input=False,
+                    standard_output=False,
+                    standard_error=False
+                )
         except Exception as e:
             Logger.error("RatingWidget::__on_can_set_popularity(): %s" % e)

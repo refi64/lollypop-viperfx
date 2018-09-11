@@ -20,12 +20,11 @@ from lollypop.define import App, Type
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
-from lollypop.widgets_base import BaseWidget
 
 
 # FIXME This class should not inherit MtpSync
 # TODO Rework MtpSync code
-class DeviceManagerWidget(Gtk.Bin, MtpSync, BaseWidget):
+class DeviceManagerWidget(Gtk.Bin, MtpSync):
     """
         Widget for synchronize mtp devices
     """

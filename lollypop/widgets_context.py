@@ -17,9 +17,8 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.objects import Album, Track, Disc
-from lollypop.define import App, TAG_EDITORS
+from lollypop.define import App
 from lollypop.logger import Logger
-from lollypop.helper_dbus import DBusHelper
 
 
 class ContextWidget(Gtk.EventBox):
@@ -42,14 +41,6 @@ class ContextWidget(Gtk.EventBox):
         grid = Gtk.Grid()
         grid.show()
 
-        # Search for available tag editors
-        self.__tag_editor = App().settings.get_value("tag-editor").get_string()
-        if not self.__tag_editor:
-            for tag_editor in TAG_EDITORS:
-                if GLib.find_program_in_path(tag_editor) is not None:
-                    self.__tag_editor = tag_editor
-                    break
-
         if not isinstance(object, Disc):
             edit_button = Gtk.Button.new_from_icon_name(
                 "document-properties-symbolic",
@@ -60,10 +51,8 @@ class ContextWidget(Gtk.EventBox):
             edit_button.set_margin_end(2)
             grid.add(edit_button)
             # Check portal for tag editor
-            dbus_helper = DBusHelper()
-            dbus_helper.call("CanLaunchTagEditor",
-                             GLib.Variant("(s)", (self.__tag_editor,)),
-                             self.__on_can_launch_tag_editor, edit_button)
+            if App().art.tag_editor:
+                edit_button.show()
 
         if isinstance(object, Track):
             add_to_queue = True
@@ -188,10 +177,20 @@ class ContextWidget(Gtk.EventBox):
             @param button as Gtk.Button
         """
         path = GLib.filename_from_uri(self.__object.uri)[0]
-        dbus_helper = DBusHelper()
-        dbus_helper.call("LaunchTagEditor",
-                         GLib.Variant("(ss)", (self.__tag_editor, path)),
-                         None, None)
+        if GLib.find_program_in_path("flatpak-spawn") is not None:
+            argv = ["flatpak-spawn", "--host", App().art.tag_editor, path]
+        else:
+            argv = [App().art.tag_editor, path]
+        try:
+            (pid, stdin, stdout, stderr) = GLib.spawn_async(
+                argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+                GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
+                standard_input=False,
+                standard_output=False,
+                standard_error=False
+            )
+        except Exception as e:
+            Logger.error("ContextWidget::__on_edit_button_clicked(): %s" % e)
         self.hide()
 
     def __on_playlist_button_clicked(self, button):
@@ -201,17 +200,3 @@ class ContextWidget(Gtk.EventBox):
         """
         App().window.container.show_playlist_manager(self.__object)
         self.hide()
-
-    def __on_can_launch_tag_editor(self, source, result, button):
-        """
-            Add action if launchable
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param button as Gtk.Button
-        """
-        try:
-            source_result = source.call_finish(result)
-            if source_result is not None and source_result[0]:
-                button.show()
-        except Exception as e:
-            Logger.error("ContextWidget::__on_can_launch_tag_editor(): %s" % e)

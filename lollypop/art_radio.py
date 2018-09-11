@@ -14,12 +14,11 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
 import re
 
-from lollypop.art_base import BaseArt
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
 
 
-class RadioArt(BaseArt):
+class RadioArt:
     """
         Manage radio artwork
     """
@@ -28,8 +27,8 @@ class RadioArt(BaseArt):
     def __init__(self):
         """
             Init radio art
+            Should be inherited by a BaseArt
         """
-        BaseArt.__init__(self)
         d = Gio.File.new_for_path(self._RADIOS_PATH)
         if not d.query_exists():
             try:

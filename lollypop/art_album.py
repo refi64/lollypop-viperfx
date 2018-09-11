@@ -14,19 +14,18 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
 import re
 
-from lollypop.art_base import BaseArt
 from lollypop.tagreader import TagReader
 from lollypop.define import App, ArtSize
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape, is_readonly
-from lollypop.helper_dbus import DBusHelper
 from lollypop.helper_task import TaskHelper
 
 
-class AlbumArt(BaseArt, TagReader):
+class AlbumArt(TagReader):
     """
          Manager album artwork
+         Should be inherited by a BaseArt
     """
 
     _MIMES = ("jpeg", "jpg", "png", "gif")
@@ -35,7 +34,6 @@ class AlbumArt(BaseArt, TagReader):
         """
             Init album art
         """
-        BaseArt.__init__(self)
         TagReader.__init__(self)
         self.__favorite = App().settings.get_value(
             "favorite-cover").get_string()
@@ -242,7 +240,7 @@ class AlbumArt(BaseArt, TagReader):
             filename = self.get_album_cache_name(album) + ".jpg"
             if save_to_tags:
                 helper = TaskHelper()
-                helper.run(self.__save_artwork_tags, data, album)
+                helper.run(self.__save_artwork_to_tags, data, album)
 
             store_path = self._STORE_PATH + "/" + filename
             if album.uri == "" or is_readonly(album.uri):
@@ -297,9 +295,7 @@ class AlbumArt(BaseArt, TagReader):
                     f.delete(None)
                 except Exception as e:
                     Logger.error("AlbumArt::remove_album_artwork(): %s" % e)
-        dbus_helper = DBusHelper()
-        dbus_helper.call("CanSetCover", None,
-                         self.__on_remove_album_artwork, album.id)
+        self.__write_image_to_tags("", album.id)
 
     def clean_album_cache(self, album):
         """
@@ -368,9 +364,9 @@ class AlbumArt(BaseArt, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def __save_artwork_tags(self, data, album):
+    def __save_artwork_to_tags(self, data, album):
         """
-            Save artwork in tags
+            Save artwork to tags
             @param data as bytes
             @param album as Album
         """
@@ -387,67 +383,40 @@ class AlbumArt(BaseArt, TagReader):
         pixbuf.savev("%s/lollypop_cover_tags.jpg" % self._CACHE_PATH,
                      "jpeg", ["quality"], [str(App().settings.get_value(
                                            "cover-quality").get_int32())])
-        f = Gio.File.new_for_path("%s/lollypop_cover_tags.jpg" %
-                                  self._CACHE_PATH)
-        if f.query_exists():
-            dbus_helper = DBusHelper()
-            dbus_helper.call("CanSetCover", None,
-                             self.__on_save_artwork_tags, album.id)
+        self.__write_image_to_tags("%s/lollypop_cover_tags.jpg" %
+                                   self._CACHE_PATH)
 
-    def __on_save_artwork_tags(self, source, result, album_id):
+    def __write_image_to_tags(self, path, album_id):
         """
-            Save image to tags
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
+            Save album at path to album tags
+            @param path as str
             @param album_id as int
         """
-        try:
-            can_set_cover = source.call_finish(result)[0]
-        except:
-            can_set_cover = False
-        if can_set_cover:
-            dbus_helper = DBusHelper()
+        if self.kid3_available:
             for uri in App().albums.get_track_uris(album_id, [], []):
                 try:
                     path = GLib.filename_from_uri(uri)[0]
                 except:
                     continue
-                dbus_helper.call("SetCover",
-                                 GLib.Variant(
-                                     "(ss)",
-                                     (path,
-                                      "%s/lollypop_cover_tags.jpg" %
-                                      self._CACHE_PATH)), None, None)
+                cover = "%s/lollypop_cover_tags.jpg" % self._CACHE_PATH
+                if GLib.find_program_in_path("flatpak-spawn") is not None:
+                    argv = ["flatpak-spawn", "--host", "kid3-cli", "-c",
+                            "select all",
+                            "-c", "set picture:'%s' ''" % cover, path]
+                else:
+                    argv = ["kid3-cli", "-c", "select all", "-c",
+                            "set picture:'%s' ''" % cover, path]
+                try:
+                    (pid, stdin, stdout, stderr) = GLib.spawn_async(
+                        argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+                        GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
+                        standard_input=False,
+                        standard_output=False,
+                        standard_error=False
+                    )
+                except Exception as e:
+                    Logger.error("AlbumArt::__on_kid3_result(): %s" % e)
             self.clean_album_cache(Album(album_id))
             # FIXME Should be better to send all covers at once and listen
             # to as signal but it works like this
             GLib.timeout_add(2000, self.album_artwork_update, album_id)
-        else:
-            # Lollypop-portal or kid3-cli removed?
-            App().settings.set_value("save-to-tags", GLib.Variant("b", False))
-
-    def __on_remove_album_artwork(self, source, result, album_id):
-        """
-            Remove album image from tags
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param album_id
-        """
-        try:
-            can_set_cover = source.call_finish(result)
-        except:
-            can_set_cover = False
-        if can_set_cover:
-            dbus_helper = DBusHelper()
-            for uri in App().albums.get_track_uris(album_id, [], []):
-                try:
-                    path = GLib.filename_from_uri(uri)[0]
-                    dbus_helper.call("SetCover",
-                                     GLib.Variant("(ss)", (path, "")),
-                                     None, None)
-                except Exception as e:
-                    Logger.error("AlbumArt::__on_remove_album_artwork(): %s" %
-                                 e)
-        else:
-            # Lollypop-portal or kid3-cli removed?
-            App().settings.set_value("save-to-tags", GLib.Variant("b", False))

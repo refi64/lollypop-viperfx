@@ -16,10 +16,9 @@ from gettext import gettext as _
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import App, Type, TAG_EDITORS
+from lollypop.define import App, Type
 from lollypop.objects import Track, Album
 from lollypop.logger import Logger
-from lollypop.helper_dbus import DBusHelper
 from lollypop.helper_task import TaskHelper
 
 
@@ -325,24 +324,14 @@ class EditMenu(BaseMenu):
             Init edit menu
             @param object as Album/Track
         """
-        # Search for available tag editors
-        self.__editor = App().settings.get_value("tag-editor").get_string()
-        if not self.__editor:
-            for tag_editor in TAG_EDITORS:
-                if GLib.find_program_in_path(tag_editor) is not None:
-                    self.__editor = tag_editor
-                    break
         # Ignore genre_ids/artist_ids
         if isinstance(object, Album):
             obj = Album(object.id)
         else:
             obj = Track(object.id)
         BaseMenu.__init__(self, obj)
-
-        dbus_helper = DBusHelper()
-        dbus_helper.call("CanLaunchTagEditor",
-                         GLib.Variant("(s)", (self.__editor,)),
-                         self.__on_can_launch_tag_editor, None)
+        if App().art.tag_editor:
+            self.__set_edit_actions()
 
 #######################
 # PRIVATE             #
@@ -363,24 +352,20 @@ class EditMenu(BaseMenu):
             @param GLib.Variant
         """
         path = GLib.filename_from_uri(self._object.uri)[0]
-        dbus_helper = DBusHelper()
-        dbus_helper.call("LaunchTagEditor",
-                         GLib.Variant("(ss)", (self.__editor, path)),
-                         None, None)
-
-    def __on_can_launch_tag_editor(self, source, result, data):
-        """
-            Add action if launchable
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param data as object
-        """
+        if GLib.find_program_in_path("flatpak-spawn") is not None:
+            argv = ["flatpak-spawn", "--host", App().art.tag_editor, path]
+        else:
+            argv = [App().art.tag_editor, path]
         try:
-            source_result = source.call_finish(result)
-            if source_result is not None and source_result[0]:
-                self.__set_edit_actions()
+            (pid, stdin, stdout, stderr) = GLib.spawn_async(
+                argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+                GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
+                standard_input=False,
+                standard_output=False,
+                standard_error=False
+            )
         except Exception as e:
-            Logger.error("EditMenu::__on_can_launch_tag_editor(): %s" % e)
+            Logger.error("MenuPopover::__edit_tag(): %s" % e)
 
 
 class AlbumMenu(Gio.Menu):

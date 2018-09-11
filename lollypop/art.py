@@ -10,6 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from lollypop.art_base import BaseArt
 from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
 from lollypop.logger import Logger
@@ -18,7 +19,7 @@ from lollypop.downloader import Downloader
 from shutil import rmtree
 
 
-class Art(AlbumArt, RadioArt, Downloader):
+class Art(BaseArt, AlbumArt, RadioArt, Downloader):
     """
         Global artwork manager
     """
@@ -27,6 +28,7 @@ class Art(AlbumArt, RadioArt, Downloader):
         """
             Create cache path
         """
+        BaseArt.__init__(self)
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
         Downloader.__init__(self)
