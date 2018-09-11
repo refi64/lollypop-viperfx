@@ -1,8 +1,3 @@
-* {
-    outline-width: 0px;
-    text-shadow: none;
-}
-
 treeview {
     padding: 2px 2px 2px 2px;
 }
@@ -292,6 +287,7 @@ popover.background separator {
 
 .trackrow {
     padding: 0px;
+    outline-width: 0px;
 	background-color: transparent;
   	color: inherit;
 }
@@ -309,6 +305,7 @@ popover.background separator {
 }
 
 .trackrowplaying {
+    outline-width: 0px;
     border-radius: 5px;
     padding: 0px;
 	background-color: alpha(@theme_fg_color, 0.07);
