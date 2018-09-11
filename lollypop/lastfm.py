@@ -365,7 +365,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Populate loved tracks playlist
         """
-        if not self.available:
+        if not self.available or App().playlists.get_track_ids(Type.LOVED):
             return
         try:
             tracks = []
