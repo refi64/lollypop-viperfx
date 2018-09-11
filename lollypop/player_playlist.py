@@ -46,15 +46,6 @@ class PlaylistPlayer(BasePlayer):
         self._playlist_tracks = tracks
         self._playlist_ids = playlist_ids
 
-    def populate_playlist_by_track_ids(self, track_ids, playlist_ids):
-        """
-            Set user playlist as current playback playlist
-            @param array of track_ids as [int]
-            @param playlist ids as [int]
-        """
-        tracks = [Track(track_id) for track_id in track_ids]
-        self.populate_playlist_by_tracks(tracks, playlist_ids)
-
     def update_playlist(self, tracks):
         """
             Update user playlist content

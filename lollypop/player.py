@@ -287,30 +287,20 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     track.set_radio(name, url)
                     self.load(track, is_playing)
                 elif App().tracks.get_uri(track_id) != "":
-                    track = Track(track_id)
-                    self._load_track(track)
-                    # We set this initial state
-                    # because seek while failed otherwise
-                    self.pause()
-                    if playlist_ids:
-                        track_ids = []
-                        for playlist_id in playlist_ids:
-                            if playlist_id == Type.POPULARS:
-                                track_ids = App().tracks.get_populars()
-                            elif playlist_id == Type.RECENTS:
-                                track_ids = App().tracks.\
-                                    get_recently_listened_to()
-                            elif playlist_id == Type.NEVER:
-                                track_ids = App().tracks.\
-                                    get_never_listened_to()
-                            elif playlist_id == Type.RANDOMS:
-                                track_ids = App().tracks.get_randoms()
-                            else:
-                                track_ids = App().playlists.get_track_ids(
-                                    playlist_id)
-                            self.populate_playlist_by_track_ids(
-                                list(set(track_ids)),
-                                playlist_ids)
+                    for playlist_id in playlist_ids:
+                        track_ids = App().playlists.get_track_ids(
+                            playlist_id)
+                        tracks = [Track(track_id)
+                                  for track_id in track_ids]
+                        wanted = None
+                        for track in tracks:
+                            if track.id == track_id:
+                                wanted = track
+                                break
+                        if wanted is not None:
+                            self._load_track(wanted)
+                        App().player.populate_playlist_by_tracks(tracks,
+                                                                 playlist_ids)
                     else:
                         if was_party:
                             self.emit("party-changed", True)

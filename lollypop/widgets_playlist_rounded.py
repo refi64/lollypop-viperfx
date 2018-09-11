@@ -193,13 +193,13 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         if App().player.locked:
             return True
         if self.__track_ids:
-            App().player.populate_playlist_by_track_ids(self.__track_ids,
-                                                        [self._data])
+            tracks = [Track(track_id) for track_id in self.__track_ids]
+            App().player.populate_playlist_by_tracks(tracks, [self._data])
             if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
-                track_id = choice(self.__track_ids)
+                track = choice(tracks)
             else:
-                track_id = self.__track_ids[0]
-            App().player.load(Track(track_id))
+                track = tracks[0]
+            App().player.load(track)
 
     def _on_edit_press_event(self, widget, event):
         """
