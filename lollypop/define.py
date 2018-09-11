@@ -125,11 +125,6 @@ class Type:
     COMPILATIONS = -2001
 
 
-PROXY_BUS = "org.freedesktop.Flatpak"
-PROXY_PATH = "/org/freedesktop/Flatpak/Development"
-PROXY_INTERFACE = "org.freedesktop.Flatpak.Development"
-
-
 SPOTIFY_CLIENT_ID = "0b144843878a46b2b12e0958c342c3ac"
 SPOTIFY_SECRET = "265ab8e057684f1b9e69e0c58f4881c1"
 
