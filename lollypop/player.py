@@ -398,14 +398,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.set_next()
             # We send this signal to update next popover
             self.emit("queue-changed")
-        elif self._current_track.id is not None and\
-                self._current_track.album in self._albums:
-            pos = self._albums.index(self._current_track.album)
-            if pos + 1 >= len(self._albums):
-                next_album = self._albums[0]
-            else:
-                next_album = self._albums[pos + 1]
-            self.load(next_album.tracks[0])
+        elif self._current_track.id is not None:
+            self.pause()
+            self.load(self._current_track.album.tracks[-1])
+            self.set_next()
+            self.next()
 
     def update_crossfading(self):
         """

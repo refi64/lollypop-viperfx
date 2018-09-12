@@ -64,7 +64,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show/Hide navigation list</property>
-                <property name="accelerator">&lt;Primary&gt;h</property>
+                <property name="accelerator">F9</property>
               </object>
             </child>
             <child>
