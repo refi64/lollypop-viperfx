@@ -114,6 +114,9 @@ class Application(Gtk.Application):
         self.add_main_option("play-pause", b"t", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Toggle playback",
                              None)
+        self.add_main_option("stop", b"s", GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, "Stop playback",
+                             None)
         self.add_main_option("next", b"n", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Go to next track",
                              None)
@@ -394,6 +397,8 @@ class Application(Gtk.Application):
                 pass
         elif options.contains("play-pause"):
             self.player.play_pause()
+        elif options.contains("stop"):
+            self.player.stop()
         elif options.contains("play-ids"):
             try:
                 value = options.lookup_value("play-ids").get_string()
