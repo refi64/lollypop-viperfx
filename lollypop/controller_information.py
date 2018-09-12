@@ -27,6 +27,8 @@ class InformationController:
         """
         self._infobox = None
         self.__tooltip = tooltip
+        self.__per_track_cover = App().settings.get_value(
+            "allow-per-track-cover")
 
     def on_current_changed(self, art_size, font_size):
         """
@@ -92,7 +94,7 @@ class InformationController:
                 App().player.current_track.album,
                 width,
                 self.get_scale_factor(),
-                App().settings.get_value("allow-per-track-cover"))
+                self.__per_track_cover)
         if artwork is not None:
             if enable_blur:
                 from lollypop.utils import blur
