@@ -3,6 +3,9 @@ stages:
 
 variables:
   BUNDLE: "lollypop-git.flatpak"
+  GIT_SUBMODULE_STRATEGY: normal
+
+  
 
 
 flatpak:
