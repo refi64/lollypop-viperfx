@@ -14,9 +14,10 @@ from gi.repository import Gdk
 
 from lollypop.define import App
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
+from lollypop.widgets_album import AlbumBaseWidget
 
 
-class AlbumsDecadeWidget(RoundedFlowBoxWidget):
+class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
     """
         Decade widget showing cover for 9 albums
     """
@@ -26,6 +27,7 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget):
             Init widget
             @param decade as [int]
         """
+        AlbumBaseWidget.__init__(self)
         RoundedFlowBoxWidget.__init__(self, item_ids)
 
     def populate(self):
@@ -34,6 +36,10 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget):
         """
         decade_str = "%s - %s" % (self._data[0], self._data[-1])
         RoundedFlowBoxWidget.populate(self, decade_str)
+
+    @property
+    def filter(self):
+        return "%s - %s" % (self._data[0], self._data[-1])
 
 #######################
 # PROTECTED           #

@@ -92,6 +92,10 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         self._lock_overlay = False
 
     @property
+    def filter(self):
+        return App().playlists.get_name(self._data)
+
+    @property
     def playlist_id(self):
         """
             Get playlist id

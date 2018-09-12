@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
+from lollypop.define import App
+
 
 class View(Gtk.Grid):
     """
@@ -34,6 +36,8 @@ class View(Gtk.Grid):
             grid = Gtk.Grid()
             grid.set_column_spacing(2)
             self.__search_entry = Gtk.SearchEntry.new()
+            self.__search_entry.connect("map", self.__on_search_map)
+            self.__search_entry.connect("unmap", self.__on_search_unmap)
             self.__search_entry.connect("search-changed",
                                         self._on_search_changed)
             self.__search_entry.connect("key-press-event",
@@ -144,6 +148,20 @@ class View(Gtk.Grid):
             widget.update_state()
             widget.update_playing_indicator()
             GLib.idle_add(self.__update_widgets, widgets)
+
+    def __on_search_map(self, widget):
+        """
+            Disable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        App().window.enable_global_shortcuts(False)
+
+    def __on_search_unmap(self, widget):
+        """
+            Enable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        App().window.enable_global_shortcuts(True)
 
     def __on_button_clicked(self, widget):
         """
