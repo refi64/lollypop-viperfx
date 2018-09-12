@@ -384,7 +384,7 @@ class AlbumArt(TagReader):
                      "jpeg", ["quality"], [str(App().settings.get_value(
                                            "cover-quality").get_int32())])
         self.__write_image_to_tags("%s/lollypop_cover_tags.jpg" %
-                                   self._CACHE_PATH)
+                                   self._CACHE_PATH, album.id)
 
     def __write_image_to_tags(self, path, album_id):
         """
