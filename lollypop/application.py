@@ -221,7 +221,7 @@ class Application(Gtk.Application):
         # Then vacuum db
         if vacuum:
             self.__vacuum()
-        self.window.destroy()
+        self.window.hide()
         Gio.Application.quit(self)
 
     def is_fullscreen(self):
