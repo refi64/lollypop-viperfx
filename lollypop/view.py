@@ -65,10 +65,10 @@ class View(Gtk.Grid):
         self._scrolled.add(self._viewport)
         self._viewport.show()
 
+    def populate(self):
+        pass
+
     def stop(self):
-        """
-            Stop view loading
-        """
         pass
 
     def enable_filter(self):
