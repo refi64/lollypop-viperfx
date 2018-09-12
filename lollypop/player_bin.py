@@ -138,6 +138,9 @@ class BinPlayer(BasePlayer):
             Change player state to STOPPED
         """
         self._playbin.set_state(Gst.State.NULL)
+        # If user click play again, it will start current track
+        # See BinPlayer.play()
+        self._next_track = self._current_track
         self._current_track = Track()
         self.emit("status-changed")
         self.emit("current-changed")
