@@ -6,26 +6,26 @@
 
 Lollypop is a new GNOME music playing application.
 
-- For users: https://wiki.gnome.org/Apps/Lollypop
+- Users: https://wiki.gnome.org/Apps/Lollypop
 
-- For packagers: You need to provide https://gitlab.gnome.org/gnumdk/lollypop-portal
+- Packagers: You need to provide https://gitlab.gnome.org/gnumdk/lollypop-portal
 
-For translators: https://hosted.weblate.org/projects/gnumdk/
+- Translators: https://hosted.weblate.org/projects/gnumdk/
 
 It provides:
 
-- MP3/4, ogg and FLAC.
+- MP3/4, Ogg and FLAC.
 - Genre/cover browsing
 - Genre/artist/cover browsing
 - Search
 - Main playlist (called queue in other apps)
 - Party mode
-- Replay gain
+- ReplayGain
 - Cover art downloader
 - Context artist view
 - MTP sync
 - Fullscreen view
-- Radios support
+- Radio support
 - Last.fm support
 - Auto install codecs
 - HiDPI support
@@ -46,7 +46,7 @@ It provides:
 - `python-sqlite`
 - `python-pylast >= 1.0`
 
-## Building from git
+## Building from Git
 
 ```bash
 $ git clone https://gitlab.gnome.org/World/lollypop.git
@@ -55,14 +55,14 @@ $ meson builddir --prefix=/usr
 # sudo ninja -C builddir install
 ```
 
-In case you want the integration with [Last.fm](http://last.fm) to work you need to install `pylast`
+Installation of `pylast` is required for integration with [Last.fm](http://last.fm) 
 
 ```bash
 # apt-get install python3-pip
 # pip3 install pylast
 ```
 
-### On Debian (Jessie)
+### On Debian GNU/Linux (Jessie)
 
 ```bash
 $ git clone https://gitlab.gnome.org/World/lollypop.git
