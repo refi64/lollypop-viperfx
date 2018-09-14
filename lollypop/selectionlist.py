@@ -366,6 +366,10 @@ class SelectionList(Gtk.Overlay):
         lists.append((Type.SEPARATOR, ""))
         return lists
 
+    # Needed because we embed this widget in minimode
+    def disable_overlay(self):
+        pass
+
     @property
     def type(self):
         """
