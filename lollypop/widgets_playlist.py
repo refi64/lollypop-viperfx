@@ -16,10 +16,9 @@ from lollypop.define import App, Type, WindowSize, Loading, ResponsiveType
 from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
 from lollypop.helper_task import TaskHelper
-from lollypop.widgets_base import BaseWidget
 
 
-class PlaylistsWidget(Gtk.Grid, BaseWidget):
+class PlaylistsWidget(Gtk.Grid):
     """
         Show playlist tracks/albums
     """
