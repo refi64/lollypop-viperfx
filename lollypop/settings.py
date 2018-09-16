@@ -168,7 +168,7 @@ class SettingsDialog:
         combo_preview = builder.get_object("combo_preview")
 
         scale_coversize = builder.get_object("scale_coversize")
-        scale_coversize.set_range(150, 300)
+        scale_coversize.set_range(170, 300)
         scale_coversize.set_value(
             App().settings.get_value("cover-size").get_int32())
         self.__settings_dialog.connect("destroy", self.__edit_settings_close)

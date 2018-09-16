@@ -47,7 +47,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Populate widget content
         """
         self.get_style_context().remove_class("loading")
-        self._rounded_class = "rounded-icon-small"
+        self._rounded_class = "rounded-icon"
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
@@ -137,13 +137,14 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                                      self._on_play_press_event)
             self._play_button = Gtk.Image.new_from_icon_name(
                 "media-playback-start-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.DND)
             self._play_button.set_opacity(0)
             # Play all button
             self._play_all_event = Gtk.EventBox()
             self._play_all_event.set_property("has-tooltip", True)
             self._play_all_event.set_tooltip_text(_("Play albums"))
             self._play_all_event.set_property("halign", Gtk.Align.END)
+            self._play_all_event.set_property("valign", Gtk.Align.END)
             self._play_all_event.connect("realize", self._on_eventbox_realize)
             self._play_all_event.connect("button-press-event",
                                          self.__on_play_all_press_event)
@@ -154,6 +155,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._artwork_event.set_property("has-tooltip", True)
             self._artwork_event.set_tooltip_text(_("Change artwork"))
             self._artwork_event.set_property("halign", Gtk.Align.END)
+            self._artwork_event.set_property("valign", Gtk.Align.END)
             self._artwork_event.connect("realize", self._on_eventbox_realize)
             self._artwork_event.connect("button-press-event",
                                         self._on_artwork_press_event)
@@ -165,6 +167,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._action_event = Gtk.EventBox()
             self._action_event.set_property("has-tooltip", True)
             self._action_event.set_property("halign", Gtk.Align.END)
+            self._action_event.set_property("valign", Gtk.Align.END)
             self._action_event.connect("realize", self._on_eventbox_realize)
             self._action_event.connect("button-press-event",
                                        self._on_action_press_event)
