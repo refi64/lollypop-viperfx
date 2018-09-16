@@ -143,7 +143,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             popover.set_relative_to(self._infobox)
         elif App().player.current_track.id == Type.RADIOS:
             popover = Gtk.Popover.new_from_model(self._infobox, menu)
-        popover.show()
+        popover.popup()
 
     def __on_infobox_button_press_event(self, eventbox, event):
         """
@@ -170,7 +170,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
                 popover = InformationPopover()
                 popover.populate()
             popover.set_relative_to(self._infobox)
-            popover.show()
+            popover.popup()
         else:
             self.__on_infobox_pressed(self.__gesture, 0, 0)
 

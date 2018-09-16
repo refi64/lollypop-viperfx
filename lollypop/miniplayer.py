@@ -105,7 +105,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
                     App().player.current_track,
                     ToolbarMenu(App().player.current_track))
                 popover.set_relative_to(self)
-                popover.show()
+                popover.popup()
         return True
 
     def _on_labels_realize(self, eventbox):

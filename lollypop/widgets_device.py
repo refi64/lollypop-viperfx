@@ -200,7 +200,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         popover = Gtk.Popover.new(button)
         popover.set_position(Gtk.PositionType.BOTTOM)
         popover.add(self.__menu_items)
-        popover.show()
+        popover.popup()
 
     def _on_finished(self):
         """

@@ -324,7 +324,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         else:
             popover.connect("closed", self.__on_pop_menu_closed)
             self.get_style_context().add_class("album-menu-selected")
-            popover.show()
+            popover.popup()
 
     def __on_pop_menu_closed(self, widget):
         """

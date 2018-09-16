@@ -251,4 +251,4 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_pop_artwork_closed)
         self._lock_overlay = True
-        popover.show()
+        popover.popup()

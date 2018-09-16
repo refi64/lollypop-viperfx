@@ -196,7 +196,7 @@ class ArtworkSearch(Gtk.Bin):
             Show popover
             @param button as Gtk.Button
         """
-        self._popover.show()
+        self._popover.popup()
         self._api_entry.set_text(
             App().settings.get_value("cs-api-key").get_string())
 

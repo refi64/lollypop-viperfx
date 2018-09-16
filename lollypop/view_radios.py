@@ -62,7 +62,7 @@ class RadiosView(FlowBoxView, ViewController):
         """
         popover = RadioPopover("", self.__radios)
         popover.set_relative_to(widget)
-        popover.show()
+        popover.popup()
 
     def _on_search_clicked(self, widget):
         """

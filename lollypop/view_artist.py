@@ -231,7 +231,7 @@ class ArtistView(ArtistAlbumsView):
         popover = LastfmPopover()
         popover.set_relative_to(widget)
         popover.populate(self._artist_ids)
-        popover.show()
+        popover.popup()
 
     def _on_artwork_draw(self, image, ctx):
         """

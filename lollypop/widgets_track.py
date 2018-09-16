@@ -195,7 +195,7 @@ class Row(Gtk.ListBoxRow):
         popover.set_pointing_to(rect)
         popover.connect("closed", self.__on_closed)
         self.get_style_context().add_class("track-menu-selected")
-        popover.show()
+        popover.popup()
 
     def __on_map(self, widget):
         """

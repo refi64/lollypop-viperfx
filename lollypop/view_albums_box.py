@@ -117,7 +117,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         album_widget.show_overlay(False)
         album_widget.lock_overlay(True)
         popover.connect("closed", self.__on_album_popover_closed, album_widget)
-        popover.show()
+        popover.popup()
         artwork.set_opacity(0.9)
 
     def __on_album_popover_closed(self, popover, album_widget):

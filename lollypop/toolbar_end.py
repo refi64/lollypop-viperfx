@@ -119,7 +119,7 @@ class ToolbarEnd(Gtk.Bin):
         else:
             self.__shuffle_button.show()
             if self.__next_popover.should_be_shown():
-                self.__next_popover.show()
+                self.__next_popover.popup()
         # Remove another button
         search_button_width = self.__search_button.get_allocated_width()
         if width < WindowSize.MONSTER - search_button_width:
@@ -136,7 +136,7 @@ class ToolbarEnd(Gtk.Bin):
             if self.__next_popover.is_visible():
                 self.__next_popover.update()
             else:
-                self.__next_popover.show()
+                self.__next_popover.popup()
         else:
             self.__next_popover.hide()
 
@@ -163,7 +163,7 @@ class ToolbarEnd(Gtk.Bin):
             from lollypop.pop_albums import AlbumsPopover
             popover = AlbumsPopover()
         popover.set_relative_to(button)
-        popover.show()
+        popover.popup()
         return popover
 
 #######################
@@ -196,7 +196,7 @@ class ToolbarEnd(Gtk.Bin):
         else:
             self.__next_popover.inhibit(False)
             if self.__next_popover.should_be_shown():
-                self.__next_popover.show()
+                self.__next_popover.popup()
 
     def _on_settings_button_toggled(self, button):
         """
@@ -209,7 +209,7 @@ class ToolbarEnd(Gtk.Bin):
         else:
             self.__next_popover.inhibit(False)
             if self.__next_popover.should_be_shown():
-                self.__next_popover.show()
+                self.__next_popover.popup()
 
 #######################
 # PRIVATE             #
@@ -412,7 +412,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         self.__next_popover.inhibit(False)
         if self.__next_popover.should_be_shown():
-            self.__next_popover.show()
+            self.__next_popover.popup()
 
     def __on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

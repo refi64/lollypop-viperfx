@@ -296,7 +296,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
             popover.connect("closed", self.__on_album_popover_closed)
-            popover.show()
+            popover.popup()
 
     def __on_artist_button_press(self, eventbox, event):
         """
