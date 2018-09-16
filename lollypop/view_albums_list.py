@@ -404,6 +404,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Populate widget with album rows
             @param albums as [Album]
         """
+        self._lazy_queue = []
         for child in self.__view.get_children():
             GLib.idle_add(child.destroy)
         self.__add_albums(list(albums))
