@@ -304,7 +304,7 @@ class ToolbarEnd(Gtk.Bin):
             self.__search_popover = SearchPopover()
             self.__search_popover.connect("closed", self.__on_popover_closed)
         self.__search_popover.set_relative_to(self.__search_popover_button)
-        self.__search_popover.show()
+        self.__search_popover.popup()
 
     def __set_shuffle_icon(self):
         """
