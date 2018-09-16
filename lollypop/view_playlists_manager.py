@@ -31,16 +31,30 @@ class PlaylistsManagerView(FlowBoxView):
             @param obj as Track/Album
         """
         self.__obj = obj
-        button = Gtk.Button(_("New playlist"))
-        button.connect("clicked", self.__on_button_clicked)
-        button.set_property("halign", Gtk.Align.CENTER)
-        button.set_margin_top(5)
-        button.set_margin_bottom(5)
-        button.show()
+        grid = Gtk.Grid()
+        grid.set_margin_top(5)
+        grid.set_margin_start(5)
+        grid.set_margin_bottom(5)
+        grid.show()
+        if obj is not None:
+            back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic",
+                                                        Gtk.IconSize.BUTTON)
+            back_button.connect("clicked",
+                                lambda x: App().window.container.reload_view())
+            back_button.set_property("halign", Gtk.Align.START)
+            back_button.set_relief(Gtk.ReliefStyle.NONE)
+            back_button.show()
+            grid.add(back_button)
+        new_playlist_button = Gtk.Button(_("New playlist"))
+        new_playlist_button.connect("clicked", self.__on_new_button_clicked)
+        new_playlist_button.set_property("halign", Gtk.Align.CENTER)
+        new_playlist_button.set_hexpand(True)
+        new_playlist_button.show()
+        grid.add(new_playlist_button)
         FlowBoxView.__init__(self)
         self._box.connect("child-activated", self.__on_album_activated)
         self.insert_row(0)
-        self.attach(button, 0, 0, 1, 1)
+        self.attach(grid, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
 
     def populate(self, items):
@@ -75,7 +89,7 @@ class PlaylistsManagerView(FlowBoxView):
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
-    def __on_button_clicked(self, button):
+    def __on_new_button_clicked(self, button):
         """
             Add a new playlist
             @param button as Gtk.Button
