@@ -120,16 +120,16 @@ class Container(Gtk.Overlay):
         self.__stack.set_visible_child(view)
         current.disable_overlay()
 
-    def show_playlist_manager(self, object):
+    def show_playlist_manager(self, obj):
         """
             Show playlist manager for object_id
             Current view stay present in ViewContainer
-            @param object as Track/Album/Disc
+            @param obj as Track/Album
         """
-        from lollypop.view_playlists import PlaylistsManageView
+        from lollypop.view_playlists_manager import PlaylistsManagerView
         current = self.__stack.get_visible_child()
-        view = PlaylistsManageView(object)
-        view.populate()
+        view = PlaylistsManagerView(obj)
+        view.populate(App().playlists.get_ids())
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)

@@ -25,10 +25,12 @@ class PlaylistsManagerView(FlowBoxView):
         Show playlists in a FlowBox
     """
 
-    def __init__(self):
+    def __init__(self, obj=None):
         """
             Init decade view
+            @param obj as Track/Album
         """
+        self.__obj = obj
         button = Gtk.Button(_("New playlist"))
         button.connect("clicked", self.__on_button_clicked)
         button.set_property("halign", Gtk.Align.CENTER)
@@ -46,7 +48,8 @@ class PlaylistsManagerView(FlowBoxView):
             Populate items
             @param items
         """
-        items = [i[0] for i in ShownPlaylists.get()] + items
+        if self.__obj is None:
+            items = [i[0] for i in ShownPlaylists.get()] + items
         FlowBoxView.populate(self, items)
 
     def get_track_ids_for_playlist_id(self, playlist_id):
@@ -68,7 +71,7 @@ class PlaylistsManagerView(FlowBoxView):
             Start lazy loading
             @param playlist ids as [int]
         """
-        widget = FlowBoxView._add_items(self, playlist_ids)
+        widget = FlowBoxView._add_items(self, playlist_ids, self.__obj)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
@@ -88,7 +91,10 @@ class PlaylistsManagerView(FlowBoxView):
             count += 1
             name = _("New playlist ") + str(count)
         App().playlists.add(name)
-        App().window.container.reload_view()
+        if self.__obj is None:
+            App().window.container.reload_view()
+        else:
+            App().window.container.show_playlist_manager(self.__obj)
 
     def __on_album_activated(self, flowbox, widget):
         """

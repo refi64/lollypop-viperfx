@@ -16,7 +16,7 @@ from random import sample, choice
 from gettext import gettext as _
 
 from lollypop.define import App, Shuffle
-from lollypop.objects import Track
+from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 from lollypop.widgets_album import AlbumBaseWidget
 
@@ -72,14 +72,26 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         Playlist widget showing cover for 9 albums
     """
 
-    def __init__(self, playlist_id):
+    def __init__(self, playlist_id, obj):
         """
             Init widget
             @param playlist_id as playlist_id
+            @param obj as Track/Album
         """
         AlbumBaseWidget.__init__(self)
         RoundedFlowBoxWidget.__init__(self, playlist_id)
         self.__track_ids = []
+        self.__obj = obj
+        if obj is not None:
+            if isinstance(obj, Album) or\
+                    isinstance(obj, Disc):
+                self.__add = not App().playlists.exists_album(
+                    playlist_id,
+                    obj)
+            else:
+                self.__add = not App().playlists.exists_track(
+                    playlist_id,
+                    obj)
 
     def populate(self):
         """
@@ -142,16 +154,29 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             # Play button
             self._play_event = Gtk.EventBox()
             self._play_event.set_property("has-tooltip", True)
-            self._play_event.set_tooltip_text(_("Play"))
             self._play_event.set_hexpand(True)
             self._play_event.set_property("valign", Gtk.Align.CENTER)
             self._play_event.set_property("halign", Gtk.Align.CENTER)
             self._play_event.connect("realize", self.__on_eventbox_realize)
             self._play_event.connect("button-press-event",
                                      self._on_play_press_event)
-            self._play_button = Gtk.Image.new_from_icon_name(
-                "media-playback-start-symbolic",
-                Gtk.IconSize.DND)
+            if self.__obj is None:
+                self._play_button = Gtk.Image.new_from_icon_name(
+                    "media-playback-start-symbolic",
+                    Gtk.IconSize.DND)
+                self._play_event.set_tooltip_text(_("Play"))
+            elif self.__add:
+                # Special case, we are in add to playlist mode
+                self._play_button = Gtk.Image.new_from_icon_name(
+                    "list-add-symbolic",
+                    Gtk.IconSize.DND)
+                self._play_event.set_tooltip_text(_("Add"))
+            else:
+                # Special case, we are in remove from playlist mode
+                self._play_button = Gtk.Image.new_from_icon_name(
+                    "list-remove-symbolic",
+                    Gtk.IconSize.DND)
+                self._play_event.set_tooltip_text(_("Remove"))
             self._play_button.set_opacity(0)
             # Edit button
             self._artwork_event = Gtk.EventBox()
@@ -194,16 +219,29 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
-            return True
-        if self.__track_ids:
-            tracks = [Track(track_id) for track_id in self.__track_ids]
-            App().player.populate_playlist_by_tracks(tracks, [self._data])
-            if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
-                track = choice(tracks)
+        if self.__obj is None:
+            if App().player.locked:
+                return True
+            if self.__track_ids:
+                tracks = [Track(track_id) for track_id in self.__track_ids]
+                App().player.populate_playlist_by_tracks(tracks, [self._data])
+                if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
+                    track = choice(tracks)
+                else:
+                    track = tracks[0]
+                App().player.load(track)
+        else:
+            if isinstance(self.__obj, Disc):
+                tracks = self.__obj.tracks
+            elif isinstance(self.__obj, Album):
+                tracks = self.__obj.tracks
             else:
-                track = tracks[0]
-            App().player.load(track)
+                tracks = [self.__obj]
+            if self.__add:
+                App().playlists.add_tracks(self.playlist_id, tracks)
+            else:
+                App().playlists.remove_tracks(self.playlist_id, tracks)
+        App().window.container.reload_view()
 
     def _on_edit_press_event(self, widget, event):
         """
