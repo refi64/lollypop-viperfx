@@ -29,7 +29,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self.set_hexpand(True)
-        self.__search = None
+        self.__search_popover = None
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
@@ -77,8 +77,8 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover = NextPopover()
         self.__next_popover.set_relative_to(self.__shuffle_button)
 
-        self.__search_button = builder.get_object("search-button")
-        self.__gesture = Gtk.GestureLongPress.new(self.__search_button)
+        self.__search_popover_button = builder.get_object("search-button")
+        self.__gesture = Gtk.GestureLongPress.new(self.__search_popover_button)
         self.__gesture.connect("pressed", self.__on_search_button_pressed)
         self.__gesture.connect("cancelled", self.__on_search_button_cancelled)
         search_action = Gio.SimpleAction.new("search", None)
@@ -121,8 +121,8 @@ class ToolbarEnd(Gtk.Bin):
             if self.__next_popover.should_be_shown():
                 self.__next_popover.popup()
         # Remove another button
-        search_button_width = self.__search_button.get_allocated_width()
-        if width < WindowSize.MONSTER - search_button_width:
+        button_width = self.__search_popover_button.get_allocated_width()
+        if width < WindowSize.MONSTER - button_width:
             self.__list_button.hide()
         else:
             self.__list_button.show()
@@ -145,8 +145,8 @@ class ToolbarEnd(Gtk.Bin):
             Search item
             @param search as str
         """
-        self.__on_search_short([])
-        self.__search.set_text(search)
+        self.__on_search_button_cancelled()
+        self.__search_popover.set_text(search)
 
     def show_list_popover(self, button):
         """
@@ -293,19 +293,18 @@ class ToolbarEnd(Gtk.Bin):
         if App().window.container.view is not None:
             App().window.container.view.enable_filter()
 
-    def __on_search_button_cancelled(self, gesture):
+    def __on_search_button_cancelled(self, *ignore):
         """
             Show search popover
-            @param gesture as Gtk.GestureLongPress
         """
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
-        if self.__search is None:
+        if self.__search_popover is None:
             from lollypop.pop_search import SearchPopover
-            self.__search = SearchPopover()
-            self.__search.connect("closed", self.__on_popover_closed)
-        self.__search.set_relative_to(self.__search_button)
-        self.__search.show()
+            self.__search_popover = SearchPopover()
+            self.__search_popover.connect("closed", self.__on_popover_closed)
+        self.__search_popover.set_relative_to(self.__search_popover_button)
+        self.__search_popover.show()
 
     def __set_shuffle_icon(self):
         """
