@@ -241,7 +241,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
                 App().playlists.add_tracks(self.playlist_id, tracks)
             else:
                 App().playlists.remove_tracks(self.playlist_id, tracks)
-        App().window.container.reload_view()
+            App().window.container.reload_view()
 
     def _on_edit_press_event(self, widget, event):
         """
