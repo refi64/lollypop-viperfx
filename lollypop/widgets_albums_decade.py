@@ -88,8 +88,25 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
                 Gtk.IconSize.DND)
             self._play_event.set_tooltip_text(_("Play"))
             self._play_button.set_opacity(0)
+            # Open button
+            self._action2_event = Gtk.EventBox()
+            self._action2_event.set_property("has-tooltip", True)
+            self._action2_event.set_tooltip_text(_("Open"))
+            self._action2_event.set_property("halign", Gtk.Align.END)
+            self._action2_event.connect("realize", self._on_eventbox_realize)
+            self._action2_event.connect("button-press-event",
+                                        self._on_open_press_event)
+            self._action2_event.set_property("valign", Gtk.Align.END)
+            self._action2_event.set_margin_bottom(5)
+            self._action2_event.set_property("halign", Gtk.Align.CENTER)
+            self._action2_button = Gtk.Image.new_from_icon_name(
+                "folder-open-symbolic",
+                Gtk.IconSize.BUTTON)
+            self._action2_button.set_opacity(0)
             self._play_event.add(self._play_button)
+            self._action2_event.add(self._action2_button)
             self._overlay.add_overlay(self._play_event)
+            self._overlay.add_overlay(self._action2_event)
             self._overlay.show_all()
             AlbumBaseWidget._show_overlay_func(self, True)
         else:
@@ -98,17 +115,10 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             self._play_event = None
             self._play_button.destroy()
             self._play_button = None
-
-    def _on_eventbox_button_press_event(self, eventbox, event):
-        """
-            Select items in list
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if isinstance(self._data, list):
-            App().window.container.list_two.select_ids(self._data)
-        else:
-            App().window.container.list_two.select_ids([self._data])
+            self._action2_event.destroy()
+            self._action2_event = None
+            self._action2_button.destroy()
+            self._action2_button = None
 
     def _on_play_press_event(self, widget, event):
         """
@@ -122,6 +132,20 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             App().lookup_action("party").change_state(GLib.Variant("b", False))
         App().player.play_albums(None, [Type.YEARS], self._data)
         return True
+
+    def _on_open_press_event(self, widget, event):
+        """
+            Open decade
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        if App().player.locked:
+            return True
+        # FIXME
+        if isinstance(self._data, list):
+            App().window.container.list_two.select_ids(self._data)
+        else:
+            App().window.container.list_two.select_ids([self._data])
 
 #######################
 # PRIVATE             #

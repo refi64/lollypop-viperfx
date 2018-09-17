@@ -92,15 +92,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             builder.add_from_resource("/org/gnome/Lollypop/CoverBox.ui")
             builder.connect_signals(self)
             self._play_button = builder.get_object("play-button")
-            self._action_button = builder.get_object("action-button")
-            self._action_event = builder.get_object("action-event")
+            self._action1_button = builder.get_object("action-button")
+            self._action1_event = builder.get_object("action-event")
             self._artwork = builder.get_object("cover")
             self.__coverbox = builder.get_object("coverbox")
             # 6 for 2*3px (application.css)
             self.__coverbox.set_property("width-request", art_size + 6)
             if art_size == ArtSize.BIG:
                 self._artwork.get_style_context().add_class("cover-frame")
-                self._artwork_button = builder.get_object("artwork-button")
+                self._action2_button = builder.get_object("artwork-button")
                 if self._album.year is not None:
                     self.__year_label.set_label(str(self._album.year))
                     self.__year_label.show()

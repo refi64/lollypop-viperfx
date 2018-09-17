@@ -180,24 +180,24 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
                 Gtk.IconSize.DND)
             self._play_button.set_opacity(0)
             # Edit button
-            self._artwork_event = Gtk.EventBox()
-            self._artwork_event.set_margin_bottom(6)
-            self._artwork_event.set_margin_end(6)
-            self._artwork_event.set_property("has-tooltip", True)
-            self._artwork_event.set_tooltip_text(_("Modify radio"))
-            self._artwork_event.connect("realize", self._on_eventbox_realize)
-            self._artwork_event.connect("button-press-event",
+            self._action2_event = Gtk.EventBox()
+            self._action2_event.set_margin_bottom(6)
+            self._action2_event.set_margin_end(6)
+            self._action2_event.set_property("has-tooltip", True)
+            self._action2_event.set_tooltip_text(_("Modify radio"))
+            self._action2_event.connect("realize", self._on_eventbox_realize)
+            self._action2_event.connect("button-press-event",
                                         self._on_edit_press_event)
-            self._artwork_event.set_property("valign", Gtk.Align.END)
-            self._artwork_event.set_property("halign", Gtk.Align.END)
-            self._artwork_button = Gtk.Image.new_from_icon_name(
+            self._action2_event.set_property("valign", Gtk.Align.END)
+            self._action2_event.set_property("halign", Gtk.Align.END)
+            self._action2_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.BUTTON)
-            self._artwork_button.set_opacity(0)
+            self._action2_button.set_opacity(0)
             self._play_event.add(self._play_button)
-            self._artwork_event.add(self._artwork_button)
+            self._action2_event.add(self._action2_button)
             self.__overlay.add_overlay(self._play_event)
-            self.__overlay.add_overlay(self._artwork_event)
+            self.__overlay.add_overlay(self._action2_event)
             self.__overlay.show_all()
             AlbumBaseWidget._show_overlay_func(self, True)
         else:
@@ -206,10 +206,10 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             self._play_event = None
             self._play_button.destroy()
             self._play_button = None
-            self._artwork_event.destroy()
-            self._artwork_event = None
-            self._artwork_button.destroy()
-            self._artwork_button = None
+            self._action2_event.destroy()
+            self._action2_event = None
+            self._action2_button.destroy()
+            self._action2_button = None
 
 #######################
 # PRIVATE             #

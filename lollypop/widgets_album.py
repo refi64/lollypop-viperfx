@@ -31,8 +31,8 @@ class AlbumBaseWidget:
         self._artwork = None
         self._widget = None
         self._play_all_button = None
-        self._artwork_button = None
-        self._action_button = None
+        self._action2_button = None
+        self._action1_button = None
         self._show_overlay = False
         self._lock_overlay = True
         self._timeout_id = None
@@ -123,17 +123,17 @@ class AlbumBaseWidget:
                     "rounded-icon-small")
                 self._set_play_all_image()
                 self._play_all_button.show()
-            if self._artwork_button is not None:
-                self._artwork_button.set_opacity(1)
-                self._artwork_button.get_style_context().add_class(
+            if self._action2_button is not None:
+                self._action2_button.set_opacity(1)
+                self._action2_button.get_style_context().add_class(
                     "rounded-icon-small")
-                self._artwork_button.show()
-            if self._action_button is not None:
+                self._action2_button.show()
+            if self._action1_button is not None:
                 self._show_append(self._album.id not in App().player.album_ids)
-                self._action_button.set_opacity(opacity)
-                self._action_button.get_style_context().add_class(
+                self._action1_button.set_opacity(opacity)
+                self._action1_button.get_style_context().add_class(
                     "rounded-icon-small")
-                self._action_button.show()
+                self._action1_button.show()
         else:
             if self._play_button is not None:
                 self._play_button.set_opacity(0)
@@ -145,15 +145,15 @@ class AlbumBaseWidget:
                 self._play_all_button.hide()
                 self._play_all_button.get_style_context().remove_class(
                     "rounded-icon-small")
-            if self._artwork_button is not None:
-                self._artwork_button.hide()
-                self._artwork_button.set_opacity(0)
-                self._artwork_button.get_style_context().remove_class(
+            if self._action2_button is not None:
+                self._action2_button.hide()
+                self._action2_button.set_opacity(0)
+                self._action2_button.get_style_context().remove_class(
                     "rounded-icon-small")
-            if self._action_button is not None:
-                self._action_button.hide()
-                self._action_button.set_opacity(0)
-                self._action_button.get_style_context().remove_class(
+            if self._action1_button is not None:
+                self._action1_button.hide()
+                self._action1_button.set_opacity(0)
+                self._action1_button.get_style_context().remove_class(
                     "rounded-icon-small")
 
     def _on_eventbox_realize(self, eventbox):
@@ -268,13 +268,13 @@ class AlbumBaseWidget:
             Show append button if append, else remove button
         """
         if append:
-            self._action_button.set_from_icon_name("list-add-symbolic",
-                                                   Gtk.IconSize.BUTTON)
-            self._action_event.set_tooltip_text(_("Add to current playlist"))
+            self._action1_button.set_from_icon_name("list-add-symbolic",
+                                                    Gtk.IconSize.BUTTON)
+            self._action1_event.set_tooltip_text(_("Add to current playlist"))
         else:
-            self._action_button.set_from_icon_name("list-remove-symbolic",
-                                                   Gtk.IconSize.BUTTON)
-            self._action_event.set_tooltip_text(
+            self._action1_button.set_from_icon_name("list-remove-symbolic",
+                                                    Gtk.IconSize.BUTTON)
+            self._action1_event.set_tooltip_text(
                 _("Remove from current playlist"))
 
 #######################
