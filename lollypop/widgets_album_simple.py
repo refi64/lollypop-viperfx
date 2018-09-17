@@ -78,7 +78,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.__overlay.set_property("halign", Gtk.Align.CENTER)
         self.__overlay.set_property("valign", Gtk.Align.CENTER)
         self.__overlay_grid = Gtk.Grid()
-        self.__overlay_grid.set_column_spacing(6)
         self.__overlay_grid.set_row_spacing(6)
         self.__overlay_grid.set_margin_top(6)
         self.__overlay_grid.set_margin_bottom(6)
