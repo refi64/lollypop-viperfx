@@ -70,6 +70,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self._album = album
         self.__responsive_type = responsive_type
         self.__score = None
+        self.__cover = None
         self.__play_indicator = None
         self.set_sensitive(False)
         self.get_style_context().add_class("loading")
