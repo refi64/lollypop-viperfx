@@ -264,7 +264,8 @@ class MtpSync:
             for album_id in album_ids:
                 self.__total += len(App().albums.get_track_ids(album_id))
             # New tracks for playlists
-            for playlist_id in App().playlists.get_synced_ids():
+            playlist_ids = App().playlists.get_synced_ids()
+            for playlist_id in playlist_ids:
                 playlists.append(App().playlists.get_name(playlist_id))
                 self.__total += len(App().playlists.get_tracks(playlist_id))
 
@@ -279,11 +280,11 @@ class MtpSync:
             # Copy new tracks to device
             if self._syncing:
                 self.__sync_albums()
-                self.__sync_playlists(playlists)
+                self.__sync_playlists(playlist_ids)
 
             # Remove old tracks from device
             if self._syncing:
-                self.__remove_from_device(playlists)
+                self.__remove_from_device(playlist_ids)
 
             # Remove empty dirs
             self.__remove_empty_dirs()
@@ -437,6 +438,7 @@ class MtpSync:
         album_name = escape(track.album_name.lower())
         is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
         if is_compilation:
+            artists = None
             on_device_album_uri = "%s/%s" %\
                                   (self._uri,
                                    album_name)
@@ -533,14 +535,15 @@ class MtpSync:
             for track_id in App().albums.get_track_ids(album_id):
                 self.__sync_track_id(Track(track_id))
 
-    def __sync_playlists(self, playlists):
+    def __sync_playlists(self, playlist_ids):
         """
             Sync file from playlist to device
-            @param playlists as [str]
+            @param playlist_ids as [int]
         """
-        for playlist in playlists:
+        for playlist_id in playlist_ids:
             m3u = None
             stream = None
+            playlist = App().playlists.get_name(playlist_id)
             try:
                 # Create playlist
                 m3u = Gio.File.new_for_path(
@@ -555,7 +558,7 @@ class MtpSync:
                 stream = m3u.open_readwrite(None)
             except Exception as e:
                 Logger.error("DeviceWidget::__sync_playlists(): %s" % e)
-            track_ids = App().playlists.get_track_ids(playlist)
+            track_ids = App().playlists.get_track_ids(playlist_id)
             # Start copying
             for track_id in track_ids:
                 if track_id is None:
@@ -584,9 +587,10 @@ class MtpSync:
                 self.__retry(m3u.move,
                              (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
-    def __remove_from_device(self, playlists):
+    def __remove_from_device(self, playlist_ids):
         """
             Delete files not available in playlist
+            @param playlist_ids as [int]
         """
         track_uris = []
         track_ids = []
@@ -594,9 +598,8 @@ class MtpSync:
         album_ids = App().albums.get_synced_ids()
         for album_id in album_ids:
             track_ids += App().albums.get_track_ids(album_id)
-        for playlist in playlists:
-            track_ids += App().playlists.get_track_ids(playlist)
-
+        for playlist_id in playlist_ids:
+            track_ids += App().playlists.get_track_ids(playlist_id)
         # Get tracks uris
         for track_id in track_ids:
             if not self._syncing:
