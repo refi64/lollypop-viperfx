@@ -165,11 +165,13 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         if set:
             # Play button
             self._play_event = Gtk.EventBox()
+            self._play_event.set_margin_start(6)
+            self._play_event.set_margin_bottom(6)
             self._play_event.set_property("has-tooltip", True)
             self._play_event.set_tooltip_text(_("Play"))
             self._play_event.set_hexpand(True)
-            self._play_event.set_property("valign", Gtk.Align.CENTER)
-            self._play_event.set_property("halign", Gtk.Align.CENTER)
+            self._play_event.set_property("valign", Gtk.Align.END)
+            self._play_event.set_property("halign", Gtk.Align.START)
             self._play_event.connect("realize", self._on_eventbox_realize)
             self._play_event.connect("button-press-event",
                                      self._on_play_press_event)
@@ -179,8 +181,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             self._play_button.set_opacity(0)
             # Edit button
             self._artwork_event = Gtk.EventBox()
-            self._artwork_event.set_margin_bottom(5)
-            self._artwork_event.set_margin_end(5)
+            self._artwork_event.set_margin_bottom(6)
+            self._artwork_event.set_margin_end(6)
             self._artwork_event.set_property("has-tooltip", True)
             self._artwork_event.set_tooltip_text(_("Modify radio"))
             self._artwork_event.connect("realize", self._on_eventbox_realize)
