@@ -222,7 +222,7 @@ class AlbumBaseWidget:
         """
         popover = CoversPopover(self._album)
         popover.set_relative_to(widget)
-        popover.connect("closed", self._on_pop_artwork_closed)
+        popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
         return True
@@ -257,7 +257,7 @@ class AlbumBaseWidget:
             self._show_append(False)
         return True
 
-    def _on_pop_artwork_closed(self, widget):
+    def _on_popover_closed(self, widget):
         """
             Remove selected style
             @param widget as Gtk.Popover

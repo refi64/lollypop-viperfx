@@ -249,16 +249,16 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         """
         popover = PlayListPopover(self._data)
         popover.set_relative_to(widget)
-        popover.connect("closed", self._on_pop_artwork_closed)
+        popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
 
-    def _on_pop_artwork_closed(self, popover):
+    def _on_popover_closed(self, popover):
         """
             Reload view
             @param popover as Gtk.Popover
         """
-        AlbumBaseWidget._on_pop_artwork_closed(self, popover)
+        AlbumBaseWidget._on_popover_closed(self, popover)
         if self.__obj is None:
             App().window.container.reload_view()
         else:
