@@ -47,7 +47,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Populate widget content
         """
         self.get_style_context().remove_class("loading")
-        self._rounded_class = "rounded-icon"
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)

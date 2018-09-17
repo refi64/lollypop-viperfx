@@ -45,7 +45,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids, art_size)
         TracksView.__init__(self, ResponsiveType.FIXED)
-        self._rounded_class = "rounded-icon"
         self.__context = None
         # Cover + rating + spacing
         self.__height = ArtSize.BIG + 26

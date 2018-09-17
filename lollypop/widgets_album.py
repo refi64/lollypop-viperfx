@@ -38,8 +38,6 @@ class AlbumBaseWidget:
         self._timeout_id = None
         self.__parent_filter = False
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-        self._squared_class = "squared-icon"
-        self._rounded_class = "rounded-icon"
 
     def set_filtered(self, b):
         """
@@ -117,46 +115,46 @@ class AlbumBaseWidget:
             if self._play_button is not None:
                 self._play_button.set_opacity(opacity)
                 self._play_button.get_style_context().add_class(
-                    self._rounded_class)
+                    "rounded-icon")
                 self._play_button.show()
             if self._play_all_button is not None:
                 self._play_all_button.set_opacity(opacity)
                 self._play_all_button.get_style_context().add_class(
-                    self._squared_class)
+                    "rounded-icon-small")
                 self._set_play_all_image()
                 self._play_all_button.show()
             if self._artwork_button is not None:
                 self._artwork_button.set_opacity(1)
                 self._artwork_button.get_style_context().add_class(
-                    self._squared_class)
+                    "rounded-icon-small")
                 self._artwork_button.show()
             if self._action_button is not None:
                 self._show_append(self._album.id not in App().player.album_ids)
                 self._action_button.set_opacity(opacity)
                 self._action_button.get_style_context().add_class(
-                    self._squared_class)
+                    "rounded-icon-small")
                 self._action_button.show()
         else:
             if self._play_button is not None:
                 self._play_button.set_opacity(0)
                 self._play_button.hide()
                 self._play_button.get_style_context().remove_class(
-                    self._rounded_class)
+                    "rounded-icon")
             if self._play_all_button is not None:
                 self._play_all_button.set_opacity(0)
                 self._play_all_button.hide()
                 self._play_all_button.get_style_context().remove_class(
-                    self._squared_class)
+                    "rounded-icon-small")
             if self._artwork_button is not None:
                 self._artwork_button.hide()
                 self._artwork_button.set_opacity(0)
                 self._artwork_button.get_style_context().remove_class(
-                    self._squared_class)
+                    "rounded-icon-small")
             if self._action_button is not None:
                 self._action_button.hide()
                 self._action_button.set_opacity(0)
                 self._action_button.get_style_context().remove_class(
-                    self._squared_class)
+                    "rounded-icon-small")
 
     def _on_eventbox_realize(self, eventbox):
         """
