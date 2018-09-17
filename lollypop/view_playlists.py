@@ -255,10 +255,13 @@ class PlaylistsView(View, ViewController):
         if hours > 0:
             mins -= hours * 60
             if mins > 0:
+                # Duration hour minute
                 self.__duration_label.set_text(_("%s h  %s m") % (hours, mins))
             else:
+                # Duration hour minute
                 self.__duration_label.set_text(_("%s h") % hours)
         else:
+            # Duration hour minute
             self.__duration_label.set_text(_("%s m") % mins)
 
     def __update_jump_button(self):
