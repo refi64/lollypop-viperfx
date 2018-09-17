@@ -302,6 +302,8 @@ class AlbumWidget(AlbumBaseWidget):
         """
         AlbumBaseWidget.__init__(self)
         self._album = album
+        self._genre_ids = genre_ids
+        self._artist_ids = artist_ids
         self._art_size = art_size
         self.connect("destroy", self.__on_destroy)
         self._scan_signal = App().scanner.connect("album-updated",

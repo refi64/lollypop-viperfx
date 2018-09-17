@@ -25,3 +25,16 @@ class AlbumsDecadeBoxView(FlowBoxView):
         """
         FlowBoxView.__init__(self)
         self._widget_class = AlbumsDecadeWidget
+
+#######################
+# PROTECTED           #
+#######################
+    def _add_items(self, item_ids, *args):
+        """
+            Add albums to the view
+            Start lazy loading
+            @param item ids as [int]
+        """
+        widget = FlowBoxView._add_items(self, item_ids)
+        if widget is not None:
+            widget.connect("overlayed", self.on_overlayed)

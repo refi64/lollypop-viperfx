@@ -35,13 +35,23 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
-        self._box.connect("child-activated", self.__on_album_activated)
         self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("album")
 
 #######################
 # PROTECTED           #
 #######################
+    def _add_items(self, album_ids):
+        """
+            Add albums to the view
+            Start lazy loading
+            @param album ids as [int]
+        """
+        widget = FlowBoxView._add_items(self, album_ids,
+                                        self.__genre_ids, self.__artist_ids)
+        if widget is not None:
+            widget.connect("overlayed", self.on_overlayed)
+
     def _on_current_changed(self, player):
         """
             Update children state
@@ -59,33 +69,13 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         for child in self._box.get_children():
             child.set_artwork(album_id)
 
-    def _add_items(self, album_ids):
-        """
-            Add albums to the view
-            Start lazy loading
-            @param album ids as [int]
-        """
-        widget = FlowBoxView._add_items(self, album_ids,
-                                        self.__genre_ids, self.__artist_ids)
-        if widget is not None:
-            widget.connect("overlayed", self.on_overlayed)
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_album_activated(self, flowbox, album_widget):
+    def _on_album_activated(self, flowbox, album_widget):
         """
             Show Context view for activated album
             @param flowbox as Gtk.Flowbox
             @param album_widget as AlbumSimpleWidget
         """
-        # Here some code for touch screens
-        # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
-        # as enter notify event enabled it
-        # Else, we are in touch screen, first time show overlay, next time
-        # show popover
-        if not album_widget.is_overlay:
-            album_widget.show_overlay(True)
+        if FlowBoxView._on_album_activated(self, flowbox, album_widget):
             return
         artwork = album_widget.get_artwork()
         if artwork is None:
@@ -120,6 +110,9 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         popover.popup()
         artwork.set_opacity(0.9)
 
+#######################
+# PRIVATE             #
+#######################
     def __on_album_popover_closed(self, popover, album_widget):
         """
             Remove overlay and restore opacity

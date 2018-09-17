@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from random import sample, choice
 from gettext import gettext as _
@@ -155,7 +155,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             self._play_event.set_hexpand(True)
             self._play_event.set_property("valign", Gtk.Align.CENTER)
             self._play_event.set_property("halign", Gtk.Align.CENTER)
-            self._play_event.connect("realize", self.__on_eventbox_realize)
+            self._play_event.connect("realize", self._on_eventbox_realize)
             self._play_event.connect("button-press-event",
                                      self._on_play_press_event)
             if self.__obj is None:
@@ -181,7 +181,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             self._artwork_event.set_property("has-tooltip", True)
             self._artwork_event.set_tooltip_text(_("Modify playlist"))
             self._artwork_event.set_property("halign", Gtk.Align.END)
-            self._artwork_event.connect("realize", self.__on_eventbox_realize)
+            self._artwork_event.connect("realize", self._on_eventbox_realize)
             self._artwork_event.connect("button-press-event",
                                         self._on_edit_press_event)
             self._artwork_event.set_property("valign", Gtk.Align.END)
@@ -213,7 +213,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
 #######################
     def _on_play_press_event(self, widget, event):
         """
-            Play radio
+            Play playlist
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
@@ -267,11 +267,3 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
 #######################
 # PRIVATE             #
 #######################
-    def __on_eventbox_realize(self, eventbox):
-        """
-            Change cursor over eventbox
-            @param eventbox as Gdk.Eventbox
-        """
-        window = eventbox.get_window()
-        if window is not None:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))

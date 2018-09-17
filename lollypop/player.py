@@ -175,12 +175,12 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self.load(track)
         self._albums = [album]
 
-    def play_albums(self, track, genre_ids, artist_ids):
+    def play_albums(self, track, filter1_ids, filter2_ids):
         """
             Play albums related to track/genre_ids/artist_ids
-            @param track as Track
-            @param genre_ids as [int]
-            @param artist_ids as [int]
+            @param track as Track/None
+            @param filter1_ids as [int]
+            @param filter2_ids as [int]
         """
         self._albums = []
         album_ids = []
@@ -189,60 +189,61 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self._playlist_tracks = []
         self._playlist_ids = []
         # We are in all artists
-        if (genre_ids and genre_ids[0] == Type.ALL) or\
-           (artist_ids and artist_ids[0] == Type.ALL):
+        if (filter1_ids and filter1_ids[0] == Type.ALL) or\
+           (filter2_ids and filter2_ids[0] == Type.ALL):
             # Genres: all, Artists: compilations
-            if artist_ids and artist_ids[0] == Type.COMPILATIONS:
+            if filter2_ids and filter2_ids[0] == Type.COMPILATIONS:
                 album_ids = App().albums.get_compilation_ids()
             # Genres: all, Artists: ids
-            elif artist_ids and artist_ids[0] != Type.ALL:
-                album_ids += App().albums.get_ids(artist_ids)
+            elif filter2_ids and filter2_ids[0] != Type.ALL:
+                album_ids += App().albums.get_ids(filter2_ids)
             # Genres: all, Artists: all
             else:
                 if App().settings.get_value("show-compilations-in-album-view"):
                     album_ids += App().albums.get_compilation_ids()
                 album_ids += App().albums.get_ids()
         # We are in populars view, add popular albums
-        elif genre_ids and genre_ids[0] == Type.POPULARS:
+        elif filter1_ids and filter1_ids[0] == Type.POPULARS:
             album_ids = App().albums.get_populars()
         # We are in loved view, add loved albums
-        elif genre_ids and genre_ids[0] == Type.LOVED:
+        elif filter1_ids and filter1_ids[0] == Type.LOVED:
             album_ids = App().albums.get_loves()
         # We are in recents view, add recent albums
-        elif genre_ids and genre_ids[0] == Type.RECENTS:
+        elif filter1_ids and filter1_ids[0] == Type.RECENTS:
             album_ids = App().albums.get_recents()
         # We are in randoms view, add random albums
-        elif genre_ids and genre_ids[0] == Type.RANDOMS:
+        elif filter1_ids and filter1_ids[0] == Type.RANDOMS:
             album_ids = App().albums.get_cached_randoms()
         # We are in compilation view without genre
-        elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
+        elif filter1_ids and filter1_ids[0] == Type.COMPILATIONS:
             album_ids = App().albums.get_compilation_ids()
         # We are in years view
-        elif genre_ids and genre_ids[0] == Type.YEARS:
-            # Only way to get years
-            years = App().window.container.list_two.selected_ids
+        elif filter1_ids and filter1_ids[0] == Type.YEARS:
             album_ids = []
-            for year in years:
+            for year in filter2_ids:
                 album_ids += App().albums.get_albums_for_year(year)
+                album_ids += App().albums.get_compilations_for_year(year)
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
             # add compilations
-            if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                album_ids += App().albums.get_compilation_ids(genre_ids)
+            if filter2_ids and filter2_ids[0] == Type.COMPILATIONS:
+                album_ids += App().albums.get_compilation_ids(filter1_ids)
             else:
-                if not artist_ids and\
+                if not filter2_ids and\
                         App().settings.get_value(
                             "show-compilations-in-album-view"):
-                    album_ids += App().albums.get_compilation_ids(genre_ids)
-                album_ids += App().albums.get_ids(artist_ids, genre_ids)
+                    album_ids += App().albums.get_compilation_ids(filter1_ids)
+                album_ids += App().albums.get_ids(filter2_ids, filter1_ids)
         # Create album objects
         for album_id in album_ids:
-            album = Album(album_id, genre_ids, artist_ids)
+            album = Album(album_id, filter1_ids, filter2_ids)
             self._albums.append(album)
             # Get track from album
             # to make Player.current_track present in Player.albums
-            if album.id == track.album.id:
+            if track is None:
+                track = album.tracks[0]
+            elif album.id == track.album.id:
                 index = album.track_ids.index(track.id)
                 track = album.tracks[index]
         self.load(track)

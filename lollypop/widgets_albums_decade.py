@@ -10,9 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk
+from gi.repository import Gdk, Gtk
 
-from lollypop.define import App
+from gettext import gettext as _
+
+from lollypop.define import App, Type
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 from lollypop.widgets_album import AlbumBaseWidget
 
@@ -34,8 +36,11 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         """
             Populate widget content
         """
+        self._lock_overlay = False
         decade_str = "%s - %s" % (self._data[0], self._data[-1])
         RoundedFlowBoxWidget.populate(self, decade_str)
+        self._widget.connect("enter-notify-event", self._on_enter_notify)
+        self._widget.connect("leave-notify-event", self._on_leave_notify)
 
     @property
     def filter(self):
@@ -60,6 +65,40 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
                                                        self._ALBUMS_COUNT)
         return album_ids
 
+    def _show_overlay_func(self, set):
+        """
+            Set overlay
+            @param set as bool
+        """
+        if self._lock_overlay or\
+           self._show_overlay == set:
+            return
+        if set:
+            # Play button
+            self._play_event = Gtk.EventBox()
+            self._play_event.set_property("has-tooltip", True)
+            self._play_event.set_hexpand(True)
+            self._play_event.set_property("valign", Gtk.Align.CENTER)
+            self._play_event.set_property("halign", Gtk.Align.CENTER)
+            self._play_event.connect("realize", self.__on_eventbox_realize)
+            self._play_event.connect("button-press-event",
+                                     self._on_play_press_event)
+            self._play_button = Gtk.Image.new_from_icon_name(
+                "media-playback-start-symbolic",
+                Gtk.IconSize.DND)
+            self._play_event.set_tooltip_text(_("Play"))
+            self._play_button.set_opacity(0)
+            self._play_event.add(self._play_button)
+            self._overlay.add_overlay(self._play_event)
+            self._overlay.show_all()
+            AlbumBaseWidget._show_overlay_func(self, True)
+        else:
+            AlbumBaseWidget._show_overlay_func(self, False)
+            self._play_event.destroy()
+            self._play_event = None
+            self._play_button.destroy()
+            self._play_button = None
+
     def _on_eventbox_button_press_event(self, eventbox, event):
         """
             Select items in list
@@ -71,7 +110,21 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         else:
             App().window.container.list_two.select_ids([self._data])
 
-    def _on_eventbox_realize(self, eventbox):
+    def _on_play_press_event(self, widget, event):
+        """
+            Play decade
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        if App().player.locked:
+            return True
+        App().player.play_albums(None, [Type.YEARS], self._data)
+        return True
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_eventbox_realize(self, eventbox):
         """
             Change cursor over eventbox
             @param eventbox as Gdk.Eventbox
@@ -79,6 +132,3 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         window = eventbox.get_window()
         if window is not None:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-#######################
-# PRIVATE             #
-#######################

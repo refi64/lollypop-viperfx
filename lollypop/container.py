@@ -691,7 +691,7 @@ class Container(Gtk.Overlay):
             view = AlbumsListView(ResponsiveType.LIST)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView([Type.YEARS], [])
+            view = AlbumsBoxView([Type.YEARS], years)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()

@@ -50,7 +50,6 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self._widget = Gtk.EventBox()
         self._widget.connect("button-press-event",
                              self._on_eventbox_button_press_event)
-        self._widget.connect("realize", self._on_eventbox_realize)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         label = Gtk.Label()
@@ -96,12 +95,6 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
-        """
-        pass
-
-    def _on_eventbox_realize(self, eventbox):
-        """
-            @param eventbox as Gtk.Eventbox
         """
         pass
 

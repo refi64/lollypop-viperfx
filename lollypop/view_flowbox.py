@@ -32,6 +32,7 @@ class FlowBoxView(LazyLoadingView):
         # Allow lazy loading to not jump up and down
         self._box.set_homogeneous(True)
         self._box.set_max_children_per_line(1000)
+        self._box.connect("child-activated", self._on_album_activated)
         self._box.show()
 
         self._viewport.set_property("valign", Gtk.Align.START)
@@ -71,6 +72,21 @@ class FlowBoxView(LazyLoadingView):
             if self._viewport.get_child() is None:
                 self._viewport.add(self._box)
         return None
+
+    def _on_album_activated(self, flowbox, widget):
+        """
+            Show overlay
+            @param flowbox as Gtk.Flowbox
+            @param widget as PlaylistRoundedWidget
+        """
+        # Here some code for touch screens
+        # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
+        # as enter notify event enabled it
+        # Else, we are in touch screen, show overlay
+        if not widget.is_overlay:
+            widget.show_overlay(True)
+            return True
+
 #######################
 # PRIVATE             #
 #######################

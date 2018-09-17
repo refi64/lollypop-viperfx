@@ -52,7 +52,6 @@ class PlaylistsManagerView(FlowBoxView):
         new_playlist_button.show()
         grid.add(new_playlist_button)
         FlowBoxView.__init__(self)
-        self._box.connect("child-activated", self.__on_album_activated)
         self.insert_row(0)
         self.attach(grid, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
@@ -77,7 +76,7 @@ class PlaylistsManagerView(FlowBoxView):
         return []
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _add_items(self, playlist_ids, *args):
         """
@@ -89,6 +88,9 @@ class PlaylistsManagerView(FlowBoxView):
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
+#######################
+# PRIVATE             #
+#######################
     def __on_new_button_clicked(self, button):
         """
             Add a new playlist
@@ -109,17 +111,3 @@ class PlaylistsManagerView(FlowBoxView):
             App().window.container.reload_view()
         else:
             App().window.container.show_playlist_manager(self.__obj)
-
-    def __on_album_activated(self, flowbox, widget):
-        """
-            Show overlay
-            @param flowbox as Gtk.Flowbox
-            @param widget as PlaylistRoundedWidget
-        """
-        # Here some code for touch screens
-        # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
-        # as enter notify event enabled it
-        # Else, we are in touch screen, show overlay
-        if not widget.is_overlay:
-            widget.show_overlay(True)
-            return
