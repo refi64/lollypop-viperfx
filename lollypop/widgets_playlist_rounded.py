@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from random import sample, choice
 from gettext import gettext as _
@@ -228,6 +228,9 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             if App().player.locked:
                 return True
             if self.__track_ids:
+                if App().player.is_party:
+                    App().lookup_action("party").change_state(
+                        GLib.Variant("b", False))
                 tracks = [Track(track_id) for track_id in self.__track_ids]
                 App().player.populate_playlist_by_tracks(tracks, [self._data])
                 if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
