@@ -27,10 +27,12 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.522" date="2018-08-23">
+    <release version="0.9.600" date="2018-09-">
       <description>
         <ul>
-          <li>Browse albums by years</li>
+          <li>Reworked playlist management</li>
+          <li>Reworked sync to MTP</li>
+          <li>lollypop-portal not needed anymore</li>
         </ul>
       </description>
     </release>
