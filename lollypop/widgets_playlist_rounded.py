@@ -53,7 +53,6 @@ class PlayListPopover(Gtk.Popover):
         old_name = App().playlists.get_name(self.__playlist_id)
         new_name = self.__name_entry.get_text()
         App().playlists.rename(old_name, new_name)
-        App().window.container.reload_view()
         self.destroy()
 
     def _on_delete_button_clicked(self, button):
@@ -63,7 +62,6 @@ class PlayListPopover(Gtk.Popover):
         """
         name = App().playlists.get_name(self.__playlist_id)
         App().playlists.delete(name)
-        App().window.container.reload_view()
         self.destroy()
 
 
@@ -254,6 +252,17 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         popover.connect("closed", self._on_pop_artwork_closed)
         self._lock_overlay = True
         popover.popup()
+
+    def _on_pop_artwork_closed(self, popover):
+        """
+            Reload view
+            @param popover as Gtk.Popover
+        """
+        AlbumBaseWidget._on_pop_artwork_closed(self, popover)
+        if self.__obj is None:
+            App().window.container.reload_view()
+        else:
+            App().window.container.show_playlist_manager(self.__obj)
 
 #######################
 # PRIVATE             #
