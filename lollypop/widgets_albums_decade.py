@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk, Gtk
+from gi.repository import Gdk, Gtk, GLib
 
 from gettext import gettext as _
 
@@ -118,6 +118,8 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         """
         if App().player.locked:
             return True
+        if App().player.is_party:
+            App().lookup_action("party").change_state(GLib.Variant("b", False))
         App().player.play_albums(None, [Type.YEARS], self._data)
         return True
 

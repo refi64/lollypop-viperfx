@@ -240,12 +240,12 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._show_append(False)
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))
-        App().player.clear_albums()
         if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
             track = choice(self._album.tracks)
         else:
             track = self._album.tracks[0]
         if App().window.container.view.filtered:
+            App().player.clear_albums()
             # Here we need to get ids from parent as view may be filtered
             for child in self.get_parent().get_children():
                 if not child.filtered:
