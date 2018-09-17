@@ -207,6 +207,9 @@ class AlbumBaseWidget:
         """
         if App().player.locked:
             return True
+        if App().player.is_party:
+            action = App().lookup_action("party")
+            action.change_state(GLib.Variant("b", False))
         App().player.play_album(self._album)
         self._show_append(False)
         return True
