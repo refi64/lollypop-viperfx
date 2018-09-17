@@ -26,12 +26,14 @@ class PlayListPopover(Gtk.Popover):
         Edit a playlist
     """
 
-    def __init__(self, playlist_id):
+    def __init__(self, playlist_id, obj):
         """
             @param playlist_id as int
+            @param obj as Object
         """
         Gtk.Popover.__init__(self)
         self.__playlist_id = playlist_id
+        self.__obj = obj
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistPopover.ui")
         builder.connect_signals(self)
@@ -53,6 +55,11 @@ class PlayListPopover(Gtk.Popover):
         old_name = App().playlists.get_name(self.__playlist_id)
         new_name = self.__name_entry.get_text()
         App().playlists.rename(old_name, new_name)
+        if self.__obj is None:
+            App().window.container.reload_view()
+        else:
+            App().window.container.show_playlist_manager(self.__obj)
+
         self.destroy()
 
     def _on_delete_button_clicked(self, button):
@@ -247,23 +254,11 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        popover = PlayListPopover(self._data)
+        popover = PlayListPopover(self._data, self.__obj)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
-
-    def _on_popover_closed(self, popover):
-        """
-            Reload view
-            @param popover as Gtk.Popover
-        """
-        AlbumBaseWidget._on_popover_closed(self, popover)
-        if self.__obj is None:
-            App().window.container.reload_view()
-        else:
-            App().window.container.show_playlist_manager(self.__obj)
-
 #######################
 # PRIVATE             #
 #######################
