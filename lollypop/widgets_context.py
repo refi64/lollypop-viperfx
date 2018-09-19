@@ -165,6 +165,10 @@ class ContextWidget(Gtk.EventBox):
             album = self.__object.album
         else:
             album = self.__object
+        for _album in App().player.albums:
+            if album.id == _album.id:
+                album = _album
+                break
         if add_to_playback:
             App().player.add_album(album)
         else:
