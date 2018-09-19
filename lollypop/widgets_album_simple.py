@@ -17,7 +17,7 @@ from random import choice
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
-from lollypop.define import App, ArtSize, Shuffle, Type
+from lollypop.define import App, ArtSize, Shuffle
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
@@ -252,8 +252,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
                     App().player.add_album(child.album)
         else:
             App().player.play_albums(track,
-                                     [Type.YEARS],
-                                     self._artist_ids)
+                                     self._album.genre_ids,
+                                     self._album.artist_ids)
         return True
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
