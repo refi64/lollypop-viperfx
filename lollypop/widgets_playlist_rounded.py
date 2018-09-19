@@ -69,6 +69,10 @@ class PlayListPopover(Gtk.Popover):
         """
         name = App().playlists.get_name(self.__playlist_id)
         App().playlists.delete(name)
+        if self.__obj is None:
+            App().window.container.reload_view()
+        else:
+            App().window.container.show_playlist_manager(self.__obj)
         self.destroy()
 
 
