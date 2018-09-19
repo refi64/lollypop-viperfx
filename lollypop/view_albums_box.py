@@ -97,8 +97,6 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         else:
             height = top_height
         popover = AlbumPopover(album_widget.album,
-                               self.__genre_ids,
-                               self.__artist_ids,
                                allocation.width,
                                height,
                                ArtSize.NONE)
