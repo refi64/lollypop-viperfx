@@ -27,7 +27,7 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.600" date="2018-09-21">
+    <release version="0.9.600" date="2018-09-20">
       <description>
         <ul>
           <li>Reworked playlist management</li>
