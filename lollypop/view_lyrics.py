@@ -32,6 +32,7 @@ class LyricsView(View, InformationController):
         """
         View.__init__(self)
         InformationController.__init__(self, False)
+        self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_set = False
@@ -45,6 +46,8 @@ class LyricsView(View, InformationController):
         self.__translate_button = builder.get_object("translate_button")
         self.add(builder.get_object("widget"))
         self.connect("size-allocate", self.__on_size_allocate)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
     def populate(self, track):
         """
@@ -82,14 +85,6 @@ class LyricsView(View, InformationController):
 ##############
 # PROTECTED  #
 ##############
-    def _on_current_changed(self, player):
-        """
-            Update lyrics
-            @param player as Player
-        """
-        self.populate(App().player.current_track)
-        self.__translate_button.set_sensitive(True)
-
     def _on_close_clicked(self, button):
         """
             Close lyrics view
@@ -253,3 +248,27 @@ class LyricsView(View, InformationController):
                 pass
         if not self.__lyrics_set and self.__downloads_running == 0:
             self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
+
+    def __on_current_changed(self, player):
+        """
+            Update lyrics
+            @param player as Player
+        """
+        self.populate(App().player.current_track)
+        self.__translate_button.set_sensitive(True)
+
+    def __on_map(self, widget):
+        """
+            Connect player signal
+        """
+        self.__current_changed_id = App().player.connect(
+            "current-changed", self.__on_current_changed)
+
+    def __on_unmap(self, widget):
+        """
+            Connect player signal
+        """
+        if self.__current_changed_id is not None:
+            App().player.disconnect(self.__current_changed_id)
+            self.__current_changed_id = None
+        App().player.disconnect_by_func(self.__on_current_changed)
