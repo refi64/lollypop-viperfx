@@ -20,7 +20,7 @@
         "--talk-name=org.gtk.vfs.*",
         "--talk-name=org.freedesktop.Notifications",
         "--talk-name=org.freedesktop.secrets",
-        "--talk-name=org.freedesktop.Flatpak.Development",
+        "--talk-name=org.freedesktop.Flatpak",
         "--talk-name=org.gnome.OnlineAccounts",
         "--talk-name=ca.desrt.dconf",
         "--own-name=org.mpris.MediaPlayer2.Lollypop",
