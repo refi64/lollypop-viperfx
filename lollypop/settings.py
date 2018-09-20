@@ -201,7 +201,7 @@ class SettingsDialog:
             if filename:
                 uri = GLib.filename_to_uri(filename)
             else:
-                uri = ""
+                uri = "/opt"
 
         self.__main_chooser.set_dir(uri)
 
@@ -616,7 +616,7 @@ class SettingsDialog:
         image = Gtk.Image.new_from_icon_name("list-remove-symbolic",
                                              Gtk.IconSize.MENU)
         chooser.set_icon(image)
-        if directory:
+        if directory is not None:
             chooser.set_dir(directory)
         self.__flowbox.add(chooser)
 
