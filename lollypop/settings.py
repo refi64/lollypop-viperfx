@@ -329,9 +329,9 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        App().window.container.show_genres(state)
         App().settings.set_value("show-genres",
                                  GLib.Variant("b", state))
+        App().window.container.show_genres(state)
 
     def _on_transitions_button_clicked(self, widget):
         """
