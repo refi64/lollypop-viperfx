@@ -271,4 +271,3 @@ class LyricsView(View, InformationController):
         if self.__current_changed_id is not None:
             App().player.disconnect(self.__current_changed_id)
             self.__current_changed_id = None
-        App().player.disconnect_by_func(self.__on_current_changed)
