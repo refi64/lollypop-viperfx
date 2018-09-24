@@ -77,10 +77,12 @@ class LastfmPopover(Gtk.Popover):
         """
         if artists:
             artist = artists.pop(0)
-            label = Gtk.Label.new(artist)
-            label.set_ellipsize(Pango.EllipsizeMode.END)
-            label.show()
-            self.__view.add(label)
+            artist_id = App().artists.get_id(artist)
+            if artist_id is not None:
+                label = Gtk.Label.new(artist)
+                label.set_ellipsize(Pango.EllipsizeMode.END)
+                label.show()
+                self.__view.add(label)
             GLib.idle_add(self.__populate, artists)
         else:
             self.__spinner.stop()
@@ -97,6 +99,8 @@ class LastfmPopover(Gtk.Popover):
         """
             Play searched item when selected
             @param widget as Gtk.ListBox
-            @param row as AlbumRow
+            @param row as Gtk.ListBoxRow
         """
-        App().window.toolbar.end.search(row.get_child().get_text())
+        artist_name = row.get_child().get_text()
+        artist_id = App().artists.get_id(artist_name)
+        App().window.container.show_artists_albums([artist_id])
