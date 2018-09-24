@@ -90,7 +90,7 @@ class InformationPopover(Gtk.Popover):
             bio_label.set_markup(
                 GLib.markup_escape_text(content.decode("utf-8")))
         elif not App().settings.get_value("network-access"):
-            bio_label.set_text(_("Network access disabled"))
+            builder.get_object("scrolled").hide()
         else:
             bio_label.set_text(_("Loading information"))
             helper.run(
@@ -186,6 +186,8 @@ class InformationPopover(Gtk.Popover):
                 image.get_scale_factor(),
                 None)
             image.set_from_surface(surface)
+        else:
+            image.hide()
 
     def __get_artist_artwork_path_from_cache(self, artist, size):
         """
