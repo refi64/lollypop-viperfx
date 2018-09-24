@@ -810,10 +810,11 @@ class Container(Gtk.Overlay):
         if mount.get_volume() is None:
             return
         uri = mount.get_default_location().get_uri()
+        drive = mount.get_drive()
         if uri is None:
             return
         parsed = urlparse(uri)
-        is_removable = parsed.scheme == "file" and\
+        is_removable = drive is not None and drive.is_removable() and\
             Type.USB_DISKS in App().settings.get_value("shown-album-lists")
         if is_removable or parsed.scheme == "mtp":
             self.__devices_index -= 1
