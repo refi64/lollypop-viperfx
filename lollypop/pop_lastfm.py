@@ -79,10 +79,12 @@ class LastfmPopover(Gtk.Popover):
             artist = artists.pop(0)
             artist_id = App().artists.get_id(artist)
             if artist_id is not None:
-                label = Gtk.Label.new(artist)
-                label.set_ellipsize(Pango.EllipsizeMode.END)
-                label.show()
-                self.__view.add(label)
+                albums = App().artists.get_albums([artist_id])
+                if albums:
+                    label = Gtk.Label.new(artist)
+                    label.set_ellipsize(Pango.EllipsizeMode.END)
+                    label.show()
+                    self.__view.add(label)
             GLib.idle_add(self.__populate, artists)
         else:
             self.__spinner.stop()
