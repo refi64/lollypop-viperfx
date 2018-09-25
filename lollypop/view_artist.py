@@ -217,21 +217,25 @@ class ArtistView(ArtistAlbumsView):
         except Exception as e:
             Logger.error("ArtistView::_on_add_clicked: %s" % e)
 
-    def _on_jump_button_clicked(self, widget):
+    def _on_jump_button_clicked(self, button):
         """
             Scroll to album
+            @parma button as Gtk.Button
         """
         self.jump_to_current()
 
-    def _on_lastfm_button_clicked(self, widget):
+    def _on_lastfm_button_toggled(self, button):
         """
             Show lastfm similar artists
+            @param button as Gtk.Button
         """
-        from lollypop.pop_lastfm import LastfmPopover
-        popover = LastfmPopover()
-        popover.set_relative_to(widget)
-        popover.populate(self._artist_ids)
-        popover.popup()
+        if button.get_active():
+            from lollypop.pop_lastfm import LastfmPopover
+            popover = LastfmPopover()
+            popover.set_relative_to(button)
+            popover.populate(self._artist_ids)
+            popover.connect("closed", lambda x: button.set_active(False))
+            popover.popup()
 
     def _on_artwork_draw(self, image, ctx):
         """
