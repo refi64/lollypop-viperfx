@@ -107,7 +107,7 @@ class Application(Gtk.Application):
         self.add_main_option("play-ids", b"a", GLib.OptionFlags.NONE,
                              GLib.OptionArg.STRING, "Play ids", None)
         self.add_main_option("debug", b"d", GLib.OptionFlags.NONE,
-                             GLib.OptionArg.NONE, "Debug lollypop", None)
+                             GLib.OptionArg.NONE, "Debug Lollypop", None)
         self.add_main_option("set-rating", b"r", GLib.OptionFlags.NONE,
                              GLib.OptionArg.STRING, "Rate the current track",
                              None)
