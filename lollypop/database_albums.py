@@ -306,7 +306,7 @@ class AlbumsDatabase:
             result = sql.execute("SELECT AVG(popularity)\
                                   FROM (SELECT popularity\
                                         FROM albums\
-                                        ORDER BY POPULARITY DESC LIMIT 100)")
+                                        ORDER BY POPULARITY DESC LIMIT 1000)")
             v = result.fetchone()
             if v and v[0] > 5:
                 return v[0]
