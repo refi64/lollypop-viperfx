@@ -372,7 +372,7 @@ class Application(Gtk.Application):
             @param options as GLib.VariantDict
         """
         if options.contains("version"):
-            Logger.info("Lollypop %s" % self.__version)
+            print("Lollypop %s" % self.__version)
             exit(0)
         return -1
 
