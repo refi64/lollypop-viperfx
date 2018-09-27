@@ -127,7 +127,7 @@ class Application(Gtk.Application):
                              GLib.OptionArg.NONE,
                              "Emulate an Android Phone",
                              None)
-        self.add_main_option("version", b"V", GLib.OptionFlags.NONE,
+        self.add_main_option("version", b"v", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE,
                              "Lollypop version",
                              None)
