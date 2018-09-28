@@ -19,6 +19,7 @@ class AdaptiveWindow:
         This class needs a stack and n paned
     """
     _ADAPTIVE_STACK = 750
+    _TRANSITION_TYPE = Gtk.StackTransitionType.CROSSFADE
 
     gsignals = {
         "adaptive-changed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
@@ -44,6 +45,7 @@ class AdaptiveWindow:
             @param stack as Gtk.Stack
         """
         self.__stack = stack
+        self.__stack.set_transition_type(self._TRANSITION_TYPE)
 
     def add_paned(self, paned, child):
         """
@@ -100,6 +102,7 @@ class AdaptiveWindow:
             @param b as bool
         """
         if b and not self._adaptive_stack:
+            self.__stack.set_transition_type(Gtk.StackTransitionType.NONE)
             self._adaptive_stack = True
             child = []
             for (p, c) in self.__paned:
@@ -108,7 +111,9 @@ class AdaptiveWindow:
                 self.__stack.add(c)
             self.__stack.set_visible_child(self.__paned[0][1])
             self.emit("adaptive-changed", True)
+            self.__stack.set_transition_type(self._TRANSITION_TYPE)
         elif not b and self._adaptive_stack:
+            self.__stack.set_transition_type(Gtk.StackTransitionType.NONE)
             self._adaptive_stack = False
             for child in self.__stack.get_children():
                 # Move wanted child to paned
@@ -118,6 +123,7 @@ class AdaptiveWindow:
                         p.add1(child)
                         break
             self.emit("adaptive-changed", False)
+            self.__stack.set_transition_type(self._TRANSITION_TYPE)
 
 ############
 # Private  #
