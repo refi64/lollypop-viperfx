@@ -50,10 +50,6 @@ class ApplicationActions:
         sidebar_action.connect("change-state", self.__on_sidebar_change_state)
         App().add_action(sidebar_action)
 
-        mini_action = Gio.SimpleAction.new("mini", None)
-        mini_action.connect("activate", App().set_mini)
-        App().add_action(mini_action)
-
         about_action = Gio.SimpleAction.new("about", None)
         about_action.connect("activate", self.__on_about_activate)
         App().add_action(about_action)

@@ -116,29 +116,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
             Setup window position and size, callbacks
         """
-        self.__setup_pos_size("window")
+        self.__setup_pos_size()
         if App().settings.get_value("window-maximized"):
             # Lets resize happen
             GLib.idle_add(self.maximize)
-
-    def set_mini(self):
-        """
-            Set mini player on/off
-        """
-        if App().player.current_track.id is None:
-            return
-        was_maximized = self.is_maximized()
-        if self.__miniplayer is None:
-            if self.is_maximized():
-                self.unmaximize()
-                GLib.timeout_add(100, self.__setup_pos_size, "mini")
-            else:
-                self.__setup_pos_size("mini")
-        elif self.__was_maximized:
-            self.maximize()
-        else:
-            self.__setup_pos_size("window")
-        self.__was_maximized = was_maximized
 
     @property
     def toolbar(self):
@@ -242,29 +223,22 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             self.__miniplayer.destroy()
             self.__miniplayer = None
 
-    def __setup_pos_size(self, name):
+    def __setup_pos_size(self):
         """
-            Set window pos and size based on name
-            @param name as str
+            Set window pos and size
         """
-        size_setting = App().settings.get_value("%s-size" % name)
+        size_setting = App().settings.get_value("window-size")
         if len(size_setting) == 2 and\
            isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
             self.resize(size_setting[0], size_setting[1])
-        if name == "window":
-            self.__setup_pos(name)
-        else:
-            # We need position to happen after resize as previous
-            # may be refused by window manager => mini player as bottom
-            GLib.idle_add(self.__setup_pos, name)
+        self.__setup_pos()
 
-    def __setup_pos(self, name):
+    def __setup_pos(self):
         """
             Set window position
-            @param name as str
         """
-        position_setting = App().settings.get_value("%s-position" % name)
+        position_setting = App().settings.get_value("window-position")
         if len(position_setting) == 2 and\
            isinstance(position_setting[0], int) and\
            isinstance(position_setting[1], int):
@@ -444,17 +418,13 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         self.__timeout_configure = None
         size = widget.get_size()
-        if self.__miniplayer is None:
-            name = "window"
-        else:
-            name = "mini"
         if self.__miniplayer is not None:
             self.__miniplayer.update_cover(size[0])
-        App().settings.set_value("%s-size" % name,
+        App().settings.set_value("window-size",
                                  GLib.Variant("ai", [size[0], size[1]]))
 
         position = widget.get_position()
-        App().settings.set_value("%s-position" % name,
+        App().settings.set_value("window-position",
                                  GLib.Variant("ai",
                                               [position[0], position[1]]))
 

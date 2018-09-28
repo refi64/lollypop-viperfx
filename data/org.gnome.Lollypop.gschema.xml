@@ -33,16 +33,6 @@
             <summary>Window position</summary>
             <description>Window position (x and y).</description>
         </key>
-        <key type="ai" name="mini-size">
-            <default>[1,1]</default>
-            <summary>Mini player size</summary>
-            <description>Window size (width and height).</description>
-        </key>
-        <key type="ai" name="mini-position">
-            <default>[]</default>
-            <summary>Mini player position</summary>
-            <description>Window position (x and y).</description>
-        </key>
         <key type="ai" name="shown-album-lists">
             <default>[-2, -3, -4, -7, -12, -100]</default>
             <summary>INTERNAL</summary>
