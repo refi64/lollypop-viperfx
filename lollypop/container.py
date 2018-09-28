@@ -895,6 +895,8 @@ class Container(Gtk.Overlay):
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
+            if self.is_paned_stack:
+                App().window.emit("can-go-back-changed", True)
             if view not in self.__stack.get_children():
                 self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted

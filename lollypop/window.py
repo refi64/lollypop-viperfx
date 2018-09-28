@@ -181,7 +181,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if b and not adaptive_stack:
             self.__show_miniplayer(True)
             self.__miniplayer.set_vexpand(False)
-            self.__container.reload_view()
             self.__container.stack.show()
             if self.__miniplayer is not None:
                 self.__miniplayer.set_vexpand(False)

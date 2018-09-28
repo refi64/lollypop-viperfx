@@ -59,10 +59,10 @@ class AdaptiveWindow:
         """
         visible_child = self.__stack.get_visible_child()
         previous_child = None
-        for (p, c) in reversed(self.__paned):
+        for (p, c) in self.__paned:
             if c == visible_child:
-                previous_child = c
                 break
+            previous_child = c
         if previous_child is None:
             self.__stack.set_visible_child(self.__paned[-1][1])
         else:
@@ -97,6 +97,7 @@ class AdaptiveWindow:
         """
         if b and not self._adaptive_stack:
             self._adaptive_stack = True
+            self.__stack.get_visible_child().hide()
             child = []
             for (p, c) in self.__paned:
                 child.append(p.get_child1())
@@ -106,6 +107,7 @@ class AdaptiveWindow:
             self.emit("adaptive-changed", True)
         elif not b and self._adaptive_stack:
             self._adaptive_stack = False
+            self.__stack.get_visible_child().show()
             for child in self.__stack.get_children():
                 # Move wanted child to paned
                 for (p, c) in self.__paned:

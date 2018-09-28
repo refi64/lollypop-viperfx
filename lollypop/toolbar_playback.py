@@ -63,7 +63,6 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         """
         if b:
             self.__back_button.show()
-            self.__back_button.set_sensitive(True)
         else:
             self.__back_button.hide()
 
