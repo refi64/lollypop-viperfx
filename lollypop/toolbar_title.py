@@ -53,6 +53,14 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         """
         if position > 0:
             self._progress.add_mark(position, Gtk.PositionType.BOTTOM, None)
-#######################
-# PRIVATE             #
-#######################
+
+    def on_adaptive_changed(self, window, b):
+        """
+            Show/hide buttons
+            @param window as Gtk.Window
+            @param b as bool
+        """
+        if b:
+            self.hide()
+        else:
+            self.show()

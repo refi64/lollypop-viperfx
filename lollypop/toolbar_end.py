@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
-from lollypop.define import App, Shuffle, NextContext, WindowSize
+from lollypop.define import App, Shuffle, NextContext
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -108,25 +108,6 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover.hide()
         Gtk.Bin.do_hide(self)
 
-    def set_minimal(self, width):
-        """
-            Set minimal, hide some widget for minimal player
-            @param width as int
-        """
-        if width < WindowSize.MONSTER:
-            self.__next_popover.hide()
-            self.__shuffle_button.hide()
-        else:
-            self.__shuffle_button.show()
-            if self.__next_popover.should_be_shown():
-                self.__next_popover.popup()
-        # Remove another button
-        button_width = self.__search_popover_button.get_allocated_width()
-        if width < WindowSize.MONSTER - button_width:
-            self.__list_button.hide()
-        else:
-            self.__list_button.show()
-
     def on_next_changed(self, player):
         """
             Show next popover
@@ -165,6 +146,22 @@ class ToolbarEnd(Gtk.Bin):
         popover.set_relative_to(button)
         popover.popup()
         return popover
+
+    def on_adaptive_changed(self, window, b):
+        """
+            Show/hide buttons
+            @param window as Gtk.Window
+            @param b as bool
+        """
+        if b:
+            self.__next_popover.hide()
+            self.__shuffle_button.hide()
+            self.__list_button.hide()
+        else:
+            self.__shuffle_button.show()
+            self.__list_button.show()
+            if self.__next_popover.should_be_shown():
+                self.__next_popover.popup()
 
 #######################
 # PROTECTED           #

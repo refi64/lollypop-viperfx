@@ -35,10 +35,10 @@ class PlaybackController:
         """
         is_radio = App().player.current_track.id == Type.RADIOS
         self._play_btn.set_sensitive(True)
-        self._prev_btn.set_sensitive(not App().player.is_locked and
-                                     not is_radio)
-        self._next_btn.set_sensitive(not App().player.is_locked and
-                                     not is_radio)
+        self._prev_button.set_sensitive(not App().player.is_locked and
+                                        not is_radio)
+        self._next_button.set_sensitive(not App().player.is_locked and
+                                        not is_radio)
 
     def on_prev_changed(self, player):
         """
@@ -46,17 +46,17 @@ class PlaybackController:
             @param player as Player
         """
         if player.prev_track.id == Type.RADIOS:
-            self._prev_btn.set_tooltip_text(
+            self._prev_button.set_tooltip_text(
                 ", ".join(player.prev_track.album_artists))
         elif player.prev_track.id is not None:
             prev_artists = GLib.markup_escape_text(
                 ", ".join(player.prev_track.artists))
             prev_title = GLib.markup_escape_text(player.prev_track.title)
-            self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
-                                              (prev_artists,
-                                               prev_title))
+            self._prev_button.set_tooltip_markup("<b>%s</b> - %s" %
+                                                 (prev_artists,
+                                                  prev_title))
         else:
-            self._prev_btn.set_tooltip_text("")
+            self._prev_button.set_tooltip_text("")
 
     def on_next_changed(self, player):
         """
@@ -64,17 +64,17 @@ class PlaybackController:
             @param player as Player
         """
         if player.next_track.id == Type.RADIOS:
-            self._next_btn.set_tooltip_text(
+            self._next_button.set_tooltip_text(
                 ", ".join(player.next_track.album_artists))
         elif player.next_track.id is not None:
             next_artists = GLib.markup_escape_text(
                 ", ".join(player.next_track.artists))
             next_title = GLib.markup_escape_text(player.next_track.title)
-            self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
-                                              (next_artists,
-                                               next_title))
+            self._next_button.set_tooltip_markup("<b>%s</b> - %s" %
+                                                 (next_artists,
+                                                  next_title))
         else:
-            self._prev_btn.set_tooltip_text("")
+            self._prev_button.set_tooltip_text("")
 
     def on_status_changed(self, player):
         """
@@ -91,14 +91,14 @@ class PlaybackController:
 #######################
 # PROTECTED           #
 #######################
-    def _on_prev_btn_clicked(self, button):
+    def _on_prev_button_clicked(self, button):
         """
             Previous track on prev button clicked
             @param button as Gtk.Button
         """
         App().player.prev()
 
-    def _on_play_btn_clicked(self, button):
+    def _on_play_button_clicked(self, button):
         """
             Play/Pause on play button clicked
             @param button as Gtk.Button
@@ -110,7 +110,7 @@ class PlaybackController:
             App().player.play()
             self.__change_play_btn_status(self._pause_image, _("Pause"))
 
-    def _on_next_btn_clicked(self, button):
+    def _on_next_button_clicked(self, button):
         """
             Next track on next button clicked
             @param button as Gtk.Button

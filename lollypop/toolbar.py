@@ -25,14 +25,15 @@ class Toolbar(Gtk.HeaderBar):
         Lollypop toolbar
     """
 
-    def __init__(self):
+    def __init__(self, window):
         """
             Init toolbar
+            @param window as Window
         """
         Gtk.HeaderBar.__init__(self)
         self.__width = WindowSize.SMALL
         self.set_title("Lollypop")
-        self.__toolbar_playback = ToolbarPlayback()
+        self.__toolbar_playback = ToolbarPlayback(window)
         self.__toolbar_playback.show()
         self.__toolbar_info = ToolbarInfo()
         self.__toolbar_info.show()
@@ -49,6 +50,7 @@ class Toolbar(Gtk.HeaderBar):
         App().player.connect("current-changed", self.__on_current_changed)
         App().player.connect("next-changed", self.__on_next_changed)
         App().player.connect("prev-changed", self.__on_prev_changed)
+        window.connect("adaptive-changed", self.on_adaptive_changed)
 
     def do_get_preferred_height(self):
         """
@@ -111,6 +113,12 @@ class Toolbar(Gtk.HeaderBar):
                 self.__toolbar_title.add_mark(position / Gst.SECOND)
         except Exception as e:
             Logger.error("Toolbar::restore_state(): %s" % e)
+
+    def on_adaptive_changed(self, window, b):
+        self.__toolbar_playback.on_adaptive_changed(window, b)
+        self.__toolbar_info.on_adaptive_changed(window, b)
+        self.__toolbar_title.on_adaptive_changed(window, b)
+        self.__toolbar_end.on_adaptive_changed(window, b)
 
     @property
     def end(self):

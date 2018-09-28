@@ -93,6 +93,17 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
         InformationController.on_current_changed(self, self.artsize, None)
 
+    def on_adaptive_changed(self, window, b):
+        """
+            Show/hide buttons
+            @param window as Gtk.Window
+            @param b as bool
+        """
+        if b:
+            self.hide()
+        else:
+            self.show()
+
 #######################
 # PROTECTED           #
 #######################

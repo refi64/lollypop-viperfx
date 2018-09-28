@@ -65,7 +65,7 @@ class Container(Gtk.Overlay):
 
         App().playlists.connect("playlists-changed",
                                 self.__update_playlists)
-        self.add(self.__paned_main_list)
+        self.add(self.__paned_one)
 
         # Show donation notification
         if App().settings.get_value("show-donation"):
@@ -246,19 +246,17 @@ class Container(Gtk.Overlay):
             visible_child.stop()
         if visible_child == self.__list_two:
             self.__stack.set_visible_child(self.__list_one)
-            App().window.toolbar.playback.show_back(True)
         elif self.__list_two.is_visible():
             self.__stack.set_visible_child(self.__list_two)
         else:
             self.__stack.set_visible_child(self.__list_one)
-            App().window.toolbar.playback.show_back(True)
 
     def save_internals(self):
         """
             Save paned position
         """
-        main_pos = self.__paned_main_list.get_position()
-        listview_pos = self.__paned_list_view.get_position()
+        main_pos = self.__paned_one.get_position()
+        listview_pos = self.__paned_two.get_position()
         listview_pos = listview_pos if listview_pos > 100 else 100
         App().settings.set_value("paned-mainlist-width",
                                  GLib.Variant("i",
@@ -266,29 +264,6 @@ class Container(Gtk.Overlay):
         App().settings.set_value("paned-listview-width",
                                  GLib.Variant("i",
                                               listview_pos))
-
-    def paned_stack(self, b):
-        """
-            Enable paned stack
-            @param bool as b
-        """
-        if b and not self.is_paned_stack:
-            self.__paned_list_view.remove(self.__list_two)
-            self.__paned_main_list.remove(self.__list_one)
-            self.__stack.add(self.__list_one)
-            self.__stack.add(self.__list_two)
-            App().window.toolbar.playback.show_back(True, True)
-            self.show_sidebar(True, True)
-            self.reload_view()
-        elif not b and self.is_paned_stack:
-            value = App().settings.get_value("show-sidebar")
-            self.__stack.remove(self.__list_two)
-            self.__stack.remove(self.__list_one)
-            self.__paned_list_view.add1(self.__list_two)
-            self.__paned_main_list.add1(self.__list_one)
-            App().window.toolbar.playback.show_back(False)
-            self.show_sidebar(value)
-            self.reload_view()
 
     def show_sidebar(self, value, force=False):
         """
@@ -337,6 +312,14 @@ class Container(Gtk.Overlay):
         return self.__list_one in self.__stack.get_children()
 
     @property
+    def stack(self):
+        """
+            Container stack
+            @return stack as Gtk.Stack
+        """
+        return self.__stack
+
+    @property
     def list_one(self):
         """
             Get first SelectionList
@@ -351,6 +334,20 @@ class Container(Gtk.Overlay):
             @return SelectionList
         """
         return self.__list_two
+
+    @property
+    def paned_one(self):
+        """
+            Get first paned (list_one)
+        """
+        return self.__paned_one
+
+    @property
+    def paned_two(self):
+        """
+            Get second paned (list_two)
+        """
+        return self.__paned_two
 
 ############
 # PRIVATE  #
@@ -375,8 +372,9 @@ class Container(Gtk.Overlay):
                 - artist list
                 - main view as artist view or album view
         """
-        self.__paned_main_list = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
-        self.__paned_list_view = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+        self.__paned_one = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+        self.__paned_two = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
@@ -396,16 +394,16 @@ class Container(Gtk.Overlay):
         vgrid.add(self.__progress)
         vgrid.show()
 
-        self.__paned_list_view.add1(self.__list_two)
-        self.__paned_list_view.add2(vgrid)
-        self.__paned_main_list.add1(self.__list_one)
-        self.__paned_main_list.add2(self.__paned_list_view)
-        self.__paned_main_list.set_position(
+        self.__paned_two.add1(self.__list_two)
+        self.__paned_two.add2(vgrid)
+        self.__paned_one.add1(self.__list_one)
+        self.__paned_one.add2(self.__paned_two)
+        self.__paned_one.set_position(
             App().settings.get_value("paned-mainlist-width").get_int32())
-        self.__paned_list_view.set_position(
+        self.__paned_two.set_position(
             App().settings.get_value("paned-listview-width").get_int32())
-        self.__paned_main_list.show()
-        self.__paned_list_view.show()
+        self.__paned_one.show()
+        self.__paned_two.show()
 
     def __setup_scanner(self):
         """
@@ -911,9 +909,6 @@ class Container(Gtk.Overlay):
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
-            if self.is_paned_stack:
-                # Just to make it sensitive
-                App().window.toolbar.playback.show_back(True, True)
             if view not in self.__stack.get_children():
                 self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted

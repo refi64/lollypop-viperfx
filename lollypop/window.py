@@ -17,18 +17,26 @@ from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
+from lollypop.window_adaptive import AdaptiveWindow
 from lollypop.utils import is_unity
 
 
-class Window(Gtk.ApplicationWindow):
+class Window(Gtk.ApplicationWindow, AdaptiveWindow):
     """
         Main window
     """
+
+    _ADAPTIVE_STACK = WindowSize.BIG
 
     def __init__(self):
         """
             Init window
         """
+        Gtk.ApplicationWindow.__init__(self,
+                                       application=App(),
+                                       title="Lollypop",
+                                       icon_name="org.gnome.Lollypop")
+        AdaptiveWindow.__init__(self)
         self.__signal1 = None
         self.__signal2 = None
         self.__timeout = None
@@ -36,10 +44,6 @@ class Window(Gtk.ApplicationWindow):
         self.__mediakeys = None
         self.__media_keys_busnames = []
         self.__was_maximized = False
-        Gtk.ApplicationWindow.__init__(self,
-                                       application=App(),
-                                       title="Lollypop",
-                                       icon_name="org.gnome.Lollypop")
         self.connect("hide", self.__on_hide)
         App().player.connect("current-changed", self.__on_current_changed)
         self.__timeout_configure = None
@@ -54,13 +58,8 @@ class Window(Gtk.ApplicationWindow):
 
         self.__setup_global_shortcuts()
 
-        self.__main_stack = Gtk.Stack()
-        self.__main_stack.set_transition_duration(1000)
-        self.__main_stack.set_transition_type(
-            Gtk.StackTransitionType.CROSSFADE)
-        self.__main_stack.show()
-
         self.__setup_content()
+
         # FIXME Remove this, handled by MPRIS in GNOME 3.26
         self.__setup_media_keys()
         self.__enabled_shortcuts = False
@@ -122,32 +121,6 @@ class Window(Gtk.ApplicationWindow):
             # Lets resize happen
             GLib.idle_add(self.maximize)
 
-    def responsive_design(self):
-        """
-            Handle responsive design
-        """
-        size = self.get_size()
-        self.__toolbar.set_content_width(size[0])
-        self.__toolbar.end.set_minimal(size[0])
-        if size[0] < WindowSize.BIG:
-            self.__container.paned_stack(True)
-            self.__show_miniplayer(True)
-            self.__main_stack.show()
-            self.__miniplayer.set_vexpand(False)
-            self.__toolbar.title.hide()
-            self.__toolbar.info.hide()
-        else:
-            self.__container.paned_stack(False)
-            self.__main_stack.show()
-            self.__show_miniplayer(False)
-            self.__toolbar.title.show()
-            self.__toolbar.info.show()
-        if size[1] < WindowSize.MEDIUM and\
-                self.__miniplayer is not None and\
-                self.__miniplayer.is_visible():
-            self.__main_stack.hide()
-            self.__miniplayer.set_vexpand(True)
-
     def set_mini(self):
         """
             Set mini player on/off
@@ -155,7 +128,7 @@ class Window(Gtk.ApplicationWindow):
         if App().player.current_track.id is None:
             return
         was_maximized = self.is_maximized()
-        if self.__main_stack.get_visible_child_name() == "main":
+        if self.__miniplayer is None:
             if self.is_maximized():
                 self.unmaximize()
                 GLib.timeout_add(100, self.__setup_pos_size, "mini")
@@ -193,6 +166,39 @@ class Window(Gtk.ApplicationWindow):
             @return Container
         """
         return self.__container
+
+##############
+# Protected  #
+##############
+    def _set_adaptive_stack(self, b):
+        """
+            Move paned child to stack
+            @param b as bool
+        """
+        adaptive_stack = self._adaptive_stack
+        AdaptiveWindow._set_adaptive_stack(self, b)
+        size = self.get_size()
+        if b and not adaptive_stack:
+            self.__show_miniplayer(True)
+            self.__miniplayer.set_vexpand(False)
+            self.__container.reload_view()
+            self.__container.stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+        elif not b and adaptive_stack:
+            self.__show_miniplayer(False)
+            self.__container.reload_view()
+            self.__container.stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+        if size[1] < WindowSize.MEDIUM and\
+                self.__miniplayer is not None and\
+                self.__miniplayer.is_visible():
+            self.__container.stack.hide()
+            self.__miniplayer.set_vexpand(True)
+        elif self.__miniplayer is not None:
+            self.__container.stack.show()
+            self.__miniplayer.set_vexpand(False)
 
 ############
 # Private  #
@@ -341,11 +347,14 @@ class Window(Gtk.ApplicationWindow):
             Setup window content
         """
         self.__container = Container()
+        self.add_stack(self.container.stack)
+        self.add_paned(self.container.paned_one, self.container.list_one)
+        self.add_paned(self.container.paned_two, self.container.list_two)
         self.__container.show()
         self.__vgrid = Gtk.Grid()
         self.__vgrid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__vgrid.show()
-        self.__toolbar = Toolbar()
+        self.__toolbar = Toolbar(self)
         self.__toolbar.show()
         if App().settings.get_value("disable-csd") or is_unity():
             self.__vgrid.add(self.__toolbar)
@@ -353,10 +362,8 @@ class Window(Gtk.ApplicationWindow):
             self.set_titlebar(self.__toolbar)
             self.__toolbar.set_show_close_button(
                 not App().settings.get_value("disable-csd"))
-        self.__vgrid.add(self.__main_stack)
+        self.__vgrid.add(self.__container)
         self.add(self.__vgrid)
-        self.__main_stack.add_named(self.__container, "main")
-        self.__main_stack.set_visible_child_name("main")
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
@@ -397,7 +404,7 @@ class Window(Gtk.ApplicationWindow):
             @param context as Gdk.DragContext
             @param time as int
         """
-        self.__main_stack.set_visible_child_name("main")
+        self.stack.set_visible_child(self.__container)
 
     def __on_hide(self, window):
         """
@@ -411,21 +418,21 @@ class Window(Gtk.ApplicationWindow):
             self.disconnect(self.__signal2)
             self.__signal2 = None
 
-    def __on_configure_event(self, widget, event):
+    def __on_configure_event(self, window, event):
         """
-            Delay event
-            @param: widget as Gtk.Window
-            @param: event as Gdk.Event
+            Handle configure event
+            @param window as Gtk.Window
+            @param event as Gdk.Event
         """
+        self.__toolbar.set_content_width(window.get_size()[0])
         if self.__timeout_configure:
             GLib.source_remove(self.__timeout_configure)
             self.__timeout_configure = None
-        self.responsive_design()
         if not self.is_maximized():
             self.__timeout_configure = GLib.timeout_add(
                 1000,
                 self.__save_size_position,
-                widget)
+                window)
 
     def __save_size_position(self, widget):
         """
@@ -434,7 +441,7 @@ class Window(Gtk.ApplicationWindow):
         """
         self.__timeout_configure = None
         size = widget.get_size()
-        if self.__main_stack.is_visible():
+        if self.__miniplayer is None:
             name = "window"
         else:
             name = "mini"
@@ -452,7 +459,7 @@ class Window(Gtk.ApplicationWindow):
         """
             Connect state signals
         """
-        self.responsive_design()
+        self.__toolbar.set_content_width(self.get_size()[0])
         if self.__signal1 is None:
             self.__signal1 = self.connect("window-state-event",
                                           self.__on_window_state_event)
@@ -477,8 +484,7 @@ class Window(Gtk.ApplicationWindow):
             Save paned widget width
             @param widget as unused, data as unused
         """
-        if self.__was_maximized and\
-           self.__main_stack.get_visible_child_name() == "mini":
+        if self.__was_maximized and self.__miniplayer is None:
             App().settings.set_boolean("window-maximized", True)
         self.__container.save_internals()
 
