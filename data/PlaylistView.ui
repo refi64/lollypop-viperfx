@@ -2,6 +2,11 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">media-playback-start-symbolic</property>
+  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -19,6 +24,11 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">document-save-as-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">media-playlist-shuffle-symbolic</property>
   </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
@@ -43,7 +53,6 @@
             <property name="halign">start</property>
             <property name="margin_start">6</property>
             <property name="margin_end">5</property>
-            <property name="hexpand">True</property>
             <property name="label">title</property>
             <property name="ellipsize">end</property>
             <property name="track_visited_links">False</property>
@@ -73,7 +82,7 @@
             <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">2</property>
+            <property name="left_attach">4</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
@@ -88,7 +97,7 @@
             <signal name="toggled" handler="_on_split_button_toggled" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">3</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
@@ -102,7 +111,7 @@
             </style>
           </object>
           <packing>
-            <property name="left_attach">4</property>
+            <property name="left_attach">6</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
@@ -117,7 +126,38 @@
             <signal name="clicked" handler="_on_save_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">3</property>
+            <property name="left_attach">5</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="play_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">start</property>
+            <property name="image">image1</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="shuffle_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
+            <property name="image">image5</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
         </child>

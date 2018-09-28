@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gdk, Gio
 
 from gettext import gettext as _
+from random import shuffle
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
@@ -45,6 +46,9 @@ class PlaylistsView(View, ViewController):
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
+        if App().player.locked:
+            builder.get_object("play_button").set_sensitive(False)
+            builder.get_object("shuffle_button").set_sensitive(False)
         self.__duration_label = builder.get_object("duration")
         builder.get_object("title").set_label(
             ", ".join(App().playlists.get_names(playlist_ids)))
@@ -207,6 +211,35 @@ class PlaylistsView(View, ViewController):
         filechooser.set_current_name("%s.m3u" % name)
         filechooser.connect("response", self.__on_save_response)
         filechooser.run()
+
+    def _on_play_button_clicked(self, button):
+        """
+            Play playlist
+            @param button as Gtk.Button
+        """
+        tracks = []
+        for playlist_id in self.__playlist_ids:
+            for track_id in App().playlists.get_track_ids(playlist_id):
+                tracks.append(Track(track_id))
+        if tracks:
+            App().player.load(tracks[0])
+            App().player.populate_playlist_by_tracks(tracks,
+                                                     self.__playlist_ids)
+
+    def _on_shuffle_button_clicked(self, button):
+        """
+            Play playlist
+            @param button as Gtk.Button
+        """
+        tracks = []
+        for playlist_id in self.__playlist_ids:
+            for track_id in App().playlists.get_track_ids(playlist_id):
+                tracks.append(Track(track_id))
+        if tracks:
+            shuffle(tracks)
+            App().player.load(tracks[0])
+            App().player.populate_playlist_by_tracks(tracks,
+                                                     self.__playlist_ids)
 
 #######################
 # PRIVATE             #
