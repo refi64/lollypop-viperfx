@@ -129,18 +129,19 @@ class PlaylistsView(View, ViewController):
             ctx.remove_class("drag-up")
             ctx.remove_class("drag-down")
 
-    def get_ids(self):
-        """
-            Return playlist ids
-            @return id as [int]
-        """
-        return self.__playlist_ids
-
     def stop(self):
         """
             Stop populating
         """
         self.__playlists_widget.stop()
+
+    @property
+    def playlist_ids(self):
+        """
+            Return playlist ids
+            @return id as [int]
+        """
+        return self.__playlist_ids
 
 #######################
 # PROTECTED           #

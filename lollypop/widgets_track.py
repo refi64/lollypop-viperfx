@@ -531,9 +531,9 @@ class PlaylistRow(Row):
                 return
             self.emit("track-moved", self._track.id, src, down)
         except:
-            if len(App().window.container.view.get_ids()) == 1:
+            if len(App().window.container.view.playlist_ids) == 1:
                 App().playlists.import_uri(
-                    App().window.container.view.get_ids()[0],
+                    App().window.container.view.playlist_ids[0],
                     data.get_text(), self._track.id, down)
 
 
@@ -754,9 +754,9 @@ class TracksWidget(Gtk.ListBox):
             bottom_row = self.get_children()[-1]
             bottom_row.emit("track-moved", bottom_row.id, value, False)
         except:
-            if len(App().window.container.view.get_ids()) == 1:
+            if len(App().window.container.view.playlist_ids) == 1:
                 App().playlists.import_uri(
-                    App().window.container.view.get_ids()[0],
+                    App().window.container.view.playlist_ids[0],
                     data.get_text())
 
     def __on_queue_changed(self, unused):
