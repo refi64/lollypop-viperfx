@@ -186,6 +186,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                 self.__miniplayer.set_vexpand(False)
         elif not b and adaptive_stack:
             self.__show_miniplayer(False)
+            # Destroy just before reloading to avoid bad visual effect
+            view = self.__container.stack.get_visible_child()
+            if view is not None:
+                view.destroy()
             self.__container.reload_view()
             self.__container.stack.show()
             if self.__miniplayer is not None:
