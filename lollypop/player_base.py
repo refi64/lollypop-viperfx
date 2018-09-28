@@ -48,7 +48,7 @@ class BasePlayer(GObject.GObject):
             self._base_init = True
             # Lock adding tracks to playback, do nothing here, just get it
             # with locked property
-            self._locked = False
+            self._is_locked = False
             # Should player do crossfading
             self._crossfading = False
             # Keep track of artist/album finished
@@ -72,15 +72,15 @@ class BasePlayer(GObject.GObject):
         """
             Mark player as locked
         """
-        self._locked = not self._locked
+        self._is_locked = not self._is_locked
         self.emit("lock-changed")
 
     @property
-    def locked(self):
+    def is_locked(self):
         """
-            Is player locked as bool
+            Is player.is_locked as bool
         """
-        return self._locked
+        return self._is_locked
 
     def reset_pcn(self):
         """

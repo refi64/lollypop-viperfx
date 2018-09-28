@@ -46,7 +46,7 @@ class PlaylistsView(View, ViewController):
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
-        if App().player.locked:
+        if App().player.is_locked:
             builder.get_object("play_button").set_sensitive(False)
             builder.get_object("shuffle_button").set_sensitive(False)
         self.__duration_label = builder.get_object("duration")

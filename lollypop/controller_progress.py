@@ -175,7 +175,7 @@ class ProgressController:
             return True
         if self.__show_volume_control:
             return
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         self.__seeking = True
 

@@ -229,7 +229,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @param: event as Gdk.Event
         """
         if self.__obj is None:
-            if App().player.locked:
+            if App().player.is_locked:
                 return True
             if self.__track_ids:
                 if App().player.is_party:

@@ -420,8 +420,8 @@ class ArtistView(ArtistAlbumsView):
             Lock buttons
             @param player as Player
         """
-        self.__add_button.set_sensitive(not player.locked)
-        self.__play_button.set_sensitive(not player.locked)
+        self.__add_button.set_sensitive(not player.is_locked)
+        self.__play_button.set_sensitive(not player.is_locked)
 
     def __on_artist_artwork_changed(self, art, prefix):
         """

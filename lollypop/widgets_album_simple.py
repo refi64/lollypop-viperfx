@@ -235,7 +235,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         self._show_append(False)
         if App().player.is_party:

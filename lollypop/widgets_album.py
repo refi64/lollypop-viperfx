@@ -108,7 +108,7 @@ class AlbumBaseWidget:
         self._show_overlay = set
         self.emit("overlayed", set)
         if set:
-            if App().player.locked:
+            if App().player.is_locked:
                 opacity = 0.2
             else:
                 opacity = 1
@@ -203,7 +203,7 @@ class AlbumBaseWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         if App().player.is_party:
             action = App().lookup_action("party")
@@ -232,7 +232,7 @@ class AlbumBaseWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         if self._album.id in App().player.album_ids:
             if App().player.current_track.album.id == self._album.id:

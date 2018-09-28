@@ -401,7 +401,7 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as QueueRow
         """
-        if not App().player.locked:
+        if not App().player.is_locked:
             App().player.load(Track(row.id))
             GLib.idle_add(row.destroy)
 

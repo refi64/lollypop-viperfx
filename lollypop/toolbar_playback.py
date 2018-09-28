@@ -71,5 +71,5 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
             Lock toolbar
             @param player as Player
         """
-        self._prev_btn.set_sensitive(not player.locked)
-        self._next_btn.set_sensitive(not player.locked)
+        self._prev_btn.set_sensitive(not player.is_locked)
+        self._next_btn.set_sensitive(not player.is_locked)

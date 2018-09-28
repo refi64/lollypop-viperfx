@@ -235,7 +235,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         url = self.__radios.get_url(self.__name)
         if url:

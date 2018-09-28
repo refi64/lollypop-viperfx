@@ -385,8 +385,8 @@ class ToolbarEnd(Gtk.Bin):
             Lock toolbar
             @param player as Player
         """
-        self.__list_button.set_sensitive(not player.locked)
-        self.__shuffle_button.set_sensitive(not player.locked)
+        self.__list_button.set_sensitive(not player.is_locked)
+        self.__shuffle_button.set_sensitive(not player.is_locked)
 
     def __on_playback_changed(self, settings, value):
         """

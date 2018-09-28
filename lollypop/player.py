@@ -52,7 +52,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Play previous track
         """
-        if self._locked:
+        if self._is_locked:
             return
         smart_prev = App().settings.get_value("smart-previous")
         if self._prev_track.id is not None:
@@ -67,7 +67,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Play next track
         """
-        if self._locked:
+        if self._is_locked:
             return
         if self._next_track.id is not None:
             self._scrobble(self._current_track, self._start_time)

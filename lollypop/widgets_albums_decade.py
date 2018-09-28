@@ -126,7 +126,7 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))
@@ -139,7 +139,7 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if App().player.locked:
+        if App().player.is_locked:
             return True
         # FIXME
         if isinstance(self._data, list):
