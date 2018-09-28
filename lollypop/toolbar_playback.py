@@ -63,6 +63,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         """
         if b:
             self.__back_button.show()
+            self.__back_button.set_sensitive(True)
         else:
             self.__back_button.hide()
 
@@ -74,7 +75,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
             Go back in container stack
             @param button as Gtk.Button
         """
-        App().window.container.go_back()
+        App().window.go_back()
 
 #######################
 # Private             #

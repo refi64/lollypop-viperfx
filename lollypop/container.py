@@ -237,20 +237,6 @@ class Container(Gtk.Overlay):
             # Select artists on list one
             GLib.idle_add(self.__list_one.select_ids, artist_ids)
 
-    def go_back(self):
-        """
-            Go back in stack
-        """
-        visible_child = self.__stack.get_visible_child()
-        if isinstance(visible_child, View):
-            visible_child.stop()
-        if visible_child == self.__list_two:
-            self.__stack.set_visible_child(self.__list_one)
-        elif self.__list_two.is_visible():
-            self.__stack.set_visible_child(self.__list_two)
-        else:
-            self.__stack.set_visible_child(self.__list_one)
-
     def save_internals(self):
         """
             Save paned position
