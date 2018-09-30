@@ -160,7 +160,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if b and not adaptive_stack:
             self.__container.show_sidebar(True)
         elif not b and adaptive_stack:
-            self.__container.show_sidebar(False)
+            value = App().settings.get_value("show-sidebar")
+            self.__container.show_sidebar(value)
         AdaptiveWindow._set_adaptive_stack(self, b)
         size = self.get_size()
         if b and not adaptive_stack:
