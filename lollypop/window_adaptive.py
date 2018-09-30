@@ -110,6 +110,7 @@ class AdaptiveWindow:
                 p.remove(c)
                 self.__stack.add(c)
             self.__stack.set_visible_child(self.__paned[0][1])
+            self.emit("can-go-back-changed", False)
             self.emit("adaptive-changed", True)
             self.__stack.set_transition_type(self._TRANSITION_TYPE)
         elif not b and self._adaptive_stack:
