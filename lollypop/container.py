@@ -258,7 +258,8 @@ class Container(Gtk.Overlay):
         """
         if show:
             self.__list_one.show()
-            if self.__list_two.selected_ids:
+            show_genres = App().settings.get_value("show-genres")
+            if self.__list_two.selected_ids and show_genres:
                 self.__list_two.show()
         else:
             self.__list_two.hide()
