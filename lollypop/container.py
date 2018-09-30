@@ -258,7 +258,7 @@ class Container(Gtk.Overlay):
         """
         if show:
             self.__list_one.show()
-            if self.__list_two.select_ids:
+            if self.__list_two.selected_ids:
                 self.__list_two.show()
         else:
             self.__list_two.hide()
