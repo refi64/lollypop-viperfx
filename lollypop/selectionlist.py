@@ -138,7 +138,6 @@ class SelectionList(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__base_type = base_type
-        self.__was_visible = False
         self.__timeout = None
         self.__modifier = False
         self.__populating = False
@@ -189,21 +188,6 @@ class SelectionList(Gtk.Overlay):
 
         App().art.connect("artist-artwork-changed",
                           self.__on_artist_artwork_changed)
-
-    def hide(self):
-        """
-            Hide widget, remember state
-        """
-        self.__was_visible = self.is_visible()
-        Gtk.Bin.hide(self)
-
-    def show(self, force=False):
-        """
-            Show widget if wanted
-            @param force as bool
-        """
-        if force or App().settings.get_value("show-sidebar"):
-            Gtk.Bin.show(self)
 
     def mark_as(self, type):
         """
@@ -390,13 +374,6 @@ class SelectionList(Gtk.Overlay):
             for item in items:
                 selected_ids.append(model[item][0])
         return selected_ids
-
-    @property
-    def was_visible(self):
-        """
-            True if widget was visible on previous hide
-        """
-        return self.__was_visible
 
 #######################
 # PROTECTED           #

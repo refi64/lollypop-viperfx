@@ -251,18 +251,16 @@ class Container(Gtk.Overlay):
                                  GLib.Variant("i",
                                               listview_pos))
 
-    def show_sidebar(self, value, force=False):
+    def show_sidebar(self, show):
         """
             Show/Hide navigation sidebar
-            @param value as bool
-            @param force as bool
-            Internally hide list one and list two
+            @param show as bool
         """
-        if value:
-            self.__list_one.show(force)
-            if self.__list_two.was_visible:
-                self.__list_two.show(force)
-        elif not self.is_paned_stack:
+        if show:
+            self.__list_one.show()
+            if self.__list_two.select_ids:
+                self.__list_two.show()
+        else:
             self.__list_two.hide()
             self.__list_one.hide()
 

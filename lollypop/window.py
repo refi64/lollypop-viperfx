@@ -157,6 +157,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param b as bool
         """
         adaptive_stack = self._adaptive_stack
+        if b and not adaptive_stack:
+            self.__container.show_sidebar(True)
+        elif not b and adaptive_stack:
+            self.__container.show_sidebar(False)
         AdaptiveWindow._set_adaptive_stack(self, b)
         size = self.get_size()
         if b and not adaptive_stack:
@@ -544,6 +548,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param widget as Gtk.Widget
         """
         self.setup_window()
+        value = App().settings.get_value("show-sidebar")
+        self.__container.show_sidebar(value)
         if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
