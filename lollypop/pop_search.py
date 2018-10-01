@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib, Gio
 
+from gettext import gettext as _
+
 from lollypop.define import App, ResponsiveType, Type
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
@@ -43,7 +45,9 @@ class SearchPopover(Gtk.Popover):
         self.__entry = builder.get_object("entry")
 
         self.__spinner = builder.get_object("spinner")
-        self.__header_stack = builder.get_object("stack")
+        self.__header_stack = builder.get_object("header_stack")
+        self.__stack = builder.get_object("stack")
+        self.__placeholder = builder.get_object("placeholder")
 
         # Connect here because we don"t want previous switch.set_state()
         # to emit a signal on init
@@ -51,7 +55,9 @@ class SearchPopover(Gtk.Popover):
 
         self.__view = AlbumsListView(ResponsiveType.SEARCH)
         self.__view.show()
-        self.__widget.attach(self.__view, 0, 1, 2, 1)
+        self.__stack.add_named(self.__view, "view")
+
+        self.__set_default_placeholder()
 
         self.add(self.__widget)
 
@@ -84,17 +90,27 @@ class SearchPopover(Gtk.Popover):
         self.__cancellable.cancel()
         self.__view.stop()
         self.__current_search = widget.get_text().strip()
-        if self.__current_search != "":
-            self.__new_btn.set_sensitive(True)
-            self.__timeout_id = GLib.timeout_add(
+        self.__timeout_id = GLib.timeout_add(
                 500,
                 self.__on_search_changed_timeout)
-        else:
-            self.__new_btn.set_sensitive(False)
 
 #######################
 # PRIVATE             #
 #######################
+    def __set_no_result_placeholder(self):
+        """
+            Set placeholder for no result
+        """
+        self.__placeholder.set_markup(
+            _("<big>No results for this search</big>"))
+
+    def __set_default_placeholder(self):
+        """
+            Set placeholder for no result
+        """
+        self.__placeholder.set_markup(
+            _("<big>Search for artists, albums and tracks</big>"))
+
     def __populate(self):
         """
             Populate searching items
@@ -104,10 +120,16 @@ class SearchPopover(Gtk.Popover):
         self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
-        search = Search()
-        search.get(self.__current_search,
-                   self.__cancellable,
-                   callback=(self.__on_search_get,))
+        if self.__current_search:
+            search = Search()
+            search.get(self.__current_search,
+                       self.__cancellable,
+                       callback=(self.__on_search_get,))
+        else:
+            self.__stack.set_visible_child_name("placeholder")
+            self.__set_default_placeholder()
+            self.__header_stack.set_visible_child(self.__new_btn)
+            GLib.idle_add(self.__spinner.stop)
 
     def __search_to_playlist(self):
         """
@@ -128,9 +150,13 @@ class SearchPopover(Gtk.Popover):
             Add rows for internal results
             @param albums as [Album]
         """
-        if albums is not None:
+        if albums:
             self.__view.populate(albums)
-            self.__header_stack.set_visible_child(self.__new_btn)
+            self.__stack.set_visible_child_name("view")
+        else:
+            self.__stack.set_visible_child_name("placeholder")
+            self.__set_no_result_placeholder()
+        self.__header_stack.set_visible_child(self.__new_btn)
         GLib.idle_add(self.__spinner.stop)
 
     def __on_map(self, widget):
@@ -163,3 +189,7 @@ class SearchPopover(Gtk.Popover):
             return True
         self.__timeout_id = None
         self.__populate()
+        if self.__current_search != "":
+            self.__new_btn.set_sensitive(True)
+        else:
+            self.__new_btn.set_sensitive(False)
