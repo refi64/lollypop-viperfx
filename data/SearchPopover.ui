@@ -79,6 +79,9 @@
           <object class="GtkLabel" id="placeholder">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
           <packing>
             <property name="name">placeholder</property>
