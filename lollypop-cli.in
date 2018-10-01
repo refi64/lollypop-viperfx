@@ -13,7 +13,6 @@
 
 import sys
 # Make sure we'll find the pygobject module, even in JHBuild
-#sys.path.insert(1, '@PYTHON_EXEC_DIR@')
 # Make sure we'll find the lollypop modules, even in JHBuild
 sys.path.insert(1, '@PYTHON_DIR@')
 import gi

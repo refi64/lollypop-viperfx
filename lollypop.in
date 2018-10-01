@@ -9,7 +9,6 @@ if 'LOLLYPOP_TRACE' in os.environ:
     from pycallgraph import PyCallGraph
     from pycallgraph.output import GraphvizOutput
 # Make sure we'll find the pygobject module, even in JHBuild
-#sys.path.insert(1, '@PYTHON_EXEC_DIR@')
 sys.path.insert(1, '@PYTHON_DIR@')
 
 from gi.repository import Gio
