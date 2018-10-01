@@ -37,6 +37,7 @@ class SearchPopover(Gtk.Popover):
         self.__current_search = ""
         self.__cancellable = Gio.Cancellable()
         self.__history = []
+        self.__width = 0
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchPopover.ui")
@@ -66,6 +67,12 @@ class SearchPopover(Gtk.Popover):
             Set search text
         """
         self.__entry.set_text(text)
+
+    def do_get_preferred_width(self):
+        if self.__width == 0:
+            return Gtk.Popover.do_get_preferred_width(self)
+        else:
+            return (self.__width, self.__width)
 
 #######################
 # PROTECTED           #
@@ -166,8 +173,8 @@ class SearchPopover(Gtk.Popover):
         """
         window_size = App().window.get_size()
         height = window_size[1]
-        width = min(500, window_size[0])
-        self.set_size_request(width, height * 0.7)
+        self.__width = min(500, window_size[0])
+        self.set_size_request(self.__width, height * 0.7)
 
     def __on_unmap(self, widget):
         """
