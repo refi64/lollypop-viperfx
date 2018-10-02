@@ -83,6 +83,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         """
             Populate widget content
         """
+        if self.get_child() is not None:
+            return
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
@@ -251,7 +253,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
 #######################
 # PRIVATE             #
 #######################
-
     def __on_button_release_event(self, widget, event):
         """
             Show revealer with tracks
@@ -589,12 +590,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
         y = None
         for child in self.__view.get_children():
             if child.album == App().player.current_track.album:
+                child.populate()
+                child.reveal(True)
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
 
     def __on_child_destroyed(self, row):
         """
-            Check clear button aspect
             @param row as AlbumRow
         """
         # Send signal for parent
