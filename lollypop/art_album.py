@@ -22,7 +22,7 @@ from lollypop.utils import escape, is_readonly
 from lollypop.helper_task import TaskHelper
 
 
-class AlbumArt(TagReader):
+class AlbumArt:
     """
          Manager album artwork
          Should be inherited by a BaseArt
@@ -34,7 +34,6 @@ class AlbumArt(TagReader):
         """
             Init album art
         """
-        TagReader.__init__(self)
         self.__favorite = App().settings.get_value(
             "favorite-cover").get_string()
         if not self.__favorite:
@@ -342,7 +341,8 @@ class AlbumArt(TagReader):
         if uri.startswith("http:") or uri.startswith("https:"):
             return
         try:
-            info = self.get_info(uri)
+            tag_reader = TagReader()
+            info = tag_reader.get_info(uri)
             exist = False
             if info is not None:
                 (exist, sample) = info.get_tags().get_sample_index("image", 0)
