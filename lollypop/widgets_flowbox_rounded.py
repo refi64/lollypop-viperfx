@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk, Pango, GObject
+from gi.repository import GLib, Gtk, Gdk, Pango, GObject
 
 import cairo
 from math import pi
@@ -39,6 +39,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
         self._data = item_ids
+        self.__scale_factor = self.get_scale_factor()
         self.__cover_size = App().settings.get_value("cover-size").get_int32()
         self.set_size_request(ArtSize.ROUNDED, ArtSize.ROUNDED)
 
@@ -101,20 +102,33 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
 #######################
 # PRIVATE             #
 #######################
-    def __draw_surface(self, album_ids, ctx):
+    def __draw_surface(self, album_ids, ctx, x, y):
         """
             Draw surface for first available album
             @param album_ids as [int]
             @param ctx as Cairo.context
+            @param x as int
+            @param y as int
         """
+        # Workaround Gdk not being thread safe
+        def draw_pixbuf(ctx, pixbuf):
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                pixbuf, self.__scale_factor, None)
+            ctx.translate(x, y)
+            ctx.set_source_surface(surface, 0, 0)
+            ctx.paint()
+            ctx.translate(-x, -y)
+            self.__timeout_id = None
         if album_ids:
             album_id = album_ids.pop(0)
-            surface = App().art.get_album_artwork(Album(album_id),
+            pixbuf = App().art.get_album_artwork_pixbuf(
+                                                  Album(album_id),
                                                   self.__cover_size,
-                                                  self.get_scale_factor())
-            if surface is not None:
-                ctx.set_source_surface(surface, 0, 0)
-                ctx.paint()
+                                                  self.__scale_factor)
+            if pixbuf is None:
+                GLib.idle_add(self.__draw_surface, album_ids, ctx, x, y)
+            else:
+                GLib.idle_add(draw_pixbuf, ctx, pixbuf)
 
     def __get_surface(self):
         """
@@ -137,20 +151,13 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             album_ids = sample(album_ids, self._ALBUMS_COUNT)
         x = self.__cover_size
         y = self.__cover_size
-        max_value = self.__cover_size * 3
-        ctx.translate(x, y)
         # Draw centered cover
-        self.__draw_surface(album_ids, ctx)
-        ctx.translate(-x, -y)
+        self.__draw_surface(album_ids, ctx, x, y)
         # Draw other covers
-        for i in [1, 2, 3]:
-            for h in [1, 2, 3]:
+        for i in [0, 1, 2]:
+            for h in [0, 1, 2]:
                 # Ignore centered
-                if i == 2 and h == 2:
-                    ctx.translate(0, y)
+                if i == 1 and h == 1:
                     continue
-                self.__draw_surface(album_ids, ctx)
-                ctx.translate(0, y)
-            ctx.translate(x, 0)
-            ctx.translate(0, -max_value)
+                self.__draw_surface(album_ids, ctx, x * i, y * h)
         return cover

@@ -143,7 +143,8 @@ class AlbumArt(TagReader):
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, size, scale, disable_cache=False):
+    def get_album_artwork_pixbuf(self, album, size,
+                                 scale, disable_cache=False):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
@@ -151,6 +152,7 @@ class AlbumArt(TagReader):
             @param scale factor as int
             @param disable_cache as bool
             @return cairo surface
+            @thread safe
         """
         size *= scale
         filename = self.get_album_cache_name(album)
@@ -212,18 +214,31 @@ class AlbumArt(TagReader):
                 # Use default artwork
                 if pixbuf is None:
                     self.cache_album_art(album.id)
-                    return self.get_default_icon("folder-music-symbolic",
-                                                 size,
-                                                 scale)
                 elif not disable_cache:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
                                      "cover-quality").get_int32())])
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-            return surface
+            return pixbuf
 
         except Exception as e:
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)
+            return None
+
+    def get_album_artwork(self, album, size, scale, disable_cache=False):
+        """
+            Return a cairo surface for album_id, covers are cached as jpg.
+            @param album as Album
+            @param pixbuf size as int
+            @param scale factor as int
+            @param disable_cache as bool
+            @return cairo surface
+            @warning: NOT THREAD SAFE
+        """
+        pixbuf = self.get_album_artwork_pixbuf(
+            album, size, scale, disable_cache)
+        if pixbuf is not None:
+            return Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
+        else:
             return self.get_default_icon("folder-music-symbolic", size, scale)
 
     def save_album_artwork(self, data, album_id):
