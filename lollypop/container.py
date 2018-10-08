@@ -882,6 +882,8 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
             view = self.__get_view_radios()
+        elif selected_ids[0] == Type.YEARS:
+            view = self.__get_view_albums_decades()
         elif selection_list.type & SelectionListType.ARTISTS:
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])
@@ -889,8 +891,6 @@ class Container(Gtk.Overlay):
                 view = self.__get_view_albums([], selected_ids)
             else:
                 view = self.__get_view_artists([], selected_ids)
-        elif selected_ids[0] == Type.YEARS:
-            view = self.__get_view_albums_decades()
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
