@@ -310,6 +310,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param first is internal
             @thread safe
         """
+        if App().settings.get_value("disable-scrobbling"):
+            return
         Logger.debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (
                                                             artist,
                                                             album,
@@ -343,6 +345,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param first is internal
             @thread safe
         """
+        if App().settings.get_value("disable-scrobbling"):
+            return
         try:
             self.update_now_playing(artist=artist,
                                     album=album,

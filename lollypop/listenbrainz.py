@@ -18,6 +18,7 @@ import time
 
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
+from lollypop.define import App
 
 HOST_NAME = "api.listenbrainz.org"
 PATH_SUBMIT = "/1/submit-listens"
@@ -46,6 +47,8 @@ class ListenBrainz(GObject.GObject):
             @param track as Track
             @param time as int
         """
+        if App().settings.get_value("disable-scrobbling"):
+            return
         payload = self.__get_payload(track)
         payload[0]["listened_at"] = time
         self.__submit("single", payload)
@@ -55,6 +58,8 @@ class ListenBrainz(GObject.GObject):
             Submit a playing now notification for a track
             @param track as Track
         """
+        if App().settings.get_value("disable-scrobbling"):
+            return
         payload = self.__get_payload(track)
         self.__submit("playing_now", payload)
 

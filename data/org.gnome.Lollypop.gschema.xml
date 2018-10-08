@@ -183,6 +183,11 @@
             <summary>Disable use of client side window decorations (headerbar)</summary>
             <description></description>
         </key>
+         <key type="b" name="disable-scrobbling">
+            <default>false</default>
+            <summary>Disable scrobbling usage</summary>
+            <description></description>
+        </key>
         <key type="b" name="show-compilations">
             <default>false</default>
             <summary>Handle compilations</summary>

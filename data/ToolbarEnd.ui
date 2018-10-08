@@ -48,7 +48,14 @@
               <attribute name="action">app.playback</attribute>
               <attribute name="target">stop</attribute>
             </item>
-    </section>
+ 	</section>
+        <section>
+            <attribute name="label" translatable="yes">Scrobbling</attribute>
+            <item>
+              <attribute name="label" translatable="yes">Enable scrobbling</attribute>
+              <attribute name="action">app.scrobbling</attribute>
+            </item>
+        </section>
     </menu>
   <object class="GtkBox" id="end">
     <property name="visible">True</property>

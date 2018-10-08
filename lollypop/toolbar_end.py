@@ -74,6 +74,17 @@ class ToolbarEnd(Gtk.Bin):
         party_action.connect("change-state", self.__on_party_mode_change_state)
         App().add_action(party_action)
         App().set_accels_for_action("app.party", ["<Control>p"])
+
+        scrobbling_disabled = App().settings.get_value("disable-scrobbling")
+        scrobbling_action = Gio.SimpleAction.new_stateful(
+            "scrobbling",
+            None,
+            GLib.Variant.new_boolean(not scrobbling_disabled))
+        scrobbling_action.connect("change-state",
+                                  self.__on_scrobbling_mode_change_state)
+        App().add_action(scrobbling_action)
+        App().set_accels_for_action("app.scrobbling", ["<Control><Shift>s"])
+
         self.__next_popover = NextPopover()
         self.__next_popover.set_relative_to(self.__shuffle_button)
 
@@ -349,6 +360,16 @@ class ToolbarEnd(Gtk.Bin):
         self.__shuffle_action.set_enabled(not value)
         self.__playback_action.set_enabled(not value)
         self.on_next_changed(App().player)
+
+    def __on_scrobbling_mode_change_state(self, action, value):
+        """
+            Change scrobbling option
+            @param action as Gio.SimpleAction
+            @param value as bool
+        """
+        action.set_state(value)
+        App().settings.set_value("disable-scrobbling",
+                                 GLib.Variant("b", not value))
 
     def __on_shuffle_change_state(self, action, value):
         """
