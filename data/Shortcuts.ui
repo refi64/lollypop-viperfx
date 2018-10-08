@@ -164,6 +164,13 @@
                 <property name="accelerator">Right</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Enable/disable scrobbling</property>
+                <property name="accelerator">&lt;Primary&gt;&lt;Shift&gt;S</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
