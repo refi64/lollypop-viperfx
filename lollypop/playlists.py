@@ -78,6 +78,8 @@ class Playlists(GObject.GObject):
             @return playlist_id as int
             @thread safe
         """
+        if name == self.LOVED:
+            return Type.LOVED
         with SqlCursor(self) as sql:
             result = sql.execute("INSERT INTO playlists (name, mtime)"
                                  " VALUES (?, ?)",
@@ -544,15 +546,15 @@ class Playlists(GObject.GObject):
         basename = ".".join(f.get_basename().split(".")[:-1])
         parser = TotemPlParser.Parser.new()
         playlist_id = self.get_id(basename)
-        # FIXME Why Type.NONE? Need to check old code
-        if playlist_id == Type.NONE:
+        if playlist_id in [Type.NONE, Type.LOVED]:
             playlist_id = self.add(basename)
-            tracks = []
-            parser.connect("entry-parsed", self.__on_entry_parsed,
-                           playlist_id, tracks)
-            parser.parse_async(f.get_uri(), True,
-                               None, self.__on_parse_finished,
-                               playlist_id, tracks)
+            uris = self.get_tracks(playlist_id)
+            if not uris:
+                parser.connect("entry-parsed", self.__on_entry_parsed,
+                               playlist_id, uris)
+                parser.parse_async(f.get_uri(), True,
+                                   None, self.__on_parse_finished,
+                                   playlist_id, uris)
 
     def get_cursor(self):
         """
