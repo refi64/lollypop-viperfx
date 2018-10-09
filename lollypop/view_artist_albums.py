@@ -37,7 +37,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         """
         LazyLoadingView.__init__(self, True)
         ViewController.__init__(self)
-        self.__current_loading_widget = None
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self.__art_size = art_size
@@ -88,33 +87,12 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             self.set_sensitive(False)
             self._album_box.add(label)
 
-    def lazy_loading(self, widgets=[], scroll_value=0):
-        """
-            Load the view in a lazy way
-            @param widgets as [AlbumSimpleWidgets]
-            @param scroll_value as float
-        """
-        self.__current_loading_widget = None
-        if self._lazy_queue is None or self._scroll_value != scroll_value:
-            return
-        if widgets:
-            self.__current_loading_widget = widgets.pop(0)
-            self._lazy_queue.remove(self.__current_loading_widget)
-        elif self._lazy_queue:
-            self.__current_loading_widget = self._lazy_queue.pop(0)
-        if self.__current_loading_widget is not None:
-            self.__current_loading_widget.connect("populated",
-                                                  self._on_populated,
-                                                  widgets,
-                                                  scroll_value)
-            self.__current_loading_widget.populate()
-
     def stop(self):
         """
             Stop current loading widget
         """
-        if self.__current_loading_widget is not None:
-            self.__current_loading_widget.stop()
+        for child in self.children:
+            child.stop()
 
     def jump_to_current(self):
         """
@@ -171,20 +149,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         for child in self.children:
             for box in child.boxes:
                 box.invalidate_filter()
-
-    def _on_populated(self, widget, widgets, scroll_value):
-        """
-            Add another album/disc
-            @param widget as AlbumDetailedWidget
-            @param widgets as pending AlbumDetailedWidgets
-            @param scroll value as float
-        """
-        if self._lazy_queue is None:
-            return
-        if not widget.is_populated():
-            widget.populate()
-        else:
-            GLib.idle_add(self.lazy_loading, widgets, scroll_value)
 
 #######################
 # PRIVATE             #

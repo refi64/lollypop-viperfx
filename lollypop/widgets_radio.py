@@ -25,6 +25,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         Widget with radio cover and title
     """
     __gsignals__ = {
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
@@ -76,7 +77,6 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         self.add(self._widget)
         self.set_artwork()
         self.set_selection()
-        self.show_all()
         self._lock_overlay = False
 
     def set_sensitive(self, b):

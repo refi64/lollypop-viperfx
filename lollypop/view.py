@@ -212,8 +212,8 @@ class LazyLoadingView(View):
         """
         View.__init__(self, filtered)
         self._lazy_queue = []  # Widgets not initialized
+        self.__priority_queue = []
         self._scroll_value = 0
-        self.__prev_scroll_value = 0
         self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
 
@@ -224,13 +224,23 @@ class LazyLoadingView(View):
         self._lazy_queue = None
         View.stop(self)
 
-    def lazy_loading(self, widgets=[], scroll_value=0):
+    def lazy_loading(self, scroll_value=0, loop=0):
         """
             Load the view in a lazy way
-            @param widgets as [Gtk.Widget]
             @param scroll_value as float
+            @parma loop as internal
         """
-        GLib.idle_add(self.__lazy_loading, widgets, scroll_value)
+        widget = None
+        if self._lazy_queue is None or self._scroll_value != scroll_value:
+            return
+        if self.__priority_queue:
+            widget = self.__priority_queue.pop(0)
+            self._lazy_queue.remove(widget)
+        elif self._lazy_queue:
+            widget = self._lazy_queue.pop(0)
+        if widget is not None:
+            widget.connect("populated", self._on_populated, scroll_value)
+            widget.populate()
 
 #######################
 # PROTECTED           #
@@ -242,35 +252,25 @@ class LazyLoadingView(View):
         """
         if not self._lazy_queue:
             return False
-        scroll_value = adj.get_value()
-        self.__prev_scroll_value = scroll_value
-        GLib.idle_add(self.__lazy_or_not, scroll_value)
+        self._scroll_value = adj.get_value()
+        GLib.idle_add(self.__lazy_or_not, self._scroll_value)
+
+    def _on_populated(self, widget, scroll_value):
+        """
+            Add another album/disc
+            @param widget as AlbumDetailedWidget
+            @param scroll value as float
+        """
+        if self._lazy_queue is None:
+            return
+        if not widget.is_populated:
+            widget.populate()
+        else:
+            GLib.idle_add(self.lazy_loading, scroll_value)
 
 #######################
 # PRIVATE             #
 #######################
-    def __lazy_loading(self, widgets=[], scroll_value=0):
-        """
-            Load the view in a lazy way
-            @param widgets as [Gtk.Widget]
-            @param scroll_value as float
-        """
-        widget = None
-        if self._lazy_queue is None or self._scroll_value != scroll_value:
-            return False
-        if widgets:
-            widget = widgets.pop(0)
-            if widget in self._lazy_queue:
-                self._lazy_queue.remove(widget)
-        elif self._lazy_queue:
-            widget = self._lazy_queue.pop(0)
-        if widget is not None:
-            widget.populate()
-            if widgets:
-                GLib.timeout_add(10, self.lazy_loading, widgets, scroll_value)
-            else:
-                GLib.idle_add(self.lazy_loading, widgets, scroll_value)
-
     def __is_visible(self, widget):
         """
             Is widget visible in scrolled
@@ -290,16 +290,13 @@ class LazyLoadingView(View):
             Add visible widgets to lazy queue
             @param scroll value as float
         """
-        self._scroll_value = scroll_value
-        widgets = []
+        self.__priority_queue = []
         if self._lazy_queue is None:
             return
         for child in self._lazy_queue:
             if self.__is_visible(child):
-                widgets.append(child)
-        if self._scroll_value != scroll_value:
-            return
-        GLib.idle_add(self.lazy_loading, widgets, self._scroll_value)
+                self.__priority_queue.append(child)
+        GLib.idle_add(self.lazy_loading, self._scroll_value)
 
 
 class MessageView(View):

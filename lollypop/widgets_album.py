@@ -64,6 +64,13 @@ class AlbumBaseWidget:
         self._show_overlay_func(set)
 
     @property
+    def is_populated(self):
+        """
+            True if album populated
+        """
+        return True
+
+    @property
     def filter(self):
         return ""
 
@@ -320,15 +327,12 @@ class AlbumWidget(AlbumBaseWidget):
         if self._artwork is None or\
                 (album_id is not None and album_id != self._album.id):
             return
-        surface = App().art.get_album_artwork(
-            self._album,
-            self._art_size,
-            self._artwork.get_scale_factor())
-        self._artwork.set_from_surface(surface)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
-        else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
+        App().task_helper.run(
+                          App().art.get_album_artwork_pixbuf,
+                          self._album,
+                          self._art_size,
+                          self._artwork.get_scale_factor(),
+                          callback=(self.__on_get_album_artwork_pixbuf,))
 
     def set_selection(self):
         """
@@ -366,6 +370,27 @@ class AlbumWidget(AlbumBaseWidget):
 #######################
 # PRIVATE             #
 #######################
+    def __on_get_album_artwork_pixbuf(self, pixbuf):
+        """
+            Set pixbuf as surface
+            @param pixbuf as Gdk.Pixbuf
+        """
+        if pixbuf is not None:
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                    pixbuf, self._artwork.get_scale_factor(), None)
+        else:
+            surface = App().art.get_album_artwork(
+                   self._album,
+                   self._art_size,
+                   self._artwork.get_scale_factor())
+        self._artwork.set_from_surface(surface)
+        if surface.get_height() > surface.get_width():
+            self._overlay_orientation = Gtk.Orientation.VERTICAL
+        else:
+            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
+        self.emit("populated")
+        self.show_all()
+
     def __on_destroy(self, widget):
         """
             Disconnect signal

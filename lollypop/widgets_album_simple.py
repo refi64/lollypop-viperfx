@@ -25,6 +25,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         Album widget showing cover, artist and title
     """
     __gsignals__ = {
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
@@ -98,7 +99,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.set_selection()
         self._widget.set_property("halign", Gtk.Align.CENTER)
         self._widget.set_property("valign", Gtk.Align.CENTER)
-        self.show_all()
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._widget.connect("button-press-event", self.__on_button_press)

@@ -28,6 +28,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
 
     _ALBUMS_COUNT = 9
     __gsignals__ = {
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
@@ -38,6 +39,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
+        self.__covers_count = 0
         self._data = item_ids
         self.__scale_factor = self.get_scale_factor()
         self.__cover_size = App().settings.get_value("cover-size").get_int32()
@@ -82,6 +84,13 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
+    @property
+    def is_populated(self):
+        """
+            True if album populated
+        """
+        return True
+
 #######################
 # PROTECTED           #
 #######################
@@ -118,7 +127,6 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             ctx.set_source_surface(surface, 0, 0)
             ctx.paint()
             ctx.translate(-x, -y)
-            self.__timeout_id = None
         if album_ids:
             album_id = album_ids.pop(0)
             pixbuf = App().art.get_album_artwork_pixbuf(
@@ -128,7 +136,12 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             if pixbuf is None:
                 GLib.idle_add(self.__draw_surface, album_ids, ctx, x, y)
             else:
+                self.__covers_count += 1
+                if self.__covers_count == 9:
+                    GLib.idle_add(self.emit, "populated")
                 GLib.idle_add(draw_pixbuf, ctx, pixbuf)
+        else:
+            GLib.idle_add(self.emit, "populated")
 
     def __get_surface(self):
         """

@@ -98,13 +98,6 @@ class TracksView:
                                      disc_number,
                                      mid_tracks + 1)
 
-    def is_populated(self):
-        """
-            Return True if populated
-            @return bool
-        """
-        return len(self.__discs) == 0
-
     def populate_list_left(self, tracks, disc_number, pos):
         """
             Populate left list, thread safe
@@ -279,6 +272,14 @@ class TracksView:
         for widget in self._tracks_widget_right.values():
             boxes.append(widget)
         return boxes
+
+    @property
+    def is_populated(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return len(self.__discs) == 0
 
 #######################
 # PROTECTED           #
