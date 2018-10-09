@@ -158,8 +158,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-leave", self.__on_drag_leave)
         self.connect("button-release-event", self.__on_button_release_event)
-        if len(self._album.tracks) != self._album.tracks_count:
-            self.__on_button_release_event(self, None)
 
     def reveal(self, reveal=None,
                transition_type=Gtk.RevealerTransitionType.SLIDE_DOWN):
