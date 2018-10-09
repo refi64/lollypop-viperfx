@@ -212,7 +212,7 @@ class Album(Base):
                 "artist_ids": [],
                 "year": None,
                 "uri": "",
-                "tracks_count": 0,
+                "tracks_count": 1,
                 "duration": 0,
                 "mtime": 0,
                 "synced": False,

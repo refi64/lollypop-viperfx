@@ -100,6 +100,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
             self._action1_button = builder.get_object("action-button")
             self._action1_event = builder.get_object("action-event")
             builder.get_object("overlay").add(self._artwork)
+            self.set_artwork()
             self.__coverbox = builder.get_object("coverbox")
             # 6 for 2*3px (application.css)
             self.__coverbox.set_property("width-request", art_size + 6)
@@ -130,7 +131,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
 
         album_info.add(self._responsive_widget)
 
-        self.set_artwork()
         self.set_selection()
 
         self.__title_label.set_label(self._album.name)
