@@ -224,11 +224,10 @@ class LazyLoadingView(View):
         self._lazy_queue = None
         View.stop(self)
 
-    def lazy_loading(self, scroll_value=0, loop=0):
+    def lazy_loading(self, scroll_value=0):
         """
             Load the view in a lazy way
             @param scroll_value as float
-            @parma loop as internal
         """
         widget = None
         if self._lazy_queue is None or self._scroll_value != scroll_value:
