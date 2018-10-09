@@ -77,6 +77,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         self.add(self._widget)
         self.set_artwork()
         self.set_selection()
+        self.show_all()
         self._lock_overlay = False
 
     def set_sensitive(self, b):
@@ -115,6 +116,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             ArtSize.BIG,
             self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
+        self.emit("populated")
 
     def set_selection(self):
         """
