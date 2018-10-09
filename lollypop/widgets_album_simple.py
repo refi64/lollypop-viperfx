@@ -254,16 +254,12 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
             track = choice(self._album.tracks)
         else:
             track = self._album.tracks[0]
-        if App().window.container.view.filtered:
-            App().player.clear_albums()
-            # Here we need to get ids from parent as view may be filtered
-            for child in self.get_parent().get_children():
-                if not child.filtered:
-                    App().player.add_album(child.album)
-        else:
-            App().player.play_albums(track,
-                                     self._album.genre_ids,
-                                     self._album.artist_ids)
+        App().player.clear_albums()
+        # Here we need to get ids from parent as view may be filtered
+        for child in self.get_parent().get_children():
+            if not child.filtered:
+                App().player.add_album(child.album)
+        App().player.load(track)
         return True
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
