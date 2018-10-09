@@ -151,6 +151,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         self.drag_dest_set(Gtk.DestDefaults.DROP,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
+        self.set_selection()
         self.connect("drag-begin", self.__on_drag_begin)
         self.connect("drag-data-get", self.__on_drag_data_get)
         self.connect("drag-data-received", self.__on_drag_data_received)
@@ -205,16 +206,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         """
             Update widget state
         """
-        child = self.get_child()
-        if child is None:
-            return
         selected = self._album.id == App().player.current_track.album.id
-        style_context = child.get_style_context()
         revealed = self.__revealer.get_reveal_child()
         if selected and not revealed:
-            style_context.add_class("album-row-selected")
+            self.set_state(Gtk.StateType.SELECTED)
         elif not selected or revealed:
-            style_context.remove_class("album-row-selected")
+            self.set_state(Gtk.StateType.NORMAL)
 
     def stop(self):
         """
