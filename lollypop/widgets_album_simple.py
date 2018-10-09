@@ -16,11 +16,12 @@ from gettext import gettext as _
 from random import choice
 
 from lollypop.widgets_album import AlbumWidget
+from lollypop.art import AlbumArtHelper
 from lollypop.pop_menu import AlbumMenu
 from lollypop.define import App, ArtSize, Shuffle
 
 
-class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
+class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
     """
         Album widget showing cover, artist and title
     """
@@ -29,31 +30,30 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album, genre_ids, artist_ids):
+    def __init__(self, album, label_height, genre_ids, artist_ids):
         """
             Init simple album widget
             @param album as Album
+            @param label_height as int
             @param genre ids as [int]
             @param artist_ids as [int]
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
-        self.set_size_request(ArtSize.BIG, ArtSize.BIG)
+        self.set_size_request(ArtSize.BIG, ArtSize.BIG + label_height)
         self.get_style_context().add_class("loading")
-        AlbumWidget.__init__(self, album, genre_ids,
-                             artist_ids, ArtSize.BIG)
+        AlbumArtHelper.__init__(self)
+        AlbumWidget.__init__(self, album, genre_ids, artist_ids)
 
     def populate(self):
         """
             Populate widget content
         """
+        AlbumArtHelper.populate(self, ArtSize.BIG, "cover-frame")
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._artwork = Gtk.Image()
-        self._artwork.set_property("halign", Gtk.Align.CENTER)
-        self._artwork.get_style_context().add_class("cover-frame")
         self.__title_label = Gtk.Label()
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label.set_property("halign", Gtk.Align.CENTER)
@@ -95,7 +95,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         grid.add(self.__title_label)
         grid.add(artist_eventbox)
         self.add(self._widget)
-        self.set_artwork()
+        AlbumArtHelper.set_artwork(self)
         self.set_selection()
         self._widget.set_property("halign", Gtk.Align.CENTER)
         self._widget.set_property("valign", Gtk.Align.CENTER)
@@ -103,6 +103,16 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._widget.connect("button-press-event", self.__on_button_press)
         self._lock_overlay = False
+
+    def set_artwork(self, album_id):
+        """
+            Set cover for album id
+            @param album_id as int
+        """
+        if self._artwork is None or\
+                (album_id is not None and album_id != self._album.id):
+            return
+        AlbumArtHelper.set_artwork(self)
 
     def do_get_preferred_width(self):
         """

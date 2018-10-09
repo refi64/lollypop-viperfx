@@ -46,6 +46,7 @@ class FlowBoxView(LazyLoadingView):
             Populate items
             @param items
         """
+        self.__wanted_height = self._get_height()
         GLib.idle_add(self._add_items, items)
 
 #######################
@@ -61,7 +62,8 @@ class FlowBoxView(LazyLoadingView):
         if self._lazy_queue is None:
             return
         if items:
-            widget = self._widget_class(items.pop(0), *args)
+            widget = self._widget_class(
+                items.pop(0), self.__wanted_height, *args)
             self._box.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)

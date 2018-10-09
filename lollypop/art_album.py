@@ -34,11 +34,25 @@ class AlbumArt:
         """
             Init album art
         """
+        self.__cover_cache = {}
         self.__favorite = App().settings.get_value(
             "favorite-cover").get_string()
         if not self.__favorite:
             self.__favorite = App().settings.get_default_value(
                 "favorite-cover").get_string()
+
+    def preload_cover(self, album_ids):
+        """
+            Preload covers for album ids
+            @param album_ids a [int]
+        """
+        # for album_id in album_ids
+        App().task_helper.run(
+                          self.get_album_artwork_pixbuf,
+                          self._album,
+                          self._art_size,
+                          self._artwork.get_scale_factor(),
+                          callback=(self.__on_get_album_artwork_pixbuf,))
 
     def get_album_cache_path(self, album, size):
         """

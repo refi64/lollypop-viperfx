@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize
+from lollypop.define import App
 from lollypop.define import Shuffle
 from lollypop.pop_artwork import CoversPopover
 
@@ -301,44 +301,21 @@ class AlbumWidget(AlbumBaseWidget):
         Album widget
     """
 
-    def __init__(self, album, genre_ids, artist_ids, art_size):
+    def __init__(self, album, genre_ids, artist_ids):
         """
             Init Album widget
         """
         AlbumBaseWidget.__init__(self)
         self._album = album
-        self._art_size = art_size
         self.connect("destroy", self.__on_destroy)
         self._scan_signal = App().scanner.connect("album-updated",
                                                   self._on_album_updated)
-
-    def get_artwork(self):
-        """
-            Get album artwork
-            @return Gtk.Image
-        """
-        return self._artwork
-
-    def set_artwork(self, album_id=None):
-        """
-            Set cover for album id
-            @param album_id as int
-        """
-        if self._artwork is None or\
-                (album_id is not None and album_id != self._album.id):
-            return
-        App().task_helper.run(
-                          App().art.get_album_artwork_pixbuf,
-                          self._album,
-                          self._art_size,
-                          self._artwork.get_scale_factor(),
-                          callback=(self.__on_get_album_artwork_pixbuf,))
 
     def set_selection(self):
         """
             Mark widget as selected if currently playing
         """
-        if self._artwork is None or self._art_size != ArtSize.BIG:
+        if self._artwork is None:
             return
         selected = self._album.id == App().player.current_track.album.id
         style_context = self._artwork.get_style_context()
@@ -370,27 +347,6 @@ class AlbumWidget(AlbumBaseWidget):
 #######################
 # PRIVATE             #
 #######################
-    def __on_get_album_artwork_pixbuf(self, pixbuf):
-        """
-            Set pixbuf as surface
-            @param pixbuf as Gdk.Pixbuf
-        """
-        if pixbuf is not None:
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                    pixbuf, self._artwork.get_scale_factor(), None)
-        else:
-            surface = App().art.get_album_artwork(
-                   self._album,
-                   self._art_size,
-                   self._artwork.get_scale_factor())
-        self._artwork.set_from_surface(surface)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
-        else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
-        self.emit("populated")
-        self.show_all()
-
     def __on_destroy(self, widget):
         """
             Disconnect signal

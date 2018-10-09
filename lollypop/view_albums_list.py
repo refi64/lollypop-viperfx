@@ -16,13 +16,14 @@ from gettext import gettext as _
 
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
+from lollypop.art import AlbumArtHelper
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
 from lollypop.controller_view import ViewController
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksView):
+class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
     """
         Album row
     """
@@ -36,6 +37,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
         "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
                           (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     # Update padding in application.css => albumrow
@@ -65,6 +67,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
             @param responsive_type as ResponsiveType
         """
         Gtk.ListBoxRow.__init__(self)
+        AlbumArtHelper.__init__(self)
         # Later => TracksView.__init__(self)
         self._responsive_widget = None
         self._album = album
@@ -85,6 +88,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         """
         if self.get_child() is not None:
             return
+        AlbumArtHelper.populate(self, ArtSize.MEDIUM, "small-cover-frame",
+                                halign=Gtk.Align.FILL)
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
@@ -105,14 +110,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label = Gtk.Label.new(self._album.name)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__cover = Gtk.Image()
-        self.__cover.get_style_context().add_class("small-cover-frame")
-        surface = App().art.get_album_artwork(
-            self._album,
-            ArtSize.MEDIUM,
-            self.get_scale_factor())
-        self.__cover.set_from_surface(surface)
-        self.__cover.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
+        AlbumArtHelper.set_artwork(self)
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)
@@ -140,7 +138,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView):
         grid.attach(self.__artist_label, 1, 0, 1, 1)
         if self.__action_button is not None:
             grid.attach(self.__action_button, 2, 0, 1, 2)
-        grid.attach(self.__cover, 0, 0, 1, 2)
+        grid.attach(self._artwork, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
