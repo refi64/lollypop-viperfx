@@ -218,23 +218,19 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         elif not selected or revealed:
             style_context.remove_class("album-row-selected")
 
-    def set_artwork(self, album_id):
-        """
-            Update cover for current album
-            @param album_id as int
-        """
-        if self.__cover is None or album_id != self._album.id:
-            return
-        surface = App().art.get_album_artwork(
-            self._album,
-            ArtSize.MEDIUM,
-            self.get_scale_factor())
-        self.__cover.set_from_surface(surface)
-
     def stop(self):
         """
             Stop view loading
         """
+        # FIXME
+
+    @property
+    def is_populated(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return True
 
     @property
     def album(self):
