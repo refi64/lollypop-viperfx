@@ -54,7 +54,7 @@ class AlbumArtHelper:
         Helper to load covers for albums
     """
 
-    def __init__(self, ):
+    def __init__(self):
         """
             Init helper
         """

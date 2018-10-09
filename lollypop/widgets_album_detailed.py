@@ -18,13 +18,14 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
+from lollypop.art import AlbumArtHelper
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, ResponsiveType
 
 
-class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
+class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
     """
         Widget with cover and tracks
     """
@@ -37,13 +38,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         """
             Init detailed album widget
             @param album as Album
+            @param label_height as int
             @param genre ids as [int]
             @param artist ids as [int]
             @param lazy as LazyLoadingView
             @param art size as ArtSize
         """
         Gtk.Bin.__init__(self)
-        AlbumWidget.__init__(self, album, genre_ids, artist_ids, art_size)
+        AlbumWidget.__init__(self, album, genre_ids, artist_ids)
+        AlbumArtHelper.__init__(self)
         TracksView.__init__(self, ResponsiveType.FIXED)
         self.__context = None
         # Cover + rating + spacing
@@ -65,8 +68,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         self.__duration_label = builder.get_object("duration")
         self.__context_button = builder.get_object("context")
 
+        # In Popovers, no artwork
         if art_size == ArtSize.NONE:
-            self._artwork = None
             rating = RatingWidget(self._album)
             rating.set_hexpand(True)
             rating.set_property("halign", Gtk.Align.END)
@@ -87,6 +90,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
         else:
+            AlbumArtHelper.populate(self, ArtSize.BIG,
+                                    "cover-frame", halign=Gtk.Align.FILL)
             self.__duration_label.set_hexpand(True)
             builder = Gtk.Builder()
             builder.add_from_resource("/org/gnome/Lollypop/CoverBox.ui")
@@ -94,49 +99,31 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             self._play_button = builder.get_object("play-button")
             self._action1_button = builder.get_object("action-button")
             self._action1_event = builder.get_object("action-event")
-            self._artwork = builder.get_object("cover")
+            builder.get_object("overlay").add(self._artwork)
             self.__coverbox = builder.get_object("coverbox")
             # 6 for 2*3px (application.css)
             self.__coverbox.set_property("width-request", art_size + 6)
-            if art_size == ArtSize.BIG:
-                self._artwork.get_style_context().add_class("cover-frame")
-                self._action2_button = builder.get_object("artwork-button")
-                if self._album.year is not None:
-                    self.__year_label.set_label(str(self._album.year))
-                    self.__year_label.show()
-                grid = Gtk.Grid()
-                grid.set_column_spacing(10)
-                grid.set_property("halign", Gtk.Align.CENTER)
-                grid.show()
-                rating = RatingWidget(self._album)
-                loved = LovedWidget(self._album)
-                rating.show()
-                loved.show()
-                grid.add(rating)
-                grid.add(loved)
-                self.__coverbox.add(grid)
-                self._widget.attach(self.__coverbox, 0, 0, 1, 1)
-                if App().window.container.get_view_width() < WindowSize.MEDIUM:
-                    self.__coverbox.hide()
-                if len(artist_ids) > 1:
-                    self.__artist_label.set_text(
-                        ", ".join(self._album.artists))
-                    self.__artist_label.show()
-            elif art_size == ArtSize.HEADER:
-                # Here we are working around default CoverBox ui
-                # Do we really need to have another ui file?
-                # So just hack values on the fly
-                self._artwork.get_style_context().add_class(
-                    "small-cover-frame")
-                overlay_grid = builder.get_object("overlay-grid")
-                overlay_grid.set_margin_bottom(2)
-                overlay_grid.set_margin_end(2)
-                overlay_grid.set_column_spacing(0)
-                play_event = builder.get_object("play-event")
-                play_event.set_margin_start(2)
-                play_event.set_margin_bottom(2)
-                album_info.attach(self.__coverbox, 0, 0, 1, 1)
-                self.__artist_label.set_text(", ".join(self._album.artists))
+            self._action2_button = builder.get_object("artwork-button")
+            if self._album.year is not None:
+                self.__year_label.set_label(str(self._album.year))
+                self.__year_label.show()
+            grid = Gtk.Grid()
+            grid.set_column_spacing(10)
+            grid.set_property("halign", Gtk.Align.CENTER)
+            grid.show()
+            rating = RatingWidget(self._album)
+            loved = LovedWidget(self._album)
+            rating.show()
+            loved.show()
+            grid.add(rating)
+            grid.add(loved)
+            self.__coverbox.add(grid)
+            self._widget.attach(self.__coverbox, 0, 0, 1, 1)
+            if App().window.container.get_view_width() < WindowSize.MEDIUM:
+                self.__coverbox.hide()
+            if len(artist_ids) > 1:
+                self.__artist_label.set_text(
+                    ", ".join(self._album.artists))
                 self.__artist_label.show()
 
         self.__set_duration()
@@ -258,7 +245,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             @param allocation as Gtk.Allocation
         """
         TracksView._on_size_allocate(self, widget, allocation)
-        if self._art_size == ArtSize.BIG:
+        if self._artwork is not None:
             if allocation.width < WindowSize.MEDIUM:
                 self.__coverbox.hide()
             else:
