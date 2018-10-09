@@ -59,17 +59,19 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         else:
             return cover_height + 2
 
-    def __init__(self, album, height, responsive_type):
+    def __init__(self, album, height, responsive_type, reveal):
         """
             Init row widgets
             @param album as Album
             @param height as int
             @param responsive_type as ResponsiveType
+            @param reveal as bool
         """
         Gtk.ListBoxRow.__init__(self)
         AlbumArtHelper.__init__(self)
         # Later => TracksView.__init__(self)
         self.__revealer = None
+        self.__reveal = reveal
         self._responsive_widget = None
         self._album = album
         self.__responsive_type = responsive_type
@@ -158,6 +160,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-leave", self.__on_drag_leave)
         self.connect("button-release-event", self.__on_button_release_event)
+        if self.__reveal:
+            self.reveal()
 
     def reveal(self, reveal=None,
                transition_type=Gtk.RevealerTransitionType.SLIDE_DOWN):
@@ -369,6 +373,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         ViewController.__init__(self)
         self.__responsive_type = responsive_type
         self.__autoscroll_timeout_id = None
+        self.__reveals = []
         self.__prev_animated_rows = []
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
@@ -389,6 +394,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self.connect("drag-motion", self.__on_drag_motion)
         self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("album")
+
+    def set_reveal(self, album_ids):
+        """
+            Set albums to reveal on populate
+            @param album_ids as [int]s
+        """
+        self.__reveals = album_ids
 
     def populate(self, albums):
         """
@@ -508,7 +520,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             return
         if albums:
             album = albums.pop(0)
-            row = self.__row_for_album(album)
+            row = self.__row_for_album(album, album.id in self.__reveals)
             row.show()
             self.__view.add(row)
             self._lazy_queue.append(row)
@@ -526,12 +538,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
             if self._viewport.get_child() is None:
                 self._viewport.add(self.__view)
 
-    def __row_for_album(self, album):
+    def __row_for_album(self, album, reveal=False):
         """
             Get a row for track id
             @param album as Album
+            @param reveal as bool
         """
-        row = AlbumRow(album, self.__height, self.__responsive_type)
+        row = AlbumRow(album, self.__height, self.__responsive_type, reveal)
         row.connect("destroy", self.__on_child_destroyed)
         row.connect("track-moved", self.__on_track_moved)
         row.connect("album-moved", self.__on_album_moved)

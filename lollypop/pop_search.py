@@ -152,12 +152,19 @@ class SearchPopover(Gtk.Popover):
                 playlist_id = App().playlists.get_id(self.__current_search)
             App().playlists.add_tracks(playlist_id, tracks)
 
-    def __on_search_get(self, albums):
+    def __on_search_get(self, result):
         """
             Add rows for internal results
-            @param albums as [Album]
+            @param result as [(int, Album, bool)]
         """
-        if albums:
+        if result:
+            albums = []
+            reveal_albums = []
+            for (score, album, in_tracks) in result:
+                albums.append(album)
+                if in_tracks:
+                    reveal_albums.append(album.id)
+            self.__view.set_reveal(reveal_albums)
             self.__view.populate(albums)
             self.__stack.set_visible_child_name("view")
         else:

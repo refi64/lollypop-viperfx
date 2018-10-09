@@ -140,7 +140,7 @@ class Search:
             Get track for name
             @param search_items as [str]
             @param cancellable as Gio.Cancellable
-            @return items as [SearchItem]
+            @return items as [(int, Album, bool)]
         """
         album_ids = self.__search_albums(search_items, cancellable)
         track_ids = self.__search_tracks(search_items, cancellable)
@@ -175,11 +175,11 @@ class Search:
             score = self.__calculate_score(album.name, search_items)
             for artist in album.artists:
                 score += self.__calculate_score(artist, search_items)
-            albums.append((score, album))
+            albums.append((score, album, False))
         # Merge albums from track results
         for key in album_tracks.keys():
             (album, tracks, score) = album_tracks[key]
             album.set_tracks(tracks)
-            albums.append((score, album))
+            albums.append((score, album, True))
         albums.sort(key=lambda tup: tup[0], reverse=True)
-        return [album for (score, album) in albums]
+        return albums
