@@ -229,6 +229,18 @@ class PlaylistsWidget(Gtk.Grid):
         return Type.PLAYLISTS
 
     @property
+    def children(self):
+        """
+            Return all rows
+            @return [Gtk.ListBoxRow]
+        """
+        rows = []
+        for listbox in [self.__tracks_widget_left, self.__tracks_widget_right]:
+            for row in listbox.get_children():
+                rows.append(row)
+        return rows
+
+    @property
     def boxes(self):
         """
             @return [Gtk.ListBox]

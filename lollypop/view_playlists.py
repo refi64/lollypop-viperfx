@@ -219,9 +219,8 @@ class PlaylistsView(View, ViewController):
             @param button as Gtk.Button
         """
         tracks = []
-        for playlist_id in self.__playlist_ids:
-            for track_id in App().playlists.get_track_ids(playlist_id):
-                tracks.append(Track(track_id))
+        for child in self.__playlists_widget.children:
+            tracks.append(child.track)
         if tracks:
             App().player.load(tracks[0])
             App().player.populate_playlist_by_tracks(tracks,
@@ -233,9 +232,8 @@ class PlaylistsView(View, ViewController):
             @param button as Gtk.Button
         """
         tracks = []
-        for playlist_id in self.__playlist_ids:
-            for track_id in App().playlists.get_track_ids(playlist_id):
-                tracks.append(Track(track_id))
+        for child in self.__playlists_widget.children:
+            tracks.append(child.track)
         if tracks:
             shuffle(tracks)
             App().player.load(tracks[0])
