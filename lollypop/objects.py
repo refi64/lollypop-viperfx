@@ -299,6 +299,15 @@ class Album(Base):
             App().albums.set_loved(self.id, loved)
             self.loved = loved
 
+    def set_uri(self, uri):
+        """
+            Set album uri
+            @param uri as str
+        """
+        if self.id >= 0:
+            App().albums.set_uri(self.id, uri)
+            self.uri = uri
+
     @property
     def title(self):
         """

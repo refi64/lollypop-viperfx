@@ -79,6 +79,7 @@ class AlbumArt:
         """
         if album.id is None:
             return None
+        self.__update_album_uri(album)
         try:
             filename = self.get_album_cache_name(album) + ".jpg"
             uris = [
@@ -379,6 +380,21 @@ class AlbumArt:
 #######################
 # PRIVATE             #
 #######################
+    def __update_album_uri(self, album):
+        """
+            Check if album uri exists, update if not
+            @param album as Album
+        """
+        d = Gio.File.new_for_uri(album.uri)
+        if not d.query_exists():
+            if album.tracks:
+                track_uri = album.tracks[0].uri
+                f = Gio.File.new_for_uri(track_uri)
+                p = f.get_parent()
+                parent_uri = "/" if p is None else p.get_uri()
+                album.set_uri(parent_uri)
+                print(album.uri, parent_uri)
+
     def __save_artwork_to_tags(self, data, album):
         """
             Save artwork to tags

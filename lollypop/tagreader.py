@@ -536,10 +536,7 @@ class TagReader(Discoverer):
         """
         f = Gio.File.new_for_uri(uri)
         d = f.get_parent()
-        if d is not None:
-            parent_uri = d.get_uri()
-        else:
-            parent_uri = ""
+        parent_uri = "/" if d is None else d.get_uri()
         new = False
         album_id = App().albums.get_id(album_name, mb_album_id, artist_ids)
         if album_id is None:
