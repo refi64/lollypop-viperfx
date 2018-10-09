@@ -69,6 +69,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         Gtk.ListBoxRow.__init__(self)
         AlbumArtHelper.__init__(self)
         # Later => TracksView.__init__(self)
+        self.__revealer = None
         self._responsive_widget = None
         self._album = album
         self.__responsive_type = responsive_type
@@ -207,7 +208,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
             Update widget state
         """
         selected = self._album.id == App().player.current_track.album.id
-        revealed = self.__revealer.get_reveal_child()
+        revealed = self.__revealer is not None and\
+            self.__revealer.get_reveal_child()
         if selected and not revealed:
             self.set_state(Gtk.StateType.SELECTED)
         elif not selected or revealed:
