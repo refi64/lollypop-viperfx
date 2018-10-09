@@ -255,7 +255,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         else:
             track = self._album.tracks[0]
         App().player.clear_albums()
-        # Here we need to get ids from parent as view may be filtered
         for child in self.get_parent().get_children():
             if not child.filtered:
                 App().player.add_album(child.album)
