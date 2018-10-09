@@ -30,17 +30,22 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album, label_height, genre_ids, artist_ids):
+    ctx = App().window.get_pango_context()
+    layout = Pango.Layout.new(ctx)
+    layout.set_text("a", 1)
+    # * 2 => two labels
+    LABEL_HEIGHT = int(layout.get_pixel_size()[1])
+
+    def __init__(self, album, genre_ids, artist_ids):
         """
             Init simple album widget
             @param album as Album
-            @param label_height as int
             @param genre ids as [int]
             @param artist_ids as [int]
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
-        self.set_size_request(ArtSize.BIG, ArtSize.BIG + label_height)
+        self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
         AlbumArtHelper.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)

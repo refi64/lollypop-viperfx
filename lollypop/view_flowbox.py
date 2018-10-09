@@ -46,12 +46,18 @@ class FlowBoxView(LazyLoadingView):
             Populate items
             @param items
         """
-        self.__wanted_height = self._get_height()
         GLib.idle_add(self._add_items, items)
 
 #######################
 # PROTECTED           #
 #######################
+    def _get_label_height(self):
+        """
+            Get wanted label height
+            @return int
+        """
+        return 0
+
     def _add_items(self, items, *args):
         """
             Add decade to the view
@@ -63,7 +69,7 @@ class FlowBoxView(LazyLoadingView):
             return
         if items:
             widget = self._widget_class(
-                items.pop(0), self.__wanted_height, *args)
+                items.pop(0), *args)
             self._box.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)

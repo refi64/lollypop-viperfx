@@ -29,7 +29,13 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, radio_id, label_height, radios):
+    ctx = App().window.get_pango_context()
+    layout = Pango.Layout.new(ctx)
+    layout.set_text("a", 1)
+    # * 2 => two labels
+    LABEL_HEIGHT = int(layout.get_pixel_size()[1])
+
+    def __init__(self, radio_id, radios):
         """
             Init radio widget
             @param radio_id as int
@@ -38,7 +44,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         """
         Gtk.FlowBoxChild.__init__(self)
         AlbumBaseWidget.__init__(self)
-        self.set_size_request(ArtSize.BIG, ArtSize.BIG + label_height)
+        self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
         self.__radio_id = radio_id
         self.__name = radios.get_name(radio_id)

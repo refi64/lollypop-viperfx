@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
@@ -41,17 +41,6 @@ class AlbumsBoxView(FlowBoxView, ViewController):
 #######################
 # PROTECTED           #
 #######################
-    def _get_height(self):
-        """
-            Get widget height
-            @return int
-        """
-        ctx = self.get_pango_context()
-        layout = Pango.Layout.new(ctx)
-        layout.set_text("a", 1)
-        # * 2 => two labels
-        return int(layout.get_pixel_size()[1]) * 2
-
     def _add_items(self, album_ids):
         """
             Add albums to the view
