@@ -270,7 +270,8 @@ class LazyLoadingView(View):
         if not widget.is_populated:
             widget.populate()
         else:
-            GLib.idle_add(self.lazy_loading, scroll_value)
+            GLib.idle_add(
+                self.lazy_loading, scroll_value, priority=GLib.PRIORITY_HIGH)
 
 #######################
 # PRIVATE             #
