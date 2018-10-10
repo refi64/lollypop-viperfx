@@ -171,6 +171,11 @@ popover.background separator {
     border-radius: 2px;
 }
 
+.cover-frame:selected {
+    padding: 0px;
+    border: 3px solid @theme_selected_bg_color;
+}
+
 .toolbar-cover-frame {
     border: none;
 }
@@ -178,12 +183,6 @@ popover.background separator {
 .small-cover-frame {
     border-radius: 1px;
     border: 1px solid shade(@theme_bg_color, 0.7);
-}
-
-.cover-frame-selected {
-    border-color: @theme_selected_bg_color;
-    background-color: @theme_selected_bg_color;
-    color: @theme_selected_fg_color;
 }
 
 .artwork-icon {

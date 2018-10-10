@@ -129,11 +129,10 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             return
         selected = App().player.current_track.id == Type.RADIOS and\
             self.__name == App().player.current_track.album_artists[0]
-        style_context = self._artwork.get_style_context()
         if selected:
-            style_context.add_class("cover-frame-selected")
+            self._artwork.set_state(Gtk.StateType.SELECTED)
         else:
-            style_context.remove_class("cover-frame-selected")
+            self._artwork.set_state(Gtk.StateType.NORMAL)
 
     @property
     def id(self):

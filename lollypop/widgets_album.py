@@ -317,11 +317,10 @@ class AlbumWidget(AlbumBaseWidget):
         if self._artwork is None:
             return
         selected = self._album.id == App().player.current_track.album.id
-        style_context = self._artwork.get_style_context()
         if selected:
-            style_context.add_class("cover-frame-selected")
+            self._artwork.set_state(Gtk.StateType.SELECTED)
         else:
-            style_context.remove_class("cover-frame-selected")
+            self._artwork.set_state(Gtk.StateType.NORMAL)
 
     @property
     def album(self):
