@@ -81,6 +81,14 @@ class FlowBoxView(LazyLoadingView):
                 self._viewport.add(self._box)
         return None
 
+    def _on_current_changed(self, player):
+        """
+            Update children state
+            @param player as Player
+        """
+        for child in self._box.get_children():
+            child.set_selection()
+
     def _on_album_activated(self, flowbox, widget):
         """
             Show overlay

@@ -52,14 +52,6 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
-    def _on_current_changed(self, player):
-        """
-            Update children state
-            @param player as Player
-        """
-        for child in self._box.get_children():
-            child.set_selection()
-
     def _on_artwork_changed(self, artwork, album_id):
         """
             Update children artwork if matching album id

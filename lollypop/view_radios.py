@@ -41,7 +41,7 @@ class RadiosView(FlowBoxView, ViewController):
 
         self.__pop_tunein = TuneinPopover(self.__radios)
         self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
-
+        self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("radio")
 
 #######################
