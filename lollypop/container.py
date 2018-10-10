@@ -50,7 +50,7 @@ class Container(Gtk.Overlay):
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
-        self.__stack = ViewContainer(500)
+        self.__stack = ViewContainer(300)
         self.__stack.show()
 
         self.__setup_view()
