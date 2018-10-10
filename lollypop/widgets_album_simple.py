@@ -59,24 +59,20 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self.__title_label = Gtk.Label()
-        self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__title_label.set_property("halign", Gtk.Align.CENTER)
-        self.__title_label.set_markup("<b>" +
-                                      GLib.markup_escape_text(
-                                          self._album.name) +
-                                      "</b>")
-        self.__artist_label = Gtk.Label()
-        self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__artist_label.set_property("halign", Gtk.Align.CENTER)
-        self.__artist_label.set_text(", ".join(self._album.artists))
-        self.__artist_label.get_style_context().add_class("dim-label")
-        artist_eventbox = Gtk.EventBox()
-        artist_eventbox.add(self.__artist_label)
-        artist_eventbox.connect("realize", self._on_eventbox_realize)
-        artist_eventbox.connect("button-press-event",
-                                self.__on_artist_button_press)
-        artist_eventbox.show()
+        self.__label = Gtk.Label()
+        self.__label.set_justify(Gtk.Justification.CENTER)
+        self.__label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__label.set_property("halign", Gtk.Align.CENTER)
+        album_name = GLib.markup_escape_text(self._album.name)
+        artist_name = GLib.markup_escape_text(", ".join(self._album.artists))
+        self.__label.set_markup("<b>%s</b>\n<span alpha='40000'>%s</span>" %
+                                (album_name, artist_name))
+        eventbox = Gtk.EventBox()
+        eventbox.add(self.__label)
+        eventbox.connect("realize", self._on_eventbox_realize)
+        eventbox.connect("button-press-event",
+                         self.__on_artist_button_press)
+        eventbox.show()
         self._widget.set_property("has-tooltip", True)
         self._widget.connect("query-tooltip", self._on_query_tooltip)
         self._widget.add(grid)
@@ -93,8 +89,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         color.get_style_context().add_class("white")
         color.add(self.__overlay)
         grid.add(color)
-        grid.add(self.__title_label)
-        grid.add(artist_eventbox)
+        grid.add(eventbox)
         self.add(self._widget)
         AlbumArtHelper.set_artwork(self)
         self.set_selection()
@@ -260,20 +255,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        eventbox.set_tooltip_text("")
-        for widget in [self.__title_label, self.__artist_label]:
-            layout = widget.get_layout()
-            if layout.is_ellipsized():
-                artist_text = self.__artist_label.get_text()
-                if artist_text:
-                    text = "<b>%s</b> - %s" % (
-                        GLib.markup_escape_text(artist_text),
-                        GLib.markup_escape_text(self.__title_label.get_text()))
-                else:
-                    text = GLib.markup_escape_text(
-                        self.__title_label.get_text())
-                eventbox.set_tooltip_markup(text)
-                break
+        layout = self.__label.get_layout()
+        if layout.is_ellipsized():
+            markup = self.__label.get_label()
+            tooltip.set_markup(markup)
+            return True
 
     def __on_button_press(self, eventbox, event):
         """
