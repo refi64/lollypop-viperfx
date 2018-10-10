@@ -213,6 +213,7 @@ class LazyLoadingView(View):
         View.__init__(self, filtered)
         self._lazy_queue = []  # Widgets not initialized
         self.__priority_queue = []
+        self.__running = 0
         self._scroll_value = 0
         self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
@@ -240,6 +241,9 @@ class LazyLoadingView(View):
         if widget is not None:
             widget.connect("populated", self._on_populated, scroll_value)
             widget.populate()
+            self.__running += 1
+            if self.__running < 2:
+                self.lazy_loading(scroll_value)
 
 #######################
 # PROTECTED           #
@@ -260,6 +264,7 @@ class LazyLoadingView(View):
             @param widget as AlbumDetailedWidget
             @param scroll value as float
         """
+        self.__running -= 1
         if self._lazy_queue is None:
             return
         if not widget.is_populated:
