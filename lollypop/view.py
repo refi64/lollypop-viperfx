@@ -12,7 +12,10 @@
 
 from gi.repository import Gtk, GLib
 
+from time import time
+
 from lollypop.define import App
+from lollypop.logger import Logger
 
 
 class View(Gtk.Grid):
@@ -217,6 +220,7 @@ class LazyLoadingView(View):
         self._scroll_value = 0
         self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
+        self.__start_time = time()
 
     def stop(self):
         """
@@ -244,6 +248,9 @@ class LazyLoadingView(View):
             self.__running += 1
             if self.__running < 2:
                 self.lazy_loading(scroll_value)
+        else:
+            Logger.debug("LazyLoadingView::lazy_loading(): %s",
+                         time() - self.__start_time)
 
 #######################
 # PROTECTED           #
