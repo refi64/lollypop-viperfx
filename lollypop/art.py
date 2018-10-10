@@ -111,9 +111,5 @@ class AlbumArtHelper:
                    self._artwork.get_size_request()[0],
                    self._artwork.get_scale_factor())
         self._artwork.set_from_surface(surface)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
-        else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self.emit("populated")
         self.show_all()

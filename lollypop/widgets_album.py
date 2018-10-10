@@ -37,7 +37,6 @@ class AlbumBaseWidget:
         self._lock_overlay = True
         self._timeout_id = None
         self.__parent_filter = False
-        self._overlay_orientation = Gtk.Orientation.HORIZONTAL
 
     def set_filtered(self, b):
         """
