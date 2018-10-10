@@ -23,6 +23,71 @@ from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 
 
+class Wikipedia:
+    """
+        Helper for wikipedia search
+    """
+    def __init__(self, cancellable):
+        """
+            Init wikipedia
+            @param cancellable as Gio.Cancellable
+            @raise exception  is wikipedia module not installed
+        """
+        self.__cancellable = cancellable
+        import wikipedia
+        wikipedia
+
+    def get_content(self, string):
+        """
+            Get content for string
+            @param string as str
+            @return str/None
+        """
+        content = None
+        try:
+            name = self.__get_duckduck_name(string)
+            if name is None:
+                return None
+            from locale import getdefaultlocale
+            import wikipedia
+            language = getdefaultlocale()[0][0:2]
+            wikipedia.set_lang(language)
+            page = wikipedia.page(name)
+            if page is None:
+                wikipedia.set_lang("en")
+                page = wikipedia.page(name)
+            if page is not None:
+                content = page.content.encode(encoding="UTF-8")
+        except Exception as e:
+            Logger.error("Wikipedia::get_content(): %s", e)
+        return content
+
+#######################
+# PRIVATE             #
+#######################
+    def __get_duckduck_name(self, string):
+        """
+            Get wikipedia duck duck name for string
+            @param string as str
+            @return str
+        """
+        name = None
+        try:
+            uri = "https://api.duckduckgo.com/?q=%s&format=json&pretty=1"\
+                % string
+            f = Gio.File.new_for_uri(uri)
+            (status, data, tag) = f.load_contents(self.__cancellable)
+            if status:
+                import json
+                decode = json.loads(data.decode("utf-8"))
+                uri = decode["AbstractURL"]
+                if uri:
+                    name = uri.split("/")[-1]
+        except Exception as e:
+            Logger.error("Wikipedia::__get_duckduck_name(): %s", e)
+        return name
+
+
 class InformationPopover(Gtk.Popover):
     """
         Popover with artist information
@@ -35,9 +100,11 @@ class InformationPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.__scale_factor = 0
+        self.__cancellable = Gio.Cancellable()
         self.__minimal = minimal
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
     def populate(self, artist_id=None):
         """
@@ -117,35 +184,15 @@ class InformationPopover(Gtk.Popover):
         """
         content = None
         try:
-            if App().lastfm is not None:
+            wikipedia = Wikipedia(self.__cancellable)
+            content = wikipedia.get_content(artist_name)
+        except Exception as e:
+            Logger.info("InformationPopover::__get_bio_content(): %s" % e)
+        try:
+            if content is None and App().lastfm is not None:
                 content = App().lastfm.get_artist_bio(artist_name)
         except Exception as e:
             Logger.info("InformationPopover::__get_bio_content(): %s" % e)
-        if content is None:
-            try:
-                from locale import getdefaultlocale
-                import wikipedia
-                language = getdefaultlocale()[0][0:2]
-                wikipedia.set_lang(language)
-                try:
-                    page = wikipedia.page("%s %s" % (artist_name, _("music")))
-                except:
-                    page = None
-                if page is None:
-                    try:
-                        page = wikipedia.page(artist_name)
-                    except:
-                        pass
-                if page is None:
-                    try:
-                        wikipedia.set_lang("en")
-                        page = wikipedia.page("%s %s" % (artist_name, "music"))
-                    except:
-                        pass
-                if page is not None:
-                    content = page.content.encode(encoding="UTF-8")
-            except Exception as e:
-                Logger.info("InformationPopover::__get_bio_content(): %s" % e)
         return content
 
     def __set_bio_content(self, content, label, artist_name):
@@ -255,3 +302,10 @@ class InformationPopover(Gtk.Popover):
         else:
             self.set_size_request(min(size[0] * 0.6, 1000),
                                   min(size[1] * 0.7, 800))
+
+    def __on_unmap(self, widget):
+        """
+            Cancel operations
+            @param widget as Gtk.Widget
+        """
+        self.__cancellable.cancel()

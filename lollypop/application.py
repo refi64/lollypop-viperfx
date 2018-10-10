@@ -86,7 +86,13 @@ class Application(Gtk.Application):
         GLib.setenv("PULSE_PROP_media.role", "music", True)
         GLib.setenv("PULSE_PROP_application.icon_name",
                     "org.gnome.Lollypop", True)
-
+        # Fix proxy for python
+        proxy = GLib.environ_getenv(GLib.get_environ(), "all_proxy")
+        if proxy is not None and proxy.startswith("socks://"):
+            proxy = proxy.replace("socks://", "socks4://")
+            from os import environ
+            environ["all_proxy"] = proxy
+            environ["ALL_PROXY"] = proxy
         # Ideally, we will be able to delete this once Flatpak has a solution
         # for SSL certificate management inside of applications.
         if GLib.file_test("/app", GLib.FileTest.EXISTS):
