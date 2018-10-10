@@ -128,16 +128,22 @@ class InformationPopover(Gtk.Popover):
                 language = getdefaultlocale()[0][0:2]
                 wikipedia.set_lang(language)
                 try:
-                    page = wikipedia.page("%s %s" % (artist_name, "music"))
-                    if artist_name.lower() not in page.title.lower():
-                        raise
+                    page = wikipedia.page("%s %s" % (artist_name, _("music")))
                 except:
+                    page = None
+                if page is None:
+                    try:
+                        page = wikipedia.page(artist_name)
+                    except:
+                        pass
+                if page is None:
                     try:
                         wikipedia.set_lang("en")
                         page = wikipedia.page("%s %s" % (artist_name, "music"))
                     except:
                         pass
-                content = page.content.encode(encoding="UTF-8")
+                if page is not None:
+                    content = page.content.encode(encoding="UTF-8")
             except Exception as e:
                 Logger.info("InformationPopover::__get_bio_content(): %s" % e)
         return content
