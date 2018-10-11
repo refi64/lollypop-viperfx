@@ -32,7 +32,8 @@ class TracksDatabase:
         pass
 
     def add(self, name, uri, duration, tracknumber, discnumber, discname,
-            album_id, year, popularity, rate, ltime, mtime, mb_track_id):
+            album_id, year, timestamp, popularity, rate, ltime, mtime,
+            mb_track_id):
         """
             Add a new track to database
             @param name as string
@@ -44,6 +45,7 @@ class TracksDatabase:
             @param album_id as int
             @param genre_id as int
             @param year as int
+            @param timestamp as int
             @param popularity as int
             @param rate as int
             @param ltime as int
@@ -56,8 +58,9 @@ class TracksDatabase:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
-                year, popularity, rate, ltime, mtime, mb_track_id) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                year, timestamp, popularity, rate,\
+                ltime, mtime, mb_track_id) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
                     name,
                     uri,
                     duration,
@@ -66,6 +69,7 @@ class TracksDatabase:
                     discname,
                     album_id,
                     year,
+                    timestamp,
                     popularity,
                     rate,
                     ltime,
@@ -182,15 +186,29 @@ class TracksDatabase:
         """
             Get track year
             @param track id as int
-            @return track year as string
+            @return year as int
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT year FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
             if v and v[0]:
-                return str(v[0])
-            return ""
+                return v[0]
+            return None
+
+    def get_timestamp(self, track_id):
+        """
+            Get track timestamp
+            @param track id as int
+            @return timestamp as int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT timestamp FROM tracks WHERE rowid=?",
+                                 (track_id,))
+            v = result.fetchone()
+            if v and v[0]:
+                return v[0]
+            return None
 
     def get_year_for_album(self, album_id):
         """
@@ -204,6 +222,26 @@ class TracksDatabase:
                                   FROM tracks\
                                   WHERE tracks.album_id=?\
                                   GROUP BY year\
+                                  ORDER BY occurrence DESC\
+                                  LIMIT 1", (album_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
+    def get_timestamp_for_album(self, album_id):
+        """
+            Get album timestamp based on tracks
+            Use most used timestamp by tracks
+            @param album id as int
+            @return int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT timestamp,\
+                                  COUNT(timestamp) AS occurrence\
+                                  FROM tracks\
+                                  WHERE tracks.album_id=?\
+                                  GROUP BY timestamp\
                                   ORDER BY occurrence DESC\
                                   LIMIT 1", (album_id,))
             v = result.fetchone()

@@ -148,6 +148,17 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET year=? WHERE rowid=?",
                         (year, album_id))
 
+    def set_timestamp(self, album_id, timestamp):
+        """
+            Set timestamp
+            @param album id as int
+            @param timestamp as int
+            @warning: commit needed
+        """
+        with SqlCursor(App().db) as sql:
+            sql.execute("UPDATE albums SET timestamp=? WHERE rowid=?",
+                        (timestamp, album_id))
+
     def set_uri(self, album_id, uri):
         """
             Set album uri for album id
@@ -184,7 +195,7 @@ class AlbumsDatabase:
                        AND synced=1"
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
-                     albums.year,\
+                     albums.timestamp,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
             filters = (Type.COMPILATIONS,)
@@ -743,14 +754,14 @@ class AlbumsDatabase:
         if artist_ids or orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
-                     albums.year,\
+                     albums.timestamp,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         elif orderby == OrderBy.NAME:
             order = " ORDER BY albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         elif orderby == OrderBy.YEAR:
-            order = " ORDER BY albums.year DESC,\
+            order = " ORDER BY albums.timestamp DESC,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         else:
@@ -826,7 +837,7 @@ class AlbumsDatabase:
                                       FROM albums, album_artists\
                                       WHERE album_artists.artist_id=?\
                                       AND album_artists.album_id=albums.rowid\
-                                      ORDER BY albums.name, albums.year",
+                                      ORDER BY albums.name, albums.timestamp",
                                      (Type.COMPILATIONS,))
             # Get compilation for genre id
             else:
@@ -839,7 +850,7 @@ class AlbumsDatabase:
                            AND album_artists.artist_id=? AND ( "
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
-                request += "1==0) ORDER BY albums.name,albums.year"
+                request += "1==0) ORDER BY albums.name,albums.timestamp"
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
@@ -929,7 +940,7 @@ class AlbumsDatabase:
             else:
                 order = " ORDER BY artists.sortname\
                          COLLATE NOCASE COLLATE LOCALIZED,\
-                         albums.year,\
+                         albums.timestamp,\
                          albums.name\
                          COLLATE NOCASE COLLATE LOCALIZED"
                 if year == Type.NONE:
@@ -965,7 +976,7 @@ class AlbumsDatabase:
                                       AND albums.year=? LIMIT ?",
                                      (Type.COMPILATIONS, year, limit))
             else:
-                order = " ORDER BY albums.year, albums.name\
+                order = " ORDER BY albums.timestamp, albums.name\
                          COLLATE NOCASE COLLATE LOCALIZED"
                 if year == Type.NONE:
                     request = "SELECT DISTINCT albums.rowid\

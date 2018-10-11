@@ -426,20 +426,17 @@ class TrackMenuPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         if menu is not None:
             self.bind_model(menu, None)
-        # FIXME Does it works? => year in popover
-        if track.year != track.album.year:
-            track_year = str(track.year)
-        else:
-            track_year = ""
 
-        if track_year != "":
-            year = Gtk.Label()
-            year.set_text(track_year)
-            year.set_margin_end(5)
-            year.get_style_context().add_class("dim-label")
-            year.set_property("halign", Gtk.Align.END)
-            year.set_property("hexpand", True)
-            year.show()
+        if track.year is not None:
+            year_label = Gtk.Label()
+            year_label.set_text(str(track.year))
+            dt = GLib.DateTime.new_from_unix_local(track.timestamp)
+            year_label.set_tooltip_text(dt.format(_("%Y-%m-%d")))
+            year_label.set_margin_end(5)
+            year_label.get_style_context().add_class("dim-label")
+            year_label.set_property("halign", Gtk.Align.END)
+            year_label.set_property("hexpand", True)
+            year_label.show()
 
         # Hack to add two widgets in popover
         grid = Gtk.Grid()
@@ -469,8 +466,8 @@ class TrackMenuPopover(Gtk.Popover):
         hgrid.add(rating)
         hgrid.add(loved)
 
-        if track_year != "":
-            hgrid.add(year)
+        if track.year is not None:
+            hgrid.add(year_label)
         hgrid.show()
 
         grid.add(hgrid)

@@ -13,7 +13,8 @@
 from gi.repository import Gst, GstPbutils, GLib, Gio
 
 from re import match
-
+from time import strptime, mktime
+from datetime import datetime
 from gettext import gettext as _
 
 from lollypop.define import App, ENCODING
@@ -294,24 +295,37 @@ class TagReader(Discoverer):
         """
             Return track year for tags
             @param tags as Gst.TagList
-            @return track year as int or None
+            @return year and timestamp (int, int)
         """
         if tags is None:
-            return None
+            return (None, None)
         (exists, date) = tags.get_date_index("date", 0)
-        if not exists:
-            (exists, date) = tags.get_date_time_index("datetime", 0)
         if exists:
             year = date.get_year()
+            struct = strptime(str(year), "%Y")
+            dt = datetime.fromtimestamp(mktime(struct))
+            timestamp = dt.timestamp()
         else:
-            year = None
-        return year
+            (exists, date) = tags.get_date_time_index("datetime", 0)
+            if exists:
+                year = date.get_year()
+                dt = date.to_g_date_time()
+                if dt is None:
+                    struct = strptime(str(date.get_year()), "%Y")
+                    dt = datetime.fromtimestamp(mktime(struct))
+                    timestamp = dt.timestamp()
+                else:
+                    timestamp = dt.to_unix()
+            else:
+                timestamp = None
+                year = None
+        return (year, timestamp)
 
     def get_original_year(self, tags):
         """
             Return original release year
             @param tags as Gst.TagList
-            @return year as int or None
+            @return year and timestamp (int, int)
         """
         def get_id3():
             try:
@@ -328,10 +342,12 @@ class TagReader(Discoverer):
                     string = m.data.decode("utf-8")
                     if string.startswith("TDOR"):
                         split = string.split("\x00")
-                        return int(split[-1][:4])
+                        date = split[-1]
+                        datetime = GLib.DateTime.new_from_iso8601(date, None)
+                        return (datetime.year(), datetime.to_unix())
             except:
                 pass
-            return None
+            return (None, None)
 
         def get_ogg():
             try:
@@ -342,18 +358,19 @@ class TagReader(Discoverer):
                         i)
                     if not exists or not sample.startswith("ORIGINALDATE="):
                         continue
-                    # ORIGINALDATE=1999-03-10 => Only year
-                    return int(sample[13:][:4])
+                    date = sample[13:]
+                    datetime = GLib.DateTime.new_from_iso8601(date, None)
+                    return (datetime.year(), datetime.to_unix())
             except:
                 pass
             return None
 
         if tags is None:
             return None
-        year = get_id3()
-        if year is None:
-            year = get_ogg()
-        return year
+        values = get_id3()
+        if values is None:
+            values = get_ogg()
+        return values
 
     def get_lyrics(self, tags):
         """

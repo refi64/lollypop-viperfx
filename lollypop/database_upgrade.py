@@ -129,6 +129,7 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             26: self.__upgrade_26,
             27: "UPDATE tracks SET duration=CAST(duration AS INT)",
             28: self.__upgrade_28,
+            29: self.__upgrade_29
         }
 
 #######################
@@ -596,3 +597,23 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             if list(itertools.chain(*result)):
                 App().settings.set_value("show-compilations",
                                          GLib.Variant("b", True))
+
+    def __upgrade_29(self, db):
+        """
+            Upgrade year to year
+        """
+        from time import strptime, mktime
+        from datetime import datetime
+        for item in ["albums", "tracks"]:
+            with SqlCursor(db) as sql:
+                sql.execute("ALTER TABLE %s ADD timestamp INT" % item)
+                result = sql.execute("SELECT rowid, year FROM %s" % item)
+                for (rowid, year) in result:
+                    if year is None:
+                        continue
+                    struct = strptime(str(year), "%Y")
+                    dt = datetime.fromtimestamp(mktime(struct))
+                    timestamp = dt.timestamp()
+                    sql.execute(
+                        "UPDATE %s set timestamp=? WHERE rowid=?" % item,
+                        (timestamp, rowid))

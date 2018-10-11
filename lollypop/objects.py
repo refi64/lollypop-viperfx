@@ -211,6 +211,7 @@ class Album(Base):
                 "artists": "",
                 "artist_ids": [],
                 "year": None,
+                "timestamp": None,
                 "uri": "",
                 "tracks_count": 1,
                 "duration": 0,
@@ -370,6 +371,7 @@ class Track(Base):
                 "duration": 0,
                 "number": 0,
                 "year": None,
+                "timestamp": None,
                 "mtime": 0,
                 "mb_track_id": None}
 

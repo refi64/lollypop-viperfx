@@ -295,9 +295,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
         tracknumber = self.get_tracknumber(tags, name)
-        year = self.get_original_year(tags)
+        (year, timestamp) = self.get_original_year(tags)
         if year is None:
-            year = self.get_year(tags)
+            (year, timestamp) = self.get_year(tags)
         duration = int(info.get_duration() / 1000000000)
 
         if version != "":
@@ -357,13 +357,15 @@ class CollectionScanner(GObject.GObject, TagReader):
         Logger.debug("CollectionScanner::add2db(): Add track")
         track_id = App().tracks.add(title, uri, duration,
                                     tracknumber, discnumber, discname,
-                                    album_id, year, track_pop, track_rate,
-                                    track_ltime, mtime, mb_track_id)
+                                    album_id, year, timestamp, track_pop,
+                                    track_rate, track_ltime, mtime,
+                                    mb_track_id)
 
         Logger.debug("CollectionScanner::add2db(): Update track")
         self.__update_track(track_id, artist_ids, genre_ids)
         Logger.debug("CollectionScanner::add2db(): Update album")
-        self.__update_album(album_id, album_artist_ids, genre_ids, year)
+        self.__update_album(album_id, album_artist_ids,
+                            genre_ids, year, timestamp)
         if new_album:
             SqlCursor.commit(App().db)
         for genre_id in new_genre_ids:
@@ -419,13 +421,14 @@ class CollectionScanner(GObject.GObject, TagReader):
         except Exception as e:
             Logger.error("CollectionScanner::__del_from_db: %s" % e)
 
-    def __update_album(self, album_id, artist_ids, genre_ids, year):
+    def __update_album(self, album_id, artist_ids, genre_ids, year, timestamp):
         """
             Set album artists
             @param album id as int
             @param artist ids as [int]
             @param genre ids as [int]
             @param year as int
+            @param timestmap as int
             @commit needed
         """
         album_artist_ids = []
@@ -452,6 +455,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Update year based on tracks
         year = App().tracks.get_year_for_album(album_id)
         App().albums.set_year(album_id, year)
+        timestamp = App().tracks.get_timestamp_for_album(album_id)
+        App().albums.set_timestamp(album_id, timestamp)
 
     def __update_track(self, track_id, artist_ids, genre_ids):
         """
