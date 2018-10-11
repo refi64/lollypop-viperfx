@@ -65,7 +65,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.__enabled_shortcuts = False
         self.enable_global_shortcuts(True)
         self.set_auto_startup_notification(False)
-        self.connect("destroy", self.__on_destroyed_window)
         self.connect("realize", self.__on_realize)
 
     def enable_global_shortcuts(self, enable):
@@ -456,15 +455,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
            event.new_window_state & Gdk.WindowState.FOCUSED:
             # FIXME Remove this, handled by MPRIS in GNOME 3.26
             self.__grab_media_keys()
-
-    def __on_destroyed_window(self, widget):
-        """
-            Save paned widget width
-            @param widget as unused, data as unused
-        """
-        if self.__was_maximized and self.__miniplayer is None:
-            App().settings.set_boolean("window-maximized", True)
-        self.__container.save_internals()
 
     def __on_seek_action(self, action, param):
         """

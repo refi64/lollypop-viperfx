@@ -227,6 +227,7 @@ class Application(Gtk.Application):
             Quit Lollypop
             @param vacuum as bool
         """
+        self.window.container.save_internals()
         if self.settings.get_value("save-state"):
             self.window.container.save_view_state()
         # Then vacuum db
