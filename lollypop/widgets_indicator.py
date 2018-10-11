@@ -187,7 +187,7 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.EventButton
         """
-        if self.__is_in_current_playlist():
+        if self.__image.get_icon_name() == "list-remove-symbolic":
             # We want track from player, not from current widget
             albums = App().player.albums
             for album in albums:
@@ -212,6 +212,7 @@ class IndicatorWidget(Gtk.EventBox):
             # If album last in list, merge
             if albums and albums[-1].id == self.__track.album.id:
                 albums[-1].add_track(self.__track)
+                App().player.set_next()
             # Add album with only track
             else:
                 album = self.__track.album
