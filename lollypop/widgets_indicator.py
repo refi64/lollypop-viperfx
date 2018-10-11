@@ -213,7 +213,7 @@ class IndicatorWidget(Gtk.EventBox):
             if albums and albums[-1].id == self.__track.album.id:
                 albums[-1].add_track(self.__track)
                 App().player.set_next()
-            # Add album with only track
+            # Add album with only one track
             else:
                 album = self.__track.album
                 album.set_tracks([self.__track])

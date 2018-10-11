@@ -268,7 +268,7 @@ class LazyLoadingView(View):
     def _on_populated(self, widget, scroll_value):
         """
             Add another album/disc
-            @param widget as AlbumDetailedWidget
+            @param widget as AlbumWidget/TracksView
             @param scroll value as float
         """
         self.__running -= 1
