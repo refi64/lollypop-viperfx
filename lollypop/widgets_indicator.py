@@ -187,7 +187,7 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.EventButton
         """
-        if self.__image.get_icon_name() == "list-remove-symbolic":
+        if self.__image.get_icon_name()[0] == "list-remove-symbolic":
             # We want track from player, not from current widget
             albums = App().player.albums
             for album in albums:
