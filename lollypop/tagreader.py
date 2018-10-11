@@ -13,8 +13,6 @@
 from gi.repository import Gst, GstPbutils, GLib, Gio
 
 from re import match
-from time import strptime, mktime
-from datetime import datetime
 from gettext import gettext as _
 
 from lollypop.define import App, ENCODING
@@ -300,25 +298,21 @@ class TagReader(Discoverer):
         if tags is None:
             return (None, None)
         (exists, date) = tags.get_date_index("date", 0)
+        dt = year = timestamp = None
         if exists:
             year = date.get_year()
-            struct = strptime(str(year), "%Y")
-            dt = datetime.fromtimestamp(mktime(struct))
-            timestamp = dt.timestamp()
+            d = Gst.DateTime.new_local_time(year, 1, 1, 0, 0, 0)
+            dt = d.to_g_date_time()
+            timestamp = dt.to_unix()
         else:
             (exists, date) = tags.get_date_time_index("datetime", 0)
             if exists:
-                year = date.get_year()
                 dt = date.to_g_date_time()
                 if dt is None:
-                    struct = strptime(str(date.get_year()), "%Y")
-                    dt = datetime.fromtimestamp(mktime(struct))
-                    timestamp = dt.timestamp()
-                else:
-                    timestamp = dt.to_unix()
-            else:
-                timestamp = None
-                year = None
+                    year = date.get_year()
+                    d = Gst.DateTime.new_local_time(year, 1, 1, 0, 0, 0)
+                    dt = d.to_g_date_time()
+                timestamp = dt.to_unix()
         return (year, timestamp)
 
     def get_original_year(self, tags):
