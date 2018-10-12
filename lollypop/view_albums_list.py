@@ -498,7 +498,8 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album_id as int
         """
         for child in self.__view.get_children():
-            child.set_artwork(album_id)
+            if child.album.id == album_id:
+                child.set_artwork()
 
 #######################
 # PRIVATE             #

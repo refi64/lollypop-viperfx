@@ -138,7 +138,8 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             @param album_id as int
         """
         for child in self.children:
-            child.set_artwork(album_id)
+            if child.album.id == album_id:
+                child.set_artwork()
 
     def _on_search_changed(self, entry):
         """

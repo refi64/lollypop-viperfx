@@ -72,14 +72,15 @@ class RadiosView(FlowBoxView, ViewController):
         self.__pop_tunein.populate()
         self.__pop_tunein.show()
 
-    def _on_artwork_changed(self, artwork, name):
+    def _on_artwork_changed(self, artwork, title):
         """
             Update children artwork if matching name
             @param artwork as Artwork
-            @param name as str
+            @param title as str
         """
         for child in self._box.get_children():
-            child.set_artwork(name)
+            if title == child.title:
+                child.set_artwork()
 
 #######################
 # PRIVATE             #

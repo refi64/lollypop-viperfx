@@ -59,7 +59,8 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param album_id as int
         """
         for child in self._box.get_children():
-            child.set_artwork(album_id)
+            if child.album.id == album_id:
+                child.set_artwork()
 
     def _on_album_activated(self, flowbox, album_widget):
         """
