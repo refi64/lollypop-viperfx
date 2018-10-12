@@ -89,16 +89,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         self._widget.connect("button-press-event", self.__on_button_press)
         self._lock_overlay = False
 
-    def set_artwork(self, album_id):
-        """
-            Set cover for album id
-            @param album_id as int
-        """
-        if self._artwork is None or\
-                (album_id is not None and album_id != self._album.id):
-            return
-        AlbumArtHelper.set_artwork(self)
-
     def do_get_preferred_width(self):
         """
             Return preferred width

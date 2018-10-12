@@ -87,6 +87,8 @@ class AlbumArtHelper:
         """
             Set cover for album id
         """
+        if self._artwork is None:
+            return
         App().task_helper.run(
                           App().art.get_album_artwork_pixbuf,
                           self._album,
