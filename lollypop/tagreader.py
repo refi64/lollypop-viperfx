@@ -248,6 +248,9 @@ class TagReader(Discoverer):
         discname = ""
         for i in range(tags.get_tag_size("extended-comment")):
             (exists, read) = tags.get_string_index("extended-comment", i)
+            if exists and read.startswith("PART"):
+                discname = "=".join(read.split("=")[1:])
+                break
             if exists and read.startswith("DISCSUBTITLE"):
                 discname = "=".join(read.split("=")[1:])
                 break
