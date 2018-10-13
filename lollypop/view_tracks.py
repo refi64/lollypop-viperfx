@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk, GObject
+from gi.repository import GLib, Gtk, GObject, Pango
 
 from gettext import gettext as _
 
@@ -385,6 +385,7 @@ class TracksView:
                         disc_text = _("Disc %s") % disc.number
                     box = Gtk.Box()
                     label = Gtk.Label()
+                    label.set_ellipsize(Pango.EllipsizeMode.END)
                     label.set_text(disc_text)
                     label.set_property("halign", Gtk.Align.START)
                     label.get_style_context().add_class("dim-label")
