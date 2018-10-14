@@ -74,7 +74,6 @@ def draw_rounded_image(image, ctx):
         Draw rounded image
         @param image as Gtk.Image
         @param ctx as cairo.Context
-        @param size as int
     """
     if not image.is_drawable():
         return
@@ -89,7 +88,7 @@ def draw_rounded_image(image, ctx):
     else:
         surface = image.props.surface
     if surface is not None:
-        width = surface.get_width() - 4
+        width = surface.get_width() / image.get_scale_factor() - 4
         ctx.translate(2, 2)
         ctx.new_sub_path()
         radius = width / 2

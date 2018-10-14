@@ -276,13 +276,11 @@ class ArtistView(ArtistAlbumsView):
         """
             Set artist artwork
         """
-        artwork_height = 0
-        scale_factor = self.__artwork.get_scale_factor()
         if App().settings.get_value("artist-artwork"):
             if len(self._artist_ids) == 1 and\
                     App().settings.get_value("artist-artwork"):
                 artist = App().artists.get_name(self._artist_ids[0])
-                size = ArtSize.ARTIST_SMALL * scale_factor
+                size = ArtSize.ARTIST_SMALL * self.__scale_factor
                 if not App().window.container.is_paned_stack:
                     size *= 2
                 path = InformationStore.get_artwork_path(artist, size)
@@ -302,10 +300,11 @@ class ArtistView(ArtistAlbumsView):
                         stream.close()
                         surface = Gdk.cairo_surface_create_from_pixbuf(
                             pixbuf,
-                            scale_factor,
+                            self.__scale_factor,
                             None)
                         self.__artwork.set_from_surface(surface)
-                        artwork_height = surface.get_height()
+                        artwork_height = surface.get_height() /\
+                            self.__scale_factor
                         self.__artwork.get_style_context().remove_class(
                             "artwork-icon")
                         self.__artwork.show()
@@ -315,7 +314,7 @@ class ArtistView(ArtistAlbumsView):
                 self.__artwork.set_from_icon_name(
                     "avatar-default-symbolic",
                     Gtk.IconSize.DND)
-                artwork_height = 16 * scale_factor
+                artwork_height = 16 * self.__scale_factor
                 self.__artwork.get_style_context().add_class("artwork-icon")
                 self.__artwork.show()
                 self.__artwork_box.show()
