@@ -143,7 +143,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
                 "album-menu-button")
             self.__artists_button.set_tooltip_text(_("Go to artist view"))
             self.__artists_button.set_property("valign", Gtk.Align.CENTER)
-            self.__artists_button.connect("clicked", self.__on_artist_button_clicked)
+            self.__artists_button.connect("clicked", self.__on_artists_button_clicked)
 
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
@@ -359,9 +359,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
                 App().player.remove_album(self._album)
             self.destroy()
 
-    def __on_artist_button_clicked(self, button):
+    def __on_artists_button_clicked(self, button):
         """
-            Jump to artist album view
+            Jump to artists albums view
             @param button as Gtk.Button
         """
         popover = self.get_ancestor(Gtk.Popover)
