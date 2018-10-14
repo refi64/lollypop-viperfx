@@ -133,30 +133,36 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
             self.__action_button.set_property("valign", Gtk.Align.CENTER)
             self.__action_button.connect("clicked", self.__on_action_clicked)
 
-        self.__jump_button = Gtk.Button.new_from_icon_name(
-                'go-jump-symbolic',
-                Gtk.IconSize.MENU)
-        self.__jump_button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__jump_button.get_style_context().add_class(
-            "album-menu-button")
-        self.__jump_button.set_tooltip_text(_("Go to artist view"))
-        self.__jump_button.set_property("valign", Gtk.Align.CENTER)
-        self.__jump_button.connect("clicked", self.__on_jump_clicked)
+        self.__artists_button = None
+        if self.__responsive_type == ResponsiveType.SEARCH:
+            self.__artists_button = Gtk.Button.new_from_icon_name(
+                    'avatar-default-symbolic',
+                    Gtk.IconSize.MENU)
+            self.__artists_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__artists_button.get_style_context().add_class(
+                "album-menu-button")
+            self.__artists_button.set_tooltip_text(_("Go to artist view"))
+            self.__artists_button.set_property("valign", Gtk.Align.CENTER)
+            self.__artists_button.connect("clicked", self.__on_artist_button_clicked)
 
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
         vgrid.add(self.__play_indicator)
         vgrid.add(self.__title_label)
-        grid.attach(self.__artist_label, 1, 0, 1, 1)
-        if self.__jump_button is not None:
-            grid.attach(self.__jump_button, 2, 0, 1, 2)
+        index = 1
+        grid.attach(self.__artist_label, index, 0, 1, 1)
+        index += 1
+        if self.__artists_button is not None:
+            grid.attach(self.__artists_button, index, 0, 1, 2)
+            index += 1
         if self.__action_button is not None:
-            grid.attach(self.__action_button, 3, 0, 1, 2)
+            grid.attach(self.__action_button, index, 0, 1, 2)
+            index += 1
         grid.attach(self._artwork, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
-        grid.attach(self.__revealer, 0, 2, 3, 1)
+        grid.attach(self.__revealer, 0, 2, index, 1)
         row_widget.add(grid)
         self.add(row_widget)
         self.set_playing_indicator()
@@ -353,14 +359,16 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
                 App().player.remove_album(self._album)
             self.destroy()
 
-    def __on_jump_clicked(self, button):
+    def __on_artist_button_clicked(self, button):
         """
             Jump to artist album view
             @param button as Gtk.Button
         """
-        artist_ids = Album(self._album.id).artist_ids
-        if artist_ids is not None and artist_ids:
-            App().window.container.show_artists_albums(artist_ids)
+        popover = self.get_ancestor(Gtk.Popover)
+        if popover is not None:
+             popover.popdown()
+
+        App().window.container.show_artists_albums(self._album.artist_ids)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
