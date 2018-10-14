@@ -131,7 +131,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
             self.__action_button.get_style_context().add_class(
                 "track-menu-button")
             self.__action_button.set_property("valign", Gtk.Align.CENTER)
-            self.__action_button.connect("clicked", self.__on_action_clicked)
+            self.__action_button.connect("clicked",
+                                         self.__on_action_button_clicked)
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
         vgrid.add(self.__play_indicator)
@@ -315,7 +316,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         self.get_style_context().remove_class("drag-up")
         self.get_style_context().remove_class("drag-down")
 
-    def __on_action_clicked(self, button):
+    def __on_action_button_clicked(self, button):
         """
             ResponsiveType.SEARCH: Play album
             Else: Delete album
