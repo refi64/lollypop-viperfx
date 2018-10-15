@@ -296,11 +296,12 @@ class BinPlayer(BasePlayer):
             if scrobbler.available:
                 scrobbler.playing_now(self._current_track)
         try:
+            # Should not raise anything since SqlCursor handles locks
             if not App().scanner.is_locked():
                 App().tracks.set_listened_at(self._current_track.id,
                                              int(time()))
-        except:  # Locked database
-            pass
+        except Exception as e:
+            Logger.error("BinPlayer::_on_stream_start(): %s", e)
 
     def _on_bus_message_tag(self, bus, message):
         """
