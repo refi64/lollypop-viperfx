@@ -277,6 +277,7 @@ class ArtistView(ArtistAlbumsView):
             Set artist artwork
         """
         if App().settings.get_value("artist-artwork"):
+            artwork_height = 0
             if len(self._artist_ids) == 1 and\
                     App().settings.get_value("artist-artwork"):
                 artist = App().artists.get_name(self._artist_ids[0])
