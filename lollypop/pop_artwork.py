@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.art_widgets import ArtworkSearch
+from lollypop.widgets_art import ArtworkSearchWidget
 from lollypop.define import App
 
 
@@ -65,8 +65,8 @@ class CoversPopover(CommonPopover):
             self._widget = None
             return
         # FIXME We only search with first artist
-        self._widget = ArtworkSearch(album.artist_ids[0],
-                                     album)
+        self._widget = ArtworkSearchWidget(album.artist_ids[0],
+                                           album)
         self._widget.show()
         self.add(self._widget)
         self._widget.populate()
@@ -83,7 +83,7 @@ class ArtworkPopover(CommonPopover):
             @param album as album
         """
         CommonPopover.__init__(self)
-        self._widget = ArtworkSearch(artist_id, None)
+        self._widget = ArtworkSearchWidget(artist_id, None)
         self._widget.show()
         self.add(self._widget)
         self._widget.populate()
