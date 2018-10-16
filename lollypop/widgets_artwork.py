@@ -124,26 +124,27 @@ class ArtworkSearchWidget(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtworkSearch.ui")
         builder.connect_signals(self)
-        self._infobar = builder.get_object("infobar")
-        self._infobar_label = builder.get_object("infobarlabel")
+        self.__infobar = builder.get_object("infobar")
+        self.__infobar_label = builder.get_object("infobarlabel")
         widget = builder.get_object("widget")
         self.__stack = builder.get_object("stack")
         self.__entry = builder.get_object("entry")
-        self._api_entry = builder.get_object("api_entry")
+        self.__api_entry = builder.get_object("api_entry")
+        self.__back_button = builder.get_object("back_button")
 
-        self._view = Gtk.FlowBox()
-        self._view.set_selection_mode(Gtk.SelectionMode.SINGLE)
-        self._view.connect("child-activated", self.__on_activate)
-        self._view.set_max_children_per_line(100)
-        self._view.set_property("row-spacing", 10)
-        self._view.show()
+        self.__view = Gtk.FlowBox()
+        self.__view.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self.__view.connect("child-activated", self.__on_activate)
+        self.__view.set_max_children_per_line(100)
+        self.__view.set_property("row-spacing", 10)
+        self.__view.show()
 
         self._popover = builder.get_object("popover")
 
-        self._label = builder.get_object("label")
-        self._label.set_text(_("Select artwork"))
+        self.__label = builder.get_object("label")
+        self.__label.set_text(_("Select artwork"))
 
-        builder.get_object("viewport").add(self._view)
+        builder.get_object("viewport").add(self.__view)
 
         self.__spinner = builder.get_object("spinner")
         self.__stack.add_named(builder.get_object("scrolled"), "main")
@@ -151,7 +152,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.add(widget)
         key = App().settings.get_value("cs-api-key").get_string() or\
             App().settings.get_default_value("cs-api-key").get_string()
-        self._api_entry.set_text(key)
+        self.__api_entry.set_text(key)
         self.set_size_request(700, 400)
 
     def populate(self):
@@ -167,7 +168,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         image.set_property("halign", Gtk.Align.CENTER)
         image.get_style_context().add_class("cover-frame")
         image.show()
-        self._view.add(image)
+        self.__view.add(image)
 
         # First load local files
         if self.__album is not None:
@@ -241,7 +242,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             Reset cover
             @param button as Gtk.Button
         """
-        self._infobar.hide()
+        self.__infobar.hide()
         if self.__album is not None:
             App().art.remove_album_artwork(self.__album)
             App().art.clean_album_cache(self.__album)
@@ -261,8 +262,8 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param reponse id as int
         """
         if response_id == Gtk.ResponseType.CLOSE:
-            self._infobar.hide()
-            self._view.unselect_all()
+            self.__infobar.hide()
+            self.__view.unselect_all()
 
     def _on_settings_button_clicked(self, button):
         """
@@ -270,7 +271,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param button as Gtk.Button
         """
         self._popover.popup()
-        self._api_entry.set_text(
+        self.__api_entry.set_text(
             App().settings.get_value("cs-api-key").get_string())
 
     def _on_api_entry_changed(self, entry):
@@ -280,6 +281,14 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
         value = entry.get_text().strip()
         App().settings.set_value("cs-api-key", GLib.Variant("s", value))
+
+    def _on_back_button_clicked(self, button):
+        """
+            Show web view
+            @param button as Gtk.Button
+        """
+        self.__stack.set_visible_child(self.__web_search)
+        self.__back_button.set_sensitive(False)
 
 #######################
 # PRIVATE             #
@@ -308,6 +317,8 @@ class ArtworkSearchWidget(Gtk.Bin):
         # Fallback to link extraction
         if uris is None and WEBKIT2:
             if self.__web_search is None:
+                self.__back_button.show()
+                self.__back_button.set_sensitive(False)
                 self.__web_search = ArtworkSearchWebView(self.__spinner)
                 self.__web_search.connect("populated",
                                           self.__on_web_search_populated)
@@ -360,7 +371,7 @@ class ArtworkSearchWidget(Gtk.Bin):
                                                                None)
                 image.set_from_surface(surface)
                 image.show()
-                self._view.add(image)
+                self.__view.add(image)
         except Exception as e:
             Logger.error("ArtworkSearch::__add_pixbuf: %s" % e)
         callback(*args)
@@ -390,10 +401,11 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param uri as str
         """
         if self.__stack.get_visible_child() == web_search:
-            for child in self._view.get_children():
+            for child in self.__view.get_children():
                 child.destroy()
             self.__stack.set_visible_child_name("main")
             self.__spinner.start()
+            self.__back_button.set_sensitive(True)
         helper = TaskHelper()
         helper.load_uri_content(uri,
                                 self.__cancellable,
@@ -430,10 +442,10 @@ class ArtworkSearchWidget(Gtk.Bin):
                 App().art.emit("artist-artwork-changed", self.__artist)
             self._streams = {}
         except:
-            self._infobar_label.set_text(_("Reset artwork?"))
-            self._infobar.show()
+            self.__infobar_label.set_text(_("Reset artwork?"))
+            self.__infobar.show()
             # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
-            self._infobar.queue_resize()
+            self.__infobar.queue_resize()
 
     def __on_search_timeout(self, string):
         """
@@ -441,7 +453,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param string as str
         """
         self.__cancellable.cancel()
-        for child in self._view.get_children():
+        for child in self.__view.get_children():
             child.destroy()
         self.__spinner.start()
         self.__timeout_id = None

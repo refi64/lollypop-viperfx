@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.widgets_art import ArtworkSearchWidget
+from lollypop.widgets_artwork import ArtworkSearchWidget
 from lollypop.define import App
 
 
