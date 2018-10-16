@@ -24,7 +24,6 @@ class SqlCursor:
     def add(obj):
         """
             Add cursor to thread list
-            Raise an exception if cursor already exists
         """
         obj.thread_lock.acquire()
         name = current_thread().getName() + obj.__class__.__name__
@@ -33,7 +32,6 @@ class SqlCursor:
     def remove(obj):
         """
             Remove cursor from thread list and commit
-            Raise an exception if cursor already exists
         """
         name = current_thread().getName() + obj.__class__.__name__
         if name in App().cursors.keys():
