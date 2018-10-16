@@ -253,12 +253,12 @@ popover.background separator {
 
 .albumrow {
     padding: 4px;
+    border-radius: 5px;
 	background-color: transparent;
   	color: inherit;
 }
 
 .albumrow:hover {
-    border-radius: 5px;
 	background-color: alpha(@theme_fg_color, 0.05);
   	color: inherit;
 }
