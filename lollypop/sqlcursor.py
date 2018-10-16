@@ -36,9 +36,10 @@ class SqlCursor:
             Raise an exception if cursor already exists
         """
         name = current_thread().getName() + obj.__class__.__name__
-        App().cursors[name].commit()
-        App().cursors[name].close()
-        del App().cursors[name]
+        if name in App().cursors.keys():
+            App().cursors[name].commit()
+            App().cursors[name].close()
+            del App().cursors[name]
         obj.thread_lock.release()
 
     def commit(obj):
@@ -70,7 +71,7 @@ class SqlCursor:
             Return cursor for thread, create a new one if needed
         """
         name = current_thread().getName() + self.__obj.__class__.__name__
-        if name not in App().cursors:
+        if name not in App().cursors.keys():
             self.__creator = True
             App().cursors[name] = self.__obj.get_cursor()
             self.__obj.thread_lock.acquire()
@@ -82,7 +83,8 @@ class SqlCursor:
         """
         if self.__creator:
             name = current_thread().getName() + self.__obj.__class__.__name__
-            App().cursors[name].commit()
-            App().cursors[name].close()
-            del App().cursors[name]
+            if name in App().cursors.keys():
+                App().cursors[name].commit()
+                App().cursors[name].close()
+                del App().cursors[name]
             self.__obj.thread_lock.release()
