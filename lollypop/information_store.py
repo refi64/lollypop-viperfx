@@ -143,29 +143,6 @@ class InformationStore:
                                   escape(artist))
         content = None
         f = Gio.File.new_for_path(filepath)
-        ###################################################################
-        # Migration code from lollypop <= 0.9.403
-        if not f.query_exists():
-            for suffix in ["lastfm", "spotify", "deezer", "wikipedia"]:
-                suffix_filepath = "%s/%s_%s.txt" % (
-                    InformationStore._INFO_PATH,
-                    escape(artist),
-                    suffix)
-                suffix_f = Gio.File.new_for_path(suffix_filepath)
-                if suffix_f.query_exists():
-                    info = suffix_f.query_info(
-                        "standard::size",
-                        Gio.FileQueryInfoFlags.NONE)
-                    if info.get_size() == 0:
-                        continue
-                    suffix_f.move(
-                        f,
-                        Gio.FileCopyFlags.OVERWRITE,
-                        None,
-                        None)
-                    break
-        #
-        ###################################################################
         if f.query_exists():
             (status, content, tag) = f.load_contents()
         return content
