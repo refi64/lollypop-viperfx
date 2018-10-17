@@ -18,6 +18,7 @@ from math import pi
 from gettext import gettext as _
 import unicodedata
 
+from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App
 
@@ -62,7 +63,7 @@ def blur(surface, image, w, h):
                 context.paint()
                 surface = resized
         except Exception as e:
-            print("blur():", e)
+            Logger.error("blur():", e)
             return None
         return surface
     TaskHelper().run(do_blur, surface, w, h,
@@ -135,7 +136,7 @@ def set_proxy_from_gnome():
                     socks.set_default_proxy(socks.SOCKS4, h, p)
                     socket.socket = socks.socksocket
     except Exception as e:
-        print("set_proxy_from_gnome():", e)
+        Logger.error("set_proxy_from_gnome(): %s", e)
 
 
 def debug(str):
@@ -216,8 +217,8 @@ def is_audio(f):
             content_type = info.get_content_type()
             if content_type in audio:
                 return True
-    except:
-        pass
+    except Exception as e:
+        Logger.error("is_audio: %s", e)
     return False
 
 
