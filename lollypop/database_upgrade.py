@@ -611,7 +611,12 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
                 for (rowid, year) in result:
                     if year is None:
                         continue
-                    struct = strptime(str(year), "%Y")
+                    if len(str(year)) == 2:
+                        struct = strptime(str(year), "%y")
+                    if len(str(year)) == 4:
+                        struct = strptime(str(year), "%Y")
+                    else:
+                        continue
                     dt = datetime.fromtimestamp(mktime(struct))
                     timestamp = dt.timestamp()
                     sql.execute(
