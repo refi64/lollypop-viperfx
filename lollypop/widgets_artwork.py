@@ -69,6 +69,9 @@ class ArtworkSearchWebView(Gtk.Bin):
         requisition.height = 300
         Gtk.Bin.do_get_preferred_size(requisition, requisition)
 
+#######################
+# PRIVATE             #
+#######################
     def __on_load_changed(self, webview, event):
         """
             Stop spinner
@@ -392,6 +395,8 @@ class ArtworkSearchWidget(Gtk.Bin):
             Cancel loading
             @param widget as Gtk.Widget
         """
+        if self.__web_search is not None:
+            self.__web_search.destroy()
         self.__cancellable.cancel()
 
     def __on_web_search_populated(self, web_search, uri):
