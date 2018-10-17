@@ -290,7 +290,10 @@ class ArtworkSearchWidget(Gtk.Bin):
             Show web view
             @param button as Gtk.Button
         """
-        self.__stack.set_visible_child(self.__web_search)
+        if self.__stack.get_visible_child_name() == "web":
+            self.__stack.set_visible_child_name("main")
+        else:
+            self.__stack.set_visible_child_name("web")
         self.__back_button.set_sensitive(False)
 
 #######################
@@ -321,14 +324,13 @@ class ArtworkSearchWidget(Gtk.Bin):
         if uris is None and WEBKIT2:
             if self.__web_search is None:
                 self.__back_button.show()
-                self.__back_button.set_sensitive(False)
                 self.__web_search = ArtworkSearchWebView(self.__spinner)
                 self.__web_search.connect("populated",
                                           self.__on_web_search_populated)
                 self.__web_search.show()
                 self.__entry.hide()
-                self.__stack.add(self.__web_search)
-                self.__stack.set_visible_child(self.__web_search)
+                self.__stack.add_named(self.__web_search, "web")
+                self.__stack.set_visible_child_name("web")
                 self.__web_search.search(self.__get_current_search())
         # Populate the view
         elif uris:
