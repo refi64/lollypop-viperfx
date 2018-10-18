@@ -611,9 +611,9 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
                 for (rowid, year) in result:
                     if year is None:
                         continue
-                    if len(str(year)) == 2:
+                    elif len(str(year)) == 2:
                         struct = strptime(str(year), "%y")
-                    if len(str(year)) == 4:
+                    elif len(str(year)) == 4:
                         struct = strptime(str(year), "%Y")
                     else:
                         continue
