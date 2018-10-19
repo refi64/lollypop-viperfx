@@ -27,13 +27,6 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.603" date="2018-10-08">
-      <description>
-        <ul>
-          <li>Fix a crash in artist view</li>
-        </ul>
-      </description>
-    </release>
     <release version="0.9.605" date="2018-10-19">
       <description>
         <ul>
