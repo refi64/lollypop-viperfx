@@ -63,6 +63,13 @@ class AlbumBaseWidget:
         self._show_overlay_func(set)
 
     @property
+    def is_populated(self):
+        """
+            True if album populated
+        """
+        return True
+
+    @property
     def filter(self):
         return ""
 
