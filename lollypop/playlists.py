@@ -44,6 +44,7 @@ class Playlists(GObject.GObject):
     __create_playlists = """CREATE TABLE playlists (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
+                            synced INT NOT NULL DEFAULT 0,
                             mtime BIGINT NOT NULL)"""
 
     __create_tracks = """CREATE TABLE tracks (
