@@ -424,6 +424,8 @@ class AlbumArt:
             @param album_id as int
         """
         if self.kid3_available:
+            if App().player.current_track.album.id == album_id:
+                App().player.stop()
             for uri in App().albums.get_track_uris(album_id, [], []):
                 try:
                     path = GLib.filename_from_uri(uri)[0]
