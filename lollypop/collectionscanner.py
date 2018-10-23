@@ -134,7 +134,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             except Exception as e:
                 Logger.error("""CollectionScanner::
                              __get_objects_for_uris(): %s""" % e)
-                return ([], [])
         for f in files:
             try:
                 if is_pls(f):
