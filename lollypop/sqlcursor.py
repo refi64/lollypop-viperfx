@@ -45,7 +45,8 @@ class SqlCursor:
             Commit current obj
         """
         name = current_thread().getName() + obj.__class__.__name__
-        App().cursors[name].commit()
+        if name in App().cursors.keys():
+            App().cursors[name].commit()
 
     def allow_thread_execution(obj):
         """
