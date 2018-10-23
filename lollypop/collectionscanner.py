@@ -192,10 +192,10 @@ class CollectionScanner(GObject.GObject, TagReader):
                     self.__inotify.add_monitor(d)
 
         i = 0
-        # Look for new files/modified files
+        # Look for new files/modified file
+        SqlCursor.add(App().db)
         try:
             to_add = []
-            SqlCursor.add(App().db)
             for uri in new_tracks:
                 if self.__thread is None:
                     return
@@ -258,9 +258,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                 except Exception as e:
                     Logger.error("CollectionScanner::__scan(add): %s, %s" %
                                  (e, uri))
-            SqlCursor.remove(App().db)
         except Exception as e:
             Logger.error("CollectionScanner::__scan(): %s" % e)
+        SqlCursor.remove(App().db)
         GLib.idle_add(self.__finish, modifications and saved)
         if not saved:
             self.__play_new_tracks(new_tracks)
