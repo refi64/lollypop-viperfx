@@ -42,18 +42,11 @@ class SqlCursor:
 
     def commit(obj):
         """
-            Commit current obj
+            Commit and release/acquire thread (allows main thread to run)
         """
         name = current_thread().getName() + obj.__class__.__name__
         if name in App().cursors.keys():
             App().cursors[name].commit()
-
-    def allow_thread_execution(obj):
-        """
-            Release thread lock allowing others threads execution
-        """
-        name = current_thread().getName() + obj.__class__.__name__
-        if name in App().cursors.keys() and len(App().cursors.keys()) > 1:
             obj.thread_lock.release()
             sleep(0.01)
             obj.thread_lock.acquire()
