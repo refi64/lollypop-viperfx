@@ -132,8 +132,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                 else:
                     files.append(f)
             except Exception as e:
-                Logger.error("""CollectionScanner::
-                             __get_objects_for_uris(): %s""" % e)
+                Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
+                             % e)
         for f in files:
             try:
                 if is_pls(f):
@@ -141,11 +141,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                 elif is_audio(f):
                     tracks.append(f.get_uri())
                 else:
-                    Logger.debug("""%s not detected
-                                 as a music file""" % f.get_uri())
+                    Logger.debug("%s not detected as a music file" %
+                                 f.get_uri())
             except Exception as e:
-                Logger.error("""CollectionScanner::
-                             __get_objects_for_uris(): %s""" % e)
+                Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
+                             % e)
         return (tracks, track_dirs)
 
     def __update_progress(self, current, total):
