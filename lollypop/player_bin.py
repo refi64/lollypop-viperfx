@@ -295,13 +295,7 @@ class BinPlayer(BasePlayer):
         for scrobbler in App().scrobblers:
             if scrobbler.available:
                 scrobbler.playing_now(self._current_track)
-        try:
-            # Should not raise anything since SqlCursor handles locks
-            if not App().scanner.is_locked():
-                App().tracks.set_listened_at(self._current_track.id,
-                                             int(time()))
-        except Exception as e:
-            Logger.error("BinPlayer::_on_stream_start(): %s", e)
+        App().tracks.set_listened_at(self._current_track.id, int(time()))
 
     def _on_bus_message_tag(self, bus, message):
         """
@@ -384,7 +378,7 @@ class BinPlayer(BasePlayer):
             return
         self._scrobble(self._current_track, self._start_time)
         # Increment popularity
-        if not App().scanner.is_locked() and self._current_track.id >= 0:
+        if self._current_track.id >= 0:
             App().tracks.set_more_popular(self._current_track.id)
             # In party mode, linear popularity
             if self.is_party:
@@ -487,22 +481,21 @@ class BinPlayer(BasePlayer):
         if track is None:
             self._scrobble(self._current_track, self._start_time)
             # Increment popularity
-            if not App().scanner.is_locked():
-                App().tracks.set_more_popular(self._current_track.id)
-                # In party mode, linear popularity
-                if self.is_party:
-                    pop_to_add = 1
-                # In normal mode, based on tracks count
+            App().tracks.set_more_popular(self._current_track.id)
+            # In party mode, linear popularity
+            if self.is_party:
+                pop_to_add = 1
+            # In normal mode, based on tracks count
+            else:
+                count = App().albums.get_tracks_count(
+                    self._current_track.album_id)
+                if count:
+                    pop_to_add = int(App().albums.max_count / count)
                 else:
-                    count = App().albums.get_tracks_count(
-                        self._current_track.album_id)
-                    if count:
-                        pop_to_add = int(App().albums.max_count / count)
-                    else:
-                        pop_to_add = 0
-                if pop_to_add > 0:
-                    App().albums.set_more_popular(self._current_track.album_id,
-                                                  pop_to_add)
+                    pop_to_add = 0
+            if pop_to_add > 0:
+                App().albums.set_more_popular(self._current_track.album_id,
+                                              pop_to_add)
 
         GLib.idle_add(self.__volume_down, self._playbin,
                       self._plugins, duration)

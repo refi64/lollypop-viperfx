@@ -111,8 +111,6 @@ class RatingWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if App().scanner.is_locked():
-            return
         user_rating = True
         rate = self.__object.get_rate()
         # -1 for compatiblity with previous release
