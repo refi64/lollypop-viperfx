@@ -246,6 +246,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
                     self.__del_from_db(uri)
+                    SqlCursor.allow_thread_execution(App().db)
             # Add files to db
             for (uri, mtime) in to_add:
                 try:
