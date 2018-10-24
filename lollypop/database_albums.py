@@ -1107,7 +1107,7 @@ class AlbumsDatabase:
                                   ON albums.rowid=t.album_id\
                                   GROUP BY albums.rowid)")
             v = result.fetchone()
-            if v:
+            if v and v[0] is not None:
                 self.__max_count = v[0]
 
 #######################
