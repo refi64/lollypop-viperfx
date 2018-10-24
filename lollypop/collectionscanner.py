@@ -261,6 +261,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                                  (e, uri))
         except Exception as e:
             Logger.error("CollectionScanner::__scan(): %s" % e)
+        SqlCursor.commit(App().db)
         SqlCursor.remove(App().db)
         GLib.idle_add(self.__finish, modifications and saved)
         if not saved:
