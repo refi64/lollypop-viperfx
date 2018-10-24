@@ -197,6 +197,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             to_add = []
             for uri in new_tracks:
                 if self.__thread is None:
+                    SqlCursor.remove(App().db)
                     return
                 try:
                     GLib.idle_add(self.__update_progress, i, count)
