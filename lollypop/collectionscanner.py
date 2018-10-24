@@ -224,6 +224,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             i += 1
                             continue
                         else:
+                            SqlCursor.allow_thread_execution(App().db)
                             self.__del_from_db(uri)
                     # If not saved, use 0 as mtime, easy delete on quit
                     if not saved:
@@ -245,6 +246,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
                     self.__del_from_db(uri)
+                    SqlCursor.allow_thread_execution(App().db)
             # Add files to db
             for (uri, mtime) in to_add:
                 try:
@@ -252,6 +254,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     i += 1
                     GLib.idle_add(self.__update_progress, i, count)
                     self.__add2db(uri, mtime)
+                    SqlCursor.allow_thread_execution(App().db)
                 except Exception as e:
                     Logger.error("CollectionScanner::__scan(add): %s, %s" %
                                  (e, uri))
@@ -363,7 +366,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         Logger.debug("CollectionScanner::add2db(): Update album")
         self.__update_album(album_id, album_artist_ids,
                             genre_ids, year, timestamp)
-        SqlCursor.commit(App().db)
+        if new_album:
+            SqlCursor.commit(App().db)
         for genre_id in new_genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         for artist_id in new_artist_ids:
@@ -398,8 +402,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().tracks.remove(track_id)
             App().tracks.clean(track_id)
             cleaned = App().albums.clean(album_id)
-            SqlCursor.commit(App().db)
             if cleaned:
+                SqlCursor.commit(App().db)
                 GLib.idle_add(self.emit, "album-updated",
                               album_id, True)
             for artist_id in album_artist_ids + artist_ids:
@@ -411,6 +415,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             for genre_id in genre_ids:
                 cleaned = App().genres.clean(genre_id)
                 if cleaned:
+                    SqlCursor.commit(App().db)
                     GLib.idle_add(self.emit, "genre-updated",
                                   genre_id, False)
         except Exception as e:
