@@ -27,14 +27,11 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.605" date="2018-10-19">
+    <release version="0.9.608" date="2018-10-24">
       <description>
         <ul>
-          <li>Sort albums with full date</li>
-          <li>Faster album loading</li>
-	  <li>Add a button to go from search to artist</li>
-	  <li>Better wikipedia search</li>
-	  <li>Allow importing loved tracks</li>
+	  <li>Fix hang while updating collection</li>
+	  <li>Fix an issue with multiple disc albums</li>
         </ul>
       </description>
     </release>
