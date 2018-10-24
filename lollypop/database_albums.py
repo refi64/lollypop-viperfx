@@ -46,7 +46,7 @@ class AlbumsDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, mb_album_id, no_album_artist,\
                                   uri, loved, popularity, rate, mtime, synced)\
@@ -67,7 +67,7 @@ class AlbumsDatabase:
             @param artist id as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             artist_ids = self.get_artist_ids(album_id)
             if artist_id not in artist_ids:
                 sql.execute("INSERT INTO "
@@ -81,7 +81,7 @@ class AlbumsDatabase:
             @param genre id as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             genres = self.get_genre_ids(album_id)
             if genre_id not in genres:
                 sql.execute("INSERT INTO\
@@ -96,7 +96,7 @@ class AlbumsDatabase:
             @param artist_ids as [int]
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             currents = self.get_artist_ids(album_id)
             if not currents or set(currents) - set(artist_ids):
                 sql.execute("DELETE FROM album_artists\
@@ -113,7 +113,7 @@ class AlbumsDatabase:
             @param synced as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE albums SET synced=? WHERE rowid=?",
                         (synced, album_id))
 
@@ -124,7 +124,7 @@ class AlbumsDatabase:
             @param loved as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE albums SET loved=? WHERE rowid=?",
                         (loved, album_id))
 
@@ -133,7 +133,7 @@ class AlbumsDatabase:
             Set album rate
             @param rate as int
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE albums SET rate=? WHERE rowid=?",
                         (rate, album_id))
 
@@ -144,7 +144,7 @@ class AlbumsDatabase:
             @param year as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE albums SET year=? WHERE rowid=?",
                         (year, album_id))
 
@@ -155,7 +155,7 @@ class AlbumsDatabase:
             @param timestamp as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE albums SET timestamp=? WHERE rowid=?",
                         (timestamp, album_id))
 
@@ -165,7 +165,7 @@ class AlbumsDatabase:
             @param Album id as int, uri as string
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE albums SET uri=? WHERE rowid=?",
                         (uri, album_id))
 
@@ -175,7 +175,7 @@ class AlbumsDatabase:
             @param album_id as int
             @param popularity as int
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             try:
                 sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                             (popularity, album_id))
@@ -282,7 +282,7 @@ class AlbumsDatabase:
             @param pop as int
             @raise sqlite3.OperationalError on db update
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             result = sql.execute("SELECT popularity from albums WHERE rowid=?",
                                  (album_id,))
             pop = result.fetchone()
@@ -1056,7 +1056,7 @@ class AlbumsDatabase:
             @param return True if album deleted or genre modified
             @warning commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             ret = False
             # Check album really have tracks from its genres
             for genre_id in self.get_genre_ids(album_id):

@@ -39,7 +39,7 @@ class ArtistsDatabase:
         """
         if sortname == "":
             sortname = format_artist_name(name)
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             result = sql.execute("INSERT INTO artists (name, sortname)\
                                   VALUES (?, ?)",
                                  (name, sortname))
@@ -52,7 +52,7 @@ class ArtistsDatabase:
             @param sort name a str
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE artists\
                          SET sortname=?\
                          WHERE rowid=?",
@@ -257,7 +257,7 @@ class ArtistsDatabase:
             @return cleaned as bool
             @warning commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             cleaned = False
             result = sql.execute("SELECT album_id from album_artists\
                                   WHERE artist_id=?\

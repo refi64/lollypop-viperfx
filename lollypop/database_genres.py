@@ -36,7 +36,7 @@ class GenresDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             result = sql.execute("INSERT INTO genres (name) VALUES (?)",
                                  (name,))
             return result.lastrowid
@@ -128,7 +128,7 @@ class GenresDatabase:
             @return cleaned as bool
             @warning commit needed
         """
-        with SqlCursor(App().db) as sql:
+        with SqlCursor(App().db, True) as sql:
             cleaned = False
             result = sql.execute("SELECT track_id from track_genres\
                                  WHERE genre_id=?\

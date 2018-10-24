@@ -63,7 +63,7 @@ class Playlists(GObject.GObject):
         f = Gio.File.new_for_path(self._DB_PATH)
         if not f.query_exists():
             try:
-                with SqlCursor(self) as sql:
+                with SqlCursor(self, True) as sql:
                     sql.execute(self.__create_playlists)
                     sql.execute(self.__create_tracks)
                     sql.execute("PRAGMA user_version=%s" % upgrade.version)
@@ -81,7 +81,7 @@ class Playlists(GObject.GObject):
         """
         if name == self.LOVED:
             return Type.LOVED
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             result = sql.execute("INSERT INTO playlists (name, mtime)"
                                  " VALUES (?, ?)",
                                  (name, datetime.now().strftime("%s")))
@@ -111,7 +111,7 @@ class Playlists(GObject.GObject):
             @param old_name as str
             @param new_name as str
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             playlist_id = self.get_id(old_name)
             sql.execute("UPDATE playlists\
                         SET name=?\
@@ -124,7 +124,7 @@ class Playlists(GObject.GObject):
             delete playlist
             @param playlist name as str
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             playlist_id = self.get_id(name)
             sql.execute("DELETE FROM playlists\
                         WHERE name=?",
@@ -139,7 +139,7 @@ class Playlists(GObject.GObject):
             Remove track from playlists
             @param uri as str
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             sql.execute("DELETE FROM tracks\
                         WHERE uri=?",
                         (uri,))
@@ -359,7 +359,7 @@ class Playlists(GObject.GObject):
             @param playlist_id as int
             @param synced as bool
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             sql.execute("UPDATE playlists\
                         SET synced=?\
                         WHERE rowid=?",
@@ -371,7 +371,7 @@ class Playlists(GObject.GObject):
             @param playlist id as int
             @param notify as bool
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             sql.execute("DELETE FROM tracks\
                          WHERE playlist_id=?", (playlist_id,))
             if notify:
@@ -384,7 +384,7 @@ class Playlists(GObject.GObject):
             @param tracks as [Track]
             @param notify as bool
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             changed = False
             for track in tracks:
                 if not self.exists_track(playlist_id, track):
@@ -406,7 +406,7 @@ class Playlists(GObject.GObject):
             @param playlist id as int
             @param uris as [str]
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             for uri in uris:
                 sql.execute("INSERT INTO tracks"
                             " VALUES (?, ?)",
@@ -421,7 +421,7 @@ class Playlists(GObject.GObject):
             @param playlist id as int
             @param tracks as [Track]
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             for track in tracks:
                 sql.execute("DELETE FROM tracks\
                              WHERE uri=?\

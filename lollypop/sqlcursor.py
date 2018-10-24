@@ -53,17 +53,22 @@ class SqlCursor:
             Release thread lock allowing others threads execution
         """
         name = current_thread().getName() + obj.__class__.__name__
-        if name in App().cursors.keys() and len(App().cursors.keys()) > 1:
+        if name in App().cursors.keys() and obj.thread_lock.count > 1:
+            App().cursors[name].commit()
             obj.thread_lock.release()
             sleep(0.01)
             obj.thread_lock.acquire()
 
-    def __init__(self, obj):
+    def __init__(self, obj, commit=False):
         """
-            Init object
+            Init object, if using multiple SqlCursor, parent commit param will
+            be used
+            @param obj as Database/Playlists/Radios
+            @param commit as bool
         """
         self.__obj = obj
         self.__creator = False
+        self.__commit = commit
 
     def __enter__(self):
         """
@@ -71,19 +76,20 @@ class SqlCursor:
         """
         name = current_thread().getName() + self.__obj.__class__.__name__
         if name not in App().cursors.keys():
-            self.__creator = True
             App().cursors[name] = self.__obj.get_cursor()
-            self.__obj.thread_lock.acquire()
+            self.__creator = True
+            if self.__commit:
+                self.__obj.thread_lock.acquire()
         return App().cursors[name]
 
     def __exit__(self, type, value, traceback):
         """
             If creator, close cursor and remove it
         """
-        if self.__creator:
-            name = current_thread().getName() + self.__obj.__class__.__name__
-            if name in App().cursors.keys():
+        name = current_thread().getName() + self.__obj.__class__.__name__
+        if name in App().cursors.keys() and self.__creator:
+            if self.__commit:
                 App().cursors[name].commit()
-                App().cursors[name].close()
-                del App().cursors[name]
-            self.__obj.thread_lock.release()
+                self.__obj.thread_lock.release()
+            App().cursors[name].close()
+            del App().cursors[name]

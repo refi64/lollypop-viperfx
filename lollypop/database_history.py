@@ -45,11 +45,11 @@ class History:
         self.thread_lock = Lock()
         # Create db schema
         try:
-            with SqlCursor(self) as sql:
+            with SqlCursor(self, True) as sql:
                 sql.execute(self.__create_history)
         except:
             pass
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             result = sql.execute("SELECT COUNT(*)\
                                   FROM history")
             v = result.fetchone()
@@ -75,7 +75,7 @@ class History:
             @param album_rate as int
             @thread safe
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             if self.exists(name, duration):
                 sql.execute("UPDATE history\
                              SET popularity=?,rate=?,ltime=?,mtime=?,\

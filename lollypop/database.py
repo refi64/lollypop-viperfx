@@ -24,6 +24,27 @@ from lollypop.localized import LocalizedCollation
 from lollypop.utils import noaccents
 
 
+class MyLock:
+    """
+        Lock with count
+    """
+    def __init__(self):
+        self.__lock = Lock()
+        self.__count = 0
+
+    def acquire(self):
+        self.__count += 1
+        self.__lock.acquire()
+
+    def release(self):
+        self.__count -= 1
+        self.__lock.release()
+
+    @property
+    def count(self):
+        return self.__count
+
+
 class Database:
     """
         Base database object
@@ -94,7 +115,7 @@ class Database:
         """
             Create database tables or manage update if needed
         """
-        self.thread_lock = Lock()
+        self.thread_lock = MyLock()
         f = Gio.File.new_for_path(self.DB_PATH)
         upgrade = DatabaseAlbumsUpgrade()
         if not f.query_exists():
@@ -103,7 +124,7 @@ class Database:
                 if not d.query_exists():
                     d.make_directory_with_parents()
                 # Create db schema
-                with SqlCursor(self) as sql:
+                with SqlCursor(self, True) as sql:
                     sql.execute(self.__create_albums)
                     sql.execute(self.__create_artists)
                     sql.execute(self.__create_genres)

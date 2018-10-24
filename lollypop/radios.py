@@ -45,7 +45,7 @@ class Radios(GObject.GObject):
         self.thread_lock = Lock()
         # Create db schema
         try:
-            with SqlCursor(self) as sql:
+            with SqlCursor(self, True) as sql:
                 sql.execute(self.create_radios)
         except:
             pass
@@ -57,7 +57,7 @@ class Radios(GObject.GObject):
             @param url as str
             @thread safe
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             if self.exists(name):
                 sql.execute("UPDATE radios\
                              SET url=?\
@@ -91,7 +91,7 @@ class Radios(GObject.GObject):
             @param old playlist name as str
             @param new playlist name as str
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             sql.execute("UPDATE radios\
                         SET name=?\
                         WHERE name=?",
@@ -103,7 +103,7 @@ class Radios(GObject.GObject):
             delete radio
             @param radio name as str
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             sql.execute("DELETE FROM radios\
                         WHERE name=?",
                         (name,))
@@ -167,7 +167,7 @@ class Radios(GObject.GObject):
             Set radio more popular
             @param name as str
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             result = sql.execute("SELECT popularity from radios WHERE name=?",
                                  (name,))
             pop = result.fetchone()
@@ -214,7 +214,7 @@ class Radios(GObject.GObject):
             @param name as str
             @param popularity as int
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             try:
                 sql.execute("UPDATE radios SET\
                             popularity=? WHERE name=?",
@@ -228,7 +228,7 @@ class Radios(GObject.GObject):
             @param name as str
             @param rate as int
         """
-        with SqlCursor(self) as sql:
+        with SqlCursor(self, True) as sql:
             try:
                 sql.execute("UPDATE radios SET\
                             rate=? WHERE name=?",
