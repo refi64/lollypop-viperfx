@@ -99,6 +99,13 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
+    @property
+    def is_populated(self):
+        """
+            True if album populated
+        """
+        return True
+
 #######################
 # PROTECTED           #
 #######################
