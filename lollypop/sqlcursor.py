@@ -86,10 +86,13 @@ class SqlCursor:
         """
             If creator, close cursor and remove it
         """
-        name = current_thread().getName() + self.__obj.__class__.__name__
+        current_thread_name = current_thread().getName()
+        name = current_thread_name + self.__obj.__class__.__name__
         if name in App().cursors.keys() and self.__creator:
             if self.__commit:
                 App().cursors[name].commit()
                 self.__obj.thread_lock.release()
-            App().cursors[name].close()
-            del App().cursors[name]
+            # Always keep main thread cursor in cache and open
+            if current_thread_name != "MainThread":
+                App().cursors[name].close()
+                del App().cursors[name]
