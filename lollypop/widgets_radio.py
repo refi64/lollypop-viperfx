@@ -135,6 +135,13 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             self._artwork.set_state(Gtk.StateType.NORMAL)
 
     @property
+    def is_populated(self):
+        """
+            True if album populated
+        """
+        return True
+
+    @property
     def id(self):
         """
             Return widget id (same value for all radio widgets)
