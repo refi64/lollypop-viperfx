@@ -366,7 +366,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         Logger.debug("CollectionScanner::add2db(): Update album")
         self.__update_album(album_id, album_artist_ids,
                             genre_ids, year, timestamp)
-        if new_album:
+        if new_album or new_genre_ids or new_artist_ids:
             SqlCursor.commit(App().db)
         for genre_id in new_genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
