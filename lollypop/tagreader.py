@@ -487,11 +487,10 @@ class TagReader(Discoverer):
             @param artists as [string]
             @param sortnames as [string]
             @param artist ids as int
-            @return ([int], [int])
+            @return [int]
             @commit needed
         """
         artist_ids = []
-        new_artist_ids = []
         sortsplit = sortnames.split(";")
         sortlen = len(sortsplit)
         i = 0
@@ -508,12 +507,11 @@ class TagReader(Discoverer):
                     if sortname is None:
                         sortname = format_artist_name(artist)
                     artist_id = App().artists.add(artist, sortname)
-                    new_artist_ids.append(artist_id)
                 elif sortname is not None:
                     App().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
-        return (artist_ids, new_artist_ids)
+        return artist_ids
 
     def add_genres(self, genres):
         """
@@ -524,7 +522,6 @@ class TagReader(Discoverer):
         """
         # Get all genre ids
         genre_ids = []
-        new_genre_ids = []
         for genre in genres.split(";"):
             genre = genre.strip()
             if genre != "":
@@ -532,9 +529,8 @@ class TagReader(Discoverer):
                 genre_id = App().genres.get_id(genre)
                 if genre_id is None:
                     genre_id = App().genres.add(genre)
-                    new_genre_ids.append(genre_id)
                 genre_ids.append(genre_id)
-        return (genre_ids, new_genre_ids)
+        return genre_ids
 
     def add_album(self, album_name, mb_album_id, artist_ids,
                   uri, loved, popularity, rate, mtime):
@@ -548,20 +544,18 @@ class TagReader(Discoverer):
             @param popularity as int
             @param rate as int
             @param mtime as int
-            @return (album id as int, new as bool)
+            @return album_id as int
             @commit needed
         """
         f = Gio.File.new_for_uri(uri)
         d = f.get_parent()
         parent_uri = "/" if d is None else d.get_uri()
-        new = False
         album_id = App().albums.get_id(album_name, mb_album_id, artist_ids)
         if album_id is None:
-            new = True
             album_id = App().albums.add(album_name, mb_album_id, artist_ids,
                                         parent_uri, loved, popularity,
                                         rate, mtime)
         # Now we have our album id, check if path doesn"t change
         if App().albums.get_uri(album_id) != parent_uri:
             App().albums.set_uri(album_id, parent_uri)
-        return (album_id, new)
+        return album_id

@@ -329,8 +329,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         Logger.debug("CollectionScanner::add2db(): "
                      "Add album artists %s" % album_artists)
-        (album_artist_ids,
-         new_artist_ids) = self.add_album_artists(album_artists, aa_sortnames)
+        album_artist_ids = self.add_album_artists(album_artists, aa_sortnames)
 
         # User does not want compilations
         if self.__disable_compilations and not album_artist_ids:
@@ -345,13 +344,12 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         Logger.debug("CollectionScanner::add2db(): Add album: "
                      "%s, %s" % (album_name, album_artist_ids))
-        (album_id, new_album) = self.add_album(album_name, mb_album_id,
-                                               album_artist_ids,
-                                               uri, loved, album_pop,
-                                               album_rate, mtime)
+        album_id = self.add_album(album_name, mb_album_id,
+                                  album_artist_ids,
+                                  uri, loved, album_pop,
+                                  album_rate, mtime)
 
-        (genre_ids,
-         new_genre_ids) = self.add_genres(genres)
+        genre_ids = self.add_genres(genres)
 
         # Add track to db
         Logger.debug("CollectionScanner::add2db(): Add track")
@@ -360,18 +358,14 @@ class CollectionScanner(GObject.GObject, TagReader):
                                     album_id, year, timestamp, track_pop,
                                     track_rate, track_ltime, mtime,
                                     mb_track_id)
-
+        SqlCursor.commit(App().db)
         Logger.debug("CollectionScanner::add2db(): Update track")
         self.__update_track(track_id, artist_ids, genre_ids)
         Logger.debug("CollectionScanner::add2db(): Update album")
         self.__update_album(album_id, album_artist_ids,
                             genre_ids, year, timestamp)
-        if new_album or new_genre_ids or new_artist_ids:
-            SqlCursor.commit(App().db)
-        for genre_id in new_genre_ids:
+        for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
-        for artist_id in new_artist_ids:
-            GLib.idle_add(self.emit, "artist-updated", artist_id, True)
         return track_id
 
     def __del_from_db(self, uri):
