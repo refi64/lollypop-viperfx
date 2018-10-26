@@ -67,13 +67,13 @@ class MtpSyncDb:
                     Logger.info("MtpSyncDb::__load_db():"
                                 " unknown sync db version")
         except Exception as e:
-            Logger.error("MtpSyncDb::load_db(): %s" % e)
+            Logger.error("MtpSyncDb::load(): %s" % e)
 
-    def save_db(self):
+    def save(self):
         """
             Saves the metadata db to the MTP device
         """
-        Logger.debug("MtpSyncDb::__save_db()")
+        Logger.debug("MtpSyncDb::__save()")
         jsondb = json.dumps({"version": 1,
                              "encoder": self.__encoder,
                              "normalize": self.__normalize,
@@ -81,13 +81,15 @@ class MtpSyncDb:
                                  {"uri": x, "metadata": y}
                                  for x, y in sorted(self.__metadata.items())]})
         dbfile = Gio.File.new_for_uri(self.__db_uri)
+        if dbfile.query_exists():
+            dbfile.delete(None)
         ok, _ = dbfile.replace_contents(
             jsondb.encode("utf-8"),
             None, False,
-            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            Gio.FileCreateFlags.NONE,
             None)
         if not ok:
-            Logger.error("MtpSyncDb::save_db() failed")
+            Logger.error("MtpSyncDb::save() failed")
 
     def set_encoder(self, encoder):
         """
@@ -238,6 +240,7 @@ class MtpSync(GObject.Object):
             self.__done = 0
             playlists = []
 
+            Logger.debug("Get new tracks before sync")
             # New tracks for synced albums
             album_ids = App().albums.get_synced_ids()
             for album_id in album_ids:
@@ -248,6 +251,7 @@ class MtpSync(GObject.Object):
                 playlists.append(App().playlists.get_name(playlist_id))
                 self.__total += len(App().playlists.get_tracks(playlist_id))
 
+            Logger.debug("Get old tracks")
             # Old tracks
             try:
                 children = self.__get_track_files()
@@ -257,18 +261,23 @@ class MtpSync(GObject.Object):
 
             # Copy new tracks to device
             if not self.__cancellable.is_cancelled():
+                Logger.debug("Sync albums")
                 self.__sync_albums()
+                Logger.debug("Sync playlists")
                 self.__sync_playlists(playlist_ids)
 
             # Remove old tracks from device
             if not self.__cancellable.is_cancelled():
+                Logger.debug("Remove from device")
                 self.__remove_from_device(playlist_ids)
 
             # Remove empty dirs
             if not self.__cancellable.is_cancelled():
+                Logger.debug("Remove empty dirs")
                 self.__remove_empty_dirs()
 
             if not self.__cancellable.is_cancelled():
+                Logger.debug("Remove old playlists")
                 # Remove old playlists
                 d = Gio.File.new_for_uri(self.__uri)
                 infos = d.enumerate_children(
@@ -281,17 +290,21 @@ class MtpSync(GObject.Object):
                         f = infos.get_child(info)
                         self.__retry(f.delete, (None,))
 
+            Logger.error("Create unsync")
             d = Gio.File.new_for_uri(self.__uri + "/unsync")
             if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
             Logger.error("MtpSync::__sync(): %s" % e)
         finally:
-            self.__mtp_syncdb.save_db()
+            Logger.debug("Save sync db")
+            self.__mtp_syncdb.save()
             self.__cancellable.cancel()
             if self.__errors:
+                Logger.debug("Sync errors")
                 GLib.idle_add(self.emit, "sync-errors")
             else:
+                Logger.debug("Sync finished")
                 GLib.idle_add(self.emit, "sync-finished")
 
     @property
