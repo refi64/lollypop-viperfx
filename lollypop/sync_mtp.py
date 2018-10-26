@@ -265,19 +265,21 @@ class MtpSync(GObject.Object):
                 self.__remove_from_device(playlist_ids)
 
             # Remove empty dirs
-            self.__remove_empty_dirs()
+            if not self.__cancellable.is_cancelled():
+                self.__remove_empty_dirs()
 
-            # Remove old playlists
-            d = Gio.File.new_for_uri(self.__uri)
-            infos = d.enumerate_children(
-                "standard::name",
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                None)
-            for info in infos:
-                name = info.get_name()
-                if name.endswith(".m3u") and name[:-4] not in playlists:
-                    f = infos.get_child(info)
-                    self.__retry(f.delete, (None,))
+            if not self.__cancellable.is_cancelled():
+                # Remove old playlists
+                d = Gio.File.new_for_uri(self.__uri)
+                infos = d.enumerate_children(
+                    "standard::name",
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                    None)
+                for info in infos:
+                    name = info.get_name()
+                    if name.endswith(".m3u") and name[:-4] not in playlists:
+                        f = infos.get_child(info)
+                        self.__retry(f.delete, (None,))
 
             d = Gio.File.new_for_uri(self.__uri + "/unsync")
             if not d.query_exists():
@@ -331,8 +333,9 @@ class MtpSync(GObject.Object):
             for a in args:
                 if isinstance(a, Gio.File):
                     Logger.info(a.get_uri())
-            sleep(5)
-            self.__retry(func, args, t - 1)
+            if self.__cancellable.is_cancelled():
+                sleep(5)
+                self.__retry(func, args, t - 1)
 
     def __remove_empty_dirs(self):
         """
@@ -343,6 +346,8 @@ class MtpSync(GObject.Object):
         try:
             # First get all directories
             while dir_uris:
+                if self.__cancellable.is_cancelled():
+                    break
                 uri = dir_uris.pop(0)
                 d = Gio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
@@ -350,6 +355,8 @@ class MtpSync(GObject.Object):
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                     None)
                 for info in infos:
+                    if self.__cancellable.is_cancelled():
+                        break
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
                             f = infos.get_child(info)
@@ -369,6 +376,8 @@ class MtpSync(GObject.Object):
                                 to_delete.append(f.get_uri())
             # Then delete
             for d in to_delete:
+                if self.__cancellable.is_cancelled():
+                    break
                 d = Gio.File.new_for_uri(d)
                 try:
                     d.delete()
@@ -388,6 +397,8 @@ class MtpSync(GObject.Object):
         if not d.query_exists():
             self.__retry(d.make_directory_with_parents, (None,))
         while dir_uris:
+            if self.__cancellable.is_cancelled():
+                break
             try:
                 uri = dir_uris.pop(0)
                 d = Gio.File.new_for_uri(uri)
@@ -396,6 +407,8 @@ class MtpSync(GObject.Object):
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                     None)
                 for info in infos:
+                    if self.__cancellable.is_cancelled():
+                        break
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
                             f = infos.get_child(info)
@@ -527,6 +540,8 @@ class MtpSync(GObject.Object):
             @param playlist_ids as [int]
         """
         for playlist_id in playlist_ids:
+            if self.__cancellable.is_cancelled():
+                break
             m3u = None
             stream = None
             playlist = App().playlists.get_name(playlist_id)
@@ -547,6 +562,8 @@ class MtpSync(GObject.Object):
             track_ids = App().playlists.get_track_ids(playlist_id)
             # Start copying
             for track_id in track_ids:
+                if self.__cancellable.is_cancelled():
+                    break
                 if track_id is None:
                     continue
                 track = Track(track_id)
@@ -588,6 +605,8 @@ class MtpSync(GObject.Object):
             track_ids += App().playlists.get_track_ids(playlist_id)
         # Get tracks uris
         for track_id in track_ids:
+            if self.__cancellable.is_cancelled():
+                break
             if self.__cancellable.is_cancelled():
                 return
             track = Track(track_id)
