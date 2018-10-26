@@ -81,13 +81,10 @@ class MtpSyncDb:
                                  {"uri": x, "metadata": y}
                                  for x, y in sorted(self.__metadata.items())]})
         dbfile = Gio.File.new_for_uri(self.__db_uri)
-        ok, _ = dbfile.replace_contents(
-            jsondb.encode("utf-8"),
-            None, False,
-            Gio.FileCreateFlags.REPLACE_DESTINATION,
-            None)
-        if not ok:
-            Logger.error("MtpSyncDb::save() failed")
+        (tmpfile, stream) = Gio.File.new_tmp()
+        stream.get_output_stream().write_all(jsondb.encode("utf-8"))
+        tmpfile.copy(dbfile, Gio.FileCopyFlags.OVERWRITE, None, None)
+        stream.close()
 
     def set_encoder(self, encoder):
         """
@@ -288,7 +285,7 @@ class MtpSync(GObject.Object):
                         f = infos.get_child(info)
                         self.__retry(f.delete, (None,))
 
-            Logger.error("Create unsync")
+            Logger.debug("Create unsync")
             d = Gio.File.new_for_uri(self.__uri + "/unsync")
             if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
