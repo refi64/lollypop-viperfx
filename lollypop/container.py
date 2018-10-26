@@ -822,7 +822,7 @@ class Container(Gtk.Overlay):
                 if child is not None:
                     child.destroy()
                 del self.__devices[dev.id]
-            break
+                break
 
     def __show_donation(self):
         """
