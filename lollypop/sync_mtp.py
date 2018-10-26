@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio, Gst
+from gi.repository import GLib, Gio, Gst, GObject
 
 from time import sleep
 from re import match
@@ -35,21 +35,21 @@ class MtpSyncDb:
         loaded before entering the scope and saving it when exiting.
     """
 
-    def __init__(self, base_uri):
+    def __init__(self):
         """
             Constructor for MtpSyncDb
-            @param base_uri as str
         """
-        self.__base_uri = base_uri
-        self.__db_uri = self.__base_uri + "/lollypop-sync.db"
         self.__encoder = "convert_none"
         self.__normalize = False
         self.__metadata = {}
 
-    def load_db(self):
+    def load(self, base_uri):
         """
             Loads the metadata db from the MTP device
+            @param base_uri as str
         """
+        self.__base_uri = base_uri
+        self.__db_uri = self.__base_uri + "/lollypop-sync.db"
         Logger.debug("MtpSyncDb::__load_db()")
         try:
             dbfile = Gio.File.new_for_uri(self.__db_uri)
@@ -160,12 +160,15 @@ class MtpSyncDb:
         return uri
 
 
-# TODO Rework this code: was designed
-# for playlists and then for albums, it sucks!
-class MtpSync:
+class MtpSync(GObject.Object):
     """
         Synchronisation to MTP devices
     """
+    __gsignals__ = {
+        "sync-progress": (GObject.SignalFlags.RUN_FIRST, None, (float,)),
+        "sync-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "sync-errors": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
 
     __ENCODE_START = 'filesrc location="%s" ! decodebin\
                             ! audioconvert\
@@ -195,28 +198,18 @@ class MtpSync:
         """
             Init MTP synchronisation
         """
-        self._syncing = False
+        GObject.Object.__init__(self)
+        self.__cancellable = Gio.Cancellable()
+        self.__cancellable.cancel()
         self.__errors = False
         self.__errors_count = 0
-        self._uri = ""
+        self.__uri = None
         self.__total = 0  # Total files to sync
         self.__done = 0   # Handled files on sync
-        self._fraction = 0.0
         self.__copied_art_uris = []
-        self.__mtp_syncdb = MtpSyncDb("")
+        self.__mtp_syncdb = MtpSyncDb()
 
-#######################
-# PROTECTED           #
-#######################
-    def _load_db_uri(self, uri):
-        """
-            Load mtp db at URI
-            @param uri as str
-        """
-        self.__mtp_syncdb = MtpSyncDb(uri)
-        self.__mtp_syncdb.load_db()
-
-    def _check_encoder_status(self, encoder):
+    def check_encoder_status(self, encoder):
         """
             Check encoder status
             @param encoder as str
@@ -226,25 +219,15 @@ class MtpSync:
             return True
         return False
 
-    def _update_progress(self):
-        """
-            Update progress bar. Do nothing
-        """
-        pass
-
-    def _on_finished(self):
-        """
-            Clean on finished. Do nothing
-        """
-        pass
-
-    def _sync(self):
+    def sync(self, uri):
         """
             Sync playlists with device. If playlists contains Type.NONE,
             sync albums marked as to be synced
+            @param uri as str
         """
         try:
-            self.__in_thread = True
+            self.__uri = uri
+            self.__cancellable.reset()
             self.__convert_bitrate = App().settings.get_value(
                 "convert-bitrate").get_int32()
             self.__errors = False
@@ -253,11 +236,7 @@ class MtpSync:
             # For progress bar
             self.__total = 1
             self.__done = 0
-            self._fraction = 0.0
             playlists = []
-
-            GLib.idle_add(App().window.container.progress.set_fraction,
-                          0, self)
 
             # New tracks for synced albums
             album_ids = App().albums.get_synced_ids()
@@ -275,22 +254,21 @@ class MtpSync:
                 self.__total += len(children)
             except:
                 pass
-            GLib.idle_add(self._update_progress)
 
             # Copy new tracks to device
-            if self._syncing:
+            if not self.__cancellable.is_cancelled():
                 self.__sync_albums()
                 self.__sync_playlists(playlist_ids)
 
             # Remove old tracks from device
-            if self._syncing:
+            if not self.__cancellable.is_cancelled():
                 self.__remove_from_device(playlist_ids)
 
             # Remove empty dirs
             self.__remove_empty_dirs()
 
             # Remove old playlists
-            d = Gio.File.new_for_uri(self._uri)
+            d = Gio.File.new_for_uri(self.__uri)
             infos = d.enumerate_children(
                 "standard::name",
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -301,21 +279,29 @@ class MtpSync:
                     f = infos.get_child(info)
                     self.__retry(f.delete, (None,))
 
-            d = Gio.File.new_for_uri(self._uri + "/unsync")
+            d = Gio.File.new_for_uri(self.__uri + "/unsync")
             if not d.query_exists():
                 self.__retry(d.make_directory_with_parents, (None,))
         except Exception as e:
-            Logger.error("DeviceManagerWidget::_sync(): %s" % e)
+            Logger.error("MtpSync::__sync(): %s" % e)
         finally:
             self.__mtp_syncdb.save_db()
-        self._fraction = 1.0
-        self._syncing = False
-        self.__in_thread = False
-        if self.__errors:
-            GLib.idle_add(self.__on_errors)
+            self.__cancellable.cancel()
+            if self.__errors:
+                GLib.idle_add(self.emit, "sync-errors")
+            else:
+                GLib.idle_add(self.emit, "sync-finished")
 
     @property
-    def mtp_syncdb(self):
+    def cancellable(self):
+        """
+            Get cancellable
+            @return Gio.Cancellable
+        """
+        return self.__cancellable
+
+    @property
+    def db(self):
         """
             Get sync db
         """
@@ -332,7 +318,7 @@ class MtpSync:
         """
         # Max allowed errors
         if self.__errors_count > 10:
-            self._syncing = False
+            self.__cancellable.cancel()
             return
         if t == 0:
             self.__errors_count += 1
@@ -353,7 +339,7 @@ class MtpSync:
             Delete empty dirs
         """
         to_delete = []
-        dir_uris = [self._uri]
+        dir_uris = [self.__uri]
         try:
             # First get all directories
             while dir_uris:
@@ -393,12 +379,12 @@ class MtpSync:
 
     def __get_track_files(self):
         """
-            Return files in self._uri/tracks
+            Return files in self.__uri/tracks
             @return [str]
         """
         children = []
-        dir_uris = [self._uri]
-        d = Gio.File.new_for_uri(self._uri)
+        dir_uris = [self.__uri]
+        d = Gio.File.new_for_uri(self.__uri)
         if not d.query_exists():
             self.__retry(d.make_directory_with_parents, (None,))
         while dir_uris:
@@ -430,9 +416,7 @@ class MtpSync:
             @param track as Track
             @return (str, str, str, bool)
         """
-        if not self._syncing:
-            self._fraction = 1.0
-            self.__in_thread = False
+        if self.__cancellable.is_cancelled():
             return
         Logger.debug("MtpSync::__sync_track_id(): %s" % track.uri)
         album_name = escape(track.album_name.lower())
@@ -440,12 +424,12 @@ class MtpSync:
         if is_compilation:
             artists = None
             on_device_album_uri = "%s/%s" %\
-                                  (self._uri,
+                                  (self.__uri,
                                    album_name)
         else:
             artists = escape(", ".join(track.album.artists).lower())
             on_device_album_uri = "%s/%s_%s" %\
-                                  (self._uri,
+                                  (self.__uri,
                                    artists,
                                    album_name)
 
@@ -471,7 +455,7 @@ class MtpSync:
         # Check extension, if not mp3, convert
         m = match(r".*(\.[^.]*)", track.uri)
         ext = m.group(1)
-        convert_ext = self.__EXTENSION[self.mtp_syncdb.encoder]
+        convert_ext = self.__EXTENSION[self.__mtp_syncdb.encoder]
         if convert_ext is not None and ext != convert_ext:
             convertion_needed = True
             track_name = track_name.replace(ext, convert_ext)
@@ -500,7 +484,8 @@ class MtpSync:
                     bus.add_signal_watch()
                     bus.connect("message::eos", self.__on_bus_eos)
                     self.__encoding = True
-                    while self.__encoding and self._syncing:
+                    while self.__encoding and\
+                            not self.__cancellable.is_cancelled():
                         sleep(1)
                     bus.disconnect_by_func(self.__on_bus_eos)
                     pipeline.set_state(Gst.State.PAUSED)
@@ -523,7 +508,8 @@ class MtpSync:
         else:
             self.__done += 1
         self.__done += 1
-        self._fraction = self.__done / self.__total
+        GLib.idle_add(self.emit, "sync-progress",
+                      self.__done / self.__total)
         return (track_name, artists, album_name, is_compilation)
 
     def __sync_albums(self):
@@ -583,7 +569,7 @@ class MtpSync:
             if m3u is not None:
                 playlist = escape(playlist)
                 dst = Gio.File.new_for_uri(
-                    self._uri + "/" + playlist + ".m3u")
+                    self.__uri + "/" + playlist + ".m3u")
                 self.__retry(m3u.move,
                              (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
@@ -602,18 +588,16 @@ class MtpSync:
             track_ids += App().playlists.get_track_ids(playlist_id)
         # Get tracks uris
         for track_id in track_ids:
-            if not self._syncing:
-                self._fraction = 1.0
-                self.__in_thread = False
+            if self.__cancellable.is_cancelled():
                 return
             track = Track(track_id)
             album_name = escape(track.album_name.lower())
             if track.album.artist_ids[0] == Type.COMPILATIONS:
-                on_device_album_uri = "%s/%s" % (self._uri,
+                on_device_album_uri = "%s/%s" % (self.__uri,
                                                  album_name)
             else:
                 artists = escape(", ".join(track.album.artists).lower())
-                on_device_album_uri = "%s/%s_%s" % (self._uri,
+                on_device_album_uri = "%s/%s_%s" % (self.__uri,
                                                     artists,
                                                     album_name)
             f = Gio.File.new_for_uri(track.uri)
@@ -621,7 +605,7 @@ class MtpSync:
             # Check extension, if converted, remove
             m = match(r".*(\.[^.]*)", track.uri)
             ext = m.group(1)
-            convert_ext = self.__EXTENSION[self.mtp_syncdb.encoder]
+            convert_ext = self.__EXTENSION[self.__mtp_syncdb.encoder]
             if convert_ext is not None and ext != convert_ext:
                 track_name = track_name.replace(ext, convert_ext)
             dst_uri = "%s/%s" % (on_device_album_uri, track_name)
@@ -633,9 +617,7 @@ class MtpSync:
 
         # Delete file on device and not in playlists
         for uri in on_mtp_files:
-            if not self._syncing:
-                self._fraction = 1.0
-                self.__in_thread = False
+            if self.__cancellable.is_cancelled():
                 return
             Logger.debug("MtpSync::__remove_from_device(): %s" % uri)
             if uri not in track_uris and uri not in self.__copied_art_uris:
@@ -645,7 +627,8 @@ class MtpSync:
                 self.__retry(to_delete.delete, (None,))
                 self.__mtp_syncdb.delete_uri(uri)
             self.__done += 1
-            self._fraction = self.__done / self.__total
+            GLib.idle_add(self.emit, "sync-progress",
+                          self.__done / self.__total)
 
     def __convert(self, src, dst):
         """
@@ -659,17 +642,17 @@ class MtpSync:
             src_path = src.get_path().replace("\\", "\\\\\\")
             dst_path = dst.get_path().replace("\\", "\\\\\\")
             pipeline_str = self.__ENCODE_START % src_path
-            if self.mtp_syncdb.normalize:
+            if self.__mtp_syncdb.normalize:
                 pipeline_str += self.__NORMALIZE
-            if self.mtp_syncdb.encoder in ["convert_vorbis", "convert_aac"]:
+            if self.__mtp_syncdb.encoder in ["convert_vorbis", "convert_aac"]:
                 convert_bitrate = self.__convert_bitrate * 1000
             else:
                 convert_bitrate = self.__convert_bitrate
             try:
-                pipeline_str += self.__ENCODERS[self.mtp_syncdb.encoder] %\
+                pipeline_str += self.__ENCODERS[self.__mtp_syncdb.encoder] %\
                     convert_bitrate
             except:
-                pipeline_str += self.__ENCODERS[self.mtp_syncdb.encoder]
+                pipeline_str += self.__ENCODERS[self.__mtp_syncdb.encoder]
             pipeline_str += self.__ENCODE_END % dst_path
             pipeline = Gst.parse_launch(pipeline_str)
             pipeline.set_state(Gst.State.PLAYING)
@@ -685,9 +668,3 @@ class MtpSync:
             @param message as Gst.Message
         """
         self.__encoding = False
-
-    def __on_errors(self):
-        """
-            Show something to the user. Do nothing.
-        """
-        pass

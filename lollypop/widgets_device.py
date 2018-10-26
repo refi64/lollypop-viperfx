@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GObject, Pango
+from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
 
@@ -22,15 +22,10 @@ from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
 
-# FIXME This class should not inherit MtpSync
-# TODO Rework MtpSync code
-class DeviceManagerWidget(Gtk.Bin, MtpSync):
+class DeviceManagerWidget(Gtk.Bin):
     """
         Widget for synchronize mtp devices
     """
-    __gsignals__ = {
-        "sync-finished": (GObject.SignalFlags.RUN_FIRST, None, ())
-    }
 
     def __init__(self, parent):
         """
@@ -39,10 +34,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param parent as Gtk.Widget
         """
         Gtk.Bin.__init__(self)
-        MtpSync.__init__(self)
+        self.__mtp_sync = MtpSync()
+        self.__mtp_sync.connect("sync-finished", self.__on_sync_finished)
+        self.__mtp_sync.connect("sync-progress", self.__on_sync_progress)
+        self.__mtp_sync.connect("sync-errors", self.__on_sync_errors)
         self.__parent = parent
-        self.__stop = False
-        self._uri = None
+        self.__uri = None
 
         self.__builder = Gtk.Builder()
         self.__builder.add_from_resource(
@@ -92,10 +89,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
             Populate playlists or albums for selected_ids
             @param selected_ids as [int]
-            @thread safe
         """
         self.__model.clear()
-        self.__stop = False
         if selected_ids[0] == Type.PLAYLISTS:
             playlists = [(Type.LOVED, App().playlists.LOVED)]
             playlists += App().playlists.get()
@@ -124,17 +119,17 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             self.__switch_albums.disconnect_by_func(self.__on_albums_state_set)
         except:
             pass
-        self._load_db_uri(uri)
-        encoder = self.mtp_syncdb.encoder
-        normalize = self.mtp_syncdb.normalize
+        self.__mtp_sync.db.load(uri)
+        encoder = self.__mtp_sync.db.encoder
+        normalize = self.__mtp_sync.db.normalize
         self.__switch_normalize = self.__builder.get_object("switch_normalize")
         self.__switch_normalize.set_sensitive(False)
         self.__switch_normalize.set_active(normalize)
         self.__builder.get_object(encoder).set_active(True)
-        for encoder in self._GST_ENCODER.keys():
-            if not self._check_encoder_status(encoder):
+        for encoder in self.__mtp_sync._GST_ENCODER.keys():
+            if not self.__mtp_sync.check_encoder_status(encoder):
                 self.__builder.get_object(encoder).set_sensitive(False)
-        self._uri = uri
+        self.__uri = uri
         d = Gio.File.new_for_uri(uri)
         try:
             if not d.query_exists():
@@ -142,52 +137,27 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         except:
             pass
 
-    def is_syncing(self):
-        """
-            @return True if syncing
-        """
-        return self._syncing
-
     def sync(self):
         """
             Start synchronisation
         """
-        self._syncing = True
         App().window.container.progress.add(self)
         self.__menu.set_sensitive(False)
         self.__view.set_sensitive(False)
         helper = TaskHelper()
-        helper.run(self._sync)
+        helper.run(self.__mtp_sync.sync, self.__uri)
 
-    def cancel_sync(self):
+    @property
+    def mtp_sync(self):
         """
-            Cancel synchronisation
+            MtpSync object
+            @return MtpSync
         """
-        self._syncing = False
+        return self.__mtp_sync
 
 #######################
 # PROTECTED           #
 #######################
-    def _update_progress(self):
-        """
-            Update progress bar smoothly
-        """
-        current = App().window.container.progress.get_fraction()
-        if self._syncing:
-            progress = (self._fraction - current) / 10
-        else:
-            progress = 0.01
-        if current < self._fraction:
-            App().window.container.progress.set_fraction(current + progress,
-                                                         self)
-        if current < 1.0:
-            if progress < 0.0002:
-                GLib.timeout_add(500, self._update_progress)
-            else:
-                GLib.timeout_add(25, self._update_progress)
-        else:
-            GLib.timeout_add(1000, self._on_finished)
-
     def _pop_menu(self, button):
         """
             Popup menu for album
@@ -202,35 +172,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         popover.add(self.__menu_items)
         popover.popup()
 
-    def _on_finished(self):
-        """
-            Emit finished signal
-        """
-        MtpSync._on_finished(self)
-        App().window.container.progress.set_fraction(1.0, self)
-        self.__view.set_sensitive(True)
-        self.__menu.set_sensitive(True)
-        self.emit("sync-finished")
-
-    def _on_errors(self):
-        """
-            Show information bar with error message
-        """
-        MtpSync._on_errors(self)
-        error_text = _("Unknown error while syncing,"
-                       " try to reboot your device")
-        try:
-            d = Gio.File.new_for_uri(self._uri)
-            info = d.query_filesystem_info("filesystem::free")
-            free = info.get_attribute_as_string("filesystem::free")
-
-            if free is None or int(free) < 1024:
-                error_text = _("No free space available on device")
-        except Exception as e:
-            Logger.error("DeviceWidget::_on_errors(): %s" % e)
-        self.__error_label.set_text(error_text)
-        self.__infobar.show()
-
     def _on_convert_toggled(self, widget):
         """
             Save option
@@ -240,11 +181,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             encoder = widget.get_name()
             if encoder == "convert_none":
                 self.__switch_normalize.set_sensitive(False)
-                self.mtp_syncdb.set_normalize(False)
-                self.mtp_syncdb.set_encoder("convert_none")
+                self.__mtp_sync.db.set_normalize(False)
+                self.__mtp_sync.db.set_encoder("convert_none")
             else:
                 self.__switch_normalize.set_sensitive(True)
-                self.mtp_syncdb.set_encoder(encoder)
+                self.__mtp_sync.db.set_encoder(encoder)
 
     def _on_normalize_state_set(self, widget, state):
         """
@@ -252,7 +193,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
-        self.mtp_syncdb.set_normalize(state)
+        self.__mtp_sync.db.set_normalize(state)
 
     def _on_response(self, infobar, response_id):
         """
@@ -272,7 +213,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param playlists as [(int, str)]
             @param synced_ids as [int]
         """
-        if playlists and not self.__stop:
+        if playlists:
             playlist = playlists.pop(0)
             selected = playlist[0] in synced_ids
             self.__model.append([selected, playlist[1], playlist[0]])
@@ -283,7 +224,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Append albums
             @param albums as [int]
         """
-        if albums and not self.__stop:
+        if albums:
             album = Album(albums.pop(0))
             synced = App().albums.get_synced(album.id)
             # Do not sync youtube albums
@@ -346,3 +287,39 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         width = max(400, allocation.width / 2)
         child_widget.set_size_request(width, -1)
+
+    def __on_sync_errors(self, mtp_sync):
+        """
+            Show information bar with error message
+            @param mtp_sync as MtpSync
+        """
+        error_text = _("Unknown error while syncing,"
+                       " try to reboot your device")
+        try:
+            d = Gio.File.new_for_uri(self.__uri)
+            info = d.query_filesystem_info("filesystem::free")
+            free = info.get_attribute_as_string("filesystem::free")
+
+            if free is None or int(free) < 1024:
+                error_text = _("No free space available on device")
+        except Exception as e:
+            Logger.error("DeviceWidget::_on_errors(): %s" % e)
+        self.__error_label.set_text(error_text)
+        self.__infobar.show()
+
+    def __on_sync_progress(self, mtp_sync, value):
+        """
+            Update progress bar
+            @param mtp_sync as MtpSync
+            @param value as float
+        """
+        App().window.container.progress.set_fraction(value, self)
+
+    def __on_sync_finished(self, mtp_sync):
+        """
+            Emit finished signal
+            @param mtp_sync as MtpSync
+        """
+        App().window.container.progress.set_fraction(1.0, self)
+        self.__view.set_sensitive(True)
+        self.__menu.set_sensitive(True)

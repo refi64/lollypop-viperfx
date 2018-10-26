@@ -84,7 +84,8 @@ class DeviceView(View):
         self.__syncing_btn.set_label(_("Synchronize %s") % "")
         builder.connect_signals(self)
         self.__device_widget = DeviceManagerWidget(self)
-        self.__device_widget.connect("sync-finished", self.__on_sync_finished)
+        self.__device_widget.mtp_sync.connect("sync-finished",
+                                              self.__on_sync_finished)
         self.__device_widget.show()
         grid = builder.get_object("device")
         self.add(grid)
@@ -123,7 +124,7 @@ class DeviceView(View):
             Check if lollypop is syncing
             @return bool
         """
-        return self.__device_widget.is_syncing()
+        return not self.__device_widget.mtp_sync.cancellable.is_cancelled()
 
     @property
     def device(self):
@@ -151,8 +152,8 @@ class DeviceView(View):
             Start synchronisation
             @param widget as Gtk.Button
         """
-        if self.__device_widget.is_syncing():
-            self.__device_widget.cancel_sync()
+        if not self.__device_widget.mtp_sync.cancellable.is_cancelled():
+            self.__device_widget.mtp_sync.cancellable.cancel()
         elif not App().window.container.progress.is_visible():
             self.__memory_combo.hide()
             self.__syncing_btn.set_label(_("Cancel synchronization"))
@@ -191,9 +192,6 @@ class DeviceView(View):
         self.__device.uri = uri
 
     def stop(self):
-        """
-            Stop syncing
-        """
         pass
 
     def __on_sync_finished(self, device_widget):
@@ -212,7 +210,7 @@ class DeviceView(View):
         """
         # Just update device widget if already populated
         if self.__memory_combo.get_active_text() is not None:
-            if not self.__device_widget.is_syncing():
+            if self.__device_widget.mtp_sync.cancellable.is_cancelled():
                 self.__device_widget.populate(self.__selected_ids)
             return
         for text in text_list:
