@@ -81,12 +81,10 @@ class MtpSyncDb:
                                  {"uri": x, "metadata": y}
                                  for x, y in sorted(self.__metadata.items())]})
         dbfile = Gio.File.new_for_uri(self.__db_uri)
-        if dbfile.query_exists():
-            dbfile.delete(None)
         ok, _ = dbfile.replace_contents(
             jsondb.encode("utf-8"),
             None, False,
-            Gio.FileCreateFlags.NONE,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
             None)
         if not ok:
             Logger.error("MtpSyncDb::save() failed")
