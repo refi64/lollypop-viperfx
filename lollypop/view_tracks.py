@@ -18,7 +18,7 @@ from lollypop.define import WindowSize, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Album
 from lollypop.logger import Logger
-from lollypop.define import App, Type, ResponsiveType, Shuffle, NextContext
+from lollypop.define import App, Type, Shuffle, NextContext
 
 
 class TracksView:
@@ -58,10 +58,6 @@ class TracksView:
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}
 
-        if self._responsive_type in [ResponsiveType.DND,
-                                     ResponsiveType.LIST,
-                                     ResponsiveType.SEARCH]:
-            self._album.merge_discs()
         # Discs to load, will be emptied
         self.__discs = list(self._album.discs)
         for disc in self.__discs:

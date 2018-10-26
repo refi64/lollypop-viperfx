@@ -234,14 +234,6 @@ class Album(Base):
         if artist_ids:
             self.artist_ids = artist_ids
 
-    def merge_discs(self):
-        """
-            Merge discs into one
-        """
-        tracks = self.tracks
-        self._discs = [Disc(self, 0)]
-        self._discs[0].set_tracks(tracks)
-
     def move_track(self, track, index):
         """
             Move track to index
