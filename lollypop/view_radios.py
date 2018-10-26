@@ -12,11 +12,14 @@
 
 from gi.repository import Gtk
 
+from gettext import gettext as _
+
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_radio import RadioWidget
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.controller_view import ViewController
+from lollypop.view import MessageView
 
 
 class RadiosView(FlowBoxView, ViewController):
@@ -43,6 +46,15 @@ class RadiosView(FlowBoxView, ViewController):
         self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
         self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("radio")
+
+    def show_warning(self):
+        """
+            Show a message to user
+        """
+        self._scrolled.hide()
+        view = MessageView(_("No favorite radios"))
+        view.show()
+        self.add(view)
 
 #######################
 # PROTECTED           #

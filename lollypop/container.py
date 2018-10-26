@@ -776,11 +776,11 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         radios = Radios()
         radio_ids = radios.get_ids()
+        view = RadiosView(radios)
         if radio_ids:
-            view = RadiosView(radios)
             view.populate(radio_ids)
         else:
-            view = MessageView(_("No favorite radios"))
+            view.show_warning()
         view.show()
         return view
 
