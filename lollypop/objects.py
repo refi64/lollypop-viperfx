@@ -244,6 +244,14 @@ class Album(Base):
             self._tracks.remove(track)
             self._tracks.insert(index, track)
 
+    def merge_discs(self):
+        """
+            Merge discs into one
+        """
+        tracks = self.tracks
+        self._discs = [Disc(self, 0)]
+        self._discs[0].set_tracks(tracks)
+
     def set_tracks(self, tracks):
         """
             Set album tracks

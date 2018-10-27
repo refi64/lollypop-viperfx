@@ -275,7 +275,11 @@ class TracksView:
             Return True if populated
             @return bool
         """
-        return len(self.__discs) == 0
+        # We allow __init__() to not be called (AlbumsViewList)
+        if hasattr(self, "__discs"):
+            return len(self.__discs) == 0
+        else:
+            return True
 
 #######################
 # PROTECTED           #

@@ -180,6 +180,7 @@ class Search:
         for key in album_tracks.keys():
             (album, tracks, score) = album_tracks[key]
             album.set_tracks(tracks)
+            album.merge_discs()
             albums.append((score, album, True))
         albums.sort(key=lambda tup: tup[0], reverse=True)
         return albums
