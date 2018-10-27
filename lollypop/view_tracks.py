@@ -234,14 +234,6 @@ class TracksView:
         """
         self.__loading = Loading.STOP
 
-    # FIXME: Fix property inheritance
-    def is_populated_func(self):
-        """
-            Return True if populated
-            @return bool
-        """
-        return len(self.__discs) == 0
-
     @property
     def height(self):
         """
@@ -276,6 +268,14 @@ class TracksView:
         for widget in self._tracks_widget_right.values():
             boxes.append(widget)
         return boxes
+
+    @property
+    def discs(self):
+        """
+            Get widget discs
+            @return [Discs]
+        """
+        return self.__discs
 
     @property
     def is_populated(self):

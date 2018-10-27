@@ -265,7 +265,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         """
             Populate remaining discs
         """
-        if not TracksView.is_populated_func(self):
+        if len(self.discs) > 0:
             TracksView.populate(self)
 
 #######################
