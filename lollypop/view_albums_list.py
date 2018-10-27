@@ -243,6 +243,14 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         # FIXME
 
     @property
+    def is_populated(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return True
+
+    @property
     def album(self):
         """
             Get album
@@ -257,7 +265,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         """
             Populate remaining discs
         """
-        if not self.is_populated:
+        if not TracksView.is_populated_func(self):
             TracksView.populate(self)
 
 #######################

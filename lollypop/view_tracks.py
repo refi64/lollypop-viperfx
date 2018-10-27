@@ -234,6 +234,14 @@ class TracksView:
         """
         self.__loading = Loading.STOP
 
+    # FIXME: Fix property inheritance
+    def is_populated_func(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return len(self.__discs) == 0
+
     @property
     def height(self):
         """
@@ -275,11 +283,7 @@ class TracksView:
             Return True if populated
             @return bool
         """
-        # We allow __init__() to not be called (AlbumsViewList)
-        if hasattr(self, "__discs"):
-            return len(self.__discs) == 0
-        else:
-            return True
+        return len(self.__discs) == 0
 
 #######################
 # PROTECTED           #
