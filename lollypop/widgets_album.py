@@ -78,7 +78,7 @@ class AlbumBaseWidget:
         """
             True if overlayed or going to be
         """
-        return self._show_overlay or self._timeout_id is not None
+        return self._show_overlay
 
 #######################
 # PROTECTED           #
