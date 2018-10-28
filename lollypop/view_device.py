@@ -86,7 +86,12 @@ class DeviceView(View):
         self.__device_widget = DeviceManagerWidget(self)
         self.__device_widget.mtp_sync.connect("sync-finished",
                                               self.__on_sync_finished)
+        self.__device_widget.mtp_sync.connect("sync-errors",
+                                              self.__on_sync_errors)
         self.__device_widget.show()
+        self.__infobar = builder.get_object("infobar")
+        self.__error_label = builder.get_object("error_label")
+
         grid = builder.get_object("device")
         self.add(grid)
         self.add(self._scrolled)
@@ -137,6 +142,17 @@ class DeviceView(View):
 #######################
 # PROTECTED           #
 #######################
+    def _on_infobar_response(self, infobar, response_id):
+        """
+            Hide infobar
+            @param widget as Gtk.Infobar
+            @param reponse id as int
+        """
+        if response_id == Gtk.ResponseType.CLOSE:
+            self.__infobar.set_revealed(False)
+            # WTF?
+            GLib.timeout_add(300, self.__infobar.hide)
+
     def _on_destroy(self, widget):
         """
             Remove running timeout
@@ -193,6 +209,18 @@ class DeviceView(View):
 
     def stop(self):
         pass
+
+    def __on_sync_errors(self, mtp_sync, error):
+        """
+            Show information bar with error message
+            @param mtp_sync as MtpSync
+            @param error as str
+        """
+        error_text = error or _("Unknown error while syncing,"
+                                " try to reboot your device")
+        self.__error_label.set_text(error_text)
+        self.__infobar.show()
+        self.__infobar.set_revealed(True)
 
     def __on_sync_finished(self, device_widget):
         """

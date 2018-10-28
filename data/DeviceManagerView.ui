@@ -12,8 +12,9 @@
   <object class="GtkGrid" id="device">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">center</property>
     <property name="margin_top">2</property>
+    <property name="row_spacing">5</property>
+    <property name="column_spacing">5</property>
     <child>
       <object class="GtkButton" id="sync_btn">
         <property name="visible">True</property>
@@ -21,7 +22,6 @@
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Synchronize to your device</property>
         <property name="halign">center</property>
-        <property name="valign">end</property>
         <property name="margin_start">5</property>
         <property name="margin_end">5</property>
         <property name="image">image1</property>
@@ -29,8 +29,8 @@
         <signal name="clicked" handler="_on_sync_clicked" swapped="no"/>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
+        <property name="left_attach">1</property>
+        <property name="top_attach">1</property>
       </packing>
     </child>
     <child>
@@ -38,13 +38,101 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
-        <property name="valign">start</property>
         <property name="margin_start">5</property>
         <signal name="changed" handler="_on_memory_combo_changed" swapped="no"/>
       </object>
       <packing>
-        <property name="left_attach">1</property>
+        <property name="left_attach">2</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkInfoBar" id="infobar">
+        <property name="can_focus">False</property>
+        <property name="message_type">error</property>
+        <property name="show_close_button">True</property>
+        <property name="revealed">False</property>
+        <signal name="response" handler="_on_infobar_response" swapped="no"/>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="spacing">6</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child internal-child="content_area">
+          <object class="GtkBox">
+            <property name="can_focus">False</property>
+            <property name="spacing">16</property>
+            <child>
+              <object class="GtkLabel" id="error_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">0</property>
+        <property name="width">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">3</property>
+        <property name="top_attach">1</property>
       </packing>
     </child>
   </object>

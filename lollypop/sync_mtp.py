@@ -73,18 +73,22 @@ class MtpSyncDb:
         """
             Saves the metadata db to the MTP device
         """
-        Logger.debug("MtpSyncDb::__save()")
-        jsondb = json.dumps({"version": 1,
+        try:
+            Logger.debug("MtpSyncDb::__save()")
+            jsondb = json.dumps(
+                            {"version": 1,
                              "encoder": self.__encoder,
                              "normalize": self.__normalize,
                              "tracks_metadata": [
                                  {"uri": x, "metadata": y}
                                  for x, y in sorted(self.__metadata.items())]})
-        dbfile = Gio.File.new_for_uri(self.__db_uri)
-        (tmpfile, stream) = Gio.File.new_tmp()
-        stream.get_output_stream().write_all(jsondb.encode("utf-8"))
-        tmpfile.copy(dbfile, Gio.FileCopyFlags.OVERWRITE, None, None)
-        stream.close()
+            dbfile = Gio.File.new_for_uri(self.__db_uri)
+            (tmpfile, stream) = Gio.File.new_tmp()
+            stream.get_output_stream().write_all(jsondb.encode("utf-8"))
+            tmpfile.copy(dbfile, Gio.FileCopyFlags.OVERWRITE, None, None)
+            stream.close()
+        except Exception as e:
+            Logger.error("MtpSyncDb::__save(): %s", e)
 
     def set_encoder(self, encoder):
         """
@@ -164,7 +168,7 @@ class MtpSync(GObject.Object):
     __gsignals__ = {
         "sync-progress": (GObject.SignalFlags.RUN_FIRST, None, (float,)),
         "sync-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
-        "sync-errors": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "sync-errors": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
     __ENCODE_START = 'filesrc location="%s" ! decodebin\
@@ -198,8 +202,8 @@ class MtpSync(GObject.Object):
         GObject.Object.__init__(self)
         self.__cancellable = Gio.Cancellable()
         self.__cancellable.cancel()
-        self.__errors = False
         self.__errors_count = 0
+        self.__last_error = ""
         self.__uri = None
         self.__total = 0  # Total files to sync
         self.__done = 0   # Handled files on sync
@@ -227,7 +231,6 @@ class MtpSync(GObject.Object):
             self.__cancellable.reset()
             self.__convert_bitrate = App().settings.get_value(
                 "convert-bitrate").get_int32()
-            self.__errors = False
             self.__errors_count = 0
             self.__copied_art_uris = []
             # For progress bar
@@ -295,12 +298,11 @@ class MtpSync(GObject.Object):
             Logger.debug("Save sync db")
             self.__mtp_syncdb.save()
             self.__cancellable.cancel()
-            if self.__errors:
+            if self.__errors_count != 0:
                 Logger.debug("Sync errors")
-                GLib.idle_add(self.emit, "sync-errors")
-            else:
-                Logger.debug("Sync finished")
-                GLib.idle_add(self.emit, "sync-finished")
+                GLib.idle_add(self.emit, "sync-errors", self.__last_error)
+            Logger.debug("Sync finished")
+            GLib.idle_add(self.emit, "sync-finished")
 
     @property
     def cancellable(self):
@@ -320,30 +322,23 @@ class MtpSync(GObject.Object):
 ############
 # Private  #
 ############
-    def __retry(self, func, args, t=5):
+    def __retry(self, func, args):
         """
-            Try to execute func 5 times
+            Try to execute func and handle errors
             @param func as function
             @param args as tuple
         """
         # Max allowed errors
-        if self.__errors_count > 10:
+        if self.__errors_count > 5:
             self.__cancellable.cancel()
-            return
-        if t == 0:
-            self.__errors_count += 1
-            self.__errors = True
             return
         try:
             func(*args)
         except Exception as e:
             Logger.error("MtpSync::_retry(%s, %s): %s" % (func, args, e))
-            for a in args:
-                if isinstance(a, Gio.File):
-                    Logger.info(a.get_uri())
-            if self.__cancellable.is_cancelled():
-                sleep(5)
-                self.__retry(func, args, t - 1)
+            self.__last_error = e
+            self.__errors_count += 1
+            sleep(1)
 
     def __remove_empty_dirs(self):
         """
@@ -437,8 +432,6 @@ class MtpSync(GObject.Object):
             @param track as Track
             @return (str, str, str, bool)
         """
-        if self.__cancellable.is_cancelled():
-            return
         Logger.debug("MtpSync::__sync_track_id(): %s" % track.uri)
         album_name = escape(track.album_name.lower())
         is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
@@ -540,6 +533,8 @@ class MtpSync(GObject.Object):
         album_ids = App().albums.get_synced_ids()
         for album_id in album_ids:
             for track_id in App().albums.get_track_ids(album_id):
+                if self.__cancellable.is_cancelled():
+                    return
                 self.__sync_track_id(Track(track_id))
 
     def __sync_playlists(self, playlist_ids):

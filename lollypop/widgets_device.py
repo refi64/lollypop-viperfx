@@ -18,7 +18,6 @@ from lollypop.sync_mtp import MtpSync
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.define import App, Type
 from lollypop.objects import Album
-from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
 
@@ -37,7 +36,6 @@ class DeviceManagerWidget(Gtk.Bin):
         self.__mtp_sync = MtpSync()
         self.__mtp_sync.connect("sync-finished", self.__on_sync_finished)
         self.__mtp_sync.connect("sync-progress", self.__on_sync_progress)
-        self.__mtp_sync.connect("sync-errors", self.__on_sync_errors)
         self.__parent = parent
         self.__uri = None
 
@@ -47,7 +45,6 @@ class DeviceManagerWidget(Gtk.Bin):
         widget = self.__builder.get_object("widget")
         self.connect("size-allocate", self.__on_size_allocate, widget)
 
-        self.__error_label = self.__builder.get_object("error-label")
         self.__switch_albums = self.__builder.get_object("switch_albums")
 
         self.__menu_items = self.__builder.get_object("menu-items")
@@ -61,9 +58,6 @@ class DeviceManagerWidget(Gtk.Bin):
         self.__builder.connect_signals(self)
 
         self.add(widget)
-
-        self.__infobar = self.__builder.get_object("infobar")
-        self.__infobar_label = self.__builder.get_object("infobarlabel")
 
         renderer0 = Gtk.CellRendererToggle()
         renderer0.set_property("activatable", True)
@@ -148,6 +142,14 @@ class DeviceManagerWidget(Gtk.Bin):
         helper.run(self.__mtp_sync.sync, self.__uri)
 
     @property
+    def uri(self):
+        """
+            Get device uri
+            @return str
+        """
+        return self.__uri
+
+    @property
     def mtp_sync(self):
         """
             MtpSync object
@@ -194,15 +196,6 @@ class DeviceManagerWidget(Gtk.Bin):
             @param state as bool
         """
         self.__mtp_sync.db.set_normalize(state)
-
-    def _on_response(self, infobar, response_id):
-        """
-            Hide infobar
-            @param widget as Gtk.Infobar
-            @param reponse id as int
-        """
-        if response_id == Gtk.ResponseType.CLOSE:
-            self.__infobar.hide()
 
 #######################
 # PRIVATE             #
@@ -287,25 +280,6 @@ class DeviceManagerWidget(Gtk.Bin):
         """
         width = max(400, allocation.width / 2)
         child_widget.set_size_request(width, -1)
-
-    def __on_sync_errors(self, mtp_sync):
-        """
-            Show information bar with error message
-            @param mtp_sync as MtpSync
-        """
-        error_text = _("Unknown error while syncing,"
-                       " try to reboot your device")
-        try:
-            d = Gio.File.new_for_uri(self.__uri)
-            info = d.query_filesystem_info("filesystem::free")
-            free = info.get_attribute_as_string("filesystem::free")
-
-            if free is None or int(free) < 1024:
-                error_text = _("No free space available on device")
-        except Exception as e:
-            Logger.error("DeviceWidget::_on_errors(): %s" % e)
-        self.__error_label.set_text(error_text)
-        self.__infobar.show()
 
     def __on_sync_progress(self, mtp_sync, value):
         """
