@@ -27,11 +27,12 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.608" date="2018-10-24">
+    <release version="0.9.610" date="2018-10-28">
       <description>
         <ul>
-	  <li>Fix hang while updating collection</li>
-	  <li>Fix an issue with multiple disc albums</li>
+	  <li>Fix broken MTP sync on GNOME 3.30</li>
+	  <li>Fix a crash about album discs</li>
+	  <li>Fix broken radio view</li>
         </ul>
       </description>
     </release>
