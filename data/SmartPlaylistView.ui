@@ -32,7 +32,7 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
+        <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkListBox" id="listbox">
@@ -76,9 +76,9 @@
         </style>
       </object>
       <packing>
-        <property name="left_attach">1</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="width">5</property>
+        <property name="width">6</property>
       </packing>
     </child>
     <child>
@@ -152,9 +152,9 @@
         </child>
       </object>
       <packing>
-        <property name="left_attach">1</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">2</property>
-        <property name="width">5</property>
+        <property name="width">6</property>
       </packing>
     </child>
     <child>
@@ -242,12 +242,6 @@
         <property name="left_attach">0</property>
         <property name="top_attach">0</property>
       </packing>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
 </interface>

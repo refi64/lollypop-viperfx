@@ -38,7 +38,9 @@ class SmartPlaylistView(View):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SmartPlaylistView.ui")
         builder.connect_signals(self)
-        self._viewport.add(builder.get_object("widget"))
+        widget = builder.get_object("widget")
+        self.connect("size-allocate", self.__on_size_allocate, widget)
+        self._viewport.add(widget)
         self.__listbox = builder.get_object("listbox")
         self._scrolled.set_property("expand", True)
         self.__limit_toggle = builder.get_object("limit_toggle")
@@ -177,3 +179,13 @@ class SmartPlaylistView(View):
             @param widget as Gtk.Widget
         """
         App().window.enable_global_shortcuts(True)
+
+    def __on_size_allocate(self, widget, allocation, child_widget):
+        """
+            Set child widget size
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+            @param child_widget as Gtk.Widget
+        """
+        width = max(400, allocation.width / 2)
+        child_widget.set_size_request(width, -1)
