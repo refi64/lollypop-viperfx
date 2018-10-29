@@ -45,6 +45,8 @@ class Playlists(GObject.GObject):
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
                             synced INT NOT NULL DEFAULT 0,
+                            smart_enabled INT NOT NULL DEFAULT 0,
+                            smart_sql TEXT,
                             mtime BIGINT NOT NULL)"""
 
     __create_tracks = """CREATE TABLE tracks (
@@ -330,6 +332,7 @@ class Playlists(GObject.GObject):
         """
             True if playlist synced
             @param playlist_id as int
+            @return bool
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT synced\
@@ -353,6 +356,36 @@ class Playlists(GObject.GObject):
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
 
+    def get_smart(self, playlist_id):
+        """
+            True if playlist is smart
+            @param playlist_id as int
+            @return bool
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT smart_enabled\
+                                 FROM playlists\
+                                 WHERE rowid=?", (playlist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return False
+
+    def get_smart_sql(self, playlist_id):
+        """
+            Get SQL smart request
+            @param playlist_id as int
+            @return str
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT smart_sql\
+                                 FROM playlists\
+                                 WHERE rowid=?", (playlist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
     def set_synced(self, playlist_id, synced):
         """
             Mark playlist as synced
@@ -364,6 +397,30 @@ class Playlists(GObject.GObject):
                         SET synced=?\
                         WHERE rowid=?",
                         (synced, playlist_id))
+
+    def set_smart(self, playlist_id, smart):
+        """
+            Mark playlist as smart
+            @param playlist_id as int
+            @param smart as bool
+        """
+        with SqlCursor(self, True) as sql:
+            sql.execute("UPDATE playlists\
+                        SET smart_enabled=?\
+                        WHERE rowid=?",
+                        (smart, playlist_id))
+
+    def set_smart_sql(self, playlist_id, request):
+        """
+            Set playlist SQL smart request
+            @param playlist_id as int
+            @param request as str
+        """
+        with SqlCursor(self, True) as sql:
+            sql.execute("UPDATE playlists\
+                        SET smart_sql=?\
+                        WHERE rowid=?",
+                        (request, playlist_id))
 
     def clear(self, playlist_id, notify=True):
         """

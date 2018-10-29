@@ -120,6 +120,20 @@ class Container(Gtk.Overlay):
         self.__stack.set_visible_child(view)
         current.disable_overlay()
 
+    def show_smart_playlist_editor(self, playlist_id):
+        """
+            Show a view allowing user to edit smart view
+            @param playlist_id as int
+        """
+        from lollypop.view_playlist_smart import SmartPlaylistView
+        current = self.__stack.get_visible_child()
+        view = SmartPlaylistView(playlist_id)
+        view.populate()
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        current.disable_overlay()
+
     def show_playlist_manager(self, obj):
         """
             Show playlist manager for object_id
@@ -755,8 +769,18 @@ class Container(Gtk.Overlay):
                         track_ids.append(track_id)
             return track_ids
 
+        def load_smart():
+            request = App().playlists.get_smart_sql(playlist_ids[0])
+            return App().db.execute(request)
+
         self.__stop_current_view()
-        if playlist_ids:
+        if len(playlist_ids) == 1 and\
+                App().playlists.get_smart(playlist_ids[0]):
+            from lollypop.view_playlists import PlaylistsView
+            view = PlaylistsView(playlist_ids)
+            loader = Loader(target=load_smart, view=view)
+            loader.start()
+        elif playlist_ids:
             from lollypop.view_playlists import PlaylistsView
             view = PlaylistsView(playlist_ids)
             loader = Loader(target=load, view=view)

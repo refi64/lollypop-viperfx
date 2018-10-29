@@ -55,6 +55,16 @@ popover.background separator {
     margin: 0px;
 }
 
+.light-border {
+    border: 1px solid shade(@theme_bg_color, 0.7);
+    border-radius: 3px;
+    padding: 10px;    
+}
+
+.no-top-border {
+    border-top: none;
+}
+
 .invisible-widget {
     background-color: @theme_bg_color;
 }

@@ -53,12 +53,17 @@ class PlaylistsView(View, ViewController):
         builder.get_object("title").set_label(
             ", ".join(App().playlists.get_names(playlist_ids)))
 
-        self.__jump_button = builder.get_object("jump-button")
-        split_button = builder.get_object("split-button")
+        self.__jump_button = builder.get_object("jump_button")
+        split_button = builder.get_object("split_button")
+        smart_button = builder.get_object("smart_button")
+
         if editable:
             split_button.set_active(not App().settings.get_value("split-view"))
         else:
             split_button.hide()
+
+        if not editable or len(playlist_ids) > 1 or playlist_ids[0] < 0:
+            smart_button.hide()
 
         self.__playlists_widget = PlaylistsWidget(playlist_ids)
         self.__playlists_widget.set_filter_func(self._filter_func)
@@ -228,7 +233,7 @@ class PlaylistsView(View, ViewController):
 
     def _on_shuffle_button_clicked(self, button):
         """
-            Play playlist
+            Play playlist shuffled
             @param button as Gtk.Button
         """
         tracks = []
@@ -239,6 +244,14 @@ class PlaylistsView(View, ViewController):
             App().player.load(tracks[0])
             App().player.populate_playlist_by_tracks(tracks,
                                                      self.__playlist_ids)
+
+    def _on_smart_button_clicked(self, button):
+        """
+            Edit smart playlist
+            @param button as Gtk.Button
+        """
+        App().window.container.show_smart_playlist_editor(
+            self.__playlist_ids[0])
 
 #######################
 # PRIVATE             #

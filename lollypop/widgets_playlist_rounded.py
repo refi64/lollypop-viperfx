@@ -141,7 +141,12 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @return [int]
         """
         album_ids = []
-        self.__track_ids = App().playlists.get_track_ids(self._data)
+        if App().playlists.get_smart(self._data):
+            request = App().playlists.get_smart_sql(self._data)
+            if request is not None:
+                self.__track_ids = App().db.execute(request)
+        else:
+            self.__track_ids = App().playlists.get_track_ids(self._data)
         sample(self.__track_ids, len(self.__track_ids))
         for track_id in self.__track_ids:
             track = Track(track_id)

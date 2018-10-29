@@ -14,6 +14,7 @@ from gi.repository import GLib, Gio
 
 import sqlite3
 from threading import Lock
+import itertools
 
 from lollypop.define import App
 from lollypop.objects import Album
@@ -142,6 +143,16 @@ class Database:
                 Logger.error("Database::__init__(): %s" % e)
         else:
             upgrade.upgrade(self)
+
+    def execute(self, request):
+        """
+            Execute SQL request
+            @param request as str
+            @return list
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute(request)
+            return list(itertools.chain(*result))
 
     def get_cursor(self):
         """

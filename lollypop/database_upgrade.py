@@ -86,7 +86,9 @@ class DatabasePlaylistsUpgrade(DatabaseUpgrade):
         """
         DatabaseUpgrade.__init__(self)
         self._UPGRADES = {
-            1: "ALTER TABLE playlists ADD synced INT NOT NULL DEFAULT 0",
+           1: "ALTER TABLE playlists ADD synced INT NOT NULL DEFAULT 0",
+           2: "ALTER TABLE playlists ADD smart_enabled INT NOT NULL DEFAULT 0",
+           3: "ALTER TABLE playlists ADD smart_sql TEXT"
         }
 
 
