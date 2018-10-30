@@ -117,7 +117,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
                 value = request_value
             sql = "(track_genres.genre_id = genres.rowid" +\
                   " AND tracks.rowid = track_genres.track_id" +\
-                  " AND ((genres.name %s '%s')) )"
+                  " AND ((genres.name %s '%s' COLLATE NOCASE)) )"
             sql = sql % (request_check, value)
         elif request_type == "album":
             request_value = self.__entry.get_text().replace("'", "''")
@@ -126,7 +126,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
             else:
                 value = request_value
             sql = "(tracks.album_id = albums.rowid" +\
-                  " AND ((albums.name %s '%s')) )"
+                  " AND ((albums.name %s '%s' COLLATE NOCASE)) )"
             sql = sql % (request_check, value)
         elif request_type == "artist":
             request_value = self.__entry.get_text().replace("'", "''")
@@ -136,7 +136,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
                 value = request_value
             sql = "(track_artists.artist_id = artists.rowid" +\
                   " AND tracks.rowid = track_artists.track_id" +\
-                  " AND ((artists.name %s '%s')) )"
+                  " AND ((artists.name %s '%s' COLLATE NOCASE)) )"
             sql = sql % (request_check, value)
         return sql
 
