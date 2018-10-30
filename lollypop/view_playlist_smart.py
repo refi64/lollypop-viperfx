@@ -43,7 +43,6 @@ class SmartPlaylistView(View):
         self._viewport.add(widget)
         self.__listbox = builder.get_object("listbox")
         self._scrolled.set_property("expand", True)
-        self.__limit_toggle = builder.get_object("limit_toggle")
         self.__match_toggle = builder.get_object("match_toggle")
         self.__operand_combobox = builder.get_object("operand_combobox")
         self.__select_combobox = builder.get_object("select_combobox")
@@ -83,7 +82,6 @@ class SmartPlaylistView(View):
         try:
             split_limit = sql.split("LIMIT")
             limit = int(split_limit[1].split(" ")[1])
-            self.__limit_toggle.set_active(True)
             self.__limit_spin.set_value(limit)
         except Exception as e:
                 Logger.warning("SmartPlaylistView::populate: %s", e)
@@ -138,8 +136,7 @@ class SmartPlaylistView(View):
             request += subrequest + " UNION "
         request = request[:-7]  # " UNION "
         request += " ORDER BY %s DESC" % orderby
-        if self.__limit_toggle.get_active():
-            request += " LIMIT %s" % int(self.__limit_spin.get_value())
+        request += " LIMIT %s" % int(self.__limit_spin.get_value())
         return request
 
     def __get_and_request(self):
@@ -165,8 +162,7 @@ class SmartPlaylistView(View):
             request += ", %s" % "track_artists"
         orderby = self.__select_combobox.get_active_id()
         subrequest += " ORDER BY %s DESC" % orderby
-        if self.__limit_toggle.get_active():
-            subrequest += " LIMIT %s" % int(self.__limit_spin.get_value())
+        subrequest += " LIMIT %s" % int(self.__limit_spin.get_value())
         return request + subrequest
 
     def _on_add_rule_button_clicked(self, button):
@@ -175,13 +171,6 @@ class SmartPlaylistView(View):
             @param button as Gtk.Button
         """
         self.__populate()
-
-    def _on_limit_toggle_toggled(self, button):
-        """
-            Enable/Disable limit spin button
-            @param button as GtkButton
-        """
-        self.__limit_spin.set_sensitive(button.get_active())
 
     def _on_match_check_button_toggled(self, button):
         """
