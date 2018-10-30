@@ -61,7 +61,13 @@ class PlaylistsManagerView(FlowBoxView):
             Populate items
             @param items
         """
-        if self.__obj is None:
+        if self.__obj is not None:
+            new_items = []
+            for item in items:
+                if not App().playlists.get_smart(item):
+                    new_items.append(item)
+            items = new_items
+        else:
             items = [i[0] for i in ShownPlaylists.get()] + items
         FlowBoxView.populate(self, items)
 
