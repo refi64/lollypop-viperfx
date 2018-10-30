@@ -385,7 +385,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param context as Gdk.DragContext
             @param time as int
         """
-        self.stack.set_visible_child(self.__container)
+        # FIXME
+        return
+        self.__stack.set_visible_child(self.__container)
 
     def __on_hide(self, window):
         """
