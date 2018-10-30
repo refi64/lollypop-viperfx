@@ -53,6 +53,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
             Try to set widget from item
             @param item as str
         """
+        item = item.replace(" COLLATE NOCASE", "")
         (t, self.__operand, value) = item.split(" ")
         # Unquote value
         if value[0] == "'":
