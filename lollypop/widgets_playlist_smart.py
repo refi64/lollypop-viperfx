@@ -54,7 +54,8 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
             @param item as str
         """
         item = item.replace(" COLLATE NOCASE", "")
-        (t, self.__operand, value) = item.split(" ")
+        (t, self.__operand, *args) = item.split(" ")
+        value = " ".join(list(args))
         # Unquote value
         if value[0] == "'":
             value = value[1:]
