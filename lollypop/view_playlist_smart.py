@@ -63,14 +63,16 @@ class SmartPlaylistView(View):
         if sql is None:
             return
         try:
-            operand = sql.split(")) )")[1].split(" ")[1]
+            if sql.find(" UNION ") != -1:
+                operand = "OR"
+            else:
+                operand = "AND"
             self.__operand_combobox.set_active_id(operand)
         except Exception as e:
             self.__operand_combobox.set_active(0)
             Logger.warning("SmartPlaylistView::populate: %s", e)
         # Setup rows
-        where = sql.split("WHERE")[1]
-        for line in where.split("((")[1:]:
+        for line in sql.split("((")[1:]:
             widget = SmartPlaylistRow(self.__size_group)
             try:
                 widget.set(line.split("))")[0])
@@ -102,11 +104,54 @@ class SmartPlaylistView(View):
             @param button as Gtk.Button
         """
         operand = self.__operand_combobox.get_active_id()
+        if operand == "AND":
+            request = self.__get_and_request()
+        else:
+            request = self.__get_or_request()
+        App().playlists.set_smart_sql(self.__playlist_id, request)
+
+    def __get_or_request(self):
+        """
+            Get request for AND operand
+            @return str
+        """
+        request = ""
+        orderby = self.__select_combobox.get_active_id()
+        for child in self.__listbox.get_children():
+            if child.sql is None:
+                continue
+            request += "SELECT DISTINCT(tracks.rowid)"
+            if orderby != "random()":
+                request += ", %s" % orderby
+            request += " FROM tracks"
+            subrequest = " WHERE %s" % child.sql
+            if subrequest.find("genres.") != -1:
+                request += ", %s" % "genres"
+            if subrequest.find("artists.") != -1:
+                request += ", %s" % "artists"
+            if subrequest.find("albums.") != -1:
+                request += ", %s" % "albums"
+            if subrequest.find("track_genres.") != -1:
+                request += ", %s" % "track_genres"
+            if subrequest.find("track_artists.") != -1:
+                request += ", %s" % "track_artists"
+            request += subrequest + " UNION "
+        request = request[:-7]  # " UNION "
+        request += " ORDER BY %s DESC" % orderby
+        if self.__limit_toggle.get_active():
+            request += " LIMIT %s" % int(self.__limit_spin.get_value())
+        return request
+
+    def __get_and_request(self):
+        """
+            Get request for AND operand
+            @return str
+        """
         request = "SELECT DISTINCT(tracks.rowid) FROM tracks"
         subrequest = " WHERE"
         for child in self.__listbox.get_children():
             if child.sql is not None:
-                subrequest += " %s %s" % (child.sql, operand)
+                subrequest += " %s AND" % child.sql
         subrequest = subrequest[:-3]
         if subrequest.find("genres.") != -1:
             request += ", %s" % "genres"
@@ -122,7 +167,7 @@ class SmartPlaylistView(View):
         subrequest += " ORDER BY %s DESC" % orderby
         if self.__limit_toggle.get_active():
             subrequest += " LIMIT %s" % int(self.__limit_spin.get_value())
-        App().playlists.set_smart_sql(self.__playlist_id, request + subrequest)
+        return request + subrequest
 
     def _on_add_rule_button_clicked(self, button):
         """

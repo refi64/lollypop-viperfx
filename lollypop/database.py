@@ -146,13 +146,21 @@ class Database:
 
     def execute(self, request):
         """
-            Execute SQL request
+            Execute SQL request (only smart one)
             @param request as str
             @return list
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute(request)
-            return list(itertools.chain(*result))
+            # Special case for OR request
+            if request.find("ORDER BY random()") == -1 and\
+                    request.find("UNION") != -1:
+                ids = []
+                for (id, other) in list(result):
+                    ids.append(id)
+                return ids
+            else:
+                return list(itertools.chain(*result))
 
     def get_cursor(self):
         """

@@ -54,11 +54,15 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
             @param item as str
         """
         (t, self.__operand, value) = item.split(" ")
-        print(t, self.__operand, value)
         # Unquote value
         if value[0] == "'":
             value = value[1:]
         if value[-1] == "'":
+            value = value[:-1]
+        # Remove %
+        if value[0] == "%":
+            value = value[1:]
+        if value[-1] == "%":
             value = value[:-1]
         if t == "tracks.year":
             self.__type_combobox.set_active_id("year")
@@ -89,31 +93,51 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         request_check = self.__operand_combobox.get_active_id()
         sql = None
         if request_type == "rating":
+            if request_check.find("LIKE") != -1:
+                rate = "%" + self.__rate + "%"
+            else:
+                rate = self.__rate
             sql = "( ((tracks.rate %s '%s'))" +\
                   " OR ((albums.rate %s '%s')) )"
-            sql = sql % (request_check, self.__rate,
-                         request_check, self.__rate)
+            sql = sql % (request_check, rate,
+                         request_check, rate)
         elif request_type == "year":
             request_value = int(self.__spin_button.get_value())
+            if request_check.find("LIKE") != -1:
+                value = "%" + request_value + "%"
+            else:
+                value = request_value
             sql = "( ((tracks.year %s '%s')) )"
-            sql = sql % (request_check, request_value)
+            sql = sql % (request_check, value)
         elif request_type == "genre":
             request_value = self.__entry.get_text().replace("'", "''")
+            if request_check.find("LIKE") != -1:
+                value = "%" + request_value + "%"
+            else:
+                value = request_value
             sql = "(track_genres.genre_id = genres.rowid" +\
                   " AND tracks.rowid = track_genres.track_id" +\
                   " AND ((genres.name %s '%s')) )"
-            sql = sql % (request_check, request_value)
+            sql = sql % (request_check, value)
         elif request_type == "album":
             request_value = self.__entry.get_text().replace("'", "''")
+            if request_check.find("LIKE") != -1:
+                value = "%" + request_value + "%"
+            else:
+                value = request_value
             sql = "(tracks.album_id = albums.rowid" +\
                   " AND ((albums.name %s '%s')) )"
-            sql = sql % (request_check, request_value)
+            sql = sql % (request_check, value)
         elif request_type == "artist":
             request_value = self.__entry.get_text().replace("'", "''")
+            if request_check.find("LIKE") != -1:
+                value = "%" + request_value + "%"
+            else:
+                value = request_value
             sql = "(track_artists.artist_id = artists.rowid" +\
                   " AND tracks.rowid = track_artists.track_id" +\
                   " AND ((artists.name %s '%s')) )"
-            sql = sql % (request_check, request_value)
+            sql = sql % (request_check, value)
         return sql
 
 #######################
@@ -135,8 +159,8 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         self.__operand_combobox.append("=", _("is equal to"))
         self.__operand_combobox.append("!=", _("is not equal to"))
         if combobox.get_active_id() in self.__TEXT:
-            self.__operand_combobox.append("like", _("contains "))
-            self.__operand_combobox.append("not like", _("does not contain"))
+            self.__operand_combobox.append("LIKE", _("contains "))
+            self.__operand_combobox.append("NOT LIKE", _("does not contain"))
         elif combobox.get_active_id() in self.__INT:
             self.__operand_combobox.append(">", _("is greater than"))
             self.__operand_combobox.append("<", _("is less than"))
