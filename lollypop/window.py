@@ -349,7 +349,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
-        self.connect("drag-leave", self.__on_drag_leave)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
@@ -377,17 +376,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                                 callback=(App().scanner.update,))
         except:
             pass
-
-    def __on_drag_leave(self, widget, context, time):
-        """
-            Remove style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param time as int
-        """
-        # FIXME
-        return
-        self.__stack.set_visible_child(self.__container)
 
     def __on_hide(self, window):
         """
