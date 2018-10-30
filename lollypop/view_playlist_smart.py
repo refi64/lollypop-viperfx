@@ -102,7 +102,10 @@ class SmartPlaylistView(View):
             @param button as Gtk.Button
         """
         operand = self.__operand_combobox.get_active_id()
-        if operand == "AND":
+        if len(self.__listbox.get_children()) == 0:
+            request = ""
+            App().playlists.set_smart(self.__playlist_id, False)
+        elif operand == "AND":
             request = self.__get_and_request()
         else:
             request = self.__get_or_request()
