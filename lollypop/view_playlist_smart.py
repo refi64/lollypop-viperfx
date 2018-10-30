@@ -107,6 +107,7 @@ class SmartPlaylistView(View):
         else:
             request = self.__get_or_request()
         App().playlists.set_smart_sql(self.__playlist_id, request)
+        App().window.container.reload_view()
 
     def __get_or_request(self):
         """
