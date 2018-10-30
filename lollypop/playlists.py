@@ -178,6 +178,7 @@ class Playlists(GObject.GObject):
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid, name\
                                   FROM playlists\
+                                  WHERE smart_enabled=0\
                                   ORDER BY mtime DESC\
                                   LIMIT 6")
             return list(result)
