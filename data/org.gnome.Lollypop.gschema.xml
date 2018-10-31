@@ -83,6 +83,11 @@
             <summary>Enabled genres in party mode</summary>
             <description>ID for genres.</description>
         </key>
+            <key type="ai" name="sync-internal-ids">
+            <default>[]</default>
+            <summary>Ids for internal synced objects</summary>
+            <description></description>
+        </key>
         <key type="as" name="music-path">
             <default>[]</default>
             <summary>REMOVE ME LATER</summary>

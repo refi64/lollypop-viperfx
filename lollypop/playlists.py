@@ -335,14 +335,18 @@ class Playlists(GObject.GObject):
             @param playlist_id as int
             @return bool
         """
-        with SqlCursor(self) as sql:
-            result = sql.execute("SELECT synced\
-                                 FROM playlists\
-                                 WHERE rowid=?", (playlist_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return False
+        if playlist_id < 0:
+            playlist_ids = list(App().settings.get_value("sync-internal-ids"))
+            return playlist_id in playlist_ids
+        else:
+            with SqlCursor(self) as sql:
+                result = sql.execute("SELECT synced\
+                                     FROM playlists\
+                                     WHERE rowid=?", (playlist_id,))
+                v = result.fetchone()
+                if v is not None:
+                    return v[0]
+                return False
 
     def get_synced_ids(self):
         """
@@ -350,12 +354,13 @@ class Playlists(GObject.GObject):
             @return [int]
         """
         with SqlCursor(self) as sql:
+            synced_ids = list(App().settings.get_value("sync-internal-ids"))
             result = sql.execute("SELECT rowid\
                                   FROM playlists\
                                   WHERE synced=1\
                                   ORDER BY name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
-            return list(itertools.chain(*result))
+            return list(itertools.chain(*result)) + synced_ids
 
     def get_smart(self, playlist_id):
         """
@@ -393,11 +398,20 @@ class Playlists(GObject.GObject):
             @param playlist_id as int
             @param synced as bool
         """
-        with SqlCursor(self, True) as sql:
-            sql.execute("UPDATE playlists\
-                        SET synced=?\
-                        WHERE rowid=?",
-                        (synced, playlist_id))
+        if playlist_id < 0:
+            synced_ids = list(App().settings.get_value("sync-internal-ids"))
+            if synced and playlist_id not in synced_ids:
+                synced_ids.append(playlist_id)
+            elif not synced and playlist_id in synced_ids:
+                synced_ids.remove(playlist_id)
+            App().settings.set_value("sync-internal-ids",
+                                     GLib.Variant("ai", synced_ids))
+        else:
+            with SqlCursor(self, True) as sql:
+                sql.execute("UPDATE playlists\
+                            SET synced=?\
+                            WHERE rowid=?",
+                            (synced, playlist_id))
 
     def set_smart(self, playlist_id, smart):
         """
