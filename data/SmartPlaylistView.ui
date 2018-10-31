@@ -131,6 +131,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
+            <property name="active">0</property>
             <items>
               <item id="random()" translatable="yes">random</item>
               <item id="tracks.album_id" translatable="yes">album</item>
@@ -181,6 +182,7 @@
               <object class="GtkComboBoxText" id="operand_combobox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="active">0</property>
                 <property name="button_sensitivity">on</property>
                 <items>
                   <item id="AND" translatable="yes">all</item>
