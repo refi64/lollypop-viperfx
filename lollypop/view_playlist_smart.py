@@ -96,6 +96,13 @@ class SmartPlaylistView(View):
 #######################
 # PROTECTED           #
 #######################
+    def _on_back_button_clicked(self, button):
+        """
+            Reload current view
+            @param button as Gtk.Button
+        """
+        App().window.container.reload_view()
+
     def _on_save_button_clicked(self, button):
         """
             Save SQL request
