@@ -258,7 +258,7 @@ class Container(Gtk.Overlay):
                     self.__list_two.count > 0 and\
                     App().settings.get_value("show-genres"):
                 self.__list_two.show()
-        else:
+        elif not self.is_paned_stack:
             self.__list_two.hide()
             self.__list_one.hide()
             self.show_artists_view()
