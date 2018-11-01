@@ -491,7 +491,7 @@ class SelectionList(Gtk.Overlay):
         if name == "":
             name = _("Unknown")
             icon_name = "dialog-warning-symbolic"
-        icon_name = get_icon_name(item_id)
+        icon_name = get_icon_name(item_id, self.__type)
         if len(value) == 3:
             sort = value[2]
         else:

@@ -20,7 +20,7 @@ import unicodedata
 
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
-from lollypop.define import App, Type
+from lollypop.define import App, Type, SelectionListType
 
 
 def blur(surface, image, w, h):
@@ -299,10 +299,11 @@ def remove_static_genres(genre_ids):
     return [item for item in genre_ids if item >= 0]
 
 
-def get_icon_name(object_id):
+def get_icon_name(object_id, type=SelectionListType.ARTISTS):
     """
         Return icon name for id
         @param ojbect_id as int
+        @param type as SelectionListType
     """
     icon = ""
     if object_id == Type.POPULARS:
@@ -310,7 +311,10 @@ def get_icon_name(object_id):
     elif object_id == Type.PLAYLISTS:
         icon = "emblem-documents-symbolic"
     elif object_id == Type.ALL:
-        icon = "media-optical-cd-audio-symbolic"
+        if type & SelectionListType.ARTISTS:
+            icon = "media-optical-cd-audio-symbolic"
+        else:
+            icon = "avatar-default-symbolic"
     elif object_id == Type.COMPILATIONS:
         icon = "system-users-symbolic"
     elif object_id == Type.RECENTS:
