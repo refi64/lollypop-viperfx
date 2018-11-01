@@ -23,6 +23,7 @@ class AdaptiveWindow:
 
     gsignals = {
         "adaptive-changed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
+        "show-can-go-back": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
         "can-go-back-changed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
     }
     for signal in gsignals:
@@ -112,6 +113,7 @@ class AdaptiveWindow:
             self.__stack.set_visible_child(self.__paned[0][1])
             self.emit("can-go-back-changed", False)
             self.emit("adaptive-changed", True)
+            self.emit("show-can-go-back", True)
             self.__stack.set_transition_type(self._TRANSITION_TYPE)
         elif not b and self._adaptive_stack:
             self.__stack.set_transition_type(Gtk.StackTransitionType.NONE)
@@ -124,6 +126,7 @@ class AdaptiveWindow:
                         p.add1(child)
                         break
             self.emit("adaptive-changed", False)
+            self.emit("show-can-go-back", False)
             self.__stack.set_transition_type(self._TRANSITION_TYPE)
 
 ############

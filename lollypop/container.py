@@ -77,21 +77,23 @@ class Container(Gtk.Overlay):
             Update list one
             @param update as bool
         """
-        if App().settings.get_value("show-genres"):
-            self.__update_list_genres(self.__list_one, update)
-        else:
-            self.__update_list_artists(self.__list_one, [Type.ALL], update)
+        if self.__list_one.get_visible():
+            if App().settings.get_value("show-genres"):
+                self.__update_list_genres(self.__list_one, update)
+            else:
+                self.__update_list_artists(self.__list_one, [Type.ALL], update)
 
     def update_list_two(self, update=False):
         """
             Update list two
             @param update as bool
         """
-        ids = self.__list_one.selected_ids
-        if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
-            self.__update_list_playlists(update, ids[0])
-        elif App().settings.get_value("show-genres") and ids:
-            self.__update_list_artists(self.__list_two, ids, update)
+        if self.__list_one.get_visible():
+            ids = self.__list_one.selected_ids
+            if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
+                self.__update_list_playlists(update, ids[0])
+            elif App().settings.get_value("show-genres") and ids:
+                self.__update_list_artists(self.__list_two, ids, update)
 
     def save_view_state(self):
         """
@@ -225,6 +227,41 @@ class Container(Gtk.Overlay):
             d.make_directory_with_parents()
         self.__devices[self.__devices_index] = dev
 
+    def save_internals(self):
+        """
+            Save paned position
+        """
+        main_pos = self.__paned_one.get_position()
+        listview_pos = self.__paned_two.get_position()
+        listview_pos = listview_pos if listview_pos > 100 else 100
+        App().settings.set_value("paned-mainlist-width",
+                                 GLib.Variant("i",
+                                              main_pos))
+        App().settings.set_value("paned-listview-width",
+                                 GLib.Variant("i",
+                                              listview_pos))
+
+    def show_sidebar(self, show):
+        """
+            Show/Hide navigation sidebar
+            @param show as bool
+        """
+        if show:
+            if not self.__list_one.get_visible():
+                self.__list_one.show()
+                App().window.emit("show-can-go-back", False)
+                if self.__list_one.count == 0:
+                    self.update_list_one()
+            self.__list_one.emit("item-selected")
+            if not self.__list_one.get_visible() and\
+                    self.__list_two.count > 0 and\
+                    App().settings.get_value("show-genres"):
+                self.__list_two.show()
+        else:
+            self.__list_two.hide()
+            self.__list_one.hide()
+            self.show_artists_view()
+
     def show_artists_albums(self, artist_ids):
         """
             Show albums from artists
@@ -251,33 +288,40 @@ class Container(Gtk.Overlay):
             # Select artists on list one
             GLib.idle_add(self.__list_one.select_ids, artist_ids)
 
-    def save_internals(self):
+    def show_view(self, item_id):
         """
-            Save paned position
+            Show view for item id
+            @param item_ids as int
         """
-        main_pos = self.__paned_one.get_position()
-        listview_pos = self.__paned_two.get_position()
-        listview_pos = listview_pos if listview_pos > 100 else 100
-        App().settings.set_value("paned-mainlist-width",
-                                 GLib.Variant("i",
-                                              main_pos))
-        App().settings.set_value("paned-listview-width",
-                                 GLib.Variant("i",
-                                              listview_pos))
-
-    def show_sidebar(self, show):
-        """
-            Show/Hide navigation sidebar
-            @param show as bool
-        """
-        if show:
-            self.__list_one.show()
-            show_genres = App().settings.get_value("show-genres")
-            if self.__list_two.selected_ids and show_genres:
-                self.__list_two.show()
+        App().window.emit("can-go-back-changed", True)
+        if item_id in [Type.POPULARS,
+                       Type.LOVED,
+                       Type.RECENTS,
+                       Type.NEVER,
+                       Type.RANDOMS]:
+            view = self.__get_view_albums([item_id], [])
+        elif item_id == Type.YEARS:
+            view = self.__get_view_albums_decades()
+        elif item_id == Type.PLAYLISTS:
+            view = self.__get_view_playlists()
         else:
-            self.__list_two.hide()
-            self.__list_one.hide()
+            view = self.__get_view_artists([], [item_id])
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        self.__stack.clean_old_views(view)
+
+    def show_artists_view(self):
+        """
+            Show artists view (rounded artwork)
+        """
+        App().window.emit("can-go-back-changed", False)
+        view = self.__get_view_artists_rounded()
+        if view not in self.__stack.get_children():
+            self.__stack.add(view)
+        App().window.emit("show-can-go-back", True)
+        self.__stack.set_visible_child(view)
+        self.__stack.clean_old_views(view)
 
     @property
     def view(self):
@@ -378,7 +422,6 @@ class Container(Gtk.Overlay):
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__list_one = SelectionList(SelectionListType.LIST_ONE)
-        self.__list_one.show()
         self.__list_two = SelectionList(SelectionListType.LIST_TWO)
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
         self.__list_one.connect("populated", self.__on_list_populated)
@@ -578,6 +621,28 @@ class Container(Gtk.Overlay):
         if child is not None:
             if hasattr(child, "stop"):
                 child.stop()
+
+    def __get_view_artists_rounded(self):
+        """
+            Get rounded artists view
+            @return view
+        """
+        def load():
+            ids = list(App().settings.get_value("shown-album-lists"))
+            ids += App().artists.get_ids()
+            return ids
+        self.__stop_current_view()
+        # Search for RoundedArtistsView
+        from lollypop.view_artists_rounded import RoundedArtistsView
+        for child in self.__stack.get_children():
+            if isinstance(child, RoundedArtistsView):
+                return child
+        # Else create a new one
+        view = RoundedArtistsView()
+        loader = Loader(target=load, view=view)
+        loader.start()
+        view.show()
+        return view
 
     def __get_view_device(self, device_id):
         """

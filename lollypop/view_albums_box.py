@@ -62,13 +62,13 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             if child.album.id == album_id:
                 child.set_artwork()
 
-    def _on_album_activated(self, flowbox, album_widget):
+    def _on_item_activated(self, flowbox, album_widget):
         """
             Show Context view for activated album
             @param flowbox as Gtk.Flowbox
             @param album_widget as AlbumSimpleWidget
         """
-        if FlowBoxView._on_album_activated(self, flowbox, album_widget):
+        if FlowBoxView._on_item_activated(self, flowbox, album_widget):
             return
         artwork = album_widget.get_artwork()
         if artwork is None:

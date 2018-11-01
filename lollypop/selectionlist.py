@@ -19,6 +19,7 @@ from hashlib import sha256
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListType
+from lollypop.utils import get_icon_name
 from lollypop.shown import ShownAlbumlists, ShownPlaylists
 
 
@@ -365,6 +366,14 @@ class SelectionList(Gtk.Overlay):
         return self.__type
 
     @property
+    def count(self):
+        """
+            Get items count in list
+            @return int
+        """
+        return len(self.__model)
+
+    @property
     def selected_ids(self):
         """
             Get selected ids
@@ -477,25 +486,23 @@ class SelectionList(Gtk.Overlay):
             @param value as [int, str, optional str]
             @thread safe
         """
-        if value[1] == "":
-            string = _("Unknown")
-            sort = string
+        item_id = value[0]
+        name = value[1]
+        if name == "":
+            name = _("Unknown")
+            icon_name = "dialog-warning-symbolic"
+        icon_name = get_icon_name(item_id)
+        if len(value) == 3:
+            sort = value[2]
         else:
-            string = value[1]
-            if len(value) == 3:
-                sort = value[2]
-            else:
-                sort = value[1]
+            sort = name
 
-        if value[0] > 0 and sort and\
+        if item_id > 0 and sort and\
                 self.__type & SelectionListType.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.add_char(sort[0])
-        icon_name = self.__get_icon_name(value[0])
-        if not icon_name and string == _("Unknown"):
-            icon_name = "dialog-warning-symbolic"
-        self.__model.append([value[0],
-                            string,
+        self.__model.append([item_id,
+                            name,
                             icon_name,
                             sort])
 
@@ -510,41 +517,6 @@ class SelectionList(Gtk.Overlay):
         if self.__type & SelectionListType.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.populate()
-
-    def __get_icon_name(self, object_id):
-        """
-            Return pixbuf for id
-            @param ojbect_id as id
-        """
-        icon = ""
-        if object_id == Type.POPULARS:
-            icon = "starred-symbolic"
-        elif object_id == Type.PLAYLISTS:
-            icon = "emblem-documents-symbolic"
-        elif object_id == Type.ALL:
-            if self.__type & SelectionListType.ARTISTS:
-                icon = "media-optical-cd-audio-symbolic"
-            else:
-                icon = "avatar-default-symbolic"
-        elif object_id == Type.COMPILATIONS:
-            icon = "system-users-symbolic"
-        elif object_id == Type.RECENTS:
-            icon = "document-open-recent-symbolic"
-        elif object_id == Type.RADIOS:
-            icon = "audio-input-microphone-symbolic"
-        elif object_id < Type.DEVICES:
-            icon = "multimedia-player-symbolic"
-        elif object_id == Type.RANDOMS:
-            icon = "media-playlist-shuffle-symbolic"
-        elif object_id == Type.LOVED:
-            icon = "emblem-favorite-symbolic"
-        elif object_id == Type.NEVER:
-            icon = "audio-speakers-symbolic"
-        elif object_id == Type.NOPARTY:
-            icon = "emblem-music-symbolic"
-        elif object_id == Type.YEARS:
-            icon = "view-sort-ascending-symbolic"
-        return icon
 
     def __sort_items(self, model, itera, iterb, data):
         """

@@ -15,6 +15,7 @@
 
 from gi.repository import Gio, GLib
 
+
 LOLLYPOP_DATA_PATH = GLib.get_user_data_dir() + "/lollypop"
 
 App = Gio.Application.get_default
@@ -131,3 +132,17 @@ ENCODING = ["utf_8",
             "iso8859_1",
             "utf_16",
             "utf_16_be"]
+
+STATIC_ALBUM_NAME = {
+    Type.POPULARS: "Popular albums",
+    Type.RANDOMS: "Random albums",
+    Type.LOVED: "Loved albums",
+    Type.RECENTS: "Recently added albums",
+    Type.NEVER: "Unplayed albums",
+    Type.PLAYLISTS: "Playlists",
+    Type.RADIOS: "Radios",
+    Type.YEARS: "Years",
+    Type.ALL: "All albums",
+    Type.COMPILATIONS: "Compilations",
+    Type.USB_DISKS: "USB disks",
+}

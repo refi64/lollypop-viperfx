@@ -13,11 +13,11 @@
 from gi.repository import GLib, Gtk, Gdk, Pango, GObject
 
 import cairo
-from math import pi
-from random import sample
+from random import shuffle
 
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize
+from lollypop.utils import draw_rounded_image
 from lollypop.objects import Album
 
 
@@ -32,18 +32,19 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, item_ids):
+    def __init__(self, data, art_size=ArtSize.ROUNDED):
         """
             Init widget
-            @param data as [int]
+            @param data as object
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
+        self._art_size = art_size
         self.__covers_count = 0
-        self._data = item_ids
-        self.__scale_factor = self.get_scale_factor()
+        self._data = data
         self.__cover_size = App().settings.get_value("cover-size").get_int32()
-        self.set_size_request(ArtSize.ROUNDED, ArtSize.ROUNDED)
+        self.__scale = art_size / self.__cover_size / 3
+        self.set_size_request(art_size, art_size)
 
     def populate(self, text):
         """
@@ -61,14 +62,13 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         label.set_markup("<b>" + GLib.markup_escape_text(text) + "</b>")
         self._widget.set_property("has-tooltip", True)
         self._widget.add(grid)
-        cover = Gtk.Image.new()
+        self._artwork = Gtk.Image.new()
+        self._artwork.connect("draw", self.__on_artwork_draw)
+        self.__set_artwork()
         self._overlay = Gtk.Overlay()
-        self._overlay.add(cover)
-        task_helper = TaskHelper()
-        task_helper.run(self.__get_surface,
-                        callback=(cover.set_from_surface,))
-        cover.set_size_request(ArtSize.ROUNDED, ArtSize.ROUNDED)
-        cover.show()
+        self._overlay.add(self._artwork)
+        self._artwork.set_size_request(self._art_size, self._art_size)
+        self._artwork.show()
         grid.add(self._overlay)
         grid.add(label)
         self.add(self._widget)
@@ -83,6 +83,14 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
+
+    @property
+    def data(self):
+        """
+            Get associated data
+            @return object
+        """
+        return self._data
 
     @property
     def is_populated(self):
@@ -101,67 +109,25 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         return []
 
-    def _on_eventbox_button_press_event(self, eventbox, event):
+    def _set_surface(self, surface):
         """
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
+            Set artwork from surface
+            @param surface as cairo.Surface
         """
-        pass
+        self._artwork.set_from_surface(surface)
 
-#######################
-# PRIVATE             #
-#######################
-    def __draw_surface(self, album_ids, ctx, x, y):
-        """
-            Draw surface for first available album
-            @param album_ids as [int]
-            @param ctx as Cairo.context
-            @param x as int
-            @param y as int
-        """
-        # Workaround Gdk not being thread safe
-        def draw_pixbuf(ctx, pixbuf):
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf, self.__scale_factor, None)
-            ctx.translate(x, y)
-            ctx.set_source_surface(surface, 0, 0)
-            ctx.paint()
-            ctx.translate(-x, -y)
-        if album_ids:
-            album_id = album_ids.pop(0)
-            pixbuf = App().art.get_album_artwork_pixbuf(
-                                                  Album(album_id),
-                                                  self.__cover_size,
-                                                  self.__scale_factor)
-            if pixbuf is None:
-                GLib.idle_add(self.__draw_surface, album_ids, ctx, x, y)
-            else:
-                self.__covers_count += 1
-                if self.__covers_count == 9:
-                    GLib.idle_add(self.emit, "populated")
-                GLib.idle_add(draw_pixbuf, ctx, pixbuf)
-        else:
-            GLib.idle_add(self.emit, "populated")
-
-    def __get_surface(self):
+    def _get_surface(self):
         """
             Get artwork surface
             @return cairo.Surface
         """
         cover = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                   ArtSize.ROUNDED,
-                                   ArtSize.ROUNDED)
+                                   self._art_size,
+                                   self._art_size)
         ctx = cairo.Context(cover)
-        ctx.new_sub_path()
-        radius = ArtSize.ROUNDED / 2
-        ctx.arc(ArtSize.ROUNDED / 2, ArtSize.ROUNDED / 2, radius, 0, 2 * pi)
-        ctx.set_source_rgb(0, 0, 0)
-        ctx.fill_preserve()
-        ctx.scale(0.5, 0.5)
-        ctx.clip()
+        ctx.scale(self.__scale, self.__scale)
         album_ids = self._get_album_ids()
-        if len(album_ids) >= self._ALBUMS_COUNT:
-            album_ids = sample(album_ids, self._ALBUMS_COUNT)
+        shuffle(album_ids)
         x = self.__cover_size
         y = self.__cover_size
         # Draw centered cover
@@ -173,4 +139,67 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
                 if i == 1 and h == 1:
                     continue
                 self.__draw_surface(album_ids, ctx, x * i, y * h)
+        GLib.idle_add(self.emit, "populated")
         return cover
+
+    def _on_eventbox_button_press_event(self, eventbox, event):
+        """
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        pass
+
+#######################
+# PRIVATE             #
+#######################
+    def __set_artwork(self):
+        """
+            Set artwork
+        """
+        self._scale_factor = self.get_scale_factor()
+        task_helper = TaskHelper()
+        task_helper.run(self._get_surface,
+                        callback=(self._set_surface,))
+
+    def __draw_surface(self, album_ids, ctx, x, y):
+        """
+            Draw surface for first available album
+            @param album_ids as [int]
+            @param ctx as Cairo.context
+            @param x as int
+            @param y as int
+        """
+        # Workaround Gdk not being thread safe
+        def draw_pixbuf(ctx, pixbuf):
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                pixbuf, self._scale_factor, None)
+            ctx.translate(x, y)
+            ctx.set_source_surface(surface, 0, 0)
+            ctx.paint()
+            ctx.translate(-x, -y)
+        if album_ids:
+            album_id = album_ids.pop(0)
+            pixbuf = App().art.get_album_artwork_pixbuf(
+                                                  Album(album_id),
+                                                  self.__cover_size,
+                                                  self._scale_factor)
+            if pixbuf is None:
+                GLib.idle_add(self.__draw_surface, album_ids, ctx, x, y)
+            else:
+                self.__covers_count += 1
+                GLib.idle_add(draw_pixbuf, ctx, pixbuf)
+
+    def __on_artwork_draw(self, image, ctx):
+        """
+            Draw rounded image
+            @param image as Gtk.Image
+            @param ctx as cairo.Context
+        """
+        if image.props.surface is None:
+            return
+        # Update image if scale factor changed
+        if self._scale_factor != image.get_scale_factor():
+            self._scale_factor = image.get_scale_factor()
+            self.__set_artwork()
+        draw_rounded_image(image, ctx)
+        return True

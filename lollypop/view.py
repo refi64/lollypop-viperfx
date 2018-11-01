@@ -271,9 +271,10 @@ class LazyLoadingView(View):
             return
         if not widget.is_populated:
             widget.populate()
+        elif self == App().window.container.view:
+            GLib.idle_add(self.lazy_loading, scroll_value)
         else:
-            GLib.idle_add(
-                self.lazy_loading, scroll_value, priority=GLib.PRIORITY_HIGH)
+            GLib.timeout_add(1000, self.lazy_loading, scroll_value)
 
 #######################
 # PRIVATE             #

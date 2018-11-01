@@ -120,12 +120,22 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             # Lets resize happen
             GLib.idle_add(self.maximize)
 
-    @property
-    def toolbar(self):
+    def go_back(self):
         """
-            toolbar as Toolbar
+            Go back in container stack
         """
-        return self.__toolbar
+        if self.__container.list_one.get_visible():
+            AdaptiveWindow.go_back(self)
+        else:
+            # Search for RoundedArtistsView
+            from lollypop.view_artists_rounded import RoundedArtistsView
+            for view in self.__container.stack.get_children():
+                if isinstance(view, RoundedArtistsView):
+                    self.__container.stack.set_visible_child(view)
+                    self.__container.stack.clean_old_views(view)
+                    view.lazy_loading()
+                    self.emit("can-go-back-changed", False)
+                    break
 
     def do_event(self, event):
         """
@@ -138,6 +148,13 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             self.__container.view.disable_overlay()
             App().player.preview.set_state(Gst.State.NULL)
         Gtk.ApplicationWindow.do_event(self, event)
+
+    @property
+    def toolbar(self):
+        """
+            toolbar as Toolbar
+        """
+        return self.__toolbar
 
     @property
     def container(self):
@@ -156,12 +173,12 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param b as bool
         """
         adaptive_stack = self._adaptive_stack
+        AdaptiveWindow._set_adaptive_stack(self, b)
         if b and not adaptive_stack:
             self.__container.show_sidebar(True)
         elif not b and adaptive_stack:
             value = App().settings.get_value("show-sidebar")
             self.__container.show_sidebar(value)
-        AdaptiveWindow._set_adaptive_stack(self, b)
         size = self.get_size()
         if b and not adaptive_stack:
             self.__show_miniplayer(True)
@@ -171,11 +188,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                 self.__miniplayer.set_vexpand(False)
         elif not b and adaptive_stack:
             self.__show_miniplayer(False)
-            # Destroy just before reloading to avoid bad visual effect
-            view = self.__container.stack.get_visible_child()
-            if view is not None:
-                view.destroy()
-            self.__container.reload_view()
             self.__container.stack.show()
             if self.__miniplayer is not None:
                 self.__miniplayer.set_vexpand(False)
@@ -529,15 +541,14 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param widget as Gtk.Widget
         """
         self.setup_window()
-        value = App().settings.get_value("show-sidebar")
-        self.__container.show_sidebar(value)
+        show_sidebar = App().settings.get_value("show-sidebar")
         if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
-        # We delay update_list_one() to be sure inital stacked mode is set
-        GLib.timeout_add(200, self.__container.update_list_one)
+        # We delay show_sidebar() to be sure inital stacked mode is set
+        GLib.timeout_add(200, self.__container.show_sidebar, show_sidebar)
         # Here we ignore initial configure events
         GLib.timeout_add(200, self.__connect_state_signals)
 

@@ -20,7 +20,7 @@ import unicodedata
 
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
-from lollypop.define import App
+from lollypop.define import App, Type
 
 
 def blur(surface, image, w, h):
@@ -93,12 +93,13 @@ def draw_rounded_image(image, ctx):
         ctx.translate(2, 2)
         ctx.new_sub_path()
         radius = width / 2
-        ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
-        ctx.set_source_rgb(1, 1, 1)
-        ctx.fill_preserve()
         ctx.set_line_width(2)
         ctx.set_source_rgba(0, 0, 0, 0.3)
+        ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
         ctx.stroke_preserve()
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill_preserve()
+        ctx.translate(-2, -2)
         ctx.set_source_surface(surface, 0, 0)
         ctx.clip()
         ctx.paint()
@@ -296,3 +297,36 @@ def remove_static_genres(genre_ids):
         @param genre ids as [int]
     """
     return [item for item in genre_ids if item >= 0]
+
+
+def get_icon_name(object_id):
+    """
+        Return icon name for id
+        @param ojbect_id as int
+    """
+    icon = ""
+    if object_id == Type.POPULARS:
+        icon = "starred-symbolic"
+    elif object_id == Type.PLAYLISTS:
+        icon = "emblem-documents-symbolic"
+    elif object_id == Type.ALL:
+        icon = "media-optical-cd-audio-symbolic"
+    elif object_id == Type.COMPILATIONS:
+        icon = "system-users-symbolic"
+    elif object_id == Type.RECENTS:
+        icon = "document-open-recent-symbolic"
+    elif object_id == Type.RADIOS:
+        icon = "audio-input-microphone-symbolic"
+    elif object_id < Type.DEVICES:
+        icon = "multimedia-player-symbolic"
+    elif object_id == Type.RANDOMS:
+        icon = "media-playlist-shuffle-symbolic"
+    elif object_id == Type.LOVED:
+        icon = "emblem-favorite-symbolic"
+    elif object_id == Type.NEVER:
+        icon = "audio-speakers-symbolic"
+    elif object_id == Type.NOPARTY:
+        icon = "emblem-music-symbolic"
+    elif object_id == Type.YEARS:
+        icon = "view-sort-ascending-symbolic"
+    return icon

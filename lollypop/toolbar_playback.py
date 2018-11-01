@@ -43,6 +43,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
 
         App().player.connect("lock-changed", self.__on_lock_changed)
         window.connect("can-go-back-changed", self.__on_can_go_back_changed)
+        window.connect("show-can-go-back", self.__on_show_can_go_back)
 
     def show_back(self, b, sensitive=False):
         """
@@ -56,15 +57,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
             self.__back_button.hide()
 
     def on_adaptive_changed(self, window, b):
-        """
-            Show/hide back button
-            @param window as Gtk.Window
-            @param b as bool
-        """
-        if b:
-            self.__back_button.show()
-        else:
-            self.__back_button.hide()
+        pass
 
 #######################
 # Protected           #
@@ -87,13 +80,24 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self._prev_button.set_sensitive(not player.is_locked)
         self._next_button.set_sensitive(not player.is_locked)
 
-    def __on_can_go_back_changed(self, window, b):
+    def __on_show_can_go_back(self, window, back):
+        """
+            Show back button
+            @param window as Gtk.Window
+            @param back as bool
+        """
+        if back:
+            self.__back_button.show()
+        else:
+            self.__back_button.hide()
+
+    def __on_can_go_back_changed(self, window, back):
         """
             Make button sensitive
             @param window as Gtk.Window
-            @param b as bool
+            @param back as bool
         """
-        if b:
+        if back:
             self.__back_button.set_sensitive(True)
         else:
             self.__back_button.set_sensitive(False)

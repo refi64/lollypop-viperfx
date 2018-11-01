@@ -32,7 +32,7 @@ class FlowBoxView(LazyLoadingView):
         # Allow lazy loading to not jump up and down
         self._box.set_homogeneous(True)
         self._box.set_max_children_per_line(1000)
-        self._box.connect("child-activated", self._on_album_activated)
+        self._box.connect("child-activated", self._on_item_activated)
         self._box.show()
 
         self._viewport.set_property("valign", Gtk.Align.START)
@@ -89,7 +89,7 @@ class FlowBoxView(LazyLoadingView):
         for child in self._box.get_children():
             child.set_selection()
 
-    def _on_album_activated(self, flowbox, widget):
+    def _on_item_activated(self, flowbox, widget):
         """
             Show overlay
             @param flowbox as Gtk.Flowbox
