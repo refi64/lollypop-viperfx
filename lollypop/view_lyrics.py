@@ -76,11 +76,9 @@ class LyricsView(View, InformationController):
             lyrics = reader.get_lyrics(tags)
         if lyrics:
             self.__lyrics_label.set_label(lyrics)
-        elif App().settings.get_value("network-access"):
+        else:
             self.__download_wikia_lyrics()
             self.__download_genius_lyrics()
-        else:
-            self.__lyrics_label.set_label(_("Network access disabled"))
 
 ##############
 # PROTECTED  #
