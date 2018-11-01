@@ -13,9 +13,11 @@
 from gi.repository import Gdk, Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
+from random import shuffle
 
 from lollypop.define import App, STATIC_ALBUM_NAME
 from lollypop.utils import get_icon_name
+from lollypop.objects import Album
 from lollypop.information_store import InformationStore
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 
@@ -100,23 +102,32 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Get surface for artist
             @return GdkPixbuf.Pixbuf
         """
+        if self._data < 0:
+            return None
         pixbuf = None
-        path = InformationStore.get_artwork_path(
+        if App().settings.get_value("artist-artwork"):
+            path = InformationStore.get_artwork_path(
                                             self.__artist_name, self._art_size)
-        if path is not None:
-            f = Gio.File.new_for_path(path)
-            (status, data, tag) = f.load_contents(None)
-            if status:
-                bytes = GLib.Bytes(data)
-                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                bytes.unref()
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                    stream,
-                    self._art_size,
-                    self._art_size,
-                    True,
-                    None)
-                stream.close()
+            if path is not None:
+                f = Gio.File.new_for_path(path)
+                (status, data, tag) = f.load_contents(None)
+                if status:
+                    bytes = GLib.Bytes(data)
+                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                    bytes.unref()
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                        stream,
+                        self._art_size,
+                        self._art_size,
+                        True,
+                        None)
+                    stream.close()
+        else:
+            album_ids = App().albums.get_ids([self._data], [])
+            shuffle(album_ids)
+            pixbuf = App().art.get_album_artwork_pixbuf(Album(album_ids[0]),
+                                                        self._art_size,
+                                                        self._scale_factor)
         return pixbuf
 
 #######################
