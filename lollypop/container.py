@@ -249,7 +249,8 @@ class Container(Gtk.Overlay):
         if show:
             if not self.__list_one.get_visible():
                 self.__list_one.show()
-                App().window.emit("show-can-go-back", False)
+                if not self.is_paned_stack:
+                    App().window.emit("show-can-go-back", False)
                 if self.__list_one.count == 0:
                     self.update_list_one()
             self.__list_one.emit("item-selected")
