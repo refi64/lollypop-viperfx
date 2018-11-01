@@ -338,7 +338,8 @@ class SelectionList(Gtk.Overlay):
             @return items as [(int, str)]
         """
         lists = ShownAlbumlists.get(self.__type)
-        lists.append((Type.SEPARATOR, ""))
+        if lists:
+            lists.append((Type.SEPARATOR, ""))
         return lists
 
     def get_playlist_headers(self):
@@ -347,7 +348,8 @@ class SelectionList(Gtk.Overlay):
             @return items as [(int, str)]
         """
         lists = ShownPlaylists.get()
-        lists.append((Type.SEPARATOR, ""))
+        if lists:
+            lists.append((Type.SEPARATOR, ""))
         return lists
 
     # Needed because we embed this widget in minimode
