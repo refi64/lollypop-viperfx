@@ -273,7 +273,6 @@ class TuneinPopover(Gtk.Popover):
             bytes = GLib.Bytes(content)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-            bytes.unref()
             stream.close()
             pixbuf.savev(cache_path_png, "png", [None], [None])
             App().art.emit("radio-artwork-changed", name)
@@ -319,7 +318,6 @@ class TuneinPopover(Gtk.Popover):
         if status:
             bytes = GLib.Bytes(content)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            bytes.unref()
             if stream is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                     stream,

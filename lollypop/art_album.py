@@ -177,7 +177,6 @@ class AlbumArt:
                         ratio = self._preserve_ratio(uri)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        bytes.unref()
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
                             size,
@@ -203,7 +202,6 @@ class AlbumArt:
                         ratio = self._preserve_ratio(uri)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        bytes.unref()
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
                             size,
@@ -274,7 +272,6 @@ class AlbumArt:
             if not save_to_tags or dst.query_exists():
                 bytes = GLib.Bytes(data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                bytes.unref()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
                 stream.close()
                 pixbuf.savev(store_path, "jpeg", ["quality"],
@@ -356,7 +353,6 @@ class AlbumArt:
             if exist:
                 bytes = GLib.Bytes(mapflags.data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                bytes.unref()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    size,
                                                                    size,
@@ -404,7 +400,6 @@ class AlbumArt:
         # https://bugzilla.gnome.org/show_bug.cgi?id=747431
         bytes = GLib.Bytes(data)
         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-        bytes.unref()
         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                            ArtSize.MONSTER,
                                                            ArtSize.MONSTER,

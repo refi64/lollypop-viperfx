@@ -160,7 +160,6 @@ class InformationStore:
         else:
             bytes = GLib.Bytes(data)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            bytes.unref()
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                ArtSize.ARTIST,
                                                                -1,

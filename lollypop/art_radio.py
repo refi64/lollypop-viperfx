@@ -219,7 +219,6 @@ class RadioArt:
             bytes = GLib.Bytes(content)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-            bytes.unref()
             stream.close()
             pixbuf.savev(cache_path_png, "png", [None], [None])
             self.emit("radio-artwork-changed", name)
