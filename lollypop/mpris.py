@@ -20,6 +20,7 @@ from random import randint
 
 from lollypop.logger import Logger
 from lollypop.define import App, ArtSize, Type, Shuffle, NextContext
+from lollypop.objects import Track
 
 
 class Server:
@@ -232,7 +233,9 @@ class MPRIS(Server):
         App().player.seek(position / (1000 * 1000))
 
     def OpenUri(self, uri):
-        pass
+        track_id = App().tracks.get_id_by_uri(uri)
+        if track_id:
+            App().player.load(Track(track_id))
 
     def Seek(self, offset):
         # Convert position in seconds
