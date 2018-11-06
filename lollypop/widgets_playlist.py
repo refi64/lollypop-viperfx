@@ -381,12 +381,13 @@ class PlaylistsWidget(Gtk.Grid):
         tracks = App().playlists.get_tracks(self.__playlist_ids[0])
         App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
 
-    def __on_remove_track(self, row, position):
+    def __on_remove_track(self, row):
         """
             Remove row's track at position
             @param row as PlaylistRow
             @param position as int
         """
+        position = self.children.index(row)
         App().playlists.remove_track_at(self.__playlist_ids[0], position)
         tracks = App().playlists.get_tracks(self.__playlist_ids[0])
         App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
