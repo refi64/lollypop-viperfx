@@ -26,7 +26,7 @@ class PlaylistRow(Row, DNDRow):
         "insert-track": (
             GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         "remove-track": (
-            GObject.SignalFlags.RUN_FIRST, None, (int,))
+            GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     def __init__(self, track):
