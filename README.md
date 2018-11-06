@@ -8,8 +8,6 @@ Lollypop is a new GNOME music playing application.
 
 - Users: https://wiki.gnome.org/Apps/Lollypop
 
-- Packagers: You need to provide https://gitlab.gnome.org/gnumdk/lollypop-portal
-
 - Translators: https://hosted.weblate.org/projects/gnumdk/
 
 It provides:
