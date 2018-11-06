@@ -39,10 +39,12 @@ class PlaylistsView(View, ViewController):
         self.__prev_animated_rows = []
         self.__track_ids = []
         self.__playlist_ids = playlist_ids
-        self.__signal_id1 = App().playlists.connect("playlist-add",
-                                                    self.__on_playlist_add)
-        self.__signal_id2 = App().playlists.connect("playlist-del",
-                                                    self.__on_playlist_del)
+        self.__signal_id1 = App().playlists.connect(
+                                            "playlist-track-added",
+                                            self.__on_playlist_track_added)
+        self.__signal_id2 = App().playlists.connect(
+                                            "playlist-track-removed",
+                                            self.__on_playlist_track_removed)
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
@@ -375,22 +377,26 @@ class PlaylistsView(View, ViewController):
                                                             self.__auto_scroll,
                                                             up)
 
-    def __on_playlist_add(self, manager, playlist_id, track_id, pos):
+    def __on_playlist_track_added(self, playlists, playlist_id, uri, pos):
         """
             Update tracks widgets
-            @param manager as PlaylistsManager
+            @param playlists as Playlists
             @param playlist id as int
-            @param track id as int
+            @param uri as str
+            @param pos as int
         """
         if playlist_id in self.__playlist_ids:
+            track_id = App().tracks.get_id_by_uri(uri)
             self.__playlists_widget.insert(track_id, pos)
 
-    def __on_playlist_del(self, manager, playlist_id, track_id):
+    def __on_playlist_track_removed(self, playlists, playlist_id, uri, pos):
         """
             Update tracks widgets
-            @param manager as PlaylistsManager
+            @param playlists as Playlists
             @param playlist id as int
-            @param track id as int
+            @param uri as str
+            @param pos as int
         """
         if playlist_id in self.__playlist_ids:
+            track_id = App().tracks.get_id_by_uri(uri)
             self.__playlists_widget.remove(track_id)

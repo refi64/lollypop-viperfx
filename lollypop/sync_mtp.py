@@ -247,7 +247,8 @@ class MtpSync(GObject.Object):
             playlist_ids = App().playlists.get_synced_ids()
             for playlist_id in playlist_ids:
                 playlists.append(App().playlists.get_name(playlist_id))
-                self.__total += len(App().playlists.get_tracks(playlist_id))
+                self.__total += len(
+                    App().playlists.get_track_uris(playlist_id))
 
             Logger.debug("Get old tracks")
             # Old tracks

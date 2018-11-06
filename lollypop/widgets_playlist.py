@@ -10,12 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk, GLib, GObject
 
 from lollypop.define import App, Type, WindowSize, Loading, ResponsiveType
-from lollypop.widgets_track import TracksWidget, PlaylistRow
+from lollypop.widgets_tracks import TracksWidget
+from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
-from lollypop.helper_task import TaskHelper
 
 
 class PlaylistsWidget(Gtk.Grid):
@@ -64,11 +64,6 @@ class PlaylistsWidget(Gtk.Grid):
                                            self.__on_activated)
         self.__tracks_widget_left.show()
         self.__tracks_widget_right.show()
-
-        self.drag_dest_set(Gtk.DestDefaults.DROP,
-                           [], Gdk.DragAction.MOVE)
-        self.drag_dest_add_text_targets()
-        self.connect("drag-data-received", self.__on_drag_data_received)
 
         self.add(self.__grid)
 
@@ -151,6 +146,7 @@ class PlaylistsWidget(Gtk.Grid):
             @param track id as int
             @param pos as int
         """
+        return
         children_len = len(self.__tracks_widget_left.get_children() +
                            self.__tracks_widget_right.get_children())
         if pos > children_len / 2:
@@ -172,6 +168,7 @@ class PlaylistsWidget(Gtk.Grid):
             Del track from widget
             @param track id as int
         """
+        return
         children = self.__tracks_widget_left.get_children() + \
             self.__tracks_widget_right.get_children()
         # Clear the widget
@@ -236,8 +233,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         rows = []
         for listbox in [self.__tracks_widget_left, self.__tracks_widget_right]:
-            for row in listbox.get_children():
-                rows.append(row)
+            rows += listbox.get_children()
         return rows
 
     @property
@@ -250,14 +246,14 @@ class PlaylistsWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def __add_tracks(self, tracks, widget, pos, previous_album_id=None):
+    def __add_tracks(self, tracks, widget, pos, previous_row=None):
         """
             Add tracks to list
             @param tracks id as array of [int]
             @param widget TracksWidget
             @param track position as int
             @param pos as int
-            @param previous album id as int
+            @param previous_row as Row
         """
         if self.__loading == Loading.STOP:
             self.__loading = Loading.NONE
@@ -274,50 +270,15 @@ class PlaylistsWidget(Gtk.Grid):
 
         track = Track(tracks.pop(0))
         track.set_number(pos)
-        row = PlaylistRow(track, track.album.id != previous_album_id)
-        row.connect("track-moved", self.__on_track_moved)
+        row = PlaylistRow(track)
+        row.set_previous_row(previous_row)
+        if previous_row is not None:
+            previous_row.set_next_row(row)
+        row.connect("insert-track", self.__on_insert_track)
+        row.connect("remove-track", self.__on_remove_track)
         row.show()
         widget.insert(row, pos)
-        GLib.idle_add(self.__add_tracks, tracks, widget,
-                      pos + 1, track.album.id)
-
-    def __update_position(self):
-        """
-            Update widget position
-
-        """
-        row_tracks_left = self.__get_row_tracks(Loading.LEFT)
-        row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
-        len_row_tracks_left = len(row_tracks_left)
-        len_row_tracks_right = len(row_tracks_right)
-        # Take first track from tracks2 and put it at the end of tracks1
-        if len_row_tracks_right > len_row_tracks_left:
-            src_track = row_tracks_right[0]
-            if row_tracks_left:
-                dst_track = row_tracks_left[-1]
-            else:
-                dst_track = None
-            self.__move_track(dst_track, src_track, False)
-        # Take last track of tracks1 and put it at the bottom of tracks2
-        elif len_row_tracks_left - 1 > len_row_tracks_right:
-            src_track = row_tracks_left[-1]
-            if row_tracks_right:
-                dst_track = row_tracks_right[0]
-            else:
-                dst_track = None
-            self.__move_track(dst_track, src_track, True)
-
-    def __update_headers(self):
-        """
-            Update headers for all tracks
-        """
-        self.__tracks_widget_left.update_headers()
-        prev_album_id = None
-        if self.__orientation == Gtk.Orientation.VERTICAL:
-            row_tracks_left = self.__tracks_widget_left.get_children()
-            if row_tracks_left:
-                prev_album_id = row_tracks_left[-1].track.album.id
-        self.__tracks_widget_right.update_headers(prev_album_id)
+        GLib.idle_add(self.__add_tracks, tracks, widget, pos + 1, row)
 
     def __get_row_tracks(self, loading):
         """
@@ -332,132 +293,6 @@ class PlaylistsWidget(Gtk.Grid):
         for row in widget.get_children():
             tracks.append(row.track)
         return tracks
-
-    def __move_track(self, dst_track, src_track, down):
-        """
-            Move track from src to row
-            @param dst_track as Track
-            @param src_track as Track
-            @param down as bool
-        """
-        row_tracks_left = self.__get_row_tracks(Loading.LEFT)
-        row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
-        tracks1_len = len(row_tracks_left)
-        tracks2_len = len(row_tracks_right)
-        if src_track in row_tracks_left:
-            src_widget = self.__tracks_widget_left
-        else:
-            src_widget = self.__tracks_widget_right
-        if tracks1_len == 0 or dst_track in row_tracks_left:
-            dst_widget = self.__tracks_widget_left
-            dst_tracks = row_tracks_left
-        elif tracks2_len == 0 or dst_track in row_tracks_right:
-            dst_widget = self.__tracks_widget_right
-            dst_tracks = row_tracks_right
-        else:
-            return
-        # Remove src from src_widget
-        for child in src_widget.get_children():
-            if child.track == src_track:
-                child.destroy()
-                break
-        prev_track = Track()
-        name = GLib.markup_escape_text(src_track.name)
-        index = 0
-        # Get previous track
-        if dst_track is not None:
-            for child in dst_widget.get_children():
-                if child.track == dst_track:
-                    break
-                index += 1
-            if down:
-                index += 1
-            # Get previous track (in dst context)
-            prev_index = dst_tracks.index(dst_track)
-            if not down:
-                prev_index -= 1
-            prev_track = dst_tracks[prev_index]
-            # If we are listening to a compilation, prepend artist name
-            if (src_track.album.artist_id == Type.COMPILATIONS or
-                    len(src_track.artist_ids) > 1 or
-                    src_track.album.artist_id not in src_track.artist_ids):
-                name = "<b>%s</b>\n%s" % (
-                    GLib.markup_escape_text(", ".join(src_track.artists)),
-                    name)
-        src_track.set_number(index)
-        row = PlaylistRow(src_track, index == 0 or
-                          src_track.album.id != prev_track.album.id)
-        row.connect("track-moved", self.__on_track_moved)
-        row.show()
-        dst_widget.insert(row, index)
-
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            ONLY HAPPEN IN VERTICAL ORIENTATION
-            Horizontal orientation is handled by TracksWidget
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.clear_animation()
-        try:
-            value = int(data.get_text())
-            try:
-                child = self.__tracks_widget_right.get_children()[-1]
-            except:
-                child = self.__tracks_widget_left.get_children()[-1]
-            self.__on_track_moved(widget, child.track.id, value, False)
-        except:
-            if len(self.__playlist_ids) == 1:
-                App().playlists.import_uri(self.__playlist_ids[0],
-                                           data.get_text())
-
-    def __on_track_moved(self, widget, dst, src, up):
-        """
-            Move track from src to row
-            Recalculate track position
-            @param widget as TracksWidget
-            @param dst as str
-            @param src as str
-            @param up as bool
-        """
-        def update_playlist():
-            # Save playlist in db only if one playlist visible
-            if len(self.__playlist_ids) == 1 and self.__playlist_ids[0] >= 0:
-                row_tracks_left = self.__get_row_tracks(Loading.LEFT)
-                row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
-                tracks = row_tracks_left + row_tracks_right
-                App().playlists.clear(self.__playlist_ids[0], False)
-                App().playlists.add_tracks(self.__playlist_ids[0],
-                                           tracks,
-                                           False)
-            if not (set(self.__playlist_ids) -
-                    set(App().player.get_playlist_ids())):
-                App().player.update_playlist(tracks)
-        src_track = dst_track = None
-        row_tracks_left = self.__get_row_tracks(Loading.LEFT)
-        row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
-        for track in row_tracks_left + row_tracks_right:
-            if track.id == int(dst):
-                dst_track = track
-            elif track.id == int(src):
-                src_track = track
-            elif src_track is not None and dst_track is not None:
-                break
-        self.__move_track(dst_track, src_track, up)
-        self.__update_position()
-        self.__update_headers()
-        self.__tracks_widget_left.update_indexes(1)
-        self.__tracks_widget_right.update_indexes(len(row_tracks_left) + 1)
-        helper = TaskHelper()
-        helper.run(update_playlist)
 
     def __on_size_allocate(self, widget, allocation):
         """
@@ -487,7 +322,6 @@ class PlaylistsWidget(Gtk.Grid):
                 self.__grid.remove(child)
             GLib.idle_add(self.__grid.add, self.__tracks_widget_left)
             GLib.idle_add(self.__grid.add, self.__tracks_widget_right)
-        self.__update_headers()
 
     def __on_activated(self, widget, track):
         """
@@ -510,3 +344,49 @@ class PlaylistsWidget(Gtk.Grid):
                     row_tracks_left +
                     row_tracks_right,
                     self.__playlist_ids)
+
+    def __on_insert_track(self, row, new_track_id, down):
+        """
+            Insert a new row at position
+            @param row as PlaylistRow
+            @param new_track_id as int
+            @param down as bool
+        """
+        position = self.children.index(row)
+        track = Track(new_track_id)
+        new_row = PlaylistRow(track)
+        new_row.connect("insert-track", self.__on_insert_track)
+        new_row.connect("remove-track", self.__on_remove_track)
+        new_row.show()
+        if down:
+            position += 1
+            new_row.set_previous_row(row)
+            new_row.set_next_row(row.next_row)
+            if row.next_row is not None:
+                row.next_row.set_previous_row(new_row)
+            row.set_next_row(new_row)
+        else:
+            new_row.set_previous_row(row.previous_row)
+            new_row.set_next_row(row)
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(new_row)
+            row.set_previous_row(new_row)
+        new_row.update_number(position + 1)
+        App().playlists.insert_track(self.__playlist_ids[0], track, position)
+        left_count = len(self.__tracks_widget_left.get_children())
+        if position < left_count:
+            row.get_parent().insert(new_row, position)
+        else:
+            row.get_parent().insert(new_row, position - left_count)
+        tracks = App().playlists.get_tracks(self.__playlist_ids[0])
+        App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
+
+    def __on_remove_track(self, row, position):
+        """
+            Remove row's track at position
+            @param row as PlaylistRow
+            @param position as int
+        """
+        App().playlists.remove_track_at(self.__playlist_ids[0], position)
+        tracks = App().playlists.get_tracks(self.__playlist_ids[0])
+        App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)

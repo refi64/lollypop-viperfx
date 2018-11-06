@@ -359,7 +359,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.add(self.__vgrid)
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
-        self.drag_dest_add_text_targets()
+        self.drag_dest_add_uri_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):

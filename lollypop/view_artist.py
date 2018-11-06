@@ -37,8 +37,8 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
         self.__art_signal_id = None
-        self.set_margin_start(10)
-        self.set_margin_end(10)
+        self._viewport.set_margin_start(10)
+        self._viewport.set_margin_end(10)
         self.connect("realize", self.__on_realize)
         self.connect("unrealize", self.__on_unrealize)
 

@@ -168,7 +168,7 @@ class PlaylistsMenu(BaseMenu):
                                                   self._object)
         else:
             exists = App().playlists.exists_track(Type.NOPARTY,
-                                                  self._object)
+                                                  self._object.uri)
         if exists:
             self.append(_('Remove from "Not in party"'),
                         "app.playlist_not_in_party")
@@ -189,7 +189,7 @@ class PlaylistsMenu(BaseMenu):
                                                       self._object)
             else:
                 exists = App().playlists.exists_track(playlist[0],
-                                                      self._object)
+                                                      self._object.uri)
             if exists:
                 action.connect("activate",
                                self.__remove_from_playlist,

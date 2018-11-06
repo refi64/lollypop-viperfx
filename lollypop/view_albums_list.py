@@ -17,27 +17,26 @@ from gettext import gettext as _
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.art import AlbumArtHelper
-from lollypop.objects import Album
-from lollypop.logger import Logger
-from lollypop.define import ArtSize, App, ResponsiveType, Shuffle
+from lollypop.objects import Album, Track
+from lollypop.define import ArtSize, App, ResponsiveType
 from lollypop.controller_view import ViewController
+from lollypop.widgets_row_dnd import DNDRow
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
+class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper, DNDRow):
     """
         Album row
     """
 
     __gsignals__ = {
-        "album-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, bool)),
-        "track-moved": (GObject.SignalFlags.RUN_FIRST, None, (str, str, bool)),
-        "album-added": (GObject.SignalFlags.RUN_FIRST, None,
-                        (int, GObject.TYPE_PYOBJECT)),
-        "track-append": (GObject.SignalFlags.RUN_FIRST, None,
-                         (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
-        "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
-                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
-        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "insert-album": (
+            GObject.SignalFlags.RUN_FIRST, None,
+            (int, GObject.TYPE_PYOBJECT, bool)),
+        "insert-track": (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        "insert-album-after": (GObject.SignalFlags.RUN_FIRST, None,
+                               (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
+        "remove-album": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     # Update padding in application.css => albumrow
@@ -59,18 +58,21 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         else:
             return cover_height + 2
 
-    def __init__(self, album, height, responsive_type, reveal):
+    def __init__(self, album, height, responsive_type, reveal, parent):
         """
             Init row widgets
             @param album as Album
             @param height as int
             @param responsive_type as ResponsiveType
             @param reveal as bool
+            @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
         AlbumArtHelper.__init__(self)
+        DNDRow.__init__(self)
         # Later => TracksView.__init__(self)
         self.__revealer = None
+        self.__parent = parent
         self.__reveal = reveal
         self._responsive_widget = None
         self._album = album
@@ -167,17 +169,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         self.add(row_widget)
         self.set_playing_indicator()
         self.show_all()
-        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
-                             Gdk.DragAction.MOVE)
-        self.drag_source_add_text_targets()
-        self.drag_dest_set(Gtk.DestDefaults.DROP,
-                           [], Gdk.DragAction.MOVE)
-        self.drag_dest_add_text_targets()
-        self.set_selection()
-        self.connect("drag-begin", self.__on_drag_begin)
-        self.connect("drag-data-get", self.__on_drag_data_get)
-        self.connect("drag-data-received", self.__on_drag_data_received)
-        self.connect("drag-leave", self.__on_drag_leave)
         self.connect("button-release-event", self.__on_button_release_event)
         if self.__reveal:
             self.reveal()
@@ -243,6 +234,14 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
         # FIXME
 
     @property
+    def parent(self):
+        """
+            Get parent view
+            @return AlbumListView
+        """
+        return self.__parent
+
+    @property
     def is_populated(self):
         """
             Return True if populated
@@ -261,12 +260,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _on_populated(self):
-        """
-            Populate remaining discs
-        """
-        if len(self.discs) > 0:
-            TracksView.populate(self)
 
 #######################
 # PRIVATE             #
@@ -278,67 +271,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
             @param event as Gdk.Event
         """
         self.reveal()
-
-    def __on_drag_begin(self, widget, context):
-        """
-            Set icon and update view padding
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-        """
-        widget.drag_source_set_icon_name("emblem-music-symbolic")
-
-    def __on_drag_data_get(self, widget, context, data, info, time):
-        """
-            Send track id
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        album_str = "a:%s:none" % self._album
-        data.set_text(album_str, len(album_str))
-
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move track
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        from lollypop.view import View
-        view = widget.get_ancestor(View)
-        if view is not None:
-            view.clear_animation()
-        if "a:%s:none" % self._album == data.get_text():
-            return
-        height = self.get_allocated_height()
-        if y > height / 2:
-            down = True
-        else:
-            down = False
-        try:
-            (type_id, object_str, album_str) = data.get_text().split(":")
-            if type_id == "t":
-                self.emit("track-moved", object_str, album_str, down)
-            elif type_id == "a":
-                self.emit("album-moved", object_str, down)
-        except Exception as e:
-            Logger.error("AlbumRow::__on_drag_data_received(): %s" % e)
-
-    def __on_drag_leave(self, widget, context, time):
-        """
-            Remove style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param time as int
-        """
-        self.get_style_context().remove_class("drag-up")
-        self.get_style_context().remove_class("drag-down")
 
     def __on_action_button_clicked(self, button):
         """
@@ -425,7 +357,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect("drag-motion", self.__on_drag_motion)
         self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("album")
@@ -453,6 +384,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param x as int
             @param y as int
         """
+        # FIXME autoscroll continue after drop
         self.clear_animation()
         for row in self.__view.get_children():
             coordinates = row.translate_coordinates(self, 0, 0)
@@ -547,20 +479,24 @@ class AlbumsListView(LazyLoadingView, ViewController):
         if style_context.has_class("drag-down"):
             row.reveal(True)
 
-    def __add_albums(self, albums):
+    def __add_albums(self, albums, previous_row=None):
         """
             Add items to the view
             @param albums ids as [Album]
+            @param previous_row as AlbumRow
         """
         if self._lazy_queue is None:
             return
         if albums:
             album = albums.pop(0)
             row = self.__row_for_album(album, album.id in self.__reveals)
+            row.set_previous_row(previous_row)
+            if previous_row is not None:
+                previous_row.set_next_row(row)
             row.show()
             self.__view.add(row)
             self._lazy_queue.append(row)
-            GLib.idle_add(self.__add_albums, albums)
+            GLib.idle_add(self.__add_albums, albums, row)
         else:
             # If only one album, we want to reveal it
             # Stop lazy loading and populate
@@ -580,13 +516,12 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album as Album
             @param reveal as bool
         """
-        row = AlbumRow(album, self.__height, self.__responsive_type, reveal)
-        row.connect("destroy", self.__on_child_destroyed)
-        row.connect("track-moved", self.__on_track_moved)
-        row.connect("album-moved", self.__on_album_moved)
-        row.connect("album-added", self.__on_album_added)
-        row.connect("track-append", self.__on_track_added)
-        row.connect("track-removed", self.__on_track_removed)
+        row = AlbumRow(album, self.__height, self.__responsive_type,
+                       reveal, self)
+        row.connect("insert-track", self.__on_insert_track)
+        row.connect("insert-album", self.__on_insert_album)
+        row.connect("insert-album-after", self.__on_insert_album_after)
+        row.connect("remove-album", self.__on_remove_album)
         return row
 
     def __auto_scroll(self, up):
@@ -633,117 +568,97 @@ class AlbumsListView(LazyLoadingView, ViewController):
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
 
-    def __on_child_destroyed(self, row):
+    def __on_insert_track(self, row, new_track_id, down):
         """
-            @param row as AlbumRow
-        """
-        # Send signal for parent
-        # TODO
-
-    def __on_album_added(self, row, index, album):
-        """
-            Add album as index
-            @param row as AlbumRow
-            @param index as int
-            @param count as int
-            @param src_widget_str
-        """
-        row = self.__row_for_album(album)
-        row.populate()
-        row.reveal(Gtk.RevealerTransitionType.NONE)
-        row.show()
-        self.__view.insert(row, index)
-        if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
-            App().player.set_next()
-
-    def __on_track_added(self, row, album, tracks):
-        """
-            Remove track from widgets
-            @param row as TrackRow
-            @param album as Album
-            @param tracks as [Track]
-        """
-        for album_row in self.__view.get_children():
-            if album_row.album == album:
-                album_row.append_rows(tracks)
-                break
-
-    def __on_track_removed(self, row, album, tracks):
-        """
-            Remove track from widgets
-            @param row as TrackRow
-            @param album as Album
-            @param tracks as [Track]
-        """
-        for album_row in self.__view.get_children():
-            if album_row.album == album:
-                album_row.remove_rows(tracks)
-                break
-
-    def __on_track_moved(self, row, src_track_str, src_album_str, down):
-        """
-            Move src track to row
-            Recalculate track position
-            @param row as TrackRow
-            @param src_track_str as str
-            @param src_widget_str as str
-            @param down as bool
-        """
-        try:
-            children = self.__view.get_children()
-            row_index = children.index(row)
-            src_track = App().player.object_by_name(src_track_str,
-                                                    src_album_str)
-            src_album = App().player.object_by_name(None, src_album_str)
-            if src_track is None or src_album is None:
-                return
-            src_album.remove_track(src_track)
-            if not src_album.tracks:
-                App().player.remove_album(src_album)
-            children[row_index].emit("track-removed", src_album, [src_track])
-            new_album = Album(src_track.album.id)
-            new_album.set_tracks([src_track])
-            album_row = self.__row_for_album(new_album)
-            album_row.populate()
-            album_row.show()
-            if down:
-                row_index += 1
-            self.__view.insert(album_row, row_index)
-            App().player.add_album(new_album, row_index)
-        except Exception as e:
-            Logger.error("AlbumsListView::__on_track_moved(): %s" % e)
-
-    def __on_album_moved(self, row, src, down):
-        """
-            Pass signal
+            Insert a new row at position
             @param row as PlaylistRow
-            @param src as str
+            @param new_track_id as int
             @param down as bool
         """
-        # Destroy current album row and search for album row
-        i = 0
-        row_index = -1
-        album = None
-        for child in self.__view.get_children():
-            if child == row:
-                row_index = i
-            if str(child.album) == src:
-                album = child.album
-                child.disconnect_by_func(self.__on_child_destroyed)
-                child.destroy()
+        new_track = Track(new_track_id)
+        children = self.__view.get_children()
+        position = children.index(row)
+        if down:
+            # Append track to album
+            if position + 1 < len(children) and\
+                    children[position + 1].album.id == new_track.album.id:
+                new_track.set_album(children[position + 1].album)
+                children[position + 1].prepend_rows([new_track])
+                children[position + 1].album.insert_track(new_track, 0)
+            # Append track to current album
+            elif children[position].album.id == new_track.album.id:
+                new_track.set_album(children[position].album)
+                children[position].append_rows([new_track])
+                children[position].album.insert_track(new_track)
+            # Add a new album
             else:
-                i += 1
-        # Create new row
-        if album is not None:
-            album_row = self.__row_for_album(album)
-            album_row.populate()
+                album = Album(new_track.album.id)
+                album.set_tracks([new_track])
+                new_row = self.__row_for_album(album, True)
+                new_row.populate()
+                new_row.show()
+                self.__view.insert(new_row, position + 1)
+                App().player.add_album(album, position + 1)
+        else:
+            album = Album(new_track.album.id)
+            album.set_tracks([new_track])
+            new_row = self.__row_for_album(album, True)
+            new_row.populate()
+            new_row.show()
+            self.__view.insert(new_row, position)
+            App().player.add_album(album, position)
 
-            # Add new row
-            if row_index != -1:
-                if down:
-                    row_index += 1
-                self.__view.insert(album_row, row_index)
-                App().player.move_album(album, row_index)
+    def __on_insert_album(self, row, new_album_id, track_ids, down):
+        """
+            Insert a new row at position
+            @param row as AlbumRow
+            @param new_track_id as int
+            @param track_ids as [int]
+            @param down as bool
+        """
+        position = self.__view.get_children().index(row)
+        if down:
+            position += 1
+        album = Album(new_album_id)
+        album.set_tracks([Track(track_id) for track_id in track_ids])
+        new_row = self.__row_for_album(album, True)
+        new_row.populate()
+        new_row.show()
+        self.__view.insert(new_row, position)
+        App().player.add_album(album, position)
+
+    def __on_insert_album_after(self, view, after_album, album):
+        """
+            Insert album after after_album
+            @param view as TracksView
+            @param after_album as Album
+            @param album as Album
+        """
+        position = 0
+        children = self.__view.get_children()
+        # If after_album is undefined, prepend)
+        if after_album.id is not None:
+            for row in children:
+                if row.album == after_album:
+                    break
+                position += 1
+        new_row = self.__row_for_album(album, True)
+        new_row.populate()
+        new_row.set_previous_row(children[position])
+        new_row.set_next_row(children[position].next_row)
+        children[position].set_next_row(new_row)
+        if new_row.next_row is not None:
+            new_row.next_row.set_previous_row(new_row)
+        new_row.show()
+        self.__view.insert(new_row, position + 1)
+        App().player.add_album(album, position + 1)
+
+    def __on_remove_album(self, row):
+        """
+            Remove album from player
+            @param row as AlbumRow
+        """
+        App().player.remove_album(row.album)
 
     def __on_drag_motion(self, widget, context, x, y, time):
         """
@@ -773,26 +688,3 @@ class AlbumsListView(LazyLoadingView, ViewController):
             self.__autoscroll_timeout_id = GLib.timeout_add(100,
                                                             self.__auto_scroll,
                                                             up)
-
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move album
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        try:
-            self.clear_animation()
-            (type_id, object_str, album_str) = data.get_text().split(":")
-            if type_id == "a":
-                self.__on_album_moved(self.__view.get_children()[-1],
-                                      object_str, True)
-            elif type_id == "t":
-                self.__on_track_moved(self.__view.get_children()[-1],
-                                      object_str, album_str, True)
-        except Exception as e:
-            Logger.error("AlbumsListView::__on_drag_data_received(): %s" % e)

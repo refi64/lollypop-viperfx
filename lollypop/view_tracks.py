@@ -15,15 +15,17 @@ from gi.repository import GLib, Gtk, GObject, Pango
 from gettext import gettext as _
 
 from lollypop.define import WindowSize, Loading
-from lollypop.widgets_track import TracksWidget, TrackRow
-from lollypop.objects import Album
+from lollypop.widgets_tracks import TracksWidget
+from lollypop.widgets_row_track import TrackRow
+from lollypop.objects import Album, Track
 from lollypop.logger import Logger
-from lollypop.define import App, Type, Shuffle, NextContext
+from lollypop.define import App, Type, NextContext, ResponsiveType
 
 
 class TracksView:
     """
         Responsive view showing discs on one or two rows
+        Need to be inherited by an Album widget (AlbumListView, AlbumWidget)
     """
     __gsignals__ = {
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
@@ -34,6 +36,8 @@ class TracksView:
                          (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
         "track-removed": (GObject.SignalFlags.RUN_FIRST, None,
                           (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
+        "insert-album-after": (GObject.SignalFlags.RUN_FIRST, None,
+                               (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT))
     }
 
     def __init__(self, responsive_type):
@@ -58,11 +62,18 @@ class TracksView:
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}
 
+        if responsive_type in [ResponsiveType.DND,
+                               ResponsiveType.LIST,
+                               ResponsiveType.SEARCH]:
+            # FIXME
+            self._album.merge_discs()
+
         # Discs to load, will be emptied
         self.__discs = list(self._album.discs)
         for disc in self.__discs:
             self.__add_disc_container(disc.number)
-            self.__set_disc_height(disc.number, disc.tracks)
+            if self._responsive_type == ResponsiveType.FIXED:
+                self.__set_disc_height(disc.number, disc.tracks)
 
     def set_playing_indicator(self):
         """
@@ -85,14 +96,17 @@ class TracksView:
         if self.__discs:
             disc = self.__discs.pop(0)
             disc_number = disc.number
-            tracks = disc.tracks
-            mid_tracks = int(0.5 + len(tracks) / 2)
-            self.populate_list_left(tracks[:mid_tracks],
-                                    disc_number,
-                                    1)
-            self.populate_list_right(tracks[mid_tracks:],
-                                     disc_number,
-                                     mid_tracks + 1)
+            tracks = list(disc.tracks)
+            if self._responsive_type == ResponsiveType.FIXED:
+                mid_tracks = int(0.5 + len(tracks) / 2)
+                self.populate_list_left(tracks[:mid_tracks],
+                                        disc_number,
+                                        0)
+                self.populate_list_right(tracks[mid_tracks:],
+                                         disc_number,
+                                         mid_tracks)
+            else:
+                self.populate_list_left(tracks, 0, 0)
 
     def populate_list_left(self, tracks, disc_number, pos):
         """
@@ -128,28 +142,32 @@ class TracksView:
 
     def append_rows(self, tracks):
         """
-            Add track rows
+            Add track rows (only works for albums with merged discs)
             @param tracks as [Track]
         """
-        for track in tracks:
-            row = TrackRow(track, self._responsive_type)
-            row.connect("destroy", self.__on_row_destroy)
-            row.connect("track-moved", self.__on_track_moved)
-            row.connect("album-moved", self.__on_album_moved)
-            row.show()
-            self.boxes[-1].add(row)
-        self.recalculate_tracks_position()
+        position = len(self.children)
+        previous_row = None if position == 1 else self.children[-1]
+        self.__add_tracks(tracks, self._tracks_widget_left,
+                          0, position, previous_row)
+
+    def prepend_rows(self, tracks):
+        """
+            Add track rows (only works for albums with merged discs)
+            @param tracks as [Track]
+        """
+        self.__add_tracks(tracks, self._tracks_widget_left,
+                          0, 0, None)
 
     def remove_rows(self, tracks):
         """
             Remove track rows
             @param tracks as [Track]
         """
+        # FIXME
         track_ids = [track.id for track in tracks]
         for row in self.children:
             if row.track.id in track_ids:
                 row.destroy()
-        self.recalculate_tracks_position()
 
     def rows_animation(self, x, y, widget):
         """
@@ -179,34 +197,6 @@ class TracksView:
                 row.get_style_context().add_class("drag-down")
                 return row
         return None
-
-    def recalculate_tracks_position(self):
-        """
-            Update track number if needed
-            Check track are correctly populated between left and right
-        """
-        # DND allowed, so discs are merged
-        disc_number = self._album.discs[0].number
-        left_widget = self._tracks_widget_left[disc_number]
-        right_widget = self._tracks_widget_right[disc_number]
-        left_children = left_widget.get_children()
-        right_children = right_widget.get_children()
-        if not App().settings.get_value("show-tag-tracknumber"):
-            i = 1
-            for child in left_widget.get_children() +\
-                    right_widget.get_children():
-                child.track.set_number(i)
-                child.update_num_label()
-                i += 1
-        if len(right_children) > len(left_children):
-            row = right_children[0]
-            right_widget.remove(row)
-            left_widget.add(row)
-        # Take last track of tracks1 and put it at the bottom of tracks2
-        elif len(left_children) - 1 > len(right_children):
-            row = left_children[-1]
-            left_widget.remove(row)
-            right_widget.prepend(row)
 
     def set_filter_func(self, func):
         """
@@ -253,8 +243,7 @@ class TracksView:
         rows = []
         for dic in [self._tracks_widget_left, self._tracks_widget_right]:
             for widget in dic.values():
-                for row in widget.get_children():
-                    rows.append(row)
+                rows += widget.get_children()
         return rows
 
     @property
@@ -353,6 +342,11 @@ class TracksView:
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
+        # We need an initial orientation but we only need to follow allocation
+        # in FIXED mode
+        if self._responsive_type != ResponsiveType.FIXED and\
+                self._orientation is not None:
+            return
         if self._width == allocation.width:
             return
         self._width = allocation.width
@@ -438,13 +432,14 @@ class TracksView:
         self._tracks_widget_left[disc_number].show()
         self._tracks_widget_right[disc_number].show()
 
-    def __add_tracks(self, tracks, widget, disc_number, i):
+    def __add_tracks(self, tracks, widget, disc_number, i, previous_row=None):
         """
             Add tracks for to tracks widget
             @param tracks as [Track]
             @param widget as TracksWidget
             @param disc number as int
             @param i as int
+            @param previous_row as TrackRow
         """
         if self.__loading == Loading.STOP:
             self.__loading = Loading.NONE
@@ -457,177 +452,74 @@ class TracksView:
             if self.__loading == Loading.ALL:
                 self._on_populated()
             self._locked_widget_right = False
+            # After prepend, we need to set last added next row
+            if self._responsive_type == ResponsiveType.DND and\
+                    i < len(self.children):
+                self.children[i].set_previous_row(self.children[i - 1])
+                self.children[i - 1].set_next_row(self.children[i])
+                self.children[0].update_number(1)
             return
 
         track = tracks.pop(0)
         if not App().settings.get_value("show-tag-tracknumber"):
-            track.set_number(i)
+            track.set_number(i + 1)
         track.set_featuring_ids(self._album.artist_ids)
         row = TrackRow(track, self._responsive_type)
-        row.connect("destroy", self.__on_row_destroy)
-        row.connect("track-moved", self.__on_track_moved)
-        row.connect("album-moved", self.__on_album_moved)
+        if self._responsive_type == ResponsiveType.DND:
+            row.set_previous_row(previous_row)
+            if previous_row is not None:
+                previous_row.set_next_row(row)
+            row.connect("destroy", self.__on_row_destroy)
+            row.connect("insert-track", self.__on_insert_track)
+            row.connect("insert-album", self.__on_insert_album)
+            row.connect("remove-track", self.__on_remove_track)
         row.show()
-        widget[disc_number].add(row)
-        GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
+        widget[disc_number].insert(row, i)
+        GLib.idle_add(self.__add_tracks, tracks, widget,
+                      disc_number, i + 1, row)
 
-    def __move_track(self, src_index, dst_index):
+    def __get_split_tracks(self, row, down):
         """
-            Move track in album
-            @param src_index as int/None
-            @param dst_index as int
+            Get tracks for row split
+            @param row as Row
+            @param down as bool
+            @return [tracks]
         """
-        # DND allowed, so discs are merged
-        disc_number = self._album.discs[0].number
-        src_widget = self._tracks_widget_left[disc_number]
-        dst_widget = self._tracks_widget_left[disc_number]
-        # Search parent widget for src and dst
-        if src_index is not None and\
-                src_index >= len(src_widget.get_children()):
-            src_index -= len(src_widget.get_children())
-            src_widget = self._tracks_widget_right[disc_number]
-        if dst_index >= len(dst_widget.get_children()):
-            dst_index -= len(dst_widget.get_children())
-            dst_widget = self._tracks_widget_right[disc_number]
-        # Get source row
-        if src_index is not None:
-            row = src_widget.get_children()[src_index]
-            src_widget.remove(row)
-            dst_widget.insert(row, dst_index)
-        if App().settings.get_enum("shuffle") != Shuffle.TRACKS:
-            App().player.set_next()
+        # Create a new album with reminding tracks
+        if down:
+            split_tracks = []
+        else:
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(None)
+            split_tracks = [Track(row.track.id)]
+        # First get tracks
+        r = row
+        while r.next_row is not None:
+            split_tracks.append(Track(r.next_row.track.id))
+            r = r.next_row
+        return split_tracks
 
-    def __on_track_moved(self, row, src_track_str, src_album_str, down):
+    def __destroy_split(self, row, down):
         """
-            Move src track to row
-            Recalculate track position
-            @param row as TrackRow
-            @param src_track_str as str
-            @param src_widget_str as str
+            Destroy rows not needed after split
+            @param row as Row
             @param down as bool
         """
-        try:
-            albums = App().player.albums
-            src_track = App().player.object_by_name(src_track_str,
-                                                    src_album_str)
-            if src_track is None:
-                return
-            # Search album
-            album_index = albums.index(self._album)
-            tracks = self._album.tracks
-            track_index = tracks.index(row.track)
-            # DND inside same widget
-            if src_album_str == str(self._album):
-                src_index = self._album.tracks.index(src_track)
-                tracks.remove(src_track)
-                track_index = tracks.index(row.track)
-                tracks.insert(track_index, src_track)
-                if down:
-                    track_index += 1
-                self.__move_track(src_index, track_index)
-            # Move src track into row
-            else:
-                # Search for src album, we need to remove track
-                src_album = App().player.object_by_name(None,
-                                                        src_album_str)
-                if src_album is None:
-                    return
-                src_album.remove_track(src_track)
-                self.emit("track-removed", src_album, [src_track])
-                # Special case when moving src at top
-                if (track_index == 0 and not down) or\
-                        (track_index + 1 == len(tracks) and down):
-                    # We just create a new album at top/bottom
-                    if album_index == 0 or album_index + 1 == len(albums):
-                        if down:
-                            album_index += 1
-                        # Create a new album for src
-                        new_src_album = Album(src_track.album.id)
-                        new_src_album.set_tracks([src_track])
-                        albums.insert(album_index, new_src_album)
-                        self.emit("album-added", album_index, new_src_album)
-                    # We need to check if an album merge is possible
-                    else:
-                        if track_index == 0:
-                            prev_next_index = album_index - 1
-                        else:
-                            prev_next_index = album_index + 1
-                        prev_next_album = albums[prev_next_index]
-                        # Merge
-                        if prev_next_album.id == src_track.album.id:
-                            prev_next_album.add_track(src_track)
-                            self.emit("track-append",
-                                      prev_next_album,
-                                      [src_track])
-                        # Add an album up
-                        else:
-                            # Create a new album for src
-                            new_src_album = Album(src_track.album.id)
-                            new_src_album.set_tracks([src_track])
-                            self.emit("album-added",
-                                      prev_next_index,
-                                      new_src_album)
-                else:
-                    if down:
-                        track_index += 1
-                    # Split orig album
-                    tracks = list(self._album.tracks)
-                    self._album.set_tracks(tracks[0:track_index])
-                    self.emit("track-removed", self._album,
-                              tracks[track_index:])
-                    # Create a new album for src
-                    new_src_album = Album(src_track.album.id)
-                    new_src_album.set_tracks([src_track])
-                    # Split album
-                    split_album = Album(self._album.id)
-                    split_album.set_tracks(tracks[track_index + 1:-1])
-                    albums.insert(album_index + 1, new_src_album)
-                    albums.insert(album_index + 2, split_album)
-                    self.emit("album-added", album_index + 1, new_src_album)
-                    self.emit("album-added", album_index + 2, split_album)
-            self.recalculate_tracks_position()
-        except Exception as e:
-            Logger.error("TracksView::__on_track_moved(): %s" % e)
+        if down:
+            r = row.next_row
+        else:
+            r = row
+        while r is not None:
+            r.track.album.remove_track(r.track)
+            r.destroy()
+            r = r.next_row
+        if down:
+            row.set_next_row(None)
 
-    def __on_album_moved(self, row, src_album_str, down):
-        """
-            Move src album to row
-            Recalculate track position
-            @param row as TrackRow
-            @param src_album_str as str
-            @param down as bool
-        """
-        try:
-            albums = App().player.albums
-            # Search track in album
-            tracks = list(self._album.tracks)
-            track_index = tracks.index(row.track)
-            album_index = App().player.albums.index(self._album)
-            if down:
-                track_index += 1
-            # Split orig album
-            self._album.set_tracks(tracks[0:track_index])
-            self.emit("track-removed", self._album,
-                      tracks[track_index:])
-            # Get album for src
-            src_album = App().player.object_by_name(None, src_album_str)
-            if src_album is None:
-                return
-            # Split album
-            split_album = Album(self._album.id)
-            split_album.set_tracks(tracks[track_index:])
-            albums.remove(src_album)
-            albums.insert(album_index + 1, src_album)
-            albums.insert(album_index + 2, split_album)
-            self.emit("album-moved", album_index + 1, src_album)
-            self.emit("album-added", album_index + 2, split_album)
-            self.recalculate_tracks_position()
-        except Exception as e:
-            Logger.error("TracksView::__on_album_moved(): %s" % e)
-
-    def __on_row_destroy(self, widget):
+    def __on_row_destroy(self, row):
         """
             Destroy self if no more row
+            @param row as Row
         """
         contain_children = False
         for box in self.boxes:
@@ -686,3 +578,104 @@ class TracksView:
                     not App().player.track_in_playback(track):
                 App().player.add_album(self._album)
             App().player.load(track)
+
+    def __on_insert_track(self, row, new_track_id, down):
+        """
+            Insert a new row at position
+            @param row as PlaylistRow
+            @param new_track_id as int
+            @param down as bool
+        """
+        track = Track(new_track_id)
+        # If same album, add track to album
+        if track.album.id == row.track.album.id:
+            position = self.children.index(row)
+            new_row = TrackRow(track, self._responsive_type)
+            new_row.connect("insert-track", self.__on_insert_track)
+            new_row.connect("remove-track", self.__on_remove_track)
+            new_row.show()
+            if down:
+                position += 1
+                new_row.set_previous_row(row)
+                new_row.set_next_row(row.next_row)
+                if row.next_row is not None:
+                    row.next_row.set_previous_row(new_row)
+                row.set_next_row(new_row)
+            else:
+                new_row.set_previous_row(row.previous_row)
+                new_row.set_next_row(row)
+                if row.previous_row is not None:
+                    row.previous_row.set_next_row(new_row)
+                row.set_previous_row(new_row)
+            new_row.update_number(position + 1)
+            row.get_parent().insert(new_row, position)
+            row.track.album.insert_track(track, position)
+        # Else, we need to insert a new album with the track
+        else:
+            # Backup album as __destroy_split() will unset it
+            album = row.track.album
+            split_album = Album(album.id)
+            split_tracks = self.__get_split_tracks(row, down)
+            # Create new album
+            track.album.set_tracks([track])
+            # We use DNDRow because we know that if tracks are DND
+            # we are DND. Little hack
+            if len(self.children) == len(split_tracks):
+                if self.previous_row is not None:
+                    album = self.previous_row.album
+                else:
+                    album = Album()
+            elif not split_tracks:
+                if self.next_row is not None:
+                    album = self.next_row.album
+                else:
+                    album = Album()
+            if album.id == track.album.id:
+                track.set_album(album)
+                if down:
+                    self.next_row.prepend_rows([track])
+                else:
+                    self.previous_row.append_rows([track])
+            else:
+                self.emit("insert-album-after",
+                          album,
+                          track.album)
+            # Create split album
+            if split_tracks:
+                split_album.set_tracks(split_tracks)
+                if album.id == track.album.id:
+                    self.emit("insert-album-after", album, split_album)
+                else:
+                    self.emit("insert-album-after", track.album, split_album)
+                self.__destroy_split(row, down)
+
+    def __on_remove_track(self, row):
+        """
+            Remove track from own album
+            @param row as PlaylistRow
+            @param position as int
+        """
+        row.track.album.remove_track(row.track)
+        if row.track.id == App().player.current_track.id:
+            App().player.set_next()
+            App().player.set_prev()
+
+    def __on_insert_album(self, row, new_album_id, track_ids, down):
+        """
+            Insert a new row at position
+            @param row as AlbumRow
+            @param new_album_id as int
+            @param track_ids as int
+            @param down as bool
+        """
+        # Backup album as __destroy_split() will unset it
+        album = row.track.album
+        new_album = Album(new_album_id)
+        tracks = [Track(track_id) for track_id in track_ids]
+        new_album.set_tracks(tracks)
+        split_album = Album(row.track.album.id)
+        split_tracks = self.__get_split_tracks(row, down)
+        split_album.set_tracks(split_tracks)
+        self.emit("insert-album-after", album, new_album)
+        self.emit("insert-album-after", new_album, split_album)
+        self.__destroy_split(row, down)

@@ -199,7 +199,7 @@ class Database:
             album_artist_ids = App().albums.get_artist_ids(album_id)
             artist_ids = App().tracks.get_artist_ids(track_id)
             uri = App().tracks.get_uri(track_id)
-            App().playlists.remove(uri)
+            App().playlists.remove_uri_from_all(uri)
             App().tracks.remove(track_id)
             App().tracks.clean(track_id)
             all_album_ids.append(album_id)

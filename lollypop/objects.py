@@ -261,12 +261,13 @@ class Album(Base):
         for track in tracks:
             track.set_album(self)
 
-    def add_track(self, track):
+    def insert_track(self, track, position=-1):
         """
             Add track to album
             @param track as Track
+            @param position as int
         """
-        self._tracks.append(track)
+        self._tracks.insert(position, track)
         track.set_album(self)
 
     def remove_track(self, track):
@@ -467,8 +468,7 @@ class Track(Base):
             True if track loved
             @return bool
         """
-        return App().playlists.exists_track(Type.LOVED,
-                                            self)
+        return App().playlists.exists_track(Type.LOVED, self.uri)
 
     @property
     def featuring_artist_ids(self):

@@ -114,15 +114,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.set_prev()
         self.emit("album-added", album.id)
 
-    def move_album(self, album, position):
-        """
-            Move album to position
-            @param album as Album
-            @param position as int
-        """
-        index = self._albums.index(album)
-        self._albums.insert(position, self._albums.pop(index))
-
     def remove_album(self, album):
         """
             Remove album from albums

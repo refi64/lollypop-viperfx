@@ -52,9 +52,8 @@ class PlayListPopover(Gtk.Popover):
             Save playlist
             @param button as Gtk.Button
         """
-        old_name = App().playlists.get_name(self.__playlist_id)
         new_name = self.__name_entry.get_text()
-        App().playlists.rename(old_name, new_name)
+        App().playlists.rename(self.__playlist_id, new_name)
         if self.__obj is None:
             App().window.container.reload_view()
         else:
@@ -67,8 +66,7 @@ class PlayListPopover(Gtk.Popover):
             Delete playlist
             @param button as Gtk.Button
         """
-        name = App().playlists.get_name(self.__playlist_id)
-        App().playlists.delete(name)
+        App().playlists.remove(self.__playlist_id)
         if self.__obj is None:
             App().window.container.reload_view()
         else:
@@ -100,7 +98,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             else:
                 self.__add = not App().playlists.exists_track(
                     playlist_id,
-                    obj)
+                    obj.uri)
 
     def populate(self):
         """
