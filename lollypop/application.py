@@ -469,7 +469,7 @@ class Application(Gtk.Application):
             @param result as Gio.AsyncResult
             @param uris as [str]
         """
-        self.scanner.update(uris, False)
+        GLib.timeout_add(500, self.scanner.update, uris, False)
 
     def __on_entry_parsed(self, parser, uri, metadata, uris):
         """

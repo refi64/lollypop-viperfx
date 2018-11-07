@@ -548,7 +548,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
         # We delay show_sidebar() to be sure inital stacked mode is set
-        GLib.timeout_add(200, self.__container.show_sidebar, show_sidebar)
+        self.__container.show_sidebar(show_sidebar)
         # Here we ignore initial configure events
         GLib.timeout_add(200, self.__connect_state_signals)
 
