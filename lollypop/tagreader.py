@@ -387,16 +387,17 @@ class TagReader(Discoverer):
                     else:
                         return None
                 elif bytes[0:4] == b"USLT":
-                    lyrics = bytes.split(b"\xff\xfe")[2].replace(b"\x00", b"")
+                    lyrics = bytes.split(b"\x00")[-1]
                 else:
                     return None
                 for encoding in ENCODING:
                     try:
                         return lyrics.decode(encoding)
-                    except:
-                        pass
-            except:
-                pass
+                    except Exception as e:
+                        Logger.warning("TagReader::get_lyrics(ENCODING): %s",
+                                       e)
+            except Exception as e:
+                Logger.warning("TagReader::get_lyrics(): %s", e)
             return None
 
         def get_mp4():
