@@ -421,29 +421,29 @@ class AlbumArt:
         if self.kid3_available:
             if App().player.current_track.album.id == album_id:
                 App().player.stop()
+            files = []
             for uri in App().albums.get_track_uris(album_id, [], []):
                 try:
-                    path = GLib.filename_from_uri(uri)[0]
+                    files.append(GLib.filename_from_uri(uri)[0])
                 except:
-                    continue
-                cover = "%s/lollypop_cover_tags.jpg" % self._CACHE_PATH
-                if GLib.find_program_in_path("flatpak-spawn") is not None:
-                    argv = ["flatpak-spawn", "--host", "kid3-cli", "-c",
-                            "select all",
-                            "-c", "set picture:'%s' ''" % cover, path]
-                else:
-                    argv = ["kid3-cli", "-c", "select all", "-c",
-                            "set picture:'%s' ''" % cover, path]
-                try:
-                    (pid, stdin, stdout, stderr) = GLib.spawn_async(
-                        argv, flags=GLib.SpawnFlags.SEARCH_PATH |
-                        GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
-                        standard_input=False,
-                        standard_output=False,
-                        standard_error=False
-                    )
-                except Exception as e:
-                    Logger.error("AlbumArt::__on_kid3_result(): %s" % e)
+                    pass
+            cover = "%s/lollypop_cover_tags.jpg" % self._CACHE_PATH
+            if GLib.find_program_in_path("flatpak-spawn") is not None:
+                argv = ["flatpak-spawn", "--host", "kid3-cli",
+                        "-c", "set picture:'%s' ''" % cover]
+            else:
+                argv = ["kid3-cli", "-c", "set picture:'%s' ''" % cover]
+            argv += files
+            try:
+                (pid, stdin, stdout, stderr) = GLib.spawn_async(
+                    argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+                    GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
+                    standard_input=False,
+                    standard_output=False,
+                    standard_error=False
+                )
+            except Exception as e:
+                Logger.error("AlbumArt::__on_kid3_result(): %s" % e)
             self.clean_album_cache(Album(album_id))
             # FIXME Should be better to send all covers at once and listen
             # to as signal but it works like this
