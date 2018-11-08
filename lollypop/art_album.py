@@ -60,10 +60,6 @@ class AlbumArt:
                 self.get_album_artwork(album, size, 1)
                 if f.query_exists():
                     return cache_path_jpg
-                else:
-                    return self._get_default_icon_path(
-                        size,
-                        "folder-music-symbolic")
         except Exception as e:
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
