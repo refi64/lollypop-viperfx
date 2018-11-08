@@ -93,6 +93,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         else:
             self.set_property("valign", Gtk.Align.CENTER)
             self._artwork = self.__art_helper.get_image(ArtSize.BIG,
+                                                        ArtSize.BIG,
                                                         "cover-frame")
             self.__duration_label.set_hexpand(True)
             builder = Gtk.Builder()
@@ -104,6 +105,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             builder.get_object("overlay").add(self._artwork)
             self.__art_helper.set_album_artwork(self._artwork,
                                                 self._album,
+                                                ArtSize.BIG,
                                                 ArtSize.BIG,
                                                 self.get_scale_factor())
             self.__coverbox = builder.get_object("coverbox")

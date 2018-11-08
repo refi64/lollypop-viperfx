@@ -12,62 +12,12 @@
 
 from gi.repository import Gio, GLib, Gdk
 
-import cairo
-
 from math import pi
 from gettext import gettext as _
 import unicodedata
 
 from lollypop.logger import Logger
-from lollypop.helper_task import TaskHelper
 from lollypop.define import App, Type, SelectionListType
-
-
-def blur(surface, image, w, h):
-    """
-        Blur surface using PIL
-        @param surface as cairo.Surface
-        @param image as Gtk.Image
-        @param w as int
-        @param h as int
-    """
-    def do_blur(surface, w, h):
-        try:
-            from PIL import Image, ImageFilter
-            from array import array
-            width = surface.get_width()
-            height = surface.get_height()
-            data = surface.get_data()
-            tmp = Image.frombuffer("RGBA", (width, height),
-                                   data, "raw", "RGBA", 0, 1)
-
-            tmp = tmp.filter(ImageFilter.GaussianBlur(10))
-
-            imgd = tmp.tobytes()
-            a = array('B', imgd)
-            stride = width * 4
-            surface = cairo.ImageSurface.create_for_data(
-                a, cairo.FORMAT_ARGB32, width, height, stride)
-            # Special check for non square images
-            if w > width or h > height:
-                size = max(w, h)
-                resized = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                             size,
-                                             size)
-                factor1 = size / width
-                factor2 = size / height
-                factor = max(factor1, factor2)
-                context = cairo.Context(resized)
-                context.scale(factor, factor)
-                context.set_source_surface(surface, 0, 0)
-                context.paint()
-                surface = resized
-        except Exception as e:
-            Logger.error("blur():", e)
-            return None
-        return surface
-    TaskHelper().run(do_blur, surface, w, h,
-                     callback=(image.set_from_surface,))
 
 
 def draw_rounded_image(image, ctx):

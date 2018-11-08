@@ -94,6 +94,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__art_helper = ArtHelper()
         self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self._artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
+                                                    ArtSize.MEDIUM,
                                                     "small-cover-frame")
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
@@ -116,6 +117,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__art_helper.set_album_artwork(self._artwork,
                                             self._album,
+                                            ArtSize.MEDIUM,
                                             ArtSize.MEDIUM,
                                             self.get_scale_factor())
         self.__play_indicator = Gtk.Image.new_from_icon_name(

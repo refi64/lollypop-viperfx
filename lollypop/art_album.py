@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
+from gi.repository import GLib, GdkPixbuf, Gio, Gst
 
 import re
 
@@ -143,8 +143,7 @@ class AlbumArt:
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork_pixbuf(self, album, size,
-                                 scale, disable_cache=False):
+    def get_album_artwork(self, album, size, scale, disable_cache=False):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
@@ -221,23 +220,6 @@ class AlbumArt:
         except Exception as e:
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)
             return None
-
-    def get_album_artwork(self, album, size, scale, disable_cache=False):
-        """
-            Return a cairo surface for album_id, covers are cached as jpg.
-            @param album as Album
-            @param pixbuf size as int
-            @param scale factor as int
-            @param disable_cache as bool
-            @return cairo surface
-            @warning: NOT THREAD SAFE
-        """
-        pixbuf = self.get_album_artwork_pixbuf(
-            album, size, scale, disable_cache)
-        if pixbuf is not None:
-            return Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-        else:
-            return self.get_default_icon("folder-music-symbolic", size, scale)
 
     def save_album_artwork(self, data, album_id):
         """

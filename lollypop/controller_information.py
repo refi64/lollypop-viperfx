@@ -86,25 +86,22 @@ class InformationController:
         """
         if width < 1 or height < 1:
             return
-        artwork = None
         if App().player.current_track.id == Type.RADIOS:
-            artwork = App().art.get_radio_artwork(
+            self.__art_helper.set_album_radio(
+                self._artwork,
                 App().player.current_track.album_artists[0],
                 width,
+                height,
                 self.get_scale_factor())
+
         elif App().player.current_track.id is not None:
             self.__art_helper.set_album_artwork(
                 self._artwork,
                 App().player.current_track.album,
                 width,
-                self.get_scale_factor())
-        return
-        if artwork is not None:
-            if enable_blur:
-                from lollypop.utils import blur
-                blur(artwork, self._artwork, width, height)
-            else:
-                self._artwork.set_from_surface(artwork)
+                height,
+                self.get_scale_factor(),
+                enable_blur)
             if self.__tooltip:
                 self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)

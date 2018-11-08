@@ -80,6 +80,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._widget.add(grid)
         self.__overlay = Gtk.Overlay.new()
         self._artwork = self.__art_helper.get_image(ArtSize.BIG,
+                                                    ArtSize.BIG,
                                                     "cover-frame")
         self.__overlay.add(self._artwork)
         self.__overlay_grid = None
@@ -88,6 +89,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.add(self._widget)
         self.__art_helper.set_album_artwork(self._artwork,
                                             self._album,
+                                            ArtSize.BIG,
                                             ArtSize.BIG,
                                             self.get_scale_factor())
         self.set_selection()

@@ -12,6 +12,7 @@
 
 from gi.repository import Gtk
 
+from lollypop.helper_art import ArtHelper
 from lollypop.define import App, ArtSize
 
 
@@ -25,6 +26,7 @@ class NextPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self.__art_helper = ArtHelper()
         self.__inhibited = False
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
@@ -48,22 +50,17 @@ class NextPopover(Gtk.Popover):
         self.__artist_label.set_text(
             ", ".join(App().player.next_track.artists))
         self.__title_label.set_text(App().player.next_track.title)
-        art = App().art.get_album_artwork(
-            App().player.next_track.album,
-            ArtSize.MEDIUM,
-            self.get_scale_factor())
-        if art is not None:
-            self.__cover.set_from_surface(art)
-            del art
-            self.__cover.set_tooltip_text(App().player.next_track.album.name)
-            self.__cover.show()
-            queue = App().player.queue
-            if queue and queue[0] == App().player.next_track.id:
-                self.__skip_btn.hide()
-            else:
-                self.__skip_btn.show()
+        self.__art_helper.set_album_artwork(self.__cover,
+                                            App().player.next_track.album,
+                                            ArtSize.MEDIUM,
+                                            ArtSize.MEDIUM,
+                                            self.get_scale_factor())
+        self.__cover.set_tooltip_text(App().player.next_track.album.name)
+        queue = App().player.queue
+        if queue and queue[0] == App().player.next_track.id:
+            self.__skip_btn.hide()
         else:
-            self.__cover.hide()
+            self.__skip_btn.show()
 
     def should_be_shown(self):
         """
