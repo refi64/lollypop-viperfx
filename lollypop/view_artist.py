@@ -312,7 +312,9 @@ class ArtistView(ArtistAlbumsView):
                         self.__artwork.show()
                         self.__artwork_box.show()
             # Add a default icon
-            if len(self._artist_ids) == 1 and artwork_height == 0:
+            if len(self._artist_ids) == 1 and\
+                    self._artist_ids[0] > 0 and\
+                    artwork_height == 0:
                 self.__artwork.set_from_icon_name(
                     "avatar-default-symbolic",
                     Gtk.IconSize.DND)
