@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, GLib
+from gi.repository import GObject, GdkPixbuf, Gio, GLib
 
 from lollypop.define import ArtSize, App, TAG_EDITORS
 from lollypop.logger import Logger
@@ -69,63 +69,6 @@ class BaseArt(GObject.GObject):
                 f.delete()
         except Exception as e:
             Logger.error("Art::clean_store(): %s" % e)
-
-    def get_default_icon(self, icon_name, size, scale):
-        """
-            Construct an empty cover album,
-            code forked Gnome Music, see copyright header
-            @param icon_name as str
-            @param size as int
-            @param scale factor as int
-            @return pixbuf as cairo.Surface
-        """
-        try:
-            # First look in cache
-            cache_path_jpg = self._get_default_icon_path(size, icon_name)
-            f = Gio.File.new_for_path(cache_path_jpg)
-            if f.query_exists():
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                    cache_path_jpg,
-                    size,
-                    size,
-                    False)
-            else:
-                # get a small pixbuf with the given path
-                icon_size = size / 4
-                icon = Gtk.IconTheme.get_default().load_icon(icon_name,
-                                                             icon_size, 0)
-                # create an empty pixbuf with the requested size
-                pixbuf = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
-                                              True,
-                                              icon.get_bits_per_sample(),
-                                              size,
-                                              size)
-                pixbuf.fill(0xffffffff)
-                icon.composite(pixbuf,
-                               icon_size * 3 / 2,
-                               icon_size * 3 / 2,
-                               icon_size,
-                               icon_size,
-                               icon_size * 3 / 2,
-                               icon_size * 3 / 2,
-                               1, 1,
-                               GdkPixbuf.InterpType.NEAREST, 255)
-                # Gdk < 3.15 was missing save method
-                # > 3.15 is missing savev method
-                try:
-                    pixbuf.save(cache_path_jpg, "jpeg",
-                                ["quality"], [str(App().settings.get_value(
-                                              "cover-quality").get_int32())])
-                except:
-                    pixbuf.savev(cache_path_jpg, "jpeg",
-                                 ["quality"], [str(App().settings.get_value(
-                                     "cover-quality").get_int32())])
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-            return surface
-        except:
-            return self.get_default_icon("computer-fail-symbolic",
-                                         ArtSize.MEDIUM,
-                                         scale)
 
     @property
     def kid3_available(self):
@@ -193,13 +136,6 @@ class BaseArt(GObject.GObject):
                 d.make_directory_with_parents()
             except:
                 Logger.info("Can't create %s" % self._CACHE_PATH)
-
-    def _get_default_icon_path(self, size, icon_name):
-        """
-            Return default icon path
-            @return path as string
-        """
-        return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
 
 #######################
 # PRIVATE             #

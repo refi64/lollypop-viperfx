@@ -55,10 +55,6 @@ class RadioArt:
                 self.get_radio_artwork(name, size, 1)
                 if f.query_exists():
                     return cache_path_png
-                else:
-                    return self._get_default_icon_path(
-                        size,
-                        "audio-input-microphone-symbolic")
         except Exception as e:
             Logger.error("RadioArt::get_radio_cache_path(): %s, %s" %
                          (e, ascii(filename)))
@@ -89,18 +85,11 @@ class RadioArt:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
                                                                     size,
                                                                     size)
-            if pixbuf is None:
-                return self.get_default_icon(
-                    "audio-input-microphone-symbolic",
-                    size,
-                    scale)
-            pixbuf.savev(cache_path_png, "png", [None], [None])
+            if pixbuf is not None:
+                pixbuf.savev(cache_path_png, "png", [None], [None])
         except Exception as e:
             Logger.error("RadioArt::get_radio_artwork(): %s" % e)
         return pixbuf
-        return self.get_default_icon("audio-input-microphone-symbolic",
-                                     size,
-                                     scale)
 
     def copy_uri_to_cache(self, uri, name, size):
         """

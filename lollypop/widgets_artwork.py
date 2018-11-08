@@ -162,14 +162,19 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
             Populate view
         """
-        image = Gtk.Image()
-        surface = App().art.get_default_icon("edit-clear-all-symbolic",
-                                             ArtSize.BIG,
-                                             self.get_scale_factor())
-        image.set_from_surface(surface)
+        image = Gtk.Image.new_from_icon_name("edit-clear-all-symbolic",
+                                             Gtk.IconSize.DIALOG)
         image.set_property("valign", Gtk.Align.CENTER)
         image.set_property("halign", Gtk.Align.CENTER)
-        image.get_style_context().add_class("cover-frame")
+        context = image.get_style_context()
+        context.add_class("cover-frame")
+        padding = context.get_padding(Gtk.StateFlags.NORMAL)
+        border = context.get_border(Gtk.StateFlags.NORMAL)
+        size = App().settings.get_value("cover-size").get_int32()
+        image.set_size_request(size + padding.left +
+                               padding.right + border.left + border.right,
+                               size + padding.top +
+                               padding.bottom + border.top + border.bottom)
         image.show()
         self.__view.add(image)
 

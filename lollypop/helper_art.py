@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
 
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
 
 
@@ -42,8 +42,14 @@ class ArtHelper(GObject.Object):
             @return Gtk.Image
         """
         image = Gtk.Image()
-        image.get_style_context().add_class(frame)
-        image.set_size_request(width, height)
+        context = image.get_style_context()
+        context.add_class(frame)
+        padding = context.get_padding(Gtk.StateFlags.NORMAL)
+        border = context.get_border(Gtk.StateFlags.NORMAL)
+        image.set_size_request(width + padding.left +
+                               padding.right + border.left + border.right,
+                               height + padding.top +
+                               padding.bottom + border.top + border.bottom)
         return image
 
     def set_album_artwork(self, image, album, width, height,
@@ -109,9 +115,11 @@ class ArtHelper(GObject.Object):
         if pixbuf is not None:
             surface = Gdk.cairo_surface_create_from_pixbuf(
                     pixbuf, scale_factor, None)
+            image.set_from_surface(surface)
+        elif width < ArtSize.BIG:
+            image.set_from_icon_name(icon, Gtk.IconSize.BUTTON)
         else:
-            surface = App().art.get_default_icon(icon, width, scale_factor)
-        image.set_from_surface(surface)
+            image.set_from_icon_name(icon, Gtk.IconSize.DIALOG)
         self.emit("artwork-set")
 
 #######################
