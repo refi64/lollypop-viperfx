@@ -51,16 +51,15 @@ class ToolbarInfo(Gtk.Bin, InformationController):
 
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
-        self._cover = builder.get_object("cover")
-        self._cover.set_property("has-tooltip", True)
+        self._artwork = builder.get_object("artwork")
+        self._artwork.set_property("has-tooltip", True)
         # Since GTK 3.20, we can set cover full height
         if Gtk.get_minor_version() > 18:
-            self._cover.get_style_context().add_class("toolbar-cover-frame")
+            self._artwork.get_style_context().add_class("toolbar-cover-frame")
         else:
-            self._cover.get_style_context().add_class("small-cover-frame")
+            self._artwork.get_style_context().add_class("small-cover-frame")
 
         self.connect("realize", self.__on_realize)
-        App().player.connect("loading-changed", self.__on_loading_changed)
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
 
@@ -91,7 +90,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             Update widgets
             player as Player
         """
-        InformationController.on_current_changed(self, self.artsize, None)
+        InformationController.on_current_changed(self, self.art_size, None)
 
     def on_adaptive_changed(self, window, b):
         """
@@ -123,11 +122,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param album id as int
         """
         if App().player.current_track.album.id == album_id:
-            surface = App().art.get_album_artwork(
-                App().player.current_track.album,
-                self.artsize,
-                self._cover.get_scale_factor())
-            self._cover.set_from_surface(surface)
+            self.update_artwork(self.art_size, self.art_size, False)
 
     def __update_logo(self, art, name):
         """
@@ -136,8 +131,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param name as str
         """
         if App().player.current_track.album_artist == name:
-            pixbuf = App().art.get_radio_artwork(name, self.artsize)
-            self._cover.set_from_surface(pixbuf)
+            pixbuf = App().art.get_radio_artwork(name, self.art_size)
+            self._artwork.set_from_surface(pixbuf)
 
     def __on_infobox_pressed(self, gesture, x, y):
         """
@@ -185,23 +180,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         else:
             self.__on_infobox_pressed(self.__gesture, 0, 0)
 
-    def __on_loading_changed(self, player, show):
-        """
-            Show spinner based on loading status
-            @param player as player
-            @param show as bool
-        """
-        if show:
-            self._title_label.hide()
-            self._artist_label.hide()
-            self._cover.hide()
-            self._spinner.show()
-            self._spinner.start()
-            self._infobox.show()
-        else:
-            self._spinner.hide()
-            self._spinner.stop()
-
     def __on_realize(self, toolbar):
         """
             Calculate art size
@@ -209,12 +187,12 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
-        artsize = self.get_allocated_height()\
+        art_size = self.get_allocated_height()\
             - padding.top - padding.bottom
         # Since GTK 3.20, we can set cover full height
         if Gtk.get_minor_version() < 20:
-            artsize -= 2
-        self.set_artsize(artsize)
+            art_size -= 2
+        self.set_art_size(art_size)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

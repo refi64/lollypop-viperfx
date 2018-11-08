@@ -44,7 +44,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         self.__grid = builder.get_object("grid")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
-        self._cover = builder.get_object("cover")
+        self._artwork = builder.get_object("cover")
         self.__signal_id1 = App().player.connect("current-changed",
                                                  self.__on_current_changed)
         self.__signal_id2 = App().player.connect("status-changed",

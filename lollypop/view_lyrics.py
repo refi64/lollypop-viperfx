@@ -41,7 +41,7 @@ class LyricsView(View, InformationController):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/LyricsView.ui")
         builder.connect_signals(self)
-        self._cover = builder.get_object("cover")
+        self._artwork = builder.get_object("cover")
         self.__lyrics_label = builder.get_object("lyrics_label")
         self.__translate_button = builder.get_object("translate_button")
         self.add(builder.get_object("widget"))

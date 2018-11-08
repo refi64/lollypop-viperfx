@@ -72,7 +72,7 @@ class FullScreen(Gtk.Window, InformationController,
         else:
             grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
-        self._cover = builder.get_object("cover")
+        self._artwork = builder.get_object("cover")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._album_label = builder.get_object("album")

@@ -12,6 +12,7 @@
 
 from gi.repository import GLib
 
+from lollypop.helper_art import ArtHelper
 from lollypop.define import Type, App
 
 
@@ -26,6 +27,8 @@ class InformationController:
             @param tooltip as bool => Show album name over cover
         """
         self._infobox = None
+        self.__art_helper = ArtHelper()
+        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__tooltip = tooltip
         self.__per_track_cover = App().settings.get_value(
             "allow-per-track-cover")
@@ -39,7 +42,7 @@ class InformationController:
         if App().player.current_track.id is None:
             if self._infobox is not None:
                 self._infobox.hide()
-            self._cover.hide()
+            self._artwork.hide()
             return
         elif self._infobox is not None:
             self._infobox.show()
@@ -90,34 +93,42 @@ class InformationController:
                 width,
                 self.get_scale_factor())
         elif App().player.current_track.id is not None:
-            artwork = App().art.get_album_artwork(
+            self.__art_helper.set_album_artwork(
+                self._artwork,
                 App().player.current_track.album,
                 width,
-                self.get_scale_factor(),
-                self.__per_track_cover)
+                self.get_scale_factor())
+        return
         if artwork is not None:
             if enable_blur:
                 from lollypop.utils import blur
-                blur(artwork, self._cover, width, height)
+                blur(artwork, self._artwork, width, height)
             else:
-                self._cover.set_from_surface(artwork)
+                self._artwork.set_from_surface(artwork)
             if self.__tooltip:
-                self._cover.set_tooltip_text(
+                self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)
-            self._cover.show()
-        else:
-            self._cover.hide()
 
-    def set_artsize(self, artsize):
+    def set_art_size(self, art_size):
         """
-            Set a new artsize for controller
-            @param artsize as int
+            Set a new art_size for controller
+            @param art_size as int
         """
-        self.__artsize = artsize
+        self.__art_size = art_size
 
     @property
-    def artsize(self):
+    def art_size(self):
         """
             Art size as int
         """
-        return self.__artsize
+        return self.__art_size
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_artwork_set(self, helper):
+        """
+            Show artwork
+            @param helper as ArtHelper
+        """
+        pass
