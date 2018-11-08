@@ -179,7 +179,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             ctx.translate(-x, -y)
         if album_ids:
             album_id = album_ids.pop(0)
-            pixbuf = App().art.get_album_artwork_pixbuf(
+            pixbuf = App().art.get_album_artwork(
                                                   Album(album_id),
                                                   self.__cover_size,
                                                   self._scale_factor)

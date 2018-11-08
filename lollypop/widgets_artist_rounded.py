@@ -124,9 +124,9 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         else:
             album_ids = App().albums.get_ids([self._data], [])
             shuffle(album_ids)
-            pixbuf = App().art.get_album_artwork_pixbuf(Album(album_ids[0]),
-                                                        self._art_size,
-                                                        self._scale_factor)
+            pixbuf = App().art.get_album_artwork(Album(album_ids[0]),
+                                                 self._art_size,
+                                                 self._scale_factor)
         return pixbuf
 
 #######################
