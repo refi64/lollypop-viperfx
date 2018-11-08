@@ -36,13 +36,13 @@ class AlbumBaseWidget:
         self._show_overlay = False
         self._lock_overlay = True
         self._timeout_id = None
-        self.__parent_filter = False
+        self.__filtered = False
 
     def set_filtered(self, b):
         """
             Set widget filtered
         """
-        self.__parent_filter = b
+        self.__filtered = b
 
     def lock_overlay(self, lock):
         """
@@ -71,7 +71,7 @@ class AlbumBaseWidget:
         """
             True if filtered by parent
         """
-        return self.__parent_filter
+        return self.__filtered
 
     @property
     def is_overlay(self):

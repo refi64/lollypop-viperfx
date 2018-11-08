@@ -55,6 +55,12 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         pass
 
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__filtered = b
+
     @property
     def is_overlay(self):
         """
@@ -64,8 +70,15 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         return False
 
     @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__filtered
+
+    @property
     def filter(self):
-        return "%s - %s" % (self._data[0], self._data[-1])
+        return App().artists.get_name(self._data).lower()
 
 #######################
 # PROTECTED           #

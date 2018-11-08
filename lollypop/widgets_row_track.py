@@ -56,7 +56,7 @@ class TrackRow(Row, DNDRow):
             @param responsive_type as ResponsiveType
         """
         Row.__init__(self, track, responsive_type)
-        self.__parent_filter = False
+        self.__filtered = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
@@ -74,14 +74,14 @@ class TrackRow(Row, DNDRow):
         """
             Set widget filtered
         """
-        self.__parent_filter = b
+        self.__filtered = b
 
     @property
     def filtered(self):
         """
             True if filtered by parent
         """
-        return self.__parent_filter
+        return self.__filtered
 
 #######################
 # PRIVATE             #
