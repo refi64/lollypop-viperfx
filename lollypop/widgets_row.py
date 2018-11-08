@@ -58,6 +58,7 @@ class Row(Gtk.ListBoxRow):
                                   self.__on_query_tooltip)
         self._title_label.set_property("hexpand", True)
         self._title_label.set_property("halign", Gtk.Align.START)
+        self._title_label.set_property("xalign", 0)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         featuring_artist_ids = track.featuring_artist_ids
         if featuring_artist_ids:
