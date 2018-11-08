@@ -90,18 +90,17 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         if self.get_child() is not None:
             return
+        self.set_property("valign", Gtk.Align.CENTER)
         self.__art_helper = ArtHelper()
         self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self._artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
-                                                    "small-cover-frame",
-                                                    halign=Gtk.Align.FILL)
+                                                    "small-cover-frame")
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.__on_query_tooltip)
         row_widget = Gtk.EventBox()
-        row_widget.set_property("valign", Gtk.Align.CENTER)
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         if self._album.artists:
@@ -317,7 +316,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Finish widget initialisation
             @param helper as ArtHelper
         """
-#        self._artwork.show()
         self.emit("populated")
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):

@@ -55,6 +55,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         """
         self.__art_helper = ArtHelper()
         self.__art_helper.connect("artwork-set", self.__on_artwork_set)
+        self.set_property("halign", Gtk.Align.CENTER)
+        self.set_property("valign", Gtk.Align.CENTER)
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()

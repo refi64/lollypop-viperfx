@@ -91,9 +91,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
         else:
+            self.set_property("valign", Gtk.Align.CENTER)
             self._artwork = self.__art_helper.get_image(ArtSize.BIG,
-                                                        "cover-frame",
-                                                        halign=Gtk.Align.FILL)
+                                                        "cover-frame")
             self.__duration_label.set_hexpand(True)
             builder = Gtk.Builder()
             builder.add_from_resource("/org/gnome/Lollypop/CoverBox.ui")

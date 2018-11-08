@@ -30,8 +30,7 @@ class ArtHelper(GObject.Object):
         """
         GObject.Object.__init__(self)
 
-    def get_image(self, art_size, frame,
-                  halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER):
+    def get_image(self, art_size, frame):
         """
             Get an artwork widget
             @param art_size as int
@@ -42,8 +41,6 @@ class ArtHelper(GObject.Object):
         """
         image = Gtk.Image()
         image.get_style_context().add_class(frame)
-        image.set_property("halign", halign)
-        image.set_property("valign", valign)
         image.set_size_request(art_size, art_size)
         return image
 
