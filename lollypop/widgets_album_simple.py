@@ -16,12 +16,12 @@ from gettext import gettext as _
 from random import choice
 
 from lollypop.widgets_album import AlbumWidget
-from lollypop.art import AlbumArtHelper
+from lollypop.helper_art import ArtHelper
 from lollypop.pop_menu import AlbumMenu
 from lollypop.define import App, ArtSize, Shuffle
 
 
-class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
+class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
@@ -47,14 +47,14 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         Gtk.FlowBoxChild.__init__(self)
         self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
-        AlbumArtHelper.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
 
     def populate(self):
         """
             Populate widget content
         """
-        AlbumArtHelper.populate(self, ArtSize.BIG, "cover-frame")
+        self.__art_helper = ArtHelper()
+        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
@@ -77,12 +77,17 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         eventbox.show()
         self._widget.add(grid)
         self.__overlay = Gtk.Overlay.new()
+        self._artwork = self.__art_helper.get_image(ArtSize.BIG,
+                                                    "cover-frame")
         self.__overlay.add(self._artwork)
         self.__overlay_grid = None
         grid.add(self.__overlay)
         grid.add(eventbox)
         self.add(self._widget)
-        AlbumArtHelper.set_artwork(self)
+        self.__art_helper.set_album_artwork(self._artwork,
+                                            self._album,
+                                            ArtSize.BIG,
+                                            self.get_scale_factor())
         self.set_selection()
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
@@ -293,3 +298,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, AlbumArtHelper):
         """
         self.lock_overlay(False)
         self.get_artwork().set_opacity(1)
+
+    def __on_artwork_set(self, helper):
+        """
+            Finish widget initialisation
+            @param helper as ArtHelper
+        """
+        self.show_all()
+        self.emit("populated")

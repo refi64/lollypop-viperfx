@@ -18,14 +18,14 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
-from lollypop.art import AlbumArtHelper
+from lollypop.helper_art import ArtHelper
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, ResponsiveType
 
 
-class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
+class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
     """
         Widget with cover and tracks
     """
@@ -46,8 +46,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
-        AlbumArtHelper.__init__(self)
         TracksView.__init__(self, ResponsiveType.FIXED)
+        self.__art_helper = ArtHelper()
+        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__context = None
         # Cover + rating + spacing
         self.__height = ArtSize.BIG + 26
@@ -90,8 +91,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
         else:
-            AlbumArtHelper.populate(self, ArtSize.BIG,
-                                    "cover-frame", halign=Gtk.Align.FILL)
+            self._artwork = self.__art_helper.get_image(ArtSize.BIG,
+                                                        "cover-frame",
+                                                        halign=Gtk.Align.FILL)
             self.__duration_label.set_hexpand(True)
             builder = Gtk.Builder()
             builder.add_from_resource("/org/gnome/Lollypop/CoverBox.ui")
@@ -100,7 +102,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
             self._action1_button = builder.get_object("action-button")
             self._action1_event = builder.get_object("action-event")
             builder.get_object("overlay").add(self._artwork)
-            self.set_artwork()
+            self.__art_helper.set_album_artwork(self._artwork,
+                                                self._album,
+                                                ArtSize.BIG,
+                                                self.get_scale_factor())
             self.__coverbox = builder.get_object("coverbox")
             # 6 for 2*3px (application.css)
             self.__coverbox.set_property("width-request", art_size + 6)
@@ -310,3 +315,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView, AlbumArtHelper):
             @param widget as Gtk.Popover
         """
         self.get_style_context().remove_class("album-menu-selected")
+
+    def __on_artwork_set(self, helper):
+        """
+            Finish widget initialisation
+            @param helper as ArtHelper
+        """
+        self._artwork.show()
+        self.emit("populated")

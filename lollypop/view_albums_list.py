@@ -16,14 +16,14 @@ from gettext import gettext as _
 
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
-from lollypop.art import AlbumArtHelper
+from lollypop.helper_art import ArtHelper
 from lollypop.objects import Album, Track
 from lollypop.define import ArtSize, App, ResponsiveType
 from lollypop.controller_view import ViewController
 from lollypop.widgets_row_dnd import DNDRow
 
 
-class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper, DNDRow):
+class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
     """
         Album row
     """
@@ -68,9 +68,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper, DNDRow):
             @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
-        AlbumArtHelper.__init__(self)
         DNDRow.__init__(self)
-        # Later => TracksView.__init__(self)
+        # Delayed => TracksView.__init__(self)
         self.__revealer = None
         self.__parent = parent
         self.__reveal = reveal
@@ -91,8 +90,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper, DNDRow):
         """
         if self.get_child() is not None:
             return
-        AlbumArtHelper.populate(self, ArtSize.MEDIUM, "small-cover-frame",
-                                halign=Gtk.Align.FILL)
+        self.__art_helper = ArtHelper()
+        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
+        self._artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
+                                                    "small-cover-frame",
+                                                    halign=Gtk.Align.FILL)
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
@@ -113,7 +115,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper, DNDRow):
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label = Gtk.Label.new(self._album.name)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        AlbumArtHelper.set_artwork(self)
+        self.__art_helper.set_album_artwork(self._artwork,
+                                            self._album,
+                                            ArtSize.MEDIUM,
+                                            self.get_scale_factor())
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)
@@ -306,6 +311,14 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper, DNDRow):
         if popover is not None:
             popover.popdown()
         App().window.container.show_artists_albums(self._album.artist_ids)
+
+    def __on_artwork_set(self, helper):
+        """
+            Finish widget initialisation
+            @param helper as ArtHelper
+        """
+#        self._artwork.show()
+        self.emit("populated")
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

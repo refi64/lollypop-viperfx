@@ -14,7 +14,6 @@ from gi.repository import Gtk
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
-from lollypop.pop_album import AlbumPopover
 from lollypop.define import ArtSize
 from lollypop.controller_view import ViewController
 
@@ -89,6 +88,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             height = bottom_height
         else:
             height = top_height
+        from lollypop.pop_album import AlbumPopover
         popover = AlbumPopover(album_widget.album,
                                allocation.width,
                                height,
