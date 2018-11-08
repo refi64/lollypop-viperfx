@@ -69,8 +69,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
         if FlowBoxView._on_item_activated(self, flowbox, album_widget):
             return
-        artwork = album_widget.get_artwork()
-        if artwork is None:
+        if album_widget.artwork is None:
             return
         # If widget top not on screen, popover will fail to show
         # FIXME: Report a bug and check always true
@@ -93,13 +92,13 @@ class AlbumsBoxView(FlowBoxView, ViewController):
                                allocation.width,
                                height,
                                ArtSize.NONE)
-        popover.set_relative_to(artwork)
+        popover.set_relative_to(album_widget.artwork)
         popover.set_position(Gtk.PositionType.BOTTOM)
         album_widget.show_overlay(False)
         album_widget.lock_overlay(True)
         popover.connect("closed", self.__on_album_popover_closed, album_widget)
         popover.popup()
-        artwork.set_opacity(0.9)
+        album_widget.artwork.set_opacity(0.9)
 
 #######################
 # PRIVATE             #
@@ -111,4 +110,4 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param album_widget as AlbumWidget
         """
         album_widget.lock_overlay(False)
-        album_widget.get_artwork().set_opacity(1)
+        album_widget.artwork.set_opacity(1)

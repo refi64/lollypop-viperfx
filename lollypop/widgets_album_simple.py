@@ -115,6 +115,14 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         return (width, width)
 
     @property
+    def artwork(self):
+        """
+            Get album artwork
+            @return Gtk.Image
+        """
+        return self._artwork
+
+    @property
     def is_populated(self):
         """
             True if album populated
@@ -307,7 +315,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param album_widget as AlbumWidget
         """
         self.lock_overlay(False)
-        self.get_artwork().set_opacity(1)
+        self._artwork.set_opacity(1)
 
     def __on_artwork_set(self, helper):
         """
