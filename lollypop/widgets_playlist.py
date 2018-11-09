@@ -245,18 +245,8 @@ class PlaylistsWidget(Gtk.Grid):
             child = self.__tracks_widget_left.get_children()[-1]
             self.__tracks_widget_left.remove(child)
             self.__tracks_widget_right.insert(child, 0)
-        if len(self.__tracks_widget_right) > 0:
-            row = self.__tracks_widget_right.get_children()[0]
-            row.show_artwork()
-            # Force update
-            if row.next_row is not None:
-                row.next_row.set_previous_row(row)
-        if len(self.__tracks_widget_left) > 1:
-            row = self.__tracks_widget_right.get_children()[-1]
-            row.hide_artwork()
-            # Force update
-            if row.previous_row is not None:
-                row.previous_row.set_next_row(row)
+        for row in self.children:
+            row.update_artwork_state()
 
     def __linking(self):
         """

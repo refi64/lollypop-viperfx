@@ -80,6 +80,29 @@ class PlaylistRow(Row, DNDRow):
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
 
+    def set_previous_row(self, row):
+        """
+            Set previous row
+            @param row as Row
+        """
+        DNDRow.set_previous_row(self, row)
+        self.update_artwork_state()
+
+    def update_artwork_state(self):
+        """
+            Update artwork state based on previous
+        """
+        if self.get_parent() is not None:
+            position = self.get_parent().get_children().index(self)
+        else:
+            position = None
+        if self.previous_row is None or\
+                self.previous_row.track.album.id != self.track.album.id or\
+                position == 0:
+            self.show_artwork()
+        else:
+            self.hide_artwork()
+
     def show_artwork(self):
         """
             Show row artwork
@@ -106,23 +129,6 @@ class PlaylistRow(Row, DNDRow):
         self.__artwork.clear()
         self.__artwork.hide()
         self.__header.hide()
-
-    def set_previous_row(self, row):
-        """
-            Set previous row
-            @param row as Row
-        """
-        if self.get_parent() is not None:
-            position = self.get_parent().get_children().index(self)
-        else:
-            position = None
-        DNDRow.set_previous_row(self, row)
-        if self.previous_row is None or\
-                self.previous_row.track.album.id != self.track.album.id or\
-                position == 0:
-            self.show_artwork()
-        else:
-            self.hide_artwork()
 
     def set_filtered(self, b):
         """
