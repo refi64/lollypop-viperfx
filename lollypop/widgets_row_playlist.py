@@ -16,6 +16,7 @@ from lollypop.define import App, ArtSize, Type, ResponsiveType
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
+from lollypop.helper_art import ArtHelper
 
 
 class PlaylistRow(Row, DNDRow):
@@ -37,19 +38,19 @@ class PlaylistRow(Row, DNDRow):
         Row.__init__(self, track, ResponsiveType.DND)
         DNDRow.__init__(self)
         self.__filtered = False
+        self.__art_helper = ArtHelper()
         self._grid.insert_row(0)
         self._grid.insert_column(0)
         self._grid.insert_column(1)
         self._grid.attach(self._indicator, 1, 1, 1, 2)
-        self.__cover = Gtk.Image()
-        self.__cover.set_property("halign", Gtk.Align.CENTER)
-        self.__cover.set_property("valign", Gtk.Align.CENTER)
-        self.__cover.get_style_context().add_class("small-cover-frame")
-        self.__cover.set_no_show_all(True)
+        self.__artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
+                                                     ArtSize.MEDIUM,
+                                                     "small-cover-frame")
+        self.__artwork.set_no_show_all(True)
         # We force width with a Box
         box = Gtk.Box()
         box.set_homogeneous(True)
-        box.add(self.__cover)
+        box.add(self.__artwork)
         box.set_property("width-request", ArtSize.MEDIUM + 2)
         self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
@@ -87,22 +88,22 @@ class PlaylistRow(Row, DNDRow):
         DNDRow.set_previous_row(self, row)
         if self.previous_row is None or\
                 self.previous_row.track.album.id != self.track.album.id:
-            self.__cover.set_tooltip_text(self._track.album.name)
-            surface = App().art.get_album_artwork(
-                self._track.album,
-                ArtSize.MEDIUM,
-                self.get_scale_factor())
-            self.__cover.set_from_surface(surface)
-            self.__cover.show()
-            self.__cover.set_margin_top(2)
+            self.__artwork.set_tooltip_text(self._track.album.name)
+            self.__art_helper.set_album_artwork(self.__artwork,
+                                                self.track.album,
+                                                ArtSize.MEDIUM,
+                                                ArtSize.MEDIUM,
+                                                self.get_scale_factor())
+            self.__artwork.set_margin_top(2)
+            self.__artwork.show()
             self.set_margin_bottom(2)
             self.__header.show_all()
         else:
-            self.__cover.set_margin_top(0)
+            self.__artwork.set_margin_top(0)
             self.set_margin_bottom(0)
-            self.__cover.set_tooltip_text("")
-            self.__cover.clear()
-            self.__cover.hide()
+            self.__artwork.set_tooltip_text("")
+            self.__artwork.clear()
+            self.__artwork.hide()
             self.__header.hide()
 
     @property

@@ -171,7 +171,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             self.__play_event.set_property("halign", Gtk.Align.CENTER)
             self.__play_event.connect("realize", self._on_eventbox_realize)
             self.__play_event.connect("button-press-event",
-                                      self._on_play_press_event)
+                                      self.__on_play_press_event)
             if self.__obj is None:
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "media-playback-start-symbolic",
@@ -190,34 +190,55 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
                     Gtk.IconSize.DND)
                 self.__play_event.set_tooltip_text(_("Remove"))
             self.__play_button.set_opacity(1)
+            # Open button
+            self.__open_event = Gtk.EventBox()
+            self.__open_event.set_property("has-tooltip", True)
+            self.__open_event.set_tooltip_text(_("Open"))
+            self.__open_event.connect("realize", self._on_eventbox_realize)
+            self.__open_event.connect("button-press-event",
+                                      self.__on_open_press_event)
+            self.__open_button = Gtk.Image.new_from_icon_name(
+                "folder-open-symbolic",
+                Gtk.IconSize.BUTTON)
+            self.__open_button.set_opacity(1)
             # Edit button
             self.__edit_event = Gtk.EventBox()
             self.__edit_event.set_property("has-tooltip", True)
             self.__edit_event.set_tooltip_text(_("Modify playlist"))
-            self.__edit_event.set_property("halign", Gtk.Align.END)
             self.__edit_event.connect("realize", self._on_eventbox_realize)
             self.__edit_event.connect("button-press-event",
-                                      self._on_edit_press_event)
-            self.__edit_event.set_property("valign", Gtk.Align.END)
-            self.__edit_event.set_margin_bottom(5)
-            self.__edit_event.set_property("halign", Gtk.Align.CENTER)
+                                      self.__on_edit_press_event)
             self.__edit_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.BUTTON)
             self.__edit_button.set_opacity(1)
             self.__play_event.add(self.__play_button)
+            self.__open_event.add(self.__open_button)
             self.__edit_event.add(self.__edit_button)
             self._overlay.add_overlay(self.__play_event)
-            self._overlay.add_overlay(self.__edit_event)
+            self.__overlay_grid = Gtk.Grid()
+            self.__overlay_grid.set_column_spacing(20)
+            self.__overlay_grid.set_property("valign", Gtk.Align.END)
+            self.__overlay_grid.set_margin_bottom(5)
+            self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
+            self.__overlay_grid.add(self.__open_event)
+            self.__overlay_grid.add(self.__edit_event)
+            self.__overlay_grid.show()
+            self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.show_all()
             self.__play_button.get_style_context().add_class("rounded-icon")
-            self.__edit_button.get_style_context().add_class(
-                "rounded-icon-small")
+            self.__overlay_grid.get_style_context().add_class(
+                "squared-icon-small")
         else:
+            self.__overlay_grid.destroy()
             self.__play_event.destroy()
             self.__play_event = None
             self.__play_button.destroy()
             self.__play_button = None
+            self.__open_event.destroy()
+            self.__open_event = None
+            self.__open_button.destroy()
+            self.__open_button = None
             self.__edit_event.destroy()
             self.__edit_event = None
             self.__edit_button.destroy()
@@ -226,7 +247,11 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _on_play_press_event(self, widget, event):
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_play_press_event(self, widget, event):
         """
             Play playlist
             @param: widget as Gtk.EventBox
@@ -259,17 +284,22 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
                 App().playlists.remove_tracks(self.playlist_id, tracks)
             App().window.container.reload_view()
 
-    def _on_edit_press_event(self, widget, event):
+    def __on_open_press_event(self, widget, event):
         """
-            Edit radio
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            Open playlist
+            @param widget as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        App().window.container.show_playlists([self._data])
+
+    def __on_edit_press_event(self, widget, event):
+        """
+            Edit playlist
+            @param widget as Gtk.EventBox
+            @param event as Gdk.Event
         """
         popover = PlayListPopover(self._data, self.__obj)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
-#######################
-# PRIVATE             #
-#######################

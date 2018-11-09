@@ -151,6 +151,18 @@ class Container(Gtk.Overlay):
         self.__stack.set_visible_child(view)
         current.disable_overlay()
 
+    def show_playlists(self, playlist_ids):
+        """
+            Show playlist view for ids
+            Current view stay present in ViewContainer
+            @param playlist_ids as [int]
+        """
+        view = self.__get_view_playlists(playlist_ids)
+        current = self.__stack.get_visible_child()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        current.disable_overlay()
+
     def get_view_width(self):
         """
             Return view width

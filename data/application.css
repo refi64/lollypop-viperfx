@@ -225,6 +225,17 @@ popover.background separator {
     border-radius: 50%;
 }
 
+.squared-icon-small {
+    transition: 70ms linear;
+    box-shadow: 0 0 4px white;
+    background-color: black;
+    color: white;
+    opacity: 0.8;
+    padding: 5px;
+    margin: 4px;
+    border-radius: 3px;
+}
+
 .no-padding {
     padding: 0px;
 }
