@@ -73,8 +73,9 @@ class OverlayHelper:
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
-        if self._artwork is not None:
-            self._artwork.set_opacity(0.9)
+        if self._artwork is None:
+            return
+        self._artwork.set_opacity(0.9)
         if self.__timeout_id is None:
             self.__timeout_id = GLib.timeout_add(250,
                                                  self._on_enter_notify_timeout)
