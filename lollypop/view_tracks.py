@@ -596,7 +596,7 @@ class TracksView:
             if not App().player.is_party and\
                     playback != NextContext.STOP and\
                     not App().player.track_in_playback(track):
-                App().player.add_album(self._album)
+                App().player.add_album(Album(self._album.id))
             App().player.load(track)
 
     def __on_insert_track(self, row, new_track_id, down):

@@ -95,7 +95,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 
     def add_album(self, album, index=-1):
         """
-            Add album
+            Add album to player. We may merge album!
             @param album as Album
             @param index as int
         """
