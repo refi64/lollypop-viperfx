@@ -226,7 +226,12 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             self.__overlay_grid.show()
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.show_all()
-            self.__play_button.get_style_context().add_class("rounded-icon")
+            if self.__obj is None:
+                self.__play_button.get_style_context().add_class(
+                    "rounded-icon")
+            else:
+                self.__play_button.get_style_context().add_class(
+                    "squared-icon-small")
             self.__overlay_grid.get_style_context().add_class(
                 "squared-icon-small")
         else:
