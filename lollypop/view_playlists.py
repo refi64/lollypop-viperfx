@@ -82,6 +82,7 @@ class PlaylistsView(View, ViewController):
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-motion", self.__on_drag_motion)
+        self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect_current_changed_signal()
 
         # No duration for non user playlists
@@ -376,6 +377,28 @@ class PlaylistsView(View, ViewController):
             self.__autoscroll_timeout_id = GLib.timeout_add(100,
                                                             self.__auto_scroll,
                                                             up)
+
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track to end
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        self.current_draged_widget = None
+        if self.__playlists_widget.children:
+            row = self.__playlists_widget.children[-1]
+            row.emit("drag-data-received",
+                     context,
+                     x,
+                     row.get_allocated_height(),
+                     data,
+                     info,
+                     time)
 
     def __on_playlist_track_added(self, playlists, playlist_id, uri):
         """

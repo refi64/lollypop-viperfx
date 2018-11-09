@@ -55,9 +55,9 @@ class PlaylistsWidget(Gtk.Grid):
         self.connect("size-allocate", self.__on_size_allocate)
 
         self.__tracks_widget_left = TracksWidget(ResponsiveType.DND)
-        self.__tracks_widget_left.set_vexpand(True)
+        self.__tracks_widget_left.set_property("valign", Gtk.Align.START)
         self.__tracks_widget_right = TracksWidget(ResponsiveType.DND)
-        self.__tracks_widget_right.set_vexpand(True)
+        self.__tracks_widget_right.set_property("valign", Gtk.Align.START)
         self.__tracks_widget_left.connect("activated",
                                           self.__on_activated)
         self.__tracks_widget_right.connect("activated",
