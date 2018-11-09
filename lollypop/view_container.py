@@ -32,6 +32,7 @@ class ViewContainer(Gtk.Stack):
         self.__duration = duration
         self.set_transition_duration(duration)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.__destroyed = []
 
     def clean_old_views(self, view):
         """
@@ -44,17 +45,33 @@ class ViewContainer(Gtk.Stack):
                     and isinstance(child, View):
                 # Delayed destroy as we may have an animation running
                 # Gtk.StackTransitionType.CROSSFADE
+                self.__destroyed.append(child)
                 GLib.timeout_add(self.__duration * 5,
-                                 self.__delayedclean_view,
+                                 self.__delayed_clean_view,
                                  child)
+
+    @property
+    def children(self):
+        """
+            Get stack children less destroyed less visible
+            @return [View]
+        """
+        children = []
+        for child in self.get_children():
+            if child not in self.__destroyed and\
+                    child != self.get_visible_child():
+                children.append(child)
+        return children
 
 #######################
 # PRIVATE             #
 #######################
-    def __delayedclean_view(self, view):
+    def __delayed_clean_view(self, view):
         """
             Clean view
             @param valid view as View
         """
         Logger.debug("ViewContainer::__delayedclean_view(): %s" % view)
+        if view in self.__destroyed:
+            self.__destroyed.remove(view)
         view.destroy()
