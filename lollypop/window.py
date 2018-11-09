@@ -127,15 +127,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if self.__container.list_one.get_visible():
             AdaptiveWindow.go_back(self)
         else:
-            # Search for RoundedArtistsView
-            from lollypop.view_artists_rounded import RoundedArtistsView
-            for view in self.__container.stack.get_children():
-                if isinstance(view, RoundedArtistsView):
-                    self.__container.stack.set_visible_child(view)
-                    self.__container.stack.clean_old_views(view)
-                    view.lazy_loading()
-                    self.emit("can-go-back-changed", False)
-                    break
+            self.__container.show_artists_view()
 
     def do_event(self, event):
         """
