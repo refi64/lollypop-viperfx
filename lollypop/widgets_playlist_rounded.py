@@ -290,7 +290,10 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        App().window.container.show_playlists([self._data])
+        if App().settings.get_value("show-sidebar"):
+            App().window.container.list_two.select_ids([self._data])
+        else:
+            App().window.container.show_playlists([self._data])
 
     def __on_edit_press_event(self, widget, event):
         """

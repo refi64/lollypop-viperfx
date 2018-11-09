@@ -143,11 +143,10 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, OverlayHelper):
         """
         if App().player.is_locked:
             return True
-        # FIXME
-        if isinstance(self._data, list):
+        if App().settings.get_value("show-sidebar"):
             App().window.container.list_two.select_ids(self._data)
         else:
-            App().window.container.list_two.select_ids([self._data])
+            App().window.container.show_years(self._data)
 
 #######################
 # PRIVATE             #
