@@ -28,9 +28,12 @@ class CellRendererAlbum(Gtk.CellRenderer):
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         if self.album == Type.NONE:
             return
-        surface = App().art.get_album_artwork(Album(self.album),
-                                              ArtSize.MEDIUM,
-                                              widget.get_scale_factor())
+        scale_factor = widget.get_scale_factor()
+        pixbuf = App().art.get_album_artwork(Album(self.album),
+                                             ArtSize.MEDIUM,
+                                             scale_factor)
+        surface = Gdk.cairo_surface_create_from_pixbuf(
+                    pixbuf, scale_factor, None)
         width = surface.get_width()
         height = surface.get_height()
         # If cover smaller than wanted size, translate
