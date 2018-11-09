@@ -231,12 +231,28 @@ class PlaylistsWidget(Gtk.Grid):
 #######################
     def __make_homogeneous(self):
         """
-            Move a track from right to left
+            Move a track from right to left and vice versa
         """
         if len(self.__tracks_widget_right) > len(self.__tracks_widget_left):
             child = self.__tracks_widget_right.get_children()[0]
             self.__tracks_widget_right.remove(child)
             self.__tracks_widget_left.add(child)
+        elif len(self.__tracks_widget_right) < len(self.__tracks_widget_left):
+            child = self.__tracks_widget_left.get_children()[-1]
+            self.__tracks_widget_left.remove(child)
+            self.__tracks_widget_right.insert(child, 0)
+
+    def __linking(self):
+        """
+            Handle linking between left and right
+        """
+        if len(self.__tracks_widget_left) == 0 or\
+                len(self.__tracks_widget_right) == 0:
+            return
+        last_left = self.__tracks_widget_left.get_children()[-1]
+        first_right = self.__tracks_widget_right.get_children()[0]
+        last_left.set_next_row(first_right)
+        first_right.set_previous_row(last_left)
 
     def __add_tracks(self, tracks, widget, pos, previous_row=None):
         """
@@ -258,6 +274,7 @@ class PlaylistsWidget(Gtk.Grid):
                 self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:
                 self.emit("populated")
+                self.__linking()
             self.__locked_widget_right = False
             return
 
@@ -365,6 +382,7 @@ class PlaylistsWidget(Gtk.Grid):
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
         new_row.update_number(position + 1)
+        App().playlists.remove_uri(self.__playlist_ids[0], track.uri)
         App().playlists.insert_track(self.__playlist_ids[0], track, position)
         left_count = len(self.__tracks_widget_left.get_children())
         if position < left_count:
@@ -373,6 +391,7 @@ class PlaylistsWidget(Gtk.Grid):
             row.get_parent().insert(new_row, position - left_count)
         tracks = App().playlists.get_tracks(self.__playlist_ids[0])
         App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
+        self.__make_homogeneous()
 
     def __on_remove_track(self, row):
         """
@@ -380,7 +399,7 @@ class PlaylistsWidget(Gtk.Grid):
             @param row as PlaylistRow
             @param position as int
         """
-        position = self.children.index(row)
-        App().playlists.remove_track_at(self.__playlist_ids[0], position)
+        App().playlists.remove_uri(self.__playlist_ids[0], row.track.uri)
         tracks = App().playlists.get_tracks(self.__playlist_ids[0])
         App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
+        self.__make_homogeneous()

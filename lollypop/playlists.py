@@ -153,11 +153,7 @@ class Playlists(GObject.GObject):
         if self.exists_track(playlist_id, uri):
             return
         self.emit("playlist-track-added", playlist_id, uri)
-        with SqlCursor(self, True) as sql:
-            sql.execute("INSERT INTO tracks VALUES (?, ?)", (playlist_id, uri))
-            sql.execute("UPDATE playlists SET mtime=?\
-                         WHERE rowid=?", (datetime.now().strftime("%s"),
-                                          playlist_id))
+        self.__add_uri(playlist_id, uri)
 
     def add_uris(self, playlist_id, uris):
         """
@@ -166,7 +162,7 @@ class Playlists(GObject.GObject):
             @param uris as [str]
         """
         for uri in uris:
-            self.add_uri(playlist_id, uri)
+            self.__add_uri(playlist_id, uri)
 
     def add_tracks(self, playlist_id, tracks):
         """
@@ -176,7 +172,7 @@ class Playlists(GObject.GObject):
             @param notify as bool
         """
         for track in tracks:
-            self.add_uri(playlist_id, track.uri)
+            self.__add_uri(playlist_id, track.uri)
 
     def insert_track(self, playlist_id, track, position):
         """
@@ -202,12 +198,7 @@ class Playlists(GObject.GObject):
         if not self.exists_track(playlist_id, uri):
             return
         self.emit("playlist-track-removed", playlist_id, uri)
-        with SqlCursor(self, True) as sql:
-            sql.execute("DELETE FROM tracks WHERE uri=? AND playlist_id=?",
-                        (uri, playlist_id))
-            sql.execute("UPDATE playlists SET mtime=?\
-                         WHERE rowid=?", (datetime.now().strftime("%s"),
-                                          playlist_id))
+        self.__remove_uri(playlist_id, uri)
 
     def remove_uris(self, playlist_id, uris):
         """
@@ -216,21 +207,7 @@ class Playlists(GObject.GObject):
             @param uris as [str]
         """
         for uri in uris:
-            self.remove_uri(playlist_id, uri)
-
-    def remove_track_at(self, playlist_id, position):
-        """
-            Remove track at position
-            @param playlist_id as int
-            @param position as int
-        """
-        SqlCursor.add(self)
-        track_ids = self.get_track_ids(playlist_id)
-        del track_ids[position]
-        self.clear(playlist_id)
-        tracks = [Track(track_id) for track_id in track_ids]
-        self.add_tracks(playlist_id, tracks)
-        SqlCursor.remove(self)
+            self.__remove_uri(playlist_id, uri)
 
     def remove_tracks(self, playlist_id, tracks):
         """
@@ -239,7 +216,7 @@ class Playlists(GObject.GObject):
             @param tracks as [Track]
         """
         for track in tracks:
-            self.remove_uri(playlist_id, track.uri)
+            self.__remove_uri(playlist_id, track.uri)
 
     def remove_uri_from_all(self, uri):
         """
@@ -692,6 +669,34 @@ class Playlists(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    def __add_uri(self, playlist_id, uri):
+        """
+            Add uri to playlist
+            @param uri as str
+        """
+        if self.exists_track(playlist_id, uri):
+            return
+        with SqlCursor(self, True) as sql:
+            sql.execute("INSERT INTO tracks VALUES (?, ?)", (playlist_id, uri))
+            sql.execute("UPDATE playlists SET mtime=?\
+                         WHERE rowid=?", (datetime.now().strftime("%s"),
+                                          playlist_id))
+
+    def __remove_uri(self, playlist_id, uri):
+        """
+            Remove uri from playlist
+            @param playlist_id as int
+            @param uri a str
+        """
+        if not self.exists_track(playlist_id, uri):
+            return
+        with SqlCursor(self, True) as sql:
+            sql.execute("DELETE FROM tracks WHERE uri=? AND playlist_id=?",
+                        (uri, playlist_id))
+            sql.execute("UPDATE playlists SET mtime=?\
+                         WHERE rowid=?", (datetime.now().strftime("%s"),
+                                          playlist_id))
+
     def __on_parse_finished(self, parser, result, playlist_id, uris):
         """
             Add tracks to playlists

@@ -51,28 +51,6 @@ class TracksWidget(Gtk.ListBox):
             self.drag_dest_add_text_targets()
             self.connect("drag-data-received", self.__on_drag_data_received)
 
-    def update_headers(self, prev_album_id=None):
-        """
-            Update headers
-            @param previous album id as int
-        """
-        for child in self.get_children():
-            if child.track.album.id == prev_album_id:
-                child.show_headers(False)
-            else:
-                child.show_headers(True)
-            prev_album_id = child.track.album.id
-
-    def update_indexes(self, start):
-        """
-            Update indexes
-            @param start index as int
-        """
-        for row in self.get_children():
-            row.track.set_number(start)
-            row.update_number_label()
-            start += 1
-
     def update_playing(self, track_id):
         """
             Update playing track

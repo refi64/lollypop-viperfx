@@ -422,6 +422,19 @@ class TracksView:
 #######################
 # PRIVATE             #
 #######################
+    def __linking(self):
+        """
+            Handle linking between left and right
+            Only used with ResponsiveType.DND
+        """
+        if len(self._tracks_widget_left[0]) == 0 or\
+                len(self._tracks_widget_right[0]) == 0:
+            return
+        last_left = self._tracks_widget_left[0].get_children()[-1]
+        first_right = self._tracks_widget_right[0].get_children()[0]
+        last_left.set_next_row(first_right)
+        first_right.set_previous_row(last_left)
+
     def __add_disc_container(self, disc_number):
         """
             Add disc container to box
@@ -458,12 +471,13 @@ class TracksView:
             if self.__loading == Loading.ALL:
                 self._on_populated()
             self._locked_widget_right = False
-            # After prepend, we need to set last added next row
-            if self._responsive_type == ResponsiveType.DND and\
-                    i < len(self.children):
-                self.children[i].set_previous_row(self.children[i - 1])
-                self.children[i - 1].set_next_row(self.children[i])
-                self.children[0].update_number(1)
+            if self._responsive_type == ResponsiveType.DND:
+                self.__linking()
+                # After prepend, we need to set last added next row
+                if i < len(self.children):
+                    self.children[i].set_previous_row(self.children[i - 1])
+                    self.children[i - 1].set_next_row(self.children[i])
+                    self.children[0].update_number(1)
             return
 
         track = tracks.pop(0)
