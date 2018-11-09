@@ -142,6 +142,8 @@ class DNDRow:
             @param info as int
             @param time as int
         """
+        widget.get_style_context().remove_class("drag-up")
+        widget.get_style_context().remove_class("drag-down")
         height = self.get_allocated_height()
         if y > height / 2:
             down = True
