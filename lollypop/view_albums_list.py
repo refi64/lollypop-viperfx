@@ -68,7 +68,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
-        DNDRow.__init__(self)
+        if responsive_type == ResponsiveType.DND:
+            DNDRow.__init__(self)
         # Delayed => TracksView.__init__(self)
         self.__revealer = None
         self.__parent = parent
