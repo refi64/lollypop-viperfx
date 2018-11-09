@@ -48,6 +48,7 @@ class PlaylistsView(View, ViewController):
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
+        self.__header = builder.get_object("header")
         if App().player.is_locked:
             builder.get_object("play_button").set_sensitive(False)
             builder.get_object("shuffle_button").set_sensitive(False)
@@ -380,7 +381,7 @@ class PlaylistsView(View, ViewController):
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
-            Move track to end
+            Move track at view bounds
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
             @param x as int
@@ -391,11 +392,17 @@ class PlaylistsView(View, ViewController):
         """
         self.current_draged_widget = None
         if self.__playlists_widget.children:
-            row = self.__playlists_widget.children[-1]
+            if y < self.__header.get_allocated_height():
+                y = 0
+                row = self.__playlists_widget.children[0]
+            elif y + self.__header.get_allocated_height() >\
+                    self.__playlists_widget.get_allocated_height():
+                row = self.__playlists_widget.children[-1]
+                y = row.get_allocated_height()
             row.emit("drag-data-received",
                      context,
                      x,
-                     row.get_allocated_height(),
+                     y,
                      data,
                      info,
                      time)

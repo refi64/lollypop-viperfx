@@ -32,6 +32,7 @@ class PlaylistsWidget(Gtk.Grid):
             @param playlist ids as [int]
         """
         Gtk.Grid.__init__(self)
+        self.set_property("valign", Gtk.Align.START)
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__playlist_ids = playlist_ids
