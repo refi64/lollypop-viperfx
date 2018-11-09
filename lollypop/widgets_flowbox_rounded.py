@@ -45,12 +45,14 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.__cover_size = App().settings.get_value("cover-size").get_int32()
         self.__scale = art_size / self.__cover_size / 3
         self.set_size_request(art_size, art_size)
+        self.get_style_context().add_class("loading-rounded")
 
     def populate(self, text):
         """
             Populate widget content
             @param text as str
         """
+        self.get_style_context().remove_class("loading-rounded")
         self._widget = Gtk.EventBox()
         self._widget.connect("button-press-event",
                              self._on_eventbox_button_press_event)
