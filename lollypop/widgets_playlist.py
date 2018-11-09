@@ -233,13 +233,13 @@ class PlaylistsWidget(Gtk.Grid):
         """
             Move a track from right to left and vice versa
         """
-        if self.__tracks_widget_right.get_allocated_height() >\
-                self.__tracks_widget_left.get_allocated_height():
+        if self.__tracks_widget_right.height >\
+                self.__tracks_widget_left.height:
             child = self.__tracks_widget_right.get_children()[0]
             self.__tracks_widget_right.remove(child)
             self.__tracks_widget_left.add(child)
-        elif self.__tracks_widget_left.get_allocated_height() >\
-                self.__tracks_widget_right.get_allocated_height():
+        elif self.__tracks_widget_left.height >\
+                self.__tracks_widget_right.height:
             child = self.__tracks_widget_left.get_children()[-1]
             self.__tracks_widget_left.remove(child)
             self.__tracks_widget_right.insert(child, 0)
