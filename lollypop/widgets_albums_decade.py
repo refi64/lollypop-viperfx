@@ -111,7 +111,7 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, OverlayHelper):
             self._overlay.show_all()
             self.__play_button.get_style_context().add_class("rounded-icon")
             self.__open_button.get_style_context().add_class(
-                "rounded-icon-small")
+                "squared-icon-small")
         else:
             self.__play_event.destroy()
             self.__play_event = None

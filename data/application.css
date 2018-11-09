@@ -210,7 +210,7 @@ popover.background separator {
     color: white;
     padding: 12px;
     margin: 2px;
-    opacity: 0.8;
+    opacity: 0.85;
     border-radius: 50%;
 }
 
@@ -219,7 +219,7 @@ popover.background separator {
     box-shadow: 0 0 4px white;
     background-color: black;
     color: white;
-    opacity: 0.8;
+    opacity: 0.85;
     padding: 8px;
     margin: 2px;
     border-radius: 50%;
@@ -230,10 +230,10 @@ popover.background separator {
     box-shadow: 0 0 4px white;
     background-color: black;
     color: white;
-    opacity: 0.8;
+    opacity: 0.85;
     padding: 8px;
     margin: 2px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .no-padding {

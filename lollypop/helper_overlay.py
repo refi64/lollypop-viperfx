@@ -213,9 +213,9 @@ class OverlayAlbumHelper(OverlayHelper):
             self._overlay_grid.show_all()
             self._play_button.get_style_context().add_class("rounded-icon")
             self._action_button.get_style_context().add_class(
-                "rounded-icon-small")
+                "squared-icon-small")
             self._artwork_button.get_style_context().add_class(
-                    "rounded-icon-small")
+                    "squared-icon-small")
         else:
             self._play_event.destroy()
             self._play_event = None

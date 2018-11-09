@@ -171,7 +171,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                               1,
                                               1)
             self.__play_all_button.get_style_context().add_class(
-                "rounded-icon-small")
+                "squared-icon-small")
         else:
             self.__play_all_event.destroy()
             self.__play_all_event = None
