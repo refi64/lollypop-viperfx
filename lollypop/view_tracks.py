@@ -679,6 +679,13 @@ class TracksView:
         if row.track.id == App().player.current_track.id:
             App().player.set_next()
             App().player.set_prev()
+        if row.previous_row is None:
+            row.next_row.set_previous_row(None)
+        elif row.next_row is None:
+            row.previous_row.set_next_row(None)
+        else:
+            row.next_row.set_previous_row(row.previous_row)
+            row.previous_row.set_next_row(row.next_row)
 
     def __on_insert_album(self, row, new_album_id, track_ids, down):
         """

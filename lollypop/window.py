@@ -43,8 +43,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.__miniplayer = None
         self.__mediakeys = None
         self.__media_keys_busnames = []
-        self.__was_maximized = False
-        self.current_draged_widget = None
         self.connect("hide", self.__on_hide)
         App().player.connect("current-changed", self.__on_current_changed)
         self.__timeout_configure = None

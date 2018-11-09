@@ -96,22 +96,39 @@ class PlaylistRow(Row, DNDRow):
             self.set_margin_bottom(2)
             self.__header.show_all()
 
+    def hide_artwork(self):
+        """
+            Hide row artwork
+        """
+        self.__artwork.set_margin_top(0)
+        self.set_margin_bottom(0)
+        self.__artwork.set_tooltip_text("")
+        self.__artwork.clear()
+        self.__artwork.hide()
+        self.__header.hide()
+
     def set_previous_row(self, row):
         """
             Set previous row
             @param row as Row
         """
+        if self.get_parent() is not None:
+            position = self.get_parent().get_children().index(self)
+        else:
+            position = None
         DNDRow.set_previous_row(self, row)
         if self.previous_row is None or\
-                self.previous_row.track.album.id != self.track.album.id:
+                self.previous_row.track.album.id != self.track.album.id or\
+                position == 0:
             self.show_artwork()
         else:
-            self.__artwork.set_margin_top(0)
-            self.set_margin_bottom(0)
-            self.__artwork.set_tooltip_text("")
-            self.__artwork.clear()
-            self.__artwork.hide()
-            self.__header.hide()
+            self.hide_artwork()
+
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__filtered = b
 
     @property
     def filter(self):
@@ -122,12 +139,6 @@ class PlaylistRow(Row, DNDRow):
                         self._track.artists +
                         [self._track.name] +
                         [self._track.album.name])
-
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-        """
-        self.__filtered = b
 
     @property
     def filtered(self):

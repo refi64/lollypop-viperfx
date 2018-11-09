@@ -153,6 +153,7 @@ class PlaylistsWidget(Gtk.Grid):
             widget = self.__tracks_widget_right
         pos = length + 1
         self.__add_tracks([track_id], widget, pos)
+        self.__make_homogeneous()
 
     def remove(self, track_id):
         """
@@ -234,18 +235,28 @@ class PlaylistsWidget(Gtk.Grid):
         """
             Move a track from right to left and vice versa
         """
-        if self.__tracks_widget_right.height >\
-                self.__tracks_widget_left.height:
+        if self.__tracks_widget_right.get_allocated_height() >\
+                self.__tracks_widget_left.get_allocated_height():
             child = self.__tracks_widget_right.get_children()[0]
             self.__tracks_widget_right.remove(child)
             self.__tracks_widget_left.add(child)
-        elif self.__tracks_widget_left.height >\
-                self.__tracks_widget_right.height:
+        elif self.__tracks_widget_left.get_allocated_height() >\
+                self.__tracks_widget_right.get_allocated_height():
             child = self.__tracks_widget_left.get_children()[-1]
             self.__tracks_widget_left.remove(child)
             self.__tracks_widget_right.insert(child, 0)
         if len(self.__tracks_widget_right) > 0:
-            self.__tracks_widget_right.get_children()[0].show_artwork()
+            row = self.__tracks_widget_right.get_children()[0]
+            row.show_artwork()
+            # Force update
+            if row.next_row is not None:
+                row.next_row.set_previous_row(row)
+        if len(self.__tracks_widget_left) > 1:
+            row = self.__tracks_widget_right.get_children()[-1]
+            row.hide_artwork()
+            # Force update
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(row)
 
     def __linking(self):
         """
@@ -275,7 +286,6 @@ class PlaylistsWidget(Gtk.Grid):
             if widget == self.__tracks_widget_right:
                 self.__loading |= Loading.RIGHT
                 self.__linking()
-                self.__make_homogeneous()
             elif widget == self.__tracks_widget_left:
                 self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:
@@ -387,7 +397,7 @@ class PlaylistsWidget(Gtk.Grid):
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
         new_row.update_number(position + 1)
-        App().playlists.remove_uri(self.__playlist_ids[0], track.uri)
+        App().playlists.remove_uris(self.__playlist_ids[0], [track.uri])
         App().playlists.insert_track(self.__playlist_ids[0], track, position)
         left_count = len(self.__tracks_widget_left.get_children())
         if position < left_count:
@@ -404,7 +414,13 @@ class PlaylistsWidget(Gtk.Grid):
             @param row as PlaylistRow
             @param position as int
         """
-        App().playlists.remove_uri(self.__playlist_ids[0], row.track.uri)
         tracks = App().playlists.get_tracks(self.__playlist_ids[0])
         App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
+        if row.previous_row is None:
+            row.next_row.set_previous_row(None)
+        elif row.next_row is None:
+            row.previous_row.set_next_row(None)
+        else:
+            row.next_row.set_previous_row(row.previous_row)
+            row.previous_row.set_next_row(row.next_row)
         self.__make_homogeneous()

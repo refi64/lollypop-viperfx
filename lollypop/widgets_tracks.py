@@ -69,17 +69,6 @@ class TracksWidget(Gtk.ListBox):
                 row.show_spinner()
                 break
 
-    @property
-    def height(self):
-        """
-            Get widget height
-            @return int
-        """
-        height = 0
-        for child in self.get_children():
-            height += child.get_allocated_height()
-        return height
-
 #######################
 # PRIVATE             #
 #######################
