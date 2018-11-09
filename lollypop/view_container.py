@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view_device import DeviceView
-from lollypop.view_artists_rounded import RoundedArtistsView
 from lollypop.view import View
 from lollypop.logger import Logger
 
@@ -42,7 +41,6 @@ class ViewContainer(Gtk.Stack):
         for child in self.get_children():
             if child != view\
                     and not isinstance(child, DeviceView)\
-                    and not isinstance(child, RoundedArtistsView)\
                     and isinstance(child, View):
                 # Delayed destroy as we may have an animation running
                 # Gtk.StackTransitionType.CROSSFADE

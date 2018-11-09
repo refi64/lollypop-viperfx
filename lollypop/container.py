@@ -318,8 +318,7 @@ class Container(Gtk.Overlay):
         """
         App().window.emit("can-go-back-changed", False)
         view = self.__get_view_artists_rounded()
-        if view not in self.__stack.get_children():
-            self.__stack.add(view)
+        self.__stack.add(view)
         App().window.emit("show-can-go-back", True)
         self.__stack.set_visible_child(view)
         self.__stack.clean_old_views(view)
@@ -633,12 +632,7 @@ class Container(Gtk.Overlay):
             ids += App().artists.get_ids()
             return ids
         self.__stop_current_view()
-        # Search for RoundedArtistsView
         from lollypop.view_artists_rounded import RoundedArtistsView
-        for child in self.__stack.get_children():
-            if isinstance(child, RoundedArtistsView):
-                return child
-        # Else create a new one
         view = RoundedArtistsView()
         loader = Loader(target=load, view=view)
         loader.start()

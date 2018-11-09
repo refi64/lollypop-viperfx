@@ -27,9 +27,6 @@ class RoundedArtistsView(FlowBoxView):
         FlowBoxView.__init__(self)
         self._widget_class = RoundedArtistWidget
 
-    def stop(self):
-        pass
-
 #######################
 # PROTECTED           #
 #######################
