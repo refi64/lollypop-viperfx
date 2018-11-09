@@ -269,12 +269,12 @@ class PlaylistsWidget(Gtk.Grid):
         if not tracks:
             if widget == self.__tracks_widget_right:
                 self.__loading |= Loading.RIGHT
+                self.__linking()
                 self.__make_homogeneous()
             elif widget == self.__tracks_widget_left:
                 self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:
                 self.emit("populated")
-                self.__linking()
             self.__locked_widget_right = False
             return
 
