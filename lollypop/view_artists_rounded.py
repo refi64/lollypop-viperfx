@@ -11,7 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.view_flowbox import FlowBoxView
-from lollypop.define import ArtSize, App, Type
+from lollypop.define import App, Type
 from lollypop.widgets_artist_rounded import RoundedArtistWidget
 
 
@@ -41,7 +41,8 @@ class RoundedArtistsView(FlowBoxView):
         """
         if Type.ALL in item_ids:
             item_ids.remove(Type.ALL)
-        FlowBoxView._add_items(self, item_ids, ArtSize.BIG)
+        art_size = App().settings.get_value("cover-size").get_int32()
+        FlowBoxView._add_items(self, item_ids, art_size)
         # if widget is not None:
         #    widget.connect("overlayed", self.on_overlayed)
 
