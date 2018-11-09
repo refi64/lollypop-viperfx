@@ -175,19 +175,19 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             if self.__obj is None:
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "media-playback-start-symbolic",
-                    Gtk.IconSize.DND)
+                    Gtk.IconSize.DIALOG)
                 self.__play_event.set_tooltip_text(_("Play"))
             elif self.__add:
                 # Special case, we are in add to playlist mode
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-add-symbolic",
-                    Gtk.IconSize.DND)
+                    Gtk.IconSize.DIALOG)
                 self.__play_event.set_tooltip_text(_("Add"))
             else:
                 # Special case, we are in remove from playlist mode
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-remove-symbolic",
-                    Gtk.IconSize.DND)
+                    Gtk.IconSize.DIALOG)
                 self.__play_event.set_tooltip_text(_("Remove"))
             self.__play_button.set_opacity(1)
             # Open button
@@ -199,7 +199,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
                                       self.__on_open_press_event)
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.LARGE_TOOLBAR)
             self.__open_button.set_opacity(1)
             # Edit button
             self.__edit_event = Gtk.EventBox()
@@ -210,7 +210,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
                                       self.__on_edit_press_event)
             self.__edit_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.LARGE_TOOLBAR)
             self.__edit_button.set_opacity(1)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)
@@ -219,7 +219,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             self.__overlay_grid = Gtk.Grid()
             self.__overlay_grid.set_column_spacing(20)
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
-            self.__overlay_grid.set_margin_bottom(5)
+            self.__overlay_grid.set_margin_bottom(10)
             self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
             self.__overlay_grid.add(self.__open_event)
             self.__overlay_grid.add(self.__edit_event)
