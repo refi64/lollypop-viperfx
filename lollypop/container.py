@@ -329,6 +329,8 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums_decades()
         elif item_id == Type.PLAYLISTS:
             view = self.__get_view_playlists()
+        elif item_id == Type.COMPILATIONS:
+            view = self.__get_view_albums([], [item_id])
         else:
             view = self.__get_view_artists([], [item_id])
         view.show()
