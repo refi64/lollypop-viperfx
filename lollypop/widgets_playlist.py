@@ -140,35 +140,24 @@ class PlaylistsWidget(Gtk.Grid):
         """
         self.__loading = Loading.STOP
 
-    def insert(self, track_id, pos=-1):
+    def insert(self, track_id):
         """
             Add track to widget
             @param track id as int
-            @param pos as int
         """
-        return
-        children_len = len(self.__tracks_widget_left.get_children() +
-                           self.__tracks_widget_right.get_children())
-        if pos > children_len / 2:
-            widget = self.__tracks_widget_right
-            pos -= len(self.__tracks_widget_left.get_children())
-        elif pos == -1:
-            widget = self.__tracks_widget_right
-        else:
+        length = len(self.children)
+        if length == 0:
             widget = self.__tracks_widget_left
+        else:
+            widget = self.__tracks_widget_right
+        pos = length + 1
         self.__add_tracks([track_id], widget, pos)
-        self.__update_position()
-        self.__update_headers()
-        self.__tracks_widget_left.update_indexes(1)
-        track_left_children = self.__tracks_widget_left.get_children()
-        self.__tracks_widget_right.update_indexes(len(track_left_children) + 1)
 
     def remove(self, track_id):
         """
-            Del track from widget
-            @param track id as int
+            Remove track from widget
+            @param track_id as int
         """
-        return
         children = self.__tracks_widget_left.get_children() + \
             self.__tracks_widget_right.get_children()
         # Clear the widget
@@ -180,12 +169,6 @@ class PlaylistsWidget(Gtk.Grid):
                 if child.track.id == track_id:
                     child.destroy()
                     break
-            self.__update_position()
-            self.__update_headers()
-            self.__tracks_widget_left.update_indexes(1)
-            track_left_children = self.__tracks_widget_left.get_children()
-            self.__tracks_widget_right.update_indexes(
-                len(track_left_children) + 1)
 
     def rows_animation(self, x, y, widget):
         """
@@ -246,6 +229,15 @@ class PlaylistsWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __make_homogeneous(self):
+        """
+            Move a track from right to left
+        """
+        if len(self.__tracks_widget_right) > len(self.__tracks_widget_left):
+            child = self.__tracks_widget_right.get_children()[0]
+            self.__tracks_widget_right.remove(child)
+            self.__tracks_widget_left.add(child)
+
     def __add_tracks(self, tracks, widget, pos, previous_row=None):
         """
             Add tracks to list
@@ -261,6 +253,7 @@ class PlaylistsWidget(Gtk.Grid):
         if not tracks:
             if widget == self.__tracks_widget_right:
                 self.__loading |= Loading.RIGHT
+                self.__make_homogeneous()
             elif widget == self.__tracks_widget_left:
                 self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:

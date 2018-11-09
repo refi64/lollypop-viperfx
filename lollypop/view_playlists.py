@@ -377,26 +377,26 @@ class PlaylistsView(View, ViewController):
                                                             self.__auto_scroll,
                                                             up)
 
-    def __on_playlist_track_added(self, playlists, playlist_id, uri, pos):
+    def __on_playlist_track_added(self, playlists, playlist_id, uri):
         """
             Update tracks widgets
             @param playlists as Playlists
             @param playlist id as int
             @param uri as str
-            @param pos as int
         """
-        if playlist_id in self.__playlist_ids:
+        if len(self.__playlist_ids) == 1 and\
+                playlist_id in self.__playlist_ids:
             track_id = App().tracks.get_id_by_uri(uri)
-            self.__playlists_widget.insert(track_id, pos)
+            self.__playlists_widget.insert(track_id)
 
-    def __on_playlist_track_removed(self, playlists, playlist_id, uri, pos):
+    def __on_playlist_track_removed(self, playlists, playlist_id, uri):
         """
             Update tracks widgets
             @param playlists as Playlists
             @param playlist id as int
             @param uri as str
-            @param pos as int
         """
-        if playlist_id in self.__playlist_ids:
+        if len(self.__playlist_ids) == 1 and\
+                playlist_id in self.__playlist_ids:
             track_id = App().tracks.get_id_by_uri(uri)
             self.__playlists_widget.remove(track_id)

@@ -39,9 +39,9 @@ class Playlists(GObject.GObject):
         "playlists-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         # Objects added/removed to/from playlist
         "playlist-track-added": (
-            GObject.SignalFlags.RUN_FIRST, None, (int, str, int)),
+            GObject.SignalFlags.RUN_FIRST, None, (int, str)),
         "playlist-track-removed": (
-            GObject.SignalFlags.RUN_FIRST, None, (int, str, int))
+            GObject.SignalFlags.RUN_FIRST, None, (int, str))
     }
     __create_playlists = """CREATE TABLE playlists (
                             id INTEGER PRIMARY KEY,
@@ -150,6 +150,9 @@ class Playlists(GObject.GObject):
             Add uri to playlist
             @param uri as str
         """
+        if self.exists_track(playlist_id, uri):
+            return
+        self.emit("playlist-track-added", playlist_id, uri)
         with SqlCursor(self, True) as sql:
             sql.execute("INSERT INTO tracks VALUES (?, ?)", (playlist_id, uri))
             sql.execute("UPDATE playlists SET mtime=?\
@@ -196,6 +199,9 @@ class Playlists(GObject.GObject):
             @param playlist_id as int
             @param uri a str
         """
+        if not self.exists_track(playlist_id, uri):
+            return
+        self.emit("playlist-track-removed", playlist_id, uri)
         with SqlCursor(self, True) as sql:
             sql.execute("DELETE FROM tracks WHERE uri=? AND playlist_id=?",
                         (uri, playlist_id))
