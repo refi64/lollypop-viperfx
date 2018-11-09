@@ -80,14 +80,11 @@ class PlaylistRow(Row, DNDRow):
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
 
-    def set_previous_row(self, row):
+    def show_artwork(self):
         """
-            Set previous row
-            @param row as Row
+            Show row artwork
         """
-        DNDRow.set_previous_row(self, row)
-        if self.previous_row is None or\
-                self.previous_row.track.album.id != self.track.album.id:
+        if not self.__artwork.get_visible():
             self.__artwork.set_tooltip_text(self._track.album.name)
             self.__art_helper.set_album_artwork(self.__artwork,
                                                 self.track.album,
@@ -98,6 +95,16 @@ class PlaylistRow(Row, DNDRow):
             self.__artwork.show()
             self.set_margin_bottom(2)
             self.__header.show_all()
+
+    def set_previous_row(self, row):
+        """
+            Set previous row
+            @param row as Row
+        """
+        DNDRow.set_previous_row(self, row)
+        if self.previous_row is None or\
+                self.previous_row.track.album.id != self.track.album.id:
+            self.show_artwork()
         else:
             self.__artwork.set_margin_top(0)
             self.set_margin_bottom(0)
