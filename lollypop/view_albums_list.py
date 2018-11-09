@@ -90,7 +90,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         if self.get_child() is not None:
             return
-        self.set_property("valign", Gtk.Align.CENTER)
         self.__art_helper = ArtHelper()
         self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self._artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
@@ -175,7 +174,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.add(row_widget)
         self.set_playing_indicator()
         self.show_all()
-        self.connect("button-release-event", self.__on_button_release_event)
+        row_widget.connect("button-release-event",
+                           self.__on_button_release_event)
         if self.__reveal:
             self.reveal()
 
@@ -253,7 +253,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Return True if populated
             @return bool
         """
-        return True
+        return True if self._responsive_widget is None\
+            else TracksView.get_populated(self)
 
     @property
     def album(self):
@@ -266,6 +267,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
 #######################
 # PROTECTED           #
 #######################
+    def _on_populated(self):
+        """
+            Populate remaining discs
+        """
+        if not self.is_populated:
+            TracksView.populate(self)
 
 #######################
 # PRIVATE             #

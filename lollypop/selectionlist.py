@@ -202,7 +202,6 @@ class SelectionList(Gtk.Overlay):
         """
             Populate view with values
             @param [(int, str, optional str)], will be deleted
-            @thread safe
         """
         if self.__populating:
             return
@@ -256,7 +255,6 @@ class SelectionList(Gtk.Overlay):
         """
             Update view with values
             @param [(int, str, optional str)]
-            @thread safe
         """
         update_fast_scroll = self.__type & SelectionListType.ARTISTS and\
             self.__fast_scroll is not None
@@ -484,7 +482,6 @@ class SelectionList(Gtk.Overlay):
         """
             Add value to the model
             @param value as [int, str, optional str]
-            @thread safe
         """
         item_id = value[0]
         name = value[1]
@@ -510,7 +507,6 @@ class SelectionList(Gtk.Overlay):
         """
             Add values to the list
             @param items as [(int,str)]
-            @thread safe
         """
         for value in values:
             self.__add_value(value)

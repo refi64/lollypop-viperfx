@@ -63,9 +63,7 @@ class TracksView:
         self._tracks_widget_right = {}
 
         if responsive_type in [ResponsiveType.DND,
-                               ResponsiveType.LIST,
                                ResponsiveType.SEARCH]:
-            # FIXME
             self._album.merge_discs()
 
         # Discs to load, will be emptied
@@ -97,7 +95,8 @@ class TracksView:
             disc = self.__discs.pop(0)
             disc_number = disc.number
             tracks = list(disc.tracks)
-            if self._responsive_type == ResponsiveType.FIXED:
+            if self._responsive_type in [ResponsiveType.FIXED,
+                                         ResponsiveType.LIST]:
                 mid_tracks = int(0.5 + len(tracks) / 2)
                 self.populate_list_left(tracks[:mid_tracks],
                                         disc_number,
@@ -224,6 +223,13 @@ class TracksView:
         """
         self.__loading = Loading.STOP
 
+    def get_populated(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return len(self.__discs) == 0
+
     @property
     def height(self):
         """
@@ -272,7 +278,7 @@ class TracksView:
             Return True if populated
             @return bool
         """
-        return len(self.__discs) == 0
+        return self.get_populated()
 
 #######################
 # PROTECTED           #
