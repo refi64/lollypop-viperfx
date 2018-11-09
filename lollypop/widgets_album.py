@@ -24,6 +24,7 @@ class AlbumWidget:
         """
             Init Album widget
         """
+        self._artwork = None
         self._album = album
         self.__filtered = False
         self.connect("destroy", self.__on_destroy)
