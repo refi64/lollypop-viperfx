@@ -19,13 +19,15 @@ from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.helper_art import ArtHelper
+from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, ResponsiveType
 
 
-class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
+class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
+                          OverlayAlbumHelper, TracksView):
     """
         Widget with cover and tracks
     """
@@ -44,9 +46,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             @param lazy as LazyLoadingView
             @param art size as ArtSize
         """
-        Gtk.Bin.__init__(self)
+        Gtk.EventBox.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, ResponsiveType.FIXED)
+        OverlayAlbumHelper.__init__(self)
         self.__art_helper = ArtHelper()
         self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__context = None
@@ -57,7 +60,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/AlbumDetailedWidget.ui")
         builder.connect_signals(self)
-        self._widget = builder.get_object("widget")
+        self.__widget = builder.get_object("widget")
         album_info = builder.get_object("albuminfo")
         self.__title_label = builder.get_object("title")
         self.__title_label.set_property("has-tooltip", True)
@@ -65,7 +68,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
         self.__artist_label.set_property("has-tooltip", True)
         self.__year_label = builder.get_object("year")
         self.__header = builder.get_object("header")
-        self.__overlay = builder.get_object("overlay")
+        self._overlay = builder.get_object("overlay")
         self.__duration_label = builder.get_object("duration")
         self.__context_button = builder.get_object("context")
 
@@ -95,38 +98,37 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
             self._artwork = self.__art_helper.get_image(ArtSize.BIG,
                                                         ArtSize.BIG,
                                                         "cover-frame")
+            self._artwork.show()
             self.__duration_label.set_hexpand(True)
-            builder = Gtk.Builder()
-            builder.add_from_resource("/org/gnome/Lollypop/CoverBox.ui")
-            builder.connect_signals(self)
-            self._play_button = builder.get_object("play-button")
-            self._action1_button = builder.get_object("action-button")
-            self._action1_event = builder.get_object("action-event")
-            builder.get_object("overlay").add(self._artwork)
+            self._overlay = Gtk.Overlay.new()
+            self._overlay.add(self._artwork)
+            self._overlay.show()
+            self._overlay_grid = None
+            self.__coverbox = Gtk.Grid()
+            self.__coverbox.set_orientation(Gtk.Orientation.VERTICAL)
+            self.__coverbox.show()
+            self.__coverbox.attach(self._overlay, 0, 0, 2, 1)
             self.__art_helper.set_album_artwork(self._artwork,
                                                 self._album,
                                                 ArtSize.BIG,
                                                 ArtSize.BIG,
                                                 self.get_scale_factor())
-            self.__coverbox = builder.get_object("coverbox")
-            # 6 for 2*3px (application.css)
-            self.__coverbox.set_property("width-request", art_size + 6)
-            self._action2_button = builder.get_object("artwork-button")
             if self._album.year is not None:
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
-            grid = Gtk.Grid()
-            grid.set_column_spacing(10)
-            grid.set_property("halign", Gtk.Align.CENTER)
-            grid.show()
             rating = RatingWidget(self._album)
+            rating.set_property("halign", Gtk.Align.END)
             loved = LovedWidget(self._album)
+            loved.set_property("halign", Gtk.Align.START)
             rating.show()
             loved.show()
-            grid.add(rating)
-            grid.add(loved)
-            self.__coverbox.add(grid)
-            self._widget.attach(self.__coverbox, 0, 0, 1, 1)
+            self.__coverbox.add(rating)
+            self.__coverbox.attach_next_to(loved,
+                                           rating,
+                                           Gtk.PositionType.RIGHT,
+                                           1,
+                                           1)
+            self.__widget.attach(self.__coverbox, 0, 0, 1, 1)
             if App().window.container.get_view_width() < WindowSize.MEDIUM:
                 self.__coverbox.hide()
             if len(artist_ids) > 1:
@@ -135,16 +137,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget, TracksView):
                 self.__artist_label.show()
 
         self.__set_duration()
-
         album_info.add(self._responsive_widget)
-
         self.set_selection()
-
         self.__title_label.set_label(self._album.name)
-
-        self.add(self._widget)
-
-        self._lock_overlay = False
+        self.add(self.__widget)
+        self.connect("enter-notify-event", self._on_enter_notify)
+        self.connect("leave-notify-event", self._on_leave_notify)
 
     def get_current_ordinate(self, parent):
         """

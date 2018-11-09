@@ -7,7 +7,6 @@
      <file compressed="true" preprocess="xml-stripblanks">ArtistInformation.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ArtistView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ArtworkSearch.ui</file>
-     <file compressed="true" preprocess="xml-stripblanks">CoverBox.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">DeviceManagerView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ExternalsPopover.ui</file>

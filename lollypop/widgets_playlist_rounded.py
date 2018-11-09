@@ -18,7 +18,7 @@ from gettext import gettext as _
 from lollypop.define import App, Shuffle
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
-from lollypop.widgets_album import AlbumBaseWidget
+from lollypop.helper_overlay import OverlayHelper
 
 
 class PlayListPopover(Gtk.Popover):
@@ -74,7 +74,7 @@ class PlayListPopover(Gtk.Popover):
         self.destroy()
 
 
-class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
+class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
     """
         Playlist widget showing cover for 9 albums
     """
@@ -85,7 +85,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
             @param playlist_id as playlist_id
             @param obj as Track/Album
         """
-        AlbumBaseWidget.__init__(self)
+        OverlayHelper.__init__(self)
         RoundedFlowBoxWidget.__init__(self, playlist_id)
         self.__track_ids = []
         self.__obj = obj
@@ -108,7 +108,6 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         RoundedFlowBoxWidget.populate(self, text)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
-        self._lock_overlay = False
 
     @property
     def filter(self):
@@ -162,65 +161,67 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, AlbumBaseWidget):
         if self._lock_overlay or\
            self._show_overlay == set:
             return
+        OverlayHelper._show_overlay_func(self, set)
         if set:
             # Play button
-            self._play_event = Gtk.EventBox()
-            self._play_event.set_property("has-tooltip", True)
-            self._play_event.set_hexpand(True)
-            self._play_event.set_property("valign", Gtk.Align.CENTER)
-            self._play_event.set_property("halign", Gtk.Align.CENTER)
-            self._play_event.connect("realize", self._on_eventbox_realize)
-            self._play_event.connect("button-press-event",
-                                     self._on_play_press_event)
+            self.__play_event = Gtk.EventBox()
+            self.__play_event.set_property("has-tooltip", True)
+            self.__play_event.set_hexpand(True)
+            self.__play_event.set_property("valign", Gtk.Align.CENTER)
+            self.__play_event.set_property("halign", Gtk.Align.CENTER)
+            self.__play_event.connect("realize", self._on_eventbox_realize)
+            self.__play_event.connect("button-press-event",
+                                      self._on_play_press_event)
             if self.__obj is None:
-                self._play_button = Gtk.Image.new_from_icon_name(
+                self.__play_button = Gtk.Image.new_from_icon_name(
                     "media-playback-start-symbolic",
                     Gtk.IconSize.DND)
-                self._play_event.set_tooltip_text(_("Play"))
+                self.__play_event.set_tooltip_text(_("Play"))
             elif self.__add:
                 # Special case, we are in add to playlist mode
-                self._play_button = Gtk.Image.new_from_icon_name(
+                self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-add-symbolic",
                     Gtk.IconSize.DND)
-                self._play_event.set_tooltip_text(_("Add"))
+                self.__play_event.set_tooltip_text(_("Add"))
             else:
                 # Special case, we are in remove from playlist mode
-                self._play_button = Gtk.Image.new_from_icon_name(
+                self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-remove-symbolic",
                     Gtk.IconSize.DND)
-                self._play_event.set_tooltip_text(_("Remove"))
-            self._play_button.set_opacity(0)
+                self.__play_event.set_tooltip_text(_("Remove"))
+            self.__play_button.set_opacity(1)
             # Edit button
-            self._action2_event = Gtk.EventBox()
-            self._action2_event.set_property("has-tooltip", True)
-            self._action2_event.set_tooltip_text(_("Modify playlist"))
-            self._action2_event.set_property("halign", Gtk.Align.END)
-            self._action2_event.connect("realize", self._on_eventbox_realize)
-            self._action2_event.connect("button-press-event",
-                                        self._on_edit_press_event)
-            self._action2_event.set_property("valign", Gtk.Align.END)
-            self._action2_event.set_margin_bottom(5)
-            self._action2_event.set_property("halign", Gtk.Align.CENTER)
-            self._action2_button = Gtk.Image.new_from_icon_name(
+            self.__edit_event = Gtk.EventBox()
+            self.__edit_event.set_property("has-tooltip", True)
+            self.__edit_event.set_tooltip_text(_("Modify playlist"))
+            self.__edit_event.set_property("halign", Gtk.Align.END)
+            self.__edit_event.connect("realize", self._on_eventbox_realize)
+            self.__edit_event.connect("button-press-event",
+                                      self._on_edit_press_event)
+            self.__edit_event.set_property("valign", Gtk.Align.END)
+            self.__edit_event.set_margin_bottom(5)
+            self.__edit_event.set_property("halign", Gtk.Align.CENTER)
+            self.__edit_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.BUTTON)
-            self._action2_button.set_opacity(0)
-            self._play_event.add(self._play_button)
-            self._action2_event.add(self._action2_button)
-            self._overlay.add_overlay(self._play_event)
-            self._overlay.add_overlay(self._action2_event)
+            self.__edit_button.set_opacity(1)
+            self.__play_event.add(self.__play_button)
+            self.__edit_event.add(self.__edit_button)
+            self._overlay.add_overlay(self.__play_event)
+            self._overlay.add_overlay(self.__edit_event)
             self._overlay.show_all()
-            AlbumBaseWidget._show_overlay_func(self, True)
+            self.__play_button.get_style_context().add_class("rounded-icon")
+            self.__edit_button.get_style_context().add_class(
+                "rounded-icon-small")
         else:
-            AlbumBaseWidget._show_overlay_func(self, False)
-            self._play_event.destroy()
-            self._play_event = None
-            self._play_button.destroy()
-            self._play_button = None
-            self._action2_event.destroy()
-            self._action2_event = None
-            self._action2_button.destroy()
-            self._action2_button = None
+            self.__play_event.destroy()
+            self.__play_event = None
+            self.__play_button.destroy()
+            self.__play_button = None
+            self.__edit_event.destroy()
+            self.__edit_event = None
+            self.__edit_button.destroy()
+            self.__edit_button = None
 
 #######################
 # PROTECTED           #
