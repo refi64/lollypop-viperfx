@@ -98,7 +98,7 @@ class DNDRow:
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
-        if self.current_draged_widget is not None:
+        if widget.get_parent() != self.get_parent():
             return
         if hasattr(widget, "_track"):
             self.emit("remove-track")
@@ -132,7 +132,6 @@ class DNDRow:
             info = {"data": (wstr, self._album.id, self._album.track_ids)}
         text = json.dumps(info)
         data.set_text(text, len(text))
-        self.current_draged_widget = widget
 
     def _on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
@@ -145,7 +144,6 @@ class DNDRow:
             @param info as int
             @param time as int
         """
-        self.current_draged_widget = None
         widget.get_style_context().remove_class("drag-up")
         widget.get_style_context().remove_class("drag-down")
         height = self.get_allocated_height()
