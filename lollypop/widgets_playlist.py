@@ -32,7 +32,6 @@ class PlaylistsWidget(Gtk.Grid):
             @param playlist ids as [int]
         """
         Gtk.Grid.__init__(self)
-        self.set_property("valign", Gtk.Align.START)
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__playlist_ids = playlist_ids
@@ -56,9 +55,9 @@ class PlaylistsWidget(Gtk.Grid):
         self.connect("size-allocate", self.__on_size_allocate)
 
         self.__tracks_widget_left = TracksWidget(ResponsiveType.DND)
-        self.__tracks_widget_left.set_property("valign", Gtk.Align.START)
+        self.__tracks_widget_left.set_vexpand("True")
         self.__tracks_widget_right = TracksWidget(ResponsiveType.DND)
-        self.__tracks_widget_right.set_property("valign", Gtk.Align.START)
+        self.__tracks_widget_right.set_vexpand("True")
         self.__tracks_widget_left.connect("activated",
                                           self.__on_activated)
         self.__tracks_widget_right.connect("activated",
@@ -171,36 +170,6 @@ class PlaylistsWidget(Gtk.Grid):
                 if child.track.id == track_id:
                     child.destroy()
                     break
-
-    def rows_animation(self, x, y, widget):
-        """
-            Show animation to help user dnd
-            @param x as int
-            @param y as int
-            @param widget as Gtk.Widget (related widget)
-            @return child as PlaylistRow/None
-        """
-        rows = self.__tracks_widget_left.get_children() +\
-            self.__tracks_widget_right.get_children()
-        for row in rows:
-            coordinates = row.translate_coordinates(widget, 0, 0)
-            if coordinates is None:
-                continue
-            (row_x, row_y) = coordinates
-            row_width = row.get_allocated_width()
-            row_height = row.get_allocated_height()
-            if x < row_x or\
-                    x > row_x + row_width or\
-                    y < row_y or\
-                    y > row_y + row_height:
-                continue
-            if y <= row_y + row_height / 2:
-                row.get_style_context().add_class("drag-up")
-                return row
-            elif y >= row_y + row_height / 2:
-                row.get_style_context().add_class("drag-down")
-                return row
-        return None
 
     @property
     def id(self):

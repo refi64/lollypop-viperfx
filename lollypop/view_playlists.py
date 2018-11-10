@@ -10,14 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk, Gio
+from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 from random import shuffle
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App, ArtSize
+from lollypop.define import App
 from lollypop.objects import Track
 from lollypop.controller_view import ViewController
 
@@ -35,8 +35,6 @@ class PlaylistsView(View, ViewController):
         """
         View.__init__(self, True)
         ViewController.__init__(self)
-        self.__autoscroll_timeout_id = None
-        self.__prev_animated_rows = []
         self.__track_ids = []
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect(
@@ -78,12 +76,6 @@ class PlaylistsView(View, ViewController):
         # Connect signals after ui init
         # "split-button" will emit a signal otherwise
         builder.connect_signals(self)
-
-        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
-                           [], Gdk.DragAction.MOVE)
-        self.drag_dest_add_text_targets()
-        self.connect("drag-motion", self.__on_drag_motion)
-        self.connect("drag-data-received", self.__on_drag_data_received)
         self.connect_current_changed_signal()
 
         # No duration for non user playlists
@@ -128,15 +120,6 @@ class PlaylistsView(View, ViewController):
                                                    1)
         self.__playlists_widget.populate_list_right(track_ids[mid_tracks:],
                                                     mid_tracks + 1)
-
-    def clear_animation(self):
-        """
-            Clear any animation
-        """
-        for row in self.__prev_animated_rows:
-            ctx = row.get_style_context()
-            ctx.remove_class("drag-up")
-            ctx.remove_class("drag-down")
 
     def stop(self):
         """
@@ -260,37 +243,6 @@ class PlaylistsView(View, ViewController):
 #######################
 # PRIVATE             #
 #######################
-    def __auto_scroll(self, up):
-        """
-            Auto scroll up/down
-            @param up as bool
-        """
-        adj = self._scrolled.get_vadjustment()
-        value = adj.get_value()
-        if up:
-            adj_value = value - ArtSize.SMALL
-            adj.set_value(adj_value)
-            if adj.get_value() == 0:
-                self.__autoscroll_timeout_id = None
-                self.get_style_context().remove_class("drag-down")
-                self.get_style_context().remove_class("drag-up")
-                return False
-            else:
-                self.get_style_context().add_class("drag-up")
-                self.get_style_context().remove_class("drag-down")
-        else:
-            adj_value = value + ArtSize.SMALL
-            adj.set_value(adj_value)
-            if adj.get_value() < adj_value:
-                self.__autoscroll_timeout_id = None
-                self.get_style_context().remove_class("drag-down")
-                self.get_style_context().remove_class("drag-up")
-                return False
-            else:
-                self.get_style_context().add_class("drag-down")
-                self.get_style_context().remove_class("drag-up")
-        return True
-
     def __set_duration(self):
         """
             Set playlist duration
@@ -346,66 +298,6 @@ class PlaylistsView(View, ViewController):
                 stream.close()
         except:
             pass
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        auto_scroll = False
-        up = y <= ArtSize.MEDIUM
-        if up:
-            auto_scroll = True
-        elif y >= self._scrolled.get_allocated_height() - ArtSize.MEDIUM:
-            auto_scroll = True
-        else:
-            self.get_style_context().remove_class("drag-down")
-            self.get_style_context().remove_class("drag-up")
-            if self.__autoscroll_timeout_id is not None:
-                GLib.source_remove(self.__autoscroll_timeout_id)
-                self.__autoscroll_timeout_id = None
-            self.clear_animation()
-            row = self.__playlists_widget.rows_animation(x, y, self)
-            if row is not None:
-                self.__prev_animated_rows.append(row)
-            return
-        if self.__autoscroll_timeout_id is None and auto_scroll:
-            self.clear_animation()
-            self.__autoscroll_timeout_id = GLib.timeout_add(100,
-                                                            self.__auto_scroll,
-                                                            up)
-
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move track at view bounds
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        self.current_draged_widget = None
-        if self.__playlists_widget.children:
-            if y < self.__header.get_allocated_height():
-                y = 0
-                row = self.__playlists_widget.children[0]
-            elif y + self.__header.get_allocated_height() >\
-                    self.__playlists_widget.get_allocated_height():
-                row = self.__playlists_widget.children[-1]
-                y = row.get_allocated_height()
-            row.emit("drag-data-received",
-                     context,
-                     x,
-                     y,
-                     data,
-                     info,
-                     time)
 
     def __on_playlist_track_added(self, playlists, playlist_id, uri):
         """
