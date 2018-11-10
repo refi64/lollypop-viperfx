@@ -126,8 +126,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__action_button = None
         if self.__responsive_type == ResponsiveType.SEARCH:
             action_icon = "media-playback-start-symbolic"
+            action_tooltip_text = _("Play")
         elif self.__responsive_type == ResponsiveType.DND:
             action_icon = "user-trash-symbolic"
+            action_tooltip_text = _("Remove from current playlist")
         if self.__responsive_type in [ResponsiveType.SEARCH,
                                       ResponsiveType.DND]:
             self.__action_button = Gtk.Button.new_from_icon_name(
@@ -138,6 +140,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 "album-menu-button")
             self.__action_button.get_style_context().add_class(
                 "track-menu-button")
+            self.__action_button.set_tooltip_text(action_tooltip_text)
             self.__action_button.set_property("valign", Gtk.Align.CENTER)
             self.__action_button.connect("clicked",
                                          self.__on_action_button_clicked)

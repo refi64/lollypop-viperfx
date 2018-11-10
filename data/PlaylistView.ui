@@ -140,6 +140,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Play</property>
             <property name="halign">start</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
@@ -155,6 +156,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Play playlist randomized</property>
             <property name="halign">start</property>
             <property name="hexpand">True</property>
             <property name="image">image5</property>
@@ -171,6 +173,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Configure smart playlist</property>
             <property name="image">image6</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_smart_button_clicked" swapped="no"/>
