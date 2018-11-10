@@ -156,7 +156,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Play random track</property>
+            <property name="tooltip_text" translatable="yes">Play playlist randomized</property>
             <property name="halign">start</property>
             <property name="hexpand">True</property>
             <property name="image">image5</property>
