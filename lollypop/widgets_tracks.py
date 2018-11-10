@@ -52,6 +52,7 @@ class TracksWidget(Gtk.ListBox):
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
             self.connect("drag-motion", self.__on_drag_motion)
+            self.connect("drag-leave", self.__on_drag_leave)
             self.connect("drag-data-received", self.__on_drag_data_received)
 
     def update_playing(self, track_id):
@@ -117,7 +118,7 @@ class TracksWidget(Gtk.ListBox):
             Auto scroll up/down
             @param up as bool
         """
-        adj = self._scrolled.get_vadjustment()
+        adj = self.get_ancestor(Gtk.ScrolledWindow).get_vadjustment()
         value = adj.get_value()
         if up:
             adj_value = value - ArtSize.SMALL
@@ -199,6 +200,14 @@ class TracksWidget(Gtk.ListBox):
                      data,
                      info,
                      time)
+
+    def __on_drag_leave(self, row, context, time):
+        """
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param time as int
+        """
+        self.__clear_animation()
 
     def __on_queue_changed(self, unused):
         """
