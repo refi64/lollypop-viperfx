@@ -263,6 +263,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Back to playlist</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="image">image2</property>
