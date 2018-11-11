@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib, Gdk
+from gi.repository import Gio, GLib
 
 from math import pi
 from gettext import gettext as _
@@ -28,16 +28,7 @@ def draw_rounded_image(image, ctx):
     """
     if not image.is_drawable():
         return
-    surface = None
-    if image.props.surface is None:
-        pixbuf = image.get_pixbuf()
-        if pixbuf is not None:
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf,
-                image.get_scale_factor(),
-                None)
-    else:
-        surface = image.props.surface
+    surface = image.props.surface
     if surface is not None:
         width = surface.get_width() / image.get_scale_factor() - 4
         ctx.translate(2, 2)
