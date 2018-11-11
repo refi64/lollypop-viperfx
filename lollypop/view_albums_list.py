@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Gdk, Pango
+from gi.repository import Gtk, GLib, GObject, Pango
 
 from gettext import gettext as _
 
@@ -378,10 +378,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self._viewport.add(self.__view)
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
-        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
-                           [], Gdk.DragAction.MOVE)
-        self.drag_dest_add_text_targets()
-        self.connect("drag-motion", self.__on_drag_motion)
         self.connect_current_changed_signal()
         self.connect_artwork_changed_signal("album")
 
@@ -683,32 +679,3 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param row as AlbumRow
         """
         App().player.remove_album(row.album)
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        auto_scroll = False
-        up = y <= ArtSize.MEDIUM
-        if up:
-            auto_scroll = True
-        elif y >= self._scrolled.get_allocated_height() - ArtSize.MEDIUM:
-            auto_scroll = True
-        else:
-            self.get_style_context().remove_class("drag-down")
-            self.get_style_context().remove_class("drag-up")
-            if self.__autoscroll_timeout_id is not None:
-                GLib.source_remove(self.__autoscroll_timeout_id)
-                self.__autoscroll_timeout_id = None
-            self.rows_animation(x, y)
-            return
-        if self.__autoscroll_timeout_id is None and auto_scroll:
-            self.clear_animation()
-            self.__autoscroll_timeout_id = GLib.timeout_add(100,
-                                                            self.__auto_scroll,
-                                                            up)

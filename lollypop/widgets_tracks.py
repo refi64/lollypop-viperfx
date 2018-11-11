@@ -10,9 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk, Gdk, GLib
+from gi.repository import GObject, Gtk, Gdk
 
-from lollypop.define import App, ArtSize, Type, ResponsiveType
+from lollypop.define import App, Type, ResponsiveType
 from lollypop.objects import Track
 
 
@@ -32,8 +32,6 @@ class TracksWidget(Gtk.ListBox):
             @param responsive_type as ResponsiveType
         """
         Gtk.ListBox.__init__(self)
-        self.__autoscroll_timeout_id = None
-        self.__prev_animated_rows = []
         self.connect("destroy", self.__on_destroy)
         self.__queue_signal_id = App().player.connect("queue-changed",
                                                       self.__on_queue_changed)
@@ -48,11 +46,9 @@ class TracksWidget(Gtk.ListBox):
         self.set_property("hexpand", True)
         self.set_property("selection-mode", Gtk.SelectionMode.NONE)
         if responsive_type == ResponsiveType.DND:
-            self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+            self.drag_dest_set(Gtk.DestDefaults.DROP,
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
-            self.connect("drag-motion", self.__on_drag_motion)
-            self.connect("drag-leave", self.__on_drag_leave)
             self.connect("drag-data-received", self.__on_drag_data_received)
 
     def update_playing(self, track_id):
@@ -76,109 +72,6 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
-    def __rows_animation(self, x, y):
-        """
-            Show animation to help user dnd
-            @param x as int
-            @param y as int
-            @return child as PlaylistRow/None
-        """
-        rows = self.get_children()
-        for row in rows:
-            coordinates = row.translate_coordinates(self, 0, 0)
-            if coordinates is None:
-                continue
-            (row_x, row_y) = coordinates
-            row_width = row.get_allocated_width()
-            row_height = row.get_allocated_height()
-            if x < row_x or\
-                    x > row_x + row_width or\
-                    y < row_y or\
-                    y > row_y + row_height:
-                continue
-            if y <= row_y + row_height / 2:
-                row.get_style_context().add_class("drag-up")
-                return row
-            elif y >= row_y + row_height / 2:
-                row.get_style_context().add_class("drag-down")
-                return row
-        return None
-
-    def __clear_animation(self):
-        """
-            Clear any animation
-        """
-        for row in self.__prev_animated_rows:
-            ctx = row.get_style_context()
-            ctx.remove_class("drag-up")
-            ctx.remove_class("drag-down")
-
-    def __auto_scroll(self, up):
-        """
-            Auto scroll up/down
-            @param up as bool
-        """
-        adj = self.get_ancestor(Gtk.ScrolledWindow).get_vadjustment()
-        value = adj.get_value()
-        if up:
-            adj_value = value - ArtSize.SMALL
-            adj.set_value(adj_value)
-            if adj.get_value() == 0:
-                self.__autoscroll_timeout_id = None
-                self.get_style_context().remove_class("drag-down")
-                self.get_style_context().remove_class("drag-up")
-                return False
-            else:
-                self.get_style_context().add_class("drag-up")
-                self.get_style_context().remove_class("drag-down")
-        else:
-            adj_value = value + ArtSize.SMALL
-            adj.set_value(adj_value)
-            if adj.get_value() < adj_value:
-                self.__autoscroll_timeout_id = None
-                self.get_style_context().remove_class("drag-down")
-                self.get_style_context().remove_class("drag-up")
-                return False
-            else:
-                self.get_style_context().add_class("drag-down")
-                self.get_style_context().remove_class("drag-up")
-        return True
-
-    def __on_drag_motion(self, widget, context, x, y, time):
-        """
-            Add style
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param time as int
-        """
-        auto_scroll = False
-        up = y <= ArtSize.MEDIUM
-        scrolled = self.get_ancestor(Gtk.ScrolledWindow)
-        if scrolled is None:
-            return
-        if up:
-            auto_scroll = True
-        elif y >= scrolled.get_allocated_height() - ArtSize.MEDIUM:
-            auto_scroll = True
-        else:
-            self.get_style_context().remove_class("drag-down")
-            self.get_style_context().remove_class("drag-up")
-            if self.__autoscroll_timeout_id is not None:
-                GLib.source_remove(self.__autoscroll_timeout_id)
-                self.__autoscroll_timeout_id = None
-            self.__clear_animation()
-            row = self.__rows_animation(x, y)
-            if row is not None:
-                self.__prev_animated_rows.append(row)
-            return
-        if self.__autoscroll_timeout_id is None and auto_scroll:
-            self.__clear_animation()
-            self.__autoscroll_timeout_id = GLib.timeout_add(100,
-                                                            self.__auto_scroll,
-                                                            up)
-
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
             Move track at view bounds
@@ -200,14 +93,6 @@ class TracksWidget(Gtk.ListBox):
                      data,
                      info,
                      time)
-
-    def __on_drag_leave(self, row, context, time):
-        """
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param time as int
-        """
-        self.__clear_animation()
 
     def __on_queue_changed(self, unused):
         """

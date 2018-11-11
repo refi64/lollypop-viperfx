@@ -10,15 +10,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 
 
 class DNDRow:
     """
         Allow Drag & drop on a Row
     """
+    __autoscroll_timeout_id = None
 
     def __init__(self):
         """
@@ -30,12 +31,14 @@ class DNDRow:
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
-        self.drag_dest_set(Gtk.DestDefaults.DROP,
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect("drag-begin", self._on_drag_begin)
-        self.connect("drag-data-get", self._on_drag_data_get)
-        self.connect("drag-data-received", self._on_drag_data_received)
+        self.connect("drag-begin", self.__on_drag_begin)
+        self.connect("drag-data-get", self.__on_drag_data_get)
+        self.connect("drag-data-received", self.__on_drag_data_received)
+        self.connect("drag-leave", self.__on_drag_leave)
+        self.connect("drag-motion", self.__on_drag_motion)
 
     def update_number(self, position):
         """
@@ -80,52 +83,73 @@ class DNDRow:
         return self.__previous_row
 
 #######################
-# PROTECTED           #
+# PRIVATE             #
 #######################
-    def _on_drag_begin(self, widget, context):
+    def __auto_scroll(self, up):
         """
-            @param widget as Gtk.Widget
+            Auto scroll up/down
+            @param up as bool
+        """
+        adj = self.get_ancestor(Gtk.ScrolledWindow).get_vadjustment()
+        value = adj.get_value()
+        if up:
+            adj_value = value - ArtSize.SMALL
+            adj.set_value(adj_value)
+            if adj.get_value() == 0:
+                DNDRow.__autoscroll_timeout_id = None
+                return False
+        else:
+            adj_value = value + ArtSize.SMALL
+            adj.set_value(adj_value)
+            if adj.get_value() < adj_value:
+                DNDRow.__autoscroll_timeout_id = None
+                return False
+        return True
+
+    def __on_drag_begin(self, row, context):
+        """
+            @param row as RowDND
             @param context as Gdk.DragContext
         """
         if self.__drag_data_delete_id is None:
             self.__drag_data_delete_id = self.connect(
                                                   "drag-data-delete",
-                                                  self._on_drag_data_delete)
+                                                  self.__on_drag_data_delete)
 
-    def _on_drag_data_delete(self, widget, context):
+    def __on_drag_data_delete(self, row, context):
         """
             Destroy row and update neighbours
-            @param widget as Gtk.Widget
+            @param row as RowDND
             @param context as Gdk.DragContext
         """
-        if widget.get_parent() != self.get_parent():
+        if row.get_parent() != self.get_parent():
             return
-        if hasattr(widget, "_track"):
+        if hasattr(row, "_track"):
             self.emit("remove-track")
-            widget.destroy()
-            if widget.previous_row is not None:
-                widget.previous_row.set_next_row(widget.next_row)
-                widget.previous_row.update_number(
-                    widget.previous_row.track.number)
+            row.destroy()
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(row.next_row)
+                row.previous_row.update_number(
+                    row.previous_row.track.number)
             else:
-                widget.update_number(widget.track.number - 1)
-            if widget.next_row is not None:
-                widget.next_row.set_previous_row(widget.previous_row)
-        elif hasattr(widget, "_album"):
+                row.update_number(row.track.number - 1)
+            if row.next_row is not None:
+                row.next_row.set_previous_row(row.previous_row)
+        elif hasattr(row, "_album"):
             self.emit("remove-album")
-            widget.destroy()
+            row.destroy()
 
-    def _on_drag_data_get(self, widget, context, data, info, time):
+    def __on_drag_data_get(self, row, context, data, info, time):
         """
             Send track id
-            @param widget as Gtk.Widget
+            @param row as RowDND
             @param context as Gdk.DragContext
             @param data as Gtk.SelectionData
             @param info as int
             @param time as int
         """
         import json
-        wstr = str(widget)
+        wstr = str(row)
         if hasattr(self, "_track"):
             info = {"data": (wstr, self._track.id, None)}
         elif hasattr(self, "_album"):
@@ -133,10 +157,10 @@ class DNDRow:
         text = json.dumps(info)
         data.set_text(text, len(text))
 
-    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+    def __on_drag_data_received(self, row, context, x, y, data, info, time):
         """
             Move track
-            @param widget as Gtk.Widget
+            @param row as RowDND
             @param context as Gdk.DragContext
             @param x as int
             @param y as int
@@ -144,8 +168,6 @@ class DNDRow:
             @param info as int
             @param time as int
         """
-        widget.get_style_context().remove_class("drag-up")
-        widget.get_style_context().remove_class("drag-down")
         height = self.get_allocated_height()
         if y > height / 2:
             down = True
@@ -155,7 +177,7 @@ class DNDRow:
             import json
             info = json.loads(data.get_text())
             (wstr, item_id, track_ids) = info["data"]
-            if str(widget) == wstr:
+            if str(row) == wstr:
                 self.disconnect(self.__drag_data_delete_id)
                 self.__drag_data_delete_id = None
                 return
@@ -169,6 +191,42 @@ class DNDRow:
                     App().window.container.view.playlist_ids[0],
                     data.get_text(), self._track.id, down)
 
-#######################
-# PRIVATE             #
-#######################
+    def __on_drag_motion(self, row, context, x, y, time):
+        """
+            Add style
+            @param row as RowDND
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param time as int
+        """
+        row_height = row.get_allocated_height()
+        if y < row_height / 2:
+            row.get_style_context().add_class("drag-up")
+        elif y > row_height / 2:
+            row.get_style_context().add_class("drag-down")
+        scrolled = row.get_ancestor(Gtk.ScrolledWindow)
+        (row_x, row_y) = row.translate_coordinates(scrolled, 0, 0)
+        auto_scroll = False
+        up = row_y + y <= ArtSize.MEDIUM
+        if up:
+            auto_scroll = True
+        elif row_y + y >= scrolled.get_allocated_height() - ArtSize.MEDIUM:
+            auto_scroll = True
+        if DNDRow.__autoscroll_timeout_id is None and auto_scroll:
+            DNDRow.__autoscroll_timeout_id = GLib.timeout_add(
+                                                            100,
+                                                            self.__auto_scroll,
+                                                            up)
+        elif DNDRow.__autoscroll_timeout_id is not None and not auto_scroll:
+            GLib.source_remove(DNDRow.__autoscroll_timeout_id)
+            DNDRow.__autoscroll_timeout_id = None
+
+    def __on_drag_leave(self, row, context, time):
+        """
+            @param row as RowDND
+            @param context as Gdk.DragContext
+            @param time as int
+        """
+        row.get_style_context().remove_class("drag-up")
+        row.get_style_context().remove_class("drag-down")
