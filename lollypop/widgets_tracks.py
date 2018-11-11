@@ -10,9 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk, Gdk
-
-from lollypop.define import App, Type, ResponsiveType
+from gi.repository import GObject, Gtk
+from lollypop.define import App, Type
 from lollypop.objects import Track
 
 
@@ -45,11 +44,6 @@ class TracksWidget(Gtk.ListBox):
         self.get_style_context().add_class("trackswidget")
         self.set_property("hexpand", True)
         self.set_property("selection-mode", Gtk.SelectionMode.NONE)
-        if responsive_type == ResponsiveType.DND:
-            self.drag_dest_set(Gtk.DestDefaults.DROP,
-                               [], Gdk.DragAction.MOVE)
-            self.drag_dest_add_text_targets()
-            self.connect("drag-data-received", self.__on_drag_data_received)
 
     def update_playing(self, track_id):
         """
@@ -72,28 +66,6 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
-    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move track at view bounds
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        if self.get_children():
-            row = self.get_children()[-1]
-            y = row.get_allocated_height()
-            row.emit("drag-data-received",
-                     context,
-                     x,
-                     y,
-                     data,
-                     info,
-                     time)
-
     def __on_queue_changed(self, unused):
         """
             Update all position labels
