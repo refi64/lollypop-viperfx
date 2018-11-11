@@ -142,8 +142,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 "track-menu-button")
             self.__action_button.set_tooltip_text(action_tooltip_text)
             self.__action_button.set_property("valign", Gtk.Align.CENTER)
-            self.__action_button.connect("clicked",
-                                         self.__on_action_button_clicked)
+            self.__action_button.connect("button-release-event",
+                                         self.__on_action_button_release_event)
         self.__artists_button = None
         if self.__responsive_type == ResponsiveType.SEARCH:
             self.__artists_button = Gtk.Button.new_from_icon_name(
@@ -154,8 +154,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 "album-menu-button")
             self.__artists_button.set_tooltip_text(_("Go to artist view"))
             self.__artists_button.set_property("valign", Gtk.Align.CENTER)
-            self.__artists_button.connect("clicked",
-                                          self.__on_artists_button_clicked)
+            self.__artists_button.connect(
+                                      "button-release-event",
+                                      self.__on_artists_button_release_event)
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
         vgrid.add(self.__play_indicator)
@@ -289,11 +290,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         self.reveal()
 
-    def __on_action_button_clicked(self, button):
+    def __on_action_button_release_event(self, button, event):
         """
             ResponsiveType.SEARCH: Play album
             Else: Delete album
             @param button as Gtk.Button
+            @param event as Gdk.Event
         """
         if self.__responsive_type == ResponsiveType.SEARCH:
             App().player.play_album(Album(self._album.id))
@@ -313,16 +315,22 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             else:
                 App().player.remove_album(self._album)
             self.destroy()
+        return True
 
-    def __on_artists_button_clicked(self, button):
+    def __on_artists_button_release_event(self, button, event):
         """
             Jump to artists albums view
             @param button as Gtk.Button
+            @param event as Gdk.Event
         """
         popover = self.get_ancestor(Gtk.Popover)
         if popover is not None:
             popover.popdown()
-        App().window.container.show_artists_albums(self._album.artist_ids)
+        if App().settings.get_value("show-sidebar"):
+            App().window.container.show_artists_albums(self._album.artist_ids)
+        else:
+            App().window.container.show_view(self._album.artist_ids[0])
+        return True
 
     def __on_artwork_set(self, helper):
         """
