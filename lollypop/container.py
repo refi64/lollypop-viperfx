@@ -225,6 +225,7 @@ class Container(Gtk.Overlay):
             Show lyrics for track
             @pram track as Track
         """
+        App().window.emit("can-go-back-changed", True)
         from lollypop.view_lyrics import LyricsView
         current = self.__stack.get_visible_child()
         view = LyricsView()
@@ -239,6 +240,7 @@ class Container(Gtk.Overlay):
             Show a view allowing user to edit smart view
             @param playlist_id as int
         """
+        App().window.emit("can-go-back-changed", True)
         from lollypop.view_playlist_smart import SmartPlaylistView
         current = self.__stack.get_visible_child()
         view = SmartPlaylistView(playlist_id)
@@ -254,6 +256,7 @@ class Container(Gtk.Overlay):
             Current view stay present in ViewContainer
             @param obj as Track/Album
         """
+        App().window.emit("can-go-back-changed", True)
         from lollypop.view_playlists_manager import PlaylistsManagerView
         current = self.__stack.get_visible_child()
         view = PlaylistsManagerView(obj)
@@ -271,6 +274,7 @@ class Container(Gtk.Overlay):
             Current view stay present in ViewContainer
             @param playlist_ids as [int]
         """
+        App().window.emit("can-go-back-changed", True)
         view = self.__get_view_playlists(playlist_ids)
         current = self.__stack.get_visible_child()
         self.__stack.add(view)
@@ -285,6 +289,7 @@ class Container(Gtk.Overlay):
             Current view stay present in ViewContainer
             @param years as [int]
         """
+        App().window.emit("can-go-back-changed", True)
         view = self.__get_view_albums_years(years)
         current = self.__stack.get_visible_child()
         self.__stack.add(view)
