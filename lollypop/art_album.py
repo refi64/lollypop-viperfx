@@ -204,7 +204,7 @@ class AlbumArt:
                             ratio,
                             None)
                         stream.close()
-                # Use default artwork
+                # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
                 elif not disable_cache:
