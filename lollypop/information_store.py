@@ -186,21 +186,15 @@ class InformationStore:
                 fstream.write(content, None)
                 fstream.close()
 
-    def uncache_artwork(artist, scale):
+    def uncache_artwork(artist):
         """
             Remove artwork from cache
             @param artist as str
-            @param scale factor as int
         """
-        # ArtistView::__set_artwork()
-        # InformationPopover::__set_artist_artwork()
-        for i in [1, 2, 3]:
-            filepath = "%s/%s_%s.jpg" % (InformationStore._CACHE_PATH,
-                                         escape(artist),
-                                         ArtSize.ARTIST_SMALL * scale * i)
-            f = Gio.File.new_for_path(filepath)
-            try:
-                if f.query_exists():
-                    f.delete(None)
-            except Exception as e:
-                Logger.error("InformationStore::uncache_artwork(): %s" % e)
+        try:
+            from pathlib import Path
+            search = "%s*.jpg" % escape(artist)
+            for p in Path(InformationStore._CACHE_PATH).glob(search):
+                p.unlink()
+        except Exception as e:
+            Logger.error("InformationStore::uncache_artwork(): %s" % e)

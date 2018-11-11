@@ -235,9 +235,7 @@ class ArtworkSearchWidget(Gtk.Bin):
                 if self.__album is not None:
                     App().art.save_album_artwork(data, self.__album.id)
                 else:
-                    InformationStore.uncache_artwork(
-                        self.__artist,
-                        button.get_scale_factor())
+                    InformationStore.uncache_artwork(self.__artist)
                     InformationStore.add_artist_artwork(self.__artist, data)
                     App().art.emit("artist-artwork-changed", self.__artist)
                 self._streams = {}
@@ -256,9 +254,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             App().art.clean_album_cache(self.__album)
             App().art.emit("album-artwork-changed", self.__album.id)
         else:
-            InformationStore.uncache_artwork(
-                        self.__artist,
-                        button.get_scale_factor())
+            InformationStore.uncache_artwork(self.__artist)
             InformationStore.add_artist_artwork(self.__artist, None)
             App().art.emit("artist-artwork-changed", self.__artist)
         self.__close_popover()
@@ -446,9 +442,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             if self.__album is not None:
                 App().art.save_album_artwork(data, self.__album.id)
             else:
-                InformationStore.uncache_artwork(
-                        self.__artist,
-                        flowbox.get_scale_factor())
+                InformationStore.uncache_artwork(self.__artist)
                 InformationStore.add_artist_artwork(self.__artist, data)
                 App().art.emit("artist-artwork-changed", self.__artist)
             self._streams = {}
