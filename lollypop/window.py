@@ -126,11 +126,12 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if self.__container.list_one.get_visible():
             AdaptiveWindow.go_back(self)
         elif self.__container.stack.children:
-            child = self.__container.stack.children[0]
+            self.__container.stack.destroy_view(
+                self.__container.stack.get_visible_child())
+            child = self.__container.stack.children[-1]
             self.__container.stack.set_visible_child(child)
-            self.__container.stack.clean_old_views(child)
-        else:
-            self.__container.show_artists_view()
+            if not self.__container.stack.children:
+                self.emit("can-go-back-changed", False)
 
     def do_event(self, event):
         """

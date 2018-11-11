@@ -34,7 +34,19 @@ class ViewContainer(Gtk.Stack):
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self.__destroyed = []
 
-    def clean_old_views(self, view):
+    def destroy_view(self, view):
+        """
+            Clean view
+            @param view as new View
+        """
+        # Delayed destroy as we may have an animation running
+        # Gtk.StackTransitionType.CROSSFADE
+        self.__destroyed.append(view)
+        GLib.timeout_add(self.__duration * 5,
+                         self.__delayed_clean_view,
+                         view)
+
+    def destroy_non_visible(self, view):
         """
             Clean old views
             @param view as new View

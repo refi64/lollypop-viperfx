@@ -108,73 +108,6 @@ class Container(Gtk.Overlay):
             GLib.Variant("ai",
                          self.__list_two.selected_ids))
 
-    def show_lyrics(self, track=None):
-        """
-            Show lyrics for track
-            @pram track as Track
-        """
-        from lollypop.view_lyrics import LyricsView
-        current = self.__stack.get_visible_child()
-        view = LyricsView()
-        view.populate(track or App().player.current_track)
-        view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        current.disable_overlay()
-
-    def show_smart_playlist_editor(self, playlist_id):
-        """
-            Show a view allowing user to edit smart view
-            @param playlist_id as int
-        """
-        from lollypop.view_playlist_smart import SmartPlaylistView
-        current = self.__stack.get_visible_child()
-        view = SmartPlaylistView(playlist_id)
-        view.populate()
-        view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        current.disable_overlay()
-
-    def show_playlist_manager(self, obj):
-        """
-            Show playlist manager for object_id
-            Current view stay present in ViewContainer
-            @param obj as Track/Album
-        """
-        from lollypop.view_playlists_manager import PlaylistsManagerView
-        current = self.__stack.get_visible_child()
-        view = PlaylistsManagerView(obj)
-        view.populate(App().playlists.get_ids())
-        view.show()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        current.disable_overlay()
-
-    def show_playlists(self, playlist_ids):
-        """
-            Show playlist view for ids
-            Current view stay present in ViewContainer
-            @param playlist_ids as [int]
-        """
-        view = self.__get_view_playlists(playlist_ids)
-        current = self.__stack.get_visible_child()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        current.disable_overlay()
-
-    def show_years(self, years):
-        """
-            Show playlist view for ids
-            Current view stay present in ViewContainer
-            @param years as [int]
-        """
-        view = self.__get_view_albums_years(years)
-        current = self.__stack.get_visible_child()
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
-        current.disable_overlay()
-
     def get_view_width(self):
         """
             Return view width
@@ -188,7 +121,7 @@ class Container(Gtk.Overlay):
         """
         view = self.__stack.get_visible_child()
         if view is not None:
-            self.__stack.clean_old_views(None)
+            self.__stack.destroy_non_visible(None)
 
     def show_genres(self, show):
         """
@@ -207,7 +140,7 @@ class Container(Gtk.Overlay):
         for child in self.__stack.get_children():
             if child != view:
                 self.__stack.set_visible_child(child)
-                self.__stack.clean_old_views(child)
+                self.__stack.destroy_non_visible(child)
                 break
 
     def reload_view(self):
@@ -287,6 +220,79 @@ class Container(Gtk.Overlay):
             self.__list_one.hide()
             self.show_artists_view()
 
+    def show_lyrics(self, track=None):
+        """
+            Show lyrics for track
+            @pram track as Track
+        """
+        from lollypop.view_lyrics import LyricsView
+        current = self.__stack.get_visible_child()
+        view = LyricsView()
+        view.populate(track or App().player.current_track)
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        current.disable_overlay()
+
+    def show_smart_playlist_editor(self, playlist_id):
+        """
+            Show a view allowing user to edit smart view
+            @param playlist_id as int
+        """
+        from lollypop.view_playlist_smart import SmartPlaylistView
+        current = self.__stack.get_visible_child()
+        view = SmartPlaylistView(playlist_id)
+        view.populate()
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        current.disable_overlay()
+
+    def show_playlist_manager(self, obj):
+        """
+            Show playlist manager for object_id
+            Current view stay present in ViewContainer
+            @param obj as Track/Album
+        """
+        from lollypop.view_playlists_manager import PlaylistsManagerView
+        current = self.__stack.get_visible_child()
+        view = PlaylistsManagerView(obj)
+        view.populate(App().playlists.get_ids())
+        view.show()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        if App().settings.get_value("show-sidebar"):
+            self.__stack.destroy_non_visible(view)
+        current.disable_overlay()
+
+    def show_playlists(self, playlist_ids):
+        """
+            Show playlist view for ids
+            Current view stay present in ViewContainer
+            @param playlist_ids as [int]
+        """
+        view = self.__get_view_playlists(playlist_ids)
+        current = self.__stack.get_visible_child()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        if App().settings.get_value("show-sidebar"):
+            self.__stack.destroy_non_visible(view)
+        current.disable_overlay()
+
+    def show_years(self, years):
+        """
+            Show playlist view for ids
+            Current view stay present in ViewContainer
+            @param years as [int]
+        """
+        view = self.__get_view_albums_years(years)
+        current = self.__stack.get_visible_child()
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
+        if App().settings.get_value("show-sidebar"):
+            self.__stack.destroy_non_visible(view)
+        current.disable_overlay()
+
     def show_artists_albums(self, artist_ids):
         """
             Show albums from artists
@@ -336,7 +342,8 @@ class Container(Gtk.Overlay):
         view.show()
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        if App().settings.get_value("show-sidebar"):
+            self.__stack.destroy_non_visible(view)
 
     def show_artists_view(self):
         """
@@ -347,7 +354,7 @@ class Container(Gtk.Overlay):
         self.__stack.add(view)
         App().window.emit("show-can-go-back", True)
         self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        self.__stack.destroy_non_visible(view)
 
     @property
     def view(self):
@@ -1020,7 +1027,7 @@ class Container(Gtk.Overlay):
                 self.__stack.set_visible_child(self.__list_two)
             else:
                 self.__stack.set_visible_child(view)
-            self.__stack.clean_old_views(view)
+            self.__stack.destroy_non_visible(view)
 
     def __on_list_populated(self, selection_list):
         """
@@ -1059,7 +1066,7 @@ class Container(Gtk.Overlay):
             view = self.__get_view_artists(genre_ids, selected_ids)
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
-        self.__stack.clean_old_views(view)
+        self.__stack.destroy_non_visible(view)
 
     def __on_pass_focus(self, selection_list):
         """

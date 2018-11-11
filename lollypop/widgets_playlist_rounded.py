@@ -299,6 +299,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             App().window.container.list_two.select_ids([self._data])
         else:
             App().window.container.show_playlists([self._data])
+            return True
 
     def __on_edit_press_event(self, widget, event):
         """
