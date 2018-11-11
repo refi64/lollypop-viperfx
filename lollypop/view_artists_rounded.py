@@ -28,6 +28,7 @@ class RoundedArtistsView(FlowBoxView):
         self._widget_class = RoundedArtistWidget
         self.connect("realize", self.__on_realize)
         self.connect("unrealize", self.__on_unrealize)
+        self.connect("destroy", self.__on_destroy)
 
     def stop(self):
         """
@@ -62,6 +63,13 @@ class RoundedArtistsView(FlowBoxView):
 #######################
 # PRIVATE             #
 #######################
+    def __on_destroy(self, widget):
+        """
+            Stop loading
+            @param widget as Gtk.Widget
+        """
+        RoundedArtistsView.stop(self)
+
     def __on_artist_artwork_changed(self, art, prefix):
         """
             Update artwork if needed
