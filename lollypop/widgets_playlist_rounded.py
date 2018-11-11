@@ -170,8 +170,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_event.set_property("valign", Gtk.Align.CENTER)
             self.__play_event.set_property("halign", Gtk.Align.CENTER)
             self.__play_event.connect("realize", self._on_eventbox_realize)
-            self.__play_event.connect("button-press-event",
-                                      self.__on_play_press_event)
+            self.__play_event.connect("button-release-event",
+                                      self.__on_play_release_event)
             if self.__obj is None:
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "media-playback-start-symbolic",
@@ -195,8 +195,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__open_event.set_property("has-tooltip", True)
             self.__open_event.set_tooltip_text(_("Open"))
             self.__open_event.connect("realize", self._on_eventbox_realize)
-            self.__open_event.connect("button-press-event",
-                                      self.__on_open_press_event)
+            self.__open_event.connect("button-release-event",
+                                      self.__on_open_release_event)
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
                 Gtk.IconSize.LARGE_TOOLBAR)
@@ -206,8 +206,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__edit_event.set_property("has-tooltip", True)
             self.__edit_event.set_tooltip_text(_("Modify playlist"))
             self.__edit_event.connect("realize", self._on_eventbox_realize)
-            self.__edit_event.connect("button-press-event",
-                                      self.__on_edit_press_event)
+            self.__edit_event.connect("button-release-event",
+                                      self.__on_edit_release_event)
             self.__edit_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.LARGE_TOOLBAR)
@@ -256,7 +256,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PRIVATE             #
 #######################
-    def __on_play_press_event(self, widget, event):
+    def __on_play_release_event(self, widget, event):
         """
             Play playlist
             @param: widget as Gtk.EventBox
@@ -289,7 +289,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                 App().playlists.remove_tracks(self.playlist_id, tracks)
             App().window.container.reload_view()
 
-    def __on_open_press_event(self, widget, event):
+    def __on_open_release_event(self, widget, event):
         """
             Open playlist
             @param widget as Gtk.EventBox
@@ -301,7 +301,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             App().window.container.show_playlists([self._data])
             return True
 
-    def __on_edit_press_event(self, widget, event):
+    def __on_edit_release_event(self, widget, event):
         """
             Edit playlist
             @param widget as Gtk.EventBox
