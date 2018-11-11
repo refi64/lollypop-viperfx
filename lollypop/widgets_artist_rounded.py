@@ -17,6 +17,7 @@ from random import shuffle
 
 from lollypop.define import App, STATIC_ALBUM_NAME
 from lollypop.utils import get_icon_name
+from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 from lollypop.helper_art import ArtHelper
 
@@ -101,11 +102,11 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         else:
             album_ids = App().albums.get_ids([self._data], [])
             shuffle(album_ids)
-            self.__art_helper.set_artist_artwork(self._artwork,
-                                                 self.__artist_name,
-                                                 self._art_size,
-                                                 self._art_size,
-                                                 self._scale_factor)
+            self.__art_helper.set_album_artwork(self._artwork,
+                                                Album(album_ids[0]),
+                                                self._art_size,
+                                                self._art_size,
+                                                self._scale_factor)
 
 #######################
 # PRIVATE             #
