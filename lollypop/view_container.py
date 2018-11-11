@@ -58,7 +58,7 @@ class ViewContainer(Gtk.Stack):
                 # Delayed destroy as we may have an animation running
                 # Gtk.StackTransitionType.CROSSFADE
                 self.__destroyed.append(child)
-                GLib.timeout_add(self.__duration * 5,
+                GLib.timeout_add(self.__duration * 2,
                                  self.__delayed_clean_view,
                                  child)
 
