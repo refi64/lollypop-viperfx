@@ -94,14 +94,19 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
         else:
+            eventbox = Gtk.EventBox()
+            eventbox.connect("enter-notify-event", self._on_enter_notify)
+            eventbox.connect("leave-notify-event", self._on_leave_notify)
+            eventbox.show()
             self.set_property("valign", Gtk.Align.CENTER)
             self._artwork = self.__art_helper.get_image(ArtSize.BIG,
                                                         ArtSize.BIG,
                                                         "cover-frame")
             self._artwork.show()
+            eventbox.add(self._artwork)
             self.__duration_label.set_hexpand(True)
             self._overlay = Gtk.Overlay.new()
-            self._overlay.add(self._artwork)
+            self._overlay.add(eventbox)
             self._overlay.show()
             self._overlay_grid = None
             self.__coverbox = Gtk.Grid()
@@ -143,8 +148,6 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         self.set_selection()
         self.__title_label.set_label(self._album.name)
         self.add(self.__widget)
-        self.connect("enter-notify-event", self._on_enter_notify)
-        self.connect("leave-notify-event", self._on_leave_notify)
 
     def get_current_ordinate(self, parent):
         """
