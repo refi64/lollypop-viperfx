@@ -10,10 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
+from gi.repository import GObject, Gio, GLib, Gtk, Gdk, GdkPixbuf
 
 from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
+from lollypop.information_store import InformationStore
 
 
 class ArtHelper(GObject.Object):
@@ -77,7 +78,29 @@ class ArtHelper(GObject.Object):
                                         scale_factor,
                                         "folder-music-symbolic"))
 
-    def set_radio_artwork(self, image, artist, width, height, scale_factor):
+    def set_radio_artwork(self, image, radio, width, height, scale_factor):
+        """
+            Set artwork for album id
+            @param image as Gtk.Image
+            @param radio as str
+            @param width as int
+            @param height as int
+            @param scale_factor as int
+        """
+        App().task_helper.run(App().art.get_radio_artwork,
+                              image,
+                              radio,
+                              width,
+                              height,
+                              scale_factor,
+                              callback=(self._on_get_artwork_pixbuf,
+                                        image,
+                                        width,
+                                        height,
+                                        scale_factor,
+                                        "audio-input-microphone-symbolic"))
+
+    def set_artist_artwork(self, image, artist, width, height, scale_factor):
         """
             Set artwork for album id
             @param image as Gtk.Image
@@ -86,7 +109,7 @@ class ArtHelper(GObject.Object):
             @param height as int
             @param scale_factor as int
         """
-        App().task_helper.run(App().art.get_radio_artwork,
+        App().task_helper.run(self.__get_artist_artwork,
                               image,
                               artist,
                               width,
@@ -97,7 +120,7 @@ class ArtHelper(GObject.Object):
                                         width,
                                         height,
                                         scale_factor,
-                                        "audio-input-microphone-symbolic"))
+                                        "avatar-default-symbolic"))
 
 #######################
 # PROTECTED           #
@@ -116,7 +139,9 @@ class ArtHelper(GObject.Object):
             surface = Gdk.cairo_surface_create_from_pixbuf(
                     pixbuf, scale_factor, None)
             image.set_from_surface(surface)
-        elif width < ArtSize.BIG:
+        elif width / scale_factor < ArtSize.BIG:
+            image.set_from_icon_name(icon, Gtk.IconSize.DND)
+        elif width / scale_factor < ArtSize.ARTIST_SMALL:
             image.set_from_icon_name(icon, Gtk.IconSize.BUTTON)
         else:
             image.set_from_icon_name(icon, Gtk.IconSize.DIALOG)
@@ -173,3 +198,31 @@ class ArtHelper(GObject.Object):
         if enable_blur:
             pixbuf = self.__get_blur(pixbuf, width, height)
         return pixbuf
+
+    def __get_artist_artwork(self, image, artist, width, height, scale_factor):
+        """
+            Set artwork for album id
+            @param image as Gtk.Image
+            @param artist as str
+            @param width as int
+            @param height as int
+            @param scale_factor as int
+            @param enable_blur as bool
+            @return GdkPixbuf.Pixbuf
+        """
+        path = InformationStore.get_artwork_path(artist, width)
+        if path is not None:
+            f = Gio.File.new_for_path(path)
+            (status, data, tag) = f.load_contents(None)
+            if status:
+                bytes = GLib.Bytes(data)
+                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                    stream,
+                    width,
+                    height,
+                    True,
+                    None)
+                stream.close()
+                return pixbuf
+        return None

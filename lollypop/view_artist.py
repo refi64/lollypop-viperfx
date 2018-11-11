@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Pango, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, Gdk, Pango, GLib
 
 from gettext import gettext as _
 from random import choice
@@ -18,9 +18,9 @@ from random import choice
 from lollypop.define import App, ArtSize, Shuffle
 from lollypop.utils import get_network_available, draw_rounded_image
 from lollypop.objects import Album
-from lollypop.information_store import InformationStore
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
+from lollypop.helper_art import ArtHelper
 from lollypop.logger import Logger
 
 
@@ -36,6 +36,8 @@ class ArtistView(ArtistAlbumsView):
             @param genre id as int
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
+        self.__art_helper = ArtHelper()
+        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__art_signal_id = None
         self._viewport.set_margin_start(10)
         self._viewport.set_margin_end(10)
@@ -108,16 +110,12 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower():
-            if self.__artwork.props.surface is not None or\
-                    self.__artwork.get_pixbuf() is not None:
-                self.__artwork.show()
+            if self.__artwork.get_visible():
                 self.__artwork_box.show()
             self.__grid.get_style_context().remove_class("header-borders")
             self.__grid.get_style_context().add_class("header")
         else:
-            if self.__artwork.props.surface is not None or\
-                    self.__artwork.get_pixbuf() is not None:
-                self.__artwork.hide()
+            if self.__artwork.get_visible():
                 self.__artwork_box.hide()
             self.__grid.get_style_context().add_class("header-borders")
             self.__grid.get_style_context().remove_class("header")
@@ -274,11 +272,31 @@ class ArtistView(ArtistAlbumsView):
 #######################
 # PRIVATE             #
 #######################
+    def __set_header_height(self):
+        """
+            Set header height based on font height and artwork height
+        """
+        # Create an self.__empty widget with header height
+        ctx = self.__label.get_pango_context()
+        layout = Pango.Layout.new(ctx)
+        layout.set_text("a", 1)
+        # Font scale 2
+        font_height = int(layout.get_pixel_size()[1]) * 2
+        if self.__artwork.props.surface is not None:
+            artwork_height = self.__artwork.props.surface.get_height() /\
+                                self.__scale_factor
+        else:
+            self.__artwork.get_style_context().add_class("artwork-icon")
+            artwork_height = 32
+        if artwork_height > font_height:
+            self.__empty.set_property("height-request", artwork_height)
+        else:
+            self.__empty.set_property("height-request", font_height)
+
     def __set_artwork(self):
         """
             Set artist artwork
         """
-        artwork_height = 0
         if App().settings.get_value("artist-artwork"):
             if len(self._artist_ids) == 1 and\
                     App().settings.get_value("artist-artwork"):
@@ -286,54 +304,13 @@ class ArtistView(ArtistAlbumsView):
                 size = ArtSize.ARTIST_SMALL * self.__scale_factor
                 if not App().window.container.is_paned_stack:
                     size *= 2
-                path = InformationStore.get_artwork_path(artist, size)
-                if path is not None:
-                    f = Gio.File.new_for_path(path)
-                    (status, data, tag) = f.load_contents(None)
-                    if status:
-                        bytes = GLib.Bytes(data)
-                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                            stream,
-                            size,
-                            size,
-                            True,
-                            None)
-                        stream.close()
-                        surface = Gdk.cairo_surface_create_from_pixbuf(
-                            pixbuf,
-                            self.__scale_factor,
-                            None)
-                        self.__artwork.set_from_surface(surface)
-                        artwork_height = surface.get_height() /\
-                            self.__scale_factor
-                        self.__artwork.get_style_context().remove_class(
-                            "artwork-icon")
-                        self.__artwork.show()
-                        self.__artwork_box.show()
-            # Add a default icon
-            if len(self._artist_ids) == 1 and\
-                    self._artist_ids[0] > 0 and\
-                    artwork_height == 0:
-                self.__artwork.set_from_icon_name(
-                    "avatar-default-symbolic",
-                    Gtk.IconSize.DND)
-                artwork_height = 16 * self.__scale_factor
-                self.__artwork.get_style_context().add_class("artwork-icon")
-                self.__artwork.show()
-                self.__artwork_box.show()
-
-        # Create an self.__empty widget with header height
-        ctx = self.__label.get_pango_context()
-        layout = Pango.Layout.new(ctx)
-        layout.set_text("a", 1)
-        # Font scale 2
-        font_height = int(layout.get_pixel_size()[1]) * 2
-
-        if artwork_height > font_height:
-            self.__empty.set_property("height-request", artwork_height)
+                self.__art_helper.set_artist_artwork(self.__artwork,
+                                                     artist,
+                                                     size,
+                                                     size,
+                                                     self.__scale_factor)
         else:
-            self.__empty.set_property("height-request", font_height)
+            self.__set_header_height()
 
     def __update_jump_button(self):
         """
@@ -435,3 +412,11 @@ class ArtistView(ArtistAlbumsView):
         if prefix == artist:
             self.__artwork.clear()
             self.__set_artwork()
+
+    def __on_artwork_set(self, helper):
+        """
+            Finish widget initialisation
+            @param helper as ArtHelper
+        """
+        self.__artwork.show()
+        self.__set_header_height()
