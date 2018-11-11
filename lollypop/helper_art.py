@@ -135,6 +135,9 @@ class ArtHelper(GObject.Object):
             @param scale_factor as int
             @param icon as str
         """
+        from threading import current_thread
+        if current_thread().getName() != "MainThread":
+            print("MERDE")
         if pixbuf is not None:
             surface = Gdk.cairo_surface_create_from_pixbuf(
                     pixbuf, scale_factor, None)

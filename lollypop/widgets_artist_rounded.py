@@ -12,7 +12,6 @@
 
 from gi.repository import Gdk, Gtk
 
-import cairo
 from gettext import gettext as _
 from random import shuffle
 
@@ -84,42 +83,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
 #######################
 # PROTECTED           #
 #######################
-    def _get_album_ids(self):
-        """
-            Get ids for widget
-            @return [int]
-        """
-        App().albums.get_ids([], [self._data])
-
-    def _set_surface(self, pixbuf):
-        """
-            Set artwork from pixbuf
-            @param pixbuf as GdkPixbuf.Pixbuf
-        """
-        if pixbuf is None:
-            icon = get_icon_name(self._data) or "avatar-default-symbolic"
-            icon_surface = Gtk.IconTheme.get_default().load_surface(
-                                             icon,
-                                             self._art_size / 2,
-                                             self._scale_factor,
-                                             None,
-                                             Gtk.IconLookupFlags.USE_BUILTIN)
-            surface = cairo.ImageSurface(cairo.Format.RGB24,
-                                         self._art_size, self._art_size)
-            ctx = cairo.Context(surface)
-            ctx.set_source_rgb(1, 1, 1)
-            ctx.paint()
-            ctx.translate(self._art_size / 4, self._art_size / 4)
-            ctx.set_source_surface(icon_surface)
-            ctx.paint()
-        else:
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                    pixbuf,
-                                                    self.get_scale_factor(),
-                                                    None)
-        RoundedFlowBoxWidget._set_surface(self, surface)
-        self.emit("populated")
-
     def _set_artwork(self):
         """
             Get surface for artist
