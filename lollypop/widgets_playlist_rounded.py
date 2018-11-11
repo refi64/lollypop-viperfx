@@ -17,7 +17,7 @@ from gettext import gettext as _
 
 from lollypop.define import App, Shuffle
 from lollypop.objects import Track, Album, Disc
-from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
+from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
 
@@ -74,7 +74,7 @@ class PlayListPopover(Gtk.Popover):
         self.destroy()
 
 
-class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
+class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
     """
         Playlist widget showing cover for 9 albums
     """
@@ -86,7 +86,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             @param obj as Track/Album
         """
         OverlayHelper.__init__(self)
-        RoundedFlowBoxWidget.__init__(self, playlist_id)
+        RoundedAlbumsWidget.__init__(self, playlist_id)
         self.__track_ids = []
         self.__obj = obj
         if obj is not None:
@@ -105,7 +105,7 @@ class PlaylistRoundedWidget(RoundedFlowBoxWidget, OverlayHelper):
             Populate widget content
         """
         text = App().playlists.get_name(self._data)
-        RoundedFlowBoxWidget.populate(self, text)
+        RoundedAlbumsWidget.populate(self, text)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
 

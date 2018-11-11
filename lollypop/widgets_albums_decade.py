@@ -15,11 +15,11 @@ from gi.repository import Gdk, Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App, Type
-from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
+from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
 
-class AlbumsDecadeWidget(RoundedFlowBoxWidget, OverlayHelper):
+class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
     """
         Decade widget showing cover for 9 albums
     """
@@ -30,7 +30,7 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, OverlayHelper):
             @param decade as [int]
         """
         OverlayHelper.__init__(self)
-        RoundedFlowBoxWidget.__init__(self, item_ids)
+        RoundedAlbumsWidget.__init__(self, item_ids)
 
     def populate(self):
         """
@@ -38,7 +38,7 @@ class AlbumsDecadeWidget(RoundedFlowBoxWidget, OverlayHelper):
         """
         self._lock_overlay = False
         decade_str = "%s - %s" % (self._data[0], self._data[-1])
-        RoundedFlowBoxWidget.populate(self, decade_str)
+        RoundedAlbumsWidget.populate(self, decade_str)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
 

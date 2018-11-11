@@ -44,6 +44,7 @@ def draw_rounded_image(image, ctx):
         ctx.new_sub_path()
         radius = width / 2
         ctx.set_line_width(2)
+        # Same in .artwork-icon (application.css)
         ctx.set_source_rgba(0, 0, 0, 0.3)
         ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
         ctx.stroke_preserve()

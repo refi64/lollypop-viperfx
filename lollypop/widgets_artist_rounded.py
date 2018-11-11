@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk, Gtk, GLib, Gio, GdkPixbuf
+from gi.repository import Gdk, Gtk
 
 import cairo
 from gettext import gettext as _
@@ -18,9 +18,8 @@ from random import shuffle
 
 from lollypop.define import App, STATIC_ALBUM_NAME
 from lollypop.utils import get_icon_name
-from lollypop.objects import Album
-from lollypop.information_store import InformationStore
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
+from lollypop.helper_art import ArtHelper
 
 
 class RoundedArtistWidget(RoundedFlowBoxWidget):
@@ -34,8 +33,10 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             @param artist_id as int
             @param art_size as int
         """
-        self.__artist_name = ""
         RoundedFlowBoxWidget.__init__(self, artist_id, art_size)
+        self.__artist_name = ""
+        self.__art_helper = ArtHelper()
+        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.connect("realize", self.__on_realize)
 
     def populate(self):
@@ -119,37 +120,29 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget._set_surface(self, surface)
         self.emit("populated")
 
-    def _get_surface(self):
+    def _set_artwork(self):
         """
             Get surface for artist
-            @return GdkPixbuf.Pixbuf
         """
         if self._data < 0:
-            return None
-        pixbuf = None
-        if App().settings.get_value("artist-artwork"):
-            path = InformationStore.get_artwork_path(
-                                            self.__artist_name, self._art_size)
-            if path is not None:
-                f = Gio.File.new_for_path(path)
-                (status, data, tag) = f.load_contents(None)
-                if status:
-                    bytes = GLib.Bytes(data)
-                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                        stream,
-                        self._art_size,
-                        self._art_size,
-                        True,
-                        None)
-                    stream.close()
+            icon_name = get_icon_name(self._data) or "avatar-default-symbolic"
+            self._artwork.set_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
+            self.emit("populated")
+            self._artwork.get_style_context().add_class("artwork-icon")
+        elif App().settings.get_value("artist-artwork"):
+            self.__art_helper.set_artist_artwork(self._artwork,
+                                                 self.__artist_name,
+                                                 self._art_size,
+                                                 self._art_size,
+                                                 self._scale_factor)
         else:
             album_ids = App().albums.get_ids([self._data], [])
             shuffle(album_ids)
-            pixbuf = App().art.get_album_artwork(Album(album_ids[0]),
+            self.__art_helper.set_artist_artwork(self._artwork,
+                                                 self.__artist_name,
+                                                 self._art_size,
                                                  self._art_size,
                                                  self._scale_factor)
-        return pixbuf
 
 #######################
 # PRIVATE             #
@@ -162,3 +155,10 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         window = widget.get_window()
         if window is not None:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+
+    def __on_artwork_set(self, helper):
+        """
+            Finish widget initialisation
+            @param helper as ArtHelper
+        """
+        self.emit("populated")

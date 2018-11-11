@@ -203,7 +203,7 @@ popover.background separator {
 }
 
 .artwork-icon {
-    border: 2px solid #bebebe;
+    border: 1px solid alpha(black, 0.3);
     background-color: white;
     color: #bebebe;
     border-radius: 50%;
