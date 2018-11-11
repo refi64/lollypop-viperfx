@@ -27,6 +27,12 @@ class RoundedArtistsView(FlowBoxView):
         FlowBoxView.__init__(self)
         self._widget_class = RoundedArtistWidget
 
+    def stop(self):
+        """
+            We want this view to be populated anyway (no sidebar mode)
+        """
+        pass
+
 #######################
 # PROTECTED           #
 #######################
