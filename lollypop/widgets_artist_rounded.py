@@ -128,7 +128,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             icon_name = get_icon_name(self._data) or "avatar-default-symbolic"
             self._artwork.set_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
             self.emit("populated")
-            self._artwork.get_style_context().add_class("artwork-icon")
+            self._artwork.get_style_context().add_class("artwork-icon-large")
         elif App().settings.get_value("artist-artwork"):
             self.__art_helper.set_artist_artwork(self._artwork,
                                                  self.__artist_name,
@@ -161,4 +161,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Finish widget initialisation
             @param helper as ArtHelper
         """
+        if self._artwork.props.surface is None:
+            self._artwork.get_style_context().add_class("artwork-icon")
         self.emit("populated")
