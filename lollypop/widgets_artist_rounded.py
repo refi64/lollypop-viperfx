@@ -62,6 +62,20 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         self.__filtered = b
 
+    def set_artwork(self):
+        """
+            Set artist artwork
+        """
+        self._set_artwork()
+
+    @property
+    def artist_name(self):
+        """
+            Get artist name
+            @return str
+        """
+        return self.__artist_name
+
     @property
     def is_overlay(self):
         """
@@ -86,7 +100,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
 #######################
     def _set_artwork(self):
         """
-            Get surface for artist
+            Set artist artwork
         """
         if self._data < 0:
             icon_name = get_icon_name(self._data) or "avatar-default-symbolic"

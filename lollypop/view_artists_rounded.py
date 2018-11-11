@@ -26,6 +26,8 @@ class RoundedArtistsView(FlowBoxView):
         """
         FlowBoxView.__init__(self)
         self._widget_class = RoundedArtistWidget
+        self.connect("realize", self.__on_realize)
+        self.connect("unrealize", self.__on_unrealize)
 
     def stop(self):
         """
@@ -56,3 +58,33 @@ class RoundedArtistsView(FlowBoxView):
             @param widget as ArtistRoundedWidget
         """
         App().window.container.show_view(widget.data)
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_artist_artwork_changed(self, art, prefix):
+        """
+            Update artwork if needed
+            @param art as Art
+            @param prefix as str
+        """
+        for child in self._box.get_children():
+            if child.artist_name == prefix:
+                child.set_artwork()
+
+    def __on_realize(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        self.__art_signal_id = App().art.connect(
+                                              "artist-artwork-changed",
+                                              self.__on_artist_artwork_changed)
+
+    def __on_unrealize(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        if self.__art_signal_id is not None:
+            App().art.disconnect(self.__art_signal_id)
