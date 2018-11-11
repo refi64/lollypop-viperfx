@@ -203,8 +203,10 @@ class DNDRow:
         row_height = row.get_allocated_height()
         if y < row_height / 2:
             row.get_style_context().add_class("drag-up")
+            row.get_style_context().remove_class("drag-downg")
         elif y > row_height / 2:
             row.get_style_context().add_class("drag-down")
+            row.get_style_context().remove_class("drag-up")
         scrolled = row.get_ancestor(Gtk.ScrolledWindow)
         (row_x, row_y) = row.translate_coordinates(scrolled, 0, 0)
         auto_scroll = False
