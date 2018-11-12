@@ -269,8 +269,7 @@ class ArtistView(ArtistAlbumsView):
         # Font scale 2
         font_height = int(layout.get_pixel_size()[1]) * 2
         if self.__artwork.props.surface is not None:
-            artwork_height = self.__artwork.props.surface.get_height() /\
-                                self.__scale_factor
+            artwork_height = self.__artwork.props.surface.get_height()
         else:
             self.__artwork.get_style_context().add_class("artwork-icon")
             artwork_height = 32
