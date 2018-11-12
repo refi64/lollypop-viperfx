@@ -36,8 +36,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget.__init__(self, artist_id, art_size)
         self.__artist_name = ""
         self.__art_helper = ArtHelper()
-        self._artwork.connect("notify::surface", self.__on_artwork_set)
-        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.connect("realize", self.__on_realize)
 
     def populate(self):
@@ -49,6 +47,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         else:
             self.__artist_name = App().artists.get_name(self._data)
         RoundedFlowBoxWidget.populate(self, self.__artist_name)
+        self._artwork.connect("notify::surface", self.__on_artwork_set)
+        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
 
     def show_overlay(self, show):
         """
@@ -135,10 +135,11 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         if window is not None:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
-    def __on_artwork_set(self, helper):
+    def __on_artwork_set(self, image, spec):
         """
             Finish widget initialisation
-            @param helper as ArtHelper
+            @param image as Gtk.Image
+            @param spec as GObject.ParamSpec
         """
         if self._artwork.props.surface is None:
             self._artwork.get_style_context().add_class("artwork-icon")
