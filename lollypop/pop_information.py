@@ -248,7 +248,8 @@ class InformationPopover(Gtk.Popover):
             @param size as int
             @return str
         """
-        path = InformationStore.get_artwork_path(artist, size)
+        path = InformationStore.get_artwork_path(
+            artist, size, self.get_scale_factor())
         if path is not None:
             return path
         return None

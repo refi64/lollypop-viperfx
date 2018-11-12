@@ -217,7 +217,7 @@ class ArtHelper(GObject.Object):
             @param enable_blur as bool
             @return GdkPixbuf.Pixbuf
         """
-        path = InformationStore.get_artwork_path(artist, width)
+        path = InformationStore.get_artwork_path(artist, width, scale_factor)
         if path is not None:
             f = Gio.File.new_for_path(path)
             (status, data, tag) = f.load_contents(None)

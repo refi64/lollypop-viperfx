@@ -58,14 +58,16 @@ class InformationStore:
                                   escape(artist))
         return GLib.file_test(filepath, GLib.FileTest.EXISTS)
 
-    def get_artwork_path(artist, size):
+    def get_artwork_path(artist, size, scale_factor):
         """
             Return path for artwork
             @param artist as string
             @param size as int
+            @param scale_factor as int
             @return path as string/None
         """
         try:
+            size *= scale_factor
             extract = None
             filepath = "%s/%s.jpg" % (
                 InformationStore._INFO_PATH,
