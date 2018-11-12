@@ -10,41 +10,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, Gdk
 
 from math import pi
 from gettext import gettext as _
 import unicodedata
+import cairo
 
 from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListType
 
 
-def draw_rounded_image(image, ctx):
+def get_round_surface(pixbuf):
     """
-        Draw rounded image
-        @param image as Gtk.Image
-        @param ctx as cairo.Context
+        Get rounded surface from pixbuf
+        @param pixbuf as GdkPixbuf.Pixbuf
+        @return surface as cairo.Surface
+        @warning not thread safe!
     """
-    if not image.is_drawable():
-        return
-    surface = image.props.surface
-    if surface is not None:
-        width = surface.get_width() / image.get_scale_factor() - 4
-        ctx.translate(2, 2)
-        ctx.new_sub_path()
-        radius = width / 2
-        ctx.set_line_width(2)
-        # Same in .artwork-icon (application.css)
-        ctx.set_source_rgba(0, 0, 0, 0.3)
-        ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
-        ctx.stroke_preserve()
-        ctx.set_source_rgb(1, 1, 1)
-        ctx.fill_preserve()
-        ctx.translate(-2, -2)
-        ctx.set_source_surface(surface, 0, 0)
-        ctx.clip()
-        ctx.paint()
+    width = pixbuf.get_width()
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, width)
+    ctx = cairo.Context(surface)
+    # Remove line width
+    ctx.translate(2, 2)
+    width -= 4
+    ctx.new_sub_path()
+    radius = width / 2
+    ctx.set_line_width(2)
+    # Same in .artwork-icon (application.css)
+    ctx.set_source_rgba(0, 0, 0, 0.3)
+    ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
+    ctx.stroke_preserve()
+    ctx.set_source_rgb(1, 1, 1)
+    ctx.fill_preserve()
+    ctx.translate(-2, -2)
+    Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0)
+    ctx.clip()
+    ctx.paint()
+    return surface
 
 
 def set_proxy_from_gnome():

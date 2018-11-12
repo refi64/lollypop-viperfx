@@ -18,7 +18,7 @@ from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.objects import Album
 from lollypop.logger import Logger
-from lollypop.utils import draw_rounded_image, escape
+from lollypop.utils import escape
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 
@@ -273,22 +273,6 @@ class InformationPopover(Gtk.Popover):
         Gtk.show_uri_on_window(App().window,
                                uri,
                                Gdk.CURRENT_TIME)
-
-    def __on_artwork_draw(self, image, ctx, artist_name):
-        """
-            Draw rounded image
-            @param image as Gtk.Image
-            @param ctx as cairo.Context
-            @param artist_name as str
-        """
-        if image.get_style_context().has_class("artwork-icon"):
-            return
-        # Update image if scale factor changed
-        if self.__scale_factor != image.get_scale_factor():
-            self.__scale_factor = image.get_scale_factor()
-            self.__set_artist_artwork(image, artist_name)
-        draw_rounded_image(image, ctx)
-        return True
 
     def __on_map(self, widget):
         """

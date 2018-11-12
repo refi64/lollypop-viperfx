@@ -16,7 +16,7 @@ from gettext import gettext as _
 from random import choice
 
 from lollypop.define import App, ArtSize, Shuffle
-from lollypop.utils import get_network_available, draw_rounded_image
+from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
@@ -237,21 +237,6 @@ class ArtistView(ArtistAlbumsView):
             popover.populate(self._artist_ids)
             popover.connect("closed", lambda x: button.set_active(False))
             popover.popup()
-
-    def _on_artwork_draw(self, image, ctx):
-        """
-            Draw rounded image
-            @param image as Gtk.Image
-            @param ctx as cairo.Context
-        """
-        if image.get_style_context().has_class("artwork-icon"):
-            return
-        # Update image if scale factor changed
-        if self.__scale_factor != image.get_scale_factor():
-            self.__scale_factor = image.get_scale_factor()
-            self.__set_artwork()
-        draw_rounded_image(image, ctx)
-        return True
 
     def _on_current_changed(self, player):
         """

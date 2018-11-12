@@ -13,7 +13,6 @@
 from gi.repository import GLib, Gtk, Pango, GObject
 
 from lollypop.define import ArtSize
-from lollypop.utils import draw_rounded_image
 
 
 class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
@@ -52,7 +51,6 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         label.set_property("halign", Gtk.Align.CENTER)
         label.set_markup("<b>" + GLib.markup_escape_text(text) + "</b>")
         self._artwork = Gtk.Image.new()
-        self._artwork.connect("draw", self.__on_artwork_draw)
         self._artwork.set_size_request(self._art_size, self._art_size)
         self._artwork.show()
         self._set_artwork()
@@ -110,17 +108,3 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
 #######################
 # PRIVATE             #
 #######################
-    def __on_artwork_draw(self, image, ctx):
-        """
-            Draw rounded image
-            @param image as Gtk.Image
-            @param ctx as cairo.Context
-        """
-        if image.props.surface is None:
-            return
-        # Update image if scale factor changed
-        if self._scale_factor != image.get_scale_factor():
-            self._scale_factor = image.get_scale_factor()
-            self._set_artwork()
-        draw_rounded_image(image, ctx)
-        return True

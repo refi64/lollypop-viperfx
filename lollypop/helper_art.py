@@ -14,6 +14,7 @@ from gi.repository import GObject, Gio, GLib, Gtk, Gdk, GdkPixbuf
 
 from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
+from lollypop.utils import get_round_surface
 from lollypop.information_store import InformationStore
 
 
@@ -107,7 +108,7 @@ class ArtHelper(GObject.Object):
                               width,
                               height,
                               scale_factor,
-                              callback=(self._on_get_artwork_pixbuf,
+                              callback=(self._on_get_artist_artwork_pixbuf,
                                         image,
                                         width,
                                         height,
@@ -117,6 +118,23 @@ class ArtHelper(GObject.Object):
 #######################
 # PROTECTED           #
 #######################
+    def _on_get_artist_artwork_pixbuf(self, pixbuf, image,
+                                      width, height, scale_factor, icon):
+        """
+            Set pixbuf as surface
+            @param pixbuf as Gdk.Pixbuf
+            @param image as Gtk.Image
+            @param size as int
+            @param scale_factor as int
+            @param icon as str
+        """
+        if pixbuf is None:
+            self._on_get_artwork_pixbuf(pixbuf, image,
+                                        width, height, scale_factor, icon)
+        else:
+            surface = get_round_surface(pixbuf)
+            image.set_from_surface(surface)
+
     def _on_get_artwork_pixbuf(self, pixbuf, image,
                                width, height, scale_factor, icon):
         """
