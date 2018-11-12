@@ -44,9 +44,6 @@ class Container(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__pulse_timeout = None
-        self.__list_one_state = App().settings.get_value("list-one-ids") or\
-            [Type.POPULARS]
-        self.__list_two_state = App().settings.get_value("list-two-ids")
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
@@ -453,32 +450,23 @@ class Container(Gtk.Overlay):
         """
             Restore saved state for list
         """
-        if not self.__list_one_state:
-            return
-        # Get list one ids (always)
         list_one_ids = []
-        for i in self.__list_one_state:
-            if isinstance(i, int):
-                list_one_ids.append(i)
-        if not list_one_ids:
-            list_one_ids = [Type.POPULARS]
-        if list_one_ids[0] != Type.NONE:
+        if App().settings.get_value("save-state"):
+            list_one_ids = App().settings.get_value("list-one-ids")
+        if list_one_ids:
             self.__list_one.select_ids(list_one_ids)
-        self.__list_one_state = []
+        else:
+            self.__list_one.select_first()
 
     def __restore_list_two_state(self):
         """
             Restore saved state for list
         """
-        if not self.__list_two_state:
+        if not App().settings.get_value("save-state"):
             return
-        list_two_ids = []
-        for i in self.__list_two_state:
-            if isinstance(i, int):
-                list_two_ids.append(i)
-        if list_two_ids and list_two_ids[0] != Type.NONE:
+        list_two_ids = App().settings.get_value("list-two-ids")
+        if list_two_ids:
             self.__list_two.select_ids(list_two_ids)
-        self.__list_two_state = []
 
     def __update_playlists(self, playlists, playlist_id):
         """
@@ -929,7 +917,6 @@ class Container(Gtk.Overlay):
             @param list as SelectionList
         """
         view = None
-        list_two_about_to_do_selection = list(self.__list_two_state)
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
@@ -947,7 +934,7 @@ class Container(Gtk.Overlay):
             self.__list_two.hide()
         # Update view
         if selected_ids[0] == Type.PLAYLISTS:
-            if not list_two_about_to_do_selection:
+            if not self.__list_one.selected_ids:
                 view = self.__get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self.__update_list_device(self.__list_two)

@@ -355,6 +355,12 @@ class SelectionList(Gtk.Overlay):
     def disable_overlay(self):
         pass
 
+    def select_first(self):
+        """
+            Select first available item
+        """
+        self.__selection.select_iter(self.__model[0].iter)
+
     @property
     def type(self):
         """
