@@ -67,6 +67,8 @@ class View(Gtk.Grid):
         self._viewport = Gtk.Viewport()
         self._scrolled.add(self._viewport)
         self._viewport.show()
+        self.connect("map", self._on_map)
+        self.connect("unmap", self._on_unmap)
 
     def populate(self):
         pass
@@ -137,6 +139,12 @@ class View(Gtk.Grid):
         """
         self._filter = self.__search_entry.get_text()
         self._box.invalidate_filter()
+
+    def _on_map(self, widget):
+        pass
+
+    def _on_unmap(self, widget):
+        pass
 
 #######################
 # PRIVATE             #

@@ -17,7 +17,7 @@ from random import shuffle
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App
+from lollypop.define import App, Type
 from lollypop.objects import Track
 from lollypop.controller_view import ViewController
 
@@ -239,6 +239,15 @@ class PlaylistsView(View, ViewController):
         """
         App().window.container.show_smart_playlist_editor(
             self.__playlist_ids[0])
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        App().settings.set_value("list-one-ids",
+                                 GLib.Variant("ai", [Type.PLAYLISTS]))
+        App().settings.set_value("list-two-ids",
+                                 GLib.Variant("ai", self.__playlist_ids))
 
 #######################
 # PRIVATE             #

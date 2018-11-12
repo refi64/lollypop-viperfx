@@ -10,10 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
+from lollypop.define import App, Type
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_radio import RadioWidget
 from lollypop.pop_radio import RadioPopover
@@ -93,6 +94,15 @@ class RadiosView(FlowBoxView, ViewController):
         for child in self._box.get_children():
             if title == child.title:
                 child.set_artwork()
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        App().settings.set_value("list-one-ids",
+                                 GLib.Variant("ai", [Type.RADIOS]))
+        App().settings.set_value("list-two-ids",
+                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

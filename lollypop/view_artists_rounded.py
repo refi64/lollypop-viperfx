@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
+
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.define import App, Type
 from lollypop.widgets_artist_rounded import RoundedArtistWidget
@@ -45,12 +47,11 @@ class RoundedArtistsView(FlowBoxView):
             Start lazy loading
             @param item ids as [int]
         """
-        if Type.ALL in item_ids:
-            item_ids.remove(Type.ALL)
+        for item_id in [Type.ALL, Type.USB_DISKS]:
+            if item_id in item_ids:
+                item_ids.remove(item_id)
         art_size = App().settings.get_value("cover-size").get_int32()
         FlowBoxView._add_items(self, item_ids, art_size)
-        # if widget is not None:
-        #    widget.connect("overlayed", self.on_overlayed)
 
     def _on_item_activated(self, flowbox, widget):
         """
@@ -59,6 +60,13 @@ class RoundedArtistsView(FlowBoxView):
             @param widget as ArtistRoundedWidget
         """
         App().window.container.show_view(widget.data)
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        App().settings.set_value("list-one-ids",
+                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

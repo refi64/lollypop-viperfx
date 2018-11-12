@@ -10,8 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
+
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_albums_decade import AlbumsDecadeWidget
+from lollypop.define import App, Type
 
 
 class AlbumsDecadeBoxView(FlowBoxView):
@@ -38,3 +41,12 @@ class AlbumsDecadeBoxView(FlowBoxView):
         widget = FlowBoxView._add_items(self, item_ids)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        App().settings.set_value("list-one-ids",
+                                 GLib.Variant("ai", [Type.YEARS]))
+        App().settings.set_value("list-two-ids",
+                                 GLib.Variant("ai", []))

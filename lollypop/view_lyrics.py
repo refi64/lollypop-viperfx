@@ -46,8 +46,6 @@ class LyricsView(View, InformationController):
         self.__translate_button = builder.get_object("translate_button")
         self.add(builder.get_object("widget"))
         self.connect("size-allocate", self.__on_size_allocate)
-        self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
 
     def populate(self, track):
         """
@@ -99,6 +97,21 @@ class LyricsView(View, InformationController):
         task_helper = TaskHelper()
         task_helper.run(self.__get_blob, self.__lyrics_label.get_text(),
                         callback=(self.__lyrics_label.set_text,))
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        self.__current_changed_id = App().player.connect(
+            "current-changed", self.__on_current_changed)
+
+    def __on_unmap(self, widget):
+        """
+            Connect player signal
+        """
+        if self.__current_changed_id is not None:
+            App().player.disconnect(self.__current_changed_id)
+            self.__current_changed_id = None
 
 ############
 # PRIVATE  #
@@ -254,18 +267,3 @@ class LyricsView(View, InformationController):
         """
         self.populate(App().player.current_track)
         self.__translate_button.set_sensitive(True)
-
-    def __on_map(self, widget):
-        """
-            Connect player signal
-        """
-        self.__current_changed_id = App().player.connect(
-            "current-changed", self.__on_current_changed)
-
-    def __on_unmap(self, widget):
-        """
-            Connect player signal
-        """
-        if self.__current_changed_id is not None:
-            App().player.disconnect(self.__current_changed_id)
-            self.__current_changed_id = None

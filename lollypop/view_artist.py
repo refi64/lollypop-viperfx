@@ -40,8 +40,6 @@ class ArtistView(ArtistAlbumsView):
         self.__art_signal_id = None
         self._viewport.set_margin_start(10)
         self._viewport.set_margin_end(10)
-        self.connect("realize", self.__on_realize)
-        self.connect("unrealize", self.__on_unrealize)
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
@@ -255,6 +253,58 @@ class ArtistView(ArtistAlbumsView):
         self.__update_jump_button()
         ArtistAlbumsView._on_populated(self, widget, scroll_value)
 
+    def _on_map(self, widget):
+        """
+            Connect signals and set active ids
+            @param widget as Gtk.Widget
+        """
+        self.__art_signal_id = App().art.connect(
+                                           "artist-artwork-changed",
+                                           self.__on_artist_artwork_changed)
+        self.__party_signal_id = App().player.connect(
+                                                "party-changed",
+                                                self.__on_album_changed)
+        self.__added_signal_id = App().player.connect(
+                                                "album-added",
+                                                self.__on_album_changed)
+        self.__removed_signal_id = App().player.connect(
+                                                  "album-removed",
+                                                  self.__on_album_changed)
+        self.__lock_signal_id = App().player.connect(
+                                               "lock-changed",
+                                               self.__on_lock_changed)
+        if self._genre_ids:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", self._genre_ids))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", self._artist_ids))
+        else:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", self._artist_ids))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", []))
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect signals
+            @param widget as Gtk.Widget
+        """
+        if self.__art_signal_id is not None:
+            App().art.disconnect(self.__art_signal_id)
+            self.__art_signal_id = None
+        if self.__party_signal_id is not None:
+            App().player.disconnect(self.__party_signal_id)
+            self.__party_signal_id = None
+        if self.__added_signal_id is not None:
+            App().player.disconnect(self.__added_signal_id)
+            self.__added_signal_id = None
+        if self.__removed_signal_id is not None:
+            App().player.disconnect(self.__removed_signal_id)
+            self.__removed_signal_id = None
+        if self.__lock_signal_id is not None:
+            App().player.disconnect(self.__lock_signal_id)
+            self.__lock_signal_id = None
+
 #######################
 # PRIVATE             #
 #######################
@@ -328,45 +378,6 @@ class ArtistView(ArtistAlbumsView):
             self.__add_button.get_image().set_from_icon_name(
                 "list-remove-symbolic",
                 Gtk.IconSize.MENU)
-
-    def __on_realize(self, widget):
-        """
-            Connect signal
-            @param widget as Gtk.Widget
-        """
-        player = App().player
-        art = App().art
-        self.__art_signal_id = art.connect("artist-artwork-changed",
-                                           self.__on_artist_artwork_changed)
-        self.__party_signal_id = player.connect("party-changed",
-                                                self.__on_album_changed)
-        self.__added_signal_id = player.connect("album-added",
-                                                self.__on_album_changed)
-        self.__removed_signal_id = player.connect("album-removed",
-                                                  self.__on_album_changed)
-        self.__lock_signal_id = player.connect("lock-changed",
-                                               self.__on_lock_changed)
-
-    def __on_unrealize(self, widget):
-        """
-            Disconnect signal
-            @param widget as Gtk.Widget
-        """
-        if self.__art_signal_id is not None:
-            App().art.disconnect(self.__art_signal_id)
-            self.__art_signal_id = None
-        if self.__party_signal_id is not None:
-            App().player.disconnect(self.__party_signal_id)
-            self.__party_signal_id = None
-        if self.__added_signal_id is not None:
-            App().player.disconnect(self.__added_signal_id)
-            self.__added_signal_id = None
-        if self.__removed_signal_id is not None:
-            App().player.disconnect(self.__removed_signal_id)
-            self.__removed_signal_id = None
-        if self.__lock_signal_id is not None:
-            App().player.disconnect(self.__lock_signal_id)
-            self.__lock_signal_id = None
 
     def __on_album_changed(self, player, album_id=None):
         """

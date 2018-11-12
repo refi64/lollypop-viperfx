@@ -10,11 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
-from lollypop.define import ArtSize
+from lollypop.define import ArtSize, App
 from lollypop.controller_view import ViewController
 
 
@@ -99,6 +99,21 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         popover.connect("closed", self.__on_album_popover_closed, album_widget)
         popover.popup()
         album_widget.artwork.set_opacity(0.9)
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        if self.__genre_ids:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", self.__genre_ids))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", self.__artist_ids))
+        else:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", self.__artist_ids))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

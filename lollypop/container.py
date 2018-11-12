@@ -202,13 +202,20 @@ class Container(Gtk.Overlay):
         elif not self.is_paned_stack:
             self.__list_two.hide()
             self.__list_one.hide()
-            self.show_artists_view()
             if App().settings.get_value("save-state"):
                 list_one_ids = App().settings.get_value("list-one-ids")
+                list_two_ids = App().settings.get_value("list-two-ids")
             else:
                 list_one_ids = []
-            if list_one_ids:
+                list_two_ids = []
+            self.show_artists_view()
+            if list_one_ids and list_two_ids:
+                self.show_view(list_one_ids[0], None, False)
+                self.show_view(list_one_ids[0], list_two_ids)
+            elif list_one_ids:
                 self.show_view(list_one_ids[0])
+            elif list_two_ids:
+                self.show_view(list_two_ids[0])
 
     def show_lyrics(self, track=None):
         """
@@ -266,14 +273,13 @@ class Container(Gtk.Overlay):
             # Select artists on list one
             GLib.idle_add(self.__list_one.select_ids, artist_ids)
 
-    def show_view(self, item_id, data=None):
+    def show_view(self, item_id, data=None, switch=True):
         """
             Show view for item id
             @param item_ids as int
             @param data as object
+            @param switch as bool
         """
-        App().settings.set_value("list-one-ids",
-                                 GLib.Variant("ai", [item_id]))
         App().window.emit("can-go-back-changed", True)
         if item_id in [Type.POPULARS,
                        Type.LOVED,
@@ -287,15 +293,7 @@ class Container(Gtk.Overlay):
             else:
                 view = self.__get_view_albums_years(data)
         elif item_id == Type.PLAYLISTS:
-            if data is None:
-                view = self.__get_view_playlists()
-            elif isinstance(data, list):
-                view = self.__get_view_playlists(data)
-            else:
-                from lollypop.view_playlists_manager import\
-                    PlaylistsManagerView
-                view = PlaylistsManagerView(data)
-                view.populate(App().playlists.get_ids())
+            view = self.__get_view_playlists([] if data is None else data)
         elif item_id == Type.COMPILATIONS:
             view = self.__get_view_albums([], [item_id])
         elif item_id == Type.RADIOS:
@@ -304,7 +302,8 @@ class Container(Gtk.Overlay):
             view = self.__get_view_artists([], [item_id])
         view.show()
         self.__stack.add(view)
-        self.__stack.set_visible_child(view)
+        if switch:
+            self.__stack.set_visible_child(view)
         if App().settings.get_value("show-sidebar"):
             self.__stack.destroy_non_visible(view)
 
@@ -799,19 +798,10 @@ class Container(Gtk.Overlay):
             @param playlist ids as [int]
             @return View
         """
-        from lollypop.view_playlists_manager import PlaylistsManagerView
-
         def load():
             track_ids = []
             for playlist_id in playlist_ids:
-                # We want track_ids from manager
-                # to show same albums for Type.RANDOMS
-                if isinstance(self.view, PlaylistsManagerView):
-                    _track_ids = self.view.get_track_ids_for_playlist_id(
-                        playlist_id)
-                else:
-                    _track_ids = App().playlists.get_track_ids(playlist_id)
-                for track_id in _track_ids:
+                for track_id in App().playlists.get_track_ids(playlist_id):
                     if track_id not in track_ids:
                         track_ids.append(track_id)
             return track_ids
@@ -833,6 +823,7 @@ class Container(Gtk.Overlay):
             loader = Loader(target=load, view=view)
             loader.start()
         else:
+            from lollypop.view_playlists_manager import PlaylistsManagerView
             view = PlaylistsManagerView()
             view.populate(App().playlists.get_ids())
         view.show()
@@ -926,8 +917,6 @@ class Container(Gtk.Overlay):
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
-        App().settings.set_value("list-one-ids",
-                                 GLib.Variant("ai", selected_ids))
         # Update lists
         if selected_ids[0] in [Type.PLAYLISTS, Type.YEARS]:
             self.__update_list_playlists(False, selected_ids[0])
@@ -1001,8 +990,6 @@ class Container(Gtk.Overlay):
         selected_ids = self.__list_two.selected_ids
         if not selected_ids or not genre_ids:
             return
-        App().settings.set_value("list-two-ids",
-                                 GLib.Variant("ai", selected_ids))
         # Just update the view
         if Type.DEVICES - 999 < genre_ids[0] < Type.DEVICES:
             from lollypop.view_device import DeviceView

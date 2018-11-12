@@ -10,12 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
 from lollypop.view_flowbox import FlowBoxView
-from lollypop.define import App
+from lollypop.define import App, Type
 from lollypop.widgets_playlist_rounded import PlaylistRoundedWidget
 from lollypop.shown import ShownPlaylists
 
@@ -71,16 +71,6 @@ class PlaylistsManagerView(FlowBoxView):
             items = [i[0] for i in ShownPlaylists.get()] + items
         FlowBoxView.populate(self, items)
 
-    def get_track_ids_for_playlist_id(self, playlist_id):
-        """
-            Get track_ids for current playlist id (even random)
-            @return [int]
-        """
-        for child in self._box.get_children():
-            if child.playlist_id == playlist_id:
-                return child.track_ids
-        return []
-
 #######################
 # PROTECTED           #
 #######################
@@ -93,6 +83,15 @@ class PlaylistsManagerView(FlowBoxView):
         widget = FlowBoxView._add_items(self, playlist_ids, self.__obj)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
+
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        App().settings.set_value("list-one-ids",
+                                 GLib.Variant("ai", [Type.PLAYLISTS]))
+        App().settings.set_value("list-two-ids",
+                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

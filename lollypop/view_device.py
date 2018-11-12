@@ -187,6 +187,13 @@ class DeviceView(View):
         if self.__selected_ids:
             self.__device_widget.populate(self.__selected_ids)
 
+    def _on_map(self, widget):
+        """
+            Set active ids
+        """
+        App().settings.set_value("list-one-ids",
+                                 GLib.Variant("ai", []))
+
 #######################
 # PRIVATE             #
 #######################
