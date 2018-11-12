@@ -51,16 +51,16 @@ class ArtHelper(GObject.Object):
         return image
 
     def set_album_artwork(self, image, album, width, height,
-                          scale_factor, enable_blur=False):
+                          enable_blur=False):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param album as Album
             @param width as int
             @param height as int
-            @param scale_factor as int
             @param enable_blur as bool
         """
+        scale_factor = image.get_scale_factor()
         App().task_helper.run(self.__get_album_artwork,
                               album,
                               width,
@@ -74,15 +74,15 @@ class ArtHelper(GObject.Object):
                                         scale_factor,
                                         "folder-music-symbolic"))
 
-    def set_radio_artwork(self, image, radio, width, height, scale_factor):
+    def set_radio_artwork(self, image, radio, width, height):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param radio as str
             @param width as int
             @param height as int
-            @param scale_factor as int
         """
+        scale_factor = image.get_scale_factor()
         App().task_helper.run(App().art.get_radio_artwork,
                               radio,
                               width,
@@ -94,15 +94,15 @@ class ArtHelper(GObject.Object):
                                         scale_factor,
                                         "audio-input-microphone-symbolic"))
 
-    def set_artist_artwork(self, image, artist, width, height, scale_factor):
+    def set_artist_artwork(self, image, artist, width, height):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param artist as str
             @param width as int
             @param height as int
-            @param scale_factor as int
         """
+        scale_factor = image.get_scale_factor()
         App().task_helper.run(self.__get_artist_artwork,
                               artist,
                               width,
@@ -167,6 +167,8 @@ class ArtHelper(GObject.Object):
             @param h as int
             @return cairo.Surface
         """
+        if pixbuf is None:
+            return None
         try:
             from PIL import Image, ImageFilter
             width = pixbuf.get_width()

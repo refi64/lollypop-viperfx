@@ -81,8 +81,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self.__art_helper.set_radio_artwork(self._artwork,
                                             self.__name,
                                             ArtSize.BIG,
-                                            ArtSize.BIG,
-                                            self.get_scale_factor())
+                                            ArtSize.BIG)
         self.set_selection()
         self.show_all()
         self._lock_overlay = False

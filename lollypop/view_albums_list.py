@@ -119,8 +119,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__art_helper.set_album_artwork(self._artwork,
                                             self._album,
                                             ArtSize.MEDIUM,
-                                            ArtSize.MEDIUM,
-                                            self.get_scale_factor())
+                                            ArtSize.MEDIUM)
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)

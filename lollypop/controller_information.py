@@ -90,8 +90,7 @@ class InformationController:
                 self._artwork,
                 App().player.current_track.album_artists[0],
                 width,
-                height,
-                self.get_scale_factor())
+                height)
 
         elif App().player.current_track.id is not None:
             self.__art_helper.set_album_artwork(
@@ -99,7 +98,6 @@ class InformationController:
                 App().player.current_track.album,
                 width,
                 height,
-                self.get_scale_factor(),
                 enable_blur)
             if self.__tooltip:
                 self._artwork.set_tooltip_text(

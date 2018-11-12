@@ -292,8 +292,7 @@ class ArtistView(ArtistAlbumsView):
                 self.__art_helper.set_artist_artwork(self.__artwork,
                                                      artist,
                                                      size,
-                                                     size,
-                                                     self.__scale_factor)
+                                                     size)
         else:
             self.__set_header_height()
 

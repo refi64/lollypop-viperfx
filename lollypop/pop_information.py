@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk
+from gi.repository import Gtk, GLib, Gio, Gdk
 
 from gettext import gettext as _
 
@@ -19,6 +19,7 @@ from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
+from lollypop.helper_art import ArtHelper
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 
@@ -99,7 +100,8 @@ class InformationPopover(Gtk.Popover):
             @param follow_player as bool
         """
         Gtk.Popover.__init__(self)
-        self.__scale_factor = 0
+        self.__scale_factor = 1
+        self.__art_helper = ArtHelper()
         self.__cancellable = Gio.Cancellable()
         self.__minimal = minimal
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -139,7 +141,10 @@ class InformationPopover(Gtk.Popover):
         if self.__minimal:
             artist_artwork.hide()
         else:
-            self.__set_artist_artwork(artist_artwork, artist_name)
+            self.__art_helper.set_artist_artwork(artist_artwork,
+                                                 artist_name,
+                                                 ArtSize.ARTIST_SMALL * 3,
+                                                 ArtSize.ARTIST_SMALL * 3)
             albums_view = AlbumsListView(ResponsiveType.LIST)
             albums_view.set_size_request(300, -1)
             albums_view.show()
@@ -204,38 +209,6 @@ class InformationPopover(Gtk.Popover):
                 GLib.markup_escape_text(content.decode("utf-8")))
         else:
             label.set_text(_("No information on this artist"))
-
-    def __set_artist_artwork(self, image, artist_name):
-        """
-            Set artist artwork
-            @param image as Gtk.Image
-            @param artist_name as str
-        """
-        size = ArtSize.ARTIST_SMALL * 3 * self.get_scale_factor()
-        artwork_path = self.__get_artist_artwork_path_from_cache(
-            artist_name,
-            size)
-        if artwork_path is None:
-            return
-        f = Gio.File.new_for_path(artwork_path)
-        (status, data, tag) = f.load_contents(None)
-        if status:
-            bytes = GLib.Bytes(data)
-            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                stream,
-                size,
-                size,
-                True,
-                None)
-            stream.close()
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf,
-                image.get_scale_factor(),
-                None)
-            image.set_from_surface(surface)
-        else:
-            image.hide()
 
     def __get_artist_artwork_path_from_cache(self, artist, size):
         """

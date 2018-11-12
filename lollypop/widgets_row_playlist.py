@@ -112,8 +112,7 @@ class PlaylistRow(Row, DNDRow):
             self.__art_helper.set_album_artwork(self.__artwork,
                                                 self.track.album,
                                                 ArtSize.MEDIUM,
-                                                ArtSize.MEDIUM,
-                                                self.get_scale_factor())
+                                                ArtSize.MEDIUM)
             self.__artwork.set_margin_top(2)
             self.__artwork.show()
             self.set_margin_bottom(2)

@@ -104,8 +104,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__art_helper.set_album_artwork(self._artwork,
                                             self._album,
                                             ArtSize.BIG,
-                                            ArtSize.BIG,
-                                            self.get_scale_factor())
+                                            ArtSize.BIG)
 
     def do_get_preferred_width(self):
         """

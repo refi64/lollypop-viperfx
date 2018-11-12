@@ -53,8 +53,7 @@ class NextPopover(Gtk.Popover):
         self.__art_helper.set_album_artwork(self.__cover,
                                             App().player.next_track.album,
                                             ArtSize.MEDIUM,
-                                            ArtSize.MEDIUM,
-                                            self.get_scale_factor())
+                                            ArtSize.MEDIUM)
         self.__cover.set_tooltip_text(App().player.next_track.album.name)
         queue = App().player.queue
         if queue and queue[0] == App().player.next_track.id:

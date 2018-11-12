@@ -117,8 +117,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             self.__art_helper.set_album_artwork(self._artwork,
                                                 self._album,
                                                 ArtSize.BIG,
-                                                ArtSize.BIG,
-                                                self.get_scale_factor())
+                                                ArtSize.BIG)
             if self._album.year is not None:
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
