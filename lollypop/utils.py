@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib, Gdk
+from gi.repository import Gio, GLib, Gdk, GdkPixbuf
 
 from math import pi
 from gettext import gettext as _
@@ -21,14 +21,14 @@ from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListType
 
 
-def get_round_surface(pixbuf):
+def get_round_surface(image):
     """
         Get rounded surface from pixbuf
-        @param pixbuf as GdkPixbuf.Pixbuf
+        @param image as GdkPixbuf.Pixbuf/cairo.Surface
         @return surface as cairo.Surface
         @warning not thread safe!
     """
-    width = pixbuf.get_width()
+    width = image.get_width()
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, width)
     ctx = cairo.Context(surface)
     # Remove line width
@@ -44,7 +44,10 @@ def get_round_surface(pixbuf):
     ctx.set_source_rgb(1, 1, 1)
     ctx.fill_preserve()
     ctx.translate(-2, -2)
-    Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0)
+    if isinstance(image, GdkPixbuf.Pixbuf):
+        Gdk.cairo_set_source_pixbuf(ctx, image, 0, 0)
+    else:
+        ctx.set_source_surface(image, 0, 0)
     ctx.clip()
     ctx.paint()
     return surface

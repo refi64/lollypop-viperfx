@@ -18,6 +18,7 @@ from random import shuffle
 from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize
 from lollypop.objects import Album
+from lollypop.utils import get_round_surface
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 
 
@@ -80,7 +81,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                     continue
                 self.__draw_surface(album_ids, ctx, x * i, y * h)
         GLib.idle_add(self.emit, "populated")
-        return cover
+        return get_round_surface(cover)
 
 #######################
 # PRIVATE             #
@@ -95,18 +96,15 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
         # Workaround Gdk not being thread safe
         def draw_pixbuf(ctx, pixbuf):
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf, self._scale_factor, None)
             ctx.translate(x, y)
-            ctx.set_source_surface(surface, 0, 0)
+            Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0)
             ctx.paint()
             ctx.translate(-x, -y)
         if album_ids:
             album_id = album_ids.pop(0)
-            pixbuf = App().art.get_album_artwork(
-                                                  Album(album_id),
-                                                  self.__cover_size,
-                                                  self._scale_factor)
+            pixbuf = App().art.get_album_artwork(Album(album_id),
+                                                 self.__cover_size,
+                                                 self._scale_factor)
             if pixbuf is None:
                 GLib.idle_add(self.__draw_surface, album_ids, ctx, x, y)
             else:
