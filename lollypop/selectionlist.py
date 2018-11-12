@@ -490,6 +490,8 @@ class SelectionList(Gtk.Overlay):
             @param value as [int, str, optional str]
         """
         item_id = value[0]
+        if item_id in [Type.USB_DISKS]:
+            return
         name = value[1]
         if name == "":
             name = _("Unknown")
