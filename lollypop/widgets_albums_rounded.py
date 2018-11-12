@@ -34,7 +34,6 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             @param data as object
         """
         RoundedFlowBoxWidget.__init__(self, data, art_size)
-        self.__covers_count = 0
         self.__cover_size = App().settings.get_value("cover-size").get_int32()
         self.__scale = art_size / self.__cover_size / 3
 
@@ -47,68 +46,65 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
         self._scale_factor = self.get_scale_factor()
         task_helper = TaskHelper()
-        task_helper.run(self._get_surface,
-                        callback=(self._set_surface,))
+        task_helper.run(self._create_surface)
 
     def _set_surface(self, surface):
         """
             Set artwork from surface
             @param surface as cairo.Surface
         """
-        self._artwork.set_from_surface(surface)
+        self._artwork.set_from_surface(
+            get_round_surface(surface, self._scale_factor))
+        self.emit("populated")
 
-    def _get_surface(self):
+    def _create_surface(self):
         """
             Get artwork surface
             @return cairo.Surface
         """
-        cover = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                   self._art_size,
-                                   self._art_size)
-        ctx = cairo.Context(cover)
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                                     self._art_size,
+                                     self._art_size)
+        ctx = cairo.Context(surface)
         ctx.scale(self.__scale, self.__scale)
         album_ids = self._get_album_ids()
         shuffle(album_ids)
-        x = self.__cover_size
-        y = self.__cover_size
-        # Draw centered cover
-        self.__draw_surface(album_ids, ctx, x, y)
-        # Draw other covers
-        for i in [0, 1, 2]:
-            for h in [0, 1, 2]:
-                # Ignore centered
-                if i == 1 and h == 1:
-                    continue
-                self.__draw_surface(album_ids, ctx, x * i, y * h)
-        GLib.idle_add(self.emit, "populated")
-        return get_round_surface(cover, self._scale_factor)
+        positions = [(1, 1), (0, 0), (0, 1), (0, 2),
+                     (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]
+        self.__draw_surface(album_ids, surface, ctx, positions)
 
 #######################
 # PRIVATE             #
 #######################
-    def __draw_surface(self, album_ids, ctx, x, y):
+    def __draw_surface(self, album_ids, surface, ctx, positions):
         """
             Draw surface for first available album
             @param album_ids as [int]
+            @param surface as cairo.Surface
             @param ctx as Cairo.context
-            @param x as int
-            @param y as int
+            @param positions as {}
         """
         # Workaround Gdk not being thread safe
-        def draw_pixbuf(ctx, pixbuf):
-            surface = Gdk.cairo_surface_create_from_pixbuf(
+        def draw_pixbuf(surface, ctx, pixbuf, positions):
+            (x, y) = positions.pop(0)
+            x *= self.__cover_size
+            y *= self.__cover_size
+            subsurface = Gdk.cairo_surface_create_from_pixbuf(
                 pixbuf, self._scale_factor, None)
             ctx.translate(x, y)
-            ctx.set_source_surface(surface, 0, 0)
+            ctx.set_source_surface(subsurface, 0, 0)
             ctx.paint()
             ctx.translate(-x, -y)
-        if album_ids:
+            self.__draw_surface(album_ids, surface, ctx, positions)
+        if album_ids and len(positions) > 0:
             album_id = album_ids.pop(0)
             pixbuf = App().art.get_album_artwork(Album(album_id),
                                                  self.__cover_size,
                                                  self._scale_factor)
             if pixbuf is None:
-                GLib.idle_add(self.__draw_surface, album_ids, ctx, x, y)
+                GLib.idle_add(self.__draw_surface, album_ids,
+                              surface, ctx, positions)
             else:
-                self.__covers_count += 1
-                GLib.idle_add(draw_pixbuf, ctx, pixbuf)
+                GLib.idle_add(draw_pixbuf, surface, ctx, pixbuf, positions)
+        else:
+            GLib.idle_add(self._set_surface, surface)
