@@ -37,7 +37,6 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
         self.__art_helper = ArtHelper()
-        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__art_signal_id = None
         self._viewport.set_margin_start(10)
         self._viewport.set_margin_end(10)
@@ -48,6 +47,8 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
         builder.connect_signals(self)
         self.__artwork = builder.get_object("artwork")
+        self.__artwork.connect("notify::surface", self.__on_artwork_set)
+        self.__artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.__artwork_box = builder.get_object("artwork-box")
         self.__label = builder.get_object("artist")
         self.__jump_button = builder.get_object("jump-button")
@@ -413,10 +414,11 @@ class ArtistView(ArtistAlbumsView):
             self.__artwork.clear()
             self.__set_artwork()
 
-    def __on_artwork_set(self, helper):
+    def __on_artwork_set(self, image, spec):
         """
             Finish widget initialisation
-            @param helper as ArtHelper
+            @param image as Gtk.Image
+            @param spec as GObject.ParamSpec
         """
         self.__artwork.show()
         self.__set_header_height()

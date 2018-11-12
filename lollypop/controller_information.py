@@ -28,7 +28,6 @@ class InformationController:
         """
         self._infobox = None
         self.__art_helper = ArtHelper()
-        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__tooltip = tooltip
         self.__per_track_cover = App().settings.get_value(
             "allow-per-track-cover")
@@ -123,9 +122,3 @@ class InformationController:
 #######################
 # PRIVATE             #
 #######################
-    def __on_artwork_set(self, helper):
-        """
-            Show artwork
-            @param helper as ArtHelper
-        """
-        pass

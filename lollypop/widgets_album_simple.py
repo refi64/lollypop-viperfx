@@ -57,7 +57,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         OverlayAlbumHelper.__init__(self)
         self.__art_helper = ArtHelper()
-        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
         self.get_style_context().remove_class("loading")
@@ -85,6 +84,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self._artwork = self.__art_helper.get_image(ArtSize.BIG,
                                                     ArtSize.BIG,
                                                     "cover-frame")
+        self._artwork.connect("notify::surface", self.__on_artwork_set)
+        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self._overlay.add(self._artwork)
         self._overlay_grid = None
         grid.add(self._overlay)
@@ -279,10 +280,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.lock_overlay(False)
         self._artwork.set_opacity(1)
 
-    def __on_artwork_set(self, helper):
+    def __on_artwork_set(self, image, spec):
         """
             Finish widget initialisation
-            @param helper as ArtHelper
+            @param image as Gtk.Image
+            @param spec as GObject.ParamSpec
         """
         self.show_all()
         self.emit("populated")

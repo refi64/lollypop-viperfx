@@ -36,7 +36,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget.__init__(self, artist_id, art_size)
         self.__artist_name = ""
         self.__art_helper = ArtHelper()
-        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
+        self._artwork.connect("notify::surface", self.__on_artwork_set)
+        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.connect("realize", self.__on_realize)
 
     def populate(self):

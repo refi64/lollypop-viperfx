@@ -51,7 +51,6 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         TracksView.__init__(self, ResponsiveType.FIXED)
         OverlayAlbumHelper.__init__(self)
         self.__art_helper = ArtHelper()
-        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self.__context = None
         # Cover + rating + spacing
         self.__height = ArtSize.BIG + 26
@@ -102,6 +101,8 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             self._artwork = self.__art_helper.get_image(ArtSize.BIG,
                                                         ArtSize.BIG,
                                                         "cover-frame")
+            self._artwork.connect("notify::surface", self.__on_artwork_set)
+            self._artwork.connect("notify::icon-name", self.__on_artwork_set)
             self._artwork.show()
             eventbox.add(self._artwork)
             self.__duration_label.set_hexpand(True)
@@ -321,10 +322,11 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
         self.get_style_context().remove_class("album-menu-selected")
 
-    def __on_artwork_set(self, helper):
+    def __on_artwork_set(self, image, spec):
         """
             Finish widget initialisation
-            @param helper as ArtHelper
+            @param image as Gtk.Image
+            @param spec as GObject.ParamSpec
         """
         self._artwork.show()
         self.emit("populated")

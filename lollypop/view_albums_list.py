@@ -92,10 +92,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         if self.get_child() is not None:
             return
         self.__art_helper = ArtHelper()
-        self.__art_helper.connect("artwork-set", self.__on_artwork_set)
         self._artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
                                                     ArtSize.MEDIUM,
                                                     "small-cover-frame")
+        self._artwork.connect("notify::surface", self.__on_artwork_set)
+        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
@@ -332,10 +333,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             App().window.container.show_view(self._album.artist_ids[0])
         return True
 
-    def __on_artwork_set(self, helper):
+    def __on_artwork_set(self, image, spec):
         """
             Finish widget initialisation
-            @param helper as ArtHelper
+            @param image as Gtk.Image
+            @param spec as GObject.ParamSpec
         """
         self.emit("populated")
 

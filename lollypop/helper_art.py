@@ -22,10 +22,6 @@ class ArtHelper(GObject.Object):
         Helper to load artwork smoothly
     """
 
-    __gsignals__ = {
-        "artwork-set": (GObject.SignalFlags.RUN_FIRST, None, ()),
-    }
-
     def __init__(self):
         """
             Init helper
@@ -145,7 +141,6 @@ class ArtHelper(GObject.Object):
             image.set_from_icon_name(icon, Gtk.IconSize.BUTTON)
         else:
             image.set_from_icon_name(icon, Gtk.IconSize.DIALOG)
-        self.emit("artwork-set")
 
 #######################
 # PRIVATE             #
