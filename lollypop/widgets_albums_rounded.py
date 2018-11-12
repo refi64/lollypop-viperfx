@@ -81,7 +81,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                     continue
                 self.__draw_surface(album_ids, ctx, x * i, y * h)
         GLib.idle_add(self.emit, "populated")
-        return get_round_surface(cover)
+        return get_round_surface(cover, self._scale_factor)
 
 #######################
 # PRIVATE             #
@@ -96,8 +96,10 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
         # Workaround Gdk not being thread safe
         def draw_pixbuf(ctx, pixbuf):
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                pixbuf, self._scale_factor, None)
             ctx.translate(x, y)
-            Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0)
+            ctx.set_source_surface(surface, 0, 0)
             ctx.paint()
             ctx.translate(-x, -y)
         if album_ids:

@@ -21,14 +21,18 @@ from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListType
 
 
-def get_round_surface(image):
+def get_round_surface(image, scale_factor):
     """
         Get rounded surface from pixbuf
         @param image as GdkPixbuf.Pixbuf/cairo.Surface
         @return surface as cairo.Surface
+        @param scale_factor as int
         @warning not thread safe!
     """
     width = image.get_width()
+    is_pixbuf = isinstance(image, GdkPixbuf.Pixbuf)
+    if is_pixbuf:
+        width = int(width / scale_factor)
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, width)
     ctx = cairo.Context(surface)
     # Remove line width
@@ -44,10 +48,9 @@ def get_round_surface(image):
     ctx.set_source_rgb(1, 1, 1)
     ctx.fill_preserve()
     ctx.translate(-2, -2)
-    if isinstance(image, GdkPixbuf.Pixbuf):
-        Gdk.cairo_set_source_pixbuf(ctx, image, 0, 0)
-    else:
-        ctx.set_source_surface(image, 0, 0)
+    if is_pixbuf:
+        image = Gdk.cairo_surface_create_from_pixbuf(image, scale_factor, None)
+    ctx.set_source_surface(image, 0, 0)
     ctx.clip()
     ctx.paint()
     return surface

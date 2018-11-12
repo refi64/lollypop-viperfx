@@ -13,7 +13,7 @@
 from gi.repository import Gio, GLib, GdkPixbuf
 
 from lollypop.utils import escape
-from lollypop.define import ArtSize, App
+from lollypop.define import App
 from lollypop.logger import Logger
 
 
@@ -162,15 +162,9 @@ class InformationStore:
         else:
             bytes = GLib.Bytes(data)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               ArtSize.ARTIST,
-                                                               -1,
-                                                               True,
-                                                               None)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
             stream.close()
-            pixbuf.savev(filepath,
-                         "jpeg", ["quality"], [str(App().settings.get_value(
-                                               "cover-quality").get_int32())])
+            pixbuf.savev(filepath, "jpeg", ["quality"], ["100"])
 
     def add_artist_bio(artist, content):
         """

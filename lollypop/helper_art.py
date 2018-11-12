@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gio, GLib, Gtk, Gdk, GdkPixbuf
+from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
 
 from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
@@ -132,7 +132,7 @@ class ArtHelper(GObject.Object):
             self._on_get_artwork_pixbuf(pixbuf, image,
                                         width, height, scale_factor, icon)
         else:
-            surface = get_round_surface(pixbuf)
+            surface = get_round_surface(pixbuf, scale_factor)
             image.set_from_surface(surface)
 
     def _on_get_artwork_pixbuf(self, pixbuf, image,
@@ -221,17 +221,6 @@ class ArtHelper(GObject.Object):
         """
         path = InformationStore.get_artwork_path(artist, width, scale_factor)
         if path is not None:
-            f = Gio.File.new_for_path(path)
-            (status, data, tag) = f.load_contents(None)
-            if status:
-                bytes = GLib.Bytes(data)
-                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                    stream,
-                    width,
-                    height,
-                    True,
-                    None)
-                stream.close()
-                return pixbuf
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+            return pixbuf
         return None
