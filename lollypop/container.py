@@ -203,6 +203,12 @@ class Container(Gtk.Overlay):
             self.__list_two.hide()
             self.__list_one.hide()
             self.show_artists_view()
+            if App().settings.get_value("save-state"):
+                list_one_ids = App().settings.get_value("list-one-ids")
+            else:
+                list_one_ids = []
+            if list_one_ids:
+                self.show_view(list_one_ids[0])
 
     def show_lyrics(self, track=None):
         """
