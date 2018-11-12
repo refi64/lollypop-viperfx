@@ -940,7 +940,7 @@ class Container(Gtk.Overlay):
             self.__list_two.hide()
         # Update view
         if selected_ids[0] == Type.PLAYLISTS:
-            if not self.__list_one.selected_ids:
+            if not self.__list_two.selected_ids:
                 view = self.__get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self.__update_list_device(self.__list_two)
