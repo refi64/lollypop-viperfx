@@ -331,6 +331,7 @@ class Downloader:
                             InformationStore.add_artist_artwork(
                                 artist,
                                 data)
+                            artwork_set = True
                             Logger.debug("""Downloader::
                                          __cache_artists_info(): %s""" % uri)
                         else:

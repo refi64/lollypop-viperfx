@@ -114,10 +114,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             self.__coverbox.set_orientation(Gtk.Orientation.VERTICAL)
             self.__coverbox.show()
             self.__coverbox.attach(self._overlay, 0, 0, 2, 1)
-            self.__art_helper.set_album_artwork(self._artwork,
-                                                self._album,
-                                                ArtSize.BIG,
-                                                ArtSize.BIG)
+            self.set_artwork()
             if self._album.year is not None:
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()
@@ -148,6 +145,15 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         self.set_selection()
         self.__title_label.set_label(self._album.name)
         self.add(self.__widget)
+
+    def set_artwork(self):
+        """
+            Set album artwork
+        """
+        self.__art_helper.set_album_artwork(self._artwork,
+                                            self._album,
+                                            ArtSize.BIG,
+                                            ArtSize.BIG)
 
     def get_current_ordinate(self, parent):
         """
