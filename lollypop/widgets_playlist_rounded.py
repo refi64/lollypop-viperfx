@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App, Shuffle
+from lollypop.define import App, Shuffle, Type
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -57,7 +57,7 @@ class PlayListPopover(Gtk.Popover):
         if self.__obj is None:
             App().window.container.reload_view()
         else:
-            App().window.container.show_playlist_manager(self.__obj)
+            App().window.container.show_view(Type.PLAYLISTS, self.__obj)
 
         self.destroy()
 
@@ -70,7 +70,7 @@ class PlayListPopover(Gtk.Popover):
         if self.__obj is None:
             App().window.container.reload_view()
         else:
-            App().window.container.show_playlist_manager(self.__obj)
+            App().window.container.show_view(Type.PLAYLISTS, self.__obj)
         self.destroy()
 
 
@@ -298,7 +298,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         if App().settings.get_value("show-sidebar"):
             App().window.container.list_two.select_ids([self._data])
         else:
-            App().window.container.show_playlists([self._data])
+            App().window.container.show_view(Type.PLAYLISTS, [self._data])
             return True
 
     def __on_edit_release_event(self, widget, event):

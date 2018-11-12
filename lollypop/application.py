@@ -228,8 +228,6 @@ class Application(Gtk.Application):
             @param vacuum as bool
         """
         self.window.container.save_internals()
-        if self.settings.get_value("save-state"):
-            self.window.container.save_view_state()
         # Then vacuum db
         if vacuum:
             self.__vacuum()
