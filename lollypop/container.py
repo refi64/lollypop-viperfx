@@ -64,6 +64,13 @@ class Container(Gtk.Overlay):
                                 self.__update_playlists)
         self.add(self.__paned_one)
 
+        if App().settings.get_value("save-state"):
+            self.__list_one_ids = App().settings.get_value("list-one-ids")
+            self.__list_two_ids = App().settings.get_value("list-two-ids")
+        else:
+            self.__list_one_ids = []
+            self.__list_two_ids = []
+
         # Show donation notification
         if App().settings.get_value("show-donation"):
             GLib.timeout_add_seconds(randint(3600, 7200),
@@ -202,20 +209,14 @@ class Container(Gtk.Overlay):
         elif not self.is_paned_stack:
             self.__list_two.hide()
             self.__list_one.hide()
-            if App().settings.get_value("save-state"):
-                list_one_ids = App().settings.get_value("list-one-ids")
-                list_two_ids = App().settings.get_value("list-two-ids")
-            else:
-                list_one_ids = []
-                list_two_ids = []
             self.show_artists_view()
-            if list_one_ids and list_two_ids:
-                self.show_view(list_one_ids[0], None, False)
-                self.show_view(list_one_ids[0], list_two_ids)
-            elif list_one_ids:
-                self.show_view(list_one_ids[0])
-            elif list_two_ids:
-                self.show_view(list_two_ids[0])
+            if self.__list_one_ids and self.__list_two_ids:
+                self.show_view(self.__list_one_ids[0], None, False)
+                self.show_view(self.__list_one_ids[0], self.__list_two_ids)
+            elif self.__list_one_ids:
+                self.show_view(self.__list_one_ids[0])
+            elif self.__list_two_ids:
+                self.show_view(self.__list_two_ids[0])
 
     def show_lyrics(self, track=None):
         """
@@ -455,11 +456,9 @@ class Container(Gtk.Overlay):
         """
             Restore saved state for list
         """
-        list_one_ids = []
-        if App().settings.get_value("save-state"):
-            list_one_ids = App().settings.get_value("list-one-ids")
-        if list_one_ids:
-            self.__list_one.select_ids(list_one_ids)
+        if self.__list_one_ids:
+            self.__list_one.select_ids(self.__list_one_ids)
+            self.__list_one_ids = []
         else:
             self.__list_one.select_first()
 
@@ -467,11 +466,9 @@ class Container(Gtk.Overlay):
         """
             Restore saved state for list
         """
-        if not App().settings.get_value("save-state"):
-            return
-        list_two_ids = App().settings.get_value("list-two-ids")
-        if list_two_ids:
-            self.__list_two.select_ids(list_two_ids)
+        if self.__list_two_ids:
+            self.__list_two.select_ids(self.__list_two_ids)
+            self.__list_one_ids = []
 
     def __update_playlists(self, playlists, playlist_id):
         """
