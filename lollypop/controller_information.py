@@ -86,7 +86,7 @@ class InformationController:
         if width < 1 or height < 1:
             return
         if App().player.current_track.id == Type.RADIOS:
-            self.__art_helper.set_album_radio(
+            self.__art_helper.set_radio_artwork(
                 self._artwork,
                 App().player.current_track.album_artists[0],
                 width,

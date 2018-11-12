@@ -16,11 +16,12 @@ from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
-from lollypop.widgets_album import AlbumBaseWidget
+from lollypop.helper_overlay import OverlayHelper
+from lollypop.helper_art import ArtHelper
 from lollypop.pop_radio import RadioPopover
 
 
-class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
+class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
     """
         Widget with radio cover and title
     """
@@ -43,9 +44,11 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             @param radios as Radios
         """
         Gtk.FlowBoxChild.__init__(self)
-        AlbumBaseWidget.__init__(self)
+        OverlayHelper.__init__(self)
+        self._widget = None
         self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
+        self.__art_helper = ArtHelper()
         self.__radio_id = radio_id
         self.__name = radios.get_name(radio_id)
         self.__radios = radios
@@ -57,13 +60,14 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         self._widget.set_property("has-tooltip", True)
-        self._widget.connect("query-tooltip", self._on_query_tooltip)
+        self._widget.connect("query-tooltip", self.__on_query_tooltip)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._artwork = Gtk.Image()
-        self._artwork.set_property("halign", Gtk.Align.CENTER)
-        self._artwork.set_size_request(ArtSize.BIG, ArtSize.BIG)
-        self._artwork.get_style_context().add_class("cover-frame")
+        self._artwork = self.__art_helper.get_image(ArtSize.BIG,
+                                                    ArtSize.BIG,
+                                                    "cover-frame")
+        self._artwork.connect("notify::surface", self.__on_artwork_set)
+        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.__label = Gtk.Label()
         self.__label.set_justify(Gtk.Justification.CENTER)
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -74,14 +78,18 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         grid.add(self.__overlay)
         grid.add(self.__label)
         self.add(self._widget)
-        self.set_artwork()
+        self.__art_helper.set_radio_artwork(self._artwork,
+                                            self.__name,
+                                            ArtSize.BIG,
+                                            ArtSize.BIG,
+                                            self.get_scale_factor())
         self.set_selection()
+        self.show_all()
+        self._lock_overlay = False
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
-        self.show_all()
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
-        self._lock_overlay = False
 
     def set_sensitive(self, b):
         """
@@ -106,20 +114,6 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         """
         self.__name = name
         self.__title_label.set_label(name)
-
-    def set_artwork(self, name=None):
-        """
-            Set artwork for radio matching name
-        """
-        if self._artwork is None or\
-                (name is not None and name != self.__name):
-            return
-        surface = App().art.get_radio_artwork(
-            self.__name,
-            ArtSize.BIG,
-            self._artwork.get_scale_factor())
-        self._artwork.set_from_surface(surface)
-        self.emit("populated")
 
     def set_selection(self):
         """
@@ -173,59 +167,86 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
         if self._lock_overlay or\
            self._show_overlay == set:
             return
+        OverlayHelper._show_overlay_func(self, set)
         if set:
             # Play button
-            self._play_event = Gtk.EventBox()
-            self._play_event.set_margin_start(6)
-            self._play_event.set_margin_bottom(6)
-            self._play_event.set_property("has-tooltip", True)
-            self._play_event.set_tooltip_text(_("Play"))
-            self._play_event.set_hexpand(True)
-            self._play_event.set_property("valign", Gtk.Align.END)
-            self._play_event.set_property("halign", Gtk.Align.START)
-            self._play_event.connect("realize", self._on_eventbox_realize)
-            self._play_event.connect("button-press-event",
-                                     self._on_play_press_event)
-            self._play_button = Gtk.Image.new_from_icon_name(
+            self.__play_event = Gtk.EventBox()
+            self.__play_event.set_margin_start(6)
+            self.__play_event.set_margin_bottom(6)
+            self.__play_event.set_property("has-tooltip", True)
+            self.__play_event.set_tooltip_text(_("Play"))
+            self.__play_event.set_hexpand(True)
+            self.__play_event.set_property("valign", Gtk.Align.END)
+            self.__play_event.set_property("halign", Gtk.Align.START)
+            self.__play_event.connect("realize", self._on_eventbox_realize)
+            self.__play_event.connect("button-press-event",
+                                      self.__on_play_press_event)
+            self.__play_button = Gtk.Image.new_from_icon_name(
                 "media-playback-start-symbolic",
                 Gtk.IconSize.DND)
-            self._play_button.set_opacity(0)
             # Edit button
-            self._action2_event = Gtk.EventBox()
-            self._action2_event.set_margin_bottom(6)
-            self._action2_event.set_margin_end(6)
-            self._action2_event.set_property("has-tooltip", True)
-            self._action2_event.set_tooltip_text(_("Modify radio"))
-            self._action2_event.connect("realize", self._on_eventbox_realize)
-            self._action2_event.connect("button-press-event",
-                                        self._on_edit_press_event)
-            self._action2_event.set_property("valign", Gtk.Align.END)
-            self._action2_event.set_property("halign", Gtk.Align.END)
-            self._action2_button = Gtk.Image.new_from_icon_name(
+            self.__artwork_event = Gtk.EventBox()
+            self.__artwork_event.set_margin_bottom(6)
+            self.__artwork_event.set_margin_end(6)
+            self.__artwork_event.set_property("has-tooltip", True)
+            self.__artwork_event.set_tooltip_text(_("Modify radio"))
+            self.__artwork_event.connect("realize", self._on_eventbox_realize)
+            self.__artwork_event.connect("button-press-event",
+                                         self.__on_edit_press_event)
+            self.__artwork_event.set_property("valign", Gtk.Align.END)
+            self.__artwork_event.set_property("halign", Gtk.Align.END)
+            self.__artwork_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.BUTTON)
-            self._action2_button.set_opacity(0)
-            self._play_event.add(self._play_button)
-            self._action2_event.add(self._action2_button)
-            self.__overlay.add_overlay(self._play_event)
-            self.__overlay.add_overlay(self._action2_event)
+            self.__play_event.add(self.__play_button)
+            self.__artwork_event.add(self.__artwork_button)
+            self.__overlay.add_overlay(self.__play_event)
+            self.__overlay.add_overlay(self.__artwork_event)
             self.__overlay.show_all()
-            AlbumBaseWidget._show_overlay_func(self, True)
+            self.__play_button.get_style_context().add_class(
+                "rounded-icon")
+            self.__artwork_button.get_style_context().add_class(
+                "squared-icon-small")
         else:
-            AlbumBaseWidget._show_overlay_func(self, False)
-            self._play_event.destroy()
-            self._play_event = None
-            self._play_button.destroy()
-            self._play_button = None
-            self._action2_event.destroy()
-            self._action2_event = None
-            self._action2_button.destroy()
-            self._action2_button = None
+            self.__play_event.destroy()
+            self.__play_event = None
+            self.__play_button.destroy()
+            self.__play_button = None
+            self.__artwork_event.destroy()
+            self.__artwork_event = None
+            self.__artwork_button.destroy()
+            self.__artwork_button = None
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
+    def __on_play_press_event(self, widget, event):
+        """
+            Play radio
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        if App().player.is_locked:
+            return True
+        url = self.__radios.get_url(self.__name)
+        if url:
+            track = Track()
+            track.set_radio(self.__name, url)
+            App().player.load(track)
+
+    def __on_edit_press_event(self, widget, event):
+        """
+            Edit radio
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        popover = RadioPopover(self.__name, self.__radios)
+        popover.set_relative_to(widget)
+        popover.connect("closed", self._on_popover_closed)
+        self._lock_overlay = True
+        popover.popup()
+
+    def __on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
             @param eventbox as Gtk.EventBox
@@ -240,28 +261,11 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumBaseWidget):
             tooltip.set_markup(markup)
             return True
 
-    def _on_play_press_event(self, widget, event):
+    def __on_artwork_set(self, image, spec):
         """
-            Play radio
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            Finish widget initialisation
+            @param image as Gtk.Image
+            @param spec as GObject.ParamSpec
         """
-        if App().player.is_locked:
-            return True
-        url = self.__radios.get_url(self.__name)
-        if url:
-            track = Track()
-            track.set_radio(self.__name, url)
-            App().player.load(track)
-
-    def _on_edit_press_event(self, widget, event):
-        """
-            Edit radio
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        popover = RadioPopover(self.__name, self.__radios)
-        popover.set_relative_to(widget)
-        popover.connect("closed", self._on_popover_closed)
-        self._lock_overlay = True
-        popover.popup()
+        self.show_all()
+        self.emit("populated")

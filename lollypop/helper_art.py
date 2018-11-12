@@ -61,7 +61,6 @@ class ArtHelper(GObject.Object):
             @param enable_blur as bool
         """
         App().task_helper.run(self.__get_album_artwork,
-                              image,
                               album,
                               width,
                               height,
@@ -84,10 +83,8 @@ class ArtHelper(GObject.Object):
             @param scale_factor as int
         """
         App().task_helper.run(App().art.get_radio_artwork,
-                              image,
                               radio,
                               width,
-                              height,
                               scale_factor,
                               callback=(self._on_get_artwork_pixbuf,
                                         image,
@@ -106,7 +103,6 @@ class ArtHelper(GObject.Object):
             @param scale_factor as int
         """
         App().task_helper.run(self.__get_artist_artwork,
-                              image,
                               artist,
                               width,
                               height,
@@ -177,11 +173,10 @@ class ArtHelper(GObject.Object):
             return None
         return pixbuf
 
-    def __get_album_artwork(self, image, album, width, height,
+    def __get_album_artwork(self, album, width, height,
                             scale_factor, enable_blur=False):
         """
             Set artwork for album id
-            @param image as Gtk.Image
             @param album as Album
             @param width as int
             @param height as int
@@ -194,10 +189,9 @@ class ArtHelper(GObject.Object):
             pixbuf = self.__get_blur(pixbuf, width, height)
         return pixbuf
 
-    def __get_artist_artwork(self, image, artist, width, height, scale_factor):
+    def __get_artist_artwork(self, artist, width, height, scale_factor):
         """
             Set artwork for album id
-            @param image as Gtk.Image
             @param artist as str
             @param width as int
             @param height as int
