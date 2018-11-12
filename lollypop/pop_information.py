@@ -139,10 +139,6 @@ class InformationPopover(Gtk.Popover):
         if self.__minimal:
             artist_artwork.hide()
         else:
-            artist_artwork.connect(
-                "draw",
-                self.__on_artwork_draw,
-                artist_name)
             self.__set_artist_artwork(artist_artwork, artist_name)
             albums_view = AlbumsListView(ResponsiveType.LIST)
             albums_view.set_size_request(300, -1)
