@@ -196,14 +196,11 @@ class Container(Gtk.Overlay):
             @param show as bool
         """
         if show or self.is_paned_stack:
-            # If list one visible, we are leaveing paned stack mode
-            # Update views to match new mode
-            if self.__list_one.get_visible():
-                self.__list_two_ids = App().settings.get_value("list-two-ids")
-                self.__list_one.select_ids(
-                    App().settings.get_value("list-one-ids"))
-            else:
-                self.__list_one.show()
+            # We are leaving paned stack mode
+            self.__list_two_ids = App().settings.get_value("list-two-ids")
+            self.__list_one.select_ids(
+                App().settings.get_value("list-one-ids"))
+            self.__list_one.show()
             if not self.is_paned_stack:
                 App().window.emit("show-can-go-back", False)
             if self.__list_one.count == 0:
@@ -212,8 +209,21 @@ class Container(Gtk.Overlay):
                     App().settings.get_value("show-genres"):
                 self.__list_two.show()
         elif not self.is_paned_stack:
-            self.__list_two.hide()
-            self.__list_one.hide()
+            if self.__list_one.get_visible():
+                list_two_ids = App().settings.get_value("list-two-ids")
+                list_one_ids = App().settings.get_value("list-one-ids")
+                # We are entering paned stack mode
+                # Restore static entry
+                if list_one_ids and list_one_ids[0] < 0:
+                    self.__list_one_ids = list_one_ids
+                    self.__list_two_ids = list_two_ids
+                # Restore genre entry
+                elif list_one_ids and list_one_ids[0] >= 0 and list_two_ids:
+                    self.__list_one_ids = list_two_ids
+                else:
+                    self.__list_one_ids = list_one_ids
+                self.__list_two.hide()
+                self.__list_one.hide()
             self.show_artists_view()
             if self.__list_one_ids and self.__list_two_ids:
                 self.show_view(self.__list_one_ids[0], None, False)
@@ -222,6 +232,8 @@ class Container(Gtk.Overlay):
                 self.show_view(self.__list_one_ids[0])
             elif self.__list_two_ids:
                 self.show_view(self.__list_two_ids[0])
+            self.__list_one_ids = []
+            self.__list_two_ids = []
 
     def show_lyrics(self, track=None):
         """
