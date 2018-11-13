@@ -102,6 +102,14 @@ class AdaptiveWindow:
                                                  "configure-event",
                                                  self.__on_configure_event)
 
+    @property
+    def adaptive_is_on(self):
+        """
+            True if adaptive is on
+            @return bool
+        """
+        return self._adaptive_stack is True
+
 #############
 # Protected #
 #############

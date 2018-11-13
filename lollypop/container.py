@@ -195,24 +195,24 @@ class Container(Gtk.Overlay):
             Show/Hide navigation sidebar
             @param show as bool
         """
-        if show or self.is_paned_stack:
-            # We are leaving paned stack mode
+        if show or App().window.adaptive_is_on:
+            # We are entering paned stack mode
             self.__list_two_ids = App().settings.get_value("list-two-ids")
             self.__list_one.select_ids(
                 App().settings.get_value("list-one-ids"))
             self.__list_one.show()
-            if not self.is_paned_stack:
+            if not App().window.adaptive_is_on:
                 App().window.emit("show-can-go-back", False)
             if self.__list_one.count == 0:
                 self.update_list_one()
             if self.__list_two.count > 0 and\
                     App().settings.get_value("show-genres"):
                 self.__list_two.show()
-        elif not self.is_paned_stack:
+        elif not App().window.adaptive_is_on:
             if self.__list_one.get_visible():
                 list_two_ids = App().settings.get_value("list-two-ids")
                 list_one_ids = App().settings.get_value("list-one-ids")
-                # We are entering paned stack mode
+                # We are leaving paned stack mode
                 # Restore static entry
                 if list_one_ids and list_one_ids[0] < 0:
                     self.__list_one_ids = list_one_ids
@@ -358,14 +358,6 @@ class Container(Gtk.Overlay):
             @return ProgressBar
         """
         return self.__progress
-
-    @property
-    def is_paned_stack(self):
-        """
-            Return True if stack contains paned
-            return True
-        """
-        return self.__list_one in self.__stack.get_children()
 
     @property
     def stack(self):
@@ -688,7 +680,7 @@ class Container(Gtk.Overlay):
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
         self.__stop_current_view()
-        if self.is_paned_stack:
+        if App().window.adaptive_is_on:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ResponsiveType.LIST, artist_ids, genre_ids)
         else:
@@ -720,7 +712,7 @@ class Container(Gtk.Overlay):
                 decades.append(decade)
             return decades
         self.__stop_current_view()
-        if self.is_paned_stack:
+        if App().window.adaptive_is_on:
             view = Gtk.Grid()
         else:
             from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
@@ -743,7 +735,7 @@ class Container(Gtk.Overlay):
             return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]
         self.__stop_current_view()
-        if self.is_paned_stack:
+        if App().window.adaptive_is_on:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ResponsiveType.LIST)
         else:
@@ -795,7 +787,7 @@ class Container(Gtk.Overlay):
                     for album_id in items]
 
         self.__stop_current_view()
-        if self.is_paned_stack:
+        if App().window.adaptive_is_on:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ResponsiveType.LIST)
         else:
@@ -970,12 +962,12 @@ class Container(Gtk.Overlay):
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
-            if self.is_paned_stack:
+            if App().window.adaptive_is_on:
                 App().window.emit("can-go-back-changed", True)
             if view not in self.__stack.get_children():
                 self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
-            if self.is_paned_stack\
+            if App().window.adaptive_is_on\
                     and self.__list_two.is_visible()\
                     and (
                         selected_ids[0] >= 0 or

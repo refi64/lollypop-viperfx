@@ -337,7 +337,7 @@ class ArtistView(ArtistAlbumsView):
                     App().settings.get_value("artist-artwork"):
                 artist = App().artists.get_name(self._artist_ids[0])
                 size = ArtSize.ARTIST_SMALL
-                if not App().window.container.is_paned_stack:
+                if not App().window.adaptive_is_on:
                     size *= 2
                 self.__art_helper.set_artist_artwork(self.__artwork,
                                                      artist,
