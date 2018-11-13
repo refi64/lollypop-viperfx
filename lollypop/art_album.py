@@ -367,7 +367,6 @@ class AlbumArt:
                 p = f.get_parent()
                 parent_uri = "/" if p is None else p.get_uri()
                 album.set_uri(parent_uri)
-                print(album.uri, parent_uri)
 
     def __save_artwork_to_tags(self, data, album):
         """
