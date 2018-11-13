@@ -196,14 +196,19 @@ class Container(Gtk.Overlay):
             @param show as bool
         """
         if show or self.is_paned_stack:
-            if not self.__list_one.get_visible():
+            # If list one visible, we are leaveing paned stack mode
+            # Update views to match new mode
+            if self.__list_one.get_visible():
+                self.__list_two_ids = App().settings.get_value("list-two-ids")
+                self.__list_one.select_ids(
+                    App().settings.get_value("list-one-ids"))
+            else:
                 self.__list_one.show()
-                if not self.is_paned_stack:
-                    App().window.emit("show-can-go-back", False)
-                if self.__list_one.count == 0:
-                    self.update_list_one()
-            if not self.__list_one.get_visible() and\
-                    self.__list_two.count > 0 and\
+            if not self.is_paned_stack:
+                App().window.emit("show-can-go-back", False)
+            if self.__list_one.count == 0:
+                self.update_list_one()
+            if self.__list_two.count > 0 and\
                     App().settings.get_value("show-genres"):
                 self.__list_two.show()
         elif not self.is_paned_stack:
@@ -673,7 +678,7 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         if self.is_paned_stack:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.LIST)
+            view = AlbumsListView(ResponsiveType.LIST, artist_ids, genre_ids)
         else:
             from lollypop.view_artist import ArtistView
             view = ArtistView(artist_ids, genre_ids)

@@ -364,14 +364,18 @@ class AlbumsListView(LazyLoadingView, ViewController):
         View showing albums
     """
 
-    def __init__(self, responsive_type):
+    def __init__(self, responsive_type, artist_ids=[], genre_ids=[]):
         """
             Init Popover
             @param responsive_type as ResponsiveType
+            @param artist_ids as int
+            @param genre_ids as int
         """
         LazyLoadingView.__init__(self)
         ViewController.__init__(self)
         self.__responsive_type = responsive_type
+        self.__genre_ids = genre_ids
+        self.__artist_ids = artist_ids
         self.__autoscroll_timeout_id = None
         self.__reveals = []
         self.__prev_animated_rows = []
@@ -496,6 +500,24 @@ class AlbumsListView(LazyLoadingView, ViewController):
         for child in self.__view.get_children():
             if child.album.id == album_id:
                 child.set_artwork()
+
+    def _on_map(self, widget):
+        """
+            Connect signals and set active ids
+            @param widget as Gtk.Widget
+        """
+        if not self.__genre_ids and not self.__artist_ids:
+            return
+        if self.__genre_ids:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", self.__genre_ids))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", self.__artist_ids))
+        else:
+            App().settings.set_value("list-one-ids",
+                                     GLib.Variant("ai", self.__artist_ids))
+            App().settings.set_value("list-two-ids",
+                                     GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #
