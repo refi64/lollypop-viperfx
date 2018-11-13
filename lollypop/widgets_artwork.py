@@ -357,12 +357,13 @@ class ArtworkSearchWidget(Gtk.Bin):
             return
         try:
             if loaded:
+                scale_factor = self.get_scale_factor()
                 bytes = GLib.Bytes(content)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 if stream is not None:
                     big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                        stream, ArtSize.BIG,
-                        ArtSize.BIG,
+                        stream, ArtSize.BIG * scale_factor,
+                        ArtSize.BIG * scale_factor,
                         True,
                         None)
                     stream.close()
@@ -371,9 +372,10 @@ class ArtworkSearchWidget(Gtk.Bin):
                 image.set_property("halign", Gtk.Align.CENTER)
                 image.set_property("valign", Gtk.Align.CENTER)
                 self.__contents[image] = content
-                surface = Gdk.cairo_surface_create_from_pixbuf(big,
-                                                               0,
-                                                               None)
+                surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                       big,
+                                                       scale_factor,
+                                                       None)
                 image.set_from_surface(surface)
                 image.show()
                 self.__view.add(image)
