@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gdk
+from gi.repository import GLib, Gdk, Gio
 
 import cairo
 from random import shuffle
@@ -36,6 +36,8 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget.__init__(self, data, art_size)
         self.__cover_size = App().settings.get_value("cover-size").get_int32()
         self.__scale = art_size / self.__cover_size / 3
+        self.__cancellable = Gio.Cancellable()
+        self.connect("unmap", self.__on_unmap)
 
 #######################
 # PROTECTED           #
@@ -86,6 +88,8 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
         # Workaround Gdk not being thread safe
         def draw_pixbuf(surface, ctx, pixbuf, positions):
+            if self.__cancellable.is_cancelled():
+                return
             (x, y) = positions.pop(0)
             x *= self.__cover_size
             y *= self.__cover_size
@@ -96,7 +100,9 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             ctx.paint()
             ctx.translate(-x, -y)
             self.__draw_surface(album_ids, surface, ctx, positions)
-        if album_ids and len(positions) > 0:
+        if self.__cancellable.is_cancelled():
+            return
+        elif album_ids and len(positions) > 0:
             album_id = album_ids.pop(0)
             pixbuf = App().art.get_album_artwork(Album(album_id),
                                                  self.__cover_size,
@@ -108,3 +114,10 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                 GLib.idle_add(draw_pixbuf, surface, ctx, pixbuf, positions)
         else:
             GLib.idle_add(self._set_surface, surface)
+
+    def __on_unmap(self, widget):
+        """
+            Cancel drawing
+            @param widget as Gtk.Widget
+        """
+        self.__cancellable.cancel()
