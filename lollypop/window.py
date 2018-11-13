@@ -168,7 +168,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             Move paned child to stack
             @param b as bool
         """
-        adaptive_stack = self._adapative_stack if\
+        adaptive_stack = self._adaptive_stack if\
             self._adaptive_stack is not None else\
             not b
         AdaptiveWindow._set_adaptive_stack(self, b)
