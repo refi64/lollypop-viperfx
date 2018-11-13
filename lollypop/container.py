@@ -206,7 +206,8 @@ class Container(Gtk.Overlay):
             if self.__list_one.count == 0:
                 self.update_list_one()
             if self.__list_two.count > 0 and\
-                    App().settings.get_value("show-genres"):
+                    App().settings.get_value("show-genres") and\
+                    self.__list_two_ids:
                 self.__list_two.show()
         elif not App().window.adaptive_is_on:
             if self.__list_one.get_visible():
