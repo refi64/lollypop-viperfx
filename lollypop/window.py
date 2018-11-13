@@ -114,10 +114,16 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
             Setup window position and size, callbacks
         """
-        self.__setup_pos_size()
+        size = App().settings.get_value("window-size")
+        pos = App().settings.get_value("window-position")
+        self.__setup_size(size)
+        self.__setup_pos(pos)
         if App().settings.get_value("window-maximized"):
             # Lets resize happen
             GLib.idle_add(self.maximize)
+            self.do_adaptive_mode(self._ADAPTIVE_STACK)
+        else:
+            self.do_adaptive_mode(size[0])
 
     def go_back(self):
         """
@@ -237,26 +243,25 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             self.__miniplayer.destroy()
             self.__miniplayer = None
 
-    def __setup_pos_size(self):
+    def __setup_size(self, size):
         """
-            Set window pos and size
+            Set window size
+            @param size as (int, int)
         """
-        size_setting = App().settings.get_value("window-size")
-        if len(size_setting) == 2 and\
-           isinstance(size_setting[0], int) and\
-           isinstance(size_setting[1], int):
-            self.resize(size_setting[0], size_setting[1])
-        self.__setup_pos()
+        if len(size) == 2 and\
+           isinstance(size[0], int) and\
+           isinstance(size[1], int):
+            self.resize(size[0], size[1])
 
-    def __setup_pos(self):
+    def __setup_pos(self, pos):
         """
             Set window position
+            @param pos as (int, int)
         """
-        position_setting = App().settings.get_value("window-position")
-        if len(position_setting) == 2 and\
-           isinstance(position_setting[0], int) and\
-           isinstance(position_setting[1], int):
-            self.move(position_setting[0], position_setting[1])
+        if len(pos) == 2 and\
+           isinstance(pos[0], int) and\
+           isinstance(pos[1], int):
+            self.move(pos[0], pos[1])
 
     # FIXME Remove this, handled by MPRIS in GNOME 3.26
     def __setup_media_keys(self):

@@ -39,7 +39,6 @@ class AdaptiveWindow:
         self.__configure_timeout_id = None
         self.__stack = None
         self.__paned = []
-        self.connect("configure-event", self.__on_configure_event)
 
     def add_stack(self, stack):
         """
@@ -85,6 +84,24 @@ class AdaptiveWindow:
         if self._adaptive_stack:
             self.__stack.set_visible_child(self.__paned[0][1])
 
+    def do_adaptive_mode(self, width):
+        """
+            Handle basic adaptive mode
+            Will start to listen to configure event
+            @param width as int
+        """
+        if width < self._ADAPTIVE_STACK:
+            self._set_adaptive_stack(True)
+        else:
+            self._set_adaptive_stack(False)
+        # We delay connect to ignore initial configure events
+        if self.__configure_timeout_id is None:
+            self.__configure_timeout_id = GLib.timeout_add(
+                                                 1000,
+                                                 self.connect,
+                                                 "configure-event",
+                                                 self.__on_configure_event)
+
 #############
 # Protected #
 #############
@@ -126,30 +143,10 @@ class AdaptiveWindow:
 ############
 # Private  #
 ############
-    def __do_adaptive_mode(self, width):
-        """
-            Handle basic adaptive mode
-            @param width as int
-        """
-        self.__configure_timeout_id = None
-        if width < self._ADAPTIVE_STACK:
-            self._set_adaptive_stack(True)
-        else:
-            self._set_adaptive_stack(False)
-
     def __on_configure_event(self, widget, event):
         """
             Delay event
             @param widget as Gtk.Window
             @param event as Gdk.EventConfigure
         """
-        if self.__configure_timeout_id is not None:
-            GLib.source_remove(self.__configure_timeout_id)
-        width = widget.get_size()[0]
-        if self._adaptive_stack is None:
-            self.__configure_timeout_id = GLib.timeout_add(
-                                                       250,
-                                                       self.__do_adaptive_mode,
-                                                       width)
-        else:
-            self.__do_adaptive_mode(width)
+        self.do_adaptive_mode(widget.get_size()[0])
