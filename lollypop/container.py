@@ -24,6 +24,7 @@ from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
 from lollypop.view import View, MessageView
 from lollypop.progressbar import ProgressBar
+from lollypop.logger import Logger
 
 
 # This is a multimedia device
@@ -194,14 +195,13 @@ class Container(Gtk.Overlay):
             Show/Hide navigation sidebar
             @param show as bool
         """
-        if show:
+        if show or self.is_paned_stack:
             if not self.__list_one.get_visible():
                 self.__list_one.show()
                 if not self.is_paned_stack:
                     App().window.emit("show-can-go-back", False)
                 if self.__list_one.count == 0:
                     self.update_list_one()
-            self.__list_one.emit("item-selected")
             if not self.__list_one.get_visible() and\
                     self.__list_two.count > 0 and\
                     App().settings.get_value("show-genres"):
@@ -468,7 +468,7 @@ class Container(Gtk.Overlay):
         """
         if self.__list_two_ids:
             self.__list_two.select_ids(self.__list_two_ids)
-            self.__list_one_ids = []
+            self.__list_two_ids = []
 
     def __update_playlists(self, playlists, playlist_id):
         """
@@ -910,6 +910,7 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param list as SelectionList
         """
+        Logger.debug("Container::__on_list_one_selected()")
         view = None
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
@@ -983,6 +984,7 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param selection_list as SelectionList
         """
+        Logger.debug("Container::__on_list_two_selected()")
         genre_ids = self.__list_one.selected_ids
         selected_ids = self.__list_two.selected_ids
         if not selected_ids or not genre_ids:

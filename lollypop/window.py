@@ -168,7 +168,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             Move paned child to stack
             @param b as bool
         """
-        adaptive_stack = self._adaptive_stack
+        adaptive_stack = self._adapative_stack if\
+            self._adaptive_stack is not None else\
+            not b
         AdaptiveWindow._set_adaptive_stack(self, b)
         if b and not adaptive_stack:
             self.__container.show_sidebar(True)
@@ -537,16 +539,13 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param widget as Gtk.Widget
         """
         self.setup_window()
-        show_sidebar = App().settings.get_value("show-sidebar")
         if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
-        # We delay show_sidebar() to be sure inital stacked mode is set
-        self.__container.show_sidebar(show_sidebar)
         # Here we ignore initial configure events
-        GLib.timeout_add(200, self.__connect_state_signals)
+        self.__connect_state_signals()
 
     def __on_current_changed(self, player):
         """

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk
+from gi.repository import GObject, Gtk, GLib
 
 
 class AdaptiveWindow:
@@ -35,7 +35,8 @@ class AdaptiveWindow:
         """
             Init adaptive mode, Gtk.Window should be initialised
         """
-        self._adaptive_stack = False
+        self._adaptive_stack = None
+        self.__configure_timeout_id = None
         self.__stack = None
         self.__paned = []
         self.connect("configure-event", self.__on_configure_event)
@@ -84,16 +85,6 @@ class AdaptiveWindow:
         if self._adaptive_stack:
             self.__stack.set_visible_child(self.__paned[0][1])
 
-    def do_adaptive_mode(self, size):
-        """
-            Handle basic adaptive mode
-            @param size as (int, int)
-        """
-        if size[0] < self._ADAPTIVE_STACK:
-            self._set_adaptive_stack(True)
-        else:
-            self._set_adaptive_stack(False)
-
 #############
 # Protected #
 #############
@@ -102,6 +93,9 @@ class AdaptiveWindow:
             Move paned child to stack
             @param b as bool
         """
+        # Do adaptive on init
+        if self._adaptive_stack is None:
+            self._adaptive_stack = not b
         if b and not self._adaptive_stack:
             self.__stack.set_transition_type(Gtk.StackTransitionType.NONE)
             self._adaptive_stack = True
@@ -132,11 +126,30 @@ class AdaptiveWindow:
 ############
 # Private  #
 ############
+    def __do_adaptive_mode(self, width):
+        """
+            Handle basic adaptive mode
+            @param width as int
+        """
+        self.__configure_timeout_id = None
+        if width < self._ADAPTIVE_STACK:
+            self._set_adaptive_stack(True)
+        else:
+            self._set_adaptive_stack(False)
+
     def __on_configure_event(self, widget, event):
         """
             Delay event
-            @param: widget as Gtk.Window
-            @param: event as Gdk.Event
+            @param widget as Gtk.Window
+            @param event as Gdk.EventConfigure
         """
-        size = self.get_size()
-        self.do_adaptive_mode(size)
+        if self.__configure_timeout_id is not None:
+            GLib.source_remove(self.__configure_timeout_id)
+        width = widget.get_size()[0]
+        if self._adaptive_stack is None:
+            self.__configure_timeout_id = GLib.timeout_add(
+                                                       250,
+                                                       self.__do_adaptive_mode,
+                                                       width)
+        else:
+            self.__do_adaptive_mode(width)
