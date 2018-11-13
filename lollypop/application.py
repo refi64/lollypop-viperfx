@@ -224,6 +224,9 @@ class Application(Gtk.Application):
             Quit Lollypop
             @param vacuum as bool
         """
+        if not self.settings.get_value("save-state"):
+            self.settings.set_value("list-one-ids", GLib.Variant("ai", []))
+            self.settings.set_value("list-two-ids", GLib.Variant("ai", []))
         self.window.container.save_internals()
         # Then vacuum db
         if vacuum:
