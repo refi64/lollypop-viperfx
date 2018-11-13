@@ -307,6 +307,9 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                         self.play()
                     else:
                         self.pause()
+                    position = load(open(LOLLYPOP_DATA_PATH + "/position.bin",
+                                    "rb"))
+                    self.seek(position / Gst.SECOND)
                 else:
                     Logger.info("Player::restore_state(): track missing")
         except Exception as e:

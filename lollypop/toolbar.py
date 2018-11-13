@@ -10,9 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gst
+from gi.repository import Gtk
 
-from lollypop.define import App, WindowSize, LOLLYPOP_DATA_PATH
+from lollypop.define import App, WindowSize
 from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
@@ -100,19 +100,6 @@ class Toolbar(Gtk.HeaderBar):
         """
         if not self.__toolbar_title.show_volume_control:
             self.__toolbar_title.update_position(value)
-
-    def set_mark(self):
-        """
-            Mark toolbar with previously saved position
-        """
-        try:
-            if App().settings.get_value("save-state"):
-                from pickle import load
-                position = load(open(LOLLYPOP_DATA_PATH + "/position.bin",
-                                     "rb"))
-                self.__toolbar_title.add_mark(position / Gst.SECOND)
-        except Exception as e:
-            Logger.error("Toolbar::restore_state(): %s" % e)
 
     def on_adaptive_changed(self, window, b):
         self.__toolbar_playback.on_adaptive_changed(window, b)

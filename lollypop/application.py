@@ -217,9 +217,6 @@ class Application(Gtk.Application):
             self.window.connect("delete-event", self.__hide_on_delete)
             self.window.show()
             self.player.restore_state()
-            # We add to mainloop as we want to run
-            # after player::restore_state() signals
-            GLib.idle_add(self.window.toolbar.set_mark)
             self.__preload_portal()
 
     def quit(self, vacuum=False):
