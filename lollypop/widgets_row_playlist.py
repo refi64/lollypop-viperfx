@@ -92,13 +92,8 @@ class PlaylistRow(Row, DNDRow):
         """
             Update artwork state based on previous
         """
-        if self.get_parent() is not None:
-            position = self.get_parent().get_children().index(self)
-        else:
-            position = None
         if self.previous_row is None or\
-                self.previous_row.track.album.id != self.track.album.id or\
-                position == 0:
+                self.previous_row.track.album.id != self.track.album.id:
             self.show_artwork()
         else:
             self.hide_artwork()

@@ -204,30 +204,37 @@ class PlaylistsWidget(Gtk.Grid):
         """
             Move a track from right to left and vice versa
         """
+        # Force linking as we are going to move tracks
+        # Allow us to not garbage chained list
+        self.__linking(True)
         if len(self.__tracks_widget_right.get_children()) >\
                 len(self.__tracks_widget_left.get_children()):
             child = self.__tracks_widget_right.get_children()[0]
             self.__tracks_widget_right.remove(child)
             self.__tracks_widget_left.add(child)
         elif len(self.__tracks_widget_left.get_children()) >\
-                len(self.__tracks_widget_right.get_children()):
+                len(self.__tracks_widget_right.get_children()) + 1:
             child = self.__tracks_widget_left.get_children()[-1]
             self.__tracks_widget_left.remove(child)
             self.__tracks_widget_right.insert(child, 0)
-        for row in self.children:
-            row.update_artwork_state()
+        self.__linking(self.__orientation == Gtk.Orientation.VERTICAL)
 
-    def __linking(self):
+    def __linking(self, link):
         """
             Handle linking between left and right
+            @param link as bool
         """
         if len(self.__tracks_widget_left) == 0 or\
                 len(self.__tracks_widget_right) == 0:
             return
         last_left = self.__tracks_widget_left.get_children()[-1]
         first_right = self.__tracks_widget_right.get_children()[0]
-        last_left.set_next_row(first_right)
-        first_right.set_previous_row(last_left)
+        if link:
+            last_left.set_next_row(first_right)
+            first_right.set_previous_row(last_left)
+        else:
+            last_left.set_next_row(None)
+            first_right.set_previous_row(None)
 
     def __add_tracks(self, tracks, widget, pos, previous_row=None):
         """
@@ -244,7 +251,6 @@ class PlaylistsWidget(Gtk.Grid):
         if not tracks:
             if widget == self.__tracks_widget_right:
                 self.__loading |= Loading.RIGHT
-                self.__linking()
             elif widget == self.__tracks_widget_left:
                 self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:
@@ -293,10 +299,12 @@ class PlaylistsWidget(Gtk.Grid):
             self.__grid.set_property("valign", Gtk.Align.START)
             self.__grid.set_column_spacing(0)
             orientation = Gtk.Orientation.VERTICAL
+            self.__linking(True)
         else:
             self.__grid.set_property("valign", Gtk.Align.FILL)
             self.__grid.set_column_spacing(5)
             orientation = Gtk.Orientation.HORIZONTAL
+            self.__linking(False)
         if orientation != self.__orientation:
             self.__orientation = orientation
             redraw = True
