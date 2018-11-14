@@ -21,9 +21,9 @@ from lollypop.define import App, Type, ResponsiveType, SelectionListMask
 from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
-from lollypop.view_container import ViewContainer
 from lollypop.view import View, MessageView
 from lollypop.progressbar import ProgressBar
+from lollypop.window_adaptive import AdaptiveStack
 from lollypop.shown import ShownLists
 from lollypop.logger import Logger
 
@@ -49,7 +49,7 @@ class Container(Gtk.Overlay):
         # Index will start at -VOLUMES
         self.__devices = {}
         self.__devices_index = Type.DEVICES
-        self.__stack = ViewContainer(300)
+        self.__stack = AdaptiveStack()
         self.__stack.show()
 
         self.__setup_view()
@@ -114,7 +114,7 @@ class Container(Gtk.Overlay):
         """
         view = self.__stack.get_visible_child()
         if view is not None:
-            self.__stack.destroy_non_visible(None)
+            view.stop()
 
     def show_genres(self, show):
         """
@@ -124,17 +124,6 @@ class Container(Gtk.Overlay):
         self.__list_two.hide()
         self.update_list_one()
         self.__list_one.select_ids([Type.POPULARS])
-
-    def destroy_current_view(self):
-        """
-            Destroy current view
-        """
-        view = self.__stack.get_visible_child()
-        for child in self.__stack.get_children():
-            if child != view:
-                self.__stack.set_visible_child(child)
-                self.__stack.destroy_non_visible(child)
-                break
 
     def reload_view(self):
         """
@@ -304,6 +293,7 @@ class Container(Gtk.Overlay):
             @param data as object
             @param switch as bool
         """
+        self.__destroy_visible()
         App().window.emit("can-go-back-changed", True)
         if item_id in [Type.POPULARS,
                        Type.LOVED,
@@ -335,22 +325,18 @@ class Container(Gtk.Overlay):
         else:
             view = self.__get_view_artists([], [item_id])
         view.show()
-        if view not in self.__stack.get_children():
-            self.__stack.add(view)
-        if switch:
-            self.__stack.set_visible_child(view)
-        if App().settings.get_value("show-sidebar"):
-            self.__stack.destroy_non_visible(view)
+        self.__stack.add(view)
+        self.__stack.set_visible_child(view)
 
     def show_artists_view(self):
         """
             Show artists view (rounded artwork)
         """
+        self.__destroy_visible()
         App().window.emit("can-go-back-changed", False)
         view = self.__get_view_artists_rounded()
         App().window.emit("show-can-go-back", True)
         self.__stack.set_visible_child(view)
-        self.__stack.destroy_non_visible(view)
 
     @property
     def view(self):
@@ -425,6 +411,14 @@ class Container(Gtk.Overlay):
 ############
 # PRIVATE  #
 ############
+    def __destroy_visible(self):
+        """
+            Destroy visible child
+        """
+        visible = self.__stack.get_visible_child()
+        if visible is not None:
+            visible.destroy()
+
     def __pulse(self):
         """
             Make progress bar pulse while visible
@@ -644,10 +638,10 @@ class Container(Gtk.Overlay):
         if view is None:
             view = RoundedArtistsView()
             self.__stack.add(view)
-        loader = Loader(target=load, view=view,
-                        on_finished=lambda r: setup(*r))
-        loader.start()
-        view.show()
+            loader = Loader(target=load, view=view,
+                            on_finished=lambda r: setup(*r))
+            loader.start()
+            view.show()
         return view
 
     def __get_view_device(self, device_id):
@@ -946,8 +940,10 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param list as SelectionList
         """
-        App().window.emit("show-can-go-back", False)
-        App().window.emit("can-go-back-changed", False)
+        self.__destroy_visible()
+        if not App().window.adaptive_is_on:
+            App().window.emit("show-can-go-back", False)
+            App().window.emit("can-go-back-changed", False)
         Logger.debug("Container::__on_list_one_selected()")
         view = None
         selected_ids = self.__list_one.selected_ids
@@ -1008,7 +1004,6 @@ class Container(Gtk.Overlay):
                 self.__stack.set_visible_child(self.__list_two)
             else:
                 self.__stack.set_visible_child(view)
-            self.__stack.destroy_non_visible(view)
 
     def __on_list_populated(self, selection_list):
         """
@@ -1023,6 +1018,7 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param selection_list as SelectionList
         """
+        self.__destroy_visible()
         Logger.debug("Container::__on_list_two_selected()")
         genre_ids = self.__list_one.selected_ids
         selected_ids = self.__list_two.selected_ids
@@ -1038,7 +1034,6 @@ class Container(Gtk.Overlay):
             view = self.__get_view_artists(genre_ids, selected_ids)
         self.__stack.add(view)
         self.__stack.set_visible_child(view)
-        self.__stack.destroy_non_visible(view)
 
     def __on_pass_focus(self, selection_list):
         """

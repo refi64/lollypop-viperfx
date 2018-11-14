@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
 from lollypop.container import Container
-from lollypop.define import App, WindowSize, Type
+from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
@@ -124,21 +124,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             self.do_adaptive_mode(self._ADAPTIVE_STACK)
         else:
             self.do_adaptive_mode(size[0])
-
-    def go_back(self):
-        """
-            Go back in container stack
-        """
-        if self.__container.list_one.get_visible() and\
-                self.__container.list_one.selected_ids[0] != Type.ARTISTS:
-            AdaptiveWindow.go_back(self)
-        elif self.__container.stack.children:
-            self.__container.stack.destroy_view(
-                self.__container.stack.get_visible_child())
-            child = self.__container.stack.children[-1]
-            self.__container.stack.set_visible_child(child)
-            if not self.__container.stack.children:
-                self.emit("can-go-back-changed", False)
 
     def do_event(self, event):
         """
@@ -344,7 +329,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             Setup window content
         """
         self.__container = Container()
-        self.add_stack(self.container.stack)
+        self.set_stack(self.container.stack)
         self.add_paned(self.container.paned_one, self.container.list_one)
         self.add_paned(self.container.paned_two, self.container.list_two)
         self.__container.show()

@@ -16,6 +16,7 @@ from gettext import gettext as _
 from locale import strcoll
 from hashlib import sha256
 
+from lollypop.view import BaseView
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
@@ -122,7 +123,7 @@ class DefaultItemsMenu(Gio.Menu):
                 GLib.Variant("ai", [rowid]))
 
 
-class SelectionList(Gtk.Overlay):
+class SelectionList(BaseView, Gtk.Overlay):
     """
         A list for artists/genres
     """
@@ -138,6 +139,7 @@ class SelectionList(Gtk.Overlay):
             @param base_type as SelectionListMask
         """
         Gtk.Overlay.__init__(self)
+        BaseView.__init__(self)
         self.__base_type = base_type
         self.__timeout = None
         self.__modifier = False
@@ -352,15 +354,27 @@ class SelectionList(Gtk.Overlay):
             lists.append((Type.SEPARATOR, "", ""))
         return lists
 
-    # Needed because we embed this widget in minimode
-    def disable_overlay(self):
-        pass
-
     def select_first(self):
         """
             Select first available item
         """
         self.__selection.select_iter(self.__model[0].iter)
+
+    @property
+    def should_ignore(self):
+        """
+            True if view should be ignored by stack manager
+            @return bool
+        """
+        return True
+
+    @property
+    def should_destroy(self):
+        """
+            True if view should be destroyed
+            @return bool
+        """
+        return False
 
     @property
     def mask(self):

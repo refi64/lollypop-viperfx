@@ -16,9 +16,28 @@ from time import time
 
 from lollypop.define import App
 from lollypop.logger import Logger
+from lollypop.window_adaptive import AdaptiveView
 
 
-class View(Gtk.Grid):
+class BaseView(AdaptiveView):
+    """
+        Common views members
+    """
+
+    def __init__(self):
+        AdaptiveView.__init__(self)
+
+    def populate(self):
+        pass
+
+    def stop(self):
+        pass
+
+    def disable_overlay(self):
+        pass
+
+
+class View(BaseView, Gtk.Grid):
     """
         Generic view
     """
@@ -28,6 +47,7 @@ class View(Gtk.Grid):
             Init view
             @param filtered as bool
         """
+        BaseView.__init__(self)
         Gtk.Grid.__init__(self)
         self.__overlayed = None
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -70,12 +90,6 @@ class View(Gtk.Grid):
         self.connect("map", self._on_map)
         self.connect("unmap", self._on_unmap)
 
-    def populate(self):
-        pass
-
-    def stop(self):
-        pass
-
     def enable_filter(self):
         """
            Filter the view
@@ -106,14 +120,6 @@ class View(Gtk.Grid):
             self.__overlayed = widget
         elif self.__overlayed == widget:
             self.__overlayed = None
-
-    @property
-    def should_destroy(self):
-        """
-            True if view should be destroyed
-            @return bool
-        """
-        return True
 
     @property
     def filtered(self):
