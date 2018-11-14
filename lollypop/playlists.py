@@ -231,10 +231,10 @@ class Playlists(GObject.GObject):
     def get(self):
         """
             Return availables playlists
-            @return array of (id, string)
+            @return [int, str, str]
         """
         with SqlCursor(self) as sql:
-            result = sql.execute("SELECT rowid, name\
+            result = sql.execute("SELECT rowid, name, name\
                                   FROM playlists\
                                   ORDER BY name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
@@ -383,7 +383,7 @@ class Playlists(GObject.GObject):
         if playlist_id == Type.LOVED:
             return self.LOVED
         elif playlist_id < 0:
-            for (id, name) in ShownPlaylists.get(True):
+            for (id, name, name) in ShownPlaylists.get(True):
                 if id == playlist_id:
                     return name
 

@@ -647,11 +647,11 @@ class Container(Gtk.Overlay):
         view = self.view_artists_rounded
         if view is None:
             view = RoundedArtistsView()
+            self.__stack.add(view)
         loader = Loader(target=load, view=view,
                         on_finished=lambda r: setup(*r))
         loader.start()
         view.show()
-        self.__stack.add(view)
         return view
 
     def __get_view_device(self, device_id):
@@ -950,6 +950,7 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param list as SelectionList
         """
+        App().window.emit("show-can-go-back", False)
         Logger.debug("Container::__on_list_one_selected()")
         view = None
         selected_ids = self.__list_one.selected_ids
@@ -983,6 +984,7 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums_decades()
         elif selected_ids[0] == Type.ARTISTS:
             view = self.__get_view_artists_rounded(False)
+            App().window.emit("show-can-go-back", True)
         elif selection_list.mask & SelectionListMask.ARTISTS:
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])

@@ -71,7 +71,7 @@ class ShownPlaylists:
         if get_all or Type.POPULARS in wanted:
             lists.append((Type.POPULARS, _("Popular tracks"), ""))
         if get_all or Type.LOVED in wanted:
-            lists.append((Type.LOVED, App().playlists.LOVED), "")
+            lists.append((Type.LOVED, App().playlists.LOVED, ""))
         if get_all or Type.RECENTS in wanted:
             lists.append((Type.RECENTS, _("Recently played"), ""))
         if get_all or Type.NEVER in wanted:

@@ -83,10 +83,7 @@ class RoundedArtistsView(FlowBoxView):
             @param flowbox as Gtk.Flowbox
             @param widget as ArtistRoundedWidget
         """
-        if App().settings.get_value("show-sidebar"):
-            App().window.container.show_artists_albums([widget.data])
-        else:
-            App().window.container.show_view(widget.data)
+        App().window.container.show_view(widget.data)
 
     def _on_map(self, widget):
         """
