@@ -220,7 +220,7 @@ class AdaptiveWindow:
                                                  self.__on_configure_event)
 
     @property
-    def adaptive_is_on(self):
+    def is_adaptive(self):
         """
             True if adaptive is on
             @return bool

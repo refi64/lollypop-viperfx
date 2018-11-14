@@ -67,7 +67,7 @@ class NextPopover(Gtk.Popover):
         """
         return not self.__inhibited and\
             App().player.is_party and\
-            not App().window.adaptive_is_on
+            not App().window.is_adaptive
 
     def inhibit(self, b):
         """

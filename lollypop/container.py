@@ -188,14 +188,14 @@ class Container(Gtk.Overlay):
         view = self.view_artists_rounded
         if view is not None:
             view.destroy()
-        if show or App().window.adaptive_is_on:
+        if show or App().window.is_adaptive:
             # We are entering paned stack mode
             self.__list_one.select_ids()
             self.__list_two_ids = App().settings.get_value("list-two-ids")
             self.__list_one.select_ids(
                 App().settings.get_value("list-one-ids"))
             self.__list_one.show()
-            if not App().window.adaptive_is_on:
+            if not App().window.is_adaptive:
                 App().window.emit("show-can-go-back", False)
             if self.__list_one.count == 0:
                 self.update_list_one()
@@ -203,7 +203,7 @@ class Container(Gtk.Overlay):
                     App().settings.get_value("show-genres") and\
                     self.__list_two_ids:
                 self.__list_two.show()
-        elif not App().window.adaptive_is_on:
+        elif not App().window.is_adaptive:
             if self.__list_one.get_visible():
                 list_two_ids = App().settings.get_value("list-two-ids")
                 list_one_ids = App().settings.get_value("list-one-ids")
@@ -693,7 +693,7 @@ class Container(Gtk.Overlay):
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
         self.__stop_current_view()
-        if App().window.adaptive_is_on:
+        if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ResponsiveType.LIST, artist_ids, genre_ids)
         else:
@@ -725,7 +725,7 @@ class Container(Gtk.Overlay):
                 decades.append(decade)
             return decades
         self.__stop_current_view()
-        if App().window.adaptive_is_on:
+        if App().window.is_adaptive:
             view = Gtk.Grid()
         else:
             from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
@@ -748,7 +748,7 @@ class Container(Gtk.Overlay):
             return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]
         self.__stop_current_view()
-        if App().window.adaptive_is_on:
+        if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ResponsiveType.LIST)
         else:
@@ -800,7 +800,7 @@ class Container(Gtk.Overlay):
                     for album_id in items]
 
         self.__stop_current_view()
-        if App().window.adaptive_is_on:
+        if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ResponsiveType.LIST)
         else:
@@ -941,7 +941,7 @@ class Container(Gtk.Overlay):
             @param list as SelectionList
         """
         self.__destroy_visible()
-        if not App().window.adaptive_is_on:
+        if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
         Logger.debug("Container::__on_list_one_selected()")
@@ -988,12 +988,12 @@ class Container(Gtk.Overlay):
         else:
             view = self.__get_view_albums(selected_ids, [])
         if view is not None:
-            if App().window.adaptive_is_on:
+            if App().window.is_adaptive:
                 App().window.emit("can-go-back-changed", True)
             if view not in self.__stack.get_children():
                 self.__stack.add(view)
             # If we are in paned stack mode, show list two if wanted
-            if App().window.adaptive_is_on\
+            if App().window.is_adaptive\
                     and self.__list_two.is_visible()\
                     and (
                         selected_ids[0] >= 0 or
