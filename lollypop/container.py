@@ -616,13 +616,16 @@ class Container(Gtk.Overlay):
             if hasattr(child, "stop"):
                 child.stop()
 
-    def __get_view_artists_rounded(self):
+    def __get_view_artists_rounded(self, static=True):
         """
             Get rounded artists view
+            @param static as bool, show static entries
             @return view
         """
         def load():
-            ids = list(App().settings.get_value("shown-album-lists"))
+            ids = []
+            if static:
+                ids = list(App().settings.get_value("shown-album-lists"))
             ids += App().artists.get_ids()
             return ids
         self.__stop_current_view()
@@ -954,6 +957,8 @@ class Container(Gtk.Overlay):
             view = self.__get_view_radios()
         elif selected_ids[0] == Type.YEARS:
             view = self.__get_view_albums_decades()
+        elif selected_ids[0] == Type.ARTISTS:
+            view = self.__get_view_artists_rounded(False)
         elif selection_list.type & SelectionListType.ARTISTS:
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])

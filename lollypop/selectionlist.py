@@ -42,7 +42,7 @@ class DefaultItemsMenu(Gio.Menu):
         if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
                      Type.ALL, Type.RECENTS, Type.YEARS,
                      Type.RANDOMS, Type.NEVER,
-                     Type.PLAYLISTS]:
+                     Type.PLAYLISTS, Type.ARTISTS]:
             startup_menu = Gio.Menu()
             action = Gio.SimpleAction(name="default_selection_id")
             App().add_action(action)

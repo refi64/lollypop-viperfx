@@ -262,9 +262,8 @@ def get_icon_name(object_id, type=SelectionListType.ARTISTS):
     elif object_id == Type.PLAYLISTS:
         icon = "emblem-documents-symbolic"
     elif object_id == Type.ALL:
-        if type & SelectionListType.ARTISTS:
-            icon = "media-optical-cd-audio-symbolic"
-        else:
+        icon = "media-optical-cd-audio-symbolic"
+    elif object_id == Type.ARTISTS:
             icon = "avatar-default-symbolic"
     elif object_id == Type.COMPILATIONS:
         icon = "system-users-symbolic"

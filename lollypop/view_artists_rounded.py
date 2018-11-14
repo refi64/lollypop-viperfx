@@ -47,7 +47,7 @@ class RoundedArtistsView(FlowBoxView):
             Start lazy loading
             @param item ids as [int]
         """
-        for item_id in [Type.ALL, Type.USB_DISKS]:
+        for item_id in [Type.ALL, Type.ARTISTS, Type.USB_DISKS]:
             if item_id in item_ids:
                 item_ids.remove(item_id)
         art_size = App().settings.get_value("cover-size").get_int32()
@@ -59,7 +59,10 @@ class RoundedArtistsView(FlowBoxView):
             @param flowbox as Gtk.Flowbox
             @param widget as ArtistRoundedWidget
         """
-        App().window.container.show_view(widget.data)
+        if App().settings.get_value("show-sidebar"):
+            App().window.container.show_artists_albums([widget.data])
+        else:
+            App().window.container.show_view(widget.data)
 
     def _on_map(self, widget):
         """

@@ -268,7 +268,6 @@ class Playlists(GObject.GObject):
     def get_track_uris(self, playlist_id):
         """
             Return availables track uris for playlist
-            If playlist name == Type.ALL, then return all tracks from db
             @param playlist name as str
             @return [str]
         """
@@ -281,7 +280,6 @@ class Playlists(GObject.GObject):
     def get_track_ids(self, playlist_id):
         """
             Return availables track ids for playlist
-            If playlist name == Type.ALL, then return all tracks from db
             @param playlist_id as int
             @return [int]
         """
@@ -312,7 +310,6 @@ class Playlists(GObject.GObject):
     def get_tracks(self, playlist_id):
         """
             Return availables tracks for playlist
-            If playlist name == Type.ALL, then return all tracks from db
             @param playlist_id as int
             @return [Track]
         """

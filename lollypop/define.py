@@ -118,6 +118,7 @@ class Type:
     SEARCH = -10
     NOPARTY = -11
     YEARS = -12
+    ARTISTS = -13
     ALL = -100
     USB_DISKS = -200
     DEVICES = -1000

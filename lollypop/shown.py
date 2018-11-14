@@ -45,10 +45,9 @@ class ShownAlbumlists:
             if get_all or Type.YEARS in wanted:
                 lists.append((Type.YEARS, _("Years")))
             if get_all or Type.ALL in wanted:
-                if mask & SelectionListType.ARTISTS:
-                    lists.append((Type.ALL, _("All albums")))
-                else:
-                    lists.append((Type.ALL, _("All artists")))
+                lists.append((Type.ALL, _("All albums")))
+            if get_all or Type.ARTISTS in wanted:
+                lists.append((Type.ARTISTS, _("All artists")))
         if get_all or (mask & SelectionListType.COMPILATIONS and
                        Type.COMPILATIONS in wanted):
             lists.append((Type.COMPILATIONS, _("Compilations")))
