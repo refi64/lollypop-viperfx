@@ -345,7 +345,6 @@ class Container(Gtk.Overlay):
         """
         App().window.emit("can-go-back-changed", False)
         view = self.__get_view_artists_rounded()
-        self.__stack.add(view)
         App().window.emit("show-can-go-back", True)
         self.__stack.set_visible_child(view)
         self.__stack.destroy_non_visible(view)
@@ -610,11 +609,6 @@ class Container(Gtk.Overlay):
             @param static as bool, show static entries
             @return view
         """
-        def on_populated(ids):
-            view.disconnect_by_func(on_populated)
-            for dev in self.__devices.values():
-                view.insert_item((dev.id, dev.name, dev.name))
-
         def load():
             ids = App().artists.get()
             compilations = App().albums.get_compilation_ids()
@@ -627,6 +621,8 @@ class Container(Gtk.Overlay):
                 if compilation_ids:
                     mask |= SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
+            for dev in self.__devices.values():
+                items.append((dev.id, dev.name, dev.name))
             items += artist_ids
             view.populate(items)
 
@@ -636,11 +632,11 @@ class Container(Gtk.Overlay):
             if isinstance(view, RoundedArtistsView):
                 return view
         view = RoundedArtistsView()
-        view.connect("populated", on_populated)
         loader = Loader(target=load, view=view,
                         on_finished=lambda r: setup(*r))
         loader.start()
         view.show()
+        self.__stack.add(view)
         return view
 
     def __get_view_device(self, device_id):
