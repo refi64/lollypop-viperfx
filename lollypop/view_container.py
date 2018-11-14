@@ -73,6 +73,7 @@ class ViewContainer(Gtk.Stack):
         children = []
         for child in self.get_children():
             if child not in self.__destroyed and\
+                    not isinstance(child, DeviceView) and\
                     child != self.get_visible_child():
                 children.append(child)
         return children
