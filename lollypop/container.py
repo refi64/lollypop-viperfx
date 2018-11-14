@@ -623,7 +623,9 @@ class Container(Gtk.Overlay):
         def setup(artist_ids, compilation_ids):
             items = []
             if static:
-                mask = SelectionListMask.LIST_ONE | SelectionListMask.ARTISTS
+                mask = SelectionListMask.LIST_ONE |\
+                       SelectionListMask.ARTISTS |\
+                       SelectionListMask.ALL_ARTISTS
                 if compilation_ids:
                     mask |= SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
