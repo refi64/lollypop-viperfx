@@ -230,11 +230,11 @@ class DeviceView(View):
             return (artists, compilations)
 
         def setup(artists, compilations):
-            items = [(Type.ALL, _("Synced albums"))]
-            items.append((Type.PLAYLISTS, _("Playlists")))
+            items = [(Type.ALL, _("Synced albums"), "")]
+            items.append((Type.PLAYLISTS, _("Playlists"), ""))
             if compilations:
-                items.append((Type.COMPILATIONS, _("Compilations")))
-                items.append((Type.SEPARATOR, ""))
+                items.append((Type.COMPILATIONS, _("Compilations"), ""))
+                items.append((Type.SEPARATOR, "", ""))
             items += artists
             self.__selection_list.populate(items)
         loader = Loader(target=load, view=self.__selection_list,
