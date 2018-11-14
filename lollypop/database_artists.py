@@ -147,7 +147,7 @@ class ArtistsDatabase:
         """
             Get all available album artists
             @param genre ids as [int]
-            @return Array of (artist id as int, artist name as string)
+            @return [int, str, str]
         """
         with SqlCursor(App().db) as sql:
             result = []

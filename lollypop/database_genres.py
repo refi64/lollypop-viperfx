@@ -103,7 +103,8 @@ class GenresDatabase:
             @return [(id as int, name as string)]
         """
         with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT DISTINCT genres.rowid, genres.name\
+            result = sql.execute("SELECT DISTINCT\
+                                  genres.rowid, genres.name,genres.name\
                                   FROM genres\
                                   ORDER BY genres.name\
                                   COLLATE NOCASE COLLATE LOCALIZED")

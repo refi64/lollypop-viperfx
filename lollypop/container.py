@@ -17,13 +17,14 @@ from gettext import gettext as _
 from urllib.parse import urlparse
 from random import randint
 
-from lollypop.define import App, Type, ResponsiveType, SelectionListType
+from lollypop.define import App, Type, ResponsiveType, SelectionListMask
 from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
 from lollypop.view import View, MessageView
 from lollypop.progressbar import ProgressBar
+from lollypop.shown import ShownLists
 from lollypop.logger import Logger
 
 
@@ -439,8 +440,8 @@ class Container(Gtk.Overlay):
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self.__list_one = SelectionList(SelectionListType.LIST_ONE)
-        self.__list_two = SelectionList(SelectionListType.LIST_TWO)
+        self.__list_one = SelectionList(SelectionListMask.LIST_ONE)
+        self.__list_two = SelectionList(SelectionListMask.LIST_TWO)
         self.__list_one.connect("item-selected", self.__on_list_one_selected)
         self.__list_one.connect("populated", self.__on_list_populated)
         self.__list_one.connect("pass-focus", self.__on_pass_focus)
@@ -526,8 +527,8 @@ class Container(Gtk.Overlay):
             return genres
 
         def setup(genres):
-            selection_list.mark_as(SelectionListType.GENRE)
-            items = selection_list.get_headers()
+            selection_list.mark_as(SelectionListMask.GENRE)
+            items = selection_list.get_headers(selection_list.mask)
             items += genres
             if update:
                 selection_list.update_values(items)
@@ -551,11 +552,11 @@ class Container(Gtk.Overlay):
             return (artists, compilations)
 
         def setup(artists, compilations):
-            mask = SelectionListType.ARTISTS
+            mask = SelectionListMask.ARTISTS
             if compilations:
-                mask |= SelectionListType.COMPILATIONS
+                mask |= SelectionListMask.COMPILATIONS
             selection_list.mark_as(mask)
-            items = selection_list.get_headers()
+            items = selection_list.get_headers(selection_list.mask)
             items += artists
             if update:
                 selection_list.update_values(items)
@@ -579,7 +580,7 @@ class Container(Gtk.Overlay):
             @param update as bool
             @param type as int
         """
-        self.__list_two.mark_as(SelectionListType.PLAYLISTS)
+        self.__list_two.mark_as(SelectionListMask.PLAYLISTS)
         if type == Type.PLAYLISTS:
             items = self.__list_two.get_playlist_headers()
             items += App().playlists.get()
@@ -612,14 +613,22 @@ class Container(Gtk.Overlay):
         def on_populated(ids):
             view.disconnect_by_func(on_populated)
             for dev in self.__devices.values():
-                view.insert_item(dev.id, dev.name)
+                view.insert_item((dev.id, dev.name, dev.name))
 
         def load():
-            ids = []
+            ids = App().artists.get()
+            compilations = App().albums.get_compilation_ids()
+            return (ids, compilations)
+
+        def setup(artist_ids, compilation_ids):
+            items = []
             if static:
-                ids = list(App().settings.get_value("shown-album-lists"))
-            ids += App().artists.get_ids()
-            return ids
+                mask = SelectionListMask.LIST_ONE | SelectionListMask.ARTISTS
+                if compilation_ids:
+                    mask |= SelectionListMask.COMPILATIONS
+                items = ShownLists.get(mask)
+            items += artist_ids
+            view.populate(items)
 
         from lollypop.view_artists_rounded import RoundedArtistsView
         self.__stop_current_view()
@@ -628,7 +637,8 @@ class Container(Gtk.Overlay):
                 return view
         view = RoundedArtistsView()
         view.connect("populated", on_populated)
-        loader = Loader(target=load, view=view)
+        loader = Loader(target=load, view=view,
+                        on_finished=lambda r: setup(*r))
         loader.start()
         view.show()
         return view
@@ -878,10 +888,11 @@ class Container(Gtk.Overlay):
             self.__devices[self.__devices_index] = dev
             if show:
                 if App().settings.get_value("show-sidebar"):
-                    self.__list_one.add_value((dev.id, dev.name))
+                    self.__list_one.add_value((dev.id, dev.name, dev.name))
                 else:
-                    self.__get_view_artists_rounded().insert_item(dev.id,
-                                                                  dev.name)
+                    self.__get_view_artists_rounded().insert_item((dev.id,
+                                                                   dev.name,
+                                                                   dev.name))
 
     def __remove_device(self, mount):
         """
@@ -938,7 +949,7 @@ class Container(Gtk.Overlay):
             self.__update_list_playlists(False, selected_ids[0])
             self.__list_two.show()
         elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
-                self.__list_one.type & SelectionListType.GENRE:
+                self.__list_one.mask & SelectionListMask.GENRE:
             self.__update_list_artists(self.__list_two, selected_ids, False)
             self.__list_two.show()
         else:
@@ -961,7 +972,7 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums_decades()
         elif selected_ids[0] == Type.ARTISTS:
             view = self.__get_view_artists_rounded(False)
-        elif selection_list.type & SelectionListType.ARTISTS:
+        elif selection_list.mask & SelectionListMask.ARTISTS:
             if selected_ids[0] == Type.ALL:
                 view = self.__get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:
@@ -995,7 +1006,7 @@ class Container(Gtk.Overlay):
             @param selection_list as SelectionList
         """
         for dev in self.__devices.values():
-            self.__list_one.add_value((dev.id, dev.name))
+            self.__list_one.add_value((dev.id, dev.name, dev.name))
 
     def __on_list_two_selected(self, selection_list):
         """
@@ -1058,7 +1069,7 @@ class Container(Gtk.Overlay):
         if App().settings.get_value("show-genres"):
             if add:
                 genre_name = App().genres.get_name(genre_id)
-                self.__list_one.add_value((genre_id, genre_name))
+                self.__list_one.add_value((genre_id, genre_name, genre_name))
             else:
                 self.__list_one.remove_value(genre_id)
 
@@ -1071,17 +1082,26 @@ class Container(Gtk.Overlay):
         """
         artist_name = App().artists.get_name(artist_id)
         sortname = App().artists.get_sortname(artist_id)
-        if App().settings.get_value("show-genres"):
-            l = self.__list_two
-            artist_ids = App().artists.get_ids(self.__list_one.selected_ids)
-            if artist_id not in artist_ids:
-                return
+        if App().settings.get_value("show-sidebar"):
+            if App().settings.get_value("show-genres"):
+                l = self.__list_two
+                artist_ids = App().artists.get_ids(
+                    self.__list_one.selected_ids)
+                if artist_id not in artist_ids:
+                    return
+            else:
+                l = self.__list_one
+            if add:
+                l.add_value((artist_id, artist_name, sortname))
+            else:
+                l.remove_value(artist_id)
         else:
-            l = self.__list_one
-        if add:
-            l.add_value((artist_id, artist_name, sortname))
-        else:
-            l.remove_value(artist_id)
+            if add:
+                self.__get_view_artists_rounded().insert_item((artist_id,
+                                                               artist_name,
+                                                               sortname))
+            else:
+                self.__get_view_artists_rounded().remove_item(artist_id)
 
     def __on_mount_added(self, vm, mount):
         """

@@ -12,12 +12,12 @@
 
 from gettext import gettext as _
 
-from lollypop.define import Type, App, SelectionListType
+from lollypop.define import Type, App, SelectionListMask
 
 
-class ShownAlbumlists:
+class ShownLists:
     """
-        Handle shown album lists
+        Handle shown lists
     """
     def get(mask, get_all=False):
         """
@@ -27,33 +27,33 @@ class ShownAlbumlists:
         """
         wanted = App().settings.get_value("shown-album-lists")
         lists = []
-        if mask & SelectionListType.LIST_ONE:
+        if mask & SelectionListMask.LIST_ONE:
             if get_all or Type.POPULARS in wanted:
-                lists.append((Type.POPULARS, _("Popular albums")))
+                lists.append((Type.POPULARS, _("Popular albums"), ""))
             if get_all or Type.RANDOMS in wanted:
-                lists.append((Type.RANDOMS, _("Random albums")))
+                lists.append((Type.RANDOMS, _("Random albums"), ""))
             if get_all or Type.LOVED in wanted:
-                lists.append((Type.LOVED, _("Loved albums")))
+                lists.append((Type.LOVED, _("Loved albums"), ""))
             if get_all or Type.RECENTS in wanted:
-                lists.append((Type.RECENTS, _("Recently added albums")))
+                lists.append((Type.RECENTS, _("Recently added albums"), ""))
             if get_all or Type.NEVER in wanted:
-                lists.append((Type.NEVER, _("Unplayed albums")))
+                lists.append((Type.NEVER, _("Unplayed albums"), ""))
             if get_all or Type.PLAYLISTS in wanted:
-                lists.append((Type.PLAYLISTS, _("Playlists")))
+                lists.append((Type.PLAYLISTS, _("Playlists"), ""))
             if get_all or Type.RADIOS in wanted:
-                lists.append((Type.RADIOS, _("Radios")))
+                lists.append((Type.RADIOS, _("Radios"), ""))
             if get_all or Type.YEARS in wanted:
-                lists.append((Type.YEARS, _("Years")))
+                lists.append((Type.YEARS, _("Years"), ""))
             if get_all or Type.ALL in wanted:
-                lists.append((Type.ALL, _("All albums")))
+                lists.append((Type.ALL, _("All albums"), ""))
             if get_all or Type.ARTISTS in wanted:
-                lists.append((Type.ARTISTS, _("All artists")))
-        if get_all or (mask & SelectionListType.COMPILATIONS and
+                lists.append((Type.ARTISTS, _("All artists"), ""))
+        if get_all or (mask & SelectionListMask.COMPILATIONS and
                        Type.COMPILATIONS in wanted):
-            lists.append((Type.COMPILATIONS, _("Compilations")))
-        if mask & SelectionListType.LIST_ONE:
-            if get_all or Type.USB_DISKS in wanted:
-                lists.append((Type.USB_DISKS, _("USB disks")))
+            lists.append((Type.COMPILATIONS, _("Compilations"), ""))
+        if mask & SelectionListMask.LIST_ONE:
+            if get_all:
+                lists.append((Type.USB_DISKS, _("USB disks"), ""))
         return lists
 
 
@@ -69,15 +69,15 @@ class ShownPlaylists:
         wanted = App().settings.get_value("shown-playlists")
         lists = []
         if get_all or Type.POPULARS in wanted:
-            lists.append((Type.POPULARS, _("Popular tracks")))
+            lists.append((Type.POPULARS, _("Popular tracks"), ""))
         if get_all or Type.LOVED in wanted:
-            lists.append((Type.LOVED, App().playlists.LOVED))
+            lists.append((Type.LOVED, App().playlists.LOVED), "")
         if get_all or Type.RECENTS in wanted:
-            lists.append((Type.RECENTS, _("Recently played")))
+            lists.append((Type.RECENTS, _("Recently played"), ""))
         if get_all or Type.NEVER in wanted:
-            lists.append((Type.NEVER, _("Unplayed")))
+            lists.append((Type.NEVER, _("Unplayed"), ""))
         if get_all or Type.RANDOMS in wanted:
-            lists.append((Type.RANDOMS, _("Random tracks")))
+            lists.append((Type.RANDOMS, _("Random tracks"), ""))
         if get_all or Type.NOPARTY in wanted:
-            lists.append((Type.NOPARTY, _("Not in party")))
+            lists.append((Type.NOPARTY, _("Not in party"), ""))
         return lists

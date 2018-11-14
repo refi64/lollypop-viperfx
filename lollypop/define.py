@@ -66,7 +66,7 @@ class ArtSize:
     MAX = 4000
 
 
-class SelectionListType:
+class SelectionListMask:
         LIST_ONE = 1 << 1
         LIST_TWO = 1 << 2
         LIST_DEVICE = 1 << 3

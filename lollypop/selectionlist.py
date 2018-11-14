@@ -18,9 +18,9 @@ from hashlib import sha256
 
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
-from lollypop.define import Type, App, ArtSize, SelectionListType
+from lollypop.define import Type, App, ArtSize, SelectionListMask
 from lollypop.utils import get_icon_name
-from lollypop.shown import ShownAlbumlists, ShownPlaylists
+from lollypop.shown import ShownLists, ShownPlaylists
 
 
 class DefaultItemsMenu(Gio.Menu):
@@ -28,16 +28,16 @@ class DefaultItemsMenu(Gio.Menu):
         Configure defaults items
     """
 
-    def __init__(self, rowid, list_type):
+    def __init__(self, rowid, mask):
         """
             Init menu
             @param rowid as int
             @param lists as [int]
-            @param list_type as SelectionListType
+            @param mask as SelectionListMask
         """
         Gio.Menu.__init__(self)
         self.__rowid = rowid
-        self.__list_type = list_type
+        self.__mask = mask
         # Startup menu
         if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
                      Type.ALL, Type.RECENTS, Type.YEARS,
@@ -55,11 +55,11 @@ class DefaultItemsMenu(Gio.Menu):
             self.insert_section(0, _("Startup"), startup_menu)
         # Shown menu
         shown_menu = Gio.Menu()
-        if list_type & SelectionListType.PLAYLISTS:
+        if mask & SelectionListMask.PLAYLISTS:
             lists = ShownPlaylists.get(True)
             wanted = App().settings.get_value("shown-playlists")
         else:
-            lists = ShownAlbumlists.get(list_type, True)
+            lists = ShownLists.get(mask, True)
             wanted = App().settings.get_value("shown-album-lists")
         for item in lists:
             exists = item[0] in wanted
@@ -87,7 +87,7 @@ class DefaultItemsMenu(Gio.Menu):
             @param rowid as int
         """
         action.set_state(param)
-        if self.__list_type & SelectionListType.PLAYLISTS:
+        if self.__mask & SelectionListMask.PLAYLISTS:
             option = "shown-playlists"
         else:
             option = "shown-album-lists"
@@ -97,9 +97,9 @@ class DefaultItemsMenu(Gio.Menu):
         else:
             wanted.remove(rowid)
         App().settings.set_value(option, GLib.Variant("ai", wanted))
-        if self.__list_type & SelectionListType.LIST_ONE:
+        if self.__mask & SelectionListMask.LIST_ONE:
             App().window.container.update_list_one(True)
-        elif self.__list_type & SelectionListType.LIST_TWO:
+        elif self.__mask & SelectionListMask.LIST_TWO:
             App().window.container.update_list_two(True)
 
     def __on_action_clicked(self, action, variant, rowid):
@@ -109,14 +109,14 @@ class DefaultItemsMenu(Gio.Menu):
             @param GVariant
             @param rowid as int
         """
-        if self.__list_type & SelectionListType.LIST_ONE:
+        if self.__mask & SelectionListMask.LIST_ONE:
             App().settings.set_value(
                 "list-one-ids",
                 GLib.Variant("ai", [rowid]))
             App().settings.set_value(
                 "list-two-ids",
                 GLib.Variant("ai", []))
-        elif self.__list_type & SelectionListType.LIST_TWO:
+        elif self.__mask & SelectionListMask.LIST_TWO:
             App().settings.set_value(
                 "list-two-ids",
                 GLib.Variant("ai", [rowid]))
@@ -135,14 +135,14 @@ class SelectionList(Gtk.Overlay):
     def __init__(self, base_type):
         """
             Init Selection list ui
-            @param base_type as SelectionListType
+            @param base_type as SelectionListMask
         """
         Gtk.Overlay.__init__(self)
         self.__base_type = base_type
         self.__timeout = None
         self.__modifier = False
         self.__populating = False
-        self.__type = 0
+        self.__mask = 0
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SelectionList.ui")
         builder.connect_signals(self)
@@ -154,8 +154,8 @@ class SelectionList(Gtk.Overlay):
         self.__model.set_sort_func(0, self.__sort_items)
         self.__view = builder.get_object("view")
         self.__view.set_model(self.__model)
-        if base_type in [SelectionListType.LIST_ONE,
-                         SelectionListType.LIST_TWO]:
+        if base_type in [SelectionListMask.LIST_ONE,
+                         SelectionListMask.LIST_TWO]:
             self.__view.get_style_context().add_class("sidebar")
         self.__view.set_row_separator_func(self.__row_separator_func)
         self.__renderer0 = CellRendererArtist()
@@ -193,10 +193,10 @@ class SelectionList(Gtk.Overlay):
     def mark_as(self, type):
         """
             Mark list as artists list
-            @param type as SelectionListType
+            @param type as SelectionListMask
         """
-        self.__type = self.__base_type | type
-        self.__renderer0.set_is_artists(type & SelectionListType.ARTISTS)
+        self.__mask = self.__base_type | type
+        self.__renderer0.set_is_artists(type & SelectionListMask.ARTISTS)
 
     def populate(self, values):
         """
@@ -256,7 +256,7 @@ class SelectionList(Gtk.Overlay):
             Update view with values
             @param [(int, str, optional str)]
         """
-        update_fast_scroll = self.__type & SelectionListType.ARTISTS and\
+        update_fast_scroll = self.__mask & SelectionListMask.ARTISTS and\
             self.__fast_scroll is not None
         if update_fast_scroll:
             self.__fast_scroll.clear()
@@ -331,14 +331,15 @@ class SelectionList(Gtk.Overlay):
             self.__fast_scroll.clear_chars()
             self.__fast_scroll.hide()
 
-    def get_headers(self):
+    def get_headers(self, mask):
         """
             Return headers
+            @param mask as SelectionListMask
             @return items as [(int, str)]
         """
-        lists = ShownAlbumlists.get(self.__type)
+        lists = ShownLists.get(mask)
         if lists:
-            lists.append((Type.SEPARATOR, ""))
+            lists.append((Type.SEPARATOR, "", ""))
         return lists
 
     def get_playlist_headers(self):
@@ -348,7 +349,7 @@ class SelectionList(Gtk.Overlay):
         """
         lists = ShownPlaylists.get()
         if lists:
-            lists.append((Type.SEPARATOR, ""))
+            lists.append((Type.SEPARATOR, "", ""))
         return lists
 
     # Needed because we embed this widget in minimode
@@ -362,12 +363,12 @@ class SelectionList(Gtk.Overlay):
         self.__selection.select_iter(self.__model[0].iter)
 
     @property
-    def type(self):
+    def mask(self):
         """
             Get selection list type
             @return bit mask
         """
-        return self.__type
+        return self.__mask
 
     @property
     def count(self):
@@ -414,8 +415,8 @@ class SelectionList(Gtk.Overlay):
             if state & Gdk.ModifierType.CONTROL_MASK or\
                state & Gdk.ModifierType.SHIFT_MASK:
                 self.__modifier = True
-        elif self.__base_type in [SelectionListType.LIST_ONE,
-                                  SelectionListType.LIST_TWO]:
+        elif self.__base_type in [SelectionListMask.LIST_ONE,
+                                  SelectionListMask.LIST_TWO]:
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None:
                 App().settings.set_value("shown-sidebar-tooltip",
@@ -423,7 +424,7 @@ class SelectionList(Gtk.Overlay):
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
-                menu = DefaultItemsMenu(rowid, self.type)
+                menu = DefaultItemsMenu(rowid, self.mask)
                 popover = Gtk.Popover.new_from_model(view, menu)
                 rect = Gdk.Rectangle()
                 rect.x = event.x
@@ -468,7 +469,7 @@ class SelectionList(Gtk.Overlay):
                 column = self.__view.get_column(0)
                 (position, width) = column.cell_get_position(self.__renderer0)
                 if App().settings.get_value("artist-artwork") and\
-                        self.__type & SelectionListType.ARTISTS:
+                        self.__mask & SelectionListMask.ARTISTS:
                     width -= ArtSize.ARTIST_SMALL +\
                         CellRendererArtist.xshift * 2
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
@@ -490,20 +491,14 @@ class SelectionList(Gtk.Overlay):
             @param value as [int, str, optional str]
         """
         item_id = value[0]
-        if item_id in [Type.USB_DISKS]:
-            return
         name = value[1]
+        sort = value[2]
         if name == "":
             name = _("Unknown")
             icon_name = "dialog-warning-symbolic"
-        icon_name = get_icon_name(item_id, self.__type)
-        if len(value) == 3:
-            sort = value[2]
-        else:
-            sort = name
-
+        icon_name = get_icon_name(item_id, self.__mask)
         if item_id > 0 and sort and\
-                self.__type & SelectionListType.ARTISTS and\
+                self.__mask & SelectionListMask.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.add_char(sort[0])
         self.__model.append([item_id,
@@ -518,7 +513,7 @@ class SelectionList(Gtk.Overlay):
         """
         for value in values:
             self.__add_value(value)
-        if self.__type & SelectionListType.ARTISTS and\
+        if self.__mask & SelectionListMask.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.populate()
 
@@ -528,7 +523,6 @@ class SelectionList(Gtk.Overlay):
         """
         if self.__populating:
             return False
-
         a_index = model.get_value(itera, 0)
         b_index = model.get_value(iterb, 0)
 
@@ -543,7 +537,7 @@ class SelectionList(Gtk.Overlay):
             return False
         # String comparaison for non static
         else:
-            if self.__type & SelectionListType.ARTISTS:
+            if self.__mask & SelectionListMask.ARTISTS:
                 a = App().artists.get_sortname(a_index)
                 b = App().artists.get_sortname(b_index)
             else:
@@ -598,7 +592,7 @@ class SelectionList(Gtk.Overlay):
         """
         if widget.get_vadjustment().get_upper() >\
                 widget.get_allocated_height() and\
-                self.__type & SelectionListType.ARTISTS and\
+                self.__mask & SelectionListMask.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.show()
         # FIXME Not needed with GTK >= 3.18
@@ -615,7 +609,7 @@ class SelectionList(Gtk.Overlay):
            event.x >= allocation.width or\
            event.y <= 0 or\
            event.y >= allocation.height:
-            if self.__type & SelectionListType.ARTISTS\
+            if self.__mask & SelectionListMask.ARTISTS\
                     and self.__fast_scroll is not None:
                 self.__fast_scroll.hide()
         # FIXME Not needed with GTK >= 3.18
@@ -625,7 +619,7 @@ class SelectionList(Gtk.Overlay):
         """
             Update row
         """
-        if self.__type & SelectionListType.ARTISTS:
+        if self.__mask & SelectionListMask.ARTISTS:
             self.__renderer0.on_artist_artwork_changed(artist)
             for item in self.__model:
                 if item[1] == artist:

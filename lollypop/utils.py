@@ -18,7 +18,7 @@ import unicodedata
 import cairo
 
 from lollypop.logger import Logger
-from lollypop.define import App, Type, SelectionListType
+from lollypop.define import App, Type, SelectionListMask
 
 
 def get_round_surface(image, scale_factor):
@@ -250,11 +250,11 @@ def remove_static_genres(genre_ids):
     return [item for item in genre_ids if item >= 0]
 
 
-def get_icon_name(object_id, type=SelectionListType.ARTISTS):
+def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
     """
         Return icon name for id
         @param ojbect_id as int
-        @param type as SelectionListType
+        @param type as SelectionListMask
     """
     icon = ""
     if object_id == Type.POPULARS:

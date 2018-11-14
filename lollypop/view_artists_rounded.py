@@ -14,6 +14,7 @@ from gi.repository import GLib
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.define import App, Type
+from locale import strcoll
 from lollypop.widgets_artist_rounded import RoundedArtistWidget
 
 
@@ -32,22 +33,21 @@ class RoundedArtistsView(FlowBoxView):
         self.connect("unrealize", self.__on_unrealize)
         self.connect("destroy", self.__on_destroy)
 
-    def insert_item(self, item_id, item_name):
+    def insert_item(self, item):
         """
             Insert item
-            @param item_id as int < 0
-            @param item_name as str
+            @param item as (int, str, str)
         """
+        for child in self._box.get_children():
+            if child.data == item[0]:
+                return
+        # Setup sort on insert
+        self._box.set_sort_func(self.__sort_func)
         art_size = App().settings.get_value("cover-size").get_int32()
-        widget = RoundedArtistWidget(item_id, art_size, item_name)
+        widget = RoundedArtistWidget(item, art_size)
         widget.populate()
         widget.show()
-        position = 0
-        for child in self._box.get_children():
-            if child.data >= 0:
-                break
-            position += 1
-        self._box.insert(widget, position)
+        self._box.insert(widget, -1)
 
     def remove_item(self, item_id):
         """
@@ -68,17 +68,14 @@ class RoundedArtistsView(FlowBoxView):
 #######################
 # PROTECTED           #
 #######################
-    def _add_items(self, item_ids, *args):
+    def _add_items(self, items, *args):
         """
             Add artists to the view
             Start lazy loading
-            @param item ids as [int]
+            @param items as [(int, str, str)]
         """
-        for item_id in [Type.ALL, Type.ARTISTS, Type.USB_DISKS]:
-            if item_id in item_ids:
-                item_ids.remove(item_id)
         art_size = App().settings.get_value("cover-size").get_int32()
-        FlowBoxView._add_items(self, item_ids, art_size)
+        FlowBoxView._add_items(self, items, art_size)
 
     def _on_item_activated(self, flowbox, widget):
         """
@@ -103,6 +100,27 @@ class RoundedArtistsView(FlowBoxView):
 #######################
 # PRIVATE             #
 #######################
+    def __sort_func(self, widget1, widget2):
+        """
+            Sort function
+            @param widget1 as RoundedArtistWidget
+            @param widget2 as RoundedArtistWidget
+        """
+        # Static vs static
+        if widget1.data < 0 and widget2.data < 0:
+            return widget1.data < widget2.data
+        # Static entries always on top
+        elif widget2.data < 0:
+            return True
+        # Static entries always on top
+        if widget1.data < 0:
+            return False
+        # String comparaison for non static
+        else:
+            a = App().artists.get_sortname(widget1.data)
+            b = App().artists.get_sortname(widget2.data)
+            return strcoll(a, b)
+
     def __on_destroy(self, widget):
         """
             Stop loading

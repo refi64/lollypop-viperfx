@@ -360,12 +360,13 @@ class CollectionScanner(GObject.GObject, TagReader):
                                     album_id, year, timestamp, track_pop,
                                     track_rate, track_ltime, mtime,
                                     mb_track_id)
-        SqlCursor.commit(App().db)
         Logger.debug("CollectionScanner::add2db(): Update track")
         self.__update_track(track_id, artist_ids, genre_ids)
         Logger.debug("CollectionScanner::add2db(): Update album")
+        SqlCursor.commit(App().db)
         self.__update_album(album_id, album_artist_ids,
                             genre_ids, year, timestamp)
+        SqlCursor.commit(App().db)
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         return track_id
@@ -419,7 +420,9 @@ class CollectionScanner(GObject.GObject, TagReader):
 
     def __update_album(self, album_id, artist_ids, genre_ids, year, timestamp):
         """
-            Set album artists
+            Update album artists based on album-artist and artist tags
+            This code auto handle compilations: empty "album artist" with
+            different artists
             @param album id as int
             @param artist ids as [int]
             @param genre ids as [int]

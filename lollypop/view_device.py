@@ -17,7 +17,7 @@ import re
 
 from lollypop.loader import Loader
 from lollypop.view import View
-from lollypop.define import App, SelectionListType, Type
+from lollypop.define import App, SelectionListMask, Type
 from lollypop.logger import Logger
 from lollypop.selectionlist import SelectionList
 from lollypop.widgets_device import DeviceManagerWidget
@@ -94,9 +94,9 @@ class DeviceView(View):
         self.__infobar = builder.get_object("infobar")
         self.__error_label = builder.get_object("error_label")
         self.__paned = builder.get_object("paned")
-        self.__selection_list = SelectionList(SelectionListType.LIST_ONE)
+        self.__selection_list = SelectionList(SelectionListMask.LIST_ONE)
         self.__selection_list.connect("item-selected", self.__on_item_selected)
-        self.__selection_list.mark_as(SelectionListType.ARTISTS)
+        self.__selection_list.mark_as(SelectionListMask.ARTISTS)
         self.__selection_list.show()
         self.__paned.add1(self.__selection_list)
         self.__paned.add2(builder.get_object("device_view"))

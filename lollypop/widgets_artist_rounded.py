@@ -27,15 +27,17 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         Artist photo or artist's albums in a rounded widget
     """
 
-    def __init__(self, artist_id, art_size, artist_name=""):
+    def __init__(self, item, art_size):
         """
             Init widget
-            @param artist_id as int
+            @param item as (int, str, str)
             @param art_size as int
-            @param name as str
+            @param artist_name as str
+            @param sortname as str
         """
-        RoundedFlowBoxWidget.__init__(self, artist_id, art_size)
-        self.__artist_name = artist_name
+        RoundedFlowBoxWidget.__init__(self, item[0], art_size)
+        self.__artist_name = item[1]
+        self.__sortname = item[2]
         self.__art_helper = ArtHelper()
         self.connect("realize", self.__on_realize)
 
@@ -73,6 +75,14 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         self._set_artwork()
 
     @property
+    def sortname(self):
+        """
+            Get sortname
+            @return str
+        """
+        return self.__sortname
+
+    @property
     def artist_name(self):
         """
             Get artist name
@@ -106,11 +116,14 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
             Set artist artwork
         """
-        if self._data < 0:
+        def set_icon_name():
             icon_name = get_icon_name(self._data) or "avatar-default-symbolic"
             self._artwork.set_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
             self.emit("populated")
             self._artwork.get_style_context().add_class("artwork-icon-large")
+
+        if self._data < 0:
+            set_icon_name()
         elif App().settings.get_value("artist-artwork"):
             self.__art_helper.set_artist_artwork(self._artwork,
                                                  self.__artist_name,
@@ -118,11 +131,14 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                                  self._art_size)
         else:
             album_ids = App().albums.get_ids([self._data], [])
-            shuffle(album_ids)
-            self.__art_helper.set_album_artwork(self._artwork,
-                                                Album(album_ids[0]),
-                                                self._art_size,
-                                                self._art_size)
+            if album_ids:
+                shuffle(album_ids)
+                self.__art_helper.set_album_artwork(self._artwork,
+                                                    Album(album_ids[0]),
+                                                    self._art_size,
+                                                    self._art_size)
+            else:
+                set_icon_name()
 
 #######################
 # PRIVATE             #
