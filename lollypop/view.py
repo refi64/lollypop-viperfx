@@ -108,6 +108,14 @@ class View(Gtk.Grid):
             self.__overlayed = None
 
     @property
+    def should_destroy(self):
+        """
+            True if view should be destroyed
+            @return bool
+        """
+        return True
+
+    @property
     def filtered(self):
         """
             True if view filtered

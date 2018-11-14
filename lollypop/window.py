@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
 from lollypop.container import Container
-from lollypop.define import App, WindowSize
+from lollypop.define import App, WindowSize, Type
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
@@ -129,7 +129,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
             Go back in container stack
         """
-        if self.__container.list_one.get_visible():
+        if self.__container.list_one.get_visible() and\
+                self.__container.list_one.selected_ids[0] != Type.ARTISTS:
             AdaptiveWindow.go_back(self)
         elif self.__container.stack.children:
             self.__container.stack.destroy_view(

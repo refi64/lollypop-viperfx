@@ -65,6 +65,10 @@ class RoundedArtistsView(FlowBoxView):
         """
         pass
 
+    @property
+    def should_destroy(self):
+        return False
+
 #######################
 # PROTECTED           #
 #######################

@@ -150,6 +150,10 @@ class DeviceView(View):
         """
         return self.__device
 
+    @property
+    def should_destroy(self):
+        return False
+
 #######################
 # PROTECTED           #
 #######################

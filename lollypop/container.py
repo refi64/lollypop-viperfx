@@ -356,16 +356,12 @@ class Container(Gtk.Overlay):
     def view(self):
         """
             Get current view
+            @return View
         """
         view = self.__stack.get_visible_child()
-        if view is not None and not isinstance(view, View):
-            # Should have commented this, why?
-            # FIXME
-            for child in self.__stack.get_children():
-                if isinstance(child, View):
-                    view = child
-                    break
-        return view
+        if view is not None and isinstance(view, View):
+            return view
+        return None
 
     @property
     def view_artists_rounded(self):
@@ -951,6 +947,7 @@ class Container(Gtk.Overlay):
             @param list as SelectionList
         """
         App().window.emit("show-can-go-back", False)
+        App().window.emit("can-go-back-changed", False)
         Logger.debug("Container::__on_list_one_selected()")
         view = None
         selected_ids = self.__list_one.selected_ids

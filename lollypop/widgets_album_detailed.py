@@ -313,7 +313,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         popover = Gtk.Popover.new_from_model(widget,
                                              AlbumMenu(self._album,
                                                        ancestor is not None))
-        if ancestor is not None:
+        if ancestor is not None and App().window.container.view is not None:
             App().window.container.view.show_popover(popover)
         else:
             popover.connect("closed", self.__on_pop_menu_closed)

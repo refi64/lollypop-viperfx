@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk, GLib
 
 from lollypop.define import App, ArtSize
+from lollypop.logger import Logger
 
 
 class DNDRow:
@@ -185,11 +186,8 @@ class DNDRow:
                 self.emit("insert-track", item_id, down)
             else:
                 self.emit("insert-album", item_id, track_ids, down)
-        except:
-            if len(App().window.container.view.playlist_ids) == 1:
-                App().playlists.import_uri(
-                    App().window.container.view.playlist_ids[0],
-                    data.get_text(), self._track.id, down)
+        except Exception as e:
+            Logger.error("DNDRow::__on_drag_data_received(): %s", e)
 
     def __on_drag_motion(self, row, context, x, y, time):
         """
