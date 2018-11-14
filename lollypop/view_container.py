@@ -39,6 +39,8 @@ class ViewContainer(Gtk.Stack):
             Clean view
             @param view as new View
         """
+        if isinstance(view, DeviceView):
+            return
         # Delayed destroy as we may have an animation running
         # Gtk.StackTransitionType.CROSSFADE
         self.__destroyed.append(view)

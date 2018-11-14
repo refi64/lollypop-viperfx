@@ -32,6 +32,33 @@ class RoundedArtistsView(FlowBoxView):
         self.connect("unrealize", self.__on_unrealize)
         self.connect("destroy", self.__on_destroy)
 
+    def insert_item(self, item_id, item_name):
+        """
+            Insert item
+            @param item_id as int < 0
+            @param item_name as str
+        """
+        art_size = App().settings.get_value("cover-size").get_int32()
+        widget = RoundedArtistWidget(item_id, art_size, item_name)
+        widget.populate()
+        widget.show()
+        position = 0
+        for child in self._box.get_children():
+            if child.data >= 0:
+                break
+            position += 1
+        self._box.insert(widget, position)
+
+    def remove_item(self, item_id):
+        """
+            Remove item from devices
+            @param item_id as int
+        """
+        for child in self._box.get_children():
+            if child.data == item_id:
+                child.destroy()
+                break
+
     def stop(self):
         """
             We want this view to be populated anyway (no sidebar mode)

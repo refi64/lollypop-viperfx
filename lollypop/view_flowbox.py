@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, GObject
 
 from lollypop.view import LazyLoadingView
 
@@ -19,6 +19,10 @@ class FlowBoxView(LazyLoadingView):
     """
         Lazy loading FlowBox
     """
+
+    __gsignals__ = {
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
 
     def __init__(self):
         """
@@ -76,6 +80,7 @@ class FlowBoxView(LazyLoadingView):
             GLib.idle_add(self._add_items, items)
             return widget
         else:
+            self.emit("populated")
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._box)

@@ -318,10 +318,21 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums([], [item_id])
         elif item_id == Type.RADIOS:
             view = self.__get_view_radios()
+        elif Type.DEVICES - 999 < item_id < Type.DEVICES:
+            from lollypop.view_device import DeviceView
+            # Search for an existing view
+            view = None
+            for child in self.__stack.get_children():
+                if isinstance(child, DeviceView):
+                    view = child
+                    break
+            if view is None:
+                view = self.__get_view_device(item_id)
         else:
             view = self.__get_view_artists([], [item_id])
         view.show()
-        self.__stack.add(view)
+        if view not in self.__stack.get_children():
+            self.__stack.add(view)
         if switch:
             self.__stack.set_visible_child(view)
         if App().settings.get_value("show-sidebar"):
@@ -598,15 +609,25 @@ class Container(Gtk.Overlay):
             @param static as bool, show static entries
             @return view
         """
+        def on_populated(ids):
+            view.disconnect_by_func(on_populated)
+            for dev in self.__devices.values():
+                view.insert_item(dev.id, dev.name)
+
         def load():
             ids = []
             if static:
                 ids = list(App().settings.get_value("shown-album-lists"))
             ids += App().artists.get_ids()
             return ids
-        self.__stop_current_view()
+
         from lollypop.view_artists_rounded import RoundedArtistsView
+        self.__stop_current_view()
+        for view in self.__stack.get_children():
+            if isinstance(view, RoundedArtistsView):
+                return view
         view = RoundedArtistsView()
+        view.connect("populated", on_populated)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -856,7 +877,11 @@ class Container(Gtk.Overlay):
             dev.uri = uri
             self.__devices[self.__devices_index] = dev
             if show:
-                self.__list_one.add_value((dev.id, dev.name))
+                if App().settings.get_value("show-sidebar"):
+                    self.__list_one.add_value((dev.id, dev.name))
+                else:
+                    self.__get_view_artists_rounded().insert_item(dev.id,
+                                                                  dev.name)
 
     def __remove_device(self, mount):
         """
@@ -866,7 +891,10 @@ class Container(Gtk.Overlay):
         uri = mount.get_default_location().get_uri()
         for dev in self.__devices.values():
             if dev.uri == uri:
-                self.__list_one.remove_value(dev.id)
+                if App().settings.get_value("show-sidebar"):
+                    self.__list_one.remove_value(dev.id)
+                else:
+                    self.__get_view_artists_rounded().remove_item(dev.id)
                 child = self.__stack.get_child_by_name(uri)
                 if child is not None:
                     child.destroy()

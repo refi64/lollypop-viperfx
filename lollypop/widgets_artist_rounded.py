@@ -27,14 +27,15 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         Artist photo or artist's albums in a rounded widget
     """
 
-    def __init__(self, artist_id, art_size):
+    def __init__(self, artist_id, art_size, artist_name=""):
         """
             Init widget
             @param artist_id as int
             @param art_size as int
+            @param name as str
         """
         RoundedFlowBoxWidget.__init__(self, artist_id, art_size)
-        self.__artist_name = ""
+        self.__artist_name = artist_name
         self.__art_helper = ArtHelper()
         self.connect("realize", self.__on_realize)
 
@@ -42,7 +43,9 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
             Populate widget content
         """
-        if self._data < 0:
+        if self.__artist_name != "":
+            pass
+        elif self._data < 0:
             self.__artist_name = _(STATIC_ALBUM_NAME[self._data])
         else:
             self.__artist_name = App().artists.get_name(self._data)
