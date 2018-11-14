@@ -197,6 +197,7 @@ class Container(Gtk.Overlay):
         """
         if show or App().window.adaptive_is_on:
             # We are entering paned stack mode
+            self.__list_one.select_ids()
             self.__list_two_ids = App().settings.get_value("list-two-ids")
             self.__list_one.select_ids(
                 App().settings.get_value("list-one-ids"))

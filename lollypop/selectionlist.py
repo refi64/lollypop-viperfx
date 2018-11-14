@@ -284,7 +284,7 @@ class SelectionList(Gtk.Overlay):
                 return item[1]
         return ""
 
-    def select_ids(self, ids):
+    def select_ids(self, ids=[]):
         """
             Make treeview select first default item
             @param object id as int
