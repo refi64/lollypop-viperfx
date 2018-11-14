@@ -16,7 +16,7 @@ from time import time
 
 from lollypop.define import App
 from lollypop.logger import Logger
-from lollypop.window_adaptive import AdaptiveView
+from lollypop.adaptive import AdaptiveView
 
 
 class BaseView(AdaptiveView):

@@ -23,7 +23,7 @@ from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view import View, MessageView
 from lollypop.progressbar import ProgressBar
-from lollypop.window_adaptive import AdaptiveStack
+from lollypop.adaptive import AdaptiveStack
 from lollypop.shown import ShownLists
 from lollypop.logger import Logger
 

@@ -17,7 +17,7 @@ from lollypop.define import App, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
-from lollypop.window_adaptive import AdaptiveWindow
+from lollypop.adaptive import AdaptiveWindow
 from lollypop.utils import is_unity
 
 
