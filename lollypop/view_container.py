@@ -56,7 +56,7 @@ class ViewContainer(Gtk.Stack):
         for child in self.get_children():
             if child != view\
                     and isinstance(child, View)\
-                    and view.should_destroy:
+                    and child.should_destroy:
                 # Delayed destroy as we may have an animation running
                 # Gtk.StackTransitionType.CROSSFADE
                 self.__destroyed.append(child)
