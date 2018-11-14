@@ -6,13 +6,15 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="valign">baseline</property>
+    <property name="margin_right">5</property>
     <property name="margin_end">5</property>
     <property name="icon_name">multimedia-player-symbolic</property>
   </object>
-  <object class="GtkGrid" id="device">
+  <object class="GtkGrid" id="device_view">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="margin_top">2</property>
+    <property name="orientation">vertical</property>
     <property name="row_spacing">5</property>
     <property name="column_spacing">5</property>
     <child>
@@ -22,6 +24,8 @@
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Synchronize to your device</property>
         <property name="halign">center</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
         <property name="margin_start">5</property>
         <property name="margin_end">5</property>
         <property name="image">image1</property>
@@ -38,6 +42,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
+        <property name="margin_left">5</property>
         <property name="margin_start">5</property>
         <signal name="changed" handler="_on_memory_combo_changed" swapped="no"/>
       </object>
@@ -175,5 +180,16 @@
     <style>
       <class name="dim-label"/>
     </style>
+  </object>
+  <object class="GtkPaned" id="paned">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="position">300</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
   </object>
 </interface>

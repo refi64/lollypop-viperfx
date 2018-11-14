@@ -15,9 +15,11 @@ from gi.repository import Gtk, GLib, Gio
 from gettext import gettext as _
 import re
 
+from lollypop.loader import Loader
 from lollypop.view import View
-from lollypop.define import App
+from lollypop.define import App, SelectionListType, Type
 from lollypop.logger import Logger
+from lollypop.selectionlist import SelectionList
 from lollypop.widgets_device import DeviceManagerWidget
 
 
@@ -91,10 +93,19 @@ class DeviceView(View):
         self.__device_widget.show()
         self.__infobar = builder.get_object("infobar")
         self.__error_label = builder.get_object("error_label")
+        self.__paned = builder.get_object("paned")
+        self.__selection_list = SelectionList(SelectionListType.LIST_ONE)
+        self.__selection_list.connect("item-selected", self.__on_item_selected)
+        self.__selection_list.mark_as(SelectionListType.ARTISTS)
+        self.__selection_list.show()
+        self.__paned.add1(self.__selection_list)
+        self.__paned.add2(builder.get_object("device_view"))
+        builder.get_object("device_view").attach(self._scrolled, 0, 3, 4, 1)
+        self.add(self.__paned)
+        self.__paned.set_position(
+            App().settings.get_value("paned-device-width").get_int32())
 
-        grid = builder.get_object("device")
-        self.add(grid)
-        self.add(self._scrolled)
+        self.__update_list_device()
         self.__sanitize_non_mtp()
 
     def populate(self, selected_ids=[]):
@@ -190,13 +201,46 @@ class DeviceView(View):
     def _on_map(self, widget):
         """
             Set active ids
+            @param widget as Gtk.Widget
         """
         App().settings.set_value("list-one-ids",
                                  GLib.Variant("ai", []))
 
+    def _on_unmap(self, widget):
+        """
+            Save paned position
+            @param widget as Gtk.Widget
+        """
+        App().settings.set_value("paned-device-width",
+                                 GLib.Variant("i",
+                                              self.__paned.get_position()))
+
 #######################
 # PRIVATE             #
 #######################
+    def __update_list_device(self):
+        """
+            Setup list for device
+            @param list as SelectionList
+            @thread safe
+        """
+        def load():
+            artists = App().artists.get()
+            compilations = App().albums.get_compilation_ids()
+            return (artists, compilations)
+
+        def setup(artists, compilations):
+            items = [(Type.ALL, _("Synced albums"))]
+            items.append((Type.PLAYLISTS, _("Playlists")))
+            if compilations:
+                items.append((Type.COMPILATIONS, _("Compilations")))
+                items.append((Type.SEPARATOR, ""))
+            items += artists
+            self.__selection_list.populate(items)
+        loader = Loader(target=load, view=self.__selection_list,
+                        on_finished=lambda r: setup(*r))
+        loader.start()
+
     def __sanitize_non_mtp(self):
         """
             Sanitize non MTP device by changing uri and creating a default
@@ -251,3 +295,10 @@ class DeviceView(View):
         for text in text_list:
             self.__memory_combo.append_text(text)
         self.__memory_combo.set_active(0)
+
+    def __on_item_selected(self, selectionlist):
+        """
+            Update view
+            @param selection_list as SelectionList
+        """
+        self.populate(selectionlist.selected_ids)

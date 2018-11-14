@@ -241,8 +241,13 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-            <key type="i" name="paned-listview-width">
+        <key type="i" name="paned-listview-width">
             <default>200</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
+        <key type="i" name="paned-device-width">
+            <default>300</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>

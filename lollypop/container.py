@@ -583,30 +583,6 @@ class Container(Gtk.Overlay):
             self.__list_two.populate(items)
             self.__restore_list_two_state()
 
-    def __update_list_device(self, selection_list):
-        """
-            Setup list for device
-            @param list as SelectionList
-            @thread safe
-        """
-        def load():
-            artists = App().artists.get()
-            compilations = App().albums.get_compilation_ids()
-            return (artists, compilations)
-
-        def setup(artists, compilations):
-            items = [(Type.ALL, _("Synced albums"))]
-            items.append((Type.PLAYLISTS, _("Playlists")))
-            if compilations:
-                items.append((Type.COMPILATIONS, _("Compilations")))
-                items.append((Type.SEPARATOR, ""))
-            items += artists
-            selection_list.mark_as(SelectionListType.ARTISTS)
-            selection_list.populate(items)
-        loader = Loader(target=load, view=selection_list,
-                        on_finished=lambda r: setup(*r))
-        loader.start()
-
     def __stop_current_view(self):
         """
             Stop current view
@@ -944,8 +920,6 @@ class Container(Gtk.Overlay):
             if not self.__list_two.selected_ids:
                 view = self.__get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
-            self.__update_list_device(self.__list_two)
-            self.__list_two.show()
             view = self.__get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
@@ -1004,16 +978,6 @@ class Container(Gtk.Overlay):
         genre_ids = self.__list_one.selected_ids
         selected_ids = self.__list_two.selected_ids
         if not selected_ids or not genre_ids:
-            return
-        # Just update the view
-        if Type.DEVICES - 999 < genre_ids[0] < Type.DEVICES:
-            from lollypop.view_device import DeviceView
-            # Search for an existing view
-            for view in self.__stack.get_children():
-                if isinstance(view, DeviceView):
-                    view.populate(selection_list.selected_ids)
-                    self.__stack.set_visible_child(view)
-            view = self.__get_view_device(genre_ids[0])
             return
         if genre_ids[0] == Type.PLAYLISTS:
             view = self.__get_view_playlists(selected_ids)
