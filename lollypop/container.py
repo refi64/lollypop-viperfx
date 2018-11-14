@@ -196,6 +196,9 @@ class Container(Gtk.Overlay):
             Show/Hide navigation sidebar
             @param show as bool
         """
+        view = self.view_artists_rounded
+        if view is not None:
+            view.destroy()
         if show or App().window.adaptive_is_on:
             # We are entering paned stack mode
             self.__list_one.select_ids()
@@ -363,6 +366,19 @@ class Container(Gtk.Overlay):
                     view = child
                     break
         return view
+
+    @property
+    def view_artists_rounded(self):
+        """
+            Get existing rounded artists view
+            @return RoundedArtistsView
+        """
+        from lollypop.view_artists_rounded import RoundedArtistsView
+        self.__stop_current_view()
+        for view in self.__stack.get_children():
+            if isinstance(view, RoundedArtistsView):
+                return view
+        return None
 
     @property
     def progress(self):
@@ -621,17 +637,16 @@ class Container(Gtk.Overlay):
                 if compilation_ids:
                     mask |= SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
-            for dev in self.__devices.values():
-                items.append((dev.id, dev.name, dev.name))
+                for dev in self.__devices.values():
+                    items.append((dev.id, dev.name, dev.name))
             items += artist_ids
             view.populate(items)
 
         from lollypop.view_artists_rounded import RoundedArtistsView
         self.__stop_current_view()
-        for view in self.__stack.get_children():
-            if isinstance(view, RoundedArtistsView):
-                return view
-        view = RoundedArtistsView()
+        view = self.view_artists_rounded
+        if view is None:
+            view = RoundedArtistsView()
         loader = Loader(target=load, view=view,
                         on_finished=lambda r: setup(*r))
         loader.start()
@@ -886,9 +901,9 @@ class Container(Gtk.Overlay):
                 if App().settings.get_value("show-sidebar"):
                     self.__list_one.add_value((dev.id, dev.name, dev.name))
                 else:
-                    self.__get_view_artists_rounded().insert_item((dev.id,
-                                                                   dev.name,
-                                                                   dev.name))
+                    self.view_artists_rounded.insert_item((dev.id,
+                                                           dev.name,
+                                                           dev.name))
 
     def __remove_device(self, mount):
         """
@@ -901,7 +916,7 @@ class Container(Gtk.Overlay):
                 if App().settings.get_value("show-sidebar"):
                     self.__list_one.remove_value(dev.id)
                 else:
-                    self.__get_view_artists_rounded().remove_item(dev.id)
+                    self.view_artists_rounded.remove_item(dev.id)
                 child = self.__stack.get_child_by_name(uri)
                 if child is not None:
                     child.destroy()
@@ -1093,11 +1108,11 @@ class Container(Gtk.Overlay):
                 l.remove_value(artist_id)
         else:
             if add:
-                self.__get_view_artists_rounded().insert_item((artist_id,
-                                                               artist_name,
-                                                               sortname))
+                self.view_artists_rounded.insert_item((artist_id,
+                                                       artist_name,
+                                                       sortname))
             else:
-                self.__get_view_artists_rounded().remove_item(artist_id)
+                self.view_artists_rounded.remove_item(artist_id)
 
     def __on_mount_added(self, vm, mount):
         """
