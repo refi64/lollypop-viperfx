@@ -216,7 +216,7 @@ class Container(Gtk.Overlay):
                 elif list_one_ids and list_one_ids[0] >= 0 and list_two_ids:
                     self.__list_one_ids = list_two_ids
                 else:
-                    self.__list_one_ids = list_one_ids
+                    self.__list_one_ids = []
                 self.__list_two.hide()
                 self.__list_one.hide()
             self.show_artists_view()
