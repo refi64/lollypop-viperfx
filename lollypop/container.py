@@ -750,7 +750,7 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.LIST)
+            view = AlbumsListView(ResponsiveType.LIST, [Type.YEARS], years)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView([Type.YEARS], years)
@@ -802,7 +802,7 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.LIST)
+            view = AlbumsListView(ResponsiveType.LIST, genre_ids, artist_ids)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView(genre_ids, artist_ids)
