@@ -33,8 +33,6 @@ class SmartPlaylistView(View):
         self.__playlist_id = playlist_id
         self.__size_group = Gtk.SizeGroup()
         self.__size_group.set_mode(Gtk.SizeGroupMode.BOTH)
-        self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SmartPlaylistView.ui")
         builder.connect_signals(self)
@@ -96,29 +94,6 @@ class SmartPlaylistView(View):
 #######################
 # PROTECTED           #
 #######################
-    def _on_back_button_clicked(self, button):
-        """
-            Reload current view
-            @param button as Gtk.Button
-        """
-        App().window.container.reload_view()
-
-    def _on_save_button_clicked(self, button):
-        """
-            Save SQL request
-            @param button as Gtk.Button
-        """
-        operand = self.__operand_combobox.get_active_id()
-        if len(self.__listbox.get_children()) == 0:
-            request = ""
-            App().playlists.set_smart(self.__playlist_id, False)
-        elif operand == "AND":
-            request = self.__get_and_request()
-        else:
-            request = self.__get_or_request()
-        App().playlists.set_smart_sql(self.__playlist_id, request)
-        App().window.container.reload_view()
-
     def __get_or_request(self):
         """
             Get request for AND operand
@@ -176,6 +151,23 @@ class SmartPlaylistView(View):
         subrequest += " LIMIT %s" % int(self.__limit_spin.get_value())
         return request + subrequest
 
+    def _on_save_button_clicked(self, button):
+        """
+            Save SQL request
+            @param button as Gtk.Button
+        """
+        operand = self.__operand_combobox.get_active_id()
+        if len(self.__listbox.get_children()) == 0:
+            request = ""
+            App().playlists.set_smart(self.__playlist_id, False)
+        elif operand == "AND":
+            request = self.__get_and_request()
+        else:
+            request = self.__get_or_request()
+        App().playlists.set_smart_sql(self.__playlist_id, request)
+        # FIXME
+        App().window.container.reload_view()
+
     def _on_add_rule_button_clicked(self, button):
         """
             Add a new rule
@@ -200,6 +192,23 @@ class SmartPlaylistView(View):
             self.__add_rule_button.set_sensitive(False)
             self.__listbox.set_sensitive(False)
 
+    def _on_map(self, widget):
+        """
+            Disable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        if App().settings.get_value("show-sidebar"):
+            App().window.emit("can-go-back-changed", True)
+            App().window.emit("show-can-go-back", True)
+        App().window.enable_global_shortcuts(False)
+
+    def _on_unmap(self, widget):
+        """
+            Enable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        App().window.enable_global_shortcuts(True)
+
 #######################
 # PRIVATE             #
 #######################
@@ -210,20 +219,6 @@ class SmartPlaylistView(View):
         widget = SmartPlaylistRow(self.__size_group)
         widget.show()
         self.__listbox.add(widget)
-
-    def __on_map(self, widget):
-        """
-            Disable global shortcuts
-            @param widget as Gtk.Widget
-        """
-        App().window.enable_global_shortcuts(False)
-
-    def __on_unmap(self, widget):
-        """
-            Enable global shortcuts
-            @param widget as Gtk.Widget
-        """
-        App().window.enable_global_shortcuts(True)
 
     def __on_size_allocate(self, widget, allocation, child_widget):
         """

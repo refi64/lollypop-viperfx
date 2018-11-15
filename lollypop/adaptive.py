@@ -61,6 +61,7 @@ class AdaptiveStack(Gtk.Stack):
         self.set_vexpand(True)
         self.__visible_child = None
         self.__history = []
+        self.__navigation_enabled = False
 
     def add(self, widget):
         """
@@ -76,12 +77,19 @@ class AdaptiveStack(Gtk.Stack):
         """
         self.__history = []
 
+    def set_navigation_enabled(self, enabled):
+        """
+            Do not destroy views on set_visible_child*()
+            @param enabled as bool
+        """
+        self.__navigation_enabled = enabled
+
     def set_visible_child(self, widget):
         """
             Set visible child in stack
             @param widget as Gtk.Widget
         """
-        if self.__visible_child is not None:
+        if not self.__navigation_enabled and self.__visible_child is not None:
             self.destroy_child(self.__visible_child)
         self.__visible_child = widget
         Gtk.Stack.set_visible_child(self, widget)
@@ -97,7 +105,7 @@ class AdaptiveStack(Gtk.Stack):
             @param widget as Gtk.Widget
             @param name as str
         """
-        if self.__visible_child is not None:
+        if not self.__navigation_enabled and self.__visible_child is not None:
             self.destroy_child(self.__visible_child)
         self.__visible_child = widget
         Gtk.Stack.set_visible_child_name(self, widget, name)
@@ -191,7 +199,7 @@ class AdaptiveWindow:
                 if widget != visible and widget.get_visible():
                     self.__stack.set_visible_child(widget)
                     break
-            if len(self.__stack.history) == 1:
+            if len(self.__stack.history) <= 1:
                 self.emit("can-go-back-changed", False)
 
     def set_initial_view(self):

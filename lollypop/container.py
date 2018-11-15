@@ -185,17 +185,20 @@ class Container(Gtk.Overlay):
             Show/Hide navigation sidebar
             @param show as bool
         """
+        adpative_window = App().window.is_adaptive
+        self.__stack.set_navigation_enabled(not show or adpative_window)
+        # Destroy to force update (static vs non static)
         view = self.view_artists_rounded
         if view is not None:
             view.destroy()
-        if show or App().window.is_adaptive:
+        if show or adpative_window:
             # We are entering paned stack mode
             self.__list_one.select_ids()
             self.__list_two_ids = App().settings.get_value("list-two-ids")
             self.__list_one.select_ids(
                 App().settings.get_value("list-one-ids"))
             self.__list_one.show()
-            if not App().window.is_adaptive:
+            if not adpative_window:
                 App().window.emit("show-can-go-back", False)
             if self.__list_one.count == 0:
                 self.update_list_one()
@@ -203,7 +206,7 @@ class Container(Gtk.Overlay):
                     App().settings.get_value("show-genres") and\
                     self.__list_two_ids:
                 self.__list_two.show()
-        elif not App().window.is_adaptive:
+        elif not adpative_window:
             if self.__list_one.get_visible():
                 list_two_ids = App().settings.get_value("list-two-ids")
                 list_one_ids = App().settings.get_value("list-one-ids")
@@ -235,14 +238,15 @@ class Container(Gtk.Overlay):
             Show lyrics for track
             @pram track as Track
         """
-        App().window.emit("can-go-back-changed", True)
         from lollypop.view_lyrics import LyricsView
         current = self.__stack.get_visible_child()
         view = LyricsView()
         view.populate(track or App().player.current_track)
         view.show()
         self.__stack.add(view)
+        App().window.container.stack.set_navigation_enabled(True)
         self.__stack.set_visible_child(view)
+        App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
     def show_smart_playlist_editor(self, playlist_id):
@@ -257,7 +261,9 @@ class Container(Gtk.Overlay):
         view.populate()
         view.show()
         self.__stack.add(view)
+        App().window.container.stack.set_navigation_enabled(True)
         self.__stack.set_visible_child(view)
+        App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
     def show_artists_albums(self, artist_ids):
@@ -293,7 +299,6 @@ class Container(Gtk.Overlay):
             @param data as object
             @param switch as bool
         """
-        self.__destroy_visible()
         App().window.emit("can-go-back-changed", True)
         if item_id in [Type.POPULARS,
                        Type.LOVED,
@@ -332,7 +337,6 @@ class Container(Gtk.Overlay):
         """
             Show artists view (rounded artwork)
         """
-        self.__destroy_visible()
         App().window.emit("can-go-back-changed", False)
         view = self.__get_view_artists_rounded()
         App().window.emit("show-can-go-back", True)
@@ -411,14 +415,6 @@ class Container(Gtk.Overlay):
 ############
 # PRIVATE  #
 ############
-    def __destroy_visible(self):
-        """
-            Destroy visible child
-        """
-        visible = self.__stack.get_visible_child()
-        if visible is not None:
-            visible.destroy()
-
     def __pulse(self):
         """
             Make progress bar pulse while visible
@@ -942,7 +938,6 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param list as SelectionList
         """
-        self.__destroy_visible()
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
@@ -1020,8 +1015,10 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param selection_list as SelectionList
         """
-        self.__destroy_visible()
         Logger.debug("Container::__on_list_two_selected()")
+        if not App().window.is_adaptive:
+            App().window.emit("show-can-go-back", False)
+            App().window.emit("can-go-back-changed", False)
         genre_ids = self.__list_one.selected_ids
         selected_ids = self.__list_two.selected_ids
         if not selected_ids or not genre_ids:
