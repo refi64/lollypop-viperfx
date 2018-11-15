@@ -10,11 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Gio, GLib, GObject, Pango
+from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from gettext import gettext as _
 from locale import strcoll
-from hashlib import sha256
 
 from lollypop.view import BaseView
 from lollypop.cellrenderer import CellRendererArtist
@@ -22,105 +21,7 @@ from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
 from lollypop.utils import get_icon_name
 from lollypop.shown import ShownLists, ShownPlaylists
-
-
-class DefaultItemsMenu(Gio.Menu):
-    """
-        Configure defaults items
-    """
-
-    def __init__(self, rowid, mask):
-        """
-            Init menu
-            @param rowid as int
-            @param lists as [int]
-            @param mask as SelectionListMask
-        """
-        Gio.Menu.__init__(self)
-        self.__rowid = rowid
-        self.__mask = mask
-        # Startup menu
-        if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
-                     Type.ALL, Type.RECENTS, Type.YEARS,
-                     Type.RANDOMS, Type.NEVER,
-                     Type.PLAYLISTS, Type.ARTISTS]:
-            startup_menu = Gio.Menu()
-            action = Gio.SimpleAction(name="default_selection_id")
-            App().add_action(action)
-            action.connect('activate',
-                           self.__on_action_clicked,
-                           rowid)
-            item = Gio.MenuItem.new(_("Default on startup"),
-                                    "app.default_selection_id")
-            startup_menu.append_item(item)
-            self.insert_section(0, _("Startup"), startup_menu)
-        # Shown menu
-        shown_menu = Gio.Menu()
-        if mask & SelectionListMask.PLAYLISTS:
-            lists = ShownPlaylists.get(True)
-            wanted = App().settings.get_value("shown-playlists")
-        else:
-            lists = ShownLists.get(mask, True)
-            wanted = App().settings.get_value("shown-album-lists")
-        for item in lists:
-            exists = item[0] in wanted
-            encoded = sha256(item[1].encode("utf-8")).hexdigest()
-            action = Gio.SimpleAction.new_stateful(
-                encoded,
-                None,
-                GLib.Variant.new_boolean(exists))
-            action.connect("change-state",
-                           self.__on_action_change_state,
-                           item[0])
-            App().add_action(action)
-            shown_menu.append(item[1], "app.%s" % encoded)
-        # Translators: shown => items
-        self.insert_section(1, _("Shown"), shown_menu)
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_action_change_state(self, action, param, rowid):
-        """
-            Set action value
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-            @param rowid as int
-        """
-        action.set_state(param)
-        if self.__mask & SelectionListMask.PLAYLISTS:
-            option = "shown-playlists"
-        else:
-            option = "shown-album-lists"
-        wanted = list(App().settings.get_value(option))
-        if param:
-            wanted.append(rowid)
-        else:
-            wanted.remove(rowid)
-        App().settings.set_value(option, GLib.Variant("ai", wanted))
-        if self.__mask & SelectionListMask.LIST_ONE:
-            App().window.container.update_list_one(True)
-        elif self.__mask & SelectionListMask.LIST_TWO:
-            App().window.container.update_list_two(True)
-
-    def __on_action_clicked(self, action, variant, rowid):
-        """
-            Add to playlists
-            @param Gio.SimpleAction
-            @param GVariant
-            @param rowid as int
-        """
-        if self.__mask & SelectionListMask.LIST_ONE:
-            App().settings.set_value(
-                "list-one-ids",
-                GLib.Variant("ai", [rowid]))
-            App().settings.set_value(
-                "list-two-ids",
-                GLib.Variant("ai", []))
-        elif self.__mask & SelectionListMask.LIST_TWO:
-            App().settings.set_value(
-                "list-two-ids",
-                GLib.Variant("ai", [rowid]))
+from lollypop.menu_views import ViewsMenu
 
 
 class SelectionList(BaseView, Gtk.Overlay):
@@ -438,7 +339,7 @@ class SelectionList(BaseView, Gtk.Overlay):
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
-                menu = DefaultItemsMenu(rowid, self.mask)
+                menu = ViewsMenu(rowid, self.mask)
                 popover = Gtk.Popover.new_from_model(view, menu)
                 rect = Gdk.Rectangle()
                 rect.x = event.x
