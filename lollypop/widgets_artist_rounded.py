@@ -15,7 +15,7 @@ from gi.repository import Gdk, Gtk
 from gettext import gettext as _
 from random import shuffle
 
-from lollypop.define import App, STATIC_ALBUM_NAME
+from lollypop.define import App, STATIC_ALBUM_NAME, SelectionListMask
 from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
@@ -54,6 +54,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget.populate(self, self.__artist_name)
         self._artwork.connect("notify::surface", self.__on_artwork_set)
         self._artwork.connect("notify::icon-name", self.__on_artwork_set)
+        self.connect("button-press-event", self.__on_button_press_event)
 
     def show_overlay(self, show):
         """
@@ -161,3 +162,23 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         if self._artwork.props.surface is None:
             self._artwork.get_style_context().add_class("artwork-icon")
         self.emit("populated")
+
+    def __on_button_press_event(self, widget, event):
+        """
+            Show configuration menu
+            @param widget as Gtk.Widget
+            @param event as Gdk.EventButton
+        """
+        if event.button != 1:
+            from lollypop.menu_views import ViewsMenu
+            from lollypop.view_artists_rounded import RoundedArtistsView
+            menu = ViewsMenu(self.get_ancestor(RoundedArtistsView),
+                             self.data,
+                             SelectionListMask.LIST_ONE)
+            popover = Gtk.Popover.new_from_model(widget, menu)
+            rect = Gdk.Rectangle()
+            rect.x = event.x
+            rect.y = event.y
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+            popover.popup()

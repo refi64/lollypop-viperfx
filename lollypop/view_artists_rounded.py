@@ -33,7 +33,7 @@ class RoundedArtistsView(FlowBoxView):
         self.connect("unrealize", self.__on_unrealize)
         self.connect("destroy", self.__on_destroy)
 
-    def insert_item(self, item):
+    def add_value(self, item):
         """
             Insert item
             @param item as (int, str, str)
@@ -49,7 +49,7 @@ class RoundedArtistsView(FlowBoxView):
         widget.show()
         self._box.insert(widget, -1)
 
-    def remove_item(self, item_id):
+    def remove_value(self, item_id):
         """
             Remove item from devices
             @param item_id as int

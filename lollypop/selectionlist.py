@@ -339,7 +339,7 @@ class SelectionList(BaseView, Gtk.Overlay):
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
-                menu = ViewsMenu(rowid, self.mask)
+                menu = ViewsMenu(self, rowid, self.mask)
                 popover = Gtk.Popover.new_from_model(view, menu)
                 rect = Gdk.Rectangle()
                 rect.x = event.x

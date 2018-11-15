@@ -889,9 +889,9 @@ class Container(Gtk.Overlay):
                 if App().settings.get_value("show-sidebar"):
                     self.__list_one.add_value((dev.id, dev.name, dev.name))
                 else:
-                    self.view_artists_rounded.insert_item((dev.id,
-                                                           dev.name,
-                                                           dev.name))
+                    self.view_artists_rounded.add_value((dev.id,
+                                                         dev.name,
+                                                         dev.name))
 
     def __remove_device(self, mount):
         """
@@ -904,7 +904,7 @@ class Container(Gtk.Overlay):
                 if App().settings.get_value("show-sidebar"):
                     self.__list_one.remove_value(dev.id)
                 else:
-                    self.view_artists_rounded.remove_item(dev.id)
+                    self.view_artists_rounded.remove_value(dev.id)
                 child = self.__stack.get_child_by_name(uri)
                 if child is not None:
                     child.destroy()
@@ -1101,11 +1101,11 @@ class Container(Gtk.Overlay):
                 l.remove_value(artist_id)
         else:
             if add:
-                self.view_artists_rounded.insert_item((artist_id,
-                                                       artist_name,
-                                                       sortname))
+                self.view_artists_rounded.add_value((artist_id,
+                                                     artist_name,
+                                                     sortname))
             else:
-                self.view_artists_rounded.remove_item(artist_id)
+                self.view_artists_rounded.remove_value(artist_id)
 
     def __on_mount_added(self, vm, mount):
         """

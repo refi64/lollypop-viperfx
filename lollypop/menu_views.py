@@ -24,14 +24,15 @@ class ViewsMenu(Gio.Menu):
         Configure defaults items
     """
 
-    def __init__(self, rowid, mask):
+    def __init__(self, widget, rowid, mask):
         """
             Init menu
+            @param widget as Gtk.Widget
             @param rowid as int
-            @param lists as [int]
             @param mask as SelectionListMask
         """
         Gtk.Popover.__init__(self)
+        self.__widget = widget
         self.__rowid = rowid
         self.__mask = mask
         # Startup menu
@@ -93,10 +94,17 @@ class ViewsMenu(Gio.Menu):
         else:
             wanted.remove(rowid)
         App().settings.set_value(option, GLib.Variant("ai", wanted))
-        if self.__mask & SelectionListMask.LIST_ONE:
-            App().window.container.update_list_one(True)
-        elif self.__mask & SelectionListMask.LIST_TWO:
-            App().window.container.update_list_two(True)
+        if self.__mask & SelectionListMask.PLAYLISTS:
+            items = ShownPlaylists.get(True)
+        else:
+            items = ShownLists.get(self.__mask, True)
+        if param:
+            for item in items:
+                if item[0] == rowid:
+                    self.__widget.add_value(item)
+                    break
+        else:
+            self.__widget.remove_value(rowid)
 
     def __on_action_clicked(self, action, variant, rowid):
         """
