@@ -185,6 +185,7 @@ class Container(Gtk.Overlay):
             Show/Hide navigation sidebar
             @param show as bool
         """
+        self.__stack.reset_history()
         adpative_window = App().window.is_adaptive
         # Destroy to force update (static vs non static)
         view = self.view_artists_rounded
