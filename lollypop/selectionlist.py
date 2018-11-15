@@ -21,7 +21,6 @@ from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
 from lollypop.utils import get_icon_name
 from lollypop.shown import ShownLists, ShownPlaylists
-from lollypop.menu_views import ViewsMenu
 
 
 class SelectionList(BaseView, Gtk.Overlay):
@@ -334,6 +333,7 @@ class SelectionList(BaseView, Gtk.Overlay):
                                   SelectionListMask.LIST_TWO]:
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None:
+                from lollypop.menu_views import ViewsMenu
                 App().settings.set_value("shown-sidebar-tooltip",
                                          GLib.Variant("b", True))
                 (path, position) = info
