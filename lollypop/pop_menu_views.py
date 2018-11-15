@@ -19,7 +19,7 @@ from lollypop.define import Type, App, SelectionListMask
 from lollypop.shown import ShownLists, ShownPlaylists
 
 
-class ViewsMenu(Gio.Menu):
+class ViewsMenuPopover(Gtk.Popover):
     """
         Configure defaults items
     """
@@ -35,6 +35,8 @@ class ViewsMenu(Gio.Menu):
         self.__widget = widget
         self.__rowid = rowid
         self.__mask = mask
+        menu = Gio.Menu()
+        self.bind_model(menu, None)
         # Startup menu
         if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
                      Type.ALL, Type.RECENTS, Type.YEARS,
@@ -49,7 +51,7 @@ class ViewsMenu(Gio.Menu):
             item = Gio.MenuItem.new(_("Default on startup"),
                                     "app.default_selection_id")
             startup_menu.append_item(item)
-            self.insert_section(0, _("Startup"), startup_menu)
+            menu.insert_section(0, _("Startup"), startup_menu)
         # Shown menu
         shown_menu = Gio.Menu()
         if mask & SelectionListMask.PLAYLISTS:
@@ -71,7 +73,7 @@ class ViewsMenu(Gio.Menu):
             App().add_action(action)
             shown_menu.append(item[1], "app.%s" % encoded)
         # Translators: shown => items
-        self.insert_section(1, _("Shown"), shown_menu)
+        menu.insert_section(1, _("Shown"), shown_menu)
 
 #######################
 # PRIVATE             #
@@ -105,6 +107,7 @@ class ViewsMenu(Gio.Menu):
                     break
         else:
             self.__widget.remove_value(rowid)
+        self.popdown()
 
     def __on_action_clicked(self, action, variant, rowid):
         """
@@ -124,3 +127,4 @@ class ViewsMenu(Gio.Menu):
             App().settings.set_value(
                 "list-two-ids",
                 GLib.Variant("ai", [rowid]))
+        self.popdown()

@@ -170,12 +170,12 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             @param event as Gdk.EventButton
         """
         if event.button != 1:
-            from lollypop.menu_views import ViewsMenu
+            from lollypop.pop_menu_views import ViewsMenuPopover
             from lollypop.view_artists_rounded import RoundedArtistsView
-            menu = ViewsMenu(self.get_ancestor(RoundedArtistsView),
-                             self.data,
-                             SelectionListMask.LIST_ONE)
-            popover = Gtk.Popover.new_from_model(widget, menu)
+            popover = ViewsMenuPopover(self.get_ancestor(RoundedArtistsView),
+                                       self.data,
+                                       SelectionListMask.LIST_ONE)
+            popover.set_relative_to(widget)
             rect = Gdk.Rectangle()
             rect.x = event.x
             rect.y = event.y

@@ -333,14 +333,14 @@ class SelectionList(BaseView, Gtk.Overlay):
                                   SelectionListMask.LIST_TWO]:
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None:
-                from lollypop.menu_views import ViewsMenu
+                from lollypop.pop_menu_views import ViewsMenuPopover
                 App().settings.set_value("shown-sidebar-tooltip",
                                          GLib.Variant("b", True))
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
-                menu = ViewsMenu(self, rowid, self.mask)
-                popover = Gtk.Popover.new_from_model(view, menu)
+                popover = ViewsMenuPopover(self, rowid, self.mask)
+                popover.set_relative_to(view)
                 rect = Gdk.Rectangle()
                 rect.x = event.x
                 rect.y = event.y
