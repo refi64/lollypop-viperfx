@@ -25,7 +25,7 @@ class LinearPlayer(BasePlayer):
         """
         BasePlayer.__init__(self)
 
-    def next(self, switch=True):
+    def next(self):
         """
             Next track for current album or next album
             @return track as Track
