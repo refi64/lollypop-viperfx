@@ -118,9 +118,7 @@ class RoundedArtistsView(FlowBoxView):
             return False
         # String comparaison for non static
         else:
-            a = App().artists.get_sortname(widget1.data)
-            b = App().artists.get_sortname(widget2.data)
-            return strcoll(a, b)
+            return strcoll(widget1.sortname, widget2.sortname)
 
     def __on_destroy(self, widget):
         """
