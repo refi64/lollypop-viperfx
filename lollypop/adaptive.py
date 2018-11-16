@@ -24,16 +24,24 @@ class AdaptiveView:
         """
         pass
 
-    def destroy(self):
+    def destroy_later(self):
         """
             Delayed destroy
             Allow animations in stack
         """
         def do_destroy():
-            Gtk.Grid.destroy(self)
+            self.destroy()
         if self.should_destroy:
             self.stop()
             GLib.timeout_add(1000, do_destroy)
+
+    @property
+    def can_destroy(self):
+        """
+            True if view can be destroyed
+            @return bool
+        """
+        return True
 
     @property
     def should_destroy(self):
@@ -70,12 +78,21 @@ class AdaptiveStack(Gtk.Stack):
         """
         if widget not in self.get_children():
             Gtk.Stack.add(self, widget)
+            widget.connect("destroy", self.__on_child_destroy)
 
     def reset_history(self):
         """
             Reset history
         """
         self.__history = []
+
+    def clear(self):
+        """
+            Clear stack
+        """
+        for child in self.get_children():
+            if child.can_destroy:
+                child.destroy()
 
     def set_navigation_enabled(self, enabled):
         """
@@ -133,7 +150,7 @@ class AdaptiveStack(Gtk.Stack):
         if widget.should_destroy:
             if widget in self.__history:
                 self.__history.remove(widget)
-            widget.destroy()
+            widget.destroy_later()
 
     @property
     def history(self):
@@ -146,6 +163,13 @@ class AdaptiveStack(Gtk.Stack):
 ############
 # PRIVATE  #
 ############
+    def __on_child_destroy(self, widget):
+        """
+            Remove from history
+            @param widget as Gtk.Widget
+        """
+        if widget in self.__history:
+            self.__history.remove(widget)
 
 
 class AdaptiveWindow:

@@ -185,8 +185,9 @@ class Container(Gtk.Overlay):
             Show/Hide navigation sidebar
             @param show as bool
         """
-        self.__stack.reset_history()
         adpative_window = App().window.is_adaptive
+        self.__stack.set_navigation_enabled(not show or adpative_window)
+        self.__stack.clear()
         # Destroy to force update (static vs non static)
         view = self.view_artists_rounded
         if view is not None:
@@ -232,9 +233,6 @@ class Container(Gtk.Overlay):
                 self.show_view(self.__list_two_ids[0])
             self.__list_one_ids = []
             self.__list_two_ids = []
-        # We need to activate navigation to be sure adaptive stack
-        # will remove unwanted children
-        self.__stack.set_navigation_enabled(not show or adpative_window)
 
     def show_lyrics(self, track=None):
         """

@@ -261,12 +261,12 @@ class SelectionList(BaseView, Gtk.Overlay):
         self.__selection.select_iter(self.__model[0].iter)
 
     @property
-    def should_ignore(self):
+    def can_destroy(self):
         """
-            True if view should be ignored by stack manager
+            True if view can be destroyed
             @return bool
         """
-        return True
+        return False
 
     @property
     def should_destroy(self):
