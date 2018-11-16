@@ -328,7 +328,10 @@ class Container(Gtk.Overlay):
             view = self.__get_view_artists([], [item_id])
         view.show()
         self.__stack.add(view)
-        self.__stack.set_visible_child(view)
+        if switch:
+            self.__stack.set_visible_child(view)
+        else:
+            self.__stack.add_to_history(view)
 
     def show_artists_view(self):
         """

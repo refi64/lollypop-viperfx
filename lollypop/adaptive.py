@@ -102,6 +102,16 @@ class AdaptiveStack(Gtk.Stack):
         """
         self.__navigation_enabled = enabled
 
+    def add_to_history(self, widget):
+        """
+            Add widget to history or rebase history at widget position
+        """
+        if widget in self.__history:
+            index = self.__history.index(widget)
+            self.__history = self.__history[0:index + 1]
+        else:
+            self.__history.append(widget)
+
     def set_visible_child(self, widget):
         """
             Set visible child in stack
@@ -111,11 +121,7 @@ class AdaptiveStack(Gtk.Stack):
             self.destroy_child(self.__visible_child)
         self.__visible_child = widget
         Gtk.Stack.set_visible_child(self, widget)
-        if widget in self.__history:
-            index = self.__history.index(widget)
-            self.__history = self.__history[0:index + 1]
-        else:
-            self.__history.append(widget)
+        self.add_to_history(widget)
 
     def set_visible_child_name(self, widget, name):
         """
@@ -127,11 +133,7 @@ class AdaptiveStack(Gtk.Stack):
             self.destroy_child(self.__visible_child)
         self.__visible_child = widget
         Gtk.Stack.set_visible_child_name(self, widget, name)
-        if widget in self.__history:
-            index = self.__history.index(widget)
-            self.__history = self.__history[0:index + 1]
-        else:
-            self.__history.append(widget)
+        self.add_to_history(widget)
 
     def remove(self, widget):
         """
