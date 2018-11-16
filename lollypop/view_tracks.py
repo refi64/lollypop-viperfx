@@ -64,10 +64,10 @@ class TracksView:
 
         if responsive_type in [ResponsiveType.DND,
                                ResponsiveType.SEARCH]:
-            self._album.merge_discs()
-
-        # Discs to load, will be emptied
-        self.__discs = list(self._album.discs)
+            self.__discs = [self._album.one_disc]
+        else:
+            self.__discs = self._album.discs
+        self.__discs_to_load = list(self.__discs)
         for disc in self.__discs:
             self.__add_disc_container(disc.number)
             if self._responsive_type == ResponsiveType.FIXED:
@@ -78,7 +78,7 @@ class TracksView:
             Set playing indicator
         """
         try:
-            for disc in self._album.discs:
+            for disc in self.__discs:
                 self._tracks_widget_left[disc.number].update_playing(
                     App().player.current_track.id)
                 self._tracks_widget_right[disc.number].update_playing(
@@ -91,8 +91,8 @@ class TracksView:
             Populate tracks
             @thread safe
         """
-        if self.__discs:
-            disc = self.__discs.pop(0)
+        if self.__discs_to_load:
+            disc = self.__discs_to_load.pop(0)
             disc_number = disc.number
             tracks = list(disc.tracks)
             if self._responsive_type in [ResponsiveType.FIXED,
@@ -156,17 +156,6 @@ class TracksView:
         """
         self.__add_tracks(tracks, self._tracks_widget_left,
                           0, 0, None)
-
-    def remove_rows(self, tracks):
-        """
-            Remove track rows
-            @param tracks as [Track]
-        """
-        # FIXME
-        track_ids = [track.id for track in tracks]
-        for row in self.children:
-            if row.track.id in track_ids:
-                row.destroy()
 
     def rows_animation(self, x, y, widget):
         """
@@ -300,7 +289,7 @@ class TracksView:
             self.__height += right_height
         self.__total_height += left_height + right_height
         # Add self._child_height for disc label
-        if len(self._album.discs) > 1:
+        if len(self.__discs) > 1:
             self.__height += self._child_height
             self.__total_height += self._child_height
         self._tracks_widget_left[disc_number].set_property("height-request",
@@ -328,7 +317,7 @@ class TracksView:
                 for widget in dic.values():
                     for child in widget.get_children():
                         child.destroy()
-            self.__discs = list(self._album.discs)
+            self.__discs = list(self.__discs)
             self.__set_duration()
             self.populate()
 
@@ -336,7 +325,7 @@ class TracksView:
         """
             Remove height request
         """
-        for disc in self._album.discs:
+        for disc in self.__discs:
             self._tracks_widget_left[disc.number].set_property(
                 "height-request", -1)
             self._tracks_widget_right[disc.number].set_property(
@@ -379,8 +368,8 @@ class TracksView:
             else:
                 width = 2
                 pos = 1
-            for disc in self._album.discs:
-                show_label = len(self._album.discs) > 1
+            for disc in self.__discs:
+                show_label = len(self.__discs) > 1
                 disc_names = self._album.disc_names(disc.number)
                 if show_label or disc_names:
                     if disc_names:

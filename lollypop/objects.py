@@ -230,6 +230,7 @@ class Album(Base):
         self.genre_ids = genre_ids
         self._tracks = []
         self._discs = []
+        self.__one_disc = None
         # Use artist ids from db else
         if artist_ids:
             self.artist_ids = artist_ids
@@ -243,14 +244,6 @@ class Album(Base):
         if track in self._tracks:
             self._tracks.remove(track)
             self._tracks.insert(index, track)
-
-    def merge_discs(self):
-        """
-            Merge discs into one
-        """
-        tracks = self.tracks
-        self._discs = [Disc(self, 0)]
-        self._discs[0].set_tracks(tracks)
 
     def set_tracks(self, tracks):
         """
@@ -344,6 +337,18 @@ class Album(Base):
             for disc in self.discs:
                 self._tracks += disc.tracks
         return self._tracks
+
+    @property
+    def one_disc(self):
+        """
+            Get album as one disc
+            @return Disc
+        """
+        if self.__one_disc is None:
+            tracks = self.tracks
+            self.__one_disc = Disc(self, 0)
+            self.__one_disc.set_tracks(tracks)
+        return self.__one_disc
 
     @property
     def discs(self):
