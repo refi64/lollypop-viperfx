@@ -40,21 +40,6 @@ class IndicatorWidget(Gtk.EventBox):
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
 
-    def show_spinner(self):
-        """
-            Show spinner
-        """
-        self.__init()
-        spinner = self.__stack.get_child_by_name("spinner")
-        if spinner is None:
-            spinner = Gtk.Spinner()
-            spinner.set_property("halign", Gtk.Align.CENTER)
-            spinner.set_property("valign", Gtk.Align.CENTER)
-            spinner.show()
-            self.__stack.add_named(spinner, "spinner")
-        spinner.start()
-        self.__stack.set_visible_child_name("spinner")
-
     def empty(self):
         """
             Show no indicator

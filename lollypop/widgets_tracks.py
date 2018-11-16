@@ -54,15 +54,6 @@ class TracksWidget(Gtk.ListBox):
             row.set_indicator(row.track.id == track_id,
                               Track(row.track.id).loved)
 
-    def show_spinner(self, track_id):
-        """
-            Show spinner for track_id
-        """
-        for row in self.get_children():
-            if row.id == track_id:
-                row.show_spinner()
-                break
-
 #######################
 # PRIVATE             #
 #######################

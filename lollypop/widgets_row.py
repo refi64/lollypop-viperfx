@@ -99,12 +99,6 @@ class Row(Gtk.ListBoxRow):
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
 
-    def show_spinner(self):
-        """
-            Show spinner
-        """
-        self._indicator.show_spinner()
-
     def set_indicator(self, playing, loved):
         """
             Show indicator

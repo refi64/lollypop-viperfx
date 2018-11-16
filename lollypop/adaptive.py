@@ -92,6 +92,7 @@ class AdaptiveStack(Gtk.Stack):
         """
         for child in self.get_children():
             if child.can_destroy:
+                child.stop()
                 child.destroy()
 
     def set_navigation_enabled(self, enabled):
