@@ -125,10 +125,18 @@ class Container(Gtk.Overlay):
         """
             Reload current view
         """
+        def select_list_two(selection_list, artist_ids):
+            self.__list_two.select_ids(artist_ids)
+            self.__list_two.disconnect_by_func(select_list_two)
+
+        list_one_selected_ids = self.__list_one.selected_ids
+        list_two_selected_ids = self.__list_two.selected_ids
         if self.__list_two.selected_ids:
-            self.__on_list_two_selected(self.__list_two)
-        elif self.__list_one.selected_ids:
-            self.__on_list_one_selected(self.__list_one)
+            self.__list_two.connect("populated",
+                                    select_list_two,
+                                    list_two_selected_ids)
+        if self.__list_one.selected_ids:
+            self.__list_one.select_ids(list_one_selected_ids)
 
     def pulse(self, pulse):
         """
@@ -269,7 +277,7 @@ class Container(Gtk.Overlay):
             @param artist id as int
         """
         def select_list_two(selection_list, artist_ids):
-            GLib.idle_add(self.__list_two.select_ids, artist_ids)
+            self.__list_two.select_ids(artist_ids)
             self.__list_two.disconnect_by_func(select_list_two)
         GLib.idle_add(self.__list_one.select_ids, [])
         GLib.idle_add(self.__list_two.select_ids, [])
@@ -284,10 +292,10 @@ class Container(Gtk.Overlay):
                             genre_ids.append(genre_id)
             # Select genres on list one
             self.__list_two.connect("populated", select_list_two, artist_ids)
-            GLib.idle_add(self.__list_one.select_ids, genre_ids)
+            self.__list_one.select_ids(genre_ids)
         else:
             # Select artists on list one
-            GLib.idle_add(self.__list_one.select_ids, artist_ids)
+            self.__list_one.select_ids(artist_ids)
 
     def show_view(self, item_id, data=None, switch=True):
         """
