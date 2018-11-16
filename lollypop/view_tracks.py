@@ -409,12 +409,12 @@ class TracksView:
                     box.show()
                     self._responsive_widget.attach(box, 0, idx, width, 1)
                     idx += 1
-                GLib.idle_add(self._responsive_widget.attach,
+                self._responsive_widget.attach(
                               self._tracks_widget_left[disc.number],
                               0, idx, 1, 1)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
-                GLib.idle_add(self._responsive_widget.attach,
+                self._responsive_widget.attach(
                               self._tracks_widget_right[disc.number],
                               pos, idx, 1, 1)
                 idx += 1
