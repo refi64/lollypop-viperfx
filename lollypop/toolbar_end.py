@@ -270,7 +270,7 @@ class ToolbarEnd(Gtk.Bin):
         # Hack, hack, hack
         submenu_name = _("Next")
         menu = self.__party_submenu
-        for (genre_id, name) in App().genres.get():
+        for (genre_id, name, sortname) in App().genres.get():
             in_party_ids = not party_ids or genre_id in party_ids
             action_name = "genre_%s" % genre_id
             action = Gio.SimpleAction.new_stateful(
