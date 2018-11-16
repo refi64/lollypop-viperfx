@@ -204,6 +204,8 @@ class Application(Gtk.Application):
             dark = self.settings.get_value("dark-ui")
             settings.set_property("gtk-application-prefer-dark-theme", dark)
         ApplicationActions()
+        self.__startup_ids1 = self.settings.get_value("list-one-ids")
+        self.__startup_ids2 = self.settings.get_value("list-two-ids")
 
     def do_startup(self):
         """
@@ -225,8 +227,8 @@ class Application(Gtk.Application):
             @param vacuum as bool
         """
         if not self.settings.get_value("save-state"):
-            self.settings.set_value("list-one-ids", GLib.Variant("ai", []))
-            self.settings.set_value("list-two-ids", GLib.Variant("ai", []))
+            self.settings.set_value("list-one-ids", self.__startup_ids1)
+            self.settings.set_value("list-two-ids", self.__startup_ids2)
         self.window.container.save_internals()
         # Then vacuum db
         if vacuum:
@@ -262,6 +264,33 @@ class Application(Gtk.Application):
             self.scrobblers.append(listenbrainz)
             self.settings.bind("listenbrainz-user-token", listenbrainz,
                                "user_token", 0)
+
+    def set_startup_ids(self, ids1, ids2):
+        """
+            Set application startup ids
+            @param ids as [int]
+            @param ids as [int]
+        """
+        if ids1 is not None:
+            self.__startup_ids1 = GLib.Variant("ai", ids1)
+        if ids2 is not None:
+            self.__startup_ids2 = GLib.Variant("ai", ids2)
+
+    @property
+    def startup_ids1(self):
+        """
+            Get current startup ids1
+            @return [int]
+        """
+        return list(self.__startup_ids1)
+
+    @property
+    def startup_ids2(self):
+        """
+            Get current startup ids1
+            @return [int]
+        """
+        return list(self.__startup_ids2)
 
     @property
     def lastfm(self):

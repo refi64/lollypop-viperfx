@@ -66,12 +66,8 @@ class Container(Gtk.Overlay):
                                 self.__update_playlists)
         self.add(self.__paned_one)
 
-        if App().settings.get_value("save-state"):
-            self.__list_one_ids = App().settings.get_value("list-one-ids")
-            self.__list_two_ids = App().settings.get_value("list-two-ids")
-        else:
-            self.__list_one_ids = []
-            self.__list_two_ids = []
+        self.__list_one_ids = App().settings.get_value("list-one-ids")
+        self.__list_two_ids = App().settings.get_value("list-two-ids")
 
         # Show donation notification
         if App().settings.get_value("show-donation"):
