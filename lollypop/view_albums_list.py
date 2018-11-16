@@ -509,14 +509,14 @@ class AlbumsListView(LazyLoadingView, ViewController):
         if not self.__genre_ids and not self.__artist_ids:
             return
         if self.__genre_ids:
-            App().settings.set_value("list-one-ids",
+            App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self.__genre_ids))
-            App().settings.set_value("list-two-ids",
+            App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", self.__artist_ids))
         else:
-            App().settings.set_value("list-one-ids",
+            App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self.__artist_ids))
-            App().settings.set_value("list-two-ids",
+            App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", []))
 
 #######################

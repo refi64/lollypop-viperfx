@@ -66,8 +66,8 @@ class Container(Gtk.Overlay):
                                 self.__update_playlists)
         self.add(self.__paned_one)
 
-        self.__list_one_ids = App().settings.get_value("list-one-ids")
-        self.__list_two_ids = App().settings.get_value("list-two-ids")
+        self.__list_one_ids = App().settings.get_value("state-one-ids")
+        self.__list_two_ids = App().settings.get_value("state-two-ids")
 
         # Show donation notification
         if App().settings.get_value("show-donation"):
@@ -199,9 +199,9 @@ class Container(Gtk.Overlay):
         if show or adpative_window:
             # We are entering paned stack mode
             self.__list_one.select_ids()
-            self.__list_two_ids = App().settings.get_value("list-two-ids")
+            self.__list_two_ids = App().settings.get_value("state-two-ids")
             self.__list_one.select_ids(
-                App().settings.get_value("list-one-ids"))
+                App().settings.get_value("state-one-ids"))
             self.__list_one.show()
             if not adpative_window:
                 App().window.emit("show-can-go-back", False)
@@ -213,8 +213,8 @@ class Container(Gtk.Overlay):
                 self.__list_two.show()
         elif not adpative_window:
             if self.__list_one.get_visible():
-                list_two_ids = App().settings.get_value("list-two-ids")
-                list_one_ids = App().settings.get_value("list-one-ids")
+                list_two_ids = App().settings.get_value("state-two-ids")
+                list_one_ids = App().settings.get_value("state-one-ids")
                 # We are leaving paned stack mode
                 # Restore static entry
                 if list_one_ids and list_one_ids[0] < 0:

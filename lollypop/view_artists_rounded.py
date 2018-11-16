@@ -93,9 +93,9 @@ class RoundedArtistsView(FlowBoxView):
         """
             Set active ids
         """
-        App().settings.set_value("list-one-ids",
+        App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.POPULARS]))
-        App().settings.set_value("list-two-ids",
+        App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
 
 #######################

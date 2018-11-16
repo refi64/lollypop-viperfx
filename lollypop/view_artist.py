@@ -274,14 +274,14 @@ class ArtistView(ArtistAlbumsView):
                                                "lock-changed",
                                                self.__on_lock_changed)
         if self._genre_ids:
-            App().settings.set_value("list-one-ids",
+            App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self._genre_ids))
-            App().settings.set_value("list-two-ids",
+            App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", self._artist_ids))
         else:
-            App().settings.set_value("list-one-ids",
+            App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self._artist_ids))
-            App().settings.set_value("list-two-ids",
+            App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", []))
 
     def _on_unmap(self, widget):

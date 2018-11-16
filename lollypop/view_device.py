@@ -207,7 +207,7 @@ class DeviceView(View):
             Set active ids
             @param widget as Gtk.Widget
         """
-        App().settings.set_value("list-one-ids",
+        App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", []))
 
     def _on_unmap(self, widget):
