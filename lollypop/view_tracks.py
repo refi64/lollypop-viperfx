@@ -217,7 +217,7 @@ class TracksView:
             Return True if populated
             @return bool
         """
-        return len(self.__discs) == 0
+        return len(self.__discs_to_load) == 0
 
     @property
     def height(self):
