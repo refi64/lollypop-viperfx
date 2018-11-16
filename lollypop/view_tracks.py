@@ -619,6 +619,11 @@ class TracksView:
             new_row.update_number(position + 1)
             row.get_parent().insert(new_row, position)
             row.track.album.insert_track(track, position)
+            if new_row.previous_row is not None and\
+                    new_row.previous_row.track.id ==\
+                    App().player.current_track.id:
+                App().player.set_next()
+                App().player.set_prev()
         # Else, we need to insert a new album with the track
         else:
             # Backup album as __destroy_split() will unset it
@@ -660,7 +665,7 @@ class TracksView:
 
     def __on_remove_track(self, row):
         """
-            Remove track from own album
+            Remove track from album
             @param row as PlaylistRow
             @param position as int
         """
@@ -675,6 +680,9 @@ class TracksView:
         else:
             row.next_row.set_previous_row(row.previous_row)
             row.previous_row.set_next_row(row.next_row)
+            if row.previous_row.track.id == App().player.current_track.id:
+                App().player.set_next()
+                App().player.set_prev()
 
     def __on_insert_album(self, row, new_album_id, track_ids, down):
         """

@@ -650,6 +650,11 @@ class AlbumsListView(LazyLoadingView, ViewController):
                 new_row.show()
                 self.__view.insert(new_row, position + 1)
                 App().player.add_album(album, position + 1)
+                if row.previous_row is not None and\
+                        row.previous_row.track.id ==\
+                        App().player.current_track.id:
+                    App().player.set_next()
+                    App().player.set_prev()
         else:
             album = Album(new_track.album.id)
             album.set_tracks([new_track])
@@ -657,6 +662,11 @@ class AlbumsListView(LazyLoadingView, ViewController):
             new_row.populate()
             new_row.show()
             self.__view.insert(new_row, position)
+            if row.previous_row is not None and\
+                    row.previous_row.track.id ==\
+                    App().player.current_track.id:
+                App().player.set_next()
+                App().player.set_prev()
             App().player.add_album(album, position)
 
     def __on_insert_album(self, row, new_album_id, track_ids, down):
