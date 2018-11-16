@@ -44,10 +44,17 @@ class ViewsMenuPopover(Gtk.Popover):
                      Type.PLAYLISTS, Type.ARTISTS] and\
                 not App().settings.get_value("save-state"):
             startup_menu = Gio.Menu()
-            action = Gio.SimpleAction(name="default_selection_id")
+            if self.__mask & SelectionListMask.LIST_TWO:
+                exists = rowid in App().startup_ids2
+            else:
+                exists = rowid in App().startup_ids1
+            action = Gio.SimpleAction.new_stateful(
+                                           "default_selection_id",
+                                           None,
+                                           GLib.Variant.new_boolean(exists))
             App().add_action(action)
-            action.connect('activate',
-                           self.__on_action_clicked,
+            action.connect("change-state",
+                           self.__on_default_change_state,
                            rowid)
             item = Gio.MenuItem.new(_("Default on startup"),
                                     "app.default_selection_id")
@@ -69,7 +76,7 @@ class ViewsMenuPopover(Gtk.Popover):
                 None,
                 GLib.Variant.new_boolean(exists))
             action.connect("change-state",
-                           self.__on_action_change_state,
+                           self.__on_shown_change_state,
                            item[0])
             App().add_action(action)
             shown_menu.append(item[1], "app.%s" % encoded)
@@ -79,20 +86,20 @@ class ViewsMenuPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __on_action_change_state(self, action, param, rowid):
+    def __on_shown_change_state(self, action, variant, rowid):
         """
             Set action value
             @param action as Gio.SimpleAction
-            @param param as GLib.Variant
+            @param variant as GLib.Variant
             @param rowid as int
         """
-        action.set_state(param)
+        action.set_state(variant)
         if self.__mask & SelectionListMask.PLAYLISTS:
             option = "shown-playlists"
         else:
             option = "shown-album-lists"
         wanted = list(App().settings.get_value(option))
-        if param:
+        if variant:
             wanted.append(rowid)
         else:
             wanted.remove(rowid)
@@ -101,7 +108,7 @@ class ViewsMenuPopover(Gtk.Popover):
             items = ShownPlaylists.get(True)
         else:
             items = ShownLists.get(self.__mask, True)
-        if param:
+        if variant:
             for item in items:
                 if item[0] == rowid:
                     self.__widget.add_value(item)
@@ -115,7 +122,7 @@ class ViewsMenuPopover(Gtk.Popover):
                 App().set_startup_ids(ids, [])
         self.popdown()
 
-    def __on_action_clicked(self, action, variant, rowid):
+    def __on_default_change_state(self, action, variant, rowid):
         """
             Add to playlists
             @param action as Gio.SimpleAction
@@ -123,7 +130,13 @@ class ViewsMenuPopover(Gtk.Popover):
             @param rowid as int
         """
         if self.__mask & SelectionListMask.LIST_ONE:
-            App().set_startup_ids([rowid], [])
+            if variant:
+                App().set_startup_ids([rowid], [])
+            else:
+                App().set_startup_ids([], [])
         elif self.__mask & SelectionListMask.LIST_TWO:
-            App().set_startup_ids(None, [rowid])
+            if variant:
+                App().set_startup_ids(None, [rowid])
+            else:
+                App().set_startup_ids(None, [])
         self.popdown()
