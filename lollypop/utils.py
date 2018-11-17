@@ -45,8 +45,6 @@ def get_round_surface(image, scale_factor):
     ctx.set_source_rgba(0, 0, 0, 0.3)
     ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
     ctx.stroke_preserve()
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.fill_preserve()
     ctx.translate(-2, -2)
     if is_pixbuf:
         image = Gdk.cairo_surface_create_from_pixbuf(image, scale_factor, None)

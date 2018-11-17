@@ -34,8 +34,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             @param data as object
         """
         RoundedFlowBoxWidget.__init__(self, data, art_size)
-        self.__cover_size = App().settings.get_value("cover-size").get_int32()
-        self.__scale = art_size / self.__cover_size / 3
+        self.__cover_size = art_size / 3
         self.__cancellable = Gio.Cancellable()
         self.connect("unmap", self.__on_unmap)
 
@@ -68,7 +67,6 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                                      self._art_size,
                                      self._art_size)
         ctx = cairo.Context(surface)
-        ctx.scale(self.__scale, self.__scale)
         album_ids = self._get_album_ids()
         shuffle(album_ids)
         positions = [(1, 1), (0, 0), (0, 1), (0, 2),
