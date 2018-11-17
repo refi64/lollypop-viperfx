@@ -61,6 +61,11 @@ popover.background separator {
     padding: 10px;    
 }
 
+.light-background {
+    background-color: shade(@theme_bg_color, 1.05);
+    border-radius: 50%;
+}
+
 .no-top-border {
     border-top: none;
 }

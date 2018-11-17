@@ -38,6 +38,14 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         self.__cancellable = Gio.Cancellable()
         self.connect("unmap", self.__on_unmap)
 
+    def populate(self, text):
+        """
+            Populate widget content
+            @param text as str
+        """
+        RoundedFlowBoxWidget.populate(self, text)
+        self._artwork.get_style_context().add_class("light-background")
+
 #######################
 # PROTECTED           #
 #######################
