@@ -223,14 +223,17 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             if filter2_ids and filter2_ids[0] == Type.COMPILATIONS:
                 album_ids += App().albums.get_compilation_ids(
                     filter1_ids, True)
-            else:
-                if not filter2_ids and\
-                        App().settings.get_value(
-                            "show-compilations-in-album-view"):
-                    album_ids += App().albums.get_compilation_ids(
-                        filter1_ids, True)
+            elif filter2_ids:
+                # In artist view
                 album_ids += App().albums.get_ids(
-                    filter2_ids, filter1_ids, True)
+                    filter2_ids, filter1_ids, False)
+            elif App().settings.get_value(
+                            "show-compilations-in-album-view"):
+                album_ids += App().albums.get_compilation_ids(
+                    filter1_ids, True)
+                album_ids += App().albums.get_ids([], filter1_ids, True)
+            else:
+                album_ids += App().albums.get_ids([], filter1_ids, True)
         # Create album objects
         for album_id in album_ids:
             album = Album(album_id, filter1_ids, filter2_ids, True)

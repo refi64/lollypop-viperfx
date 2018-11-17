@@ -751,7 +751,7 @@ class AlbumsDatabase:
             @return [int]
         """
         with SqlCursor(App().db) as sql:
-            order = "ORDER BY albums.name, albums.timestamp"
+            order = " ORDER BY albums.name, albums.timestamp"
             result = []
             # Get all compilations
             if not genre_ids or genre_ids[0] == Type.ALL:
