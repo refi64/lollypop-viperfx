@@ -228,7 +228,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         def on_change_state(action, value, genre_id):
             action.set_state(value)
-            ids = App().player.get_party_ids()
+            ids = list(App().settings.get_value("party-ids"))
             genre_ids = App().genres.get_ids()
             # Select all
             if genre_id is None:

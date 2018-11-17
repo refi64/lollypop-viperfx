@@ -538,28 +538,6 @@ class AlbumsDatabase:
         """
         return self._cached_randoms
 
-    def get_party_ids(self, genre_ids):
-        """
-            Get album ids for party mode based on genre ids
-            @param Array of genre ids
-            @return Array of album ids as int
-        """
-        albums = []
-        # get popular first
-        if Type.POPULARS in genre_ids:
-            albums += self.get_populars()
-        # get recents next
-        if Type.RECENTS in genre_ids:
-            recents = self.get_recents()
-            for recent in recents:
-                if recent not in albums:
-                    albums.append(recent)
-        for genre_id in genre_ids:
-            for album in App().genres.get_albums(genre_id, True):
-                if album not in albums:
-                    albums.append(album)
-        return albums
-
     def get_disc_names(self, album_id, disc):
         """
             Get disc names

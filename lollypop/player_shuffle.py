@@ -75,22 +75,6 @@ class ShufflePlayer(BasePlayer):
                 track = self._current_track
         return track
 
-    def get_party_ids(self):
-        """
-            Return party ids
-            @return [ids as int]
-        """
-        party_settings = App().settings.get_value("party-ids")
-        ids = []
-        genre_ids = App().genres.get_ids()
-        genre_ids.append(Type.POPULARS)
-        genre_ids.append(Type.RECENTS)
-        for setting in party_settings:
-            if isinstance(setting, int) and\
-               setting in genre_ids:
-                ids.append(setting)
-        return ids
-
     def set_party(self, party):
         """
             Set party mode on if party is True
@@ -130,12 +114,14 @@ class ShufflePlayer(BasePlayer):
         """
             Set party mode ids
         """
-        party_ids = self.get_party_ids()
-        if party_ids:
-            album_ids = App().albums.get_party_ids(party_ids)
-        else:
-            album_ids = App().albums.get_ids([], [])
-        self._albums = [Album(album_id) for album_id in album_ids]
+        party_ids = App().settings.get_value("party-ids")
+        album_ids = App().albums.get_ids([], party_ids, True)
+        if not album_ids:
+            album_ids = App().albums.get_ids([], party_ids, False)
+        self._albums = []
+        for album_id in album_ids:
+            album = Album(album_id, [], [], True)
+            self._albums.append(album)
 
     @property
     def is_party(self):

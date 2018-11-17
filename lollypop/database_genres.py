@@ -14,7 +14,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import App, Type
+from lollypop.define import App, Type, OrderBy
 from lollypop.utils import get_network_available
 
 
@@ -81,11 +81,30 @@ class GenresDatabase:
                                  COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
 
-    def get_albums(self, genre_id):
+    def get_album_ids(self, genre_id, ignore=False):
         """
-            Get all availables albums  for genres
-            @return Array of id as int
+            Get all availables albums for genres
+            @param ignore as bool
+            @return [int]
         """
+        orderby = App().settings.get_enum("orderby")
+        if OrderBy.ARTIST:
+            order = " ORDER BY artists.sortname\
+                     COLLATE NOCASE COLLATE LOCALIZED,\
+                     albums.timestamp,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        elif orderby == OrderBy.NAME:
+            order = " ORDER BY albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        elif orderby == OrderBy.YEAR:
+            order = " ORDER BY albums.timestamp DESC,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        else:
+            order = " ORDER BY albums.popularity DESC,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
         with SqlCursor(App().db) as sql:
             filters = (genre_id, )
             request = "SELECT albums.rowid\
@@ -94,6 +113,9 @@ class GenresDatabase:
                        AND album_genres.album_id=albums.rowid"
             if not get_network_available():
                 request += " AND albums.synced!=%s" % Type.NONE
+            if ignore:
+                request += " AND albums.loved != -1"
+            request += order
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
