@@ -237,10 +237,7 @@ class ToolbarEnd(Gtk.Bin):
                     action = App().lookup_action("genre_%s" % genre_id)
                     if action.get_state() != value:
                         action.set_state(value)
-                if value:
-                    ids = App().genres.get_ids()
-                else:
-                    ids = []
+                ids = []
             # Party id added
             elif value:
                 ids.append(genre_id)
