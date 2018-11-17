@@ -114,5 +114,5 @@ class LovedWidget(Gtk.Bin):
         else:
             self.set_tooltip_text(_("Blacklist"))
             self.__artwork.set_opacity(0.8)
-            self.__artwork.set_from_icon_name("face-shutmouth-symbolic",
+            self.__artwork.set_from_icon_name("media-skip-forward-symbolic",
                                               Gtk.IconSize.BUTTON)

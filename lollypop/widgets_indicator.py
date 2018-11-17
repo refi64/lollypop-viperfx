@@ -64,7 +64,7 @@ class IndicatorWidget(Gtk.EventBox):
             self.__loved.set_from_icon_name("emblem-favorite-symbolic",
                                             Gtk.IconSize.MENU)
         elif status == -1:
-            self.__loved.set_from_icon_name("face-shutmouth-symbolic",
+            self.__loved.set_from_icon_name("media-skip-forward-symbolic",
                                             Gtk.IconSize.MENU)
         if status != 0:
             self.__stack.set_visible_child_name("loved")
