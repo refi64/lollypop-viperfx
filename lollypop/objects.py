@@ -13,7 +13,6 @@
 
 from gi.repository import GLib
 
-from lollypop.helper_task import TaskHelper
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, Type
@@ -379,6 +378,7 @@ class Track(Base):
                 "year": None,
                 "timestamp": None,
                 "mtime": 0,
+                "loved": False,
                 "mb_track_id": None}
 
     def __init__(self, track_id=None, album=None):
@@ -452,28 +452,12 @@ class Track(Base):
 
     def set_loved(self, loved):
         """
-            Add or remove track from loved playlist
-            @param loved Add to loved playlist if `True`; remove if `False`
+            Mark album as loved
+            @param loved as bool
         """
-        scrobbler_love = True
-        if not self.loved:
-            if loved:
-                App().playlists.add_tracks(Type.LOVED, [self])
-        elif not loved:
-            scrobbler_love = False
-            App().playlists.remove_tracks(Type.LOVED, [self])
-        for scrobbler in App().scrobblers:
-            if scrobbler.can_love:
-                helper = TaskHelper()
-                helper.run(scrobbler.set_loved, self, scrobbler_love)
-
-    @property
-    def loved(self):
-        """
-            True if track loved
-            @return bool
-        """
-        return App().playlists.exists_track(Type.LOVED, self.uri)
+        if self.id >= 0:
+            App().tracks.set_loved(self.id, loved)
+            self.loved = loved
 
     @property
     def featuring_artist_ids(self):

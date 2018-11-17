@@ -131,7 +131,8 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             26: self.__upgrade_26,
             27: "UPDATE tracks SET duration=CAST(duration AS INT)",
             28: self.__upgrade_28,
-            29: self.__upgrade_29
+            29: self.__upgrade_29,
+            30: "ALTER TABLE tracks ADD loved INT NOT NULL DEFAULT 0"
         }
 
 #######################

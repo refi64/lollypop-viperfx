@@ -221,7 +221,7 @@ class AlbumsDatabase:
         """
             Get album loved
             @param album id as int
-            @return loved as bool
+            @return loved as int
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT loved FROM albums WHERE\

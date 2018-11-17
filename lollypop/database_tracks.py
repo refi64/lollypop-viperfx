@@ -621,11 +621,8 @@ class TracksDatabase:
             @param popularity as int
         """
         with SqlCursor(App().db, True) as sql:
-            try:
-                sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
-                            (popularity, track_id))
-            except:  # Database is locked
-                pass
+            sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
+                        (popularity, track_id))
 
     def get_popularity(self, track_id):
         """
@@ -640,6 +637,30 @@ class TracksDatabase:
             if v is not None:
                 return v[0]
             return 0
+
+    def get_loved(self, track_id):
+        """
+            Get track loved status
+            @param track_id as int
+            @return loved as int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT loved FROM tracks WHERE\
+                                 rowid=?", (track_id,))
+
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
+    def get_loved_track_ids(self):
+        """
+            Get loved track ids
+            @return [int]
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks WHERE loved=1")
+            return list(itertools.chain(*result))
 
     def get_ltime(self, track_id):
         """
@@ -669,6 +690,17 @@ class TracksDatabase:
             if v is not None:
                 return v[0]
             return 0
+
+    def set_loved(self, track_id, loved):
+        """
+            Set track loved
+            @param track_id as int
+            @param loved as int
+            @warning: commit needed
+        """
+        with SqlCursor(App().db, True) as sql:
+            sql.execute("UPDATE tracks SET loved=? WHERE rowid=?",
+                        (loved, track_id))
 
     def count(self):
         """

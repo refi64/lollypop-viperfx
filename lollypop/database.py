@@ -92,6 +92,7 @@ class Database:
                                               year INT,
                                               timestamp INT,
                                               popularity INT NOT NULL,
+                                              loved INT NOT NULL,
                                               rate INT NOT NULL,
                                               ltime INT NOT NULL,
                                               mtime INT NOT NULL,

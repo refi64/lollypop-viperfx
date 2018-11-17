@@ -12,6 +12,9 @@
 
 from gi.repository import Gtk
 
+from lollypop.define import App
+from lollypop.objects import Track
+
 
 class LovedWidget(Gtk.Bin):
     """
@@ -60,5 +63,7 @@ class LovedWidget(Gtk.Bin):
         """
         loved = not self.__object.loved
         self.__object.set_loved(loved)
+        if App().lastfm is not None and isinstance(self.__object, Track):
+            App().lastfm.set_loved(self.__object, loved)
         self.set_opacity(0.8 if loved else 0.2)
         return True

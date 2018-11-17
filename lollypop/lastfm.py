@@ -30,7 +30,7 @@ from locale import getdefaultlocale
 import re
 
 from lollypop.helper_task import TaskHelper
-from lollypop.define import App, Type
+from lollypop.define import App
 from lollypop.objects import Track
 from lollypop.logger import Logger
 from lollypop.goa import GoaSyncedAccount
@@ -369,18 +369,19 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Populate loved tracks playlist
         """
-        if not self.available or App().playlists.get_track_ids(Type.LOVED):
+        if not self.available or\
+                App().settings.get_value("lastfm-loved-status"):
             return
         try:
-            tracks = []
             user = self.get_user(self.__login)
             for loved in user.get_loved_tracks():
                 track_id = App().tracks.search_track(
                     str(loved.track.artist),
                     str(loved.track.title))
                 if track_id is not None:
-                    tracks.append(Track(track_id))
-            App().playlists.add_tracks(Type.LOVED, tracks)
+                    Track(track_id).set_loved(1)
+            App().settings.set_value("lastfm-loved-status",
+                                     GLib.Variant("b", True))
         except Exception as e:
             Logger.error("LastFM::__populate_loved_tracks: %s" % e)
 

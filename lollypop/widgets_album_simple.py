@@ -18,7 +18,6 @@ from random import choice
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.helper_art import ArtHelper
-from lollypop.pop_menu import AlbumMenu
 from lollypop.define import App, ArtSize, Shuffle
 
 
@@ -249,6 +248,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             @param event as Gdk.EventButton
         """
         if event.button != 1:
+            from lollypop.pop_menu import AlbumMenu
             popover = Gtk.Popover.new_from_model(self._artwork,
                                                  AlbumMenu(self._album,
                                                            True))

@@ -296,6 +296,11 @@
             <summary>Restart current track on previous</summary>
             <description></description>
         </key>
+        <key type="b" name="lastfm-loved-status">
+            <default>false</default>
+            <summary>Last.fm loved tracks already set</summary>
+            <description></description>
+        </key>
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
             <default>'none'</default>
             <summary>Shuffle mode</summary>
