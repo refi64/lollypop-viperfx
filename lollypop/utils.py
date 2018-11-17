@@ -277,8 +277,6 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
         icon = "emblem-favorite-symbolic"
     elif object_id == Type.NEVER:
         icon = "audio-speakers-symbolic"
-    elif object_id == Type.NOPARTY:
-        icon = "emblem-music-symbolic"
     elif object_id == Type.YEARS:
         icon = "view-sort-ascending-symbolic"
     return icon

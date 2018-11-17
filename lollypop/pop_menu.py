@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import App, Type
+from lollypop.define import App
 from lollypop.objects import Track, Album
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
@@ -160,26 +160,6 @@ class PlaylistsMenu(BaseMenu):
         playlist_action.connect("activate",
                                 self.__add_to_playlists)
         self.append(_("Add to others"), "app.playlist_action")
-
-        playlist_action = Gio.SimpleAction(name="playlist_not_in_party")
-        App().add_action(playlist_action)
-        if isinstance(self._object, Album):
-            exists = App().playlists.exists_album(Type.NOPARTY,
-                                                  self._object)
-        else:
-            exists = App().playlists.exists_track(Type.NOPARTY,
-                                                  self._object.uri)
-        if exists:
-            self.append(_('Remove from "Not in party"'),
-                        "app.playlist_not_in_party")
-            playlist_action.connect("activate",
-                                    self.__remove_from_playlist, Type.NOPARTY)
-        else:
-            self.append(_('Add to "Not in party"'),
-                        "app.playlist_not_in_party")
-            playlist_action.connect("activate",
-                                    self.__add_to_playlist, Type.NOPARTY)
-
         i = 0
         for playlist in App().playlists.get_last():
             action = Gio.SimpleAction(name="playlist%s" % i)

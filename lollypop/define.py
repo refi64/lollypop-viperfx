@@ -117,7 +117,7 @@ class Type:
     RADIOS = -8
     UNUSED_FIXME = -9
     SEARCH = -10
-    NOPARTY = -11
+#    NOPARTY = -11  Free for use
     YEARS = -12
     ARTISTS = -13
     ALL = -100

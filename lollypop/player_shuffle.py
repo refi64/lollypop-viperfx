@@ -12,7 +12,6 @@
 
 import random
 
-from lollypop.helper_task import TaskHelper
 from lollypop.define import Shuffle, NextContext, App, Type
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
@@ -45,9 +44,6 @@ class ShufflePlayer(BasePlayer):
         self.__already_played_albums = []
         # Tracks already played for albums
         self.__already_played_tracks = {}
-        # If we have tracks/albums to ignore in party mode, add them
-        helper = TaskHelper()
-        helper.run(self.__init_party_blacklist)
         # Reset user playlist
         self._playlist_tracks = []
         self._playlist_ids = []
@@ -313,12 +309,3 @@ class ShufflePlayer(BasePlayer):
             self.__already_played_tracks[track.album] = []
         if track not in self.__already_played_tracks[track.album]:
             self.__already_played_tracks[track.album].append(track)
-
-    def __init_party_blacklist(self):
-        """
-            Add party mode blacklist to already played tracks
-        """
-        if self.__is_party:
-            for track_id in App().playlists.get_track_ids(Type.NOPARTY):
-                track = Track(track_id)
-                self.__add_to_shuffle_history(track)

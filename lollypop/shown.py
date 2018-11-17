@@ -79,6 +79,4 @@ class ShownPlaylists:
             lists.append((Type.NEVER, _("Unplayed"), ""))
         if get_all or Type.RANDOMS in wanted:
             lists.append((Type.RANDOMS, _("Random tracks"), ""))
-        if get_all or Type.NOPARTY in wanted:
-            lists.append((Type.NOPARTY, _("Not in party"), ""))
         return lists
