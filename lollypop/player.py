@@ -224,9 +224,12 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 album_ids += App().albums.get_compilation_ids(
                     filter1_ids, True)
             elif filter2_ids:
-                # In artist view
-                album_ids += App().albums.get_ids(
-                    filter2_ids, filter1_ids, False)
+                # In artist view, play all albums if ignoring return []
+                album_ids = App().albums.get_ids(
+                    filter2_ids, filter1_ids, True)
+                if not album_ids:
+                    album_ids = App().albums.get_ids(
+                        filter2_ids, filter1_ids, False)
             elif App().settings.get_value(
                             "show-compilations-in-album-view"):
                 album_ids += App().albums.get_compilation_ids(

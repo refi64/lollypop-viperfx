@@ -167,7 +167,10 @@ class ArtistView(ArtistAlbumsView):
                 App().lookup_action("party").change_state(
                     GLib.Variant("b", False))
             album_ids = App().albums.get_ids(self._artist_ids,
-                                             self._genre_ids)
+                                             self._genre_ids, True)
+            if not album_ids:
+                album_ids = App().albums.get_ids(self._artist_ids,
+                                                 self._genre_ids, False)
             if album_ids:
                 track = None
                 if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
