@@ -102,7 +102,7 @@ class LovedWidget(Gtk.Bin):
             @param status as int
         """
         if status == 0:
-            self.set_tooltip_text(_("Dislike"))
+            self.set_tooltip_text(_("Allow playback"))
             self.__artwork.set_opacity(0.2)
             self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
                                               Gtk.IconSize.BUTTON)
@@ -112,7 +112,7 @@ class LovedWidget(Gtk.Bin):
             self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
                                               Gtk.IconSize.BUTTON)
         else:
-            self.set_tooltip_text(_("Blacklist"))
+            self.set_tooltip_text(_("Disallow playback"))
             self.__artwork.set_opacity(0.8)
             self.__artwork.set_from_icon_name("media-skip-forward-symbolic",
                                               Gtk.IconSize.BUTTON)
