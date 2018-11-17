@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
+from gettext import gettext as _
+
 from lollypop.define import App, Type
 from lollypop.objects import Track
 
@@ -35,7 +37,7 @@ class LovedWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.add(builder.get_object("widget"))
         self.set_property("valign", Gtk.Align.CENTER)
-        self.__set_artwork()
+        self.__set_artwork(self.__object.loved)
 
 #######################
 # PROTECTED           #
@@ -46,7 +48,11 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        self.__artwork.set_opacity(0.2 if self.__object.loved else 0.8)
+        if self.__object.loved < 1:
+            loved = self.__object.loved + 1
+        else:
+            loved = Type.NONE
+        self.__set_artwork(loved)
 
     def _on_leave_notify_event(self, widget, event):
         """
@@ -54,7 +60,7 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        self.__artwork.set_opacity(0.8 if self.__object.loved else 0.2)
+        self.__set_artwork(self.__object.loved)
 
     def _on_button_release_event(self, widget, event):
         """
@@ -74,7 +80,7 @@ class LovedWidget(Gtk.Bin):
             self.__timeout_id = GLib.timeout_add(1000,
                                                  self.__set_lastfm_status,
                                                  lastfm_status)
-        self.__set_artwork()
+        self.__set_artwork(self.__object.loved)
         return True
 
 #######################
@@ -90,19 +96,23 @@ class LovedWidget(Gtk.Bin):
                               self.__object,
                               status)
 
-    def __set_artwork(self):
+    def __set_artwork(self, status):
         """
             Set artwork base on object status
+            @param status as int
         """
-        if self.__object.loved == 0:
+        if status == 0:
+            self.set_tooltip_text(_("Dislike"))
             self.__artwork.set_opacity(0.2)
             self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
                                               Gtk.IconSize.BUTTON)
-        elif self.__object.loved == 1:
+        elif status == 1:
+            self.set_tooltip_text(_("Like"))
             self.__artwork.set_opacity(0.8)
             self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
                                               Gtk.IconSize.BUTTON)
         else:
+            self.set_tooltip_text(_("Blacklist"))
             self.__artwork.set_opacity(0.8)
             self.__artwork.set_from_icon_name("face-shutmouth-symbolic",
                                               Gtk.IconSize.BUTTON)
