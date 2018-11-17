@@ -110,15 +110,15 @@ class Row(Gtk.ListBoxRow):
         if playing:
             self.get_style_context().remove_class("trackrow")
             self.get_style_context().add_class("trackrowplaying")
-            if loved:
+            if loved == 1:
                 self._indicator.play_loved()
             else:
                 self._indicator.play()
         else:
             self.get_style_context().remove_class("trackrowplaying")
             self.get_style_context().add_class("trackrow")
-            if loved and self.__context is None:
-                self._indicator.loved()
+            if loved != 0 and self.__context is None:
+                self._indicator.loved(loved)
             else:
                 self._indicator.empty()
 

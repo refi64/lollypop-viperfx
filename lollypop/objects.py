@@ -135,11 +135,12 @@ class Disc:
         Represent an album disc
     """
 
-    def __init__(self, album, disc_number):
+    def __init__(self, album, disc_number, disallow_ignored_tracks):
         self.db = App().albums
         self.__tracks = []
         self.__album = album
         self.__number = disc_number
+        self.__disallow_ignored_tracks = disallow_ignored_tracks
 
     def set_tracks(self, tracks):
         """
@@ -191,14 +192,16 @@ class Disc:
                 self.album.id,
                 self.album.genre_ids,
                 self.album.artist_ids,
-                self.number)]
+                self.number,
+                self.__disallow_ignored_tracks)]
             if not self.__tracks:
                 self.__tracks = [Track(track_id, self.album)
                                  for track_id in self.db.get_disc_track_ids(
                     self.album.id,
                     self.album.genre_ids,
                     [],
-                    self.number)]
+                    self.number,
+                    self.__disallow_ignored_tracks)]
         return self.__tracks
 
 
@@ -218,31 +221,32 @@ class Album(Base):
                 "synced": False,
                 "loved": False}
 
-    def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
+    def __init__(self, album_id=None, genre_ids=[], artist_ids=[],
+                 disallow_ignored_tracks=False):
         """
             Init album
             @param album_id as int
             @param genre_ids as [int]
+            @param disallow_ignored_tracks as bool
         """
         Base.__init__(self, App().albums)
         self.id = album_id
         self.genre_ids = genre_ids
         self._tracks = []
         self._discs = []
+        self.__disallow_ignored_tracks = disallow_ignored_tracks
         self.__one_disc = None
         # Use artist ids from db else
         if artist_ids:
             self.artist_ids = artist_ids
 
-    def move_track(self, track, index):
+    def disallow_ignored_tracks(self):
         """
-            Move track to index
-            @param track as Track
-            @param index
+            Disallow ignore tracks (loved == -1)
         """
-        if track in self._tracks:
-            self._tracks.remove(track)
-            self._tracks.insert(index, track)
+        self._tracks = []
+        self._discs = []
+        self.__disallow_ignored_tracks = True
 
     def set_tracks(self, tracks):
         """
@@ -345,7 +349,7 @@ class Album(Base):
         """
         if self.__one_disc is None:
             tracks = self.tracks
-            self.__one_disc = Disc(self, 0)
+            self.__one_disc = Disc(self, 0, self.__disallow_ignored_tracks)
             self.__one_disc.set_tracks(tracks)
         return self.__one_disc
 
@@ -357,7 +361,8 @@ class Album(Base):
         """
         if not self._discs:
             disc_numbers = self.db.get_discs(self.id, self.genre_ids)
-            self._discs = [Disc(self, number) for number in disc_numbers]
+            self._discs = [Disc(self, number, self.__disallow_ignored_tracks)
+                           for number in disc_numbers]
         return self._discs
 
 

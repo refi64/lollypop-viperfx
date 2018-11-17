@@ -26,6 +26,8 @@ class AlbumWidget:
         """
         self._artwork = None
         self._album = album
+        self._genre_ids = genre_ids
+        self._artist_ids = artist_ids
         self.__filtered = False
         self.connect("destroy", self.__on_destroy)
         self._scan_signal = App().scanner.connect("album-updated",

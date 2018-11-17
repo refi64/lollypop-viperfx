@@ -230,7 +230,7 @@ class DeviceView(View):
         """
         def load():
             artists = App().artists.get()
-            compilations = App().albums.get_compilation_ids()
+            compilations = App().albums.get_compilation_ids([])
             return (artists, compilations)
 
         def setup(artists, compilations):

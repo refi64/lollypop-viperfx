@@ -99,6 +99,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param album as Album
             @param index as int
         """
+        album.disallow_ignored_tracks()
         # We are not playing a user playlist anymore
         self._playlist_tracks = []
         self._playlist_ids = []
@@ -153,6 +154,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             Play album
             @param album as Album
         """
+        album.disallow_ignored_tracks()
         if self.is_party:
             self.set_party(False)
         self.reset_history()
@@ -184,21 +186,21 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
            (filter2_ids and filter2_ids[0] == Type.ALL):
             # Genres: all, Artists: compilations
             if filter2_ids and filter2_ids[0] == Type.COMPILATIONS:
-                album_ids = App().albums.get_compilation_ids()
+                album_ids = App().albums.get_compilation_ids([], True)
             # Genres: all, Artists: ids
             elif filter2_ids and filter2_ids[0] != Type.ALL:
-                album_ids += App().albums.get_ids(filter2_ids)
+                album_ids += App().albums.get_ids(filter2_ids, [], True)
             # Genres: all, Artists: all
             else:
                 if App().settings.get_value("show-compilations-in-album-view"):
-                    album_ids += App().albums.get_compilation_ids()
-                album_ids += App().albums.get_ids()
+                    album_ids += App().albums.get_compilation_ids([], True)
+                album_ids += App().albums.get_ids([], [], True)
         # We are in populars view, add popular albums
         elif filter1_ids and filter1_ids[0] == Type.POPULARS:
             album_ids = App().albums.get_populars()
         # We are in loved view, add loved albums
         elif filter1_ids and filter1_ids[0] == Type.LOVED:
-            album_ids = App().albums.get_loves()
+            album_ids = App().albums.get_loved_albums()
         # We are in recents view, add recent albums
         elif filter1_ids and filter1_ids[0] == Type.RECENTS:
             album_ids = App().albums.get_recents()
@@ -207,7 +209,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             album_ids = App().albums.get_cached_randoms()
         # We are in compilation view without genre
         elif filter1_ids and filter1_ids[0] == Type.COMPILATIONS:
-            album_ids = App().albums.get_compilation_ids()
+            album_ids = App().albums.get_compilation_ids([])
         # We are in years view
         elif filter1_ids and filter1_ids[0] == Type.YEARS:
             album_ids = []
@@ -219,16 +221,19 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             # If we are not in compilation view and show compilation is on,
             # add compilations
             if filter2_ids and filter2_ids[0] == Type.COMPILATIONS:
-                album_ids += App().albums.get_compilation_ids(filter1_ids)
+                album_ids += App().albums.get_compilation_ids(
+                    filter1_ids, True)
             else:
                 if not filter2_ids and\
                         App().settings.get_value(
                             "show-compilations-in-album-view"):
-                    album_ids += App().albums.get_compilation_ids(filter1_ids)
-                album_ids += App().albums.get_ids(filter2_ids, filter1_ids)
+                    album_ids += App().albums.get_compilation_ids(
+                        filter1_ids, True)
+                album_ids += App().albums.get_ids(
+                    filter2_ids, filter1_ids, True)
         # Create album objects
         for album_id in album_ids:
-            album = Album(album_id, filter1_ids, filter2_ids)
+            album = Album(album_id, filter1_ids, filter2_ids, True)
             self._albums.append(album)
             # Get track from album
             # to make Player.current_track present in Player.albums

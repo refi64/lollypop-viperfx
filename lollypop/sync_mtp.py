@@ -19,7 +19,7 @@ import json
 from lollypop.logger import Logger
 from lollypop.utils import escape
 from lollypop.define import App, Type
-from lollypop.objects import Track
+from lollypop.objects import Track, Album
 
 
 class MtpSyncDb:
@@ -242,7 +242,8 @@ class MtpSync(GObject.Object):
             # New tracks for synced albums
             album_ids = App().albums.get_synced_ids()
             for album_id in album_ids:
-                self.__total += len(App().albums.get_track_ids(album_id))
+                album = Album(album_id)
+                self.__total += len(album.track_ids)
             # New tracks for playlists
             playlist_ids = App().playlists.get_synced_ids()
             for playlist_id in playlist_ids:
@@ -533,7 +534,8 @@ class MtpSync(GObject.Object):
         """
         album_ids = App().albums.get_synced_ids()
         for album_id in album_ids:
-            for track_id in App().albums.get_track_ids(album_id):
+            album = Album(album_id)
+            for track_id in album.track_ids:
                 if self.__cancellable.is_cancelled():
                     return
                 self.__sync_track_id(Track(track_id))
@@ -604,7 +606,8 @@ class MtpSync(GObject.Object):
 
         album_ids = App().albums.get_synced_ids()
         for album_id in album_ids:
-            track_ids += App().albums.get_track_ids(album_id)
+            album = Album(album_id)
+            track_ids += album.track_ids
         for playlist_id in playlist_ids:
             track_ids += App().playlists.get_track_ids(playlist_id)
         # Get tracks uris

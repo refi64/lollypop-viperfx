@@ -397,7 +397,7 @@ class AlbumArt:
         """
         if self.kid3_available:
             files = []
-            for uri in App().albums.get_track_uris(album_id, [], []):
+            for uri in App().albums.get_track_uris(album_id):
                 try:
                     files.append(GLib.filename_from_uri(uri)[0])
                 except:

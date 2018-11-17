@@ -150,7 +150,7 @@ class InformationPopover(Gtk.Popover):
             albums_view.show()
             widget.attach(albums_view, 2, 1, 1, 2)
             albums = []
-            for album_id in App().albums.get_ids([artist_id]):
+            for album_id in App().albums.get_ids([artist_id], []):
                 albums.append(Album(album_id))
             albums_view.populate(albums)
         content = InformationStore.get_bio(artist_name)

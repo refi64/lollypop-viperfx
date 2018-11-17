@@ -134,7 +134,7 @@ class ShufflePlayer(BasePlayer):
         if party_ids:
             album_ids = App().albums.get_party_ids(party_ids)
         else:
-            album_ids = App().albums.get_ids()
+            album_ids = App().albums.get_ids([], [])
         self._albums = [Album(album_id) for album_id in album_ids]
 
     @property

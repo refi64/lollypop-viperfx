@@ -621,7 +621,7 @@ class Container(Gtk.Overlay):
         """
         def load():
             ids = App().artists.get()
-            compilations = App().albums.get_compilation_ids()
+            compilations = App().albums.get_compilation_ids([])
             return (ids, compilations)
 
         def setup(artist_ids, compilation_ids):
@@ -778,9 +778,9 @@ class Container(Gtk.Overlay):
                 if is_compilation or\
                         App().settings.get_value(
                             "show-compilations-in-album-view"):
-                    items = App().albums.get_compilation_ids()
+                    items = App().albums.get_compilation_ids([])
                 if not is_compilation:
-                    items += App().albums.get_ids()
+                    items += App().albums.get_ids([], [])
             elif genre_ids and genre_ids[0] == Type.POPULARS:
                 items = App().albums.get_rated()
                 count = 100 - len(items)
@@ -788,7 +788,7 @@ class Container(Gtk.Overlay):
                     if album not in items:
                         items.append(album)
             elif genre_ids and genre_ids[0] == Type.LOVED:
-                items = App().albums.get_loves()
+                items = App().albums.get_loved_albums()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
                 items = App().albums.get_recents()
             elif genre_ids and genre_ids[0] == Type.NEVER:

@@ -202,10 +202,7 @@ class PlaylistsMenu(BaseMenu):
         def add(playlist_id):
             tracks = []
             if isinstance(self._object, Album):
-                track_ids = App().albums.get_track_ids(self._object.id,
-                                                       self._object.genre_ids,
-                                                       self._object.artist_ids)
-                for track_id in track_ids:
+                for track_id in self._object.track_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object.id)]
@@ -228,10 +225,7 @@ class PlaylistsMenu(BaseMenu):
         def remove(playlist_id):
             tracks = []
             if isinstance(self._object, Album):
-                track_ids = App().albums.get_track_ids(self._object.id,
-                                                       self._object.genre_ids,
-                                                       self._object.artist_ids)
-                for track_id in track_ids:
+                for track_id in self._object.track_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object.id)]

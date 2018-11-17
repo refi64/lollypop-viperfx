@@ -52,26 +52,31 @@ class IndicatorWidget(Gtk.EventBox):
             Show play indicator
         """
         self.__init()
-        self.__clear_spinner()
         self.__stack.set_visible_child_name("play")
 
-    def loved(self):
+    def loved(self, status):
         """
             Show loved indicator
+            @param loved status
         """
         self.__init()
-        self.__clear_spinner()
-        self.__stack.set_visible_child_name("loved")
+        if status == 1:
+            self.__loved.set_from_icon_name("emblem-favorite-symbolic",
+                                            Gtk.IconSize.MENU)
+        elif status == -1:
+            self.__loved.set_from_icon_name("face-shutmouth-symbolic",
+                                            Gtk.IconSize.MENU)
+        if status != 0:
+            self.__stack.set_visible_child_name("loved")
 
     def play_loved(self):
         """
             Show play/loved indicator
         """
         self.__init()
-        self.__clear_spinner()
         self.__pass = 1
         self.play()
-        self.__timeout_id = GLib.timeout_add(500, self.__play_loved)
+        self.__timeout_id = GLib.timeout_add(1000, self.__play_loved)
 
     def clear(self):
         """
@@ -110,14 +115,6 @@ class IndicatorWidget(Gtk.EventBox):
                     return True
         return False
 
-    def __clear_spinner(self):
-        """
-            Clear spinner
-        """
-        spinner = self.__stack.get_child_by_name("spinner")
-        if spinner is not None:
-            spinner.stop()
-
     def __init(self):
         """
             Init widget content if needed
@@ -138,11 +135,10 @@ class IndicatorWidget(Gtk.EventBox):
                               self.__on_button_release_event)
         play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
                                             Gtk.IconSize.MENU)
-        loved = Gtk.Image.new_from_icon_name("emblem-favorite-symbolic",
-                                             Gtk.IconSize.MENU)
+        self.__loved = Gtk.Image()
         self.__stack.add_named(self.__button, "button")
         self.__stack.add_named(play, "play")
-        self.__stack.add_named(loved, "loved")
+        self.__stack.add_named(self.__loved, "loved")
         self.add(self.__stack)
         self.connect("enter-notify-event", self.__on_enter_notify)
         self.connect("leave-notify-event", self.__on_leave_notify)
@@ -164,8 +160,8 @@ class IndicatorWidget(Gtk.EventBox):
         """
         if self.__track.id == App().player.current_track.id:
             self.play()
-        elif self.__track.loved:
-            self.loved()
+        else:
+            self.loved(self.__track.loved)
 
     def __on_button_release_event(self, widget, event):
         """
@@ -224,12 +220,13 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Show play/loved indicator
         """
+        # FIXME pas coupé dans un popover
         if self.__timeout_id is None:
             return False
         if self.__stack.get_visible_child_name() == "play":
-            if self.__pass == 10:
+            if self.__pass == 5:
                 self.__pass = 0
-                self.loved()
+                self.loved(1)
         else:
             self.play()
         self.__pass += 1

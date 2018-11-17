@@ -94,11 +94,11 @@ class DeviceManagerWidget(Gtk.Bin):
             self.__column2.set_title(_("Playlists"))
         else:
             if selected_ids[0] == Type.COMPILATIONS:
-                albums = App().albums.get_compilation_ids()
+                albums = App().albums.get_compilation_ids([])
             elif selected_ids[0] == Type.ALL:
                 albums = App().albums.get_synced_ids()
             else:
-                albums = App().albums.get_ids(selected_ids)
+                albums = App().albums.get_ids(selected_ids, [])
             self.__model.clear()
             self.__append_albums(albums)
             self.__column1.set_visible(True)
