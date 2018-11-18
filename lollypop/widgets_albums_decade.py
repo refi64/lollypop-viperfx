@@ -86,7 +86,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
                                       self._on_play_press_event)
             self.__play_button = Gtk.Image.new_from_icon_name(
                 "media-playback-start-symbolic",
-                Gtk.IconSize.DIALOG)
+                Gtk.IconSize.DND)
             self.__play_event.set_tooltip_text(_("Play"))
             self.__play_button.set_opacity(1)
             # Open button
@@ -102,7 +102,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__open_event.set_property("halign", Gtk.Align.CENTER)
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
-                Gtk.IconSize.LARGE_TOOLBAR)
+                Gtk.IconSize.BUTTON)
             self.__open_button.set_opacity(1)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)

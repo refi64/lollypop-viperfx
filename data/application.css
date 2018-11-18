@@ -228,7 +228,7 @@ popover.background separator {
     background-color: black;
     color: white;
     padding: 12px;
-    margin: 2px;
+    margin: 4px;
     opacity: 0.85;
     border-radius: 50%;
 }
@@ -240,7 +240,7 @@ popover.background separator {
     color: white;
     opacity: 0.85;
     padding: 8px;
-    margin: 2px;
+    margin: 4px;
     border-radius: 50%;
 }
 
@@ -251,7 +251,7 @@ popover.background separator {
     color: white;
     opacity: 0.85;
     padding: 8px;
-    margin: 2px;
+    margin: 4px;
     border-radius: 5px;
 }
 

@@ -203,7 +203,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._overlay.add_overlay(self._play_event)
             if self._overlay_grid is None:
                 self._overlay_grid = Gtk.Grid()
-                self._overlay_grid.set_row_spacing(6)
+                self._overlay_grid.set_column_spacing(10)
                 self._overlay_grid.set_margin_bottom(6)
                 self._overlay_grid.set_margin_end(6)
                 self._overlay_grid.set_property("halign", Gtk.Align.END)
@@ -213,9 +213,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._overlay_grid.add(self._artwork_event)
             self._overlay_grid.show_all()
             self._play_button.get_style_context().add_class("rounded-icon")
-            self._action_button.get_style_context().add_class(
-                "squared-icon-small")
-            self._artwork_button.get_style_context().add_class(
+            self._overlay_grid.get_style_context().add_class(
                     "squared-icon-small")
         else:
             self._play_event.destroy()
@@ -230,6 +228,8 @@ class OverlayAlbumHelper(OverlayHelper):
             self._artwork_event = None
             self._artwork_button.destroy()
             self._artwork_button = None
+            self._overlay_grid.destroy()
+            self._overlay_grid = None
 
     def _show_append(self, append):
         """

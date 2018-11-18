@@ -168,13 +168,13 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             if self.__obj is None:
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "media-playback-start-symbolic",
-                    Gtk.IconSize.DIALOG)
+                    Gtk.IconSize.DND)
                 self.__play_event.set_tooltip_text(_("Play"))
             elif self.__add:
                 # Special case, we are in add to playlist mode
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-add-symbolic",
-                    Gtk.IconSize.DIALOG)
+                    Gtk.IconSize.DND)
                 self.__play_event.set_tooltip_text(_("Add"))
             else:
                 # Special case, we are in remove from playlist mode
@@ -192,7 +192,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                                       self.__on_open_release_event)
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
-                Gtk.IconSize.LARGE_TOOLBAR)
+                Gtk.IconSize.BUTTON)
             self.__open_button.set_opacity(1)
             # Edit button
             self.__edit_event = Gtk.EventBox()
@@ -203,14 +203,14 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                                       self.__on_edit_release_event)
             self.__edit_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
-                Gtk.IconSize.LARGE_TOOLBAR)
+                Gtk.IconSize.BUTTON)
             self.__edit_button.set_opacity(1)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)
             self.__edit_event.add(self.__edit_button)
             self._overlay.add_overlay(self.__play_event)
             self.__overlay_grid = Gtk.Grid()
-            self.__overlay_grid.set_column_spacing(20)
+            self.__overlay_grid.set_column_spacing(10)
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
             self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
