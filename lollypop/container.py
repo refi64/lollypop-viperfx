@@ -493,7 +493,8 @@ class Container(Gtk.Overlay):
         state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
         # We do not support genres in navigation mode
-        if App().settings.get_value("show-genres") and not state_two_ids:
+        if App().settings.get_value("show-genres") and\
+                state_one_ids and state_one_ids[0] >= 0 and not state_two_ids:
             state_one_ids = []
         # Artist id with genre off or genre and artist id
         elif (state_two_ids and not state_one_ids) or\
