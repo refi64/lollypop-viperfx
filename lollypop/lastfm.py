@@ -216,11 +216,11 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Add or remove track from loved playlist on Last.fm
             @param track as Track
-            @param loved Add to loved playlist if `True`; remove if `False`
+            @param loved as bool
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
                 self.available:
-            if loved:
+            if loved == 1:
                 self.love(",".join(track.artists), track.name)
             else:
                 self.unlove(",".join(track.artists), track.name)

@@ -432,20 +432,15 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                         return True
         return False
 
-    def object_by_name(self, track_name, album_name):
+    def get_album_by_id(self, album_id):
         """
             Get track by object name
-            @track_name as str
-            @param album_name as str
-            @return Album is track_name is None, else Track or None
+            @param album_id as int
+            @return Album
         """
         for album in self._albums:
-            if str(album) == album_name:
-                if track_name is None:
-                    return album
-                for track in album.tracks:
-                    if str(track) == track_name:
-                        return track
+            if album.id == album_id:
+                return album
         return None
 
     @property

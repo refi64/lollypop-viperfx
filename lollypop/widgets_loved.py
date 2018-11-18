@@ -73,13 +73,18 @@ class LovedWidget(Gtk.Bin):
         else:
             loved = Type.NONE
         self.__object.set_loved(loved)
-        if App().lastfm is not None and isinstance(self.__object, Track):
-            lastfm_status = True if loved == 1 else False
-            if self.__timeout_id is not None:
-                GLib.source_remove(self.__timeout_id)
-            self.__timeout_id = GLib.timeout_add(1000,
-                                                 self.__set_lastfm_status,
-                                                 lastfm_status)
+        if isinstance(self.__object, Track):
+            album = App().player.get_album_by_id(self.__object.album.id)
+            if album is not None:
+                album.disallow_ignored_tracks()
+            # Update state on Last.fm
+            if App().lastfm is not None:
+                lastfm_status = True if loved == 1 else False
+                if self.__timeout_id is not None:
+                    GLib.source_remove(self.__timeout_id)
+                self.__timeout_id = GLib.timeout_add(1000,
+                                                     self.__set_lastfm_status,
+                                                     lastfm_status)
         self.__set_artwork(self.__object.loved)
         return True
 
