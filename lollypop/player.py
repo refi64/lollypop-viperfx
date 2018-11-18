@@ -136,19 +136,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 
     def remove_album_by_id(self, album_id):
         """
-            Remove album id from albums
+            Remove all instance of album with id from albums
             @param album_id as int
         """
         try:
-            idx = self.album_ids.index(album_id)
-            album = self._albums[idx]
-            self._albums.remove(album)
-            if album in self._albums_backup:
-                self._albums_backup.remove(album)
-            if not self.is_party or self._next_track.album_id == album.id:
-                self.set_next()
-            self.set_prev()
-            self.emit("album-removed", album.id)
+            for album in self.albums:
+                if album.id == album_id:
+                    self.remove_album(album)
         except Exception as e:
             Logger.error("Player::remove_album(): %s" % e)
 
