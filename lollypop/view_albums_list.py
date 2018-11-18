@@ -239,7 +239,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
             Stop view loading
         """
-        # FIXME
+        if self._responsive_widget is not None:
+            TracksView.stop(self)
 
     def set_artwork(self):
         """
