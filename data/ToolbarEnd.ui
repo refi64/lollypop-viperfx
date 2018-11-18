@@ -10,7 +10,7 @@
               <attribute name="action">app.party</attribute>
             </item>
             <submenu id="party_submenu">
-                <attribute name="label">Configure</attribute>
+                <attribute name="label" translatable="yes">Configure</attribute>
             </submenu>
         </section>
         <section>
