@@ -125,9 +125,11 @@ class Container(Gtk.Overlay):
         """
             Reload current view
         """
-        # Destroy all widgets
+        from lollypop.view_device import DeviceView
+        # Destroy all widgets except DeviceView
         for child in self.__stack.get_children():
-            child.destroy()
+            if not isinstance(child, DeviceView):
+                child.destroy()
         if App().settings.get_value("show-sidebar"):
             self.__reload_list_view()
         else:
