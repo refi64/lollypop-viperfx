@@ -103,6 +103,11 @@ class LastfmPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as Gtk.ListBoxRow
         """
+        self.popdown()
         artist_name = row.get_child().get_text()
         artist_id = App().artists.get_id(artist_name)
-        App().window.container.show_artists_albums([artist_id])
+        if App().settings.get_value("show-sidebar"):
+            GLib.idle_add(App().window.container.show_artists_albums,
+                          [artist_id])
+        else:
+            GLib.idle_add(App().window.container.show_view, artist_id)
