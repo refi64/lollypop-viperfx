@@ -121,11 +121,13 @@ class Container(Gtk.Overlay):
         self.update_list_one()
         self.__list_one.select_ids([Type.POPULARS])
 
-    def reload_view(self, full=False):
+    def reload_view(self):
         """
             Reload current view
-            @param full as bool
         """
+        # Destroy all widgets
+        for child in self.__stack.get_children():
+            child.destroy()
         if App().settings.get_value("show-sidebar"):
             self.__reload_list_view()
         else:
