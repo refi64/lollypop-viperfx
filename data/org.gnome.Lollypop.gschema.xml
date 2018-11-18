@@ -85,7 +85,7 @@
         </key>
             <key type="ai" name="sync-internal-ids">
             <default>[]</default>
-            <summary>Ids for internal synced objects</summary>
+            <summary>INTERNAL</summary>
             <description></description>
         </key>
         <key type="as" name="music-path">
@@ -298,7 +298,7 @@
         </key>
         <key type="b" name="lastfm-loved-status">
             <default>false</default>
-            <summary>Last.fm loved tracks already set</summary>
+            <summary>Last.fm loved track status</summary>
             <description></description>
         </key>
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">

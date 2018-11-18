@@ -950,10 +950,11 @@ class Container(Gtk.Overlay):
             Update view based on selected object
             @param list as SelectionList
         """
+        Logger.debug("Container::__on_list_one_selected()")
+        self.__stack.destroy_non_visible_children()
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
-        Logger.debug("Container::__on_list_one_selected()")
         view = None
         selected_ids = self.__list_one.selected_ids
         if not selected_ids:
@@ -1028,6 +1029,7 @@ class Container(Gtk.Overlay):
             @param selection_list as SelectionList
         """
         Logger.debug("Container::__on_list_two_selected()")
+        self.__stack.destroy_non_visible_children()
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
