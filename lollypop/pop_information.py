@@ -148,6 +148,7 @@ class InformationPopover(Gtk.Popover):
             albums_view = AlbumsListView(ResponsiveType.LIST)
             albums_view.set_size_request(300, -1)
             albums_view.show()
+            widget.insert_column(2)
             widget.attach(albums_view, 2, 1, 1, 2)
             albums = []
             for album_id in App().albums.get_ids([artist_id], []):
