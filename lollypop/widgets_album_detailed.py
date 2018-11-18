@@ -73,6 +73,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
 
         # In Popovers, no artwork
         if art_size == ArtSize.NONE:
+            self._artwork = None
             rating = RatingWidget(self._album)
             rating.set_hexpand(True)
             rating.set_property("halign", Gtk.Align.END)
@@ -150,10 +151,11 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
             Set album artwork
         """
-        self.__art_helper.set_album_artwork(self._artwork,
-                                            self._album,
-                                            ArtSize.BIG,
-                                            ArtSize.BIG)
+        if self._artwork is not None:
+            self.__art_helper.set_album_artwork(self._artwork,
+                                                self._album,
+                                                ArtSize.BIG,
+                                                ArtSize.BIG)
 
     def get_current_ordinate(self, parent):
         """

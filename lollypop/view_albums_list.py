@@ -116,10 +116,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label = Gtk.Label.new(self._album.name)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__art_helper.set_album_artwork(self._artwork,
-                                            self._album,
-                                            ArtSize.MEDIUM,
-                                            ArtSize.MEDIUM)
+        self.set_artwork()
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)
@@ -243,6 +240,15 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Stop view loading
         """
         # FIXME
+
+    def set_artwork(self):
+        """
+            Set album artwork
+        """
+        self.__art_helper.set_album_artwork(self._artwork,
+                                            self._album,
+                                            ArtSize.MEDIUM,
+                                            ArtSize.MEDIUM)
 
     @property
     def parent(self):
