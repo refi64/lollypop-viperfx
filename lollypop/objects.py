@@ -280,9 +280,11 @@ class Album(Base):
         """
             Remove track from album
             @param track as Track
+            @return True if album empty
         """
         if track in self.tracks:
             self._tracks.remove(track)
+        return len(self._tracks) == 0
 
     def clear_tracks(self):
         """

@@ -161,16 +161,15 @@ class ContextWidget(Gtk.EventBox):
             @param add_to_playback as bool
         """
         if isinstance(self.__object, Disc):
-            # FIXME 0.9.900
             album = self.__object.album.clone(True)
             album.set_discs([self.__object])
         else:
             album = self.__object.clone(True)
         if add_to_playback:
             App().player.add_album(album)
+        elif isinstance(self.__object, Disc):
+            App().player.remove_disc(self.__object, album.id)
         else:
-            # FIXME 0.9.900
-            # Trouver un moyen de correctement supprimer un disque
             App().player.remove_album_by_id(album.id)
         self.hide()
 
