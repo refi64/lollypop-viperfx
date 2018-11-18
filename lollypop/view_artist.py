@@ -276,16 +276,10 @@ class ArtistView(ArtistAlbumsView):
         self.__lock_signal_id = App().player.connect(
                                                "lock-changed",
                                                self.__on_lock_changed)
-        if self._genre_ids:
-            App().settings.set_value("state-one-ids",
-                                     GLib.Variant("ai", self._genre_ids))
-            App().settings.set_value("state-two-ids",
-                                     GLib.Variant("ai", self._artist_ids))
-        else:
-            App().settings.set_value("state-one-ids",
-                                     GLib.Variant("ai", self._artist_ids))
-            App().settings.set_value("state-two-ids",
-                                     GLib.Variant("ai", []))
+        App().settings.set_value("state-one-ids",
+                                 GLib.Variant("ai", self._genre_ids))
+        App().settings.set_value("state-two-ids",
+                                 GLib.Variant("ai", self._artist_ids))
 
     def _on_unmap(self, widget):
         """

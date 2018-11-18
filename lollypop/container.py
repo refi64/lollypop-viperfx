@@ -251,8 +251,8 @@ class Container(Gtk.Overlay):
         def select_list_two(selection_list, artist_ids):
             self.__list_two.select_ids(artist_ids)
             self.__list_two.disconnect_by_func(select_list_two)
-        GLib.idle_add(self.__list_one.select_ids, [])
-        GLib.idle_add(self.__list_two.select_ids, [])
+        self.__list_one.select_ids()
+        self.__list_two.select_ids()
         if App().settings.get_value("show-genres"):
             # Get artist genres
             genre_ids = []
@@ -469,6 +469,13 @@ class Container(Gtk.Overlay):
 
         state_one_ids = App().settings.get_value("state-one-ids")
         state_two_ids = App().settings.get_value("state-two-ids")
+        if state_two_ids and not state_one_ids:
+            if App().settings.get_value("show-genres"):
+                self.show_artists_albums(state_two_ids)
+                return
+            else:
+                state_one_ids = state_two_ids
+                state_two_ids = []
         if state_two_ids:
             self.__list_two.connect("populated",
                                     select_list_two,
@@ -485,11 +492,14 @@ class Container(Gtk.Overlay):
         """
         state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
-        if state_one_ids and state_one_ids[0] >= 0 and state_two_ids:
+        # We do not support genres in navigation mode
+        if App().settings.get_value("show-genres") and not state_two_ids:
+            state_one_ids = []
+        # Artist id with genre off or genre and artist id
+        elif (state_two_ids and not state_one_ids) or\
+                (state_one_ids and state_one_ids[0] >= 0 and state_two_ids):
             state_one_ids = state_two_ids
             state_two_ids = []
-        elif state_one_ids and state_one_ids[0] >= 0:
-            state_one_ids = []
         self.show_artists_view()
         if state_one_ids and state_two_ids:
             self.show_view(state_one_ids[0], None, False)
