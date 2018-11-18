@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Pango, GLib, Gst
 
-from lollypop.define import App, ResponsiveType
+from lollypop.define import App
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
@@ -37,9 +37,7 @@ class Row(Gtk.ListBoxRow):
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
-        self._indicator = IndicatorWidget(
-            self._track,
-            self if responsive_type == ResponsiveType.DND else None)
+        self._indicator = IndicatorWidget(self._track, responsive_type)
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
         self._row_widget = Gtk.EventBox()

@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App
+from lollypop.define import App, ResponsiveType
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -22,15 +22,15 @@ class IndicatorWidget(Gtk.EventBox):
         Show play/loved indicator
     """
 
-    def __init__(self, track, parent):
+    def __init__(self, track, responsive_type):
         """
             Init indicator widget, ui will be set when needed
             @param track as Track
-            @param parent as Gtk.Widget
+            @param responsive_type as ResponsiveType
         """
         Gtk.EventBox.__init__(self)
         self.__track = track
-        self.__parent = parent
+        self.__responsive_type = responsive_type
         self.__pass = 1
         self.__timeout_id = None
         self.__button = None
@@ -185,10 +185,11 @@ class IndicatorWidget(Gtk.EventBox):
                                 App().player.set_next()
                             break
                     break
-            # if track album in Player albums, destroy parent
-            # FIXME 0.9.900
-            if self.__parent is not None:
-                self.__parent.destroy()
+            # Destroy parent Gtk.ListBoxRow
+            if self.__responsive_type != ResponsiveType.FIXED:
+                ancestor = self.get_ancestor(Gtk.ListBoxRow)
+                if ancestor is not None:
+                    ancestor.destroy()
         else:
             albums = App().player.albums
             # If album last in list, merge
