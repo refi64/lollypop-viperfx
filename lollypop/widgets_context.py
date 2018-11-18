@@ -161,10 +161,11 @@ class ContextWidget(Gtk.EventBox):
             @param add_to_playback as bool
         """
         if isinstance(self.__object, Disc):
-            album = Album(self.__object.album.id)
+            # FIXME 0.9.900
+            album = self.__object.album.clone(True)
             album.set_discs([self.__object])
         else:
-            album = self.__object
+            album = self.__object.clone(True)
         if add_to_playback:
             App().player.add_album(album)
         else:

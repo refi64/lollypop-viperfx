@@ -99,7 +99,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param album as Album
             @param index as int
         """
-        album.disallow_ignored_tracks()
         # We are not playing a user playlist anymore
         self._playlist_tracks = []
         self._playlist_ids = []
@@ -158,7 +157,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             Play album
             @param album as Album
         """
-        album.disallow_ignored_tracks()
         if self.is_party:
             self.set_party(False)
         self.reset_history()

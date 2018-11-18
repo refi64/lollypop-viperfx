@@ -303,8 +303,8 @@ class OverlayAlbumHelper(OverlayHelper):
             self._show_append(True)
         else:
             if App().player.is_playing and not App().player.albums:
-                App().player.play_album(self._album)
+                App().player.play_album(self._album.clone(True))
             else:
-                App().player.add_album(self._album)
+                App().player.add_album(self._album.clone(True))
             self._show_append(False)
         return True

@@ -240,14 +240,13 @@ class Album(Base):
         if artist_ids:
             self.artist_ids = artist_ids
 
-    def disallow_ignored_tracks(self):
+    def clone(self, disallow_ignored_tracks):
         """
-            Disallow ignore tracks (loved == -1)
+            Clone album
+            @param disallow_ignored_tracks as bool
         """
-        self._tracks = []
-        for disc in self._discs:
-            disc.set_tracks([])
-        self.__disallow_ignored_tracks = True
+        return Album(self.id, self.genre_ids,
+                     self.artist_ids, disallow_ignored_tracks)
 
     def set_discs(self, discs):
         """

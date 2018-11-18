@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App
-from lollypop.objects import Album
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -187,7 +186,7 @@ class IndicatorWidget(Gtk.EventBox):
                             break
                     break
             # if track album in Player albums, destroy parent
-            # FIXME
+            # FIXME 0.9.900
             if self.__parent is not None:
                 self.__parent.destroy()
         else:
@@ -200,7 +199,7 @@ class IndicatorWidget(Gtk.EventBox):
             else:
                 # We do not want to share same album with multiple user add
                 # If needed, previous merge will do the job
-                album = Album(self.__track.album.id)
+                album = self.__track.album.clone(True)
                 album.set_tracks([self.__track])
                 if App().player.is_playing:
                     App().player.add_album(album)
