@@ -18,6 +18,12 @@ from lollypop.utils import get_round_surface
 from lollypop.information_store import InformationStore
 
 
+class ArtHelperEffect:
+    NONE = 1 << 1
+    ROUNDED = 1 << 2
+    BLUR = 1 << 3
+
+
 class ArtHelper(GObject.Object):
     """
         Helper to load artwork smoothly
@@ -51,14 +57,14 @@ class ArtHelper(GObject.Object):
         return image
 
     def set_album_artwork(self, image, album, width, height,
-                          enable_blur=False):
+                          effect=ArtHelperEffect.NONE):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param album as Album
             @param width as int
             @param height as int
-            @param enable_blur as bool
+            @param effect as ArtHelperEffect
         """
         scale_factor = image.get_scale_factor()
         App().task_helper.run(self.__get_album_artwork,
@@ -66,13 +72,14 @@ class ArtHelper(GObject.Object):
                               width,
                               height,
                               scale_factor,
-                              enable_blur,
+                              effect,
                               callback=(self._on_get_artwork_pixbuf,
                                         image,
                                         width,
                                         height,
                                         scale_factor,
-                                        "folder-music-symbolic"))
+                                        "folder-music-symbolic",
+                                        effect))
 
     def set_radio_artwork(self, image, radio, width, height):
         """
@@ -92,7 +99,8 @@ class ArtHelper(GObject.Object):
                                         width,
                                         height,
                                         scale_factor,
-                                        "audio-input-microphone-symbolic"))
+                                        "audio-input-microphone-symbolic",
+                                        ArtHelperEffect.NONE))
 
     def set_artist_artwork(self, image, artist, width, height):
         """
@@ -136,7 +144,7 @@ class ArtHelper(GObject.Object):
             image.set_from_surface(surface)
 
     def _on_get_artwork_pixbuf(self, pixbuf, image,
-                               width, height, scale_factor, icon):
+                               width, height, scale_factor, icon, effect):
         """
             Set pixbuf as surface
             @param pixbuf as Gdk.Pixbuf
@@ -144,10 +152,14 @@ class ArtHelper(GObject.Object):
             @param size as int
             @param scale_factor as int
             @param icon as str
+            @param effect as ArtHelperEffect
         """
         if pixbuf is not None:
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                    pixbuf, scale_factor, None)
+            if effect & ArtHelperEffect.ROUNDED:
+                surface = get_round_surface(pixbuf, scale_factor)
+            else:
+                surface = Gdk.cairo_surface_create_from_pixbuf(
+                        pixbuf, scale_factor, None)
             image.set_from_surface(surface)
         elif width / scale_factor < ArtSize.BIG:
             image.set_from_icon_name(icon, Gtk.IconSize.DND)
@@ -178,7 +190,7 @@ class ArtHelper(GObject.Object):
             tmp = Image.frombytes("RGB", (width, height),
                                   data, "raw", "RGB", stride)
 
-            tmp = tmp.filter(ImageFilter.GaussianBlur(10))
+            tmp = tmp.filter(ImageFilter.GaussianBlur(20))
             imgd = tmp.tobytes()
             data = GLib.Bytes.new(imgd)
             pixbuf = GdkPixbuf.Pixbuf.new_from_data(imgd,
@@ -193,19 +205,18 @@ class ArtHelper(GObject.Object):
             return None
         return pixbuf
 
-    def __get_album_artwork(self, album, width, height,
-                            scale_factor, enable_blur=False):
+    def __get_album_artwork(self, album, width, height, scale_factor, effect):
         """
             Set artwork for album id
             @param album as Album
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param enable_blur as bool
+            @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
         pixbuf = App().art.get_album_artwork(album, width, scale_factor)
-        if enable_blur:
+        if effect & ArtHelperEffect.BLUR:
             pixbuf = self.__get_blur(pixbuf, width, height)
         return pixbuf
 

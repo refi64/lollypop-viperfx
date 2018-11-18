@@ -18,6 +18,7 @@ from lollypop.view import View
 from lollypop.define import App, WindowSize, Type
 from lollypop.controller_information import InformationController
 from lollypop.utils import escape
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.helper_task import TaskHelper
 
 
@@ -31,7 +32,7 @@ class LyricsView(View, InformationController):
             Init view
         """
         View.__init__(self)
-        InformationController.__init__(self, False)
+        InformationController.__init__(self, False, ArtHelperEffect.BLUR)
         self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
@@ -53,9 +54,7 @@ class LyricsView(View, InformationController):
             @param track as Track
         """
         self.__current_track = track
-        self.update_artwork(self.__current_width,
-                            self.__current_height,
-                            True)
+        self.update_artwork(self.__current_width, self.__current_height)
         self.__lyrics_set = False
         self.__update_lyrics_style()
         self.__lyrics_label.set_text(_("Loading…"))
@@ -216,9 +215,7 @@ class LyricsView(View, InformationController):
         """
         self.__size_allocate_timeout_id = None
         self.__update_lyrics_style()
-        self.update_artwork(self.__current_width,
-                            self.__current_height,
-                            True)
+        self.update_artwork(self.__current_width, self.__current_height)
 
     def __on_size_allocate(self, widget, allocation):
         """

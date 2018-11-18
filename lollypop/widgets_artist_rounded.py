@@ -19,7 +19,7 @@ from lollypop.define import App, STATIC_ALBUM_NAME, SelectionListMask
 from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
-from lollypop.helper_art import ArtHelper
+from lollypop.helper_art import ArtHelper, ArtHelperEffect
 
 
 class RoundedArtistWidget(RoundedFlowBoxWidget):
@@ -137,7 +137,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                 self.__art_helper.set_album_artwork(self._artwork,
                                                     Album(album_ids[0]),
                                                     self._art_size,
-                                                    self._art_size)
+                                                    self._art_size,
+                                                    ArtHelperEffect.ROUNDED)
             else:
                 set_icon_name()
 

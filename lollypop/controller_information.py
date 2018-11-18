@@ -12,7 +12,7 @@
 
 from gi.repository import GLib
 
-from lollypop.helper_art import ArtHelper
+from lollypop.helper_art import ArtHelper, ArtHelperEffect
 from lollypop.define import Type, App
 
 
@@ -21,14 +21,16 @@ class InformationController:
         Information controller (title, artist, album, cover)
     """
 
-    def __init__(self, tooltip=True):
+    def __init__(self, show_tooltip=True, effect=ArtHelperEffect.NONE):
         """
             Init controller
-            @param tooltip as bool => Show album name over cover
+            @param show_tooltip as bool
+            @param effect as effect=ArtHelperEffect
         """
         self._infobox = None
+        self.__effect = effect
         self.__art_helper = ArtHelper()
-        self.__tooltip = tooltip
+        self.__show_tooltip = show_tooltip
         self.__per_track_cover = App().settings.get_value(
             "allow-per-track-cover")
 
@@ -46,7 +48,7 @@ class InformationController:
         elif self._infobox is not None:
             self._infobox.show()
         self.update_labels(font_size)
-        self.update_artwork(art_size, art_size, False)
+        self.update_artwork(art_size, art_size)
 
     def update_labels(self, font_size):
         """
@@ -76,12 +78,11 @@ class InformationController:
                                          GLib.markup_escape_text(title_text)))
         self._title_label.show()
 
-    def update_artwork(self, width, height, enable_blur):
+    def update_artwork(self, width, height):
         """
             Update artwork
             @param width as int
             @param height as int
-            @param enable_blur as bool
         """
         if width < 1 or height < 1:
             return
@@ -98,8 +99,8 @@ class InformationController:
                 App().player.current_track.album,
                 width,
                 height,
-                enable_blur)
-            if self.__tooltip:
+                self.__effect)
+            if self.__show_tooltip:
                 self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)
 
