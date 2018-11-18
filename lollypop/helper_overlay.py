@@ -30,6 +30,7 @@ class OverlayHelper:
         self._show_overlay = False
         self._lock_overlay = False
         self.__timeout_id = None
+        self._pixel_size = 32
 
     def lock_overlay(self, lock):
         """
@@ -136,6 +137,8 @@ class OverlayAlbumHelper(OverlayHelper):
             Init overlay
         """
         OverlayHelper.__init__(self)
+        self._pixel_size = App().settings.get_value(
+            "cover-size").get_int32() / 9
 
 #######################
 # PROTECTED           #
@@ -168,7 +171,8 @@ class OverlayAlbumHelper(OverlayHelper):
             self._play_event.show()
             self._play_button = Gtk.Image.new_from_icon_name(
                 "media-playback-start-symbolic",
-                Gtk.IconSize.DND)
+                Gtk.IconSize.INVALID)
+            self._play_button.set_pixel_size(self._pixel_size + 20)
             self._play_button.set_opacity(opacity)
             self._play_button.show()
             self._play_event.add(self._play_button)
@@ -183,8 +187,9 @@ class OverlayAlbumHelper(OverlayHelper):
                                         self._on_artwork_press_event)
             self._artwork_button = Gtk.Image.new_from_icon_name(
                 "image-x-generic-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.INVALID)
             self._artwork_button.set_opacity(1)
+            self._artwork_button.set_pixel_size(self._pixel_size)
             self._artwork_button.show()
             # Action button
             self._action_event = Gtk.EventBox()
@@ -196,6 +201,7 @@ class OverlayAlbumHelper(OverlayHelper):
                                        self._on_action_press_event)
             self._action_button = Gtk.Image.new()
             self._action_button.set_opacity(opacity)
+            self._action_button.set_pixel_size(self._pixel_size)
             self._action_button.show()
             self._show_append(self._album.id not in App().player.album_ids)
             self._artwork_event.add(self._artwork_button)
@@ -237,11 +243,11 @@ class OverlayAlbumHelper(OverlayHelper):
         """
         if append:
             self._action_button.set_from_icon_name("list-add-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.INVALID)
             self._action_event.set_tooltip_text(_("Add to current playlist"))
         else:
             self._action_button.set_from_icon_name("list-remove-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.INVALID)
             self._action_event.set_tooltip_text(
                 _("Remove from current playlist"))
 

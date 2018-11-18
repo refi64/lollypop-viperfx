@@ -158,6 +158,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                           self.__on_play_all_press_event)
             self.__play_all_button = Gtk.Image.new()
             self.__play_all_button.set_opacity(opacity)
+            self.__play_all_button.set_pixel_size(self._pixel_size)
             self.__set_play_all_image()
             self.__play_all_button.show()
             self.__play_all_event.add(self.__play_all_button)
@@ -196,11 +197,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         if App().settings.get_enum("shuffle") == Shuffle.NONE:
             self.__play_all_button.set_from_icon_name(
                 "media-playlist-consecutive-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.INVALID)
         else:
             self.__play_all_button.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.INVALID)
 
     def __on_play_all_press_event(self, widget, event):
         """

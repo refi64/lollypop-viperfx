@@ -14,7 +14,7 @@ from gi.repository import Gdk, Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ArtSize
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
@@ -31,6 +31,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         """
         OverlayHelper.__init__(self)
         RoundedAlbumsWidget.__init__(self, item_ids)
+        self._pixel_size = ArtSize.ROUNDED / 10
 
     def populate(self):
         """
@@ -86,9 +87,10 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
                                       self._on_play_press_event)
             self.__play_button = Gtk.Image.new_from_icon_name(
                 "media-playback-start-symbolic",
-                Gtk.IconSize.DND)
+                Gtk.IconSize.INVALID)
             self.__play_event.set_tooltip_text(_("Play"))
             self.__play_button.set_opacity(1)
+            self.__play_button.set_pixel_size(self._pixel_size + 20)
             # Open button
             self.__open_event = Gtk.EventBox()
             self.__open_event.set_property("has-tooltip", True)
@@ -98,11 +100,12 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__open_event.connect("button-press-event",
                                       self._on_open_press_event)
             self.__open_event.set_property("valign", Gtk.Align.END)
-            self.__open_event.set_margin_bottom(5)
+            self.__open_event.set_margin_bottom(10)
             self.__open_event.set_property("halign", Gtk.Align.CENTER)
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.INVALID)
+            self.__open_button.set_pixel_size(self._pixel_size)
             self.__open_button.set_opacity(1)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)

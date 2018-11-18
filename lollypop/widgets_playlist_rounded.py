@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App, Shuffle, Type
+from lollypop.define import App, Shuffle, Type, ArtSize
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -80,6 +80,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
         OverlayHelper.__init__(self)
         RoundedAlbumsWidget.__init__(self, playlist_id)
+        self._pixel_size = ArtSize.ROUNDED / 10
         self.__track_ids = []
         self.__obj = obj
         if obj is not None:
@@ -168,21 +169,22 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             if self.__obj is None:
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "media-playback-start-symbolic",
-                    Gtk.IconSize.DND)
+                    Gtk.IconSize.INVALID)
                 self.__play_event.set_tooltip_text(_("Play"))
             elif self.__add:
                 # Special case, we are in add to playlist mode
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-add-symbolic",
-                    Gtk.IconSize.DND)
+                    Gtk.IconSize.INVALID)
                 self.__play_event.set_tooltip_text(_("Add"))
             else:
                 # Special case, we are in remove from playlist mode
                 self.__play_button = Gtk.Image.new_from_icon_name(
                     "list-remove-symbolic",
-                    Gtk.IconSize.DIALOG)
+                    Gtk.IconSize.INVALID)
                 self.__play_event.set_tooltip_text(_("Remove"))
             self.__play_button.set_opacity(1)
+            self.__play_button.set_pixel_size(self._pixel_size + 20)
             # Open button
             self.__open_event = Gtk.EventBox()
             self.__open_event.set_property("has-tooltip", True)
@@ -192,8 +194,9 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                                       self.__on_open_release_event)
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.INVALID)
             self.__open_button.set_opacity(1)
+            self.__open_button.set_pixel_size(self._pixel_size)
             # Edit button
             self.__edit_event = Gtk.EventBox()
             self.__edit_event.set_property("has-tooltip", True)
@@ -203,8 +206,9 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                                       self.__on_edit_release_event)
             self.__edit_button = Gtk.Image.new_from_icon_name(
                 "document-properties-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.INVALID)
             self.__edit_button.set_opacity(1)
+            self.__edit_button.set_pixel_size(self._pixel_size)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)
             self.__edit_event.add(self.__edit_button)
