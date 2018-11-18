@@ -473,6 +473,7 @@ class Container(Gtk.Overlay):
             self.__list_two.connect("populated",
                                     select_list_two,
                                     state_two_ids)
+        self.__list_one.select_ids()
         if state_one_ids:
             self.__list_one.select_ids(state_one_ids)
         else:
