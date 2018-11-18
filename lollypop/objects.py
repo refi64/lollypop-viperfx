@@ -270,7 +270,10 @@ class Album(Base):
             @param track as Track
             @param position as int
         """
-        self._tracks.insert(position, track)
+        if position == -1:
+            self._tracks.append(track)
+        else:
+            self._tracks.insert(position, track)
         track.set_album(self)
 
     def remove_track(self, track):
