@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
 from lollypop.container import Container
-from lollypop.define import App, WindowSize
+from lollypop.define import App, WindowSize, Type
 from lollypop.toolbar import Toolbar
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
@@ -513,10 +513,16 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         elif string == "loved":
             track = App().player.current_track
             if track.id is not None and track.id >= 0:
-                track.set_loved(not track.loved)
+                if track.loved < 1:
+                    loved = track.loved + 1
+                else:
+                    loved = Type.NONE
+                track.set_loved(loved)
                 if App().notify is not None:
-                    if track.loved:
+                    if track.loved == 1:
                         heart = "❤"
+                    elif track.loved == -1:
+                        heart = "⏭"
                     else:
                         heart = "♡"
                     App().notify.send("%s - %s: %s" %
