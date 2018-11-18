@@ -224,21 +224,19 @@ popover.background separator {
 
 .rounded-icon {
     transition: 70ms linear;
-    box-shadow: 0 0 4px white;
-    background-color: black;
+    box-shadow: 0 0 3px white;
+    background-color: alpha(black, 0.8);
     color: white;
     padding: 12px;
     margin: 4px;
-    opacity: 0.85;
     border-radius: 50%;
 }
 
 .rounded-icon-small {
     transition: 70ms linear;
-    box-shadow: 0 0 4px white;
-    background-color: black;
+    box-shadow: 0 0 3px white;
+    background-color: alpha(black, 0.8);
     color: white;
-    opacity: 0.85;
     padding: 8px;
     margin: 4px;
     border-radius: 50%;
@@ -246,10 +244,9 @@ popover.background separator {
 
 .squared-icon-small {
     transition: 70ms linear;
-    box-shadow: 0 0 4px white;
-    background-color: black;
+    box-shadow: 0 0 3px white;
+    background-color: alpha(black, 0.8);
     color: white;
-    opacity: 0.85;
     padding: 8px;
     margin: 4px;
     border-radius: 5px;
