@@ -245,8 +245,16 @@ class Album(Base):
             Disallow ignore tracks (loved == -1)
         """
         self._tracks = []
-        self._discs = []
+        for disc in self._discs:
+            disc.set_tracks([])
         self.__disallow_ignored_tracks = True
+
+    def set_discs(self, discs):
+        """
+            Set album discs
+            @param discs as [Disc]
+        """
+        self._discs = discs
 
     def set_tracks(self, tracks):
         """

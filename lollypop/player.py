@@ -106,7 +106,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         # We do not shuffle when user add an album
         self._albums_backup = []
         if index == -1:
-            self._albums.append(album)
+            if self._albums and self._albums[-1].id == album.id:
+                self._albums[-1].set_tracks(self._albums[-1].tracks +
+                                            album.tracks)
+            else:
+                self._albums.append(album)
         else:
             self._albums.insert(index, album)
         if self._current_track.id is not None and self._current_track.id > 0:
@@ -147,7 +151,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.set_prev()
             self.emit("album-removed", album.id)
         except Exception as e:
-            Logger.error("Player::remove_album_by_id(): %s" % e)
+            Logger.error("Player::remove_album(): %s" % e)
 
     def play_album(self, album):
         """

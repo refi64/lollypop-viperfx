@@ -81,16 +81,15 @@ class ContextWidget(Gtk.EventBox):
                 album = object.album
             else:
                 album = object
-            player_album = None
+            player_album_track_ids = []
             for _album in App().player.albums:
                 if album.id == _album.id:
-                    player_album = _album
-                    break
-            if player_album is not None:
-                if player_album.track_ids.sort() == object.track_ids.sort():
-                    add_to_playback = False
-                    string = _("Remove from current playlist")
-                    icon = "list-remove-symbolic"
+                    player_album_track_ids += _album.track_ids
+            if len(set(player_album_track_ids) &
+                    set(object.track_ids)) == len(object.track_ids):
+                add_to_playback = False
+                string = _("Remove from current playlist")
+                icon = "list-remove-symbolic"
             playback_button = Gtk.Button.new_from_icon_name(
                 icon,
                 Gtk.IconSize.BUTTON)
@@ -162,12 +161,15 @@ class ContextWidget(Gtk.EventBox):
             @param add_to_playback as bool
         """
         if isinstance(self.__object, Disc):
-            album = self.__object.album
+            album = Album(self.__object.album.id)
+            album.set_discs([self.__object])
         else:
             album = self.__object
         if add_to_playback:
             App().player.add_album(album)
         else:
+            # FIXME 0.9.900
+            # Trouver un moyen de correctement supprimer un disque
             App().player.remove_album_by_id(album.id)
         self.hide()
 
