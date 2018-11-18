@@ -138,7 +138,9 @@ class ArtHelper(GObject.Object):
         """
         if pixbuf is None:
             self._on_get_artwork_pixbuf(pixbuf, image,
-                                        width, height, scale_factor, icon)
+                                        width, height,
+                                        scale_factor, icon,
+                                        ArtHelperEffect.NONE)
         else:
             surface = get_round_surface(pixbuf, scale_factor)
             image.set_from_surface(surface)

@@ -143,10 +143,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         """
         if App().player.is_locked:
             return True
-        if App().settings.get_value("show-sidebar"):
-            App().window.container.list_two.select_ids(self._data)
-        else:
-            App().window.container.show_view(Type.YEARS, self._data)
+        App().window.container.reload_view()
 
 #######################
 # PRIVATE             #

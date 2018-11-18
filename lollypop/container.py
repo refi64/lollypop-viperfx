@@ -66,8 +66,8 @@ class Container(Gtk.Overlay):
                                 self.__update_playlists)
         self.add(self.__paned_one)
 
-        self.__list_one_ids = App().settings.get_value("state-one-ids")
-        self.__list_two_ids = App().settings.get_value("state-two-ids")
+        self.__state_one_ids = App().settings.get_value("state-one-ids")
+        self.__state_two_ids = App().settings.get_value("state-two-ids")
 
         # Show donation notification
         if App().settings.get_value("show-donation"):
@@ -121,22 +121,15 @@ class Container(Gtk.Overlay):
         self.update_list_one()
         self.__list_one.select_ids([Type.POPULARS])
 
-    def reload_view(self):
+    def reload_view(self, full=False):
         """
             Reload current view
+            @param full as bool
         """
-        def select_list_two(selection_list, artist_ids):
-            self.__list_two.select_ids(artist_ids)
-            self.__list_two.disconnect_by_func(select_list_two)
-
-        list_one_selected_ids = self.__list_one.selected_ids
-        list_two_selected_ids = self.__list_two.selected_ids
-        if self.__list_two.selected_ids:
-            self.__list_two.connect("populated",
-                                    select_list_two,
-                                    list_two_selected_ids)
-        if self.__list_one.selected_ids:
-            self.__list_one.select_ids(list_one_selected_ids)
+        if App().settings.get_value("show-sidebar"):
+            self.__reload_list_view()
+        else:
+            self.__reload_navigation_view()
 
     def pulse(self, pulse):
         """
@@ -199,7 +192,7 @@ class Container(Gtk.Overlay):
         if show or adpative_window:
             # We are entering paned stack mode
             self.__list_one.select_ids()
-            self.__list_two_ids = App().settings.get_value("state-two-ids")
+            self.__state_two_ids = App().settings.get_value("state-two-ids")
             self.__list_one.select_ids(
                 App().settings.get_value("state-one-ids"))
             self.__list_one.show()
@@ -209,34 +202,13 @@ class Container(Gtk.Overlay):
                 self.update_list_one()
             if self.__list_two.count > 0 and\
                     App().settings.get_value("show-genres") and\
-                    self.__list_two_ids:
+                    self.__state_two_ids:
                 self.__list_two.show()
         elif not adpative_window:
             if self.__list_one.get_visible():
-                list_two_ids = App().settings.get_value("state-two-ids")
-                list_one_ids = App().settings.get_value("state-one-ids")
-                # We are leaving paned stack mode
-                # Restore static entry
-                if list_one_ids and list_one_ids[0] < 0:
-                    self.__list_one_ids = list_one_ids
-                    self.__list_two_ids = list_two_ids
-                # Restore genre entry
-                elif list_one_ids and list_one_ids[0] >= 0 and list_two_ids:
-                    self.__list_one_ids = list_two_ids
-                else:
-                    self.__list_one_ids = []
                 self.__list_two.hide()
                 self.__list_one.hide()
-            self.show_artists_view()
-            if self.__list_one_ids and self.__list_two_ids:
-                self.show_view(self.__list_one_ids[0], None, False)
-                self.show_view(self.__list_one_ids[0], self.__list_two_ids)
-            elif self.__list_one_ids:
-                self.show_view(self.__list_one_ids[0])
-            elif self.__list_two_ids:
-                self.show_view(self.__list_two_ids[0])
-            self.__list_one_ids = []
-            self.__list_two_ids = []
+            self.__reload_navigation_view()
 
     def show_lyrics(self, track=None):
         """
@@ -484,13 +456,57 @@ class Container(Gtk.Overlay):
         App().scanner.connect("genre-updated", self.__on_genre_updated)
         App().scanner.connect("artist-updated", self.__on_artist_updated)
 
+    def __reload_list_view(self):
+        """
+            Reload list view
+        """
+        def select_list_two(selection_list, artist_ids):
+            self.__list_two.select_ids(artist_ids)
+            self.__list_two.disconnect_by_func(select_list_two)
+
+        list_one_selected_ids = self.__list_one.selected_ids
+        list_two_selected_ids = self.__list_two.selected_ids
+        if self.__list_two.selected_ids:
+            self.__list_two.connect("populated",
+                                    select_list_two,
+                                    list_two_selected_ids)
+        if self.__list_one.selected_ids:
+            self.__list_one.select_ids(list_one_selected_ids)
+
+    def __reload_navigation_view(self):
+        """
+            Reload navigation view
+        """
+        state_two_ids = App().settings.get_value("state-two-ids")
+        state_one_ids = App().settings.get_value("state-one-ids")
+        # We are leaving paned stack mode
+        # Restore static entry
+        if state_one_ids and state_one_ids[0] < 0:
+            self.__state_one_ids = state_one_ids
+            self.__state_two_ids = state_two_ids
+        # Restore genre entry
+        elif state_one_ids and state_one_ids[0] >= 0 and state_two_ids:
+            self.__state_one_ids = state_two_ids
+        else:
+            self.__state_one_ids = []
+        self.show_artists_view()
+        if self.__state_one_ids and self.__state_two_ids:
+            self.show_view(self.__state_one_ids[0], None, False)
+            self.show_view(self.__state_one_ids[0], self.__state_two_ids)
+        elif self.__state_one_ids:
+            self.show_view(self.__state_one_ids[0])
+        elif self.__state_two_ids:
+            self.show_view(self.__state_two_ids[0])
+        self.__state_one_ids = []
+        self.__state_two_ids = []
+
     def __restore_list_one_state(self):
         """
             Restore saved state for list
         """
-        if self.__list_one_ids:
-            self.__list_one.select_ids(self.__list_one_ids)
-            self.__list_one_ids = []
+        if self.__state_one_ids:
+            self.__list_one.select_ids(self.__state_one_ids)
+            self.__state_one_ids = []
         else:
             self.__list_one.select_first()
 
@@ -498,9 +514,9 @@ class Container(Gtk.Overlay):
         """
             Restore saved state for list
         """
-        if self.__list_two_ids:
-            self.__list_two.select_ids(self.__list_two_ids)
-            self.__list_two_ids = []
+        if self.__state_two_ids:
+            self.__list_two.select_ids(self.__state_two_ids)
+            self.__state_two_ids = []
 
     def __update_playlists(self, playlists, playlist_id):
         """

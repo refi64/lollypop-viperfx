@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App, Shuffle, Type
+from lollypop.define import App, Shuffle
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -54,11 +54,7 @@ class PlayListPopover(Gtk.Popover):
         """
         new_name = self.__name_entry.get_text()
         App().playlists.rename(self.__playlist_id, new_name)
-        if self.__obj is None:
-            App().window.container.reload_view()
-        else:
-            App().window.container.show_view(Type.PLAYLISTS, self.__obj)
-
+        App().window.container.reload_view()
         self.destroy()
 
     def _on_delete_button_clicked(self, button):
@@ -67,10 +63,7 @@ class PlayListPopover(Gtk.Popover):
             @param button as Gtk.Button
         """
         App().playlists.remove(self.__playlist_id)
-        if self.__obj is None:
-            App().window.container.reload_view()
-        else:
-            App().window.container.show_view(Type.PLAYLISTS, self.__obj)
+        App().window.container.reload_view()
         self.destroy()
 
 
@@ -288,6 +281,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             else:
                 App().playlists.remove_tracks(self.playlist_id, tracks)
             App().window.container.reload_view()
+        return True
 
     def __on_open_release_event(self, widget, event):
         """
@@ -295,11 +289,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if App().settings.get_value("show-sidebar"):
-            App().window.container.list_two.select_ids([self._data])
-        else:
-            App().window.container.show_view(Type.PLAYLISTS, [self._data])
-            return True
+        App().window.container.reload_view()
+        return True
 
     def __on_edit_release_event(self, widget, event):
         """
@@ -312,3 +303,4 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
+        return True
