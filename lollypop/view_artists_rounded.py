@@ -28,6 +28,7 @@ class RoundedArtistsView(FlowBoxView):
             Init decade view
         """
         FlowBoxView.__init__(self)
+        self.__lazy_queue_backup = None
         self._widget_class = RoundedArtistWidget
         self.connect("realize", self.__on_realize)
         self.connect("unrealize", self.__on_unrealize)
@@ -63,7 +64,8 @@ class RoundedArtistsView(FlowBoxView):
         """
             We want this view to be populated anyway (no sidebar mode)
         """
-        pass
+        self.__lazy_queue_backup = self._lazy_queue
+        FlowBoxView.stop(self)
 
     @property
     def should_destroy(self):
@@ -93,6 +95,10 @@ class RoundedArtistsView(FlowBoxView):
         """
             Set active ids
         """
+        if self.__lazy_queue_backup is not None:
+            self._lazy_queue = self.__lazy_queue_backup
+            self.__lazy_queue_backup = None
+            GLib.idle_add(self.lazy_loading)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.POPULARS]))
         App().settings.set_value("state-two-ids",
