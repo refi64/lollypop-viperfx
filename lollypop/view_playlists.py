@@ -84,12 +84,12 @@ class PlaylistsView(View, ViewController):
         if playlist_ids[0] > 0:
             self.__set_duration()
 
-    def populate(self, track_ids):
+    def populate(self, tracks):
         """
             Populate view with tracks from playlist
-            @param track_ids_list as {[int]}
+            @param tracks as {[Track]}
         """
-        self.__playlists_widget.populate(track_ids)
+        self.__playlists_widget.populate(tracks)
         self.__update_jump_button()
 
     def stop(self):
@@ -249,7 +249,8 @@ class PlaylistsView(View, ViewController):
         """
             Update jump button status
         """
-        if App().player.current_track.id in self.__playlists_widget.track_ids:
+        ids = [track.id for track in self.__playlists_widget.tracks]
+        if App().player.current_track.id in ids:
             self.__jump_button.set_sensitive(True)
         else:
             self.__jump_button.set_sensitive(False)

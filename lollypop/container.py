@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 from random import randint
 
 from lollypop.define import App, Type, ResponsiveType, SelectionListMask
-from lollypop.objects import Album
+from lollypop.objects import Album, Track
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view import View, MessageView
@@ -847,18 +847,19 @@ class Container(Gtk.Overlay):
             @return View
         """
         def load():
-            track_ids = {}
+            tracks = {}
             for playlist_id in playlist_ids:
                 if playlist_id == Type.LOVED:
-                    track_ids[playlist_id] = App().tracks.get_loved_track_ids()
+                    ids = App().tracks.get_loved_track_ids()
                 else:
-                    track_ids[playlist_id] = App().playlists.get_track_ids(
-                        playlist_id)
-            return track_ids
+                    ids = App().playlists.get_track_ids(playlist_id)
+                tracks[playlist_id] = [Track(id) for id in ids]
+            return tracks
 
         def load_smart():
             request = App().playlists.get_smart_sql(playlist_ids[0])
-            return {Type.SMART: App().db.execute(request)}
+            ids = App().db.execute(request)
+            return {Type.SMART: [Track(id) for id in ids]}
 
         self.__stop_current_view()
         if len(playlist_ids) == 1 and\

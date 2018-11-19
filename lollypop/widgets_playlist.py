@@ -35,7 +35,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__playlist_ids = playlist_ids
-        self.__track_ids = {}
+        self.__tracks = {}
         self.__row_tracks_left = []
         self.__row_tracks_right = []
         self.__width = None
@@ -94,12 +94,12 @@ class PlaylistsWidget(Gtk.Grid):
                 ordinate = child.translate_coordinates(self.__grid, 0, 0)[1]
         return ordinate
 
-    def populate(self, track_ids):
+    def populate(self, tracks):
         """
             Populate view with two columns
-            @param track_ids as [[int],[int],...]
+            @param tracks as [[int],[int],...]
         """
-        self.__track_ids = track_ids
+        self.__tracks = tracks
         # We are looking for middle
         # Ponderate with this:
         # Tracks with cover == 2
@@ -108,8 +108,7 @@ class PlaylistsWidget(Gtk.Grid):
         heights = {}
         total = 0
         idx = 0
-        for track_id in self.track_ids:
-            track = Track(track_id)
+        for track in self.tracks:
             if track.album_id != prev_album_id:
                 heights[idx] = 2
                 total += 2
@@ -126,13 +125,13 @@ class PlaylistsWidget(Gtk.Grid):
             if count >= half:
                 break
             mid_tracks += 1
-        self.populate_list_left(self.track_ids[:mid_tracks], 1)
-        self.populate_list_right(self.track_ids[mid_tracks:], mid_tracks + 1)
+        self.populate_list_left(self.tracks[:mid_tracks], 1)
+        self.populate_list_right(self.tracks[mid_tracks:], mid_tracks + 1)
 
     def populate_list_left(self, tracks, pos):
         """
             Populate left list
-            @param track's ids as array of int (not null)
+            @param tracks as [Track]
             @param track position as int
             @thread safe
         """
@@ -146,7 +145,7 @@ class PlaylistsWidget(Gtk.Grid):
     def populate_list_right(self, tracks, pos):
         """
             Populate right list
-            @param track"s ids as array of int (not null)
+            @param tracks as [Track]
             @param track position as int
             @thread safe
         """
@@ -216,15 +215,15 @@ class PlaylistsWidget(Gtk.Grid):
         return Type.PLAYLISTS
 
     @property
-    def track_ids(self):
+    def tracks(self):
         """
-            Get track ids
-            @return [int]
+            Get tracks
+            @return [Track]
         """
-        track_ids = []
-        for ids in list(self.__track_ids.values()):
-            track_ids += ids
-        return track_ids
+        tracks = []
+        for _tracks in list(self.__tracks.values()):
+            tracks += _tracks
+        return tracks
 
     @property
     def children(self):
@@ -305,7 +304,7 @@ class PlaylistsWidget(Gtk.Grid):
             self.__locked_widget_right = False
             return
 
-        track = Track(tracks.pop(0))
+        track = tracks.pop(0)
         track.set_number(pos)
         row = PlaylistRow(track)
         row.set_previous_row(previous_row)
