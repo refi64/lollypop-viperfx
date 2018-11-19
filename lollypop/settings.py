@@ -315,8 +315,6 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        if not state:
-            App().set_startup_ids([], [])
         App().settings.set_value("save-state",
                                  GLib.Variant("b", state))
 
