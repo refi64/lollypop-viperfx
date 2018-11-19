@@ -230,6 +230,23 @@ class Container(Gtk.Overlay):
         App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
+    def show_playlist_manager(self, obj):
+        """
+            Show playlist manager for object_id
+            Current view stay present in ViewContainer
+            @param obj as Track/Album
+        """
+        from lollypop.view_playlists_manager import PlaylistsManagerView
+        current = self.__stack.get_visible_child()
+        view = PlaylistsManagerView(obj)
+        view.populate(App().playlists.get_ids())
+        view.show()
+        self.__stack.add(view)
+        App().window.container.stack.set_navigation_enabled(True)
+        self.__stack.set_visible_child(view)
+        App().window.container.stack.set_navigation_enabled(False)
+        current.disable_overlay()
+
     def show_smart_playlist_editor(self, playlist_id):
         """
             Show a view allowing user to edit smart view

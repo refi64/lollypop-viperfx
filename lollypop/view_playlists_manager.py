@@ -88,10 +88,11 @@ class PlaylistsManagerView(FlowBoxView):
         """
             Set active ids
         """
-        App().settings.set_value("state-one-ids",
-                                 GLib.Variant("ai", [Type.PLAYLISTS]))
-        App().settings.set_value("state-two-ids",
-                                 GLib.Variant("ai", []))
+        if self.__obj is None:
+            App().settings.set_value("state-one-ids",
+                                     GLib.Variant("ai", [Type.PLAYLISTS]))
+            App().settings.set_value("state-two-ids",
+                                     GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #
