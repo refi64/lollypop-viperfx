@@ -85,7 +85,10 @@ class SmartPlaylistView(View):
                 Logger.warning("SmartPlaylistView::populate: %s", e)
         try:
             split_order = sql.split("ORDER BY")
-            orderby = split_order[1].split(" ")[1]
+            split_spaces = split_order[1].split(" ")
+            orderby = split_spaces[1]
+            if split_spaces[2] in ["ASC", "DESC"]:
+                orderby += " %s" % split_spaces[2]
             self.__select_combobox.set_active_id(orderby)
         except Exception as e:
                 self.__select_combobox.set_active(0)
@@ -121,7 +124,7 @@ class SmartPlaylistView(View):
                 request += ", %s" % "track_artists"
             request += subrequest + " UNION "
         request = request[:-7]  # " UNION "
-        request += " ORDER BY %s DESC" % orderby
+        request += " ORDER BY %s" % orderby
         request += " LIMIT %s" % int(self.__limit_spin.get_value())
         return request
 
@@ -147,7 +150,7 @@ class SmartPlaylistView(View):
         if subrequest.find("track_artists.") != -1:
             request += ", %s" % "track_artists"
         orderby = self.__select_combobox.get_active_id()
-        subrequest += " ORDER BY %s DESC" % orderby
+        subrequest += " ORDER BY %s" % orderby
         subrequest += " LIMIT %s" % int(self.__limit_spin.get_value())
         return request + subrequest
 

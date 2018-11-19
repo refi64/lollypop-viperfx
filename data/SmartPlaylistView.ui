@@ -136,8 +136,10 @@
                   <item id="random()" translatable="yes">random</item>
                   <item id="tracks.album_id" translatable="yes">album</item>
                   <item id="track_artists.artist_id" translatable="yes">artist</item>
-                  <item id="tracks.year" translatable="yes">year</item>
-                  <item id="tracks.duration" translatable="yes">duration</item>
+                  <item id="tracks.year DESC" translatable="yes">year DESC</item>
+                  <item id="tracks.year ASC" translatable="yes">year ASC</item>
+                  <item id="tracks.duration DESC" translatable="yes">duration DESC</item>
+                  <item id="tracks.duration ASC" translatable="yes">duration ASC</item>
                 </items>
               </object>
               <packing>
