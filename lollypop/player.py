@@ -294,6 +294,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                                              "/track_id.bin", "rb"))
                 self.set_queue(load(open(LOLLYPOP_DATA_PATH +
                                          "/queue.bin", "rb")))
+                albums = load(open(LOLLYPOP_DATA_PATH + "/Albums.bin", "rb"))
                 playlist_ids = load(open(LOLLYPOP_DATA_PATH +
                                          "/playlist_ids.bin", "rb"))
                 (is_playing, was_party) = load(open(LOLLYPOP_DATA_PATH +
@@ -306,13 +307,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     track.set_radio(name, url)
                     self.load(track, is_playing)
                 elif App().tracks.get_uri(current_track_id) != "":
-                    for playlist_id in playlist_ids:
-                        track_ids = App().playlists.get_track_ids(
-                            playlist_id)
-                        tracks = [Track(track_id) for track_id in track_ids]
-                        App().player.populate_playlist_by_tracks(tracks,
-                                                                 playlist_ids)
-                    else:
+                    if albums:
                         if was_party:
                             self.emit("party-changed", True)
                         else:
@@ -320,15 +315,22 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                                                 LOLLYPOP_DATA_PATH +
                                                 "/Albums.bin",
                                                 "rb"))
-                    # Load track from player albums
-                    current_track = Track(current_track_id)
-                    index = self.album_ids.index(current_track.album.id)
-                    for track in self._albums[index].tracks:
-                        if track.id == current_track_id:
-                            self._load_track(track)
-                            break
-                    self.set_next()
-                    self.set_prev()
+                        # Load track from player albums
+                        current_track = Track(current_track_id)
+                        index = self.album_ids.index(current_track.album.id)
+                        for track in self._albums[index].tracks:
+                            if track.id == current_track_id:
+                                self._load_track(track)
+                                break
+                    else:
+                        for playlist_id in playlist_ids:
+                            tracks = App().playlists.get_tracks(playlist_id)
+                            App().player.populate_playlist_by_tracks(
+                                tracks, playlist_ids)
+                            for track in tracks:
+                                if track.id == current_track_id:
+                                    self._load_track(track)
+                                    break
                     if is_playing:
                         self.play()
                     else:

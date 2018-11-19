@@ -315,7 +315,6 @@ class Application(Gtk.Application):
                         dump(list(self.player.albums), f)
                 except Exception as e:
                     Logger.error("Application::__save_state(): %s" % e)
-            print(track_id)
             dump(track_id, open(LOLLYPOP_DATA_PATH + "/track_id.bin", "wb"))
             dump([self.player.is_playing, self.player.is_party],
                  open(LOLLYPOP_DATA_PATH + "/player.bin", "wb"))
