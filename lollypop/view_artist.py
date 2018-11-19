@@ -124,15 +124,22 @@ class ArtistView(ArtistAlbumsView):
             Change cursor on label
             @param eventbox as Gtk.EventBox
         """
-        if len(self._artist_ids) == 1:
-            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            if len(self._artist_ids) == 1:
+                eventbox.get_window().set_cursor(
+                    Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
     def _on_artwork_box_realize(self, eventbox):
         """
             Change cursor on image
             @param eventbox as Gtk.EventBox
         """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
     def _on_label_button_release(self, eventbox, event):
         """

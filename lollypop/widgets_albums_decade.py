@@ -14,6 +14,7 @@ from gi.repository import Gdk, Gtk, GLib
 
 from gettext import gettext as _
 
+from lollypop.logger import Logger
 from lollypop.define import App, Type, ArtSize
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -159,6 +160,9 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             Change cursor over eventbox
             @param eventbox as Gdk.Eventbox
         """
-        window = eventbox.get_window()
-        if window is not None:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            window = eventbox.get_window()
+            if window is not None:
+                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))

@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk, GLib
 
 from gettext import gettext as _
 
+from lollypop.logger import Logger
 from lollypop.pop_artwork import CoversPopover
 from lollypop.define import App
 
@@ -106,9 +107,12 @@ class OverlayHelper:
             Change cursor over eventbox
             @param eventbox as Gdk.Eventbox
         """
-        window = eventbox.get_window()
-        if window is not None:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            window = eventbox.get_window()
+            if window is not None:
+                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
     def _on_enter_notify_timeout(self):
         """

@@ -12,6 +12,9 @@
 
 from gi.repository import Gtk, Gdk
 
+from gettext import gettext as _
+
+from lollypop.logger import Logger
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.define import App, WindowSize
@@ -113,7 +116,10 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
             Set mouse cursor
             @param eventbox as Gtk.EventBox
         """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
 #######################
 # PRIVATE             #

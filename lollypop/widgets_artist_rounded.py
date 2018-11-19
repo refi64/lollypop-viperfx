@@ -20,6 +20,7 @@ from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 from lollypop.helper_art import ArtHelper, ArtHelperEffect
+from lollypop.logger import Logger
 
 
 class RoundedArtistWidget(RoundedFlowBoxWidget):
@@ -150,9 +151,12 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Change cursor over eventbox
             @param widget as Gtk.Widget
         """
-        window = widget.get_window()
-        if window is not None:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            window = widget.get_window()
+            if window is not None:
+                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
     def __on_artwork_set(self, image, spec):
         """

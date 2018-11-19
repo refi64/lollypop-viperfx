@@ -12,6 +12,9 @@
 
 from gi.repository import Gtk, Gdk, GLib
 
+from gettext import gettext as _
+
+from lollypop.logger import Logger
 from lollypop.controller_information import InformationController
 from lollypop.define import App, Type
 
@@ -110,7 +113,10 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show hand cursor over
         """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        try:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
 #######################
 # PRIVATE             #
