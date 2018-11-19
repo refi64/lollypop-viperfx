@@ -390,7 +390,20 @@ class PlaylistsWidget(Gtk.Grid):
             @param new_track_id as int
             @param down as bool
         """
-        position = self.children.index(row)
+        # Search playlist id
+        playlist_id = None
+        for key in self.__tracks.keys():
+            if row.track in self.__tracks[key]:
+                playlist_id = key
+                break
+        if playlist_id is None:
+            return
+        # Remove new_track_id from playlist if exists
+        for track in self.__tracks[playlist_id]:
+            if track.id == new_track_id:
+                self.__tracks[playlist_id].remove(track)
+                break
+        position = self.__tracks[playlist_id].index(row.track)
         track = Track(new_track_id)
         new_row = PlaylistRow(track)
         new_row.connect("insert-track", self.__on_insert_track)
@@ -410,15 +423,15 @@ class PlaylistsWidget(Gtk.Grid):
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
         new_row.update_number(position + 1)
-        App().playlists.remove_uris(self.__playlist_ids[0], [track.uri])
-        App().playlists.insert_track(self.__playlist_ids[0], track, position)
+        self.__tracks[playlist_id].insert(position, track)
+        App().playlists.insert_track(playlist_id, track, position)
         left_count = len(self.__tracks_widget_left.get_children())
         if position < left_count:
             row.get_parent().insert(new_row, position)
         else:
             row.get_parent().insert(new_row, position - left_count)
-        tracks = App().playlists.get_tracks(self.__playlist_ids[0])
-        App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
+        App().player.populate_playlist_by_tracks(self.tracks,
+                                                 self.__playlist_ids)
         self.__make_homogeneous()
 
     def __on_remove_track(self, row):
@@ -427,8 +440,12 @@ class PlaylistsWidget(Gtk.Grid):
             @param row as PlaylistRow
             @param position as int
         """
-        tracks = App().playlists.get_tracks(self.__playlist_ids[0])
-        App().player.populate_playlist_by_tracks(tracks, self.__playlist_ids)
+        # Remove track
+        for key in self.__tracks.keys():
+            if row.track in self.__tracks[key]:
+                self.__tracks[key].remove(row.track)
+                App().playlists.remove_uri(key, row.track.uri)
+                break
         if row.previous_row is None:
             row.next_row.set_previous_row(None)
         elif row.next_row is None:

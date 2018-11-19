@@ -176,13 +176,15 @@ class Playlists(GObject.GObject):
 
     def insert_track(self, playlist_id, track, position):
         """
-            Insert track at position
+            Insert track at position, will remove track first if exists
             @param playlist_id as int
             @param track as Track
             @param position as int
         """
         SqlCursor.add(self)
         track_ids = self.get_track_ids(playlist_id)
+        if track.id in track_ids:
+            track_ids.remove(track.id)
         track_ids.insert(position, track.id)
         self.clear(playlist_id)
         tracks = [Track(track_id) for track_id in track_ids]
