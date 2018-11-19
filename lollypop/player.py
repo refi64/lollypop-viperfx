@@ -290,8 +290,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         try:
             if App().settings.get_value("save-state"):
-                track_id = load(open(LOLLYPOP_DATA_PATH +
-                                     "/track_id.bin", "rb"))
+                current_track_id = load(open(LOLLYPOP_DATA_PATH +
+                                             "/track_id.bin", "rb"))
                 self.set_queue(load(open(LOLLYPOP_DATA_PATH +
                                          "/queue.bin", "rb")))
                 playlist_ids = load(open(LOLLYPOP_DATA_PATH +
@@ -301,23 +301,15 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 if playlist_ids and playlist_ids[0] == Type.RADIOS:
                     radios = Radios()
                     track = Track()
-                    name = radios.get_name(track_id)
+                    name = radios.get_name(current_track_id)
                     url = radios.get_url(name)
                     track.set_radio(name, url)
                     self.load(track, is_playing)
-                elif App().tracks.get_uri(track_id) != "":
+                elif App().tracks.get_uri(current_track_id) != "":
                     for playlist_id in playlist_ids:
                         track_ids = App().playlists.get_track_ids(
                             playlist_id)
-                        tracks = [Track(track_id)
-                                  for track_id in track_ids]
-                        wanted = None
-                        for track in tracks:
-                            if track.id == track_id:
-                                wanted = track
-                                break
-                        if wanted is not None:
-                            self._load_track(wanted)
+                        tracks = [Track(track_id) for track_id in track_ids]
                         App().player.populate_playlist_by_tracks(tracks,
                                                                  playlist_ids)
                     else:
@@ -328,6 +320,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                                                 LOLLYPOP_DATA_PATH +
                                                 "/Albums.bin",
                                                 "rb"))
+                    # Load track from player albums
+                    current_track = Track(current_track_id)
+                    index = self.album_ids.index(current_track.album.id)
+                    for track in self._albums[index].tracks:
+                        if track.id == current_track_id:
+                            self._load_track(track)
+                            break
                     self.set_next()
                     self.set_prev()
                     if is_playing:
