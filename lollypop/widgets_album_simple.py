@@ -86,7 +86,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self._artwork.connect("notify::surface", self.__on_artwork_set)
         self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self._overlay.add(self._artwork)
-        self._overlay_grid = None
         grid.add(self._overlay)
         grid.add(eventbox)
         self.add(self.__widget)

@@ -110,7 +110,6 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             self._overlay = Gtk.Overlay.new()
             self._overlay.add(eventbox)
             self._overlay.show()
-            self._overlay_grid = None
             self.__coverbox = Gtk.Grid()
             self.__coverbox.set_orientation(Gtk.Orientation.VERTICAL)
             self.__coverbox.show()
