@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.loader import Loader
-from lollypop.define import App
+from lollypop.define import App, Type
 from lollypop.view_playlists import PlaylistsView
 
 
@@ -41,7 +41,7 @@ class PlaylistsPopover(Gtk.Popover):
             Populate view
         """
         def load():
-            return [track.id for track in App().player.get_playlist_tracks()]
+            return {Type.NONE: App().player.get_playlist_tracks()}
         loader = Loader(target=load, view=self._widget)
         loader.start()
 

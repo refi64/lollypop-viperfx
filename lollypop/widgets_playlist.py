@@ -396,13 +396,12 @@ class PlaylistsWidget(Gtk.Grid):
             if row.track in self.__tracks[key]:
                 playlist_id = key
                 break
-        if playlist_id is None:
-            return
-        # Remove new_track_id from playlist if exists
-        for track in self.__tracks[playlist_id]:
-            if track.id == new_track_id:
-                self.__tracks[playlist_id].remove(track)
-                break
+        if playlist_id is not None:
+            # Remove new_track_id from playlist if exists
+            for track in self.__tracks[playlist_id]:
+                if track.id == new_track_id:
+                    self.__tracks[playlist_id].remove(track)
+                    break
         position = self.__tracks[playlist_id].index(row.track)
         track = Track(new_track_id)
         new_row = PlaylistRow(track)
@@ -424,14 +423,16 @@ class PlaylistsWidget(Gtk.Grid):
             row.set_previous_row(new_row)
         new_row.update_number(position + 1)
         self.__tracks[playlist_id].insert(position, track)
-        App().playlists.insert_track(playlist_id, track, position)
+        if playlist_id >= 0:
+            App().playlists.insert_track(playlist_id, track, position)
         left_count = len(self.__tracks_widget_left.get_children())
         if position < left_count:
             row.get_parent().insert(new_row, position)
         else:
             row.get_parent().insert(new_row, position - left_count)
-        App().player.populate_playlist_by_tracks(self.tracks,
-                                                 self.__playlist_ids)
+        if self.__playlist_ids == App().player.get_playlist_ids():
+            App().player.populate_playlist_by_tracks(self.tracks,
+                                                     self.__playlist_ids)
         self.__make_homogeneous()
 
     def __on_remove_track(self, row):
@@ -444,7 +445,8 @@ class PlaylistsWidget(Gtk.Grid):
         for key in self.__tracks.keys():
             if row.track in self.__tracks[key]:
                 self.__tracks[key].remove(row.track)
-                App().playlists.remove_uri(key, row.track.uri)
+                if key >= 0:
+                    App().playlists.remove_uri(key, row.track.uri)
                 break
         if row.previous_row is None:
             row.next_row.set_previous_row(None)

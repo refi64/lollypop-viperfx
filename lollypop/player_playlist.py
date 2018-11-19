@@ -45,6 +45,8 @@ class PlaylistPlayer(BasePlayer):
         self._albums = []
         self._playlist_tracks = tracks
         self._playlist_ids = playlist_ids
+        self.set_next()
+        self.set_prev()
 
     def update_playlist(self, tracks):
         """
