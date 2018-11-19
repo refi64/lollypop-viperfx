@@ -830,16 +830,16 @@ class Container(Gtk.Overlay):
             @return View
         """
         def load():
-            track_ids = []
+            playlists_track_ids = []
             for playlist_id in playlist_ids:
                 if playlist_id == Type.LOVED:
                     track_ids = App().tracks.get_loved_track_ids()
                 else:
                     track_ids = App().playlists.get_track_ids(playlist_id)
                 for track_id in track_ids:
-                    if track_id not in track_ids:
-                        track_ids.append(track_id)
-            return track_ids
+                    if track_id not in playlists_track_ids:
+                        playlists_track_ids.append(track_id)
+            return playlists_track_ids
 
         def load_smart():
             request = App().playlists.get_smart_sql(playlist_ids[0])
