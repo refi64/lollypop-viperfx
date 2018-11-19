@@ -26,6 +26,7 @@ class FlowBoxView(LazyLoadingView):
         """
         LazyLoadingView.__init__(self, True)
         self._widget_class = None
+        self._items = []
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -46,7 +47,8 @@ class FlowBoxView(LazyLoadingView):
             Populate items
             @param items
         """
-        GLib.idle_add(self._add_items, items)
+        self._items = items
+        GLib.idle_add(self._add_items, self._items)
 
 #######################
 # PROTECTED           #

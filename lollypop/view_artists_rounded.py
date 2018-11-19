@@ -95,10 +95,15 @@ class RoundedArtistsView(FlowBoxView):
         """
             Set active ids
         """
-        if self.__lazy_queue_backup is not None:
+        # Restpre lazy loading queue
+        if self.__lazy_queue_backup:
             self._lazy_queue = self.__lazy_queue_backup
             self.__lazy_queue_backup = None
-            GLib.idle_add(self.lazy_loading)
+        else:
+            self._lazy_queue = []
+        # Force reloading remaining items
+        # If empty, it will load lazy loading queue anyway
+        self._add_items(self._items)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.POPULARS]))
         App().settings.set_value("state-two-ids",
