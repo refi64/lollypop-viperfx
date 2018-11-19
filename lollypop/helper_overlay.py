@@ -192,7 +192,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._artwork_button = Gtk.Image.new_from_icon_name(
                 "image-x-generic-symbolic",
                 Gtk.IconSize.INVALID)
-            self._artwork_button.set_opacity(1)
+            self._artwork_button.set_opacity(opacity)
             self._artwork_button.set_pixel_size(self._pixel_size)
             self._artwork_button.show()
             # Action button
