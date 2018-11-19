@@ -114,9 +114,13 @@ class Container(Gtk.Overlay):
             Show/Hide genres
             @param bool
         """
-        self.__list_two.hide()
-        self.update_list_one()
-        self.__list_one.select_ids([Type.POPULARS])
+        def select_list_one(selection_list):
+            self.__list_one.select_first()
+            self.__list_one.disconnect_by_func(select_list_one)
+        if App().settings.get_value("show-sidebar"):
+            self.__list_two.hide()
+            self.update_list_one()
+            self.__list_one.connect("populated", select_list_one)
 
     def reload_view(self):
         """
