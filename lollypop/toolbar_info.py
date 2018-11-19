@@ -93,7 +93,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             Update widgets
             player as Player
         """
-        InformationController.on_current_changed(self, self.art_size, None)
+        if self.get_realized():
+            InformationController.on_current_changed(self, self.art_size, None)
 
     def on_adaptive_changed(self, window, b):
         """
@@ -195,10 +196,9 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         padding = style.get_padding(style.get_state())
         art_size = self.get_allocated_height()\
             - padding.top - padding.bottom
-        # Since GTK 3.20, we can set cover full height
-        if Gtk.get_minor_version() < 20:
-            art_size -= 2
         self.set_art_size(art_size)
+        if App().player.current_track.id is not None:
+            self.on_current_changed(App().player)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

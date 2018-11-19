@@ -92,7 +92,6 @@ class InformationController:
                 App().player.current_track.album_artists[0],
                 width,
                 height)
-
         elif App().player.current_track.id is not None:
             self.__art_helper.set_album_artwork(
                 self._artwork,
