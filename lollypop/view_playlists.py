@@ -18,7 +18,6 @@ from random import shuffle
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
 from lollypop.define import App, Type
-from lollypop.objects import Track
 from lollypop.controller_view import ViewController
 
 
@@ -35,7 +34,6 @@ class PlaylistsView(View, ViewController):
         """
         View.__init__(self, True)
         ViewController.__init__(self)
-        self.__track_ids = []
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect(
                                             "playlist-track-added",
@@ -89,40 +87,10 @@ class PlaylistsView(View, ViewController):
     def populate(self, track_ids):
         """
             Populate view with tracks from playlist
-            @param track_ids as [int]
+            @param track_ids_list as {[int]}
         """
-        # We are looking for middle
-        # Ponderate with this:
-        # Tracks with cover == 2
-        # Tracks without cover == 1
-        prev_album_id = None
-        heights = {}
-        total = 0
-        idx = 0
-        for track_id in track_ids:
-            track = Track(track_id)
-            if track.album_id != prev_album_id:
-                heights[idx] = 2
-                total += 2
-            else:
-                heights[idx] = 1
-                total += 1
-            prev_album_id = track.album_id
-            idx += 1
-        half = int(total / 2 + 0.5)
-        mid_tracks = 1
-        count = 0
-        for height in heights.values():
-            count += height
-            if count >= half:
-                break
-            mid_tracks += 1
-        self.__track_ids = track_ids
+        self.__playlists_widget.populate(track_ids)
         self.__update_jump_button()
-        self.__playlists_widget.populate_list_left(track_ids[:mid_tracks],
-                                                   1)
-        self.__playlists_widget.populate_list_right(track_ids[mid_tracks:],
-                                                    mid_tracks + 1)
 
     def stop(self):
         """
@@ -281,7 +249,7 @@ class PlaylistsView(View, ViewController):
         """
             Update jump button status
         """
-        if App().player.current_track.id in self.__track_ids:
+        if App().player.current_track.id in self.__playlists_widget.track_ids:
             self.__jump_button.set_sensitive(True)
         else:
             self.__jump_button.set_sensitive(False)

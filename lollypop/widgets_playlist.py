@@ -35,6 +35,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__playlist_ids = playlist_ids
+        self.__track_ids = {}
         self.__row_tracks_left = []
         self.__row_tracks_right = []
         self.__width = None
@@ -92,6 +93,41 @@ class PlaylistsWidget(Gtk.Grid):
             if child.track.id == App().player.current_track.id:
                 ordinate = child.translate_coordinates(self.__grid, 0, 0)[1]
         return ordinate
+
+    def populate(self, track_ids):
+        """
+            Populate view with two columns
+            @param track_ids as [[int],[int],...]
+        """
+        self.__track_ids = track_ids
+        # We are looking for middle
+        # Ponderate with this:
+        # Tracks with cover == 2
+        # Tracks without cover == 1
+        prev_album_id = None
+        heights = {}
+        total = 0
+        idx = 0
+        for track_id in self.track_ids:
+            track = Track(track_id)
+            if track.album_id != prev_album_id:
+                heights[idx] = 2
+                total += 2
+            else:
+                heights[idx] = 1
+                total += 1
+            prev_album_id = track.album_id
+            idx += 1
+        half = int(total / 2 + 0.5)
+        mid_tracks = 1
+        count = 0
+        for height in heights.values():
+            count += height
+            if count >= half:
+                break
+            mid_tracks += 1
+        self.populate_list_left(self.track_ids[:mid_tracks], 1)
+        self.populate_list_right(self.track_ids[mid_tracks:], mid_tracks + 1)
 
     def populate_list_left(self, tracks, pos):
         """
@@ -178,6 +214,17 @@ class PlaylistsWidget(Gtk.Grid):
             @return int
         """
         return Type.PLAYLISTS
+
+    @property
+    def track_ids(self):
+        """
+            Get track ids
+            @return [int]
+        """
+        track_ids = []
+        for ids in list(self.__track_ids.values()):
+            track_ids += ids
+        return track_ids
 
     @property
     def children(self):
