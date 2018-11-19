@@ -47,9 +47,11 @@ class PlaylistsView(View, ViewController):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
         self.__header = builder.get_object("header")
+        self.__play_button = builder.get_object("play_button")
+        self.__shuffle_button = builder.get_object("shuffle_button")
         if App().player.is_locked:
-            builder.get_object("play_button").set_sensitive(False)
-            builder.get_object("shuffle_button").set_sensitive(False)
+            self.__play_button.set_sensitive(False)
+            self.__shuffle_button.set_sensitive(False)
         self.__duration_label = builder.get_object("duration")
         builder.get_object("title").set_label(
             ", ".join(App().playlists.get_names(playlist_ids)))
@@ -62,7 +64,8 @@ class PlaylistsView(View, ViewController):
             split_button.set_active(not App().settings.get_value("split-view"))
         else:
             split_button.hide()
-
+            self.__play_button.hide()
+            self.__shuffle_button.hide()
         if not editable or len(playlist_ids) > 1 or playlist_ids[0] < 0:
             smart_button.hide()
 
