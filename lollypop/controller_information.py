@@ -43,7 +43,6 @@ class InformationController:
         if App().player.current_track.id is None:
             if self._infobox is not None:
                 self._infobox.hide()
-            self._artwork.hide()
             return
         elif self._infobox is not None:
             self._infobox.show()
