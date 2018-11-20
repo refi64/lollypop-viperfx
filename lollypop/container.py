@@ -848,12 +848,15 @@ class Container(Gtk.Overlay):
         """
         def load():
             tracks = {}
+            all_ids = []
             for playlist_id in playlist_ids:
                 if playlist_id == Type.LOVED:
                     ids = App().tracks.get_loved_track_ids()
                 else:
                     ids = App().playlists.get_track_ids(playlist_id)
-                tracks[playlist_id] = [Track(id) for id in ids]
+                tracks[playlist_id] = [Track(id)
+                                       for id in ids if id not in all_ids]
+                all_ids += ids
             return tracks
 
         def load_smart():
