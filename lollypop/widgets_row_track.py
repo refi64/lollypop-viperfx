@@ -55,7 +55,7 @@ class TrackRow(Row, DNDRow):
             @param track as Track
             @param responsive_type as ResponsiveType
         """
-        Row.__init__(self, track, responsive_type)
+        Row.__init__(self, track)
         self.__filtered = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)

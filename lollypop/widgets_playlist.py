@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, GObject
 
-from lollypop.define import App, Type, WindowSize, Loading, ResponsiveType
+from lollypop.define import App, Type, WindowSize, Loading
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
@@ -56,10 +56,6 @@ class PlaylistsWidget(Gtk.Grid):
 
         self.connect("size-allocate", self.__on_size_allocate)
 
-        if len(self.__playlist_ids) == 1:
-            self.__responsive_type = ResponsiveType.DND
-        else:
-            self.__responsive_type = ResponsiveType.FIXED
         self.__tracks_widget_left = TracksWidget()
         self.__tracks_widget_left.set_vexpand("True")
         self.__tracks_widget_right = TracksWidget()
@@ -294,7 +290,7 @@ class PlaylistsWidget(Gtk.Grid):
 
         track = tracks.pop(0)
         track.set_number(pos)
-        row = PlaylistRow(track, self.__responsive_type)
+        row = PlaylistRow(track, self.__playlist_ids)
         row.set_previous_row(previous_row)
         if previous_row is not None:
             previous_row.set_next_row(row)
@@ -381,7 +377,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.__last_drag_id = new_track_id
         position = self.children.index(row)
         track = Track(new_track_id)
-        new_row = PlaylistRow(track, self.__responsive_type)
+        new_row = PlaylistRow(track, self.__playlist_ids)
         new_row.connect("insert-track", self.__on_insert_track)
         new_row.connect("remove-track", self.__on_remove_track)
         new_row.show()

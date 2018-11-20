@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ResponsiveType
+from lollypop.define import App
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -24,15 +24,14 @@ class IndicatorWidget(Gtk.EventBox):
         playlists
     """
 
-    def __init__(self, track, responsive_type):
+    def __init__(self, track):
         """
             Init indicator widget, ui will be set when needed
             @param track as Track
-            @param responsive_type as ResponsiveType
         """
         Gtk.EventBox.__init__(self)
         self.__track = track
-        self.__responsive_type = responsive_type
+        self.__playlist_ids = []
         self.__pass = 1
         self.__timeout_id = None
         self.__button = None
@@ -40,6 +39,13 @@ class IndicatorWidget(Gtk.EventBox):
         self.connect("destroy", self.__on_destroy)
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
+
+    def set_playlist_ids(self, playlist_ids):
+        """
+            Set playlist ids
+            @param playlist_ids as [int]
+        """
+        self.__playlist_ids = playlist_ids
 
     def empty(self):
         """
@@ -92,7 +98,7 @@ class IndicatorWidget(Gtk.EventBox):
             Update button based on queue status
         """
         self.__init()
-        if self.__track.playlist_id is not None:
+        if len(self.__playlist_ids) < 2:
             self.__button.set_tooltip_text(_("Remove from playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
@@ -149,7 +155,8 @@ class IndicatorWidget(Gtk.EventBox):
             Remove track from player playlists
         """
         App().player.remove_track(self.__track.id)
-        App().playlists.remove_uri(self.__track.playlist_id, self.__track.uri)
+        App().playlists.remove_uri(self.__playlist_ids[0],
+                                   self.__track.uri)
 
     def __init(self):
         """
@@ -166,7 +173,8 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
         self.__button.get_style_context().add_class("menu-button")
         self.__button.get_style_context().add_class("track-menu-button")
-        self.__button.show()
+        if len(self.__playlist_ids) < 2:
+            self.__button.show()
         self.__button.connect("button-release-event",
                               self.__on_button_release_event)
         play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
@@ -206,13 +214,12 @@ class IndicatorWidget(Gtk.EventBox):
             @param event as Gdk.EventButton
         """
         if self.__image.get_icon_name()[0] == "list-remove-symbolic":
-            if self.__track.playlist_id is not None:
+            if len(self.__playlist_ids) == 1:
                 self.__remove_from_player_playlists()
             else:
                 self.__remove_from_player_albums()
-
             # Destroy parent Gtk.ListBoxRow
-            if not self.__responsive_type == ResponsiveType.FIXED:
+            if len(self.__playlist_ids) == 1:
                 ancestor = self.get_ancestor(Gtk.ListBoxRow)
                 if ancestor is not None:
                     ancestor.destroy()

@@ -24,11 +24,10 @@ class Row(Gtk.ListBoxRow):
         A row
     """
 
-    def __init__(self, track, responsive_type):
+    def __init__(self, track):
         """
             Init row widgets
             @param track as Track
-            @param responsive_type as ResponsiveType
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
@@ -37,7 +36,9 @@ class Row(Gtk.ListBoxRow):
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
-        self._indicator = IndicatorWidget(self._track, responsive_type)
+        self._indicator = None
+        if self._indicator is None:
+            self._indicator = IndicatorWidget(self._track)
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
         self._row_widget = Gtk.EventBox()
