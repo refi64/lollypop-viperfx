@@ -403,6 +403,7 @@ class PlaylistsWidget(Gtk.Grid):
                     self.__tracks[playlist_id].remove(track)
                     break
         position = self.__tracks[playlist_id].index(row.track)
+        global_position = self.children.index(row)
         track = Track(new_track_id)
         new_row = PlaylistRow(track)
         new_row.connect("insert-track", self.__on_insert_track)
@@ -410,6 +411,7 @@ class PlaylistsWidget(Gtk.Grid):
         new_row.show()
         if down:
             position += 1
+            global_position += 1
             new_row.set_previous_row(row)
             new_row.set_next_row(row.next_row)
             if row.next_row is not None:
@@ -421,15 +423,15 @@ class PlaylistsWidget(Gtk.Grid):
             if row.previous_row is not None:
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
-        new_row.update_number(position + 1)
+        new_row.update_number(global_position + 1)
         self.__tracks[playlist_id].insert(position, track)
         if playlist_id >= 0:
             App().playlists.insert_track(playlist_id, track, position)
         left_count = len(self.__tracks_widget_left.get_children())
-        if position < left_count:
-            row.get_parent().insert(new_row, position)
+        if global_position < left_count:
+            row.get_parent().insert(new_row, global_position)
         else:
-            row.get_parent().insert(new_row, position - left_count)
+            row.get_parent().insert(new_row, global_position - left_count)
         if self.__playlist_ids == App().player.get_playlist_ids():
             App().player.populate_playlist_by_tracks(self.tracks,
                                                      self.__playlist_ids)
