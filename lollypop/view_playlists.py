@@ -61,6 +61,7 @@ class PlaylistsView(View, ViewController):
         if editable:
             split_button.set_active(not App().settings.get_value("split-view"))
         else:
+            self.__jump_button.set_hexpand(True)
             split_button.hide()
             self.__play_button.hide()
             self.__shuffle_button.hide()
