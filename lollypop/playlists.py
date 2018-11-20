@@ -39,9 +39,9 @@ class Playlists(GObject.GObject):
         "playlists-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         # Objects added/removed to/from playlist
         "playlist-track-added": (
-            GObject.SignalFlags.RUN_FIRST, None, (int, str)),
+            GObject.SignalFlags.RUN_FIRST, None, (int, str, int)),
         "playlist-track-removed": (
-            GObject.SignalFlags.RUN_FIRST, None, (int, str))
+            GObject.SignalFlags.RUN_FIRST, None, (int, str, int))
     }
     __create_playlists = """CREATE TABLE playlists (
                             id INTEGER PRIMARY KEY,
@@ -184,7 +184,10 @@ class Playlists(GObject.GObject):
         SqlCursor.add(self)
         track_ids = self.get_track_ids(playlist_id)
         if track.id in track_ids:
+            index = track_ids.index(track.id)
             track_ids.remove(track.id)
+            if index < position:
+                position -= 1
         track_ids.insert(position, track.id)
         self.clear(playlist_id)
         tracks = [Track(track_id) for track_id in track_ids]
@@ -199,7 +202,9 @@ class Playlists(GObject.GObject):
         """
         if not self.exists_track(playlist_id, uri):
             return
-        self.emit("playlist-track-removed", playlist_id, uri)
+        uris = self.get_track_uris(playlist_id)
+        position = uris.index(uri)
+        self.emit("playlist-track-removed", playlist_id, uri, position)
         self.__remove_uri(playlist_id, uri)
 
     def remove_uris(self, playlist_id, uris):
@@ -583,11 +588,11 @@ class Playlists(GObject.GObject):
                         GLib.idle_add(self.emit, "playlist-add",
                                       playlist_id, track_id, start_idx)
                         start_idx += 1
-                    self.clear(playlist_id, False)
+                    self.clear(playlist_id)
                     tracks = []
                     for track_id in playlist_track_ids:
                         tracks.append(Track(track_id))
-                    self.add_tracks(playlist_id, tracks, False)
+                    self.add_tracks(playlist_id, tracks)
         except:
             pass
 

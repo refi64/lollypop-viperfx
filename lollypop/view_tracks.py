@@ -429,10 +429,8 @@ class TracksView:
             Add disc container to box
             @param disc_number as int
         """
-        self._tracks_widget_left[disc_number] = TracksWidget(
-            self._responsive_type)
-        self._tracks_widget_right[disc_number] = TracksWidget(
-            self._responsive_type)
+        self._tracks_widget_left[disc_number] = TracksWidget()
+        self._tracks_widget_right[disc_number] = TracksWidget()
         self._tracks_widget_left[disc_number].connect("activated",
                                                       self.__on_activated)
         self._tracks_widget_right[disc_number].connect("activated",

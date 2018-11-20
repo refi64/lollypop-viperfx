@@ -39,6 +39,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.__row_tracks_left = []
         self.__row_tracks_right = []
         self.__width = None
+        self.__last_drag_id = None
         self.__orientation = None
         self.__loading = Loading.NONE
         # Used to block widget2 populate while showing one column
@@ -55,9 +56,13 @@ class PlaylistsWidget(Gtk.Grid):
 
         self.connect("size-allocate", self.__on_size_allocate)
 
-        self.__tracks_widget_left = TracksWidget(ResponsiveType.DND)
+        if len(self.__playlist_ids) == 1:
+            self.__responsive_type = ResponsiveType.DND
+        else:
+            self.__responsive_type = ResponsiveType.FIXED
+        self.__tracks_widget_left = TracksWidget()
         self.__tracks_widget_left.set_vexpand("True")
-        self.__tracks_widget_right = TracksWidget(ResponsiveType.DND)
+        self.__tracks_widget_right = TracksWidget()
         self.__tracks_widget_right.set_vexpand("True")
         self.__tracks_widget_left.connect("activated",
                                           self.__on_activated)
@@ -97,9 +102,8 @@ class PlaylistsWidget(Gtk.Grid):
     def populate(self, tracks):
         """
             Populate view with two columns
-            @param tracks as [[int],[int],...]
+            @param tracks as [Track]
         """
-        self.__tracks = tracks
         # We are looking for middle
         # Ponderate with this:
         # Tracks with cover == 2
@@ -108,7 +112,7 @@ class PlaylistsWidget(Gtk.Grid):
         heights = {}
         total = 0
         idx = 0
-        for track in self.tracks:
+        for track in tracks:
             if track.album_id != prev_album_id:
                 heights[idx] = 2
                 total += 2
@@ -125,8 +129,8 @@ class PlaylistsWidget(Gtk.Grid):
             if count >= half:
                 break
             mid_tracks += 1
-        self.populate_list_left(self.tracks[:mid_tracks], 1)
-        self.populate_list_right(self.tracks[mid_tracks:], mid_tracks + 1)
+        self.populate_list_left(tracks[:mid_tracks], 1)
+        self.populate_list_right(tracks[mid_tracks:], mid_tracks + 1)
 
     def populate_list_left(self, tracks, pos):
         """
@@ -189,22 +193,17 @@ class PlaylistsWidget(Gtk.Grid):
         self.__add_tracks([track_id], widget, pos)
         self.__make_homogeneous()
 
-    def remove(self, track_id):
+    def remove(self, track_id, position):
         """
             Remove track from widget
             @param track_id as int
+            @param position as int
         """
-        children = self.__tracks_widget_left.get_children() + \
-            self.__tracks_widget_right.get_children()
-        # Clear the widget
-        if track_id is None:
-            for child in children:
-                child.destroy()
-        else:
-            for child in children:
-                if child.track.id == track_id:
-                    child.destroy()
-                    break
+        index = 0
+        for row in self.children:
+            if row.track.id == track_id and index == position:
+                row.destroy()
+                break
 
     @property
     def id(self):
@@ -213,17 +212,6 @@ class PlaylistsWidget(Gtk.Grid):
             @return int
         """
         return Type.PLAYLISTS
-
-    @property
-    def tracks(self):
-        """
-            Get tracks
-            @return [Track]
-        """
-        tracks = []
-        for _tracks in list(self.__tracks.values()):
-            tracks += _tracks
-        return tracks
 
     @property
     def children(self):
@@ -306,7 +294,7 @@ class PlaylistsWidget(Gtk.Grid):
 
         track = tracks.pop(0)
         track.set_number(pos)
-        row = PlaylistRow(track)
+        row = PlaylistRow(track, self.__responsive_type)
         row.set_previous_row(previous_row)
         if previous_row is not None:
             previous_row.set_next_row(row)
@@ -390,28 +378,15 @@ class PlaylistsWidget(Gtk.Grid):
             @param new_track_id as int
             @param down as bool
         """
-        # Search playlist id
-        playlist_id = None
-        for key in self.__tracks.keys():
-            if row.track in self.__tracks[key]:
-                playlist_id = key
-                break
-        if playlist_id is not None:
-            # Remove new_track_id from playlist if exists
-            for track in self.__tracks[playlist_id]:
-                if track.id == new_track_id:
-                    self.__tracks[playlist_id].remove(track)
-                    break
-        position = self.__tracks[playlist_id].index(row.track)
-        global_position = self.children.index(row)
+        self.__last_drag_id = new_track_id
+        position = self.children.index(row)
         track = Track(new_track_id)
-        new_row = PlaylistRow(track)
+        new_row = PlaylistRow(track, self.__responsive_type)
         new_row.connect("insert-track", self.__on_insert_track)
         new_row.connect("remove-track", self.__on_remove_track)
         new_row.show()
         if down:
             position += 1
-            global_position += 1
             new_row.set_previous_row(row)
             new_row.set_next_row(row.next_row)
             if row.next_row is not None:
@@ -423,33 +398,28 @@ class PlaylistsWidget(Gtk.Grid):
             if row.previous_row is not None:
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
-        new_row.update_number(global_position + 1)
-        self.__tracks[playlist_id].insert(position, track)
-        if playlist_id >= 0:
-            App().playlists.insert_track(playlist_id, track, position)
+        new_row.update_number(position + 1)
         left_count = len(self.__tracks_widget_left.get_children())
-        if global_position < left_count:
-            row.get_parent().insert(new_row, global_position)
+        if position < left_count:
+            row.get_parent().insert(new_row, position)
         else:
-            row.get_parent().insert(new_row, global_position - left_count)
-        if self.__playlist_ids == App().player.get_playlist_ids():
-            App().player.populate_playlist_by_tracks(self.tracks,
-                                                     self.__playlist_ids)
+            row.get_parent().insert(new_row, position - left_count)
+        App().player.insert_track(track, position)
+        if len(self.__playlist_ids) == 1 and self.__playlist_ids[0] >= 0:
+            App().playlists.insert_track(self.__playlist_ids[0],
+                                         track, position)
         self.__make_homogeneous()
 
     def __on_remove_track(self, row):
         """
-            Remove row's track at position
+            Remove row's track
             @param row as PlaylistRow
-            @param position as int
         """
-        # Remove track
-        for key in self.__tracks.keys():
-            if row.track in self.__tracks[key]:
-                self.__tracks[key].remove(row.track)
-                if key >= 0:
-                    App().playlists.remove_uri(key, row.track.uri)
-                break
+        App().player.remove_track(row.track.id)
+        if row.track.id != self.__last_drag_id and (
+                len(self.__playlist_ids) == 1 or self.__playlist_ids[0] > 0):
+            App().playlists.remove_uri(self.__playlist_ids[0], row.track.uri)
+        self.__last_drag_id = None
         if row.previous_row is None:
             row.next_row.set_previous_row(None)
         elif row.next_row is None:

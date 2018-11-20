@@ -88,7 +88,7 @@ class PlaylistsView(View, ViewController):
     def populate(self, tracks):
         """
             Populate view with tracks from playlist
-            @param tracks as {[Track]}
+            @param tracks as [track]
         """
         self.__playlists_widget.populate(tracks)
         self.__update_jump_button()
@@ -250,8 +250,7 @@ class PlaylistsView(View, ViewController):
         """
             Update jump button status
         """
-        ids = [track.id for track in self.__playlists_widget.tracks]
-        if App().player.current_track.id in ids:
+        if App().player.current_track.playlist_id in self.__playlist_ids:
             self.__jump_button.set_sensitive(True)
         else:
             self.__jump_button.set_sensitive(False)
@@ -293,14 +292,15 @@ class PlaylistsView(View, ViewController):
             track_id = App().tracks.get_id_by_uri(uri)
             self.__playlists_widget.insert(track_id)
 
-    def __on_playlist_track_removed(self, playlists, playlist_id, uri):
+    def __on_playlist_track_removed(self, playlists, playlist_id, uri, pos):
         """
             Update tracks widgets
             @param playlists as Playlists
             @param playlist id as int
             @param uri as str
+            @param pos as int
         """
         if len(self.__playlist_ids) == 1 and\
                 playlist_id in self.__playlist_ids:
             track_id = App().tracks.get_id_by_uri(uri)
-            self.__playlists_widget.remove(track_id)
+            self.__playlists_widget.remove(track_id, pos)

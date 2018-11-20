@@ -27,12 +27,23 @@ class PlaylistPlayer(BasePlayer):
         """
         BasePlayer.__init__(self)
 
-    def get_playlist_ids(self):
+    def insert_track(self, track, position):
         """
-            Get playlist id
-            @return id as int
+            Insert track as position
+            @param track as Track
+            @param position as int
         """
-        return self._playlist_ids
+        self._playlist_tracks.insert(position, track)
+
+    def remove_track(self, track_id):
+        """
+            Remove track from player
+            @param track_id as int
+        """
+        for track in self._playlist_tracks:
+            if track.id == track_id:
+                self._playlist_tracks.remove(track)
+                break
 
     def populate_playlist_by_tracks(self, tracks, playlist_ids):
         """
@@ -56,13 +67,6 @@ class PlaylistPlayer(BasePlayer):
         if self._albums:
             return
         self._playlist_tracks = tracks
-
-    def get_playlist_tracks(self):
-        """
-            Get user playlist tracks
-            @return [Track]
-        """
-        return self._playlist_tracks
 
     def next(self, force):
         """
@@ -101,6 +105,30 @@ class PlaylistPlayer(BasePlayer):
                 idx -= 1
             track = self._playlist_tracks[idx]
         return track
+
+    @property
+    def playlist_tracks(self):
+        """
+            Get playlist tracks
+            @return Track
+        """
+        return self._playlist_tracks
+
+    @property
+    def playlist_track_ids(self):
+        """
+            Get playlist track ids
+            @return [int]
+        """
+        return [track.id for track in self._playlist_tracks]
+
+    @property
+    def playlist_ids(self):
+        """
+            Get playlist id
+            @return id as int
+        """
+        return self._playlist_ids
 
 #######################
 # PROTECTED           #

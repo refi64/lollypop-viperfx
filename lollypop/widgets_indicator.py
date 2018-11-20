@@ -20,6 +20,8 @@ from lollypop.define import App, ResponsiveType
 class IndicatorWidget(Gtk.EventBox):
     """
         Show play/loved indicator
+        If embedded in a Popover, will not affect playlists but only player
+        playlists
     """
 
     def __init__(self, track, responsive_type):
@@ -90,7 +92,11 @@ class IndicatorWidget(Gtk.EventBox):
             Update button based on queue status
         """
         self.__init()
-        if self.__is_in_current_playlist():
+        if self.__track.playlist_id is not None:
+            self.__button.set_tooltip_text(_("Remove from playlist"))
+            self.__image.set_from_icon_name("list-remove-symbolic",
+                                            Gtk.IconSize.MENU)
+        elif self.__is_in_current_playlist():
             self.__button.set_tooltip_text(
                 _("Remove from current playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
@@ -105,14 +111,45 @@ class IndicatorWidget(Gtk.EventBox):
 #######################
     def __is_in_current_playlist(self):
         """
-            Check if track_id in Player current playlist
+            Check if track in Player current playlist
             @return bool
         """
-        for album in App().player.albums:
-            if self.__track.album.id == album.id:
-                if self.__track.id in album.track_ids:
-                    return True
+        if App().player.albums:
+            for album in App().player.albums:
+                if self.__track.album.id == album.id:
+                    if self.__track.id in album.track_ids:
+                        return True
+        elif App().player.playlist_ids:
+            if self.__track.id in App().player.playlist_track_ids:
+                return True
         return False
+
+    def __remove_from_player_albums(self):
+        """
+            Remove track from player albums
+        """
+        albums = [album
+                  for album in App().player.albums
+                  if album.id == self.__track.album.id]
+        for album in albums:
+            for track in album.tracks:
+                if track.id == self.__track.id:
+                    count = len(album.tracks)
+                    album.remove_track(track)
+                    # Album is now empty
+                    if count == 1:
+                        App().player.remove_album(album)
+                        App().player.stop()
+                    elif App().player.next_track.id == track.id:
+                        App().player.set_next()
+                    break
+
+    def __remove_from_player_playlists(self):
+        """
+            Remove track from player playlists
+        """
+        App().player.remove_track(self.__track.id)
+        App().playlists.remove_uri(self.__track.playlist_id, self.__track.uri)
 
     def __init(self):
         """
@@ -169,24 +206,13 @@ class IndicatorWidget(Gtk.EventBox):
             @param event as Gdk.EventButton
         """
         if self.__image.get_icon_name()[0] == "list-remove-symbolic":
-            # We want track from player, not from current widget
-            albums = App().player.albums
-            for album in albums:
-                if album.id == self.__track.album.id:
-                    for track in album.tracks:
-                        if track.id == self.__track.id:
-                            count = len(album.tracks)
-                            album.remove_track(track)
-                            # Album is now empty
-                            if count == 1:
-                                App().player.remove_album(album)
-                                App().player.stop()
-                            elif App().player.next_track.id == track.id:
-                                App().player.set_next()
-                            break
-                    break
+            if self.__track.playlist_id is not None:
+                self.__remove_from_player_playlists()
+            else:
+                self.__remove_from_player_albums()
+
             # Destroy parent Gtk.ListBoxRow
-            if self.__responsive_type != ResponsiveType.FIXED:
+            if not self.__responsive_type == ResponsiveType.FIXED:
                 ancestor = self.get_ancestor(Gtk.ListBoxRow)
                 if ancestor is not None:
                     ancestor.destroy()

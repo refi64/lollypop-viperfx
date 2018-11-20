@@ -30,13 +30,15 @@ class PlaylistRow(Row, DNDRow):
             GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, track):
+    def __init__(self, track, responsive_type):
         """
             Init row widget
             @param track as Track
+            @param responsive_type as ResponsiveType
         """
-        Row.__init__(self, track, ResponsiveType.DND)
-        DNDRow.__init__(self)
+        Row.__init__(self, track, responsive_type)
+        if responsive_type == ResponsiveType.DND:
+            DNDRow.__init__(self)
         self.__filtered = False
         self.__art_helper = ArtHelper()
         self._grid.insert_row(0)

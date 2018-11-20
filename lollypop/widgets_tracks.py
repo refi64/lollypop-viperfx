@@ -25,10 +25,9 @@ class TracksWidget(Gtk.ListBox):
                       None, (GObject.TYPE_PYOBJECT,))
     }
 
-    def __init__(self, responsive_type):
+    def __init__(self):
         """
             Init track widget
-            @param responsive_type as ResponsiveType
         """
         Gtk.ListBox.__init__(self)
         self.connect("destroy", self.__on_destroy)
@@ -64,7 +63,7 @@ class TracksWidget(Gtk.ListBox):
         for row in self.get_children():
             row.update_number_label()
 
-    def __on_loved_playlist_changed(self, widget, playlist_id, uri):
+    def __on_loved_playlist_changed(self, widget, playlist_id, uri, *ignore):
         """
             Updates the loved icon
             @param playlist as Playlist
