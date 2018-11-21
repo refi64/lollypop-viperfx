@@ -203,7 +203,7 @@ class ArtHelper(GObject.Object):
                                                     height,
                                                     width * 3)
         except Exception as e:
-            Logger.error("ArtHelper::__get_blur():", e)
+            Logger.error("ArtHelper::__get_blur(): %s", e)
             return None
         return pixbuf
 

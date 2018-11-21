@@ -387,7 +387,13 @@ class TagReader(Discoverer):
                     else:
                         return None
                 elif bytes[0:4] == b"USLT":
+                    # This code sucks, if someone know how to handle this
+                    # UTF8
                     lyrics = bytes.split(b"\x00")[-1]
+                    # UTF-16
+                    if not lyrics:
+                        lyrics = bytes.split(
+                            b"\xff\xfe")[2].replace(b"\x00", b"")
                 else:
                     return None
                 for encoding in ENCODING:
