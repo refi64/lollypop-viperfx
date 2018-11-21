@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Pango
 
-from lollypop.define import ResponsiveType
+from lollypop.define import RowListType
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -49,18 +49,18 @@ class TrackRow(Row, DNDRow):
             height = menu_height
         return height
 
-    def __init__(self, track, responsive_type):
+    def __init__(self, track, list_type):
         """
             Init row widget and show it
             @param track as Track
-            @param responsive_type as ResponsiveType
+            @param list_type as RowListType
         """
         Row.__init__(self, track)
         self.__filtered = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
-        if responsive_type == ResponsiveType.DND:
+        if list_type & RowListType.DND:
             DNDRow.__init__(self)
 
     @property

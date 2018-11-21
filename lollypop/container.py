@@ -17,7 +17,7 @@ from gettext import gettext as _
 from urllib.parse import urlparse
 from random import randint
 
-from lollypop.define import App, Type, ResponsiveType, SelectionListMask
+from lollypop.define import App, Type, RowListType, SelectionListMask
 from lollypop.objects import Album, Track
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
@@ -724,7 +724,7 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.LIST, artist_ids, genre_ids)
+            view = AlbumsListView(RowListType.DEFAULT, artist_ids, genre_ids)
         else:
             from lollypop.view_artist import ArtistView
             view = ArtistView(artist_ids, genre_ids)
@@ -779,7 +779,7 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.LIST, [Type.YEARS], years)
+            view = AlbumsListView(RowListType.DEFAULT, [Type.YEARS], years)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView([Type.YEARS], years)
@@ -831,7 +831,7 @@ class Container(Gtk.Overlay):
         self.__stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ResponsiveType.LIST, genre_ids, artist_ids)
+            view = AlbumsListView(RowListType.DEFAULT, genre_ids, artist_ids)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView(genre_ids, artist_ids)

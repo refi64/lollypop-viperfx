@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
-from lollypop.define import App, ResponsiveType
+from lollypop.define import App, RowListType
 from lollypop.widgets_utils import Popover
 
 
@@ -57,7 +57,7 @@ class AlbumsPopover(Popover):
         label.set_margin_start(2)
         label.get_style_context().add_class("dim-label")
         label.set_property("halign", Gtk.Align.START)
-        self.__view = AlbumsListView(ResponsiveType.DND)
+        self.__view = AlbumsListView(RowListType.DND)
         self.__view.populate(App().player.albums)
         self.__view.show()
         grid = Gtk.Grid()

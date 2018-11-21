@@ -46,11 +46,11 @@ class Loading:
     STOP = 4
 
 
-class ResponsiveType:
-    FIXED = 0
-    DND = 1
-    SEARCH = 2
-    LIST = 3
+class RowListType:
+    DEFAULT = 1 << 0
+    TWO_COLUMNS = 1 << 1
+    DND = 1 << 2
+    SEARCH = 1 << 3
 
 
 class ArtSize:

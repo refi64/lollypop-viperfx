@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio, Gdk
 from gettext import gettext as _
 
 from lollypop.helper_task import TaskHelper
-from lollypop.define import App, ArtSize, ResponsiveType
+from lollypop.define import App, ArtSize, RowListType
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
@@ -147,7 +147,7 @@ class InformationPopover(Popover):
                                                  ArtSize.ARTIST_SMALL * 3,
                                                  ArtSize.ARTIST_SMALL * 3,
                                                  ArtHelperEffect.ROUNDED)
-            albums_view = AlbumsListView(ResponsiveType.LIST)
+            albums_view = AlbumsListView(RowListType.DEFAULT)
             albums_view.set_size_request(300, -1)
             albums_view.show()
             widget.insert_column(2)

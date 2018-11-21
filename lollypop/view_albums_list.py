@@ -18,7 +18,7 @@ from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.helper_art import ArtHelper
 from lollypop.objects import Album, Track
-from lollypop.define import ArtSize, App, ResponsiveType
+from lollypop.define import ArtSize, App, RowListType
 from lollypop.controller_view import ViewController
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -58,17 +58,17 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         else:
             return cover_height + 2
 
-    def __init__(self, album, height, responsive_type, reveal, parent):
+    def __init__(self, album, height, list_type, reveal, parent):
         """
             Init row widgets
             @param album as Album
             @param height as int
-            @param responsive_type as ResponsiveType
+            @param list_type as RowListType
             @param reveal as bool
             @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
-        if responsive_type == ResponsiveType.DND:
+        if list_type == RowListType.DND:
             DNDRow.__init__(self)
         # Delayed => TracksView.__init__(self)
         self.__revealer = None
@@ -76,7 +76,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__reveal = reveal
         self._responsive_widget = None
         self._album = album
-        self.__responsive_type = responsive_type
+        self.__list_type = list_type
         self.__play_indicator = None
         self.set_sensitive(False)
         self.get_style_context().add_class("loading")
@@ -120,14 +120,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.get_style_context().add_class("dim-label")
         self.set_artwork()
         self.__action_button = None
-        if self.__responsive_type == ResponsiveType.SEARCH:
+        if self.__list_type & RowListType.SEARCH:
             action_icon = "media-playback-start-symbolic"
             action_tooltip_text = _("Play")
-        elif self.__responsive_type == ResponsiveType.DND:
+        elif self.__list_type & RowListType.DND:
             action_icon = "user-trash-symbolic"
             action_tooltip_text = _("Remove from current playlist")
-        if self.__responsive_type in [ResponsiveType.SEARCH,
-                                      ResponsiveType.DND]:
+        if self.__list_type & (RowListType.SEARCH | RowListType.DND):
             self.__action_button = Gtk.Button.new_from_icon_name(
                 action_icon,
                 Gtk.IconSize.MENU)
@@ -141,7 +140,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.__action_button.connect("button-release-event",
                                          self.__on_action_button_release_event)
         self.__artists_button = None
-        if self.__responsive_type == ResponsiveType.SEARCH:
+        if self.__list_type & RowListType.SEARCH:
             self.__artists_button = Gtk.Button.new_from_icon_name(
                     'avatar-default-symbolic',
                     Gtk.IconSize.MENU)
@@ -187,19 +186,19 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
             self.set_selection()
-            if self.__responsive_type != ResponsiveType.SEARCH and\
+            if not self.__list_type & RowListType.SEARCH and\
                     self.__action_button is not None:
                 self.__action_button.set_opacity(1)
                 self.__action_button.set_sensitive(True)
         else:
             if self._responsive_widget is None:
-                TracksView.__init__(self, self.__responsive_type)
+                TracksView.__init__(self, self.__list_type)
                 self.__revealer.add(self._responsive_widget)
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
             self.__revealer.set_reveal_child(True)
             self.set_selection()
-            if self.__responsive_type != ResponsiveType.SEARCH and\
+            if not self.__list_type != RowListType.SEARCH and\
                     self.__action_button is not None:
                 self.__action_button.set_opacity(0)
                 self.__action_button.set_sensitive(False)
@@ -292,12 +291,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
 
     def __on_action_button_release_event(self, button, event):
         """
-            ResponsiveType.SEARCH: Play album
+            RowListType.SEARCH: Play album
             Else: Delete album
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        if self.__responsive_type == ResponsiveType.SEARCH:
+        if self.__list_type & RowListType.SEARCH:
             App().player.play_album(Album(self._album.id))
             if App().player.is_party:
                 App().lookup_action("party").change_state(
@@ -364,16 +363,16 @@ class AlbumsListView(LazyLoadingView, ViewController):
         View showing albums
     """
 
-    def __init__(self, responsive_type, artist_ids=[], genre_ids=[]):
+    def __init__(self, list_type, artist_ids=[], genre_ids=[]):
         """
             Init widget
-            @param responsive_type as ResponsiveType
+            @param list_type as RowListType
             @param artist_ids as int
             @param genre_ids as int
         """
         LazyLoadingView.__init__(self)
         ViewController.__init__(self)
-        self.__responsive_type = responsive_type
+        self.__list_type = list_type
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
         self.__autoscroll_timeout_id = None
@@ -567,8 +566,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album as Album
             @param reveal as bool
         """
-        row = AlbumRow(album, self.__height, self.__responsive_type,
-                       reveal, self)
+        row = AlbumRow(album, self.__height, self.__list_type, reveal, self)
         row.connect("insert-track", self.__on_insert_track)
         row.connect("insert-album", self.__on_insert_album)
         row.connect("insert-album-after", self.__on_insert_album_after)

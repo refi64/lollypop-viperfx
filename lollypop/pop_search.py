@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 
-from lollypop.define import App, ResponsiveType, Type
+from lollypop.define import App, RowListType, Type
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
@@ -54,7 +54,7 @@ class SearchPopover(Gtk.Popover):
         # to emit a signal on init
         builder.connect_signals(self)
 
-        self.__view = AlbumsListView(ResponsiveType.SEARCH)
+        self.__view = AlbumsListView(RowListType.SEARCH)
         self.__view.show()
         self.__stack.add_named(self.__view, "view")
 

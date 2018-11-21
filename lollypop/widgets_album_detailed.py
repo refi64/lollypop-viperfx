@@ -24,7 +24,7 @@ from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, ArtSize, ResponsiveType
+from lollypop.define import App, ArtSize, RowListType
 
 
 class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
@@ -49,7 +49,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
         Gtk.EventBox.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
-        TracksView.__init__(self, ResponsiveType.FIXED)
+        TracksView.__init__(self, RowListType.TWO_COLUMNS)
         OverlayAlbumHelper.__init__(self)
         self.__art_helper = ArtHelper()
         self.__context = None

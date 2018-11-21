@@ -19,7 +19,7 @@ from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_track import TrackRow
 from lollypop.objects import Album, Track
 from lollypop.logger import Logger
-from lollypop.define import App, Type, NextContext, ResponsiveType
+from lollypop.define import App, Type, NextContext, RowListType
 
 
 class TracksView:
@@ -40,12 +40,12 @@ class TracksView:
                                (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT))
     }
 
-    def __init__(self, responsive_type):
+    def __init__(self, list_type):
         """
             Init widget
-            @param responsive_type as ResponsiveType
+            @param list_type as RowListType
         """
-        self._responsive_type = responsive_type
+        self._list_type = list_type
         self.__loading = Loading.NONE
         self._width = None
         self._orientation = None
@@ -62,15 +62,15 @@ class TracksView:
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}
 
-        if responsive_type in [ResponsiveType.DND,
-                               ResponsiveType.SEARCH]:
+        if list_type & (RowListType.DND | RowListType.SEARCH):
             self.__discs = [self._album.one_disc]
         else:
             self.__discs = self._album.discs
         self.__discs_to_load = list(self.__discs)
         for disc in self.__discs:
             self.__add_disc_container(disc.number)
-            if self._responsive_type == ResponsiveType.FIXED:
+            if self._list_type & (RowListType.DEFAULT |
+                                  RowListType.TWO_COLUMNS):
                 self.__set_disc_height(disc.number, disc.tracks)
 
     def set_playing_indicator(self):
@@ -95,8 +95,7 @@ class TracksView:
             disc = self.__discs_to_load.pop(0)
             disc_number = disc.number
             tracks = list(disc.tracks)
-            print(self._responsive_type)
-            if self._responsive_type == ResponsiveType.FIXED:
+            if self._list_type & RowListType.TWO_COLUMNS:
                 mid_tracks = int(0.5 + len(tracks) / 2)
                 self.populate_list_left(tracks[:mid_tracks],
                                         disc_number,
@@ -338,8 +337,8 @@ class TracksView:
             @param allocation as Gtk.Allocation
         """
         # We need an initial orientation but we only need to follow allocation
-        # in FIXED mode
-        if self._responsive_type != ResponsiveType.FIXED and\
+        # in TWO_COLUMNS mode
+        if not self._list_type & RowListType.TWO_COLUMNS and\
                 self._orientation is not None:
             return
         if self._width == allocation.width:
@@ -414,7 +413,7 @@ class TracksView:
     def __linking(self):
         """
             Handle linking between left and right
-            Only used with ResponsiveType.DND
+            Only used with RowListType.DND
         """
         if len(self._tracks_widget_left[0]) == 0 or\
                 len(self._tracks_widget_right[0]) == 0:
@@ -458,7 +457,7 @@ class TracksView:
             if self.__loading == Loading.ALL:
                 self._on_populated()
             self._locked_widget_right = False
-            if self._responsive_type == ResponsiveType.DND:
+            if self._list_type & RowListType.DND:
                 self.__linking()
                 # After prepend, we need to set last added next row
                 if i < len(self.children):
@@ -471,8 +470,8 @@ class TracksView:
         if not App().settings.get_value("show-tag-tracknumber"):
             track.set_number(i + 1)
         track.set_featuring_ids(self._album.artist_ids)
-        row = TrackRow(track, self._responsive_type)
-        if self._responsive_type == ResponsiveType.DND:
+        row = TrackRow(track, self._list_type)
+        if self._list_type & RowListType.DND:
             row.set_previous_row(previous_row)
             if previous_row is not None:
                 previous_row.set_next_row(row)
@@ -599,7 +598,7 @@ class TracksView:
         # If same album, add track to album
         if track.album.id == row.track.album.id:
             position = self.children.index(row)
-            new_row = TrackRow(track, self._responsive_type)
+            new_row = TrackRow(track, self._list_type)
             new_row.connect("insert-track", self.__on_insert_track)
             new_row.connect("remove-track", self.__on_remove_track)
             new_row.show()
