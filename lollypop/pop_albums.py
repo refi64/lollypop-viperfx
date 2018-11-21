@@ -57,7 +57,7 @@ class AlbumsPopover(Popover):
         label.set_margin_start(2)
         label.get_style_context().add_class("dim-label")
         label.set_property("halign", Gtk.Align.START)
-        self.__view = AlbumsListView(RowListType.DND)
+        self.__view = AlbumsListView(RowListType.DND | RowListType.Popover)
         self.__view.populate(App().player.albums)
         self.__view.show()
         grid = Gtk.Grid()

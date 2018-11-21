@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Pango, GLib, Gst
 
-from lollypop.define import App
+from lollypop.define import App, RowListType
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
@@ -90,6 +90,9 @@ class Row(Gtk.ListBoxRow):
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
+        if list_type & (RowListType.READ_ONLY | RowListType.Popover):
+            self.__menu_button.set_opacity(0)
+            self.__menu_button.set_sensitive(False)
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         if self._artists_label is not None:
@@ -185,20 +188,6 @@ class Row(Gtk.ListBoxRow):
         popover.connect("closed", self.__on_closed)
         self.get_style_context().add_class("track-menu-selected")
         popover.popup()
-
-    def __on_map(self, widget):
-        """
-            Fix for Gtk < 3.18,
-            if we are in a popover, do not show menu button
-        """
-        widget = self.get_parent()
-        while widget is not None:
-            if isinstance(widget, Gtk.Popover):
-                break
-            widget = widget.get_parent()
-        if widget is None:
-            self._grid.add(self.__menu_button)
-            self.__menu_button.show()
 
     def __on_artist_button_press(self, eventbox, event):
         """
