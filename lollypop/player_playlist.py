@@ -19,6 +19,7 @@ from lollypop.objects import Track
 class PlaylistPlayer(BasePlayer):
     """
         Manage user playlist
+        Assertion: we never have same track ids in playlists player
     """
 
     def __init__(self):
@@ -33,7 +34,10 @@ class PlaylistPlayer(BasePlayer):
             @param track as Track
             @param position as int
         """
+        self.remove_track(track.id)
         self._playlist_tracks.insert(position, track)
+        self.set_next()
+        self.set_prev()
 
     def remove_track(self, track_id):
         """

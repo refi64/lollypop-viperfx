@@ -419,10 +419,11 @@ class PlaylistsWidget(Gtk.Grid):
             Remove row's track
             @param row as PlaylistRow
         """
-        App().player.remove_track(row.track.id)
-        if row.track.id != self.__last_drag_id and (
-                len(self.__playlist_ids) == 1 or self.__playlist_ids[0] > 0):
-            App().playlists.remove_uri(self.__playlist_ids[0], row.track.uri)
+        if row.track.id != self.__last_drag_id:
+            App().player.remove_track(row.track.id)
+            if len(self.__playlist_ids) == 1 or self.__playlist_ids[0] > 0:
+                App().playlists.remove_uri(self.__playlist_ids[0],
+                                           row.track.uri)
         if row.previous_row is None:
             row.next_row.set_previous_row(None)
         elif row.next_row is None:
