@@ -51,6 +51,8 @@ class RowListType:
     TWO_COLUMNS = 1 << 1
     DND = 1 << 2
     SEARCH = 1 << 3
+    READ_ONLY = 1 << 4
+    PLAYLISTS = 1 << 5
 
 
 class ArtSize:

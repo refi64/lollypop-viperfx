@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App
+from lollypop.define import App, RowListType
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -24,14 +24,15 @@ class IndicatorWidget(Gtk.EventBox):
         playlists
     """
 
-    def __init__(self, track):
+    def __init__(self, row, list_type):
         """
             Init indicator widget, ui will be set when needed
-            @param track as Track
+            @param row as Row
+            @param list_type as RowListType
         """
         Gtk.EventBox.__init__(self)
-        self.__track = track
-        self.__playlist_ids = []
+        self.__row = row
+        self.__list_type = list_type
         self.__pass = 1
         self.__timeout_id = None
         self.__button = None
@@ -39,13 +40,6 @@ class IndicatorWidget(Gtk.EventBox):
         self.connect("destroy", self.__on_destroy)
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
-
-    def set_playlist_ids(self, playlist_ids):
-        """
-            Set playlist ids
-            @param playlist_ids as [int]
-        """
-        self.__playlist_ids = playlist_ids
 
     def empty(self):
         """
@@ -98,7 +92,7 @@ class IndicatorWidget(Gtk.EventBox):
             Update button based on queue status
         """
         self.__init()
-        if len(self.__playlist_ids) == 1:
+        if self.__list_type & RowListType.PLAYLISTS:
             self.__button.set_tooltip_text(_("Remove from playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
@@ -122,41 +116,13 @@ class IndicatorWidget(Gtk.EventBox):
         """
         if App().player.albums:
             for album in App().player.albums:
-                if self.__track.album.id == album.id:
-                    if self.__track.id in album.track_ids:
+                if self.__row.track.album.id == album.id:
+                    if self.__row.track.id in album.track_ids:
                         return True
         elif App().player.playlist_ids:
-            if self.__track.id in App().player.playlist_track_ids:
+            if self.__row.track.id in App().player.playlist_track_ids:
                 return True
         return False
-
-    def __remove_from_player_albums(self):
-        """
-            Remove track from player albums
-        """
-        albums = [album
-                  for album in App().player.albums
-                  if album.id == self.__track.album.id]
-        for album in albums:
-            for track in album.tracks:
-                if track.id == self.__track.id:
-                    count = len(album.tracks)
-                    album.remove_track(track)
-                    # Album is now empty
-                    if count == 1:
-                        App().player.remove_album(album)
-                        App().player.stop()
-                    elif App().player.next_track.id == track.id:
-                        App().player.set_next()
-                    break
-
-    def __remove_from_player_playlists(self):
-        """
-            Remove track from player playlists
-        """
-        App().player.remove_track(self.__track.id)
-        App().playlists.remove_uri(self.__playlist_ids[0],
-                                   self.__track.uri)
 
     def __init(self):
         """
@@ -173,8 +139,9 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
         self.__button.get_style_context().add_class("menu-button")
         self.__button.get_style_context().add_class("track-menu-button")
-        if len(self.__playlist_ids) < 2:
-            self.__button.show()
+        if self.__list_type & RowListType.READ_ONLY:
+            self.__button.set_sensitive(False)
+            self.__button.set_opacity(0)
         self.__button.connect("button-release-event",
                               self.__on_button_release_event)
         play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
@@ -202,10 +169,10 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__track.id == App().player.current_track.id:
+        if self.__row.track.id == App().player.current_track.id:
             self.play()
         else:
-            self.loved(self.__track.loved)
+            self.loved(self.__row.track.loved)
 
     def __on_button_release_event(self, widget, event):
         """
@@ -214,27 +181,22 @@ class IndicatorWidget(Gtk.EventBox):
             @param event as Gdk.EventButton
         """
         if self.__image.get_icon_name()[0] == "list-remove-symbolic":
-            if len(self.__playlist_ids) == 1:
-                self.__remove_from_player_playlists()
-            else:
-                self.__remove_from_player_albums()
-            # Destroy parent Gtk.ListBoxRow
-            if len(self.__playlist_ids) == 1:
-                ancestor = self.get_ancestor(Gtk.ListBoxRow)
-                if ancestor is not None:
-                    ancestor.destroy()
+            self.__row.emit("remove-track")
+            ancestor = self.get_ancestor(Gtk.ListBoxRow)
+            if ancestor is not None:
+                ancestor.destroy()
         else:
             albums = App().player.albums
             # If album last in list, merge
-            if albums and albums[-1].id == self.__track.album.id:
-                albums[-1].insert_track(self.__track)
+            if albums and albums[-1].id == self.__row.track.album.id:
+                albums[-1].insert_track(self.__row.track)
                 App().player.set_next()
             # Add album with only one track
             else:
                 # We do not want to share same album with multiple user add
                 # If needed, previous merge will do the job
-                album = self.__track.album.clone(True)
-                album.set_tracks([self.__track])
+                album = self.__row.track.album.clone(True)
+                album.set_tracks([self.__row.track])
                 if App().player.is_playing:
                     App().player.add_album(album)
                 else:

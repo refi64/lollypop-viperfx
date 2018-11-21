@@ -55,7 +55,7 @@ class TrackRow(Row, DNDRow):
             @param track as Track
             @param list_type as RowListType
         """
-        Row.__init__(self, track)
+        Row.__init__(self, track, list_type)
         self.__filtered = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)

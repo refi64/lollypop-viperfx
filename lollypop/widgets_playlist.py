@@ -295,7 +295,7 @@ class PlaylistsWidget(Gtk.Grid):
 
         track = tracks.pop(0)
         track.set_number(pos + 1)
-        row = PlaylistRow(track, self.__playlist_ids)
+        row = PlaylistRow(track, self.__list_type)
         row.set_previous_row(previous_row)
         if previous_row is not None:
             previous_row.set_next_row(row)
@@ -387,7 +387,7 @@ class PlaylistsWidget(Gtk.Grid):
         else:
             index = None
         track = Track(new_track_id)
-        new_row = PlaylistRow(track, self.__playlist_ids)
+        new_row = PlaylistRow(track, self.__list_type)
         new_row.connect("insert-track", self.__on_insert_track)
         new_row.connect("remove-track", self.__on_remove_track)
         new_row.show()

@@ -881,8 +881,11 @@ class Container(Gtk.Overlay):
             loader.start()
         elif playlist_ids:
             from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids,
-                                 RowListType.TWO_COLUMNS | RowListType.DND)
+            if len(playlist_ids) == 1:
+                list_type = RowListType.TWO_COLUMNS | RowListType.DND
+            else:
+                list_type = RowListType.TWO_COLUMNS | RowListType.READ_ONLY
+            view = PlaylistsView(playlist_ids, list_type)
             loader = Loader(target=load, view=view)
             loader.start()
         else:

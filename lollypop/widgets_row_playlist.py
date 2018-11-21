@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Pango, GLib
 
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, RowListType
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
@@ -30,15 +30,14 @@ class PlaylistRow(Row, DNDRow):
             GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, track, playlist_ids):
+    def __init__(self, track, list_type):
         """
             Init row widget
             @param track as Track
-            @param playlist_ids as [int]
+            @param list_type as RowListType
         """
-        Row.__init__(self, track)
-        self._indicator.set_playlist_ids(playlist_ids)
-        if len(playlist_ids) == 1:
+        Row.__init__(self, track, list_type)
+        if list_type & RowListType.DND:
             DNDRow.__init__(self)
         self.__filtered = False
         self.__art_helper = ArtHelper()
