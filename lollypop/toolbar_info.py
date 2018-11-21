@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
+from lollypop.widgets_utils import Popover
 from lollypop.controller_information import InformationController
 from lollypop.define import App, Type
 
@@ -155,7 +156,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             popover = TrackMenuPopover(App().player.current_track, menu)
             popover.set_relative_to(self._infobox)
         elif App().player.current_track.id == Type.RADIOS:
-            popover = Gtk.Popover.new_from_model(self._infobox, menu)
+            popover = Popover.new_from_model(self._infobox, menu)
         popover.popup()
 
     def __on_infobox_button_press_event(self, eventbox, event):

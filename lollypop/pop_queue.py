@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
 from lollypop.define import App, ArtSize, Type
+from lollypop.widgets_utils import Popover
 from lollypop.objects import Track, Album
 
 
@@ -236,7 +237,7 @@ class QueueRow(Gtk.ListBoxRow):
             self.set_tooltip_text("")
 
 
-class QueuePopover(Gtk.Popover):
+class QueuePopover(Popover):
     """
         Popover showing queue
     """
@@ -245,7 +246,7 @@ class QueuePopover(Gtk.Popover):
         """
             Init Popover
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)

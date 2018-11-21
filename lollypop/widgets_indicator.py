@@ -253,7 +253,6 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Show play/loved indicator
         """
-        # FIXME pas coupé dans un popover
         if self.__timeout_id is None:
             return False
         if self.__stack.get_visible_child_name() == "play":

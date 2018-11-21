@@ -18,6 +18,7 @@ from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, ArtSize, WindowSize
 from lollypop.art import Art
+from lollypop.widgets_utils import Popover
 from lollypop.list import LinkedList
 from lollypop.objects import Track
 from lollypop.helper_task import TaskHelper
@@ -29,7 +30,7 @@ class TuneItem:
     LOGO = ""
 
 
-class TuneinPopover(Gtk.Popover):
+class TuneinPopover(Popover):
     """
         Popover showing tunin radios
     """
@@ -39,7 +40,7 @@ class TuneinPopover(Gtk.Popover):
             Init Popover
             @param radios_manager as Radios
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.__cancellable = Gio.Cancellable()
         if radios_manager is not None:
             self.__radios_manager = radios_manager

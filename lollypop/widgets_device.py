@@ -18,6 +18,7 @@ from lollypop.sync_mtp import MtpSync
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.define import App, Type
 from lollypop.objects import Album
+from lollypop.widgets_utils import Popover
 from lollypop.helper_task import TaskHelper
 
 
@@ -169,7 +170,7 @@ class DeviceManagerWidget(Gtk.Bin):
         parent = self.__menu_items.get_parent()
         if parent is not None:
             parent.remove(self.__menu_items)
-        popover = Gtk.Popover.new(button)
+        popover = Popover.new(button)
         popover.set_position(Gtk.PositionType.BOTTOM)
         popover.add(self.__menu_items)
         popover.popup()

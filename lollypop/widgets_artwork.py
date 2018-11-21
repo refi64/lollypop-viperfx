@@ -10,10 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk, Gdk, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, GObject, Gdk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
 from urllib.parse import urlparse
+from lollypop.widgets_utils import Popover
 
 from lollypop.logger import Logger
 try:
@@ -389,7 +390,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
         widget = self.get_parent()
         while widget is not None:
-            if isinstance(widget, Gtk.Popover):
+            if isinstance(widget, Popover):
                 widget.hide()
                 break
             widget = widget.get_parent()

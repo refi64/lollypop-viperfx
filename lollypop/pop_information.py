@@ -22,6 +22,7 @@ from lollypop.utils import escape
 from lollypop.helper_art import ArtHelper
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
+from lollypop.widgets_utils import Popover
 
 
 class Wikipedia:
@@ -89,7 +90,7 @@ class Wikipedia:
         return name
 
 
-class InformationPopover(Gtk.Popover):
+class InformationPopover(Popover):
     """
         Popover with artist information
     """
@@ -99,7 +100,7 @@ class InformationPopover(Gtk.Popover):
             Init artist infos
             @param follow_player as bool
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.__scale_factor = 1
         self.__art_helper = ArtHelper()
         self.__cancellable = Gio.Cancellable()

@@ -14,10 +14,11 @@ from gi.repository import Gtk
 
 from lollypop.loader import Loader
 from lollypop.define import App
+from lollypop.widgets_utils import Popover
 from lollypop.view_playlists import PlaylistsView
 
 
-class PlaylistsPopover(Gtk.Popover):
+class PlaylistsPopover(Popover):
     """
         Popover showing current albums
         @Warning: destroy it self on close
@@ -27,7 +28,7 @@ class PlaylistsPopover(Gtk.Popover):
         """
             Init Popover
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)

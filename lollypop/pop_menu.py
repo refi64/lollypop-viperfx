@@ -18,6 +18,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.define import App
 from lollypop.objects import Track, Album
+from lollypop.widgets_utils import Popover
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
@@ -386,7 +387,7 @@ class TrackMenu(Gio.Menu):
                             EditMenu(track))
 
 
-class TrackMenuPopover(Gtk.Popover):
+class TrackMenuPopover(Popover):
     """
         Contextual menu widget for a track
     """
@@ -397,7 +398,7 @@ class TrackMenuPopover(Gtk.Popover):
             @param track as Track
             @param menu as Gio.Menu
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         if menu is not None:
             self.bind_model(menu, None)
 

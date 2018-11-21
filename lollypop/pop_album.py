@@ -10,13 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
-
 from lollypop.view_artist_albums import ArtistAlbumsView
 from lollypop.define import ArtSize
+from lollypop.widgets_utils import Popover
 
 
-class AlbumPopover(Gtk.Popover):
+class AlbumPopover(Popover):
     """
         An ArtistAlbumsView in a popover
         Not an AlbumDetailedWidget because we want a lazy loading view
@@ -30,7 +29,7 @@ class AlbumPopover(Gtk.Popover):
             @param height as int
             @param art size as int
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.__height = height
         self.__width = width
         self.get_style_context().add_class("box-shadow")

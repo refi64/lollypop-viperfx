@@ -17,6 +17,7 @@ from random import choice
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
+from lollypop.widgets_utils import Popover
 from lollypop.helper_art import ArtHelper
 from lollypop.define import App, ArtSize, Shuffle
 
@@ -243,9 +244,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         if event.button != 1:
             from lollypop.pop_menu import AlbumMenu
-            popover = Gtk.Popover.new_from_model(self._artwork,
-                                                 AlbumMenu(self._album,
-                                                           True))
+            popover = Popover.new_from_model(self._artwork,
+                                             AlbumMenu(self._album, True))
             popover.set_position(Gtk.PositionType.BOTTOM)
             rect = Gdk.Rectangle()
             rect.x = event.x
@@ -267,7 +267,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
     def __on_album_popover_closed(self, popover):
         """
             Remove overlay and restore opacity
-            @param popover as Gtk.Popover
+            @param popover as Popover
             @param album_widget as AlbumWidget
         """
         self.lock_overlay(False)

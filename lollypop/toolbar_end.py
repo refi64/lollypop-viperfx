@@ -414,7 +414,7 @@ class ToolbarEnd(Gtk.Bin):
     def __on_list_popover_closed(self, popover):
         """
             Reset variable
-            @param popover as Gtk.Popover
+            @param popover as Popover
         """
         self.__list_popover = None
         self.__on_popover_closed(popover)
@@ -422,7 +422,7 @@ class ToolbarEnd(Gtk.Bin):
     def __on_popover_closed(self, popover):
         """
             Restore next popover if needed
-            @param popover as Gtk.Popover
+            @param popover as Popover
         """
         self.__next_popover.inhibit(False)
         if self.__next_popover.should_be_shown():

@@ -17,11 +17,12 @@ from gettext import gettext as _
 
 from lollypop.define import App, Shuffle, Type, ArtSize
 from lollypop.objects import Track, Album, Disc
+from lollypop.widgets_utils import Popover
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
 
-class PlayListPopover(Gtk.Popover):
+class PlayListPopover(Popover):
     """
         Edit a playlist
     """
@@ -31,7 +32,7 @@ class PlayListPopover(Gtk.Popover):
             @param playlist_id as int
             @param obj as Object
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.__playlist_id = playlist_id
         self.__obj = obj
         builder = Gtk.Builder()

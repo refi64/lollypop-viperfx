@@ -16,12 +16,13 @@ from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
+from lollypop.widgets_utils import Popover
 from lollypop.helper_task import TaskHelper
 from lollypop.art import Art
 
 
 # Show a popover with radio logos from the web
-class RadioPopover(Gtk.Popover):
+class RadioPopover(Popover):
     """
         Popover with radio logos from the web
         @Warning: destroy it self on close
@@ -33,7 +34,7 @@ class RadioPopover(Gtk.Popover):
             @param name as string
             @param radios_manager as RadiosManager
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.connect("map", self.__on_map)
         self.__name = name
         self.__radios_manager = radios_manager

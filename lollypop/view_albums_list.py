@@ -373,7 +373,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
 
     def __init__(self, responsive_type, artist_ids=[], genre_ids=[]):
         """
-            Init Popover
+            Init widget
             @param responsive_type as ResponsiveType
             @param artist_ids as int
             @param genre_ids as int

@@ -322,7 +322,7 @@ class Row(Gtk.ListBoxRow):
     def __on_closed(self, widget):
         """
             Remove selected style
-            @param widget as Gtk.Popover
+            @param widget as Popover
         """
         self.get_style_context().remove_class("track-menu-selected")
 

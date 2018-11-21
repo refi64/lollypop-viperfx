@@ -10,13 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
-
 from lollypop.widgets_artwork import ArtworkSearchWidget
 from lollypop.define import App
+from lollypop.widgets_utils import Popover
 
 
-class CommonPopover(Gtk.Popover):
+class CommonPopover(Popover):
     """
         Resized popover
     """
@@ -25,7 +24,7 @@ class CommonPopover(Gtk.Popover):
         """
             Connect map signal
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
 

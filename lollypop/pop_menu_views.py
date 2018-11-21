@@ -10,16 +10,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib
+from gi.repository import Gio, GLib
 
 from gettext import gettext as _
 from hashlib import sha256
 
 from lollypop.define import Type, App, SelectionListMask
 from lollypop.shown import ShownLists, ShownPlaylists
+from lollypop.widgets_utils import Popover
 
 
-class ViewsMenuPopover(Gtk.Popover):
+class ViewsMenuPopover(Popover):
     """
         Configure defaults items
     """
@@ -31,7 +32,7 @@ class ViewsMenuPopover(Gtk.Popover):
             @param rowid as int
             @param mask as SelectionListMask
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.__widget = widget
         self.__rowid = rowid
         self.__mask = mask

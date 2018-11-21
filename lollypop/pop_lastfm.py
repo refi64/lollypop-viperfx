@@ -15,9 +15,10 @@ from gi.repository import Gtk, GLib, Pango
 from lollypop.define import App
 from lollypop.helper_task import TaskHelper
 from lollypop.utils import get_network_available
+from lollypop.widgets_utils import Popover
 
 
-class LastfmPopover(Gtk.Popover):
+class LastfmPopover(Popover):
     """
         A lastfm popover with similar artists
     """
@@ -26,7 +27,7 @@ class LastfmPopover(Gtk.Popover):
         """
             Init popover
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/LastfmPopover.ui")
         self.connect("map", self.__on_map)

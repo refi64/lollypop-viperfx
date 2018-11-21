@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.pop_artwork import CoversPopover
 from lollypop.define import App
 
 
@@ -125,7 +124,7 @@ class OverlayHelper:
     def _on_popover_closed(self, widget):
         """
             Remove selected style
-            @param widget as Gtk.Popover
+            @param widget as Popover
         """
         self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
@@ -275,6 +274,7 @@ class OverlayAlbumHelper(OverlayHelper):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        from lollypop.pop_artwork import CoversPopover
         popover = CoversPopover(self._album)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_popover_closed)

@@ -17,9 +17,10 @@ from gettext import gettext as _
 from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.define import App, ResponsiveType
+from lollypop.widgets_utils import Popover
 
 
-class AlbumsPopover(Gtk.Popover):
+class AlbumsPopover(Popover):
     """
         Popover showing Albums View
     """
@@ -28,7 +29,7 @@ class AlbumsPopover(Gtk.Popover):
         """
             Init popover
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         self.__clear_button = Gtk.Button.new_from_icon_name(
             "edit-clear-all-symbolic",
             Gtk.IconSize.MENU)

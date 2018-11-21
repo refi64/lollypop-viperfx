@@ -18,6 +18,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
+from lollypop.widgets_utils import Popover
 from lollypop.helper_art import ArtHelper
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_context import ContextWidget
@@ -309,11 +310,11 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             @param widget as Gtk.Button
             @param album id as int
         """
-        ancestor = self.get_ancestor(Gtk.Popover)
+        ancestor = self.get_ancestor(Popover)
         # Get album real genre ids (not contextual)
-        popover = Gtk.Popover.new_from_model(widget,
-                                             AlbumMenu(self._album,
-                                                       ancestor is not None))
+        popover = Popover.new_from_model(widget,
+                                         AlbumMenu(self._album,
+                                                   ancestor is not None))
         if ancestor is not None and App().window.container.view is not None:
             App().window.container.view.show_popover(popover)
         else:
@@ -324,7 +325,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
     def __on_pop_menu_closed(self, widget):
         """
             Remove selected style
-            @param widget as Gtk.Popover
+            @param widget as Popover
         """
         self.get_style_context().remove_class("album-menu-selected")
 
