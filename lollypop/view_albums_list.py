@@ -40,7 +40,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
     }
 
     # Update padding in application.css => albumrow
-    __MARGIN = 4
+    __MARGIN = 6
 
     def get_best_height(widget):
         """
