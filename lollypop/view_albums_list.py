@@ -116,11 +116,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label = Gtk.Label.new(self._album.name)
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__title_label.set_property("halign", Gtk.Align.START)
+        self.__title_label.get_style_context().add_class("dim-label")
         self.set_artwork()
-        self.__play_indicator = Gtk.Image.new_from_icon_name(
-            "media-playback-start-symbolic",
-            Gtk.IconSize.MENU)
-        self.__play_indicator.get_style_context().add_class("dim-label")
         self.__action_button = None
         if self.__responsive_type == ResponsiveType.SEARCH:
             action_icon = "media-playback-start-symbolic"
@@ -155,10 +153,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.__artists_button.connect(
                                       "button-release-event",
                                       self.__on_artists_button_release_event)
-        vgrid = Gtk.Grid()
-        vgrid.set_column_spacing(5)
-        vgrid.add(self.__play_indicator)
-        vgrid.add(self.__title_label)
         index = 1
         grid.attach(self.__artist_label, index, 0, 1, 1)
         index += 1
@@ -169,7 +163,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             grid.attach(self.__action_button, index, 0, 1, 2)
             index += 1
         grid.attach(self._artwork, 0, 0, 1, 2)
-        grid.attach(vgrid, 1, 1, 1, 1)
+        grid.attach(self.__title_label, 1, 1, 1, 1)
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
         grid.attach(self.__revealer, 0, 2, index, 1)
@@ -215,12 +209,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Show play indicator
             @param show as bool
         """
-        if self.__play_indicator is None:
-            return
         if self.album.id == App().player.current_track.album.id:
-            self.__play_indicator.set_opacity(1)
+            self._artwork.set_state(Gtk.StateType.SELECTED)
         else:
-            self.__play_indicator.set_opacity(0)
+            self._artwork.set_state(Gtk.StateType.NORMAL)
         if self.__revealer.get_reveal_child():
             TracksView.set_playing_indicator(self)
 
