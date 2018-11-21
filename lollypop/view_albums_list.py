@@ -68,7 +68,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
-        if list_type == RowListType.DND:
+        if list_type & RowListType.DND:
             DNDRow.__init__(self)
         # Delayed => TracksView.__init__(self)
         self.__revealer = None
