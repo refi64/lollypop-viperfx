@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 
 class Popover(Gtk.Popover):
@@ -23,4 +23,5 @@ class Popover(Gtk.Popover):
             Init widget
         """
         Gtk.Popover.__init__(self)
-        self.connect("unmap", lambda x: self.destroy())
+        # If popover is pointing to a widget, we need to destroy idle
+        self.connect("unmap", lambda x: GLib.idle_add(self.destroy))
