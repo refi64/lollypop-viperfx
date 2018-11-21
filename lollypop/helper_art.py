@@ -99,7 +99,6 @@ class ArtHelper(GObject.Object):
                               radio,
                               width,
                               scale_factor,
-                              effect,
                               callback=(self._on_get_artwork_pixbuf,
                                         image,
                                         width,
