@@ -186,10 +186,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
             self.set_selection()
-            if not self.__list_type & RowListType.SEARCH and\
-                    self.__action_button is not None:
-                self.__action_button.set_opacity(1)
-                self.__action_button.set_sensitive(True)
         else:
             if self._responsive_widget is None:
                 TracksView.__init__(self, self.__list_type)
@@ -198,10 +194,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 TracksView.populate(self)
             self.__revealer.set_reveal_child(True)
             self.set_selection()
-            if not self.__list_type != RowListType.SEARCH and\
-                    self.__action_button is not None:
-                self.__action_button.set_opacity(0)
-                self.__action_button.set_sensitive(False)
 
     def set_playing_indicator(self):
         """
