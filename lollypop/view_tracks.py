@@ -95,8 +95,8 @@ class TracksView:
             disc = self.__discs_to_load.pop(0)
             disc_number = disc.number
             tracks = list(disc.tracks)
-            if self._responsive_type in [ResponsiveType.FIXED,
-                                         ResponsiveType.LIST]:
+            print(self._responsive_type)
+            if self._responsive_type == ResponsiveType.FIXED:
                 mid_tracks = int(0.5 + len(tracks) / 2)
                 self.populate_list_left(tracks[:mid_tracks],
                                         disc_number,
