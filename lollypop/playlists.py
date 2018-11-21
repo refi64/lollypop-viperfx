@@ -636,7 +636,7 @@ class Playlists(GObject.GObject):
             @return bool
         """
         # We do not use Album object for performance reasons
-        playlist_uris = self.get_tracks(playlist_id)
+        playlist_uris = self.get_track_uris(playlist_id)
         track_uris = album.track_uris
         return len(set(playlist_uris) & set(track_uris)) == len(track_uris)
 
