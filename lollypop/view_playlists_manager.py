@@ -31,29 +31,14 @@ class PlaylistsManagerView(FlowBoxView):
             @param obj as Track/Album
         """
         self.__obj = obj
-        grid = Gtk.Grid()
-        grid.set_margin_top(5)
-        grid.set_margin_start(5)
-        grid.set_margin_bottom(5)
-        grid.show()
-        if obj is not None:
-            back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic",
-                                                        Gtk.IconSize.BUTTON)
-            back_button.connect("clicked",
-                                lambda x: App().window.container.reload_view())
-            back_button.set_property("halign", Gtk.Align.START)
-            back_button.set_relief(Gtk.ReliefStyle.NONE)
-            back_button.show()
-            grid.add(back_button)
         new_playlist_button = Gtk.Button(_("New playlist"))
         new_playlist_button.connect("clicked", self.__on_new_button_clicked)
         new_playlist_button.set_property("halign", Gtk.Align.CENTER)
         new_playlist_button.set_hexpand(True)
         new_playlist_button.show()
-        grid.add(new_playlist_button)
         FlowBoxView.__init__(self)
         self.insert_row(0)
-        self.attach(grid, 0, 0, 1, 1)
+        self.attach(new_playlist_button, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
 
     def populate(self, items):
@@ -93,6 +78,9 @@ class PlaylistsManagerView(FlowBoxView):
                                      GLib.Variant("ai", [Type.PLAYLISTS]))
             App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", []))
+        else:
+            App().window.emit("can-go-back-changed", True)
+            App().window.emit("show-can-go-back", True)
 
 #######################
 # PRIVATE             #
