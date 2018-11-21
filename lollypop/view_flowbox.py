@@ -62,7 +62,7 @@ class FlowBoxView(LazyLoadingView):
 
     def _add_items(self, items, *args):
         """
-            Add decade to the view
+            Add items to the view
             Start lazy loading
             @param items as [int]
             @return added widget
@@ -79,7 +79,8 @@ class FlowBoxView(LazyLoadingView):
             return widget
         else:
             GLib.idle_add(self.lazy_loading)
-            if self._viewport.get_child() is None:
+            if not self._viewport.in_destruction() and\
+                    self._viewport.get_child() is None:
                 self._viewport.add(self._box)
         return None
 
