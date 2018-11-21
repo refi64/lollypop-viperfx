@@ -120,6 +120,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__play_indicator = Gtk.Image.new_from_icon_name(
             "media-playback-start-symbolic",
             Gtk.IconSize.MENU)
+        self.__play_indicator.get_style_context().add_class("dim-label")
         self.__action_button = None
         if self.__responsive_type == ResponsiveType.SEARCH:
             action_icon = "media-playback-start-symbolic"
