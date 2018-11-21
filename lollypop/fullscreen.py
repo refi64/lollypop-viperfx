@@ -16,6 +16,7 @@ from datetime import datetime
 
 from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.view_albums_list import AlbumsListView
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
 from lollypop.controller_progress import ProgressController
@@ -36,7 +37,7 @@ class FullScreen(Gtk.Window, InformationController,
         self.set_title("Lollypop")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
-        InformationController.__init__(self)
+        InformationController.__init__(self, ArtHelperEffect.NONE)
         self.set_application(app)
         self.__timeout1 = self.__timeout2 = None
         self.__signal1_id = self.__signal2_id = self.__signal3_id = None

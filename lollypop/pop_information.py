@@ -19,7 +19,7 @@ from lollypop.define import App, ArtSize, ResponsiveType
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
-from lollypop.helper_art import ArtHelper
+from lollypop.helper_art import ArtHelper, ArtHelperEffect
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.widgets_utils import Popover
@@ -145,7 +145,8 @@ class InformationPopover(Popover):
             self.__art_helper.set_artist_artwork(artist_artwork,
                                                  artist_name,
                                                  ArtSize.ARTIST_SMALL * 3,
-                                                 ArtSize.ARTIST_SMALL * 3)
+                                                 ArtSize.ARTIST_SMALL * 3,
+                                                 ArtHelperEffect.ROUNDED)
             albums_view = AlbumsListView(ResponsiveType.LIST)
             albums_view.set_size_request(300, -1)
             albums_view.show()

@@ -22,6 +22,7 @@ class ArtHelperEffect:
     NONE = 1 << 1
     ROUNDED = 1 << 2
     BLUR = 1 << 3
+    FALLBACK = 1 << 4
 
 
 class ArtHelper(GObject.Object):
@@ -57,7 +58,8 @@ class ArtHelper(GObject.Object):
         return image
 
     def set_album_artwork(self, image, album, width, height,
-                          effect=ArtHelperEffect.NONE):
+                          effect=ArtHelperEffect.NONE |
+                          ArtHelperEffect.FALLBACK):
         """
             Set artwork for album id
             @param image as Gtk.Image
@@ -81,34 +83,41 @@ class ArtHelper(GObject.Object):
                                         "folder-music-symbolic",
                                         effect))
 
-    def set_radio_artwork(self, image, radio, width, height):
+    def set_radio_artwork(self, image, radio, width, height,
+                          effect=ArtHelperEffect.NONE |
+                          ArtHelperEffect.FALLBACK):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param radio as str
             @param width as int
             @param height as int
+            @param effect as ArtHelperEffect
         """
         scale_factor = image.get_scale_factor()
         App().task_helper.run(App().art.get_radio_artwork,
                               radio,
                               width,
                               scale_factor,
+                              effect,
                               callback=(self._on_get_artwork_pixbuf,
                                         image,
                                         width,
                                         height,
                                         scale_factor,
                                         "audio-input-microphone-symbolic",
-                                        ArtHelperEffect.NONE))
+                                        effect))
 
-    def set_artist_artwork(self, image, artist, width, height):
+    def set_artist_artwork(self, image, artist, width, height,
+                           effect=ArtHelperEffect.ROUNDED |
+                           ArtHelperEffect.FALLBACK):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param artist as str
             @param width as int
             @param height as int
+            @param effect as ArtHelperEffect
         """
         scale_factor = image.get_scale_factor()
         App().task_helper.run(self.__get_artist_artwork,
@@ -116,18 +125,20 @@ class ArtHelper(GObject.Object):
                               width,
                               height,
                               scale_factor,
+                              effect,
                               callback=(self._on_get_artist_artwork_pixbuf,
                                         image,
                                         width,
                                         height,
                                         scale_factor,
-                                        "avatar-default-symbolic"))
+                                        "avatar-default-symbolic",
+                                        effect))
 
 #######################
 # PROTECTED           #
 #######################
-    def _on_get_artist_artwork_pixbuf(self, pixbuf, image,
-                                      width, height, scale_factor, icon):
+    def _on_get_artist_artwork_pixbuf(self, pixbuf, image, width, height,
+                                      scale_factor, icon, effect):
         """
             Set pixbuf as surface
             @param pixbuf as Gdk.Pixbuf
@@ -135,14 +146,18 @@ class ArtHelper(GObject.Object):
             @param size as int
             @param scale_factor as int
             @param icon as str
+            @param effect as ArtHelperEffect
         """
         if pixbuf is None:
             self._on_get_artwork_pixbuf(pixbuf, image,
                                         width, height,
-                                        scale_factor, icon,
-                                        ArtHelperEffect.NONE)
+                                        scale_factor, icon, effect)
         else:
-            surface = get_round_surface(pixbuf, scale_factor)
+            if effect & ArtHelperEffect.ROUNDED:
+                surface = get_round_surface(pixbuf, scale_factor)
+            else:
+                surface = Gdk.cairo_surface_create_from_pixbuf(
+                        pixbuf, scale_factor, None)
             image.set_from_surface(surface)
 
     def _on_get_artwork_pixbuf(self, pixbuf, image,
@@ -163,12 +178,17 @@ class ArtHelper(GObject.Object):
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                         pixbuf, scale_factor, None)
             image.set_from_surface(surface)
-        elif width / scale_factor < ArtSize.BIG:
-            image.set_from_icon_name(icon, Gtk.IconSize.DND)
-        elif width / scale_factor < ArtSize.ARTIST_SMALL:
-            image.set_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            image.show()
+        elif effect & ArtHelperEffect.FALLBACK:
+            if width / scale_factor < ArtSize.BIG:
+                image.set_from_icon_name(icon, Gtk.IconSize.DND)
+            elif width / scale_factor < ArtSize.ARTIST_SMALL:
+                image.set_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            else:
+                image.set_from_icon_name(icon, Gtk.IconSize.DIALOG)
+            image.show()
         else:
-            image.set_from_icon_name(icon, Gtk.IconSize.DIALOG)
+            image.hide()
 
 #######################
 # PRIVATE             #
@@ -204,7 +224,7 @@ class ArtHelper(GObject.Object):
                                                     width * 3)
         except Exception as e:
             Logger.error("ArtHelper::__get_blur(): %s", e)
-            return None
+            return pixbuf
         return pixbuf
 
     def __get_album_artwork(self, album, width, height, scale_factor, effect):
@@ -222,18 +242,20 @@ class ArtHelper(GObject.Object):
             pixbuf = self.__get_blur(pixbuf, width, height)
         return pixbuf
 
-    def __get_artist_artwork(self, artist, width, height, scale_factor):
+    def __get_artist_artwork(self, artist, width, height,
+                             scale_factor, effect):
         """
             Set artwork for album id
             @param artist as str
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param enable_blur as bool
             @return GdkPixbuf.Pixbuf
         """
         path = InformationStore.get_artwork_path(artist, width, scale_factor)
         if path is not None:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+            if effect & ArtHelperEffect.BLUR:
+                pixbuf = self.__get_blur(pixbuf, width, height)
             return pixbuf
         return None

@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.logger import Logger
 from lollypop.widgets_utils import Popover
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.define import App, Type
 
@@ -30,7 +31,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        InformationController.__init__(self)
+        InformationController.__init__(self, ArtHelperEffect.NONE)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)
