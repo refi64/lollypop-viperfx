@@ -104,8 +104,7 @@ class ShufflePlayer(BasePlayer):
                 self.play()
         else:
             # We want current album to continue playback
-            if self._current_track.album not in self._albums:
-                self._albums.insert(0, self._current_track.album)
+            self._albums = [self._current_track.album]
             self.set_next()
             self.set_prev()
         self.emit("party-changed", party)
