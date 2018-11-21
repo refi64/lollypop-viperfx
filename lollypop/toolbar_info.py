@@ -58,11 +58,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self._artist_label = builder.get_object("artist")
         self._artwork = builder.get_object("artwork")
         self._artwork.set_property("has-tooltip", True)
-        # Since GTK 3.20, we can set cover full height
-        if Gtk.get_minor_version() > 18:
-            self._artwork.get_style_context().add_class("toolbar-cover-frame")
-        else:
-            self._artwork.get_style_context().add_class("small-cover-frame")
 
         self.connect("realize", self.__on_realize)
         App().art.connect("album-artwork-changed", self.__update_cover)
@@ -194,10 +189,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             Calculate art size
             @param toolbar as ToolbarInfos
         """
-        style = self.get_style_context()
-        padding = style.get_padding(style.get_state())
-        art_size = self.get_allocated_height()\
-            - padding.top - padding.bottom
+        art_size = self.get_allocated_height()
         self.set_art_size(art_size)
         if App().player.current_track.id is not None:
             self.on_current_changed(App().player)
