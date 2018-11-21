@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst
+from gi.repository import Gst, GLib
 
 from pickle import load
 from random import choice
@@ -172,7 +172,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         if self.is_party:
-            self.set_party(False)
+            App().lookup_action("party").change_state(GLib.Variant("b", False))
         self.reset_history()
         # We are not playing a user playlist anymore
         self._playlist_tracks = []
