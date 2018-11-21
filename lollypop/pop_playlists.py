@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.loader import Loader
-from lollypop.define import App
+from lollypop.define import App, RowListType
 from lollypop.widgets_utils import Popover
 from lollypop.view_playlists import PlaylistsView
 
@@ -33,6 +33,7 @@ class PlaylistsPopover(Popover):
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
         self._widget = PlaylistsView(App().player.playlist_ids,
+                                     RowListType.DND,
                                      False)
         self._widget.show()
         self.add(self._widget)
@@ -42,7 +43,7 @@ class PlaylistsPopover(Popover):
             Populate view
         """
         def load():
-            return App().player.playlist_tracks
+            return list(App().player.playlist_tracks)
         loader = Loader(target=load, view=self._widget)
         loader.start()
 

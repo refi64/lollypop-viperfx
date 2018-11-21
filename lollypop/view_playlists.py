@@ -26,10 +26,11 @@ class PlaylistsView(View, ViewController):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_ids, editable=True):
+    def __init__(self, playlist_ids, list_type, editable=True):
         """
             Init PlaylistView
             @parma playlist ids as [int]
+            @param list_type as RowListType
             @param editable as bool
         """
         View.__init__(self, True)
@@ -68,7 +69,7 @@ class PlaylistsView(View, ViewController):
         if not editable or len(playlist_ids) > 1 or playlist_ids[0] < 0:
             smart_button.hide()
 
-        self.__playlists_widget = PlaylistsWidget(playlist_ids)
+        self.__playlists_widget = PlaylistsWidget(playlist_ids, list_type)
         self.__playlists_widget.set_filter_func(self._filter_func)
         self.__playlists_widget.show()
         self.add(builder.get_object("widget"))

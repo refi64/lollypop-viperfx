@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, GObject
 
-from lollypop.define import App, Type, WindowSize, Loading
+from lollypop.define import App, Type, WindowSize, Loading, RowListType
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
@@ -26,15 +26,17 @@ class PlaylistsWidget(Gtk.Grid):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, playlist_ids):
+    def __init__(self, playlist_ids, list_type):
         """
             Init playlist Widget
             @param playlist ids as [int]
+            @param list_type as RowListType
         """
         Gtk.Grid.__init__(self)
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__playlist_ids = playlist_ids
+        self.__list_type = list_type
         self.__tracks = {}
         self.__row_tracks_left = []
         self.__row_tracks_right = []
@@ -100,33 +102,36 @@ class PlaylistsWidget(Gtk.Grid):
             Populate view with two columns
             @param tracks as [Track]
         """
-        # We are looking for middle
-        # Ponderate with this:
-        # Tracks with cover == 2
-        # Tracks without cover == 1
-        prev_album_id = None
-        heights = {}
-        total = 0
-        idx = 0
-        for track in tracks:
-            if track.album_id != prev_album_id:
-                heights[idx] = 2
-                total += 2
-            else:
-                heights[idx] = 1
-                total += 1
-            prev_album_id = track.album_id
-            idx += 1
-        half = int(total / 2 + 0.5)
-        mid_tracks = 1
-        count = 0
-        for height in heights.values():
-            count += height
-            if count >= half:
-                break
-            mid_tracks += 1
-        self.populate_list_left(tracks[:mid_tracks], 1)
-        self.populate_list_right(tracks[mid_tracks:], mid_tracks + 1)
+        if self.__list_type & RowListType.TWO_COLUMNS:
+            # We are looking for middle
+            # Ponderate with this:
+            # Tracks with cover == 2
+            # Tracks without cover == 1
+            prev_album_id = None
+            heights = {}
+            total = 0
+            idx = 0
+            for track in tracks:
+                if track.album_id != prev_album_id:
+                    heights[idx] = 2
+                    total += 2
+                else:
+                    heights[idx] = 1
+                    total += 1
+                prev_album_id = track.album_id
+                idx += 1
+            half = int(total / 2 + 0.5)
+            mid_tracks = 1
+            count = 0
+            for height in heights.values():
+                count += height
+                if count >= half:
+                    break
+                mid_tracks += 1
+            self.populate_list_left(tracks[:mid_tracks], 0)
+            self.populate_list_right(tracks[mid_tracks:], mid_tracks)
+        else:
+            self.populate_list_left(tracks, 0)
 
     def populate_list_left(self, tracks, pos):
         """
@@ -289,7 +294,7 @@ class PlaylistsWidget(Gtk.Grid):
             return
 
         track = tracks.pop(0)
-        track.set_number(pos)
+        track.set_number(pos + 1)
         row = PlaylistRow(track, self.__playlist_ids)
         row.set_previous_row(previous_row)
         if previous_row is not None:

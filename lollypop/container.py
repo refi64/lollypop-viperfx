@@ -875,12 +875,14 @@ class Container(Gtk.Overlay):
         if len(playlist_ids) == 1 and\
                 App().playlists.get_smart(playlist_ids[0]):
             from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids)
+            view = PlaylistsView(playlist_ids,
+                                 RowListType.TWO_COLUMNS | RowListType.DND)
             loader = Loader(target=load_smart, view=view)
             loader.start()
         elif playlist_ids:
             from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids)
+            view = PlaylistsView(playlist_ids,
+                                 RowListType.TWO_COLUMNS | RowListType.DND)
             loader = Loader(target=load, view=view)
             loader.start()
         else:
