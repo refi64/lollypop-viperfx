@@ -376,6 +376,11 @@ class PlaylistsWidget(Gtk.Grid):
         """
         self.__last_drag_id = new_track_id
         position = self.children.index(row)
+        playlist_ids = App().playlists.get_track_ids(self.__playlist_ids[0])
+        if new_track_id in playlist_ids:
+            index = playlist_ids.index(new_track_id)
+        else:
+            index = None
         track = Track(new_track_id)
         new_row = PlaylistRow(track, self.__playlist_ids)
         new_row.connect("insert-track", self.__on_insert_track)
@@ -394,7 +399,10 @@ class PlaylistsWidget(Gtk.Grid):
             if row.previous_row is not None:
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
-        new_row.update_number(position + 1)
+        if index is None or index > position:
+            new_row.update_number(position + 1)
+        else:
+            new_row.update_number(position)
         left_count = len(self.__tracks_widget_left.get_children())
         if position < left_count:
             row.get_parent().insert(new_row, position)
@@ -415,7 +423,6 @@ class PlaylistsWidget(Gtk.Grid):
         if row.track.id != self.__last_drag_id and (
                 len(self.__playlist_ids) == 1 or self.__playlist_ids[0] > 0):
             App().playlists.remove_uri(self.__playlist_ids[0], row.track.uri)
-        self.__last_drag_id = None
         if row.previous_row is None:
             row.next_row.set_previous_row(None)
         elif row.next_row is None:
@@ -423,4 +430,6 @@ class PlaylistsWidget(Gtk.Grid):
         else:
             row.next_row.set_previous_row(row.previous_row)
             row.previous_row.set_next_row(row.next_row)
-        self.__make_homogeneous()
+        if row.track.id != self.__last_drag_id:
+            self.__make_homogeneous()
+        self.__last_drag_id = None
