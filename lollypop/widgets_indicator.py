@@ -98,7 +98,7 @@ class IndicatorWidget(Gtk.EventBox):
             Update button based on queue status
         """
         self.__init()
-        if len(self.__playlist_ids) < 2:
+        if len(self.__playlist_ids) == 1:
             self.__button.set_tooltip_text(_("Remove from playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
