@@ -57,8 +57,8 @@ class PlayListPopover(Popover):
         """
         new_name = self.__name_entry.get_text()
         App().playlists.rename(self.__playlist_id, new_name)
-        App().window.container.reload_view()
-        self.destroy()
+        self.__parent.rename(new_name)
+        self.popdown()
 
     def _on_delete_button_clicked(self, button):
         """

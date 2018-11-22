@@ -40,18 +40,18 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.set_property("valign", Gtk.Align.CENTER)
         self.get_style_context().add_class("loading-rounded")
 
-    def populate(self, text):
+    def populate(self, name):
         """
             Populate widget content
-            @param text as str
+            @param name as str
         """
         self.get_style_context().remove_class("loading-rounded")
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        label = Gtk.Label()
-        label.set_ellipsize(Pango.EllipsizeMode.END)
-        label.set_property("halign", Gtk.Align.CENTER)
-        label.set_markup("<b>" + GLib.markup_escape_text(text) + "</b>")
+        self.__label = Gtk.Label()
+        self.__label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__label.set_property("halign", Gtk.Align.CENTER)
+        self.__label.set_markup("<b>" + GLib.markup_escape_text(name) + "</b>")
         self._artwork = Gtk.Image.new()
         self._artwork.set_size_request(self._art_size, self._art_size)
         self._artwork.show()
@@ -59,7 +59,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self._overlay = Gtk.Overlay()
         self._overlay.add(self._artwork)
         grid.add(self._overlay)
-        grid.add(label)
+        grid.add(self.__label)
         self._widget = Gtk.EventBox()
         self._widget.set_property("has-tooltip", True)
         self._widget.add(grid)
@@ -73,6 +73,13 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
+
+    def rename(self, name):
+        """
+            Rename widget
+            @param name as str
+        """
+        self.__label.set_markup("<b>" + GLib.markup_escape_text(name) + "</b>")
 
     @property
     def data(self):
