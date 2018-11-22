@@ -868,6 +868,12 @@ class Container(Gtk.Overlay):
             ids = App().db.execute(request)
             for id in ids:
                 track = Track(id)
+                # Smart playlist may report invalid tracks
+                # An album always have an artist so check
+                # object is valid. Others Lollypop widgets assume
+                # objects are valid
+                if not track.album.artist_ids:
+                    continue
                 tracks.append(track)
             return tracks
 
