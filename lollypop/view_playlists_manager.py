@@ -35,6 +35,7 @@ class PlaylistsManagerView(FlowBoxView):
         new_playlist_button.connect("clicked", self.__on_new_button_clicked)
         new_playlist_button.set_property("halign", Gtk.Align.CENTER)
         new_playlist_button.set_hexpand(True)
+        new_playlist_button.set_margin_top(5)
         new_playlist_button.show()
         FlowBoxView.__init__(self)
         self.insert_row(0)
