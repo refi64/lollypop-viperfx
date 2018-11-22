@@ -34,6 +34,8 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         Gtk.FlowBoxChild.__init__(self)
         self._art_size = art_size
         self._data = data
+        self.__name = ""
+        self.__filtered = False
         self._scale_factor = self.get_scale_factor()
         self.set_size_request(art_size, art_size)
         self.set_property("halign", Gtk.Align.CENTER)
@@ -45,6 +47,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             Populate widget content
             @param name as str
         """
+        self.__name = name
         self.get_style_context().remove_class("loading-rounded")
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
@@ -81,6 +84,20 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         self.__label.set_markup("<b>" + GLib.markup_escape_text(name) + "</b>")
 
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__filtered = b
+
+    @property
+    def name(self):
+        """
+            Get name
+            @return str
+        """
+        return self.__name
+
     @property
     def data(self):
         """
@@ -88,6 +105,21 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             @return object
         """
         return self._data
+
+    @property
+    def filter(self):
+        """
+            Current filter
+            @return str
+        """
+        return self.name.lower()
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__filtered
 
     @property
     def is_populated(self):

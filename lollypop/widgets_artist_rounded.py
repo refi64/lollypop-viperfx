@@ -64,12 +64,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         pass
 
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-        """
-        self.__filtered = b
-
     def set_artwork(self):
         """
             Set artist artwork
@@ -99,17 +93,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             @return bool
         """
         return False
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-        """
-        return self.__filtered
-
-    @property
-    def filter(self):
-        return App().artists.get_name(self._data).lower()
 
 #######################
 # PROTECTED           #

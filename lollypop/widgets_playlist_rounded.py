@@ -106,10 +106,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         self._widget.connect("leave-notify-event", self._on_leave_notify)
 
     @property
-    def filter(self):
-        return App().playlists.get_name(self._data)
-
-    @property
     def playlist_id(self):
         """
             Get playlist id

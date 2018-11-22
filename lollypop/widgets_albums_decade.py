@@ -44,10 +44,6 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
 
-    @property
-    def filter(self):
-        return "%s - %s" % (self._data[0], self._data[-1])
-
 #######################
 # PROTECTED           #
 #######################
