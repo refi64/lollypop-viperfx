@@ -27,12 +27,14 @@ class PlayListPopover(Popover):
         Edit a playlist
     """
 
-    def __init__(self, playlist_id, obj):
+    def __init__(self, parent, playlist_id, obj):
         """
+            @param parent as PlaylistRoundedWidget
             @param playlist_id as int
             @param obj as Object
         """
         Popover.__init__(self)
+        self.__parent = parent
         self.__playlist_id = playlist_id
         self.__obj = obj
         builder = Gtk.Builder()
@@ -64,8 +66,7 @@ class PlayListPopover(Popover):
             @param button as Gtk.Button
         """
         App().playlists.remove(self.__playlist_id)
-        App().window.container.reload_view()
-        self.destroy()
+        self.__parent.destroy()
 
 
 class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
@@ -306,7 +307,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        popover = PlayListPopover(self._data, self.__obj)
+        popover = PlayListPopover(self, self._data, self.__obj)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
