@@ -38,14 +38,14 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.set_size_request(art_size, art_size)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
-        self.get_style_context().add_class("loading-rounded")
+        self.get_style_context().add_class("loading")
 
     def populate(self, text):
         """
             Populate widget content
             @param text as str
         """
-        self.get_style_context().remove_class("loading-rounded")
+        self.get_style_context().remove_class("loading")
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         label = Gtk.Label()
