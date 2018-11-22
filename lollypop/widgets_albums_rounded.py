@@ -28,22 +28,24 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
     """
     _ALBUMS_COUNT = 9
 
-    def __init__(self, data, art_size=ArtSize.ROUNDED):
+    def __init__(self, data, name, sortname, art_size=ArtSize.ROUNDED):
         """
             Init widget
             @param data as object
+            @param name as str
+            @param sortname as str
+            @param art_size as int
         """
-        RoundedFlowBoxWidget.__init__(self, data, art_size)
+        RoundedFlowBoxWidget.__init__(self, data, name, sortname, art_size)
         self.__cover_size = art_size / 3
         self.__cancellable = Gio.Cancellable()
         self.connect("unmap", self.__on_unmap)
 
-    def populate(self, text):
+    def populate(self):
         """
             Populate widget content
-            @param text as str
         """
-        RoundedFlowBoxWidget.populate(self, text)
+        RoundedFlowBoxWidget.populate(self)
         self._artwork.get_style_context().add_class("light-background")
 
 #######################

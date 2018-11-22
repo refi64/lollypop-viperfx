@@ -25,16 +25,20 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, data, art_size=ArtSize.ROUNDED):
+    def __init__(self, data, name, sortname, art_size=ArtSize.ROUNDED):
         """
             Init widget
             @param data as object
+            @param name as str
+            @param sortname as str
+            @param art_size as int
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
         self._art_size = art_size
         self._data = data
-        self.__name = ""
+        self.__name = name
+        self.__sortname = sortname
         self.__filtered = False
         self._scale_factor = self.get_scale_factor()
         self.set_size_request(art_size, art_size)
@@ -42,19 +46,18 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.set_property("valign", Gtk.Align.CENTER)
         self.get_style_context().add_class("loading-rounded")
 
-    def populate(self, name):
+    def populate(self):
         """
             Populate widget content
-            @param name as str
         """
-        self.__name = name
         self.get_style_context().remove_class("loading-rounded")
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__label = Gtk.Label()
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_property("halign", Gtk.Align.CENTER)
-        self.__label.set_markup("<b>" + GLib.markup_escape_text(name) + "</b>")
+        self.__label.set_markup(
+            "<b>" + GLib.markup_escape_text(self.__name) + "</b>")
         self._artwork = Gtk.Image.new()
         self._artwork.set_size_request(self._art_size, self._art_size)
         self._artwork.show()
@@ -97,6 +100,14 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             @return str
         """
         return self.__name
+
+    @property
+    def sortname(self):
+        """
+            Get sortname
+            @return str
+        """
+        return self.__sortname
 
     @property
     def data(self):

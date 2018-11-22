@@ -27,14 +27,12 @@ class PlayListPopover(Popover):
         Edit a playlist
     """
 
-    def __init__(self, parent, playlist_id, obj):
+    def __init__(self, playlist_id, obj):
         """
-            @param parent as PlaylistRoundedWidget
             @param playlist_id as int
             @param obj as Object
         """
         Popover.__init__(self)
-        self.__parent = parent
         self.__playlist_id = playlist_id
         self.__obj = obj
         builder = Gtk.Builder()
@@ -57,7 +55,6 @@ class PlayListPopover(Popover):
         """
         new_name = self.__name_entry.get_text()
         App().playlists.rename(self.__playlist_id, new_name)
-        self.__parent.rename(new_name)
         self.popdown()
 
     def _on_delete_button_clicked(self, button):
@@ -66,7 +63,7 @@ class PlayListPopover(Popover):
             @param button as Gtk.Button
         """
         App().playlists.remove(self.__playlist_id)
-        self.__parent.destroy()
+        self.popdown()
 
 
 class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
@@ -81,7 +78,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param obj as Track/Album
         """
         OverlayHelper.__init__(self)
-        RoundedAlbumsWidget.__init__(self, playlist_id)
+        name = sortname = App().playlists.get_name(playlist_id)
+        RoundedAlbumsWidget.__init__(self, playlist_id, name, sortname)
         self._pixel_size = ArtSize.ROUNDED / 10
         self.__track_ids = []
         self.__obj = obj
@@ -100,8 +98,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
             Populate widget content
         """
-        text = App().playlists.get_name(self._data)
-        RoundedAlbumsWidget.populate(self, text)
+
+        RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
 
@@ -303,7 +301,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        popover = PlayListPopover(self, self._data, self.__obj)
+        popover = PlayListPopover(self._data, self.__obj)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True

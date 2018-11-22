@@ -151,7 +151,7 @@ class SelectionList(BaseView, Gtk.Overlay):
                 found = True
                 break
         if not found:
-            self.__add_value((object_id, name))
+            self.__add_value((object_id, name, name))
 
     def update_values(self, values):
         """

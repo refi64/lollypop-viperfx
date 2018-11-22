@@ -15,7 +15,7 @@ from gi.repository import Gdk, Gtk
 from gettext import gettext as _
 from random import shuffle
 
-from lollypop.define import App, STATIC_ALBUM_NAME, SelectionListMask
+from lollypop.define import App, SelectionListMask
 from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
@@ -33,12 +33,9 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Init widget
             @param item as (int, str, str)
             @param art_size as int
-            @param artist_name as str
-            @param sortname as str
         """
-        RoundedFlowBoxWidget.__init__(self, item[0], art_size)
-        self.__artist_name = item[1]
-        self.__sortname = item[2]
+        RoundedFlowBoxWidget.__init__(self, item[0], item[1],
+                                      item[1], art_size)
         self.__art_helper = ArtHelper()
         self.connect("realize", self.__on_realize)
 
@@ -46,13 +43,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
             Populate widget content
         """
-        if self.__artist_name != "":
-            pass
-        elif self._data < 0:
-            self.__artist_name = _(STATIC_ALBUM_NAME[self._data])
-        else:
-            self.__artist_name = App().artists.get_name(self._data)
-        RoundedFlowBoxWidget.populate(self, self.__artist_name)
+        RoundedFlowBoxWidget.populate(self)
         self._artwork.connect("notify::surface", self.__on_artwork_set)
         self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.connect("button-press-event", self.__on_button_press_event)
@@ -69,22 +60,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Set artist artwork
         """
         self._set_artwork()
-
-    @property
-    def sortname(self):
-        """
-            Get sortname
-            @return str
-        """
-        return self.__sortname
-
-    @property
-    def artist_name(self):
-        """
-            Get artist name
-            @return str
-        """
-        return self.__artist_name
 
     @property
     def is_overlay(self):
@@ -111,7 +86,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             set_icon_name()
         elif App().settings.get_value("artist-artwork"):
             self.__art_helper.set_artist_artwork(self._artwork,
-                                                 self.__artist_name,
+                                                 self.name,
                                                  self._art_size,
                                                  self._art_size)
         else:
