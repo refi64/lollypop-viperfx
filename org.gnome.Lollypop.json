@@ -239,7 +239,7 @@
             "builddir": true,
             "sources": [{
                 "type": "git",
-                "url": "git@gitlab.gnome.org:World/lollypop.git",
+                "url": "https://gitlab.gnome.org/World/lollypop.git",
                 "branch": "master"
             }]
         }
