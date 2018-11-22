@@ -25,33 +25,39 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, data, art_size=ArtSize.ROUNDED):
+    def __init__(self, data, name, sortname, art_size=ArtSize.ROUNDED):
         """
             Init widget
             @param data as object
+            @param name as str
+            @param sortname as str
+            @param art_size as int
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
         self._art_size = art_size
         self._data = data
+        self.__name = name
+        self.__sortname = sortname
+        self.__filtered = False
         self._scale_factor = self.get_scale_factor()
         self.set_size_request(art_size, art_size)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
         self.get_style_context().add_class("loading")
 
-    def populate(self, text):
+    def populate(self):
         """
             Populate widget content
-            @param text as str
         """
         self.get_style_context().remove_class("loading")
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        label = Gtk.Label()
-        label.set_ellipsize(Pango.EllipsizeMode.END)
-        label.set_property("halign", Gtk.Align.CENTER)
-        label.set_markup("<b>" + GLib.markup_escape_text(text) + "</b>")
+        self.__label = Gtk.Label()
+        self.__label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__label.set_property("halign", Gtk.Align.CENTER)
+        self.__label.set_markup(
+            "<b>" + GLib.markup_escape_text(self.__name) + "</b>")
         self._artwork = Gtk.Image.new()
         self._artwork.set_size_request(self._art_size, self._art_size)
         self._artwork.show()
@@ -59,7 +65,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self._overlay = Gtk.Overlay()
         self._overlay.add(self._artwork)
         grid.add(self._overlay)
-        grid.add(label)
+        grid.add(self.__label)
         self._widget = Gtk.EventBox()
         self._widget.set_property("has-tooltip", True)
         self._widget.add(grid)
@@ -74,6 +80,35 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
+    def rename(self, name):
+        """
+            Rename widget
+            @param name as str
+        """
+        self.__label.set_markup("<b>" + GLib.markup_escape_text(name) + "</b>")
+
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__filtered = b
+
+    @property
+    def name(self):
+        """
+            Get name
+            @return str
+        """
+        return self.__name
+
+    @property
+    def sortname(self):
+        """
+            Get sortname
+            @return str
+        """
+        return self.__sortname
+
     @property
     def data(self):
         """
@@ -81,6 +116,21 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
             @return object
         """
         return self._data
+
+    @property
+    def filter(self):
+        """
+            Current filter
+            @return str
+        """
+        return self.name.lower()
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__filtered
 
     @property
     def is_populated(self):

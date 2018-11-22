@@ -31,7 +31,8 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             @param decade as [int]
         """
         OverlayHelper.__init__(self)
-        RoundedAlbumsWidget.__init__(self, item_ids)
+        decade_str = "%s - %s" % (item_ids[0], item_ids[-1])
+        RoundedAlbumsWidget.__init__(self, item_ids, decade_str, decade_str)
         self._pixel_size = ArtSize.ROUNDED / 10
 
     def populate(self):
@@ -39,14 +40,9 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             Populate widget content
         """
         self._lock_overlay = False
-        decade_str = "%s - %s" % (self._data[0], self._data[-1])
-        RoundedAlbumsWidget.populate(self, decade_str)
+        RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
-
-    @property
-    def filter(self):
-        return "%s - %s" % (self._data[0], self._data[-1])
 
 #######################
 # PROTECTED           #

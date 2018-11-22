@@ -55,8 +55,7 @@ class PlayListPopover(Popover):
         """
         new_name = self.__name_entry.get_text()
         App().playlists.rename(self.__playlist_id, new_name)
-        App().window.container.reload_view()
-        self.destroy()
+        self.popdown()
 
     def _on_delete_button_clicked(self, button):
         """
@@ -64,8 +63,7 @@ class PlayListPopover(Popover):
             @param button as Gtk.Button
         """
         App().playlists.remove(self.__playlist_id)
-        App().window.container.reload_view()
-        self.destroy()
+        self.popdown()
 
 
 class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
@@ -80,7 +78,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param obj as Track/Album
         """
         OverlayHelper.__init__(self)
-        RoundedAlbumsWidget.__init__(self, playlist_id)
+        name = sortname = App().playlists.get_name(playlist_id)
+        RoundedAlbumsWidget.__init__(self, playlist_id, name, sortname)
         self._pixel_size = ArtSize.ROUNDED / 10
         self.__track_ids = []
         self.__obj = obj
@@ -99,14 +98,10 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
             Populate widget content
         """
-        text = App().playlists.get_name(self._data)
-        RoundedAlbumsWidget.populate(self, text)
+
+        RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
-
-    @property
-    def filter(self):
-        return App().playlists.get_name(self._data)
 
     @property
     def playlist_id(self):

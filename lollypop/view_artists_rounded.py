@@ -145,7 +145,7 @@ class RoundedArtistsView(FlowBoxView):
             @param prefix as str
         """
         for child in self._box.get_children():
-            if child.artist_name == prefix:
+            if child.name == prefix:
                 child.set_artwork()
 
     def __on_realize(self, widget):
