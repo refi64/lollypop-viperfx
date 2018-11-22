@@ -390,7 +390,7 @@ class Playlists(GObject.GObject):
         if playlist_id == Type.LOVED:
             return self.LOVED
         elif playlist_id < 0:
-            for (id, name, name) in ShownPlaylists.get(True):
+            for (id, name, sortname) in ShownPlaylists.get(True):
                 if id == playlist_id:
                     return name
 
