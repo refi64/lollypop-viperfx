@@ -632,7 +632,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             else:
                 album = Album(new_track.album.id)
                 album.set_tracks([new_track])
-                new_row = self.__row_for_album(album, True)
+                new_row = self.__row_for_album(album)
                 new_row.populate()
                 new_row.show()
                 self.__view.insert(new_row, position + 1)
@@ -645,7 +645,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         else:
             album = Album(new_track.album.id)
             album.set_tracks([new_track])
-            new_row = self.__row_for_album(album, True)
+            new_row = self.__row_for_album(album)
             new_row.populate()
             new_row.show()
             self.__view.insert(new_row, position)
@@ -669,7 +669,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             position += 1
         album = Album(new_album_id)
         album.set_tracks([Track(track_id) for track_id in track_ids])
-        new_row = self.__row_for_album(album, True)
+        new_row = self.__row_for_album(album)
         new_row.populate()
         new_row.show()
         self.__view.insert(new_row, position)
@@ -690,7 +690,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
                 if row.album == after_album:
                     break
                 position += 1
-        new_row = self.__row_for_album(album, True)
+        new_row = self.__row_for_album(album)
         new_row.populate()
         new_row.set_previous_row(children[position])
         new_row.set_next_row(children[position].next_row)
