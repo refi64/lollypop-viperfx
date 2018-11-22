@@ -43,6 +43,7 @@ class Row(Gtk.ListBoxRow):
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
         self._row_widget = Gtk.EventBox()
+        self._row_widget.connect("destroy", self.__on_destroy)
         self._row_widget.connect("button-release-event",
                                  self.__on_button_release_event)
         self._row_widget.connect("enter-notify-event",
@@ -308,6 +309,15 @@ class Row(Gtk.ListBoxRow):
             self.set_indicator(App().player.current_track.id == self._track.id,
                                self._track.loved)
         return True
+
+    def __on_destroy(self, widget):
+        """
+            We need to stop timeout idle to prevent
+            __on_indicator_button_release_event() segfaulting
+        """
+        if self.__context_timeout_id is not None:
+            GLib.source_remove(self.__context_timeout_id)
+            self.__context_timeout_id = None
 
     def __on_closed(self, widget):
         """
