@@ -40,6 +40,8 @@ class Container(Gtk.Overlay):
         Container for main view
     """
 
+    __DONATION = 1
+
     def __init__(self):
         """
             Init container
@@ -67,7 +69,7 @@ class Container(Gtk.Overlay):
         self.add(self.__paned_one)
 
         # Show donation notification
-        if App().settings.get_value("show-donation"):
+        if App().settings.get_value("donation").get_int32() != self.__DONATION:
             GLib.timeout_add_seconds(randint(3600, 7200),
                                      self.__show_donation)
 
@@ -985,8 +987,8 @@ class Container(Gtk.Overlay):
         self.add_overlay(notification)
         notification.show()
         notification.set_reveal_child(True)
-        App().settings.set_value("show-donation",
-                                 GLib.Variant("b", False))
+        App().settings.set_value("donation",
+                                 GLib.Variant("i", self.__DONATION))
 
     def __on_list_one_selected(self, selection_list):
         """

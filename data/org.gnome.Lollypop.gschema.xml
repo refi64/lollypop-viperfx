@@ -48,9 +48,9 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-        <key type="b" name="show-donation">
-            <default>true</default>
-            <summary>Allow user to donate to the project</summary>
+        <key type="i" name="donation">
+            <default>0</default>
+            <summary>INTERNAL</summary>
             <description></description>
         </key>
         <key type="b" name="allow-per-track-cover">
