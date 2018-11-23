@@ -322,7 +322,6 @@ class AlbumArt:
             exist = False
             if info is not None:
                 (exist, sample) = info.get_tags().get_sample_index("image", 0)
-                # Some file store it in a preview-image tag
                 if not exist:
                     (exist, sample) = info.get_tags().get_sample_index(
                         "preview-image", 0)
