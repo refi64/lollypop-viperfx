@@ -60,12 +60,12 @@ Bilal Elmoussaoui
             </child>
             <child>
               <object class="GtkLinkButton" id="liberapay">
-                <property name="label" translatable="yes">Liberapay</property>
+                <property name="label" translatable="yes">Patreon</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
-                <property name="uri">https://liberapay.com/gnumdk</property>
+                <property name="uri">https://www.patreon.com/gnumdk</property>
               </object>
             </child>
             <child>
