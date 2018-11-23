@@ -19,7 +19,7 @@ from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_track import TrackRow
 from lollypop.objects import Album, Track
 from lollypop.logger import Logger
-from lollypop.define import App, Type, NextContext, RowListType
+from lollypop.define import App, Type, RowListType
 
 
 class TracksView:
@@ -577,10 +577,8 @@ class TracksView:
             else:
                 App().player.append_to_queue(track.id)
         else:
-            playback = App().settings.get_enum("playback")
             # Do not update album list if in party or album already available
             if not App().player.is_party and\
-                    playback != NextContext.STOP and\
                     not App().player.track_in_playback(track):
                 album = self._album.clone(True)
                 App().player.add_album(album)
