@@ -199,12 +199,8 @@ popover.background separator {
 
 .small-cover-frame {
     border-radius: 1px;
-    border: 2px solid shade(@theme_bg_color, 1.5);;
+    border: 1px solid shade(@theme_bg_color, 0.95);
     background-color: shade(@theme_bg_color, 1.5);
-}
-
-.small-cover-frame:selected {
-    border: 2px solid @theme_selected_bg_color;
 }
 
 .artwork-icon {

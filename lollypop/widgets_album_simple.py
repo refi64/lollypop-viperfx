@@ -214,12 +214,13 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self._show_append(False)
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))
-        if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
+        shuffle_setting = App().settings.get_enum("shuffle")
+        if shuffle_setting == Shuffle.TRACKS:
             track = choice(self._album.tracks)
         else:
             track = self._album.tracks[0]
-        App().player.play_albums(
-            track, self._genre_ids, self._artist_ids, True)
+        App().player.play_albums(track, self._genre_ids, self._artist_ids,
+                                 shuffle_setting == Shuffle.ALBUMS)
         return True
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):

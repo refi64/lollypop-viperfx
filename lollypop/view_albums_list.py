@@ -40,7 +40,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
     }
 
     # Update padding in application.css => albumrow
-    __MARGIN = 6
+    __MARGIN = 4
 
     def get_best_height(widget):
         """
@@ -74,6 +74,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer = None
         self.__parent = parent
         self.__reveal = reveal
+        self._artwork = None
         self._responsive_widget = None
         self._album = album
         self.__list_type = list_type
@@ -185,7 +186,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
-            self.set_selection()
+            if self.album.id == App().player.current_track.album.id:
+                self.set_state(Gtk.StateType.SELECTED)
         else:
             if self._responsive_widget is None:
                 TracksView.__init__(self, self.__list_type)
@@ -193,30 +195,22 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
             self.__revealer.set_reveal_child(True)
-            self.set_selection()
+            self.set_state(Gtk.StateType.NORMAL)
 
     def set_playing_indicator(self):
         """
             Show play indicator
             @param show as bool
         """
-        if self.album.id == App().player.current_track.album.id:
-            self._artwork.set_state(Gtk.StateType.SELECTED)
-        else:
-            self._artwork.set_state(Gtk.StateType.NORMAL)
+        if self._artwork is None:
+            return
+        selected = self.album.id == App().player.current_track.album.id
         if self.__revealer.get_reveal_child():
             TracksView.set_playing_indicator(self)
-
-    def set_selection(self):
-        """
-            Update widget state
-        """
-        selected = self._album.id == App().player.current_track.album.id
-        revealed = self.__revealer is not None and\
-            self.__revealer.get_reveal_child()
-        if selected and not revealed:
+            self.set_state(Gtk.StateType.NORMAL)
+        elif selected:
             self.set_state(Gtk.StateType.SELECTED)
-        elif not selected or revealed:
+        else:
             self.set_state(Gtk.StateType.NORMAL)
 
     def stop(self):
@@ -476,7 +470,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param player as Player
         """
         for child in self.__view.get_children():
-            child.set_selection()
             child.set_playing_indicator()
 
     def _on_artwork_changed(self, artwork, album_id):
