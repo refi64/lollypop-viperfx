@@ -13,9 +13,8 @@
 from gi.repository import Gtk, Gdk, Pango, GLib
 
 from gettext import gettext as _
-from random import choice
 
-from lollypop.define import App, ArtSize, Shuffle
+from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
@@ -173,30 +172,9 @@ class ArtistView(ArtistAlbumsView):
             if App().player.is_party:
                 App().lookup_action("party").change_state(
                     GLib.Variant("b", False))
-            album_ids = App().albums.get_ids(self._artist_ids,
-                                             self._genre_ids, True)
-            if not album_ids:
-                album_ids = App().albums.get_ids(self._artist_ids,
-                                                 self._genre_ids, False)
-            if album_ids:
-                track = None
-                if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
-                    album_id = choice(album_ids)
-                    album_tracks = Album(album_id).tracks
-                    if album_tracks:
-                        track = choice(album_tracks)
-                else:
-                    if App().settings.get_enum("shuffle") == Shuffle.ALBUMS:
-                        album_id = choice(album_ids)
-                    else:
-                        album_id = album_ids[0]
-                    album_tracks = Album(album_id).tracks
-                    if album_tracks:
-                        track = album_tracks[0]
-                if track.id is not None:
-                    App().player.play_albums(track,
-                                             self._genre_ids,
-                                             self._artist_ids)
+            App().player.play_albums(None,
+                                     self._genre_ids,
+                                     self._artist_ids)
             self.__update_icon(False)
         except Exception as e:
             Logger.error("ArtistView::_on_play_clicked: %s" % e)

@@ -184,16 +184,15 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self.load(track)
         self._albums = [album]
 
-    def play_albums(self, track, filter1_ids, filter2_ids, random=False):
+    def play_albums(self, album_id, filter1_ids, filter2_ids):
         """
             Play albums related to track/genre_ids/artist_ids
-            @param track as Track/None
+            @param album_id as int/None
             @param filter1_ids as [int]
             @param filter2_ids as [int]
-            @param random as bool
         """
         self._albums = []
-        album_ids = []
+        album_ids = [] if album_id is None else [album_id]
         self.reset_history()
         # We are not playing a user playlist anymore
         self._playlist_tracks = []
@@ -203,7 +202,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
            (filter2_ids and filter2_ids[0] == Type.ALL):
             # Genres: all, Artists: compilations
             if filter2_ids and filter2_ids[0] == Type.COMPILATIONS:
-                album_ids = App().albums.get_compilation_ids([], True)
+                album_ids += App().albums.get_compilation_ids([], True)
             # Genres: all, Artists: ids
             elif filter2_ids and filter2_ids[0] != Type.ALL:
                 album_ids += App().albums.get_ids(filter2_ids, [], True)
@@ -214,22 +213,22 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 album_ids += App().albums.get_ids([], [], True)
         # We are in populars view, add popular albums
         elif filter1_ids and filter1_ids[0] == Type.POPULARS:
-            album_ids = App().albums.get_populars()
+            album_ids += App().albums.get_populars()
         # We are in loved view, add loved albums
         elif filter1_ids and filter1_ids[0] == Type.LOVED:
-            album_ids = App().albums.get_loved_albums()
+            album_ids += App().albums.get_loved_albums()
         # We are in recents view, add recent albums
         elif filter1_ids and filter1_ids[0] == Type.RECENTS:
-            album_ids = App().albums.get_recents()
+            album_ids += App().albums.get_recents()
         # We are in randoms view, add random albums
         elif filter1_ids and filter1_ids[0] == Type.RANDOMS:
-            album_ids = App().albums.get_cached_randoms()
+            album_ids += App().albums.get_cached_randoms()
         # We are in compilation view without genre
         elif filter1_ids and filter1_ids[0] == Type.COMPILATIONS:
-            album_ids = App().albums.get_compilation_ids([])
+            album_ids += App().albums.get_compilation_ids([])
         # We are in years view
         elif filter1_ids and filter1_ids[0] == Type.YEARS:
-            album_ids = []
+            album_ids += []
             for year in filter2_ids:
                 album_ids += App().albums.get_albums_for_year(year)
                 album_ids += App().albums.get_compilations_for_year(year)
@@ -242,10 +241,10 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     filter1_ids, True)
             elif filter2_ids:
                 # In artist view, play all albums if ignoring return []
-                album_ids = App().albums.get_ids(
+                album_ids += App().albums.get_ids(
                     filter2_ids, filter1_ids, True)
                 if not album_ids:
-                    album_ids = App().albums.get_ids(
+                    album_ids += App().albums.get_ids(
                         filter2_ids, filter1_ids, False)
             elif App().settings.get_value(
                             "show-compilations-in-album-view"):
@@ -254,20 +253,36 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 album_ids += App().albums.get_ids([], filter1_ids, True)
             else:
                 album_ids += App().albums.get_ids([], filter1_ids, True)
-        if random:
-            shuffle(album_ids)
+
+        shuffle_setting = App().settings.get_enum("shuffle")
+        if not album_ids:
+            return
+        elif shuffle_setting == Shuffle.ALBUMS:
+            if album_id is None:
+                shuffle(album_ids)
+                album = Album(album_ids.pop(0))
+            else:
+                album = Album(album_ids.pop(0))
+                shuffle(album_ids)
+        else:
+            album = Album(album_ids.pop(0))
+        # Select a track and start playback
+        track = None
+        self._albums = [album]
+        if shuffle_setting == Shuffle.TRACKS:
+            track = choice(album.tracks)
+        elif shuffle_setting == Shuffle.ALBUMS:
+            if self._albums and self._albums[0].tracks:
+                track = self._albums[0].tracks[0]
+        elif album.tracks:
+            track = album.tracks[0]
+
         # Create album objects
         for album_id in album_ids:
             album = Album(album_id, filter1_ids, filter2_ids, True)
             self._albums.append(album)
-            # Get track from album
-            # to make Player.current_track present in Player.albums
-            if track is None:
-                track = album.tracks[0]
-            elif album.id == track.album.id:
-                index = album.track_ids.index(track.id)
-                track = album.tracks[index]
-        self.load(track)
+        if track is not None:
+            self.load(track)
 
     def clear_albums(self):
         """

@@ -13,7 +13,6 @@
 from gi.repository import GLib, Gdk, Gtk, Pango, GObject
 
 from gettext import gettext as _
-from random import choice
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
@@ -214,13 +213,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self._show_append(False)
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))
-        shuffle_setting = App().settings.get_enum("shuffle")
-        if shuffle_setting == Shuffle.TRACKS:
-            track = choice(self._album.tracks)
-        else:
-            track = self._album.tracks[0]
-        App().player.play_albums(track, self._genre_ids, self._artist_ids,
-                                 shuffle_setting == Shuffle.ALBUMS)
+        App().player.play_albums(self._album.id,
+                                 self._genre_ids,
+                                 self._artist_ids)
         return True
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
