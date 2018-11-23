@@ -539,7 +539,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
                 children[0].reveal(True)
             else:
                 GLib.idle_add(self.lazy_loading)
-            if not self._viewport.in_destruction() and\
+            if self._viewport is not None and\
                     self._viewport.get_child() is None:
                 self._viewport.add(self.__view)
 

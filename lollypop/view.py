@@ -85,6 +85,7 @@ class View(BaseView, Gtk.Grid):
         self._scrolled.connect("leave-notify-event", self.__on_leave_notify)
         self._scrolled.show()
         self._viewport = Gtk.Viewport()
+        self._viewport.connect("destroy", self.__on_destroy)
         self._scrolled.add(self._viewport)
         self._viewport.show()
         self.connect("map", self._on_map)
@@ -223,6 +224,13 @@ class View(BaseView, Gtk.Grid):
            event.y <= 0 or\
            event.y >= allocation.height:
             self.disable_overlay()
+
+    def __on_destroy(self, viewport):
+        """
+            Mark widget as destroyed
+            @param viewport as Gtk.Viewport
+        """
+        self._viewport = None
 
 
 class LazyLoadingView(View):
