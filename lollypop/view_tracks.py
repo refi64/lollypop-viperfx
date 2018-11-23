@@ -104,7 +104,7 @@ class TracksView:
                                          disc_number,
                                          mid_tracks)
             else:
-                self.populate_list_left(tracks, 0, 0)
+                self.populate_list_left(tracks, disc_number, 0)
 
     def populate_list_left(self, tracks, disc_number, pos):
         """
