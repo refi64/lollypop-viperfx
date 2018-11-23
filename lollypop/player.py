@@ -54,9 +54,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         if self._is_locked:
             return
-        smart_prev = App().settings.get_value("smart-previous")
         if self._prev_track.id is not None:
-            if smart_prev and self.position / Gst.SECOND > 2:
+            if self.position / Gst.SECOND > 2:
                 self.seek(0)
             else:
                 self.load(self._prev_track)

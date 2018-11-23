@@ -291,11 +291,6 @@
             <summary>Smoothing duration</summary>
             <description></description>
         </key>
-        <key type="b" name="smart-previous">
-            <default>false</default>
-            <summary>Restart current track on previous</summary>
-            <description></description>
-        </key>
         <key type="b" name="lastfm-loved-status">
             <default>false</default>
             <summary>Last.fm loved track status</summary>
