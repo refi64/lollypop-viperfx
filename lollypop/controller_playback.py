@@ -33,12 +33,17 @@ class PlaybackController:
             Update toolbar
             @param player as Player
         """
-        is_radio = App().player.current_track.id == Type.RADIOS
-        self._play_btn.set_sensitive(True)
-        self._prev_button.set_sensitive(not App().player.is_locked and
-                                        not is_radio)
-        self._next_button.set_sensitive(not App().player.is_locked and
-                                        not is_radio)
+        if App().player.current_track.id is None:
+            self._play_button.set_sensitive(False)
+            self._prev_button.set_sensitive(False)
+            self._next_button.set_sensitive(False)
+        else:
+            is_radio = App().player.current_track.id == Type.RADIOS
+            self._play_button.set_sensitive(True)
+            self._prev_button.set_sensitive(not App().player.is_locked and
+                                            not is_radio)
+            self._next_button.set_sensitive(not App().player.is_locked and
+                                            not is_radio)
 
     def on_prev_changed(self, player):
         """
@@ -81,12 +86,10 @@ class PlaybackController:
             Update buttons and progress bar
             @param player as Player
         """
-        # GTK bug, should not be needed, see #1214
-        self._play_btn.set_sensitive(True)
         if player.is_playing:
-            self.__change_play_btn_status(self._pause_image, _("Pause"))
+            self.__change_play_button_status(self._pause_image, _("Pause"))
         else:
-            self.__change_play_btn_status(self._play_image, _("Play"))
+            self.__change_play_button_status(self._play_image, _("Play"))
 
 #######################
 # PROTECTED           #
@@ -105,10 +108,10 @@ class PlaybackController:
         """
         if App().player.is_playing:
             App().player.pause()
-            self.__change_play_btn_status(self._play_image, _("Play"))
+            self.__change_play_button_status(self._play_image, _("Play"))
         else:
             App().player.play()
-            self.__change_play_btn_status(self._pause_image, _("Pause"))
+            self.__change_play_button_status(self._pause_image, _("Pause"))
 
     def _on_next_button_clicked(self, button):
         """
@@ -120,11 +123,11 @@ class PlaybackController:
 #######################
 # PRIVATE             #
 #######################
-    def __change_play_btn_status(self, image, status):
+    def __change_play_button_status(self, image, status):
         """
             Update play button with image and status as tooltip
             @param image as Gtk.Image
             @param status as str
         """
-        self._play_btn.set_image(image)
-        self._play_btn.set_tooltip_text(status)
+        self._play_button.set_image(image)
+        self._play_button.set_tooltip_text(status)

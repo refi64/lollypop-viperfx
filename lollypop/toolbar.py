@@ -38,7 +38,6 @@ class Toolbar(Gtk.HeaderBar):
         self.__toolbar_info = ToolbarInfo()
         self.__toolbar_info.show()
         self.__toolbar_title = ToolbarTitle()
-        self.__toolbar_title.show()
         self.__toolbar_end = ToolbarEnd()
         self.__toolbar_end.show()
         self.pack_start(self.__toolbar_playback)
@@ -150,6 +149,10 @@ class Toolbar(Gtk.HeaderBar):
         Logger.debug("Toolbar::_on_current_changed()")
         self.__toolbar_playback.on_current_changed(player)
         self.__toolbar_info.on_current_changed(player)
+        if App().player.current_track.id is None:
+            self.__toolbar_title.hide()
+        else:
+            self.__toolbar_title.show()
         self.__toolbar_title.on_current_changed(player)
 
     def __on_prev_changed(self, player):

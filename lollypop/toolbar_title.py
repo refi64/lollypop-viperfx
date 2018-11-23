@@ -12,6 +12,7 @@
 
 from gi.repository import Gtk
 
+from lollypop.define import App
 from lollypop.controller_progress import ProgressController
 
 
@@ -62,5 +63,5 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         """
         if b:
             self.hide()
-        else:
+        elif App().player.current_track.id is not None:
             self.show()

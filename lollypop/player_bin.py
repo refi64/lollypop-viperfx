@@ -60,17 +60,6 @@ class BinPlayer(BasePlayer):
             bus.connect("message::tag", self._on_bus_message_tag)
         self._start_time = 0
 
-    @property
-    def preview(self):
-        """
-            Get a preview bin
-            @return Gst.Element
-        """
-        if self.__preview is None:
-            self.__preview = Gst.ElementFactory.make("playbin", "player")
-            self.set_preview_output()
-        return self.__preview
-
     def set_preview_output(self):
         """
             Set preview output
@@ -137,11 +126,8 @@ class BinPlayer(BasePlayer):
         """
             Change player state to STOPPED
         """
-        self._playbin.set_state(Gst.State.NULL)
-        # If user click play again, it will start current track
-        # See BinPlayer.play()
-        self._next_track = self._current_track
         self._current_track = Track()
+        self._playbin.set_state(Gst.State.NULL)
         self.emit("status-changed")
         self.emit("current-changed")
 
@@ -194,6 +180,17 @@ class BinPlayer(BasePlayer):
             return state == Gst.State.PLAYING
         else:
             return False
+
+    @property
+    def preview(self):
+        """
+            Get a preview bin
+            @return Gst.Element
+        """
+        if self.__preview is None:
+            self.__preview = Gst.ElementFactory.make("playbin", "player")
+            self.set_preview_output()
+        return self.__preview
 
     @property
     def position(self):
@@ -251,8 +248,6 @@ class BinPlayer(BasePlayer):
             @param init volume as bool
             @return False if track not loaded
         """
-        if self.__need_to_stop():
-            return False
         if init_volume:
             self._plugins.volume.props.volume = 1.0
         Logger.debug("BinPlayer::_load_track(): %s" % track.uri)
@@ -359,7 +354,6 @@ class BinPlayer(BasePlayer):
         """
         Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
-            self.stop()
             self._next_context = NextContext.NONE
             if self._next_track.id is not None:
                 self._load_track(self._next_track)
@@ -378,7 +372,7 @@ class BinPlayer(BasePlayer):
             return
         self._scrobble(self._current_track, self._start_time)
         # Increment popularity
-        if self._current_track.id >= 0:
+        if self._current_track.id is not None and self._current_track.id >= 0:
             App().tracks.set_more_popular(self._current_track.id)
             # In party mode, linear popularity
             if self.is_party:
@@ -396,7 +390,10 @@ class BinPlayer(BasePlayer):
                     pop_to_add = 1
             App().albums.set_more_popular(self._current_track.album_id,
                                           pop_to_add)
-        if self._next_track.id is not None:
+        if self.__need_to_stop():
+            # We are in gstreamer thread
+            GLib.idle_add(self.stop)
+        elif self._next_track.id is not None:
             self._load_track(self._next_track)
 
 #######################

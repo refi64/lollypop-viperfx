@@ -35,7 +35,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self.add(builder.get_object("playback"))
 
         self._prev_button = builder.get_object("previous_button")
-        self._play_btn = builder.get_object("play_button")
+        self._play_button = builder.get_object("play_button")
         self._next_button = builder.get_object("next_button")
         self.__back_button = builder.get_object("back_button")
         self._play_image = builder.get_object("play_image")
