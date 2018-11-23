@@ -568,7 +568,7 @@ class MtpSync(GObject.Object):
             except Exception as e:
                 Logger.error("DeviceWidget::__sync_playlists(): %s" % e)
             if App().playlists.get_smart(playlist_id):
-                request = App().playlists.get_smart_sql(playlist_ids[0])
+                request = App().playlists.get_smart_sql(playlist_id)
                 track_ids = App().db.execute(request)
             else:
                 track_ids = App().playlists.get_track_ids(playlist_id)
