@@ -109,7 +109,7 @@ class ViewsMenuPopover(Popover):
             items = ShownPlaylists.get(True)
         else:
             items = ShownLists.get(self.__mask, True)
-        if variant:
+        if variant and rowid != Type.USB_DISKS:
             for item in items:
                 if item[0] == rowid:
                     self.__widget.add_value(item)
