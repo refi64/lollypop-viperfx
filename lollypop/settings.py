@@ -407,8 +407,16 @@ class SettingsDialog:
         """
         App().settings.set_value("artist-artwork",
                                  GLib.Variant("b", state))
-        App().window.container.list_one.redraw()
-        App().window.container.list_two.redraw()
+        if App().settings.get_value("show-sidebar"):
+            App().window.container.list_one.redraw()
+            App().window.container.list_two.redraw()
+        else:
+            from lollypop.view_artists_rounded import RoundedArtistsView
+            for child in App().window.container.stack.get_children():
+                if isinstance(child, RoundedArtistsView):
+                    child.destroy()
+                    break
+            App().window.container.reload_view()
         if state:
             App().art.cache_artists_info()
 
