@@ -69,7 +69,7 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._shuffle != Shuffle.NONE or self.__is_party:
+        if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_prev:
                 track = self.__history.prev.value
             else:
