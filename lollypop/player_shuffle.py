@@ -16,6 +16,7 @@ from lollypop.define import Shuffle, NextContext, App, Type
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
 from lollypop.list import LinkedList
+from lollypop.logger import Logger
 
 
 class ShufflePlayer(BasePlayer):
@@ -54,7 +55,7 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._shuffle != Shuffle.NONE or self.__is_party:
+        if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_next:
                 track = self.__history.next.value
             elif self._albums or (self._playlist_tracks and
@@ -213,41 +214,17 @@ class ShufflePlayer(BasePlayer):
                     track = self.__get_tracks_random()
                 else:
                     track = self.__get_playlists_random()
-            else:
-                track = self.__get_albums_random()
-            # Try to get another one track after reseting history
-            if track.id is None:
-                self.__already_played_albums = []
-                self.__already_played_tracks = {}
-                self.__history = []
-                return self.__get_next()
-            return track
-        except:  # Recursion error
-            return Track()
-
-    def __get_albums_random(self):
-        """
-            Return a track for current album or if finished
-            from a random album
-            @return Track
-        """
-        album = self._current_track.album
-        new_track_position = self._current_track.position + 1
-        # next album
-        if new_track_position >= len(album.track_ids):
-            self.__already_played_albums.append(album)
-            for album in sorted(
-                    self._albums, key=lambda *args: random.random()):
-                # Ignore current album, not an issue if playing one album
-                # in shuffle because LinearPlayer will handle next()
-                if album not in self.__already_played_albums and\
-                        album != App().player.current_track.album:
-                    track = album.tracks[0]
-                    break
-        # next track
-        else:
-            track = album.tracks[new_track_position]
-        return track
+                # All track dones
+                # Try to get another one track after reseting history
+                if track.id is None:
+                    self.__already_played_albums = []
+                    self.__already_played_tracks = {}
+                    self.__history = []
+                    return self.__get_next()
+                return track
+        except Exception as e:  # Recursion error
+            Logger.error("ShufflePLayer::__get_next(): %s", e)
+        return Track()
 
     def __get_playlists_random(self):
         """

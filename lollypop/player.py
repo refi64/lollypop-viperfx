@@ -13,7 +13,7 @@
 from gi.repository import Gst, GLib
 
 from pickle import load
-from random import choice
+from random import choice, shuffle
 
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
@@ -184,12 +184,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self.load(track)
         self._albums = [album]
 
-    def play_albums(self, track, filter1_ids, filter2_ids):
+    def play_albums(self, track, filter1_ids, filter2_ids, random=False):
         """
             Play albums related to track/genre_ids/artist_ids
             @param track as Track/None
             @param filter1_ids as [int]
             @param filter2_ids as [int]
+            @param random as bool
         """
         self._albums = []
         album_ids = []
@@ -253,6 +254,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 album_ids += App().albums.get_ids([], filter1_ids, True)
             else:
                 album_ids += App().albums.get_ids([], filter1_ids, True)
+        if random:
+            shuffle(album_ids)
         # Create album objects
         for album_id in album_ids:
             album = Album(album_id, filter1_ids, filter2_ids, True)
