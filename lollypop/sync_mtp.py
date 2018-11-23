@@ -473,7 +473,8 @@ class MtpSync(GObject.Object):
         m = match(r".*(\.[^.]*)", track.uri)
         ext = m.group(1)
         convert_ext = self.__EXTENSION[self.__mtp_syncdb.encoder]
-        if convert_ext is not None and ext != convert_ext:
+        if (convert_ext is not None and
+                ext != convert_ext) or self.__mtp_syncdb.normalize:
             convertion_needed = True
             track_name = track_name.replace(ext, convert_ext)
         else:
