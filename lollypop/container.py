@@ -973,14 +973,14 @@ class Container(Gtk.Overlay):
         from lollypop.app_notification import AppNotification
         notification = AppNotification(
             _("Please consider a donation to the project"),
-            [_("PayPal"), _("Liberapay")],
+            [_("PayPal"), _("Patreon")],
             [lambda: Gtk.show_uri_on_window(
                 App().window,
                 "https://www.paypal.me/lollypopgnome",
                 Gdk.CURRENT_TIME),
              lambda: Gtk.show_uri_on_window(
                 App().window,
-                "https://liberapay.com/gnumdk",
+                "https://www.patreon.com/gnumdk",
                 Gdk.CURRENT_TIME)])
         self.add_overlay(notification)
         notification.show()
