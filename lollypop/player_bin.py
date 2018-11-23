@@ -393,6 +393,8 @@ class BinPlayer(BasePlayer):
         if self.__need_to_stop():
             # We are in gstreamer thread
             GLib.idle_add(self.stop)
+            # Reenable as it has been disabled by do_crossfading()
+            self.update_crossfading()
         elif self._next_track.id is not None:
             self._load_track(self._next_track)
 
@@ -472,7 +474,8 @@ class BinPlayer(BasePlayer):
             @param next as bool
         """
         # No cossfading if we need to stop
-        if self.__need_to_stop() and next:
+        if self.__need_to_stop():
+            self._crossfading = False
             return
 
         if track is None:
@@ -532,7 +535,7 @@ class BinPlayer(BasePlayer):
                 not self._playlist_ids) or\
                     playback == self._next_context:
                 stop = True
-        return stop and self.is_playing
+        return stop
 
     def __on_volume_changed(self, playbin, sink):
         """
