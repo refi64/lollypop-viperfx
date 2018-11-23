@@ -260,6 +260,13 @@ class SelectionList(BaseView, Gtk.Overlay):
         """
         self.__selection.select_iter(self.__model[0].iter)
 
+    def redraw(self):
+        """
+            Redraw list
+        """
+        self.__view.set_model(None)
+        self.__view.set_model(self.__model)
+
     @property
     def can_destroy(self):
         """
