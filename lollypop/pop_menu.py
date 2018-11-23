@@ -48,23 +48,11 @@ class ArtistMenu(BaseMenu):
             @param object as Album/Track
         """
         BaseMenu.__init__(self, object)
-        if self.__filter_artist_ids():
-            self.__set_artists_actions()
+        self.__set_artists_actions()
 
 #######################
 # PRIVATE             #
 #######################
-    def __filter_artist_ids(self):
-        """
-            Remove static entries
-            @return [int]
-        """
-        artist_ids = []
-        for artist_id in self._object.artist_ids:
-            if artist_id > 0:
-                artist_ids.append(artist_id)
-        return artist_ids
-
     def __set_artists_actions(self):
         """
             Set queue actions
@@ -81,7 +69,11 @@ class ArtistMenu(BaseMenu):
             @param Gio.SimpleAction
             @param GLib.Variant
         """
-        App().window.container.show_artists_albums(self.__filter_artist_ids())
+        if App().settings.get_value("show-sidebar"):
+            App().window.container.show_artists_albums(
+                 self._object.artist_ids)
+        else:
+            App().window.container.show_view(self._object.artist_ids[0])
 
 
 class QueueMenu(BaseMenu):
