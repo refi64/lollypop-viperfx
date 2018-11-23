@@ -51,24 +51,9 @@ class Toolbar(Gtk.HeaderBar):
         App().player.connect("prev-changed", self.__on_prev_changed)
         window.connect("adaptive-changed", self.on_adaptive_changed)
 
-    def do_get_preferred_height(self):
-        """
-            Here, we calculate height based on:
-            - playback toolbar if bigger
-            - infos toolbar to adapt to font size then
-        """
-        style = self.get_style_context()
-        padding = style.get_padding(style.get_state())
-        info_height = self.__toolbar_info.get_preferred_height()
-        if info_height[0] + padding.top + padding.bottom > 47:
-            height = info_height[0] + padding.top + padding.bottom
-        else:
-            height = Gtk.HeaderBar.do_get_preferred_height(self)[0]
-        return (height, height)
-
     def do_get_preferred_width(self):
         """
-            Allow snapping for screen with width > 1400
+            Allow snapping for screen with width < 1400
             @return (int, int)
         """
         return (WindowSize.SMALL, self.__width)
