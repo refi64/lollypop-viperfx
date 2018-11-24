@@ -16,7 +16,6 @@ from gettext import gettext as _
 
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
-from lollypop.helper_art import ArtHelper
 from lollypop.objects import Album, Track
 from lollypop.define import ArtSize, App, RowListType
 from lollypop.controller_view import ViewController
@@ -92,12 +91,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         if self.get_child() is not None:
             return
-        self.__art_helper = ArtHelper()
-        self._artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
-                                                    ArtSize.MEDIUM,
-                                                    "small-cover-frame")
-        self._artwork.connect("notify::surface", self.__on_artwork_set)
-        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
+        self._artwork = App().art_helper.get_image(ArtSize.MEDIUM,
+                                                   ArtSize.MEDIUM,
+                                                   "small-cover-frame")
         self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
@@ -170,7 +166,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         row_widget.add(grid)
         self.add(row_widget)
         self.set_playing_indicator()
-        self.show_all()
         row_widget.connect("button-release-event",
                            self.__on_button_release_event)
         if self.__reveal:
@@ -224,10 +219,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
             Set album artwork
         """
-        self.__art_helper.set_album_artwork(self._artwork,
-                                            self._album,
-                                            ArtSize.MEDIUM,
-                                            ArtSize.MEDIUM)
+        App().art_helper.set_album_artwork(self._album,
+                                           ArtSize.MEDIUM,
+                                           ArtSize.MEDIUM,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_album_artwork)
 
     @property
     def parent(self):
@@ -267,6 +263,19 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
 #######################
 # PRIVATE             #
 #######################
+    def __on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.BUTTON)
+        else:
+            self._artwork.set_from_surface(surface)
+        self.emit("populated")
+        self.show_all()
+
     def __on_button_release_event(self, widget, event):
         """
             Show revealer with tracks
@@ -313,14 +322,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         else:
             App().window.container.show_view(self._album.artist_ids[0])
         return True
-
-    def __on_artwork_set(self, image, spec):
-        """
-            Finish widget initialisation
-            @param image as Gtk.Image
-            @param spec as GObject.ParamSpec
-        """
-        self.emit("populated")
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

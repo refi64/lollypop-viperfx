@@ -17,7 +17,6 @@ from gettext import gettext as _
 from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
 from lollypop.helper_overlay import OverlayHelper
-from lollypop.helper_art import ArtHelper
 from lollypop.pop_radio import RadioPopover
 
 
@@ -48,7 +47,6 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self._widget = None
         self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
-        self.__art_helper = ArtHelper()
         self.__radio_id = radio_id
         self.__name = radios.get_name(radio_id)
         self.__radios = radios
@@ -63,11 +61,9 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self._widget.connect("query-tooltip", self.__on_query_tooltip)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._artwork = self.__art_helper.get_image(ArtSize.BIG,
-                                                    ArtSize.BIG,
-                                                    "cover-frame")
-        self._artwork.connect("notify::surface", self.__on_artwork_set)
-        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
+        self._artwork = App().art_helper.get_image(ArtSize.BIG,
+                                                   ArtSize.BIG,
+                                                   "cover-frame")
         self.__label = Gtk.Label()
         self.__label.set_justify(Gtk.Justification.CENTER)
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -78,10 +74,12 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         grid.add(self.__overlay)
         grid.add(self.__label)
         self.add(self._widget)
-        self.__art_helper.set_radio_artwork(self._artwork,
-                                            self.__name,
-                                            ArtSize.BIG,
-                                            ArtSize.BIG)
+        App().art_helper.set_radio_artwork(
+                                           self.__name,
+                                           ArtSize.BIG,
+                                           ArtSize.BIG,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_radio_artwork)
         self.set_selection()
         self.show_all()
         self._lock_overlay = False
@@ -260,11 +258,15 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             tooltip.set_markup(markup)
             return True
 
-    def __on_artwork_set(self, image, spec):
+    def __on_radio_artwork(self, surface):
         """
-            Finish widget initialisation
-            @param image as Gtk.Image
-            @param spec as GObject.ParamSpec
+            Set radio artwork
+            @param surface as str
         """
+        if surface is None:
+            self._artwork.set_from_icon_name("audio-input-microphone-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
         self.show_all()
         self.emit("populated")

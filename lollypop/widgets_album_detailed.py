@@ -19,7 +19,6 @@ from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.widgets_utils import Popover
-from lollypop.helper_art import ArtHelper
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import WindowSize
@@ -51,7 +50,6 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, RowListType.TWO_COLUMNS)
         OverlayAlbumHelper.__init__(self)
-        self.__art_helper = ArtHelper()
         self.__context = None
         # Cover + rating + spacing
         self.__height = ArtSize.BIG + 26
@@ -100,11 +98,9 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             eventbox.connect("leave-notify-event", self._on_leave_notify)
             eventbox.show()
             self.set_property("valign", Gtk.Align.CENTER)
-            self._artwork = self.__art_helper.get_image(ArtSize.BIG,
-                                                        ArtSize.BIG,
-                                                        "cover-frame")
-            self._artwork.connect("notify::surface", self.__on_artwork_set)
-            self._artwork.connect("notify::icon-name", self.__on_artwork_set)
+            self._artwork = App().art_helper.get_image(ArtSize.BIG,
+                                                       ArtSize.BIG,
+                                                       "cover-frame")
             self._artwork.show()
             eventbox.add(self._artwork)
             self.__duration_label.set_hexpand(True)
@@ -151,11 +147,11 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
             Set album artwork
         """
-        if self._artwork is not None:
-            self.__art_helper.set_album_artwork(self._artwork,
-                                                self._album,
-                                                ArtSize.BIG,
-                                                ArtSize.BIG)
+        App().art_helper.set_album_artwork(self._album,
+                                           ArtSize.BIG,
+                                           ArtSize.BIG,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_album_artwork)
 
     def get_current_ordinate(self, parent):
         """
@@ -329,11 +325,15 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
         self.get_style_context().remove_class("album-menu-selected")
 
-    def __on_artwork_set(self, image, spec):
+    def __on_album_artwork(self, surface):
         """
-            Finish widget initialisation
-            @param image as Gtk.Image
-            @param spec as GObject.ParamSpec
+            Set album artwork
+            @param surface as str
         """
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
         self._artwork.show()
         self.emit("populated")

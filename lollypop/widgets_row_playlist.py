@@ -16,7 +16,6 @@ from lollypop.define import App, ArtSize, Type, RowListType
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
-from lollypop.helper_art import ArtHelper
 
 
 class PlaylistRow(Row, DNDRow):
@@ -40,14 +39,13 @@ class PlaylistRow(Row, DNDRow):
         if list_type & RowListType.DND:
             DNDRow.__init__(self)
         self.__filtered = False
-        self.__art_helper = ArtHelper()
         self._grid.insert_row(0)
         self._grid.insert_column(0)
         self._grid.insert_column(1)
         self._grid.attach(self._indicator, 1, 1, 1, 2)
-        self.__artwork = self.__art_helper.get_image(ArtSize.MEDIUM,
-                                                     ArtSize.MEDIUM,
-                                                     "small-cover-frame")
+        self.__artwork = App().art_helper.get_image(ArtSize.MEDIUM,
+                                                    ArtSize.MEDIUM,
+                                                    "small-cover-frame")
         self.__artwork.set_no_show_all(True)
         # We force width with a Box
         box = Gtk.Box()
@@ -106,14 +104,14 @@ class PlaylistRow(Row, DNDRow):
         """
         if not self.__artwork.get_visible():
             self.__artwork.set_tooltip_text(self._track.album.name)
-            self.__art_helper.set_album_artwork(self.__artwork,
-                                                self.track.album,
-                                                ArtSize.MEDIUM,
-                                                ArtSize.MEDIUM)
+            App().art_helper.set_album_artwork(
+                                           self.track.album,
+                                           ArtSize.MEDIUM,
+                                           ArtSize.MEDIUM,
+                                           self.__artwork.get_scale_factor(),
+                                           self.__on_album_artwork)
             self.__artwork.set_margin_top(2)
-            self.__artwork.show()
             self.set_margin_bottom(2)
-            self.__header.show_all()
 
     def hide_artwork(self):
         """
@@ -161,3 +159,15 @@ class PlaylistRow(Row, DNDRow):
 #######################
 # PRIVATE             #
 #######################
+    def __on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self.__artwork.set_from_icon_name("folder-music-symbolic",
+                                              Gtk.IconSize.BUTTON)
+        else:
+            self.__artwork.set_from_surface(surface)
+        self.__artwork.show()
+        self.show_all()

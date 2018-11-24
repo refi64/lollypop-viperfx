@@ -14,12 +14,11 @@ from gi.repository import Gtk, GLib, Gio, Gdk
 
 from gettext import gettext as _
 
-from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize, RowListType
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
-from lollypop.helper_art import ArtHelper, ArtHelperEffect
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.widgets_utils import Popover
@@ -102,7 +101,6 @@ class InformationPopover(Popover):
         """
         Popover.__init__(self)
         self.__scale_factor = 1
-        self.__art_helper = ArtHelper()
         self.__cancellable = Gio.Cancellable()
         self.__minimal = minimal
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -114,7 +112,6 @@ class InformationPopover(Popover):
             Show information for artists
             @param artist_id as int
         """
-        helper = TaskHelper()
         builder = Gtk.Builder()
         builder.add_from_resource(
             "/org/gnome/Lollypop/ArtistInformation.ui")
@@ -123,7 +120,7 @@ class InformationPopover(Popover):
         self.add(widget)
         artist_label = builder.get_object("artist_label")
         title_label = builder.get_object("title_label")
-        artist_artwork = builder.get_object("artist_artwork")
+        self.__artist_artwork = builder.get_object("artist_artwork")
         bio_label = builder.get_object("bio_label")
         if artist_id is None and App().player.current_track.id is not None:
             builder.get_object("lyrics_button").show()
@@ -140,13 +137,15 @@ class InformationPopover(Popover):
             self.__on_label_button_release_event,
             artist_name)
         if self.__minimal:
-            artist_artwork.hide()
+            self.__artist_artwork.hide()
         else:
-            self.__art_helper.set_artist_artwork(artist_artwork,
-                                                 artist_name,
-                                                 ArtSize.ARTIST_SMALL * 3,
-                                                 ArtSize.ARTIST_SMALL * 3,
-                                                 ArtHelperEffect.ROUNDED)
+            App().art_helper.set_artist_artwork(
+                                    artist_name,
+                                    ArtSize.ARTIST_SMALL * 3,
+                                    ArtSize.ARTIST_SMALL * 3,
+                                    self.__artist_artwork.get_scale_factor(),
+                                    self.__on_artist_artwork,
+                                    ArtHelperEffect.ROUNDED)
             albums_view = AlbumsListView(RowListType.DEFAULT)
             albums_view.set_size_request(300, -1)
             albums_view.show()
@@ -164,7 +163,7 @@ class InformationPopover(Popover):
             builder.get_object("scrolled").hide()
         else:
             bio_label.set_text(_("Loading information"))
-            helper.run(
+            App().task_helper.run(
                 self.__get_bio_content, artist_name,
                 callback=(self.__set_bio_content, bio_label, artist_name))
 
@@ -268,3 +267,13 @@ class InformationPopover(Popover):
             @param widget as Gtk.Widget
         """
         self.__cancellable.cancel()
+
+    def __on_artist_artwork(self, surface):
+        """
+            Finish widget initialisation
+            @param surface as cairo.Surface
+        """
+        if surface is None:
+            self.__artist_artwork.hide()
+        else:
+            self.__artist_artwork.set_from_surface(surface)

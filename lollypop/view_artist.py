@@ -19,7 +19,6 @@ from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
-from lollypop.helper_art import ArtHelper
 from lollypop.logger import Logger
 
 
@@ -35,7 +34,6 @@ class ArtistView(ArtistAlbumsView):
             @param genre id as int
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
-        self.__art_helper = ArtHelper()
         self.__art_signal_id = None
         self._viewport.set_margin_start(10)
         self._viewport.set_margin_end(10)
@@ -44,8 +42,6 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
         builder.connect_signals(self)
         self.__artwork = builder.get_object("artwork")
-        self.__artwork.connect("notify::surface", self.__on_artwork_set)
-        self.__artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.__artwork_box = builder.get_object("artwork-box")
         self.__label = builder.get_object("artist")
         self.__jump_button = builder.get_object("jump-button")
@@ -321,10 +317,12 @@ class ArtistView(ArtistAlbumsView):
                 size = ArtSize.ARTIST_SMALL
                 if not App().window.is_adaptive:
                     size *= 2
-                self.__art_helper.set_artist_artwork(self.__artwork,
-                                                     artist,
-                                                     size,
-                                                     size)
+                App().art_helper.set_artist_artwork(
+                                            artist,
+                                            size,
+                                            size,
+                                            self.__artwork.get_scale_factor(),
+                                            self.__on_artist_artwork)
         else:
             self.__set_header_height()
 
@@ -390,11 +388,15 @@ class ArtistView(ArtistAlbumsView):
             self.__artwork.clear()
             self.__set_artwork()
 
-    def __on_artwork_set(self, image, spec):
+    def __on_artist_artwork(self, surface):
         """
-            Finish widget initialisation
-            @param image as Gtk.Image
-            @param spec as GObject.ParamSpec
+            Set artist artwork
+            @param surface as cairo.Surface
         """
+        if surface is None:
+            self.__artwork.set_from_icon_name("avatar-default-symbolic",
+                                              Gtk.IconSize.DND)
+        else:
+            self.__artwork.set_from_surface(surface)
         self.__artwork.show()
         self.__set_header_height()

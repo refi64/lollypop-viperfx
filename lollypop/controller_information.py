@@ -12,7 +12,7 @@
 
 from gi.repository import GLib
 
-from lollypop.helper_art import ArtHelper, ArtHelperEffect
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.define import Type, App
 
 
@@ -29,7 +29,6 @@ class InformationController:
         """
         self._infobox = None
         self.__effect = effect
-        self.__art_helper = ArtHelper()
         self.__show_tooltip = show_tooltip
         self.__per_track_cover = App().settings.get_value(
             "allow-per-track-cover")
@@ -86,18 +85,20 @@ class InformationController:
         if width < 1 or height < 1:
             return
         if App().player.current_track.id == Type.RADIOS:
-            self.__art_helper.set_radio_artwork(
-                self._artwork,
+            App().art_helper.set_radio_artwork(
                 App().player.current_track.album_artists[0],
                 width,
                 height,
+                self._artwork.get_scale_factor(),
+                self.__on_radio_artwork,
                 self.__effect)
         elif App().player.current_track.id is not None:
-            self.__art_helper.set_album_artwork(
-                self._artwork,
+            App().art_helper.set_album_artwork(
                 App().player.current_track.album,
                 width,
                 height,
+                self._artwork.get_scale_factor(),
+                self.__on_album_artwork,
                 self.__effect)
             if self.__show_tooltip:
                 self._artwork.set_tooltip_text(
@@ -120,3 +121,22 @@ class InformationController:
 #######################
 # PRIVATE             #
 #######################
+    def __on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.hide()
+        else:
+            self._artwork.set_from_surface(surface)
+
+    def __on_radio_artwork(self, surface):
+        """
+            Set radio artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.hide()
+        else:
+            self._artwork.set_from_surface(surface)

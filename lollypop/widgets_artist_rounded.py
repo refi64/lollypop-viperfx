@@ -19,7 +19,7 @@ from lollypop.define import App, SelectionListMask
 from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
-from lollypop.helper_art import ArtHelper, ArtHelperEffect
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.logger import Logger
 
 
@@ -36,7 +36,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         RoundedFlowBoxWidget.__init__(self, item[0], item[1],
                                       item[1], art_size)
-        self.__art_helper = ArtHelper()
         self.connect("realize", self.__on_realize)
 
     def populate(self):
@@ -44,8 +43,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Populate widget content
         """
         RoundedFlowBoxWidget.populate(self)
-        self._artwork.connect("notify::surface", self.__on_artwork_set)
-        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
         self.connect("button-press-event", self.__on_button_press_event)
 
     def show_overlay(self, show):
@@ -85,19 +82,23 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         if self._data < 0:
             set_icon_name()
         elif App().settings.get_value("artist-artwork"):
-            self.__art_helper.set_artist_artwork(self._artwork,
-                                                 self.name,
-                                                 self._art_size,
-                                                 self._art_size)
+            App().art_helper.set_artist_artwork(
+                                            self.name,
+                                            self._art_size,
+                                            self._art_size,
+                                            self._artwork.get_scale_factor(),
+                                            self.__on_artist_artwork)
         else:
             album_ids = App().albums.get_ids([self._data], [])
             if album_ids:
                 shuffle(album_ids)
-                self.__art_helper.set_album_artwork(self._artwork,
-                                                    Album(album_ids[0]),
-                                                    self._art_size,
-                                                    self._art_size,
-                                                    ArtHelperEffect.ROUNDED)
+                App().art_helper.set_album_artwork(
+                                            Album(album_ids[0]),
+                                            self._art_size,
+                                            self._art_size,
+                                            self._artwork.get_scale_factor(),
+                                            self.__on_artist_artwork,
+                                            ArtHelperEffect.ROUNDED)
             else:
                 set_icon_name()
 
@@ -116,12 +117,16 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
-    def __on_artwork_set(self, image, spec):
+    def __on_artist_artwork(self, surface):
         """
             Finish widget initialisation
-            @param image as Gtk.Image
-            @param spec as GObject.ParamSpec
+            @param surface as cairo.Surface
         """
+        if surface is None:
+            self._artwork.set_from_icon_name("avatar-default-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
         if self._artwork.props.surface is None:
             self._artwork.get_style_context().add_class("artwork-icon")
         self.emit("populated")

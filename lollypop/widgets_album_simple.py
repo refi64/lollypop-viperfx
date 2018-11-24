@@ -17,7 +17,6 @@ from gettext import gettext as _
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_utils import Popover
-from lollypop.helper_art import ArtHelper
 from lollypop.define import App, ArtSize, Shuffle
 
 
@@ -55,7 +54,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             Populate widget content
         """
         OverlayAlbumHelper.__init__(self)
-        self.__art_helper = ArtHelper()
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
         self.get_style_context().remove_class("loading")
@@ -80,11 +78,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         eventbox.show()
         self.__widget.add(grid)
         self._overlay = Gtk.Overlay.new()
-        self._artwork = self.__art_helper.get_image(ArtSize.BIG,
-                                                    ArtSize.BIG,
-                                                    "cover-frame")
-        self._artwork.connect("notify::surface", self.__on_artwork_set)
-        self._artwork.connect("notify::icon-name", self.__on_artwork_set)
+        self._artwork = App().art_helper.get_image(ArtSize.BIG,
+                                                   ArtSize.BIG,
+                                                   "cover-frame")
         self._overlay.add(self._artwork)
         grid.add(self._overlay)
         grid.add(eventbox)
@@ -99,10 +95,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
             Set album artwork
         """
-        self.__art_helper.set_album_artwork(self._artwork,
-                                            self._album,
-                                            ArtSize.BIG,
-                                            ArtSize.BIG)
+        App().art_helper.set_album_artwork(self._album,
+                                           ArtSize.BIG,
+                                           ArtSize.BIG,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_album_artwork)
 
     def do_get_preferred_width(self):
         """
@@ -218,6 +215,19 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                  self._artist_ids)
         return True
 
+    def __on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
+        self.show_all()
+        self.emit("populated")
+
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -269,12 +279,3 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         self.lock_overlay(False)
         self._artwork.set_opacity(1)
-
-    def __on_artwork_set(self, image, spec):
-        """
-            Finish widget initialisation
-            @param image as Gtk.Image
-            @param spec as GObject.ParamSpec
-        """
-        self.show_all()
-        self.emit("populated")
