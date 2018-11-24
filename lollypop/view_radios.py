@@ -104,6 +104,13 @@ class RadiosView(FlowBoxView, ViewController):
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
 
+    def _on_unmap(self, widget):
+        """
+            Destroy popover
+            @param widget as Gtk.Widget
+        """
+        self.__pop_tunein.destroy()
+
 #######################
 # PRIVATE             #
 #######################

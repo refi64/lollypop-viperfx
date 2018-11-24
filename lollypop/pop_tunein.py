@@ -18,7 +18,6 @@ from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, ArtSize, WindowSize
 from lollypop.art import Art
-from lollypop.widgets_utils import Popover
 from lollypop.list import LinkedList
 from lollypop.objects import Track
 from lollypop.helper_task import TaskHelper
@@ -30,7 +29,7 @@ class TuneItem:
     LOGO = ""
 
 
-class TuneinPopover(Popover):
+class TuneinPopover(Gtk.Popover):
     """
         Popover showing tunin radios
     """
@@ -40,7 +39,7 @@ class TuneinPopover(Popover):
             Init Popover
             @param radios_manager as Radios
         """
-        Popover.__init__(self)
+        Gtk.Popover.__init__(self)
         self.__cancellable = Gio.Cancellable()
         if radios_manager is not None:
             self.__radios_manager = radios_manager
@@ -86,23 +85,15 @@ class TuneinPopover(Popover):
 
     def populate(self, uri="http://opml.radiotime.com/Browse.ashx?c="):
         """
-            Populate views
+            Populate view for uri
             @param uri as str
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
             self.__show_not_found(_("Can't connect to TuneIn…"))
             return
-        self.__spinner.start()
-        self.__clear()
-        self.__stack.set_visible_child_name("spinner")
-        self.__back_btn.set_sensitive(False)
-        self.__home_btn.set_sensitive(False)
-        self.__label.set_text(_("Please wait…"))
-        helper = TaskHelper()
-        helper.load_uri_content(uri,
-                                self.__cancellable,
-                                self.__on_uri_content)
-        self.__cancellable.reset()
+        if self.__view.get_children():
+            return
+        self.__populate(uri)
 
 #######################
 # PROTECTED           #
@@ -118,7 +109,7 @@ class TuneinPopover(Popover):
         self.__stack.set_visible_child_name("spinner")
         self.__spinner.start()
         self.__clear()
-        self.populate(self.__history.value)
+        self.__populate(self.__history.value)
         if self.__history.prev is None:
             self.__back_btn.set_sensitive(False)
 
@@ -128,7 +119,7 @@ class TuneinPopover(Popover):
             @param btn as Gtk.Button
         """
         self.__history = None
-        self.populate()
+        self.__populate()
 
     def _on_search_changed(self, widget):
         """
@@ -149,11 +140,28 @@ class TuneinPopover(Popover):
                                                  text)
         else:
             self.__history = None
-            self.populate()
+            self.__populate()
 
 #######################
 # PRIVATE             #
 #######################
+    def __populate(self, uri="http://opml.radiotime.com/Browse.ashx?c="):
+        """
+            Populate view for uri
+            @param uri as str
+        """
+        self.__clear()
+        self.__spinner.start()
+        self.__stack.set_visible_child_name("spinner")
+        self.__back_btn.set_sensitive(False)
+        self.__home_btn.set_sensitive(False)
+        self.__label.set_text(_("Please wait…"))
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                self.__cancellable,
+                                self.__on_uri_content)
+        self.__cancellable.reset()
+
     def __show_not_found(self, message=""):
         """
             Show not found message
@@ -294,7 +302,6 @@ class TuneinPopover(Popover):
             @param widget as Gtk.Widget
         """
         self.__cancellable.cancel()
-        GLib.timeout_add(500, App().window.container.reload_view)
 
     def __on_item_content(self, uri, status, content, name):
         """
@@ -307,6 +314,7 @@ class TuneinPopover(Popover):
         if status and content:
             uri = content.decode("utf-8").split("\n")[0]
         self.__radios_manager.add(name.replace("/", "-"), uri)
+        App().window.container.reload_view()
 
     def __on_image_downloaded(self, uri, status, content, image):
         """
@@ -341,7 +349,7 @@ class TuneinPopover(Popover):
         """
         if item.TYPE == "link":
             self.__scrolled.get_vadjustment().set_value(0.0)
-            self.populate(item.URL)
+            self.__populate(item.URL)
         elif item.TYPE == "audio":
             if Gio.NetworkMonitor.get_default().get_network_available():
                 # Cache for toolbar
@@ -416,4 +424,4 @@ class TuneinPopover(Popover):
         self.__timeout_id = None
         uri = "http://opml.radiotime.com/Search.ashx?query=%s" %\
             GLib.uri_escape_string(string, "/", False)
-        self.populate(uri)
+        self.__populate(uri)
