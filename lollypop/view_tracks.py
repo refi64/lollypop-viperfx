@@ -126,7 +126,8 @@ class TracksView:
             @param disc_number as int
             @param pos as int
         """
-        # If we are showing only one column, wait for widget1
+        # If right list below left list, wait before loading
+        # FIXME use a signal for this
         if self._orientation == Gtk.Orientation.VERTICAL and\
            self._locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right,
@@ -320,14 +321,14 @@ class TracksView:
             self.__set_duration()
             self.populate()
 
-    def _on_populated(self):
+    def _on_populated(self, disc_number):
         """
             Remove height request
+            @param disc_number
         """
-        for disc in self.__discs:
-            self._tracks_widget_left[disc.number].set_property(
+        self._tracks_widget_left[disc_number].set_property(
                 "height-request", -1)
-            self._tracks_widget_right[disc.number].set_property(
+        self._tracks_widget_right[disc_number].set_property(
                 "height-request", -1)
 
     def _on_size_allocate(self, widget, allocation):
@@ -402,9 +403,10 @@ class TracksView:
                               0, idx, 1, 1)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
-                self._responsive_widget.attach(
-                              self._tracks_widget_right[disc.number],
-                              pos, idx, 1, 1)
+                if self._list_type & RowListType.TWO_COLUMNS:
+                    self._responsive_widget.attach(
+                               self._tracks_widget_right[disc.number],
+                               pos, idx, 1, 1)
                 idx += 1
 
 #######################
@@ -453,9 +455,12 @@ class TracksView:
             if widget == self._tracks_widget_right:
                 self.__loading |= Loading.RIGHT
             elif widget == self._tracks_widget_left:
-                self.__loading |= Loading.LEFT
+                if not self._list_type & RowListType.TWO_COLUMNS:
+                    self._on_populated(disc_number)
+                else:
+                    self.__loading |= Loading.LEFT
             if self.__loading == Loading.ALL:
-                self._on_populated()
+                self._on_populated(disc_number)
             self._locked_widget_right = False
             if self._list_type & RowListType.DND:
                 self.__linking()

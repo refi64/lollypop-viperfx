@@ -194,11 +194,12 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
 #######################
 # PROTECTED           #
 #######################
-    def _on_populated(self):
+    def _on_populated(self, disc_number):
         """
             Emit populated signal
+            @param disc_number as int
         """
-        TracksView._on_populated(self)
+        TracksView._on_populated(self, disc_number)
         self.emit("populated")
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
