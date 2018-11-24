@@ -74,12 +74,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         grid.add(self.__overlay)
         grid.add(self.__label)
         self.add(self._widget)
-        App().art_helper.set_radio_artwork(
-                                           self.__name,
-                                           ArtSize.BIG,
-                                           ArtSize.BIG,
-                                           self._artwork.get_scale_factor(),
-                                           self.__on_radio_artwork)
+        self.set_artwork()
         self.set_selection()
         self.show_all()
         self._lock_overlay = False
@@ -87,6 +82,18 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self.set_property("valign", Gtk.Align.CENTER)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
+
+    def set_artwork(self):
+        """
+            Set album artwork
+        """
+        if self._widget is None:
+            return
+        App().art_helper.set_radio_artwork(self.__name,
+                                           ArtSize.BIG,
+                                           ArtSize.BIG,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_radio_artwork)
 
     def set_sensitive(self, b):
         """

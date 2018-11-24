@@ -95,6 +95,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
             Set album artwork
         """
+        if self._artwork is None:
+            return
         App().art_helper.set_album_artwork(self._album,
                                            ArtSize.BIG,
                                            ArtSize.BIG,
