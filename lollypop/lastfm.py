@@ -29,7 +29,6 @@ from gettext import gettext as _
 from locale import getdefaultlocale
 import re
 
-from lollypop.helper_task import TaskHelper
 from lollypop.define import App
 from lollypop.objects import Track
 from lollypop.logger import Logger
@@ -84,8 +83,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param callback as function
         """
         if self.is_goa:
-            helper = TaskHelper()
-            helper.run(self.__connect, full_sync)
+            App().task_helper.run(self.__connect, full_sync)
         elif Gio.NetworkMonitor.get_default().get_network_available():
             from lollypop.helper_passwords import PasswordsHelper
             helper = PasswordsHelper()
@@ -133,8 +131,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
                 self.available:
             self.__clean_queue()
-            helper = TaskHelper()
-            helper.run(self.__scrobble,
+            App().task_helper.run(
+                       self.__scrobble,
                        ", ".join(track.artists),
                        track.album_name,
                        track.title,
@@ -150,8 +148,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
                 track.id > 0 and self.available:
-            helper = TaskHelper()
-            helper.run(self.__now_playing,
+            App().task_helper.run(
+                       self.__now_playing,
                        ", ".join(track.artists),
                        track.album_name,
                        track.title,
@@ -264,8 +262,8 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
         if self.__queue:
             (track, timestamp) = self.__queue.pop(0)
-            helper = TaskHelper()
-            helper.run(self.__scrobble,
+            App().task_helper.run(
+                       self.__scrobble,
                        ", ".join(track.artists),
                        track.album_name,
                        track.title,
@@ -292,8 +290,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                     username=self.__login,
                     password_hash=md5(self.__password))
             if full_sync:
-                helper = TaskHelper()
-                helper.run(self.__populate_loved_tracks)
+                App().task_helper.run(self.__populate_loved_tracks)
         except Exception as e:
             Logger.debug("LastFM::__connect(): %s" % e)
 
@@ -400,5 +397,5 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.__login = attributes["login"]
         self.__password = password
         if Gio.NetworkMonitor.get_default().get_network_available():
-            helper = TaskHelper()
-            helper.run(self.__connect, full_sync, callback=(callback, *args))
+            App().task_helper.run(self.__connect, full_sync,
+                                  callback=(callback, *args))

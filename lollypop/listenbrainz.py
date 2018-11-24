@@ -16,7 +16,6 @@ from gi.repository import Soup, GObject, Gio, GLib
 import json
 import time
 
-from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
 from lollypop.define import App
 
@@ -88,8 +87,7 @@ class ListenBrainz(GObject.GObject):
         """
         if self.__queue:
             (listen_type, payload) = self.__queue.pop(0)
-            helper = TaskHelper()
-            helper.run(self.__request, listen_type, payload)
+            App().task_helper.run(self.__request, listen_type, payload)
             GLib.timeout_add(1000, self.__clean_queue)
 
     def __submit(self, listen_type, payload):
@@ -99,9 +97,8 @@ class ListenBrainz(GObject.GObject):
             @param payload as []
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
-            helper = TaskHelper()
             self.__clean_queue()
-            helper.run(self.__request, listen_type, payload)
+            App().task_helper.run(self.__request, listen_type, payload)
         else:
             self.__queue.append((listen_type, payload))
 

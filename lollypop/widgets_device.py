@@ -19,7 +19,6 @@ from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.define import App, Type
 from lollypop.objects import Album
 from lollypop.widgets_utils import Popover
-from lollypop.helper_task import TaskHelper
 
 
 class DeviceManagerWidget(Gtk.Bin):
@@ -139,8 +138,7 @@ class DeviceManagerWidget(Gtk.Bin):
         App().window.container.progress.add(self)
         self.__menu.set_sensitive(False)
         self.__view.set_sensitive(False)
-        helper = TaskHelper()
-        helper.run(self.__mtp_sync.sync, self.__uri)
+        App().task_helper.run(self.__mtp_sync.sync, self.__uri)
 
     @property
     def uri(self):

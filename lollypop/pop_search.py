@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib, Gio
 from gettext import gettext as _
 
 from lollypop.define import App, RowListType, Type
-from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
 
@@ -83,8 +82,7 @@ class SearchPopover(Gtk.Popover):
             @param button as Gtk.Button
         """
         button.set_sensitive(False)
-        helper = TaskHelper()
-        helper.run(self.__search_to_playlist)
+        App().task_helper.run(self.__search_to_playlist)
 
     def _on_search_changed(self, widget):
         """

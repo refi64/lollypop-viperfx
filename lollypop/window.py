@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 from lollypop.container import Container
 from lollypop.define import App, WindowSize, Type
 from lollypop.toolbar import Toolbar
-from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
 from lollypop.adaptive import AdaptiveWindow
 from lollypop.utils import is_unity
@@ -372,9 +371,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                 if parsed.scheme in ["file", "sftp", "smb", "webdav"]:
                     uris.append(uri)
             if uris:
-                task_helper = TaskHelper()
-                task_helper.run(importer.add, uris,
-                                callback=(App().scanner.update,))
+                App().task_helper.run(importer.add, uris,
+                                      callback=(App().scanner.update,))
         except:
             pass
 

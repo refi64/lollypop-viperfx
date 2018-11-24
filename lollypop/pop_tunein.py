@@ -344,17 +344,16 @@ class TuneinPopover(Popover):
             self.populate(item.URL)
         elif item.TYPE == "audio":
             if Gio.NetworkMonitor.get_default().get_network_available():
-                helper = TaskHelper()
                 # Cache for toolbar
-                helper.run(App().art.copy_uri_to_cache,
-                           item.LOGO, item.TEXT,
-                           App().window.toolbar.info.artsize)
+                App().task_helper.run(App().art.copy_uri_to_cache,
+                                      item.LOGO, item.TEXT,
+                                      App().window.toolbar.info.artsize)
                 # Cache for MPRIS
-                helper.run(App().art.copy_uri_to_cache,
-                           item.LOGO, item.TEXT, ArtSize.BIG)
+                App().task_helper.run(App().art.copy_uri_to_cache,
+                                      item.LOGO, item.TEXT, ArtSize.BIG)
                 # Cache for miniplayer
-                helper.run(App().art.copy_uri_to_cache,
-                           item.LOGO, item.TEXT, WindowSize.SMALL)
+                App().task_helper.run(App().art.copy_uri_to_cache,
+                                      item.LOGO, item.TEXT, WindowSize.SMALL)
             track = Track()
             track.set_radio(item.TEXT, item.URL)
             App().player.load(track)

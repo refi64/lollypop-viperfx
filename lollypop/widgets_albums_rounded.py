@@ -15,7 +15,6 @@ from gi.repository import GLib, Gdk, Gio
 import cairo
 from random import shuffle
 
-from lollypop.helper_task import TaskHelper
 from lollypop.define import App, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import get_round_surface
@@ -56,8 +55,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             Set artwork
         """
         self._scale_factor = self.get_scale_factor()
-        task_helper = TaskHelper()
-        task_helper.run(self._create_surface)
+        App().task_helper.run(self._create_surface)
 
     def _set_surface(self, surface):
         """

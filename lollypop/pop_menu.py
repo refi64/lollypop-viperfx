@@ -20,7 +20,6 @@ from lollypop.define import App
 from lollypop.objects import Track, Album
 from lollypop.widgets_utils import Popover
 from lollypop.logger import Logger
-from lollypop.helper_task import TaskHelper
 
 
 class BaseMenu(Gio.Menu):
@@ -203,8 +202,7 @@ class PlaylistsMenu(BaseMenu):
             if playlist_id in App().player.playlist_ids:
                 App().player.update_playlist(
                     App().playlists.get_track_ids(playlist_id))
-        helper = TaskHelper()
-        helper.run(add, playlist_id)
+        App().task_helper.run(add, playlist_id)
 
     def __remove_from_playlist(self, action, variant, playlist_id):
         """
@@ -226,8 +224,7 @@ class PlaylistsMenu(BaseMenu):
             if playlist_id in App().player.playlist_ids:
                 App().player.update_playlist(
                     App().playlists.get_track_ids(playlist_id))
-        helper = TaskHelper()
-        helper.run(remove, playlist_id)
+        App().task_helper.run(remove, playlist_id)
 
     def __add_to_loved(self, action, variant):
         """

@@ -18,8 +18,8 @@ from lollypop.view import View
 from lollypop.define import App, WindowSize, Type
 from lollypop.controller_information import InformationController
 from lollypop.utils import escape
-from lollypop.helper_art import ArtHelperEffect
 from lollypop.helper_task import TaskHelper
+from lollypop.helper_art import ArtHelperEffect
 
 
 class LyricsView(View, InformationController):
@@ -93,9 +93,8 @@ class LyricsView(View, InformationController):
             @param button as Gtk.Button
         """
         button.set_sensitive(False)
-        task_helper = TaskHelper()
-        task_helper.run(self.__get_blob, self.__lyrics_label.get_text(),
-                        callback=(self.__lyrics_label.set_text,))
+        App().task_helper.run(self.__get_blob, self.__lyrics_label.get_text(),
+                              callback=(self.__lyrics_label.set_text,))
 
     def _on_map(self, widget):
         """
@@ -138,7 +137,6 @@ class LyricsView(View, InformationController):
         """
         self.__downloads_running += 1
         # Update lyrics
-        task_helper = TaskHelper()
         if self.__current_track.id == Type.RADIOS:
             split = self.__current_track.name.split(" - ")
             if len(split) < 2:
@@ -161,12 +159,12 @@ class LyricsView(View, InformationController):
                 None,
                 False)
         uri = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
-        task_helper.load_uri_content(
-            uri,
-            self.__cancellable,
-            self.__on_lyrics_downloaded,
-            "lyricbox",
-            "\n")
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                self.__cancellable,
+                                self.__on_lyrics_downloaded,
+                                "lyricbox",
+                                "\n")
 
     def __download_genius_lyrics(self):
         """
@@ -174,7 +172,6 @@ class LyricsView(View, InformationController):
         """
         self.__downloads_running += 1
         # Update lyrics
-        task_helper = TaskHelper()
         if self.__current_track.id == Type.RADIOS:
             split = App().player.current_track.name.split(" - ")
             if len(split) < 2:
@@ -186,12 +183,12 @@ class LyricsView(View, InformationController):
             title = self.__current_track.name
         string = escape("%s %s" % (artist, title))
         uri = "https://genius.com/%s-lyrics" % string.replace(" ", "-")
-        task_helper.load_uri_content(
-            uri,
-            self.__cancellable,
-            self.__on_lyrics_downloaded,
-            "song_body-lyrics",
-            "")
+        helper = TaskHelper()
+        helper.load_uri_content(uri,
+                                self.__cancellable,
+                                self.__on_lyrics_downloaded,
+                                "song_body-lyrics",
+                                "")
 
     def __update_lyrics_style(self):
         """

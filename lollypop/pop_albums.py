@@ -14,7 +14,6 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.helper_task import TaskHelper
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.define import App, RowListType
 from lollypop.widgets_utils import Popover
@@ -106,8 +105,7 @@ class AlbumsPopover(Popover):
             @param button as Gtk.Button
         """
         button.set_sensitive(False)
-        helper = TaskHelper()
-        helper.run(self.__albums_to_playlist)
+        App().task_helper.run(self.__albums_to_playlist)
 
     def __on_clear_clicked(self, button):
         """

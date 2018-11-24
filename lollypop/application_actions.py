@@ -13,7 +13,6 @@
 from gi.repository import Gio, GLib, Gtk
 
 from lollypop.define import App
-from lollypop.helper_task import TaskHelper
 from lollypop.settings import SettingsDialog
 
 
@@ -72,8 +71,7 @@ class ApplicationActions:
             @param param as GLib.Variant
         """
         if App().window:
-            helper = TaskHelper()
-            helper.run(App().art.clean_all_cache)
+            App().task_helper.run(App().art.clean_all_cache)
             App().scanner.update()
 
     def __on_about_activate_response(self, dialog, response_id):

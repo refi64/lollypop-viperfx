@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Pango
 
 from lollypop.define import App
-from lollypop.helper_task import TaskHelper
 from lollypop.utils import get_network_available
 from lollypop.widgets_utils import Popover
 
@@ -53,9 +52,8 @@ class LastfmPopover(Popover):
             artists = []
             for artist_id in artist_ids:
                 artists.append(App().artists.get_name(artist_id))
-            task_helper = TaskHelper()
-            task_helper.run(self.__get_similars, artists,
-                            callback=(self.__populate,))
+            App().task_helper.run(self.__get_similars, artists,
+                                  callback=(self.__populate,))
 
 #######################
 # PRIVATE             #

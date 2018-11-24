@@ -11,7 +11,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.define import App
-from lollypop.helper_task import TaskHelper
 from lollypop.objects import Album, Track
 
 
@@ -37,9 +36,8 @@ class Search:
         for item in current_search.lower().split():
             if item not in search_items:
                 search_items.append(item)
-        helper = TaskHelper()
-        helper.run(self.__get, search_items,
-                   cancellable, callback=callback)
+        App().task_helper.run(self.__get, search_items,
+                              cancellable, callback=callback)
 
 #######################
 # PRIVATE             #
