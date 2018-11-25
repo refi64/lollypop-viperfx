@@ -66,7 +66,9 @@ class RadiosView(FlowBoxView, ViewController):
             Start lazy loading
             @param radio ids as [int]
         """
-        FlowBoxView._add_items(self, radio_ids, self.__radios)
+        widget = FlowBoxView._add_items(self, radio_ids, self.__radios)
+        if widget is not None:
+            widget.connect("overlayed", self.on_overlayed)
 
     def _on_new_clicked(self, widget):
         """
