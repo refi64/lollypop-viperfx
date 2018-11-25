@@ -14,7 +14,6 @@ from gi.repository import Gst, GLib
 
 from pickle import load
 from random import choice, shuffle
-
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer

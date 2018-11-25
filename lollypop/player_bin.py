@@ -33,7 +33,6 @@ class BinPlayer(BasePlayer):
         """
             Init playbin
         """
-        Gst.init(None)
         BasePlayer.__init__(self)
         self.__codecs = Codecs()
         self._playbin = self.__playbin1 = Gst.ElementFactory.make(

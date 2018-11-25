@@ -16,7 +16,8 @@ gi.require_version("Gst", "1.0")
 gi.require_version("GstAudio", "1.0")
 gi.require_version("GstPbutils", "1.0")
 gi.require_version("TotemPlParser", "1.0")
-from gi.repository import Gtk, Gio, GLib, Gdk, TotemPlParser
+from gi.repository import Gtk, Gio, GLib, Gdk, Gst
+Gst.init(None)
 
 from threading import current_thread
 from pickle import dump
@@ -451,6 +452,7 @@ class Application(Gtk.Application):
                 elif is_pls(f):
                     pls.append(uri)
             if pls:
+                from gi.repository import TotemPlParser
                 parser = TotemPlParser.Parser.new()
                 parser.connect("entry-parsed", self.__on_entry_parsed, uris)
                 parser.parse_async(uri, True, None,
