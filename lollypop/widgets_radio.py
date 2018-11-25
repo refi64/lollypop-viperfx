@@ -44,7 +44,11 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         Gtk.FlowBoxChild.__init__(self)
         OverlayHelper.__init__(self)
         self._widget = None
-        self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
+        self.__art_size = 110\
+            if App().window.is_adaptive\
+            else ArtSize.BIG
+        self.set_size_request(self.__art_size,
+                              self.__art_size + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
         self.__radio_id = radio_id
         self.__radios = radios
@@ -60,8 +64,8 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self._widget.connect("query-tooltip", self.__on_query_tooltip)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._artwork = App().art_helper.get_image(ArtSize.BIG,
-                                                   ArtSize.BIG,
+        self._artwork = App().art_helper.get_image(self.__art_size,
+                                                   self.__art_size,
                                                    "cover-frame")
         self.__label = Gtk.Label()
         self.__label.set_justify(Gtk.Justification.CENTER)
@@ -90,8 +94,8 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             return
         name = self.__radios.get_name(self.__radio_id)
         App().art_helper.set_radio_artwork(name,
-                                           ArtSize.BIG,
-                                           ArtSize.BIG,
+                                           self.__art_size,
+                                           self.__art_size,
                                            self._artwork.get_scale_factor(),
                                            self.__on_radio_artwork)
 
