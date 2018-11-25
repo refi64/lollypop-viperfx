@@ -354,7 +354,7 @@ class TuneinPopover(Gtk.Popover):
                 # Cache for toolbar
                 App().task_helper.run(App().art.copy_uri_to_cache,
                                       item.LOGO, item.TEXT,
-                                      App().window.toolbar.info.artsize)
+                                      App().window.toolbar.info.art_size)
                 # Cache for MPRIS
                 App().task_helper.run(App().art.copy_uri_to_cache,
                                       item.LOGO, item.TEXT, ArtSize.BIG)
