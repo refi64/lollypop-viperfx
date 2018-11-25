@@ -13,37 +13,26 @@
 from lollypop.define import App
 
 
+class ViewControllerType:
+    RADIO = "radio"
+    ALBUM = "album"
+
+
 class ViewController:
     """
         Update view for registered signals
         Should be herited by a Gtk.Widget
     """
 
-    def __init__(self):
+    def __init__(self, controller_type):
         """
             Init controller
+            @param controller_type as ViewControllerType
         """
         self.__signals_ids = {}
-        self.connect("destroy", self.__on_destroy)
-
-    def connect_current_changed_signal(self):
-        """
-            Connect to current-changed signal
-        """
-        player = App().player
-        self.__signals_ids[
-            player.connect("current-changed",
-                           self._on_current_changed)] = player
-
-    def connect_artwork_changed_signal(self, type):
-        """
-            Connect to cover-changed signal
-            @param type as str ("album", "radio")
-        """
-        artwork = App().art
-        self.__signals_ids[
-            artwork.connect("%s-artwork-changed" % type,
-                            self._on_artwork_changed)] = artwork
+        self.__type = controller_type
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
 #######################
 # PROTECTED           #
@@ -57,9 +46,21 @@ class ViewController:
 #######################
 # PRIVATE             #
 #######################
-    def __on_destroy(self, widget):
+    def __on_map(self, widget):
         """
-            Remove signals
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        self.__signals_ids[
+            App().player.connect("current-changed",
+                                 self._on_current_changed)] = App().player
+        self.__signals_ids[
+            App().art.connect("%s-artwork-changed" % self.__type,
+                              self._on_artwork_changed)] = App().art
+
+    def __on_unmap(self, widget):
+        """
+            Disconnect signals
             @param widget as Gtk.Widget
         """
         for signal_id in self.__signals_ids.keys():

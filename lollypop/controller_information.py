@@ -54,7 +54,7 @@ class InformationController:
             @param font_size as int
         """
         if App().player.current_track.id == Type.RADIOS:
-            artist_text = App().player.current_track.album_artists[0]
+            artist_text = App().player.current_track.radio_name
         else:
             artist_text = ", ".join(App().player.current_track.artists)
         if font_size is None:
@@ -86,7 +86,7 @@ class InformationController:
             return
         if App().player.current_track.id == Type.RADIOS:
             App().art_helper.set_radio_artwork(
-                App().player.current_track.album_artists[0],
+                App().player.current_track.radio_name,
                 width,
                 height,
                 self._artwork.get_scale_factor(),

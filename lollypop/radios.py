@@ -10,13 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject, Gio, GLib
 
 import sqlite3
 import itertools
 from threading import Lock
 
 from lollypop.sqlcursor import SqlCursor
+from lollypop.logger import Logger
 
 
 class Radios(GObject.GObject):
@@ -34,7 +35,7 @@ class Radios(GObject.GObject):
                             popularity INT NOT NULL)"""
     __gsignals__ = {
         # Add, rename, delete
-        "radios-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "radio-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
     }
 
     def __init__(self):
@@ -45,69 +46,63 @@ class Radios(GObject.GObject):
         self.thread_lock = Lock()
         # Create db schema
         try:
-            with SqlCursor(self, True) as sql:
-                sql.execute(self.create_radios)
-        except:
-            pass
+            f = Gio.File.new_for_path(self.DB_PATH)
+            if not f.query_exists():
+                with SqlCursor(self, True) as sql:
+                    sql.execute(self.create_radios)
+        except Exception as e:
+            Logger.error("Radios::__init__(self): %s", e)
 
-    def add(self, name, url):
+    def add(self, name, uri):
         """
             Add a radio, update url if radio already exists in db
             @param radio name as str
-            @param url as str
+            @param uri as str
             @thread safe
         """
         with SqlCursor(self, True) as sql:
-            if self.exists(name):
-                sql.execute("UPDATE radios\
-                             SET url=?\
-                             WHERE name=?", (url, name))
-            else:
-                sql.execute("INSERT INTO radios (name, url, popularity)\
-                             VALUES (?, ?, ?)",
-                            (name, url, 0))
-            GLib.idle_add(self.emit, "radios-changed")
+            result = sql.execute("INSERT INTO radios (name, url, popularity)\
+                                  VALUES (?, ?, ?)",
+                                 (name, uri, 0))
+            GLib.idle_add(self.emit, "radio-changed", result.lastrowid)
 
-    def exists(self, name):
+    def exists(self, radio_id):
         """
             Return True if radio exists
-            @param radio as string
+            @param radio_id as int
             @return bool
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid\
                                   FROM radios\
-                                  WHERE name=?",
-                                 (name,))
+                                  WHERE rowid=?",
+                                 (radio_id,))
             v = result.fetchone()
-            if v is not None:
-                return True
-            else:
-                return False
+            return v is not None
 
-    def rename(self, old_name, new_name):
+    def rename(self, radio_id, name):
         """
             Rename playlist
-            @param old playlist name as str
-            @param new playlist name as str
+            @param radio_id as int
+            @param name as str
         """
         with SqlCursor(self, True) as sql:
             sql.execute("UPDATE radios\
                         SET name=?\
-                        WHERE name=?",
-                        (new_name, old_name))
-            GLib.idle_add(self.emit, "radios-changed")
+                        WHERE rowid=?",
+                        (name, radio_id))
+            GLib.idle_add(self.emit, "radio-changed", radio_id)
 
-    def delete(self, name):
+    def remove(self, radio_id):
         """
-            delete radio
-            @param radio name as str
+            Remvoe radio with radio id
+            @param radio_id as int
         """
         with SqlCursor(self, True) as sql:
             sql.execute("DELETE FROM radios\
-                        WHERE name=?",
-                        (name,))
-            GLib.idle_add(self.emit, "radios-changed")
+                        WHERE rowid=?",
+                        (radio_id,))
+            GLib.idle_add(self.emit, "radio-changed", radio_id)
 
     def get(self):
         """
@@ -147,37 +142,37 @@ class Radios(GObject.GObject):
                 return v[0]
             return ""
 
-    def get_url(self, name):
+    def get_uri(self, radio_id):
         """
-            Return url for name
-            @param name as str
-            @return url as str
+            Return uri for radio_id
+            @param radio_id as int
+            @return uri as str
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT url\
                                   FROM radios\
-                                  WHERE name=?", (name,))
+                                  WHERE rowid=?", (radio_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return ""
 
-    def set_more_popular(self, name):
+    def set_more_popular(self, radio_id):
         """
             Set radio more popular
-            @param name as str
+            @param radio_id as int
         """
         with SqlCursor(self, True) as sql:
-            result = sql.execute("SELECT popularity from radios WHERE name=?",
-                                 (name,))
+            result = sql.execute("SELECT popularity from radios WHERE rowid=?",
+                                 (radio_id,))
             pop = result.fetchone()
             if pop:
                 current = pop[0]
             else:
                 current = 0
             current += 1
-            sql.execute("UPDATE radios set popularity=? WHERE name=?",
-                        (current, name))
+            sql.execute("UPDATE radios set popularity=? WHERE rowid=?",
+                        (current, radio_id))
 
     def get_higher_popularity(self):
         """
@@ -208,33 +203,35 @@ class Radios(GObject.GObject):
                 return v[0]
             return 5
 
-    def set_popularity(self, name, popularity):
+    def set_popularity(self, radio_id, popularity):
         """
             Set popularity
-            @param name as str
+            @param radio_id as int
             @param popularity as int
         """
         with SqlCursor(self, True) as sql:
-            try:
-                sql.execute("UPDATE radios SET\
-                            popularity=? WHERE name=?",
-                            (popularity, name))
-            except:  # Database is locked
-                pass
+            sql.execute("UPDATE radios SET popularity=? WHERE rowid=?",
+                        (popularity, radio_id))
 
-    def set_rate(self, name, rate):
+    def set_rate(self, radio_id, rate):
         """
             Set rate
-            @param name as str
+            @param radio_id as int
             @param rate as int
         """
         with SqlCursor(self, True) as sql:
-            try:
-                sql.execute("UPDATE radios SET\
-                            rate=? WHERE name=?",
-                            (rate, name))
-            except:  # Database is locked
-                pass
+            sql.execute("UPDATE radios SET rate=? WHERE rowid=?",
+                        (rate, radio_id))
+
+    def set_uri(self, radio_id, uri):
+        """
+            Set uri
+            @param radio_id as int
+            @param uri as str
+        """
+        with SqlCursor(self, True) as sql:
+            sql.execute("UPDATE radios SET url=? WHERE rowid=?",
+                        (uri, radio_id))
 
     def get_id(self, name):
         """
@@ -242,39 +239,35 @@ class Radios(GObject.GObject):
             @param name as str
         """
         with SqlCursor(self) as sql:
-            result = sql.execute("SELECT id\
-                                 FROM radios WHERE\
-                                 name=?", (name,))
+            result = sql.execute("SELECT id FROM radios WHERE name=?", (name,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return 0
 
-    def get_popularity(self, name):
+    def get_popularity(self, radio_id):
         """
             Get popularity
-            @param name as str
+            @param radio_id as int
             @return popularity as int
         """
         with SqlCursor(self) as sql:
-            result = sql.execute("SELECT popularity\
-                                 FROM radios\
-                                 WHERE name=?", (name,))
+            result = sql.execute("SELECT popularity FROM radios WHERE rowid=?",
+                                 (radio_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return 0
 
-    def get_rate(self, name):
+    def get_rate(self, radio_id):
         """
             Get radio rate
-            @param name as str
+            @param radio_id as int
             @return rate as int
         """
         with SqlCursor(self) as sql:
-            result = sql.execute("SELECT rate\
-                                  FROM radios\
-                                  WHERE name=?", (name,))
+            result = sql.execute("SELECT rate FROM radios WHERE rowid=?",
+                                 (radio_id,))
             v = result.fetchone()
             if v:
                 return v[0]

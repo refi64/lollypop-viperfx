@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.view import LazyLoadingView
 from lollypop.define import App, ArtSize
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
-from lollypop.controller_view import ViewController
+from lollypop.controller_view import ViewController, ViewControllerType
 
 
 class ArtistAlbumsView(LazyLoadingView, ViewController):
@@ -36,7 +36,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             @param art size as ArtSize
         """
         LazyLoadingView.__init__(self, True)
-        ViewController.__init__(self)
+        ViewController.__init__(self, ViewControllerType.ALBUM)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self.__art_size = art_size
@@ -61,9 +61,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         self._overlay.add_overlay(self.__spinner)
         self._overlay.show()
         self.add(self._overlay)
-
-        self.connect_current_changed_signal()
-        self.connect_artwork_changed_signal("album")
 
     def populate(self, albums):
         """

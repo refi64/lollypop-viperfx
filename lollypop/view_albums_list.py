@@ -18,7 +18,7 @@ from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
 from lollypop.define import ArtSize, App, RowListType
-from lollypop.controller_view import ViewController
+from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
 
 
@@ -357,7 +357,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param genre_ids as int
         """
         LazyLoadingView.__init__(self)
-        ViewController.__init__(self)
+        ViewController.__init__(self, ViewControllerType.ALBUM)
         self.__list_type = list_type
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
@@ -376,8 +376,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self._viewport.add(self.__view)
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
-        self.connect_current_changed_signal()
-        self.connect_artwork_changed_signal("album")
 
     def set_reveal(self, album_ids):
         """

@@ -17,7 +17,6 @@ from gettext import gettext as _
 from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
 from lollypop.helper_overlay import OverlayHelper
-from lollypop.pop_radio import RadioPopover
 
 
 class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
@@ -48,13 +47,13 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
         self.get_style_context().add_class("loading")
         self.__radio_id = radio_id
-        self.__name = radios.get_name(radio_id)
         self.__radios = radios
 
     def populate(self):
         """
             Init widget content
         """
+        name = self.__radios.get_name(self.__radio_id)
         self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         self._widget.set_property("has-tooltip", True)
@@ -67,7 +66,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self.__label = Gtk.Label()
         self.__label.set_justify(Gtk.Justification.CENTER)
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__label.set_text(self.__name)
+        self.__label.set_text(name)
         self._widget.add(grid)
         self.__overlay = Gtk.Overlay.new()
         self.__overlay.add(self._artwork)
@@ -89,7 +88,8 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         """
         if self._widget is None:
             return
-        App().art_helper.set_radio_artwork(self.__name,
+        name = self.__radios.get_name(self.__radio_id)
+        App().art_helper.set_radio_artwork(name,
                                            ArtSize.BIG,
                                            ArtSize.BIG,
                                            self._artwork.get_scale_factor(),
@@ -111,13 +111,12 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         width = Gtk.FlowBoxChild.do_get_preferred_width(self)[0]
         return (width, width)
 
-    def set_name(self, name):
+    def rename(self, name):
         """
             Set radio name
-            @param name as string
+            @param name as str
         """
-        self.__name = name
-        self.__title_label.set_label(name)
+        self.__label.set_label(name)
 
     def set_selection(self):
         """
@@ -125,8 +124,9 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         """
         if self._artwork is None:
             return
+        name = self.__radios.get_name(self.__radio_id)
         selected = App().player.current_track.id == Type.RADIOS and\
-            self.__name == App().player.current_track.album_artists[0]
+            name == App().player.current_track.radio_name
         if selected:
             self._artwork.set_state(Gtk.StateType.SELECTED)
         else:
@@ -136,29 +136,30 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
     def is_populated(self):
         """
             True if album populated
+            @return bool
         """
         return True
 
     @property
     def id(self):
         """
-            Return widget id (same value for all radio widgets)
+            @return int
         """
-        return Type.RADIOS
+        return self.__radio_id
 
     @property
     def filter(self):
         """
-            @Return filter as str
+            @return filter as str
         """
-        return self.__name
+        return self.name.lower()
 
     @property
-    def title(self):
+    def name(self):
         """
-            @Return title as str
+            @return name as str
         """
-        return self.__name
+        return self.__radios.get_name(self.__radio_id)
 
 #######################
 # PROTECTED           #
@@ -232,11 +233,9 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         """
         if App().player.is_locked:
             return True
-        url = self.__radios.get_url(self.__name)
-        if url:
-            track = Track()
-            track.set_radio(self.__name, url)
-            App().player.load(track)
+        track = Track()
+        track.set_radio_id(self.__radio_id)
+        App().player.load(track)
 
     def __on_edit_press_event(self, widget, event):
         """
@@ -244,7 +243,8 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        popover = RadioPopover(self.__name, self.__radios)
+        from lollypop.pop_radio import RadioPopover
+        popover = RadioPopover(self.__radio_id, self.__radios)
         popover.set_relative_to(widget)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True

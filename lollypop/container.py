@@ -902,16 +902,15 @@ class Container(Gtk.Overlay):
         """
             Get radios view
         """
-        from lollypop.view_radios import RadiosView
-        from lollypop.radios import Radios
+        def load():
+            from lollypop.radios import Radios
+            radios = Radios()
+            return radios.get_ids()
         self.__stop_current_view()
-        radios = Radios()
-        radio_ids = radios.get_ids()
-        view = RadiosView(radios)
-        if radio_ids:
-            view.populate(radio_ids)
-        else:
-            view.show_warning()
+        from lollypop.view_radios import RadiosView
+        view = RadiosView()
+        loader = Loader(target=load, view=view)
+        loader.start()
         view.show()
         return view
 

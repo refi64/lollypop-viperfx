@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.define import ArtSize, App
-from lollypop.controller_view import ViewController
+from lollypop.controller_view import ViewController, ViewControllerType
 
 
 class AlbumsBoxView(FlowBoxView, ViewController):
@@ -30,12 +30,10 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param artist ids as [int]
         """
         FlowBoxView.__init__(self)
-        ViewController.__init__(self)
+        ViewController.__init__(self, ViewControllerType.ALBUM)
         self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
-        self.connect_current_changed_signal()
-        self.connect_artwork_changed_signal("album")
 
 #######################
 # PROTECTED           #

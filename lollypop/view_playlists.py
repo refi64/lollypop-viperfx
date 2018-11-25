@@ -18,7 +18,7 @@ from random import shuffle
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
 from lollypop.define import App, Type
-from lollypop.controller_view import ViewController
+from lollypop.controller_view import ViewController, ViewControllerType
 
 
 class PlaylistsView(View, ViewController):
@@ -34,7 +34,7 @@ class PlaylistsView(View, ViewController):
             @param editable as bool
         """
         View.__init__(self, True)
-        ViewController.__init__(self)
+        ViewController.__init__(self, ViewControllerType.ALBUM)
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect(
                                             "playlist-track-added",
@@ -79,7 +79,6 @@ class PlaylistsView(View, ViewController):
         # Connect signals after ui init
         # "split-button" will emit a signal otherwise
         builder.connect_signals(self)
-        self.connect_current_changed_signal()
 
         # No duration for non user playlists
         # FIXME

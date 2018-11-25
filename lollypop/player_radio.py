@@ -72,7 +72,7 @@ class RadioPlayer(BasePlayer):
         self._plugins.volume.props.volume = 1.0
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property("uri", track.uri)
-        Radios().set_more_popular(track.album_artists[0])
+        Radios().set_more_popular(track.radio_id)
         self._current_track = track
         self.__current = None
         if play:
@@ -106,4 +106,4 @@ class RadioPlayer(BasePlayer):
         """
         # Only start playing if context always True
         if self.__current == track:
-            track.set_radio(track.album_artists[0], uri)
+            track.set_uri(uri)

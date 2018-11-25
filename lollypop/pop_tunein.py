@@ -34,17 +34,17 @@ class TuneinPopover(Gtk.Popover):
         Popover showing tunin radios
     """
 
-    def __init__(self, radios_manager=None):
+    def __init__(self, radios=None):
         """
             Init Popover
-            @param radios_manager as Radios
+            @param radios as Radios
         """
         Gtk.Popover.__init__(self)
         self.__cancellable = Gio.Cancellable()
-        if radios_manager is not None:
-            self.__radios_manager = radios_manager
+        if radios is not None:
+            self.__radios = radios
         else:
-            self.__radios_manager = Radios()
+            self.__radios = Radios()
         self.__timeout_id = None
         self.__history = None
         self.__covers_to_download = []
@@ -313,8 +313,7 @@ class TuneinPopover(Gtk.Popover):
         """
         if status and content:
             uri = content.decode("utf-8").split("\n")[0]
-        self.__radios_manager.add(name.replace("/", "-"), uri)
-        App().window.container.reload_view()
+        self.__radios.add(name.replace("/", "-"), uri)
 
     def __on_image_downloaded(self, uri, status, content, image):
         """

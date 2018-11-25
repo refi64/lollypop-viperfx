@@ -72,7 +72,7 @@ class Base:
             radios = Radios()
             avg_popularity = radios.get_avg_popularity()
             if avg_popularity > 0:
-                popularity = radios.get_popularity(self._album_artists[0])
+                popularity = radios.get_popularity(self._radio_id)
         return popularity * 5 / avg_popularity + 0.5
 
     def set_popularity(self, new_rate):
@@ -97,7 +97,7 @@ class Base:
                 best_popularity = self.db.get_higher_popularity()
                 if new_rate == 5:
                     popularity = (popularity + best_popularity) / 2
-                radios.set_popularity(self._album_artists[0], popularity)
+                radios.set_popularity(self._radio_id, popularity)
         except Exception as e:
             Logger.error("Base::set_popularity(): %s" % e)
 
@@ -114,7 +114,7 @@ class Base:
             rate = self.db.get_rate(self.id)
         elif self.id == Type.RADIOS:
             radios = Radios()
-            rate = radios.get_rate(self._album_artists[0])
+            rate = radios.get_rate(self._radio_id)
         return rate
 
     def set_rate(self, rate):
@@ -124,7 +124,7 @@ class Base:
         """
         if self.id == Type.RADIOS:
             radios = Radios()
-            radios.set_rate(self._album_artists[0], rate)
+            radios.set_rate(self._radio_id, rate)
         else:
             self.db.set_rate(self.id, rate)
             App().player.emit("rate-changed", (self.id, rate))
@@ -406,6 +406,8 @@ class Track(Base):
         """
         Base.__init__(self, App().tracks)
         self.id = track_id
+        self._radio_id = None
+        self._radio_name = ""
         self._uri = None
         self._number = 0
 
@@ -429,13 +431,6 @@ class Track(Base):
                 artist_ids = list(set(artist_ids) - set(db_album_artist_ids))
         self.__featuring_ids = list(set(artist_ids) - set(album_artist_ids))
 
-    def set_album_artists(self, artists):
-        """
-            Set album artist
-            @param artists as [int]
-        """
-        self._album_artists = artists
-
     def set_album(self, album):
         """
             Set track album
@@ -450,6 +445,18 @@ class Track(Base):
         """
         self._uri = uri
 
+    def set_radio_id(self, radio_id):
+        """
+            Set radio id
+            @param radio_id as int
+        """
+        from lollypop.radios import Radios
+        radios = Radios()
+        self.id = Type.RADIOS
+        self._radio_id = radio_id
+        self._radio_name = radios.get_name(radio_id)
+        self._uri = radios.get_uri(radio_id)
+
     def set_radio(self, name, uri):
         """
             Set radio
@@ -457,7 +464,7 @@ class Track(Base):
             @param uri as string
         """
         self.id = Type.RADIOS
-        self._album_artists = [name]
+        self._radio_name = name
         self._uri = uri
 
     def set_number(self, number):
@@ -522,6 +529,22 @@ class Track(Base):
             Alias to Track.name
         """
         return self.name
+
+    @property
+    def radio_id(self):
+        """
+            Get radio id
+            @return int
+        """
+        return self._radio_id
+
+    @property
+    def radio_name(self):
+        """
+            Get radio name
+            @return str
+        """
+        return self._radio_name
 
     @property
     def uri(self):

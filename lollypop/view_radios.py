@@ -17,9 +17,9 @@ from gettext import gettext as _
 from lollypop.define import App, Type
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_radio import RadioWidget
-from lollypop.pop_radio import RadioPopover
+from lollypop.radios import Radios
 from lollypop.pop_tunein import TuneinPopover
-from lollypop.controller_view import ViewController
+from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.view import MessageView
 
 
@@ -28,34 +28,34 @@ class RadiosView(FlowBoxView, ViewController):
         Show radios flow box
     """
 
-    def __init__(self, radios):
+    def __init__(self):
         """
             Init view
-            @param radios as Radios
         """
         FlowBoxView.__init__(self)
-        ViewController.__init__(self)
+        ViewController.__init__(self, ViewControllerType.RADIO)
         self._widget_class = RadioWidget
-        self.__radios = radios
+        self.__radios = Radios()
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/RadiosView.ui")
         builder.connect_signals(self)
         self.insert_row(0)
         self.attach(builder.get_object("widget"), 0, 0, 1, 1)
-
         self.__pop_tunein = TuneinPopover(self.__radios)
         self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
-        self.connect_current_changed_signal()
-        self.connect_artwork_changed_signal("radio")
 
-    def show_warning(self):
+    def populate(self, radio_ids):
         """
-            Show a message to user
+            Add radio widgets
+            @param radio_ids as [int]
         """
-        self._scrolled.hide()
-        view = MessageView(_("No favorite radios"))
-        view.show()
-        self.add(view)
+        if radio_ids:
+            FlowBoxView.populate(self, radio_ids)
+        else:
+            self._scrolled.hide()
+            view = MessageView(_("No favorite radios"))
+            view.show()
+            self.add(view)
 
 #######################
 # PROTECTED           #
@@ -73,7 +73,8 @@ class RadiosView(FlowBoxView, ViewController):
             Show popover for adding a new radio
             @param widget as Gtk.Widget
         """
-        popover = RadioPopover("", self.__radios)
+        from lollypop.pop_radio import RadioPopover
+        popover = RadioPopover(None, self.__radios)
         popover.set_relative_to(widget)
         popover.popup()
 
@@ -85,20 +86,22 @@ class RadiosView(FlowBoxView, ViewController):
         self.__pop_tunein.populate()
         self.__pop_tunein.show()
 
-    def _on_artwork_changed(self, artwork, title):
+    def _on_artwork_changed(self, artwork, name):
         """
             Update children artwork if matching name
             @param artwork as Artwork
-            @param title as str
+            @param name as str
         """
         for child in self._box.get_children():
-            if title == child.title:
+            if name == child.name:
                 child.set_artwork()
 
     def _on_map(self, widget):
         """
             Set active ids
         """
+        self.__signal_id = self.__radios.connect("radio-changed",
+                                                 self.__on_radio_changed)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.RADIOS]))
         App().settings.set_value("state-two-ids",
@@ -109,17 +112,43 @@ class RadiosView(FlowBoxView, ViewController):
             Destroy popover
             @param widget as Gtk.Widget
         """
+        if self.__signal_id is not None:
+            self.__radios.disconnect(self.__signal_id)
+            self.__signal_id = None
         self.__pop_tunein.destroy()
 
 #######################
 # PRIVATE             #
 #######################
-    def __on_logo_changed(self, player, name):
+    def __add_radio(self, radio_id):
         """
-            Update radio logo
-            @param player as Plyaer
-            @param name as string
+            Add radio
+            @param radio_id as int
         """
-        for child in self._box.get_children():
-            if child.title == name:
-                child.update_cover()
+        widget = RadioWidget(radio_id, self.__radios)
+        self._box.insert(widget, 0)
+        widget.populate()
+        widget.show()
+
+    def __on_radio_changed(self, radios, radio_id):
+        """
+            Update view based on radio_id status
+            @param radios as Radios
+            @param radio_id as int
+        """
+        exists = radios.exists(radio_id)
+        if exists:
+            item = None
+            for child in self._box.get_children():
+                if child.id == radio_id:
+                    item = child
+                    break
+            if item is None:
+                self.__add_radio(radio_id)
+            else:
+                name = self.__radios.get_name(radio_id)
+                item.rename(name)
+        else:
+            for child in self._box.get_children():
+                if child.id == radio_id:
+                    child.destroy()
