@@ -171,10 +171,9 @@ class ArtworkSearchWidget(Gtk.Bin):
         context.add_class("cover-frame")
         padding = context.get_padding(Gtk.StateFlags.NORMAL)
         border = context.get_border(Gtk.StateFlags.NORMAL)
-        size = App().settings.get_value("cover-size").get_int32()
-        image.set_size_request(size + padding.left +
+        image.set_size_request(ArtSize.BIG + padding.left +
                                padding.right + border.left + border.right,
-                               size + padding.top +
+                               ArtSize.BIG + padding.top +
                                padding.bottom + border.top + border.bottom)
         image.show()
         self.__view.add(image)

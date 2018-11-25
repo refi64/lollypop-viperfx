@@ -13,7 +13,7 @@
 from gi.repository import GLib
 
 from lollypop.view_flowbox import FlowBoxView
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ArtSize
 from locale import strcoll
 from lollypop.widgets_artist_rounded import RoundedArtistWidget
 
@@ -44,8 +44,7 @@ class RoundedArtistsView(FlowBoxView):
                 return
         # Setup sort on insert
         self._box.set_sort_func(self.__sort_func)
-        art_size = App().settings.get_value("cover-size").get_int32()
-        widget = RoundedArtistWidget(item, art_size)
+        widget = RoundedArtistWidget(item, ArtSize.BIG)
         widget.populate()
         widget.show()
         self._box.insert(widget, -1)
@@ -80,8 +79,7 @@ class RoundedArtistsView(FlowBoxView):
             Start lazy loading
             @param items as [(int, str, str)]
         """
-        art_size = App().settings.get_value("cover-size").get_int32()
-        FlowBoxView._add_items(self, items, art_size)
+        FlowBoxView._add_items(self, items, ArtSize.BIG)
 
     def _on_item_activated(self, flowbox, widget):
         """
