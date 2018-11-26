@@ -67,7 +67,7 @@ class FlowBoxView(LazyLoadingView):
             @param items as [int]
             @return added widget
         """
-        if self._lazy_queue is None:
+        if self._lazy_queue is None and self._viewport is None:
             return
         if items:
             widget = self._widget_class(
@@ -79,8 +79,7 @@ class FlowBoxView(LazyLoadingView):
             return widget
         else:
             GLib.idle_add(self.lazy_loading)
-            if self._viewport is not None and\
-                    self._viewport.get_child() is None:
+            if self._viewport.get_child() is None:
                 self._viewport.add(self._box)
         return None
 

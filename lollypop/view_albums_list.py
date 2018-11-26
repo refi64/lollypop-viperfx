@@ -212,6 +212,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
             Stop view loading
         """
+        self._artwork = None
         if self._responsive_widget is not None:
             TracksView.stop(self)
 
@@ -270,6 +271,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Set album artwork
             @param surface as str
         """
+        if self._artwork is None:
+            return
         if surface is None:
             self._artwork.set_from_icon_name("folder-music-symbolic",
                                              Gtk.IconSize.BUTTON)
@@ -518,7 +521,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param albums ids as [Album]
             @param previous_row as AlbumRow
         """
-        if self._lazy_queue is None:
+        if self._lazy_queue is None and self._viewport is None:
             return
         if albums:
             album = albums.pop(0)
@@ -540,8 +543,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
                 children[0].reveal(True)
             else:
                 GLib.idle_add(self.lazy_loading)
-            if self._viewport is not None and\
-                    self._viewport.get_child() is None:
+            if self._viewport.get_child() is None:
                 self._viewport.add(self.__view)
 
     def __row_for_album(self, album, reveal=False):
