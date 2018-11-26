@@ -277,7 +277,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 
         # Create album objects
         for _album_id in album_ids:
-            if album_id == album_id:
+            if _album_id == album_id:
                 continue
             album = Album(_album_id, filter1_ids, filter2_ids, True)
             self._albums.append(album)
