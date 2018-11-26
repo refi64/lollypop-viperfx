@@ -169,15 +169,15 @@ class AlbumArt:
                     if uri is not None:
                         f = Gio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
-                        ratio = self._preserve_ratio(uri)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
                             size,
                             size,
-                            ratio,
+                            True,
                             None)
+                        pixbuf = self._preserve_ratio(pixbuf, size)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
@@ -194,16 +194,16 @@ class AlbumArt:
                     if uri is not None:
                         f = Gio.File.new_for_uri(uri)
                         (status, data, tag) = f.load_contents(None)
-                        ratio = self._preserve_ratio(uri)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
                             size,
                             size,
-                            ratio,
+                            True,
                             None)
                         stream.close()
+                        pixbuf = self._preserve_ratio(pixbuf, size)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)

@@ -83,31 +83,30 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
-    def _preserve_ratio(self, uri):
+    def _preserve_ratio(self, pixbuf, size):
         """
-            Preserve the cover’s aspect ratio
+            Return scaled pixbuf if needed
             @param uri as str
-            @return respect aspect ratio as bool
+            @param size s int
+            @return GdkPixbuf.Pixbuf
         """
         if App().settings.get_value("preserve-aspect-ratio"):
-            return True
-        f = Gio.File.new_for_uri(uri)
-        (status, data, tag) = f.load_contents(None)
-        bytes = GLib.Bytes(data)
-        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-        cover = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-        stream.close()
-        cover_width = cover.get_width()
-        cover_height = cover.get_height()
-        del cover
-        if cover_width == cover_height:
-            return True
-        elif cover_width < cover_height:
-            cut = cover_height / 5
-            return cover_width < cover_height - cut
+            return pixbuf
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        if width == height:
+            preserve = True
+        elif width < height:
+            cut = height / 5
+            preserve = width < height - cut
         else:
-            cut = cover_width / 5
-            return cover_height < cover_width - cut
+            cut = width / 5
+            preserve = height < width - cut
+        if preserve:
+            return pixbuf
+        else:
+            return pixbuf.scale_simple(size, size,
+                                       GdkPixbuf.InterpType.BILINEAR)
 
     def _create_store(self):
         """
