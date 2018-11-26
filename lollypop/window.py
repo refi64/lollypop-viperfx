@@ -64,6 +64,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.enable_global_shortcuts(True)
         self.set_auto_startup_notification(False)
         self.connect("realize", self.__on_realize)
+        self.connect("adaptive-changed", self.__on_adaptive_changed)
 
     def enable_global_shortcuts(self, enable):
         """
@@ -151,46 +152,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         return self.__container
 
-##############
-# Protected  #
-##############
-    def _set_adaptive_stack(self, b):
-        """
-            Move paned child to stack
-            @param b as bool
-        """
-        adaptive_stack = self._adaptive_stack if\
-            self._adaptive_stack is not None else\
-            not b
-        AdaptiveWindow._set_adaptive_stack(self, b)
-        if b and not adaptive_stack:
-            self.__container.show_sidebar(True)
-        elif not b and adaptive_stack:
-            value = App().settings.get_value("show-sidebar")
-            self.__container.show_sidebar(value)
-        size = self.get_size()
-        if b and not adaptive_stack:
-            self.__show_miniplayer(True)
-            self.__miniplayer.set_vexpand(False)
-            self.__container.stack.show()
-            if self.__miniplayer is not None:
-                self.__miniplayer.set_vexpand(False)
-        elif not b and adaptive_stack:
-            self.__show_miniplayer(False)
-            self.__container.stack.show()
-            if self.__miniplayer is not None:
-                self.__miniplayer.set_vexpand(False)
-        if size[1] < WindowSize.MEDIUM and\
-                self.__miniplayer is not None and\
-                self.__miniplayer.is_visible():
-            self.__container.stack.hide()
-            self.__miniplayer.set_vexpand(True)
-        elif self.__miniplayer is not None:
-            self.__container.stack.show()
-            self.__miniplayer.set_vexpand(False)
-
 ############
-# Private  #
+# PRIVATE  #
 ############
     def __setup_global_shortcuts(self):
         """
@@ -552,3 +515,33 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         else:
             artists = ", ".join(player.current_track.artists)
             self.set_title("%s - %s" % (artists, "Lollypop"))
+
+    def __on_adaptive_changed(self, window, adaptive_stack):
+        """
+            Handle adaptive mode
+            @param window as AdaptiveWindow
+            @param adaptive_stack as bool
+        """
+        if adaptive_stack:
+            value = App().settings.get_value("show-sidebar")
+            self.__container.show_sidebar(value)
+            self.__show_miniplayer(False)
+            self.__container.stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+        else:
+            self.__container.show_sidebar(True)
+            self.__show_miniplayer(True)
+            self.__miniplayer.set_vexpand(False)
+            self.__container.stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+        size = self.get_size()
+        if size[1] < WindowSize.MEDIUM and\
+                self.__miniplayer is not None and\
+                self.__miniplayer.is_visible():
+            self.__container.stack.hide()
+            self.__miniplayer.set_vexpand(True)
+        elif self.__miniplayer is not None:
+            self.__container.stack.show()
+            self.__miniplayer.set_vexpand(False)

@@ -251,9 +251,9 @@ class AdaptiveWindow:
             @param width as int
         """
         if width < self._ADAPTIVE_STACK:
-            self._set_adaptive_stack(True)
+            self.__set_adaptive_stack(True)
         else:
-            self._set_adaptive_stack(False)
+            self.__set_adaptive_stack(False)
         # We delay connect to ignore initial configure events
         if self.__configure_timeout_id is None:
             self.__configure_timeout_id = GLib.timeout_add(
@@ -273,7 +273,11 @@ class AdaptiveWindow:
 #############
 # PROTECTED #
 #############
-    def _set_adaptive_stack(self, b):
+
+############
+# PRIVATE  #
+############
+    def __set_adaptive_stack(self, b):
         """
             Move paned child to stack
             @param b as bool
@@ -306,9 +310,6 @@ class AdaptiveWindow:
             self.emit("show-can-go-back", False)
             self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
-############
-# PRIVATE  #
-############
     def __on_configure_event(self, widget, event):
         """
             Delay event
