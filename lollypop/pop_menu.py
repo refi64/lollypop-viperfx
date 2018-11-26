@@ -265,6 +265,8 @@ class ToolbarMenu(BaseMenu):
         if track.id >= 0:
             playlist_menu = PlaylistsMenu(track)
             self.insert_section(1, _("Playlists"), playlist_menu)
+        self.insert_section(2, _("Artist"),
+                            ArtistMenu(track))
 
 #######################
 # PRIVATE             #
