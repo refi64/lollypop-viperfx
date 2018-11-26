@@ -65,3 +65,4 @@ class ViewController:
         """
         for signal_id in self.__signals_ids.keys():
             self.__signals_ids[signal_id].disconnect(signal_id)
+        self.__signals_ids = {}
