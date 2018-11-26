@@ -296,8 +296,8 @@ class AdaptiveWindow:
                 self.__stack.add(c)
             self.__stack.set_visible_child(self.__paned[0][1])
             self.emit("can-go-back-changed", False)
-            self.emit("adaptive-changed", True)
             self.emit("show-can-go-back", True)
+            self.emit("adaptive-changed", True)
             self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         elif not b and self._adaptive_stack:
             self.__stack.set_transition_type(Gtk.StackTransitionType.NONE)
@@ -306,8 +306,8 @@ class AdaptiveWindow:
             for (p, c) in self.__paned:
                 self.__stack.remove(c)
                 p.add1(c)
-            self.emit("adaptive-changed", False)
             self.emit("show-can-go-back", False)
+            self.emit("adaptive-changed", False)
             self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
     def __on_configure_event(self, widget, event):

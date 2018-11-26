@@ -523,16 +523,16 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param adaptive_stack as bool
         """
         if adaptive_stack:
-            value = App().settings.get_value("show-sidebar")
-            self.__container.show_sidebar(value)
-            self.__show_miniplayer(False)
+            self.__container.show_sidebar(True)
+            self.__show_miniplayer(True)
+            self.__miniplayer.set_vexpand(False)
             self.__container.stack.show()
             if self.__miniplayer is not None:
                 self.__miniplayer.set_vexpand(False)
         else:
-            self.__container.show_sidebar(True)
-            self.__show_miniplayer(True)
-            self.__miniplayer.set_vexpand(False)
+            value = App().settings.get_value("show-sidebar")
+            self.__container.show_sidebar(value)
+            self.__show_miniplayer(False)
             self.__container.stack.show()
             if self.__miniplayer is not None:
                 self.__miniplayer.set_vexpand(False)
