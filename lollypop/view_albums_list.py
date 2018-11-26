@@ -521,7 +521,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param albums ids as [Album]
             @param previous_row as AlbumRow
         """
-        if self._lazy_queue is None and self._viewport is None:
+        if self._lazy_queue is None or self._viewport is None:
             return
         if albums:
             album = albums.pop(0)

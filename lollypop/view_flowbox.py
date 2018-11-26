@@ -67,7 +67,7 @@ class FlowBoxView(LazyLoadingView):
             @param items as [int]
             @return added widget
         """
-        if self._lazy_queue is None and self._viewport is None:
+        if self._lazy_queue is None or self._viewport is None:
             return
         if items:
             widget = self._widget_class(
