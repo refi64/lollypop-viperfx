@@ -376,7 +376,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
         self.__view.show()
-        self._viewport.add(self.__view)
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
 
