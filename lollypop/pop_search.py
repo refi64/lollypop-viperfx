@@ -63,6 +63,13 @@ class SearchPopover(Gtk.Popover):
 
         self.add(self.__widget)
 
+    def popup(self):
+        """
+            Popup and set focus on entry
+        """
+        Gtk.Popover.popup(self)
+        self.__entry.grab_focus()
+
     def set_text(self, text):
         """
             Set search text
