@@ -18,6 +18,7 @@ from random import shuffle
 from lollypop.define import App, RowListType, Type, Shuffle
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
+from lollypop.logger import Logger
 
 
 class SearchPopover(Gtk.Popover):
@@ -90,14 +91,17 @@ class SearchPopover(Gtk.Popover):
             Play search
             @param button as Gtk.Button
         """
-        App().player.clear_albums()
-        shuffle_setting = App().settings.get_enum("shuffle")
-        children = self.__view.children
-        if shuffle_setting == Shuffle.ALBUMS:
-            shuffle(children)
-        for child in children:
-            App().player.add_album(child.album)
-        App().player.load(App().player.albums[0].tracks[0])
+        try:
+            App().player.clear_albums()
+            shuffle_setting = App().settings.get_enum("shuffle")
+            children = self.__view.children
+            if shuffle_setting == Shuffle.ALBUMS:
+                shuffle(children)
+            for child in children:
+                App().player.add_album(child.album)
+            App().player.load(App().player.albums[0].tracks[0])
+        except Exception as e:
+            Logger.error("SearchPopover::_on_play_button_clicked(): %s", e)
 
     def _on_new_button_clicked(self, button):
         """
