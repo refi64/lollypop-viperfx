@@ -13,8 +13,9 @@
 from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
+from random import shuffle
 
-from lollypop.define import App, RowListType, Type
+from lollypop.define import App, RowListType, Type, Shuffle
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
 
@@ -41,7 +42,8 @@ class SearchPopover(Gtk.Popover):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchPopover.ui")
         self.__widget = builder.get_object("widget")
-        self.__new_btn = builder.get_object("new_btn")
+        self.__new_button = builder.get_object("new_button")
+        self.__play_button = builder.get_object("play_button")
         self.__entry = builder.get_object("entry")
 
         self.__spinner = builder.get_object("spinner")
@@ -76,7 +78,21 @@ class SearchPopover(Gtk.Popover):
 #######################
 # PROTECTED           #
 #######################
-    def _on_new_btn_clicked(self, button):
+    def _on_play_button_clicked(self, button):
+        """
+            Play search
+            @param button as Gtk.Button
+        """
+        App().player.clear_albums()
+        shuffle_setting = App().settings.get_enum("shuffle")
+        children = self.__view.children
+        if shuffle_setting == Shuffle.ALBUMS:
+            shuffle(children)
+        for child in children:
+            App().player.add_album(child.album)
+        App().player.load(App().player.albums[0].tracks[0])
+
+    def _on_new_button_clicked(self, button):
         """
             Create a new playlist based on search
             @param button as Gtk.Button
@@ -133,7 +149,7 @@ class SearchPopover(Gtk.Popover):
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_default_placeholder()
-            self.__header_stack.set_visible_child(self.__new_btn)
+            self.__header_stack.set_visible_child(self.__new_button)
             GLib.idle_add(self.__spinner.stop)
 
     def __search_to_playlist(self):
@@ -168,7 +184,7 @@ class SearchPopover(Gtk.Popover):
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_no_result_placeholder()
-        self.__header_stack.set_visible_child(self.__new_btn)
+        self.__header_stack.set_visible_child(self.__new_button)
         GLib.idle_add(self.__spinner.stop)
 
     def __on_map(self, widget):
@@ -188,7 +204,7 @@ class SearchPopover(Gtk.Popover):
         """
         self.__cancellable.cancel()
         self.__view.stop()
-        self.__header_stack.set_visible_child(self.__new_btn)
+        self.__header_stack.set_visible_child(self.__new_button)
         self.__spinner.stop()
 
     def __on_search_changed_timeout(self):
@@ -202,6 +218,8 @@ class SearchPopover(Gtk.Popover):
         self.__timeout_id = None
         self.__populate()
         if self.__current_search != "":
-            self.__new_btn.set_sensitive(True)
+            self.__play_button.set_sensitive(True)
+            self.__new_button.set_sensitive(True)
         else:
-            self.__new_btn.set_sensitive(False)
+            self.__play_button.set_sensitive(False)
+            self.__new_button.set_sensitive(False)
