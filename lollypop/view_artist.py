@@ -310,19 +310,18 @@ class ArtistView(ArtistAlbumsView):
         """
             Set artist artwork
         """
-        if App().settings.get_value("artist-artwork"):
-            if len(self._artist_ids) == 1 and\
-                    App().settings.get_value("artist-artwork"):
-                artist = App().artists.get_name(self._artist_ids[0])
-                size = ArtSize.ARTIST_SMALL
-                if not App().window.is_adaptive:
-                    size *= 2
-                App().art_helper.set_artist_artwork(
-                                            artist,
-                                            size,
-                                            size,
-                                            self.__artwork.get_scale_factor(),
-                                            self.__on_artist_artwork)
+        if len(self._artist_ids) == 1 and\
+                App().settings.get_value("artist-artwork"):
+            artist = App().artists.get_name(self._artist_ids[0])
+            size = ArtSize.ARTIST_SMALL
+            if not App().window.is_adaptive:
+                size *= 2
+            App().art_helper.set_artist_artwork(
+                                        artist,
+                                        size,
+                                        size,
+                                        self.__artwork.get_scale_factor(),
+                                        self.__on_artist_artwork)
         else:
             self.__set_header_height()
 
