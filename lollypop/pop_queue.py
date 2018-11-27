@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
 from lollypop.define import App, ArtSize, Type
 from lollypop.widgets_utils import Popover
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 
 
 class QueueRow(Gtk.ListBoxRow):
@@ -31,7 +31,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param track_id as int
         """
         Gtk.ListBoxRow.__init__(self)
-        self.__id = track_id
+        self.__track = Track(track_id)
         self.__number = 0
         self.set_margin_start(5)
         self.set_margin_end(5)
@@ -104,6 +104,12 @@ class QueueRow(Gtk.ListBoxRow):
         """
         if show:
             self.__header.show_all()
+            App().art_helper.set_album_artwork(
+                                           self.__track.album,
+                                           ArtSize.MEDIUM,
+                                           ArtSize.MEDIUM,
+                                           self.get_scale_factor(),
+                                           self.__on_album_artwork)
         else:
             self.__header.hide()
 
@@ -113,25 +119,24 @@ class QueueRow(Gtk.ListBoxRow):
             Get row id
             @return row id as int
         """
-        return self.__id
+        return self.__track.id
 
     def set_labels(self):
         """
             Set artist, album and title label
         """
-        track = Track(self.__id)
         self.__artist_label.set_markup(
             "<b>" + GLib.markup_escape_text(
-                ", ".join(track.album.artists)) + "</b>")
-        self.__album_label.set_text(track.album.name)
+                ", ".join(self.__track.album.artists)) + "</b>")
+        self.__album_label.set_text(self.__track.album.name)
         # If we are listening to a compilation, prepend artist name
-        title = GLib.markup_escape_text(track.name)
-        if track.album.artist_id == Type.COMPILATIONS or\
-           len(track.artist_ids) > 1 or\
-           track.album.artist_id not in track.artist_ids:
-            if track.artist_names != track.album.artist_name:
+        title = GLib.markup_escape_text(self.__track.name)
+        if self.__track.album.artist_id == Type.COMPILATIONS or\
+           len(self.__track.artist_ids) > 1 or\
+           self.__track.album.artist_id not in self.__track.artist_ids:
+            if self.__track.artist_names != self.__track.album.artist_name:
                 title = "<b>%s</b>\n%s" % (
-                    GLib.markup_escape_text(track.artist_names),
+                    GLib.markup_escape_text(self.__track.artist_names),
                     title)
         self.__title_label.set_markup(title)
 
@@ -167,7 +172,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        track_id = str(self.__id)
+        track_id = str(self.__track.id)
         data.set_text(track_id, len(track_id))
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -235,6 +240,13 @@ class QueueRow(Gtk.ListBoxRow):
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
             self.set_tooltip_text("")
+
+    def __on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        self.set_cover(surface)
 
 
 class QueuePopover(Popover):
@@ -314,11 +326,6 @@ class QueuePopover(Popover):
             album_id = App().tracks.get_album_id(track_id)
             row = self.__row_for_track_id(track_id)
             if album_id != prev_album_id:
-                surface = App().art.get_album_artwork(
-                    Album(album_id),
-                    ArtSize.MEDIUM,
-                    self.get_scale_factor())
-                row.set_cover(surface)
                 row.show_header(True)
             self.__view.add(row)
             GLib.idle_add(self.__add_items, items, album_id)
@@ -380,11 +387,6 @@ class QueuePopover(Popover):
                 child.set_cover(None)
                 child.show_header(False)
             else:
-                surface = App().art.get_album_artwork(
-                    Album(track.album.id),
-                    ArtSize.MEDIUM,
-                    self.get_scale_factor())
-                child.set_cover(surface)
                 child.show_header(True)
             prev_album_id = track.album.id
 
