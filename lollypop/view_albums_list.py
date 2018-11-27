@@ -79,7 +79,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__list_type = list_type
         self.__play_indicator = None
         self.set_sensitive(False)
-        self.get_style_context().add_class("loading")
         self.set_property("height-request", height)
         self.set_margin_start(5)
         # 15 for scrollbar overlay
@@ -95,7 +94,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self._artwork = App().art_helper.get_image(ArtSize.MEDIUM,
                                                    ArtSize.MEDIUM,
                                                    "small-cover-frame")
-        self.get_style_context().remove_class("loading")
         self.get_style_context().add_class("albumrow")
         self.set_sensitive(True)
         self.set_property("has-tooltip", True)

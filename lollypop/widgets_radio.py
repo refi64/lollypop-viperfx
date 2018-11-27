@@ -49,7 +49,6 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             else ArtSize.BIG
         self.set_size_request(self.__art_size,
                               self.__art_size + self.LABEL_HEIGHT)
-        self.get_style_context().add_class("loading")
         self.__radio_id = radio_id
         self.__radios = radios
 
@@ -58,7 +57,6 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             Init widget content
         """
         name = self.__radios.get_name(self.__radio_id)
-        self.get_style_context().remove_class("loading")
         self._widget = Gtk.EventBox()
         self._widget.set_property("has-tooltip", True)
         self._widget.connect("query-tooltip", self.__on_query_tooltip)
