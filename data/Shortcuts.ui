@@ -64,14 +64,14 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show/Hide volume control</property>
-                <property name="accelerator">&lt;Alt&gt;v</property>
+                <property name="accelerator">&lt;Primary&gt;&lt;Alt&gt;v</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show lyrics</property>
-                <property name="accelerator">&lt;Alt&gt;l</property>
+                <property name="accelerator">&lt;Primary&gt;&lt;Alt&gt;l</property>
               </object>
             </child>
             <child>

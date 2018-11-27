@@ -161,8 +161,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         App().set_accels_for_action("app.shortcut::locked", ["<Control>l"])
         App().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
-        App().set_accels_for_action("app.shortcut::volume", ["<Alt>v"])
-        App().set_accels_for_action("app.shortcut::lyrics", ["<Alt>l"])
+        App().set_accels_for_action("app.shortcut::volume",
+                                    ["<Control><Alt>v"])
+        App().set_accels_for_action("app.shortcut::lyrics",
+                                    ["<Control><Alt>l"])
         App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
         App().set_accels_for_action("app.shortcut::current_artist",
                                     ["<Control><Alt>a"])
