@@ -24,6 +24,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
     """
         Decade widget showing cover for 9 albums
     """
+    _pixel_size = ArtSize.ROUNDED / 10
 
     def __init__(self, item_ids):
         """
@@ -33,7 +34,6 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         OverlayHelper.__init__(self)
         decade_str = "%s - %s" % (item_ids[0], item_ids[-1])
         RoundedAlbumsWidget.__init__(self, item_ids, decade_str, decade_str)
-        self._pixel_size = ArtSize.ROUNDED / 10
 
     def populate(self):
         """
@@ -87,7 +87,8 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
                 Gtk.IconSize.INVALID)
             self.__play_event.set_tooltip_text(_("Play"))
             self.__play_button.set_opacity(1)
-            self.__play_button.set_pixel_size(self._pixel_size + 20)
+            self.__play_button.set_pixel_size(
+                AlbumsDecadeWidget._pixel_size + 20)
             # Open button
             self.__open_event = Gtk.EventBox()
             self.__open_event.set_property("has-tooltip", True)
@@ -102,7 +103,8 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__open_button = Gtk.Image.new_from_icon_name(
                 "folder-open-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__open_button.set_pixel_size(self._pixel_size)
+            self.__open_button.set_pixel_size(
+                AlbumsDecadeWidget._pixel_size)
             self.__open_button.set_opacity(1)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)

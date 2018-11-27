@@ -70,6 +70,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
     """
         Playlist widget showing cover for 9 albums
     """
+    _pixel_size = ArtSize.ROUNDED / 10
 
     def __init__(self, playlist_id, obj):
         """
@@ -80,7 +81,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         OverlayHelper.__init__(self)
         name = sortname = App().playlists.get_name(playlist_id)
         RoundedAlbumsWidget.__init__(self, playlist_id, name, sortname)
-        self._pixel_size = ArtSize.ROUNDED / 10
         self.__track_ids = []
         self.__obj = obj
         if obj is not None:
@@ -180,7 +180,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                     Gtk.IconSize.INVALID)
                 self.__play_event.set_tooltip_text(_("Remove"))
             self.__play_button.set_opacity(1)
-            self.__play_button.set_pixel_size(self._pixel_size + 20)
+            self.__play_button.set_pixel_size(
+                PlaylistRoundedWidget._pixel_size + 20)
             # Open button
             self.__open_event = Gtk.EventBox()
             self.__open_event.set_property("has-tooltip", True)
@@ -192,7 +193,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                 "folder-open-symbolic",
                 Gtk.IconSize.INVALID)
             self.__open_button.set_opacity(1)
-            self.__open_button.set_pixel_size(self._pixel_size)
+            self.__open_button.set_pixel_size(
+                PlaylistRoundedWidget._pixel_size)
             # Edit button
             self.__edit_event = Gtk.EventBox()
             self.__edit_event.set_property("has-tooltip", True)
@@ -204,7 +206,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                 "document-properties-symbolic",
                 Gtk.IconSize.INVALID)
             self.__edit_button.set_opacity(1)
-            self.__edit_button.set_pixel_size(self._pixel_size)
+            self.__edit_button.set_pixel_size(
+                PlaylistRoundedWidget._pixel_size)
             self.__play_event.add(self.__play_button)
             self.__open_event.add(self.__open_button)
             self.__edit_event.add(self.__edit_button)
