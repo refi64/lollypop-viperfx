@@ -35,8 +35,6 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
         self.__art_signal_id = None
-        self._viewport.set_margin_start(10)
-        self._viewport.set_margin_end(10)
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
@@ -60,6 +58,8 @@ class ArtistView(ArtistAlbumsView):
         self.__empty.show()
         self._album_box.add(self.__empty)
         self._album_box.set_row_spacing(20)
+        self._album_box.set_margin_start(10)
+        self._album_box.set_margin_end(10)
 
         self.__scale_factor = self.__artwork.get_scale_factor()
         self.__set_artwork()
