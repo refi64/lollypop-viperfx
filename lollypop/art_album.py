@@ -139,13 +139,12 @@ class AlbumArt:
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, size, scale, disable_cache=False):
+    def get_album_artwork(self, album, size, scale):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param pixbuf size as int
             @param scale factor as int
-            @param disable_cache as bool
             @return cairo surface
             @thread safe
         """
@@ -207,7 +206,7 @@ class AlbumArt:
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
-                elif not disable_cache:
+                else:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
                                      "cover-quality").get_int32())])
