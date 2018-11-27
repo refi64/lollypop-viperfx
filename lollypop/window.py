@@ -165,7 +165,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         App().set_accels_for_action("app.shortcut::lyrics", ["<Alt>l"])
         App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
         App().set_accels_for_action("app.shortcut::current_artist",
-                                    ["<Alt>a"])
+                                    ["<Control><Alt>a"])
         App().set_accels_for_action("app.shortcut::show_genres",
                                     ["<Control>g"])
         App().set_accels_for_action("app.shortcut::show_sidebar", ["F9"])
@@ -465,7 +465,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             if App().player.current_track.id is not None and\
                     App().player.current_track.id > 0:
                 artist_ids = App().player.current_track.album.artist_ids
-                self.container.show_artists_albums(artist_ids)
+                if App().settings.get_value("show-sidebar"):
+                    self.container.show_artists_albums(artist_ids)
+                else:
+                    App().window.container.show_view(artist_ids[0])
         elif string == "show_genres":
             state = not App().settings.get_value("show-genres")
             App().settings.set_value("show-genres",

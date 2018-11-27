@@ -78,7 +78,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show albums from artist</property>
-                <property name="accelerator">&lt;Alt&gt;a</property>
+                <property name="accelerator">&lt;Primary&gt;&lt;Alt&gt;a</property>
               </object>
             </child>
             <child>
