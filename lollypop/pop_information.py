@@ -245,6 +245,10 @@ class InformationPopover(Popover):
         """
         uri = "file://%s/%s.txt" % (InformationStore._INFO_PATH,
                                     escape(artist))
+        f = Gio.File.new_for_uri(uri)
+        if not f.query_exists():
+            f.replace_contents(b"", None, False,
+                               Gio.FileCreateFlags.NONE, None)
         Gtk.show_uri_on_window(App().window,
                                uri,
                                Gdk.CURRENT_TIME)
