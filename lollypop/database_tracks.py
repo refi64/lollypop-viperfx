@@ -144,7 +144,7 @@ class TracksDatabase:
 
     def get_id_by(self, name, album_id, artist_ids):
         """
-            Return track id for uri
+            Return track id for name/album/artists
             @param name as str
             @param album id as int
             @return track id as int
@@ -167,6 +167,20 @@ class TracksDatabase:
             if v is not None:
                 return v[0]
             return None
+
+    def get_ids_by_artist(self, artist_id):
+        """
+            Return track id for artist_id
+            @param artist_id as int
+            @return [int]
+        """
+        with SqlCursor(App().db) as sql:
+            filters = (artist_id,)
+            request = "SELECT tracks.rowid FROM tracks, track_artists\
+                       WHERE track_artists.artist_id=? AND\
+                       tracks.rowid = track_artists.track_id"
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result))
 
     def get_name(self, track_id):
         """

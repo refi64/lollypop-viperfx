@@ -227,11 +227,8 @@ class ArtistsDatabase:
             @return Array of id as int
         """
         with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT artists.rowid FROM artists, albums,\
-                                  album_artists\
+            result = sql.execute("SELECT artists.rowid FROM artists\
                                   WHERE noaccents(artists.name) LIKE ?\
-                                  AND album_artists.artist_id=artists.rowid\
-                                  AND album_artists.album_id=albums.rowid\
                                   LIMIT 25", ("%" + noaccents(string) + "%",))
             return list(itertools.chain(*result))
 
