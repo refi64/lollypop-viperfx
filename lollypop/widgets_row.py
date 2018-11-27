@@ -270,7 +270,7 @@ class Row(Gtk.ListBoxRow):
                                                          event)
         elif event.button == 2:
             if self._track.id in App().player.queue:
-                App().player.del_from_queue(self._track.id)
+                App().player.remove_from_queue(self._track.id)
             else:
                 App().player.append_to_queue(self._track.id)
         else:

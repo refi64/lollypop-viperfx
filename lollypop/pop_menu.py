@@ -105,7 +105,7 @@ class QueueMenu(BaseMenu):
             del_queue_action = Gio.SimpleAction(name="del_queue_action")
             App().add_action(del_queue_action)
             del_queue_action.connect("activate",
-                                     self.__del_from_queue)
+                                     self.__remove_from_queue)
             self.append(_("Remove from queue"), "app.del_queue_action")
 
     def __append_to_queue(self, action, variant):
@@ -117,13 +117,13 @@ class QueueMenu(BaseMenu):
         App().player.append_to_queue(self._object.id, False)
         App().player.emit("queue-changed")
 
-    def __del_from_queue(self, action, variant):
+    def __remove_from_queue(self, action, variant):
         """
             Delete track id from queue
             @param Gio.SimpleAction
             @param GLib.Variant
         """
-        App().player.del_from_queue(self._object.id, False)
+        App().player.remove_from_queue(self._object.id, False)
         App().player.emit("queue-changed")
 
 

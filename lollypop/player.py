@@ -520,7 +520,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         if self._current_track.id is not None and self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
         if self.track_in_queue(self._current_track):
-            self.del_from_queue(self._current_track.id)
+            self.remove_from_queue(self._current_track.id)
         else:
             if self.shuffle_has_next or not self.__do_not_update_next:
                 self.set_next()

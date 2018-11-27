@@ -192,7 +192,7 @@ class QueuePopover(Popover):
             @param row as PlaylistRow
         """
         if row.track.id != self.__last_drag_id:
-            App().player.del_from_queue(row.track.id)
+            App().player.remove_from_queue(row.track.id)
         if row.previous_row is None:
             row.next_row.set_previous_row(None)
         elif row.next_row is None:

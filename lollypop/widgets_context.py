@@ -170,12 +170,12 @@ class ContextWidget(Gtk.EventBox):
                 if add_to_queue:
                     App().player.append_to_queue(track_id, False)
                 else:
-                    App().player.del_from_queue(track_id, False)
+                    App().player.remove_from_queue(track_id, False)
         elif isinstance(self.__object, Track):
             if add_to_queue:
                 App().player.append_to_queue(self.__object.id, False)
             else:
-                App().player.del_from_queue(self.__object.id, False)
+                App().player.remove_from_queue(self.__object.id, False)
         App().player.emit("queue-changed")
         self.hide()
 

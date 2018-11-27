@@ -66,7 +66,7 @@ class QueuePlayer:
         if notify:
             self.emit("queue-changed")
 
-    def del_from_queue(self, track_id, notify=True):
+    def remove_from_queue(self, track_id, notify=True):
         """
             Remove track from queue
             @param track id as int

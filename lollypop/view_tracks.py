@@ -578,7 +578,7 @@ class TracksView:
         # Add to queue by default
         if App().player.is_locked:
             if track.id in App().player.queue:
-                App().player.del_from_queue(track.id)
+                App().player.remove_from_queue(track.id)
             else:
                 App().player.append_to_queue(track.id)
         else:
