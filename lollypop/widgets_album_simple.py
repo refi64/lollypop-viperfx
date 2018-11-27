@@ -90,6 +90,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__widget.connect("enter-notify-event", self._on_enter_notify)
         self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self.__on_button_press)
+        self.connect("destroy", self.__on_destroy)
 
     def set_artwork(self):
         """
@@ -222,6 +223,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             Set album artwork
             @param surface as str
         """
+        if self.__widget is None:
+            return
         if surface is None:
             self._artwork.set_from_icon_name("folder-music-symbolic",
                                              Gtk.IconSize.DIALOG)
@@ -281,3 +284,10 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         self.lock_overlay(False)
         self._artwork.set_opacity(1)
+
+    def __on_destroy(self, widget):
+        """
+            Destroyed widget
+            @param widget as Gtk.Widget
+        """
+        self.__widget = None

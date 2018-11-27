@@ -84,6 +84,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.set_margin_start(5)
         # 15 for scrollbar overlay
         self.set_margin_end(15)
+        self.connect("destroy", self.__on_destroy)
 
     def populate(self):
         """
@@ -345,6 +346,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
             self.set_tooltip_text("")
+
+    def __on_destroy(self, widget):
+        """
+            Destroyed widget
+            @param widget as Gtk.Widget
+        """
+        self._artwork = None
 
 
 class AlbumsListView(LazyLoadingView, ViewController):
