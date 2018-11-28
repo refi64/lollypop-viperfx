@@ -42,26 +42,19 @@ class SearchPopover(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchPopover.ui")
+        builder.connect_signals(self)
         self.__widget = builder.get_object("widget")
         self.__new_button = builder.get_object("new_button")
         self.__play_button = builder.get_object("play_button")
         self.__entry = builder.get_object("entry")
-
         self.__spinner = builder.get_object("spinner")
         self.__header_stack = builder.get_object("header_stack")
         self.__stack = builder.get_object("stack")
         self.__placeholder = builder.get_object("placeholder")
-
-        # Connect here because we don"t want previous switch.set_state()
-        # to emit a signal on init
-        builder.connect_signals(self)
-
         self.__view = AlbumsListView(RowListType.SEARCH)
         self.__view.show()
         self.__stack.add_named(self.__view, "view")
-
         self.__set_default_placeholder()
-
         self.add(self.__widget)
 
     def popup(self):
