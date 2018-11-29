@@ -411,16 +411,16 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param: widget as Gtk.Window
         """
         self.__timeout_configure = None
-        size = widget.get_size()
+        (width, height) = widget.get_size()
         if self.__miniplayer is not None:
-            self.__miniplayer.update_cover(size[0])
+            self.__miniplayer.update_cover(width)
+        # Keep a minimal height
+        if height < Sizing.BIG:
+            height = Sizing.BIG
         App().settings.set_value("window-size",
-                                 GLib.Variant("ai", [size[0], size[1]]))
-
-        position = widget.get_position()
-        App().settings.set_value("window-position",
-                                 GLib.Variant("ai",
-                                              [position[0], position[1]]))
+                                 GLib.Variant("ai", [width, height]))
+        (x, y) = widget.get_position()
+        App().settings.set_value("window-position", GLib.Variant("ai", [x, y]))
 
     def __connect_state_signals(self):
         """
