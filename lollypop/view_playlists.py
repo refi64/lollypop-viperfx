@@ -36,6 +36,7 @@ class PlaylistsView(View, ViewController):
         View.__init__(self, True)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self.__playlist_ids = playlist_ids
+        self.__tracks = []
         self.__signal_id1 = App().playlists.connect(
                                             "playlist-track-added",
                                             self.__on_playlist_track_added)
@@ -90,6 +91,7 @@ class PlaylistsView(View, ViewController):
             Populate view with tracks from playlist
             @param tracks as [track]
         """
+        self.__tracks = tracks
         self.__playlists_widget.populate(tracks)
         self.__update_jump_button()
 
@@ -250,7 +252,8 @@ class PlaylistsView(View, ViewController):
         """
             Update jump button status
         """
-        if App().player.current_track.playlist_id in self.__playlist_ids:
+        track_ids = [track.id for track in self.__tracks]
+        if App().player.current_track.id in track_ids:
             self.__jump_button.set_sensitive(True)
         else:
             self.__jump_button.set_sensitive(False)
