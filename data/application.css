@@ -214,33 +214,56 @@ popover.background separator {
 }
 
 .rounded-icon {
+    background: none;
+    border: none;
+    background-image: none;
+    box-shadow: none;
+	border-image-source: none;
     transition: 70ms linear;
     box-shadow: 0 0 3px white;
     background-color: alpha(black, 0.8);
-    color: white;
+    color: alpha(white, 0.9);
     padding: 12px;
     margin: 4px;
     border-radius: 50%;
 }
 
-.rounded-icon-small {
-    transition: 70ms linear;
-    box-shadow: 0 0 3px white;
-    background-color: alpha(black, 0.8);
+.rounded-icon:hover {
     color: white;
-    padding: 8px;
-    margin: 4px;
-    border-radius: 50%;
+    transition: 500ms linear;
+    background-color: alpha(black, 0.9);
 }
 
 .squared-icon-small {
     transition: 70ms linear;
     box-shadow: 0 0 3px white;
     background-color: alpha(black, 0.8);
-    color: white;
-    padding: 8px;
     margin: 4px;
     border-radius: 5px;
+}
+
+.squared-icon-small:hover {
+    background-color: alpha(black, 0.9);
+}
+
+.overlay-button {
+    background: none;
+    color: alpha(white, 0.9);
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    background-image: none;
+    box-shadow: none;
+	border-image-source: none;
+	opacity: 0.9;
+	padding: 6px;
+	border-radius: 5px;
+}
+
+.overlay-button:hover {
+    transition: 500ms linear;
+    color: white;
+    background-color: alpha(black, 0.9);
 }
 
 .no-padding {

@@ -22,7 +22,8 @@ class OverlayHelper:
     """
         An overlay helper
     """
-    _pixel_size = 32
+    _pixel_size = App().settings.get_value(
+            "cover-size").get_int32() / 9
 
     def __init__(self):
         """
@@ -101,13 +102,13 @@ class OverlayHelper:
             if self._show_overlay:
                 self._show_overlay_func(False)
 
-    def _on_eventbox_realize(self, eventbox):
+    def _on_realize(self, widget):
         """
-            Change cursor over eventbox
-            @param eventbox as Gdk.Eventbox
+            Set cursor on widget
+            @param widget as Gtk.Widget
         """
         try:
-            window = eventbox.get_window()
+            window = widget.get_window()
             if window is not None:
                 window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
         except:
@@ -134,8 +135,6 @@ class OverlayAlbumHelper(OverlayHelper):
     """
         Special album case
     """
-    _pixel_size = App().settings.get_value(
-            "cover-size").get_int32() / 9
 
     def __init__(self):
         """
@@ -152,89 +151,75 @@ class OverlayAlbumHelper(OverlayHelper):
             @param show_overlay as bool
         """
         if self._lock_overlay or\
-           self._show_overlay == show_overlay:
+                self._show_overlay == show_overlay or\
+                App().player.is_locked:
             return
         OverlayHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
-            if App().player.is_locked:
-                opacity = 0.2
-            else:
-                opacity = 1
-            # Play button
-            self._play_event = Gtk.EventBox()
-            self._play_event.set_property("has-tooltip", True)
-            self._play_event.set_tooltip_text(_("Play"))
-            self._play_event.connect("realize", self._on_eventbox_realize)
-            self._play_event.connect("button-press-event",
-                                     self._on_play_press_event)
-            self._play_event.set_property("halign", Gtk.Align.START)
-            self._play_event.set_property("valign", Gtk.Align.END)
-            self._play_event.set_margin_start(6)
-            self._play_event.set_margin_bottom(6)
-            self._play_event.show()
-            self._play_button = Gtk.Image.new_from_icon_name(
+            self._play_button = Gtk.Button.new_from_icon_name(
                 "media-playback-start-symbolic",
                 Gtk.IconSize.INVALID)
-            self._play_button.set_pixel_size(
+            self._play_button.set_relief(Gtk.ReliefStyle.NONE)
+            self._play_button.get_image().set_pixel_size(
                 OverlayAlbumHelper._pixel_size + 20)
-            self._play_button.set_opacity(opacity)
+            self._play_button.set_property("has-tooltip", True)
+            self._play_button.set_tooltip_text(_("Play"))
+            self._play_button.connect("realize", self._on_realize)
+            self._play_button.connect("clicked", self.__on_play_clicked)
+            self._play_button.set_property("halign", Gtk.Align.START)
+            self._play_button.set_property("valign", Gtk.Align.END)
+            self._play_button.set_margin_start(6)
+            self._play_button.set_margin_bottom(6)
             self._play_button.show()
-            self._play_event.add(self._play_button)
             # Artwork button
-            self._artwork_event = Gtk.EventBox()
-            self._artwork_event.set_property("has-tooltip", True)
-            self._artwork_event.set_tooltip_text(_("Change artwork"))
-            self._artwork_event.set_property("halign", Gtk.Align.END)
-            self._artwork_event.set_property("valign", Gtk.Align.END)
-            self._artwork_event.connect("realize", self._on_eventbox_realize)
-            self._artwork_event.connect("button-press-event",
-                                        self._on_artwork_press_event)
-            self._artwork_button = Gtk.Image.new_from_icon_name(
+            self._artwork_button = Gtk.Button.new_from_icon_name(
                 "image-x-generic-symbolic",
                 Gtk.IconSize.INVALID)
-            self._artwork_button.set_opacity(opacity)
-            self._artwork_button.set_pixel_size(OverlayAlbumHelper._pixel_size)
+            self._artwork_button.set_relief(Gtk.ReliefStyle.NONE)
+            self._artwork_button.set_property("has-tooltip", True)
+            self._artwork_button.set_tooltip_text(_("Change artwork"))
+            self._artwork_button.set_property("halign", Gtk.Align.END)
+            self._artwork_button.set_property("valign", Gtk.Align.END)
+            self._artwork_button.connect("realize", self._on_realize)
+            self._artwork_button.connect("clicked", self.__on_artwork_clicked)
+            self._artwork_button.get_image().set_pixel_size(
+                OverlayAlbumHelper._pixel_size)
             self._artwork_button.show()
             # Action button
-            self._action_event = Gtk.EventBox()
-            self._action_event.set_property("has-tooltip", True)
-            self._action_event.set_property("halign", Gtk.Align.END)
-            self._action_event.set_property("valign", Gtk.Align.END)
-            self._action_event.connect("realize", self._on_eventbox_realize)
-            self._action_event.connect("button-press-event",
-                                       self._on_action_press_event)
-            self._action_button = Gtk.Image.new()
-            self._action_button.set_opacity(opacity)
-            self._action_button.set_pixel_size(OverlayAlbumHelper._pixel_size)
+            self._action_button = Gtk.Button.new()
+            self._action_button.set_relief(Gtk.ReliefStyle.NONE)
+            self._action_button.set_property("has-tooltip", True)
+            self._action_button.set_property("halign", Gtk.Align.END)
+            self._action_button.set_property("valign", Gtk.Align.END)
+            self._action_button.connect("realize", self._on_realize)
+            self._action_button.connect("clicked", self.__on_action_clicked)
+            self._action_button.set_image(Gtk.Image())
+            self._action_button.get_image().set_pixel_size(
+                OverlayAlbumHelper._pixel_size)
             self._action_button.show()
             self._show_append(self._album.id not in App().player.album_ids)
-            self._artwork_event.add(self._artwork_button)
-            self._action_event.add(self._action_button)
-            self._overlay.add_overlay(self._play_event)
+            self._overlay.add_overlay(self._play_button)
             self._overlay_grid = Gtk.Grid()
-            self._overlay_grid.set_column_spacing(10)
             self._overlay_grid.set_margin_bottom(6)
             self._overlay_grid.set_margin_end(6)
             self._overlay_grid.set_property("halign", Gtk.Align.END)
             self._overlay_grid.set_property("valign", Gtk.Align.END)
             self._overlay.add_overlay(self._overlay_grid)
-            self._overlay_grid.add(self._action_event)
-            self._overlay_grid.add(self._artwork_event)
+            self._overlay_grid.add(self._action_button)
+            self._overlay_grid.add(self._artwork_button)
             self._overlay_grid.show_all()
             self._play_button.get_style_context().add_class("rounded-icon")
             self._overlay_grid.get_style_context().add_class(
                     "squared-icon-small")
+            self._artwork_button.get_style_context().add_class(
+                    "overlay-button")
+            self._action_button.get_style_context().add_class(
+                    "overlay-button")
         else:
-            self._play_event.destroy()
-            self._play_event = None
             self._play_button.destroy()
             self._play_button = None
-            self._action_event.destroy()
-            self._action_event = None
             self._action_button.destroy()
             self._action_button = None
-            self._artwork_event.destroy()
-            self._artwork_event = None
             self._artwork_button.destroy()
             self._artwork_button = None
             self._overlay_grid.destroy()
@@ -245,20 +230,24 @@ class OverlayAlbumHelper(OverlayHelper):
             Show append button if append, else remove button
         """
         if append:
-            self._action_button.set_from_icon_name("list-add-symbolic",
-                                                   Gtk.IconSize.INVALID)
-            self._action_event.set_tooltip_text(_("Add to current playlist"))
+            self._action_button.get_image().set_from_icon_name(
+                                                  "list-add-symbolic",
+                                                  Gtk.IconSize.INVALID)
+            self._action_button.set_tooltip_text(_("Add to current playlist"))
         else:
-            self._action_button.set_from_icon_name("list-remove-symbolic",
+            self._action_button.get_image().set_from_icon_name(
+                                                   "list-remove-symbolic",
                                                    Gtk.IconSize.INVALID)
-            self._action_event.set_tooltip_text(
+            self._action_button.set_tooltip_text(
                 _("Remove from current playlist"))
 
-    def _on_play_press_event(self, widget, event):
+#######################
+# PRIVATE             #
+#######################
+    def __on_play_clicked(self, button):
         """
             Play album
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            @param button as Gtk.Button
         """
         if App().player.is_locked:
             return True
@@ -269,26 +258,24 @@ class OverlayAlbumHelper(OverlayHelper):
         self._show_append(False)
         return True
 
-    def _on_artwork_press_event(self, widget, event):
+    def __on_artwork_clicked(self, button):
         """
             Popover with album art downloaded from the web (in fact google :-/)
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            @param button as Gtk.Button
         """
         from lollypop.pop_artwork import CoversPopover
         popover = CoversPopover(self._album)
-        popover.set_relative_to(widget)
+        popover.set_relative_to(button)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
         return True
 
-    def _on_action_press_event(self, widget, event):
+    def __on_action_clicked(self, button):
         """
             Append album to current list if not present
             Remove it if present
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            @param button as Gtk.Button
         """
         if App().player.is_locked:
             return True

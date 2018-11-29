@@ -63,72 +63,69 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
                                                        self._ALBUMS_COUNT)
         return album_ids
 
-    def _show_overlay_func(self, set):
+    def _show_overlay_func(self, show_overlay):
         """
             Set overlay
-            @param set as bool
+            @param show_overlay as bool
         """
         if self._lock_overlay or\
-           self._show_overlay == set:
+                self._show_overlay == show_overlay or\
+                App().player.is_locked:
             return
-        OverlayHelper._show_overlay_func(self, set)
-        if set:
+        OverlayHelper._show_overlay_func(self, show_overlay)
+        if show_overlay:
             # Play button
-            self.__play_event = Gtk.EventBox()
-            self.__play_event.set_property("has-tooltip", True)
-            self.__play_event.set_hexpand(True)
-            self.__play_event.set_property("valign", Gtk.Align.CENTER)
-            self.__play_event.set_property("halign", Gtk.Align.CENTER)
-            self.__play_event.connect("realize", self.__on_eventbox_realize)
-            self.__play_event.connect("button-press-event",
-                                      self._on_play_press_event)
-            self.__play_button = Gtk.Image.new_from_icon_name(
+            self.__play_button = Gtk.Button.new_from_icon_name(
                 "media-playback-start-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__play_event.set_tooltip_text(_("Play"))
-            self.__play_button.set_opacity(1)
-            self.__play_button.set_pixel_size(
+            self.__play_button.set_tooltip_text(_("Play"))
+            self.__play_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__play_button.get_image().set_pixel_size(
                 AlbumsDecadeWidget._pixel_size + 20)
+            self.__play_button.set_property("has-tooltip", True)
+            self.__play_button.set_hexpand(True)
+            self.__play_button.set_property("valign", Gtk.Align.CENTER)
+            self.__play_button.set_property("halign", Gtk.Align.CENTER)
+            self.__play_button.connect("realize", self._on_realize)
+            self.__play_button.connect("clicked", self.__on_play_clicked)
             # Open button
-            self.__open_event = Gtk.EventBox()
-            self.__open_event.set_property("has-tooltip", True)
-            self.__open_event.set_tooltip_text(_("Open"))
-            self.__open_event.set_property("halign", Gtk.Align.END)
-            self.__open_event.connect("realize", self._on_eventbox_realize)
-            self.__open_event.connect("button-press-event",
-                                      self._on_open_press_event)
-            self.__open_event.set_property("valign", Gtk.Align.END)
-            self.__open_event.set_margin_bottom(10)
-            self.__open_event.set_property("halign", Gtk.Align.CENTER)
-            self.__open_button = Gtk.Image.new_from_icon_name(
+            self.__open_button = Gtk.Button.new_from_icon_name(
                 "folder-open-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__open_button.set_pixel_size(
+            self.__open_button.get_image().set_pixel_size(
                 AlbumsDecadeWidget._pixel_size)
-            self.__open_button.set_opacity(1)
-            self.__play_event.add(self.__play_button)
-            self.__open_event.add(self.__open_button)
-            self._overlay.add_overlay(self.__play_event)
-            self._overlay.add_overlay(self.__open_event)
+            self.__open_button.set_property("has-tooltip", True)
+            self.__open_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__open_button.set_tooltip_text(_("Open"))
+            self.__open_button.connect("realize", self._on_realize)
+            self.__open_button.connect("clicked", self.__on_open_clicked)
+            self.__overlay_grid = Gtk.Grid()
+            self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
+            self.__overlay_grid.set_property("valign", Gtk.Align.END)
+            self.__overlay_grid.set_margin_bottom(10)
+            self.__overlay_grid.add(self.__open_button)
+            self._overlay.add_overlay(self.__overlay_grid)
+            self._overlay.add_overlay(self.__play_button)
             self._overlay.show_all()
             self.__play_button.get_style_context().add_class("rounded-icon")
-            self.__open_button.get_style_context().add_class(
+            self.__open_button.get_style_context().add_class("overlay-button")
+            self.__overlay_grid.get_style_context().add_class(
                 "squared-icon-small")
         else:
-            self.__play_event.destroy()
-            self.__play_event = None
             self.__play_button.destroy()
             self.__play_button = None
-            self.__open_event.destroy()
-            self.__open_event = None
             self.__open_button.destroy()
             self.__open_button = None
+            self.__overlay_grid.destroy()
+            self.__overlay_grid = None
 
-    def _on_play_press_event(self, widget, event):
+#######################
+# PRIVATE             #
+#######################
+    def __on_play_clicked(self, button):
         """
             Play decade
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            @param button as Gtk.Button
         """
         if App().player.is_locked:
             return True
@@ -137,11 +134,10 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         App().player.play_albums(None, [Type.YEARS], self._data)
         return True
 
-    def _on_open_press_event(self, widget, event):
+    def __on_open_clicked(self, button):
         """
             Open decade
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            @param button as Gtk.Button
         """
         if App().player.is_locked:
             return True
@@ -150,9 +146,6 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         else:
             App().window.container.show_view(Type.YEARS, self._data)
 
-#######################
-# PRIVATE             #
-#######################
     def __on_eventbox_realize(self, eventbox):
         """
             Change cursor over eventbox

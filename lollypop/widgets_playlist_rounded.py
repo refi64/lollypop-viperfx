@@ -143,107 +143,90 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                 break
         return album_ids
 
-    def _show_overlay_func(self, set):
+    def _show_overlay_func(self, show_overlay):
         """
             Set overlay
-            @param set as bool
+            @param show_overlay as bool
         """
         if self._lock_overlay or\
-           self._show_overlay == set:
+                self._show_overlay == show_overlay or\
+                App().player.is_locked:
             return
-        OverlayHelper._show_overlay_func(self, set)
-        if set:
+        OverlayHelper._show_overlay_func(self, show_overlay)
+        if show_overlay:
             # Play button
-            self.__play_event = Gtk.EventBox()
-            self.__play_event.set_property("has-tooltip", True)
-            self.__play_event.set_hexpand(True)
-            self.__play_event.set_property("valign", Gtk.Align.CENTER)
-            self.__play_event.set_property("halign", Gtk.Align.CENTER)
-            self.__play_event.connect("realize", self._on_eventbox_realize)
-            self.__play_event.connect("button-release-event",
-                                      self.__on_play_release_event)
             if self.__obj is None:
-                self.__play_button = Gtk.Image.new_from_icon_name(
+                self.__play_button = Gtk.Button.new_from_icon_name(
                     "media-playback-start-symbolic",
                     Gtk.IconSize.INVALID)
-                self.__play_event.set_tooltip_text(_("Play"))
+                self.__play_button.set_tooltip_text(_("Play"))
             elif self.__add:
                 # Special case, we are in add to playlist mode
-                self.__play_button = Gtk.Image.new_from_icon_name(
+                self.__play_button = Gtk.Button.new_from_icon_name(
                     "list-add-symbolic",
                     Gtk.IconSize.INVALID)
-                self.__play_event.set_tooltip_text(_("Add"))
+                self.__play_button.set_tooltip_text(_("Add"))
             else:
                 # Special case, we are in remove from playlist mode
-                self.__play_button = Gtk.Image.new_from_icon_name(
+                self.__play_button = Gtk.Button.new_from_icon_name(
                     "list-remove-symbolic",
                     Gtk.IconSize.INVALID)
-                self.__play_event.set_tooltip_text(_("Remove"))
-            self.__play_button.set_opacity(1)
-            self.__play_button.set_pixel_size(
+                self.__play_button.set_tooltip_text(_("Remove"))
+            self.__play_button.set_property("has-tooltip", True)
+            self.__play_button.set_hexpand(True)
+            self.__play_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__play_button.set_property("valign", Gtk.Align.CENTER)
+            self.__play_button.set_property("halign", Gtk.Align.CENTER)
+            self.__play_button.connect("realize", self._on_realize)
+            self.__play_button.connect("clicked", self.__on_play_clicked)
+            self.__play_button.get_image().set_pixel_size(
                 PlaylistRoundedWidget._pixel_size + 20)
             # Open button
-            self.__open_event = Gtk.EventBox()
-            self.__open_event.set_property("has-tooltip", True)
-            self.__open_event.set_tooltip_text(_("Open"))
-            self.__open_event.connect("realize", self._on_eventbox_realize)
-            self.__open_event.connect("button-release-event",
-                                      self.__on_open_release_event)
-            self.__open_button = Gtk.Image.new_from_icon_name(
+            self.__open_button = Gtk.Button.new_from_icon_name(
                 "folder-open-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__open_button.set_opacity(1)
-            self.__open_button.set_pixel_size(
+            self.__open_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__open_button.set_property("has-tooltip", True)
+            self.__open_button.set_tooltip_text(_("Open"))
+            self.__open_button.connect("realize", self._on_realize)
+            self.__open_button.connect("clicked", self.__on_open_clicked)
+            self.__open_button.get_image().set_pixel_size(
                 PlaylistRoundedWidget._pixel_size)
             # Edit button
-            self.__edit_event = Gtk.EventBox()
-            self.__edit_event.set_property("has-tooltip", True)
-            self.__edit_event.set_tooltip_text(_("Modify playlist"))
-            self.__edit_event.connect("realize", self._on_eventbox_realize)
-            self.__edit_event.connect("button-release-event",
-                                      self.__on_edit_release_event)
-            self.__edit_button = Gtk.Image.new_from_icon_name(
+            self.__edit_button = Gtk.Button.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__edit_button.set_opacity(1)
-            self.__edit_button.set_pixel_size(
+            self.__edit_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__edit_button.set_property("has-tooltip", True)
+            self.__edit_button.set_tooltip_text(_("Modify playlist"))
+            self.__edit_button.connect("realize", self._on_realize)
+            self.__edit_button.connect("clicked", self.__on_edit_clicked)
+            self.__edit_button.get_image().set_pixel_size(
                 PlaylistRoundedWidget._pixel_size)
-            self.__play_event.add(self.__play_button)
-            self.__open_event.add(self.__open_button)
-            self.__edit_event.add(self.__edit_button)
-            self._overlay.add_overlay(self.__play_event)
+            self._overlay.add_overlay(self.__play_button)
             self.__overlay_grid = Gtk.Grid()
-            self.__overlay_grid.set_column_spacing(10)
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
             self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
-            self.__overlay_grid.add(self.__open_event)
-            self.__overlay_grid.add(self.__edit_event)
-            self.__overlay_grid.show()
+            self.__overlay_grid.add(self.__open_button)
+            self.__overlay_grid.add(self.__edit_button)
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.show_all()
-            if self.__obj is None:
-                self.__play_button.get_style_context().add_class(
-                    "rounded-icon")
-            else:
-                self.__play_button.get_style_context().add_class(
-                    "squared-icon-small")
+            self.__play_button.get_style_context().add_class("rounded-icon")
+            self.__open_button.get_style_context().add_class("overlay-button")
+            self.__edit_button.get_style_context().add_class("overlay-button")
             self.__overlay_grid.get_style_context().add_class(
                 "squared-icon-small")
         else:
             self.__overlay_grid.destroy()
-            self.__play_event.destroy()
-            self.__play_event = None
             self.__play_button.destroy()
             self.__play_button = None
-            self.__open_event.destroy()
-            self.__open_event = None
             self.__open_button.destroy()
             self.__open_button = None
-            self.__edit_event.destroy()
-            self.__edit_event = None
             self.__edit_button.destroy()
             self.__edit_button = None
+            self.__overlay_grid.destroy()
+            self.__overlay_grid = None
 
 #######################
 # PROTECTED           #
@@ -252,11 +235,10 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PRIVATE             #
 #######################
-    def __on_play_release_event(self, widget, event):
+    def __on_play_clicked(self, button):
         """
             Play playlist
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
+            @param button as Gtk.Button
         """
         if self.__obj is None:
             if App().player.is_locked:
@@ -286,11 +268,10 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             App().window.container.reload_view()
         return True
 
-    def __on_open_release_event(self, widget, event):
+    def __on_open_clicked(self, button):
         """
             Open playlist
-            @param widget as Gtk.EventBox
-            @param event as Gdk.Event
+            @param button as Gtk.Button
         """
         if App().settings.get_value("show-sidebar"):
             App().window.container.list_two.select_ids([self._data])
@@ -298,14 +279,13 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             App().window.container.show_view(Type.PLAYLISTS, [self._data])
         return True
 
-    def __on_edit_release_event(self, widget, event):
+    def __on_edit_clicked(self, button):
         """
             Edit playlist
-            @param widget as Gtk.EventBox
-            @param event as Gdk.Event
+            @param button as Gtk.Button
         """
         popover = PlayListPopover(self._data, self.__obj)
-        popover.set_relative_to(widget)
+        popover.set_relative_to(button)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
