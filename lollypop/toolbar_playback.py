@@ -56,7 +56,11 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         else:
             self.__back_button.hide()
 
-    def on_adaptive_changed(self, window, b):
+    def set_mini(self, mini):
+        """
+            Show/hide
+            @param mini as bool
+        """
         pass
 
 #######################

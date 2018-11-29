@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio
 from gettext import gettext as _
 
 from lollypop.view import View
-from lollypop.define import App, WindowSize, Type
+from lollypop.define import App, Sizing, Type
 from lollypop.controller_information import InformationController
 from lollypop.utils import escape
 from lollypop.helper_task import TaskHelper
@@ -199,11 +199,11 @@ class LyricsView(View, InformationController):
             context.remove_class(cls)
         context.add_class("lyrics")
         width = self.get_allocated_width()
-        if width > WindowSize.XXLARGE:
+        if width > Sizing.LARGE:
             context.add_class("lyrics-x-large")
-        elif width > WindowSize.MONSTER:
+        elif width > Sizing.MONSTER:
             context.add_class("lyrics-large")
-        elif width > WindowSize.BIG:
+        elif width > Sizing.BIG:
             context.add_class("lyrics-medium")
 
     def __handle_size_allocation(self):

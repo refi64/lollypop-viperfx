@@ -21,7 +21,7 @@ from lollypop.pop_menu import AlbumMenu
 from lollypop.widgets_utils import Popover
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_context import ContextWidget
-from lollypop.define import WindowSize
+from lollypop.define import Sizing
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, RowListType
 
@@ -130,7 +130,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
                                            1,
                                            1)
             self.__widget.attach(self.__coverbox, 0, 0, 1, 1)
-            if App().window.container.get_view_width() < WindowSize.MEDIUM:
+            if App().window.container.get_view_width() < Sizing.MEDIUM:
                 self.__coverbox.hide()
             if len(artist_ids) > 1:
                 self.__artist_label.set_text(
@@ -261,7 +261,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
         TracksView._on_size_allocate(self, widget, allocation)
         if self._artwork is not None:
-            if allocation.width < WindowSize.MEDIUM:
+            if allocation.width < Sizing.MEDIUM:
                 self.__coverbox.hide()
             else:
                 self.__coverbox.show()

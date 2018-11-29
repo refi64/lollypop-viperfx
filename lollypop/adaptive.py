@@ -188,7 +188,7 @@ class AdaptiveWindow:
         Handle window resizing and window's children workflow
         This class needs a stack and n paned
     """
-    _ADAPTIVE_STACK = 750
+    _ADAPTIVE_STACK = 600
 
     gsignals = {
         "adaptive-changed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),

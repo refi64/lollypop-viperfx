@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.logger import Logger
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
-from lollypop.define import App, WindowSize
+from lollypop.define import App, Sizing
 
 
 class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
@@ -99,7 +99,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         """
         height = App().window.get_size()[1]
         if App().player.current_track.id is not None and\
-                height > WindowSize.MEDIUM:
+                height > Sizing.MEDIUM:
             if event.button == 1:
                 App().window.toolbar.end.show_list_popover(button)
             elif App().player.current_track.id >= 0:

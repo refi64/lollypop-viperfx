@@ -93,12 +93,12 @@ class PowerManagement:
     BOTH = 3             # Inhibit screensaver and suspend
 
 
-class WindowSize:
+class Sizing:
     SMALL = 350
     MEDIUM = 500
     BIG = 700
     MONSTER = 800
-    XXLARGE = 1000
+    LARGE = 1000
 
 
 class OrderBy:

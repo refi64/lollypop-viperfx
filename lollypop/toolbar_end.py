@@ -158,21 +158,23 @@ class ToolbarEnd(Gtk.Bin):
         popover.popup()
         return popover
 
-    def on_adaptive_changed(self, window, b):
+    def set_mini(self, mini):
         """
-            Show/hide buttons
-            @param window as Gtk.Window
-            @param b as bool
+            Show/hide
+            @param mini as bool
         """
-        if b:
-            self.__next_popover.hide()
-            self.__shuffle_button.hide()
+        if mini:
             self.__list_button.hide()
         else:
-            self.__shuffle_button.show()
             self.__list_button.show()
-            if self.__next_popover.should_be_shown():
-                self.__next_popover.popup()
+
+    @property
+    def next_popover(self):
+        """
+            Get next popover
+            @return popover
+        """
+        return self.__next_popover
 
 #######################
 # PROTECTED           #

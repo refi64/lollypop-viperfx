@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import App, WindowSize
+from lollypop.define import App, Sizing
 from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
@@ -31,7 +31,7 @@ class Toolbar(Gtk.HeaderBar):
             @param window as Window
         """
         Gtk.HeaderBar.__init__(self)
-        self.__width = WindowSize.SMALL
+        self.__width = Sizing.SMALL
         self.set_title("Lollypop")
         self.__toolbar_playback = ToolbarPlayback(window)
         self.__toolbar_playback.show()
@@ -49,14 +49,14 @@ class Toolbar(Gtk.HeaderBar):
         App().player.connect("current-changed", self.__on_current_changed)
         App().player.connect("next-changed", self.__on_next_changed)
         App().player.connect("prev-changed", self.__on_prev_changed)
-        window.connect("adaptive-changed", self.on_adaptive_changed)
+        window.connect("adaptive-changed", self.__on_adaptive_changed)
 
     def do_get_preferred_width(self):
         """
             Allow snapping for screen with width < 1400
             @return (int, int)
         """
-        return (WindowSize.SMALL, self.__width)
+        return (Sizing.SMALL, self.__width)
 
     def set_content_width(self, window_width):
         """
@@ -69,7 +69,7 @@ class Toolbar(Gtk.HeaderBar):
         if window is not None:
             available = window.get_width() - width
             if available > 0:
-                if window_width >= WindowSize.MEDIUM:
+                if window_width >= Sizing.MEDIUM:
                     title = available / 2
                 else:
                     title = available
@@ -85,11 +85,15 @@ class Toolbar(Gtk.HeaderBar):
         if not self.__toolbar_title.show_volume_control:
             self.__toolbar_title.update_position(value)
 
-    def on_adaptive_changed(self, window, b):
-        self.__toolbar_playback.on_adaptive_changed(window, b)
-        self.__toolbar_info.on_adaptive_changed(window, b)
-        self.__toolbar_title.on_adaptive_changed(window, b)
-        self.__toolbar_end.on_adaptive_changed(window, b)
+    def set_mini(self, mini):
+        """
+            Set toolbar working when small
+            @param mini as bool
+        """
+        self.__toolbar_playback.set_mini(mini)
+        self.__toolbar_info.set_mini(mini)
+        self.__toolbar_title.set_mini(mini)
+        self.__toolbar_end.set_mini(mini)
 
     @property
     def end(self):
@@ -162,3 +166,14 @@ class Toolbar(Gtk.HeaderBar):
         """
         self.__toolbar_playback.on_status_changed(player)
         self.__toolbar_title.on_status_changed(player)
+
+    def __on_adaptive_changed(self, window, adaptive):
+        """
+            Show/hide next popover
+            @param window as Window
+            @param adaptive as bool
+        """
+        if adaptive:
+            self.__toolbar_end.next_popover.hide()
+        elif self.__toolbar_end.next_popover.should_be_shown():
+            self.__toolbar_end.next_popover.popup()

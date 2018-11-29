@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
 from lollypop.container import Container
-from lollypop.define import App, WindowSize, Type
+from lollypop.define import App, Sizing, Type
 from lollypop.toolbar import Toolbar
 from lollypop.logger import Logger
 from lollypop.adaptive import AdaptiveWindow
@@ -24,8 +24,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
     """
         Main window
     """
-
-    _ADAPTIVE_STACK = WindowSize.BIG
 
     def __init__(self):
         """
@@ -189,7 +187,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             from lollypop.miniplayer import MiniPlayer
             self.__miniplayer = MiniPlayer(self.get_size()[0])
             self.__vgrid.add(self.__miniplayer)
+            self.__toolbar.set_mini(True)
         elif not show and self.__miniplayer is not None:
+            self.__toolbar.set_mini(False)
             self.__miniplayer.destroy()
             self.__miniplayer = None
 
@@ -315,6 +315,32 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.drag_dest_add_uri_targets()
         self.connect("drag-data-received", self.__on_drag_data_received)
 
+    def __handle_miniplayer(self, width, height):
+        """
+            Handle mini player show/hide
+            @param width as int
+            @param height as int
+        """
+        if width < Sizing.MONSTER:
+            self.__show_miniplayer(True)
+            self.__miniplayer.set_vexpand(False)
+            self.__container.stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+        else:
+            self.__show_miniplayer(False)
+            self.__container.stack.show()
+            if self.__miniplayer is not None:
+                self.__miniplayer.set_vexpand(False)
+        if height < Sizing.MEDIUM and\
+                self.__miniplayer is not None and\
+                self.__miniplayer.is_visible():
+            self.__container.stack.hide()
+            self.__miniplayer.set_vexpand(True)
+        elif self.__miniplayer is not None:
+            self.__container.stack.show()
+            self.__miniplayer.set_vexpand(False)
+
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
             Import values
@@ -359,7 +385,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param window as Gtk.Window
             @param event as Gdk.Event
         """
-        self.__toolbar.set_content_width(window.get_size()[0])
+        (width, height) = window.get_size()
+        self.__handle_miniplayer(width, height)
+        self.__toolbar.set_content_width(width)
         if self.__timeout_configure:
             GLib.source_remove(self.__timeout_configure)
             self.__timeout_configure = None
@@ -529,24 +557,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         if adaptive_stack:
             self.__container.show_sidebar(True)
-            self.__show_miniplayer(True)
-            self.__miniplayer.set_vexpand(False)
-            self.__container.stack.show()
-            if self.__miniplayer is not None:
-                self.__miniplayer.set_vexpand(False)
+            self.__toolbar.set_show_close_button(False)
         else:
             value = App().settings.get_value("show-sidebar")
+            self.__toolbar.set_show_close_button(
+                not App().settings.get_value("disable-csd"))
             self.__container.show_sidebar(value)
-            self.__show_miniplayer(False)
-            self.__container.stack.show()
-            if self.__miniplayer is not None:
-                self.__miniplayer.set_vexpand(False)
-        size = self.get_size()
-        if size[1] < WindowSize.MEDIUM and\
-                self.__miniplayer is not None and\
-                self.__miniplayer.is_visible():
-            self.__container.stack.hide()
-            self.__miniplayer.set_vexpand(True)
-        elif self.__miniplayer is not None:
-            self.__container.stack.show()
-            self.__miniplayer.set_vexpand(False)

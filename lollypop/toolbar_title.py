@@ -55,13 +55,12 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         if position > 0:
             self._progress.add_mark(position, Gtk.PositionType.BOTTOM, None)
 
-    def on_adaptive_changed(self, window, b):
+    def set_mini(self, mini):
         """
-            Show/hide buttons
-            @param window as Gtk.Window
-            @param b as bool
+            Show/hide
+            @param mini as bool
         """
-        if b:
+        if mini:
             self.hide()
         elif App().player.current_track.id is not None:
             self.show()

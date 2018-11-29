@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, GObject
 
-from lollypop.define import App, Type, WindowSize, Loading, RowListType
+from lollypop.define import App, Type, Sizing, Loading, RowListType
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
@@ -332,7 +332,7 @@ class PlaylistsWidget(Gtk.Grid):
             return
         self.__width = allocation.width
         redraw = False
-        if allocation.width < WindowSize.MONSTER or\
+        if allocation.width < Sizing.MONSTER or\
                 not App().settings.get_value("split-view"):
             self.__grid.set_property("valign", Gtk.Align.START)
             self.__grid.set_column_spacing(0)
