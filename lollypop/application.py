@@ -226,7 +226,6 @@ class Application(Gtk.Application):
             self.window.connect("delete-event", self.__hide_on_delete)
             self.window.show()
             self.player.restore_state()
-            self.__preload_portal()
 
     def quit(self, vacuum=False):
         """
@@ -365,21 +364,6 @@ class Application(Gtk.Application):
                 sql.isolation_level = ""
         except Exception as e:
             Logger.error("Application::__vacuum(): %s" % e)
-
-    def __preload_portal(self):
-        """
-            Preload lollypop portal
-        """
-        try:
-            bus = self.get_dbus_connection()
-            Gio.DBusProxy.new(bus, Gio.DBusProxyFlags.NONE, None,
-                              "org.gnome.Lollypop.Portal",
-                              "/org/gnome/LollypopPortal",
-                              "org.gnome.Lollypop.Portal", None, None)
-        except Exception as e:
-            Logger.info("You are missing lollypop-portal: "
-                        "https://github.com/gnumdk/lollypop-portal")
-            Logger.error("Application::__preload_portal(): %s", e)
 
     def __on_handle_local_options(self, app, options):
         """

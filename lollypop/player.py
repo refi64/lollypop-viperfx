@@ -327,7 +327,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 elif App().tracks.get_uri(current_track_id) != "":
                     if albums:
                         if was_party:
-                            self.emit("party-changed", True)
+                            App().lookup_action("party").change_state(
+                                GLib.Variant("b", True))
                         else:
                             self._albums = load(open(
                                                 LOLLYPOP_DATA_PATH +
