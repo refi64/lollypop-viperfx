@@ -247,6 +247,7 @@ popover.background separator {
 }
 
 .overlay-button {
+    transition: 0ms linear;
     background: none;
     color: alpha(white, 0.9);
     padding: 0px;
