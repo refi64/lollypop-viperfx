@@ -35,6 +35,7 @@ class History:
                             rate INT NOT NULL,
                             mtime INT NOT NULL,
                             album_rate INT NOT NULL,
+                            loved INT NOT NULL,
                             loved_album INT NOT NULL,
                             album_popularity INT NOT NULL)"""
 
@@ -61,7 +62,7 @@ class History:
                 sql.execute("VACUUM")
 
     def add(self, name, duration, popularity, rate,
-            ltime, mtime, loved_album, album_popularity, album_rate):
+            ltime, mtime, loved, loved_album, album_popularity, album_rate):
         """
             Add an item to history
             @param name as str
@@ -70,6 +71,7 @@ class History:
             @param rate as int
             @param ltime as int
             @param mtime as int
+            @param loved as bool
             @param loved album as bool
             @param album_popularity as int
             @param album_rate as int
@@ -78,18 +80,19 @@ class History:
         with SqlCursor(self, True) as sql:
             if self.exists(name, duration):
                 sql.execute("UPDATE history\
-                             SET popularity=?,rate=?,ltime=?,mtime=?,\
+                             SET popularity=?,rate=?,ltime=?,mtime=?,loved=?,\
                              loved_album=?,album_popularity=?,album_rate=?\
                              WHERE name=? AND duration=?",
-                            (popularity, rate, ltime, mtime, loved_album,
-                             album_popularity, album_rate, name, duration))
+                            (popularity, rate, ltime, mtime, loved,
+                             loved_album, album_popularity, album_rate,
+                             name, duration))
             else:
                 sql.execute("INSERT INTO history\
                              (name, duration, popularity, rate, ltime, mtime,\
-                             loved_album, album_popularity, album_rate)\
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                             loved, loved_album, album_popularity, album_rate)\
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             (name, duration, popularity, rate, ltime, mtime,
-                             loved_album, album_popularity, album_rate))
+                             loved, loved_album, album_popularity, album_rate))
 
     def get(self, name, duration):
         """
@@ -102,7 +105,8 @@ class History:
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT popularity, rate, ltime, mtime,\
-                                  loved_album, album_popularity, album_rate\
+                                  loved, loved_album, album_popularity,\
+                                  album_rate\
                                   FROM history\
                                   WHERE name=?\
                                   AND duration=?",
@@ -110,7 +114,7 @@ class History:
             v = result.fetchone()
             if v is not None:
                 return v
-            return (0, 0, 0, 0, 0, 0, 0)
+            return (0, 0, 0, 0, 0, 0, 0, 0)
 
     def exists(self, name, duration):
         """

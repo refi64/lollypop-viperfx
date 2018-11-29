@@ -786,11 +786,13 @@ class SettingsDialog:
             ltime = App().tracks.get_ltime(track_id)
             mtime = App().tracks.get_mtime(track_id)
             duration = App().tracks.get_duration(track_id)
-            loved = App().albums.get_loved(album_id)
+            loved_track = App().tracks.get_loved(track_id)
+            loved_album = App().albums.get_loved(album_id)
             album_popularity = App().albums.get_popularity(album_id)
             album_rate = App().albums.get_rate(album_id)
             history.add(name, duration, popularity, rate,
-                        ltime, mtime, loved, album_popularity, album_rate)
+                        ltime, mtime, loved_track, loved_album,
+                        album_popularity, album_rate)
             self.__progress.set_fraction((count - len(track_ids)) / count)
             GLib.idle_add(self.__reset_database, track_ids,
                           count, history)

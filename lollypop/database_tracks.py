@@ -32,7 +32,7 @@ class TracksDatabase:
         pass
 
     def add(self, name, uri, duration, tracknumber, discnumber, discname,
-            album_id, year, timestamp, popularity, rate, ltime, mtime,
+            album_id, year, timestamp, popularity, rate, loved, ltime, mtime,
             mb_track_id):
         """
             Add a new track to database
@@ -48,6 +48,7 @@ class TracksDatabase:
             @param timestamp as int
             @param popularity as int
             @param rate as int
+            @param loved as bool
             @param ltime as int
             @param mtime as int
             @param mb_track_id as str
@@ -58,9 +59,9 @@ class TracksDatabase:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
-                year, timestamp, popularity, rate,\
+                year, timestamp, popularity, rate, loved,\
                 ltime, mtime, mb_track_id) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
                     name,
                     uri,
                     duration,
@@ -72,6 +73,7 @@ class TracksDatabase:
                     timestamp,
                     popularity,
                     rate,
+                    loved,
                     ltime,
                     mtime,
                     mb_track_id))

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Gio
 
 import itertools
 from time import time
@@ -132,7 +132,8 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             27: "UPDATE tracks SET duration=CAST(duration AS INT)",
             28: self.__upgrade_28,
             29: self.__upgrade_29,
-            30: "ALTER TABLE tracks ADD loved INT NOT NULL DEFAULT 0"
+            30: "ALTER TABLE tracks ADD loved INT NOT NULL DEFAULT 0",
+            31: self.__upgrade_31
         }
 
 #######################
@@ -625,3 +626,15 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
                     sql.execute(
                         "UPDATE %s set timestamp=? WHERE rowid=?" % item,
                         (timestamp, rowid))
+
+    def __upgrade_31(self, db):
+        """
+            Delete history database related to upgrade 30
+        """
+        try:
+            LOCAL_PATH = GLib.get_user_data_dir() + "/lollypop"
+            DB_PATH = "%s/history.db" % LOCAL_PATH
+            f = Gio.File.new_for_path(DB_PATH)
+            f.delete(None)
+        except Exception as e:
+            Logger.error("DatabaseAlbumsUpgrade::__upgrade_31(): %s", e)

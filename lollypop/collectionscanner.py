@@ -321,7 +321,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         Logger.debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
         (track_pop, track_rate, track_ltime, album_mtime,
-         loved, album_pop, album_rate) = self.__history.get(name, duration)
+         track_loved, album_loved, album_pop, album_rate) = self.__history.get(
+            name, duration)
         # If nothing in stats, use track mtime
         if album_mtime == 0:
             album_mtime = mtime
@@ -348,7 +349,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                      "%s, %s" % (album_name, album_artist_ids))
         album_id = self.add_album(album_name, mb_album_id,
                                   album_artist_ids,
-                                  uri, loved, album_pop,
+                                  uri, album_loved, album_pop,
                                   album_rate, mtime)
 
         genre_ids = self.add_genres(genres)
@@ -358,8 +359,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         track_id = App().tracks.add(title, uri, duration,
                                     tracknumber, discnumber, discname,
                                     album_id, year, timestamp, track_pop,
-                                    track_rate, track_ltime, mtime,
-                                    mb_track_id)
+                                    track_rate, track_loved, track_ltime,
+                                    mtime, mb_track_id)
         Logger.debug("CollectionScanner::add2db(): Update track")
         self.__update_track(track_id, artist_ids, genre_ids)
         Logger.debug("CollectionScanner::add2db(): Update album")
@@ -388,14 +389,15 @@ class CollectionScanner(GObject.GObject, TagReader):
             rate = App().tracks.get_rate(track_id)
             ltime = App().tracks.get_ltime(track_id)
             mtime = App().tracks.get_mtime(track_id)
+            loved_track = App().tracks.get_loved(track_id)
             duration = App().tracks.get_duration(track_id)
             album_popularity = App().albums.get_popularity(album_id)
             album_rate = App().albums.get_rate(album_id)
-            loved = App().albums.get_loved(album_id)
+            loved_album = App().albums.get_loved(album_id)
             uri = App().tracks.get_uri(track_id)
             self.__history.add(name, duration, popularity, rate,
-                               ltime, mtime, loved, album_popularity,
-                               album_rate)
+                               ltime, mtime, loved_track, loved_album,
+                               album_popularity, album_rate)
             App().tracks.remove(track_id)
             App().tracks.clean(track_id)
             cleaned = App().albums.clean(album_id)
