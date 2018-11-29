@@ -230,7 +230,6 @@ popover.background separator {
 
 .rounded-icon:hover {
     color: white;
-    transition: 500ms linear;
     background-color: alpha(black, 0.9);
 }
 
