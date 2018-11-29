@@ -136,6 +136,14 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         Gtk.ApplicationWindow.do_event(self, event)
 
     @property
+    def miniplayer(self):
+        """
+            True if miniplayer is on
+            @return bool
+        """
+        return self.__miniplayer is not None
+
+    @property
     def toolbar(self):
         """
             toolbar as Toolbar

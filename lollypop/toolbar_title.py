@@ -47,14 +47,6 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         """
         self.set_property("width_request", width)
 
-    def add_mark(self, position):
-        """
-            Add a mark at position
-            @param position as float
-        """
-        if position > 0:
-            self._progress.add_mark(position, Gtk.PositionType.BOTTOM, None)
-
     def set_mini(self, mini):
         """
             Show/hide

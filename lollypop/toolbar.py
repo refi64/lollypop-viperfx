@@ -140,7 +140,7 @@ class Toolbar(Gtk.HeaderBar):
         self.__toolbar_info.on_current_changed(player)
         if App().player.current_track.id is None:
             self.__toolbar_title.hide()
-        elif not App().window.is_adaptive:
+        elif not App().window.miniplayer:
             self.__toolbar_title.show()
         self.__toolbar_title.on_current_changed(player)
 
