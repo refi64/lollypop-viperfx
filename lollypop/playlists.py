@@ -154,7 +154,8 @@ class Playlists(GObject.GObject):
         if self.exists_track(playlist_id, uri):
             return
         if signal:
-            self.emit("playlist-track-added", playlist_id, uri)
+            position = len(self.get_track_uris(playlist_id))
+            self.emit("playlist-track-added", playlist_id, uri, position)
         with SqlCursor(self, True) as sql:
             sql.execute("INSERT INTO tracks VALUES (?, ?)", (playlist_id, uri))
             sql.execute("UPDATE playlists SET mtime=?\
@@ -210,8 +211,8 @@ class Playlists(GObject.GObject):
         """
         if not self.exists_track(playlist_id, uri):
             return
-        uris = self.get_track_uris(playlist_id)
         if signal:
+            uris = self.get_track_uris(playlist_id)
             position = uris.index(uri)
             self.emit("playlist-track-removed", playlist_id, uri, position)
         with SqlCursor(self, True) as sql:

@@ -280,17 +280,18 @@ class PlaylistsView(View, ViewController):
         except:
             pass
 
-    def __on_playlist_track_added(self, playlists, playlist_id, uri):
+    def __on_playlist_track_added(self, playlists, playlist_id, uri, pos):
         """
             Update tracks widgets
             @param playlists as Playlists
             @param playlist id as int
             @param uri as str
+            @param pos as int
         """
         if len(self.__playlist_ids) == 1 and\
                 playlist_id in self.__playlist_ids:
             track_id = App().tracks.get_id_by_uri(uri)
-            self.__playlists_widget.insert(track_id)
+            self.__playlists_widget.append(track_id)
 
     def __on_playlist_track_removed(self, playlists, playlist_id, uri, pos):
         """

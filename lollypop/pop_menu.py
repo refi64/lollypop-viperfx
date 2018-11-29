@@ -198,7 +198,7 @@ class PlaylistsMenu(BaseMenu):
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object.id)]
-            App().playlists.add_tracks(playlist_id, tracks)
+            App().playlists.add_tracks(playlist_id, tracks, True)
             if playlist_id in App().player.playlist_ids:
                 App().player.update_playlist(
                     App().playlists.get_track_ids(playlist_id))

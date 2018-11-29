@@ -180,7 +180,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         self.__loading = Loading.STOP
 
-    def insert(self, track_id):
+    def append(self, track_id):
         """
             Add track to widget
             @param track id as int
@@ -191,7 +191,7 @@ class PlaylistsWidget(Gtk.Grid):
         else:
             widget = self.__tracks_widget_right
         pos = length + 1
-        self.__add_tracks([track_id], widget, pos)
+        self.__add_tracks([Track(track_id)], widget, pos)
         self.__make_homogeneous()
 
     def remove(self, track_id, position):
@@ -204,8 +204,10 @@ class PlaylistsWidget(Gtk.Grid):
         for row in self.children:
             if row.track.id == track_id and index == position:
                 GLib.idle_add(row.destroy)
+                self.__on_remove_track(row)
                 break
             index += 1
+        self.__make_homogeneous()
 
     @property
     def id(self):
