@@ -203,8 +203,9 @@ class PlaylistsWidget(Gtk.Grid):
         index = 0
         for row in self.children:
             if row.track.id == track_id and index == position:
-                row.destroy()
+                GLib.idle_add(row.destroy)
                 break
+            index += 1
 
     @property
     def id(self):
