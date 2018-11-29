@@ -79,7 +79,10 @@ class RoundedArtistsView(FlowBoxView):
             Start lazy loading
             @param items as [(int, str, str)]
         """
-        FlowBoxView._add_items(self, items, ArtSize.BIG)
+        if App().window.is_adaptive:
+            FlowBoxView._add_items(self, items, ArtSize.LARGE)
+        else:
+            FlowBoxView._add_items(self, items, ArtSize.BIG)
 
     def _on_item_activated(self, flowbox, widget):
         """

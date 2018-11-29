@@ -61,6 +61,7 @@ class ArtSize:
     SMALL = 33
     MEDIUM = 48  # If changed, adapt width request in AlbumRow
     ARTIST_SMALL = 60
+    LARGE = 100
     BIG = 200
     ROUNDED = 300
     FULLSCREEN = 500
