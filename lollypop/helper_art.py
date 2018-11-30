@@ -22,7 +22,8 @@ class ArtHelperEffect:
     NONE = 1 << 1
     ROUNDED = 1 << 2
     BLUR = 1 << 3
-    FALLBACK = 1 << 4
+    NO_RATIO = 1 << 4
+    FALLBACK = 1 << 5
 
 
 class ArtHelper(GObject.Object):
@@ -217,7 +218,8 @@ class ArtHelper(GObject.Object):
             @return GdkPixbuf.Pixbuf
         """
         pixbuf = App().art.get_album_artwork(
-            album, width, height, scale_factor)
+            album, width, height, scale_factor,
+            not effect & ArtHelperEffect.NO_RATIO)
         if effect & ArtHelperEffect.BLUR:
             pixbuf = self.__get_blur(pixbuf, width, height)
         return pixbuf

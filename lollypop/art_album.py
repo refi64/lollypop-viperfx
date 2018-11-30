@@ -141,13 +141,14 @@ class AlbumArt:
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, width, height, scale):
+    def get_album_artwork(self, album, width, height, scale, ratio=True):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param width as int
             @param height as int
             @param scale factor as int
+            @param ratio as bool
             @return cairo surface
             @thread safe
         """
@@ -179,9 +180,11 @@ class AlbumArt:
                             stream,
                             width,
                             height,
-                            True,
+                            ratio,
                             None)
-                        pixbuf = self._preserve_ratio(pixbuf, width, height)
+                        if ratio:
+                            pixbuf = self._preserve_ratio(
+                                pixbuf, width, height)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
@@ -204,10 +207,12 @@ class AlbumArt:
                             stream,
                             width,
                             height,
-                            True,
+                            ratio,
                             None)
                         stream.close()
-                        pixbuf = self._preserve_ratio(pixbuf, width, height)
+                        if ratio:
+                            pixbuf = self._preserve_ratio(
+                                pixbuf, width, height)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
