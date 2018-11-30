@@ -216,7 +216,8 @@ class ArtHelper(GObject.Object):
             @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
-        pixbuf = App().art.get_album_artwork(album, width, scale_factor)
+        pixbuf = App().art.get_album_artwork(
+            album, width, height, scale_factor)
         if effect & ArtHelperEffect.BLUR:
             pixbuf = self.__get_blur(pixbuf, width, height)
         return pixbuf

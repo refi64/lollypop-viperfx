@@ -83,11 +83,12 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
-    def _preserve_ratio(self, pixbuf, size):
+    def _preserve_ratio(self, pixbuf, w, h):
         """
             Return scaled pixbuf if needed
             @param uri as str
-            @param size s int
+            @param w as int
+            @param h as int
             @return GdkPixbuf.Pixbuf
         """
         if App().settings.get_value("preserve-aspect-ratio"):
@@ -105,8 +106,7 @@ class BaseArt(GObject.GObject):
         if preserve:
             return pixbuf
         else:
-            return pixbuf.scale_simple(size, size,
-                                       GdkPixbuf.InterpType.BILINEAR)
+            return pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
 
     def _create_store(self):
         """

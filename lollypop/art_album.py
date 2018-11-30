@@ -40,24 +40,26 @@ class AlbumArt:
             self.__favorite = App().settings.get_default_value(
                 "favorite-cover").get_string()
 
-    def get_album_cache_path(self, album, size):
+    def get_album_cache_path(self, album, width, height):
         """
             get artwork cache path for album_id
             @param album as Album
-            @param size as int
+            @param width as int
+            @param height as int
             @return cover path as string or None if no cover
         """
         filename = ""
         try:
             filename = self.get_album_cache_name(album)
-            cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
-                                               filename,
-                                               size)
+            cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH,
+                                                  filename,
+                                                  width,
+                                                  height)
             f = Gio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 return cache_path_jpg
             else:
-                self.get_album_artwork(album, size, 1)
+                self.get_album_artwork(album, width, height, 1)
                 if f.query_exists():
                     return cache_path_jpg
         except Exception as e:
@@ -139,18 +141,21 @@ class AlbumArt:
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, size, scale):
+    def get_album_artwork(self, album, width, height, scale):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
-            @param pixbuf size as int
+            @param width as int
+            @param height as int
             @param scale factor as int
             @return cairo surface
             @thread safe
         """
-        size *= scale
+        width *= scale
+        height *= scale
         filename = self.get_album_cache_name(album)
-        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
+        cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH, filename,
+                                              width, height)
         pixbuf = None
 
         try:
@@ -158,8 +163,8 @@ class AlbumArt:
             f = Gio.File.new_for_path(cache_path_jpg)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
-                                                                size,
-                                                                size)
+                                                                width,
+                                                                height)
             else:
                 # Use favorite folder artwork
                 if pixbuf is None:
@@ -172,17 +177,17 @@ class AlbumArt:
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
-                            size,
-                            size,
+                            width,
+                            height,
                             True,
                             None)
-                        pixbuf = self._preserve_ratio(pixbuf, size)
+                        pixbuf = self._preserve_ratio(pixbuf, width, height)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
                     try:
                         pixbuf = self.pixbuf_from_tags(
-                            album.tracks[0].uri, size)
+                            album.tracks[0].uri, width, height)
                     except Exception as e:
                         print("AlbumArt::get_album_artwork()", e)
 
@@ -197,12 +202,12 @@ class AlbumArt:
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                             stream,
-                            size,
-                            size,
+                            width,
+                            height,
                             True,
                             None)
                         stream.close()
-                        pixbuf = self._preserve_ratio(pixbuf, size)
+                        pixbuf = self._preserve_ratio(pixbuf, width, height)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
@@ -306,11 +311,12 @@ class AlbumArt:
         except Exception as e:
             Logger.error("AlbumArt::clean_album_cache(): %s" % e)
 
-    def pixbuf_from_tags(self, uri, size):
+    def pixbuf_from_tags(self, uri, width, height):
         """
             Return cover from tags
             @param uri as str
-            @param size as int
+            @param width as int
+            @param height as int
         """
         pixbuf = None
         if uri.startswith("http:") or uri.startswith("https:"):
@@ -330,8 +336,8 @@ class AlbumArt:
                 bytes = GLib.Bytes(mapflags.data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   size,
-                                                                   size,
+                                                                   width,
+                                                                   height,
                                                                    False,
                                                                    None)
                 stream.close()

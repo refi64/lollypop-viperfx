@@ -84,7 +84,7 @@ class NotificationManager:
                 player.current_track.album_artists[0], ArtSize.BIG)
         else:
             cover_path = App().art.get_album_cache_path(
-                player.current_track.album, ArtSize.BIG)
+                player.current_track.album, ArtSize.BIG, ArtSize.BIG)
         if cover_path is None:
             icon = Gio.Icon.new_for_string("org.gnome.Lollypop-symbolic")
         else:

@@ -112,6 +112,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             album_id = album_ids.pop(0)
             pixbuf = App().art.get_album_artwork(Album(album_id),
                                                  self.__cover_size,
+                                                 self.__cover_size,
                                                  self._scale_factor)
             if pixbuf is None:
                 GLib.idle_add(self.__draw_surface, album_ids,

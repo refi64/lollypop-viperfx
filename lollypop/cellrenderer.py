@@ -31,6 +31,7 @@ class CellRendererAlbum(Gtk.CellRenderer):
         scale_factor = widget.get_scale_factor()
         pixbuf = App().art.get_album_artwork(Album(self.album),
                                              ArtSize.MEDIUM,
+                                             ArtSize.MEDIUM,
                                              scale_factor)
         surface = Gdk.cairo_surface_create_from_pixbuf(
                     pixbuf, scale_factor, None)
