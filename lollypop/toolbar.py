@@ -90,10 +90,8 @@ class Toolbar(Gtk.HeaderBar):
             Set toolbar working when small
             @param mini as bool
         """
-        self.__toolbar_playback.set_mini(mini)
         self.__toolbar_info.set_mini(mini)
         self.__toolbar_title.set_mini(mini)
-        self.__toolbar_end.set_mini(mini)
 
     @property
     def end(self):

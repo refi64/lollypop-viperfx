@@ -158,16 +158,6 @@ class ToolbarEnd(Gtk.Bin):
         popover.popup()
         return popover
 
-    def set_mini(self, mini):
-        """
-            Show/hide
-            @param mini as bool
-        """
-        if mini:
-            self.__list_button.hide()
-        else:
-            self.__list_button.show()
-
     @property
     def next_popover(self):
         """
