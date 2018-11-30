@@ -192,7 +192,7 @@ class ArtHelper(GObject.Object):
             tmp = Image.frombytes("RGB", (width, height),
                                   data, "raw", "RGB", stride)
 
-            tmp = tmp.filter(ImageFilter.GaussianBlur(20))
+            tmp = tmp.filter(ImageFilter.GaussianBlur(30))
             imgd = tmp.tobytes()
             data = GLib.Bytes.new(imgd)
             pixbuf = GdkPixbuf.Pixbuf.new_from_data(imgd,
