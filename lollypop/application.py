@@ -110,6 +110,7 @@ class Application(Gtk.Application):
         self.notify = None
         self.scrobblers = []
         self.debug = False
+        self.shown_sidebar_tooltip = False
         self.__fs = None
         GLib.set_application_name("Lollypop")
         GLib.set_prgname("lollypop")

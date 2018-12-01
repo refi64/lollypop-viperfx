@@ -43,11 +43,6 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-        <key type="b" name="shown-sidebar-tooltip">
-            <default>false</default>
-            <summary>INTERNAL</summary>
-            <description></description>
-        </key>
         <key type="i" name="donation">
             <default>0</default>
             <summary>INTERNAL</summary>

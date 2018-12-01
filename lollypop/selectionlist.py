@@ -341,8 +341,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None:
                 from lollypop.pop_menu_views import ViewsMenuPopover
-                App().settings.set_value("shown-sidebar-tooltip",
-                                         GLib.Variant("b", True))
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
@@ -373,10 +371,10 @@ class SelectionList(BaseView, Gtk.Overlay):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
+        def shown_sidebar_tooltip():
+            App().shown_sidebar_tooltip = True
+
         if keyboard:
-            return True
-        elif not App().settings.get_value("shown-sidebar-tooltip"):
-            tooltip.set_markup(_("Right click to configure"))
             return True
         (exists, tx, ty, model, path, i) = self.__view.get_tooltip_context(
             x,
@@ -401,6 +399,10 @@ class SelectionList(BaseView, Gtk.Overlay):
                 layout.set_text(text, -1)
                 if layout.is_ellipsized():
                     tooltip.set_markup(GLib.markup_escape_text(text))
+                    return True
+                elif not App().shown_sidebar_tooltip:
+                    GLib.timeout_add(1000, shown_sidebar_tooltip)
+                    tooltip.set_markup(_("Right click to configure"))
                     return True
         return False
 
