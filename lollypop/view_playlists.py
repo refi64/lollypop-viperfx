@@ -80,10 +80,16 @@ class PlaylistsView(View, ViewController):
         # "split-button" will emit a signal otherwise
         builder.connect_signals(self)
 
-        # No duration for non user playlists
-        # FIXME
+        # In DB duration calculation
         if playlist_ids[0] > 0:
-            self.__set_duration()
+            duration = 0
+            for playlist_id in self.__playlist_ids:
+                duration += App().playlists.get_duration(playlist_id)
+            self.__set_duration(duration)
+        # Ask widget after populated
+        else:
+            self.__playlists_widget.connect("populated",
+                                            self.__on_playlist_populated)
 
     def populate(self, tracks):
         """
@@ -224,14 +230,11 @@ class PlaylistsView(View, ViewController):
 #######################
 # PRIVATE             #
 #######################
-    def __set_duration(self):
+    def __set_duration(self, duration):
         """
             Set playlist duration
+            @param duration as int (seconds)
         """
-        duration = 0
-        for playlist_id in self.__playlist_ids:
-            duration += App().playlists.get_duration(playlist_id)
-
         hours = int(duration / 3600)
         mins = int(duration / 60)
         if hours > 0:
@@ -307,3 +310,10 @@ class PlaylistsView(View, ViewController):
                 playlist_id in self.__playlist_ids:
             track_id = App().tracks.get_id_by_uri(uri)
             self.__playlists_widget.remove(track_id, pos)
+
+    def __on_playlist_populated(self, widget):
+        """
+            Set duration on populated
+            @param widget as PlaylistsWidget
+        """
+        self.__set_duration(widget.duration)

@@ -37,6 +37,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__playlist_ids = playlist_ids
         self.__list_type = list_type
+        self.__duration = 0 if playlist_ids[0] < 0 else None
         self.__tracks = {}
         self.__row_tracks_left = []
         self.__row_tracks_right = []
@@ -229,6 +230,14 @@ class PlaylistsWidget(Gtk.Grid):
         return rows
 
     @property
+    def duration(self):
+        """
+            Get duration
+            @return int (seconds)
+        """
+        return self.__duration
+
+    @property
     def boxes(self):
         """
             @return [Gtk.ListBox]
@@ -298,6 +307,8 @@ class PlaylistsWidget(Gtk.Grid):
 
         track = tracks.pop(0)
         track.set_number(pos + 1)
+        if self.__duration is not None:
+            self.__duration += track.duration
         row = PlaylistRow(track, self.__list_type)
         row.set_previous_row(previous_row)
         if previous_row is not None:
