@@ -38,7 +38,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    # Update padding in application.css => albumrow
     __MARGIN = 4
 
     def get_best_height(widget):
@@ -80,7 +79,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__play_indicator = None
         self.set_sensitive(False)
         self.set_property("height-request", height)
-        self.set_margin_start(5)
         # 15 for scrollbar overlay
         self.set_margin_end(15)
         self.connect("destroy", self.__on_destroy)
@@ -94,13 +92,16 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self._artwork = App().art_helper.get_image(ArtSize.MEDIUM,
                                                    ArtSize.MEDIUM,
                                                    "small-cover-frame")
+        self._artwork.set_margin_start(self.__MARGIN)
         self.get_style_context().add_class("albumrow")
         self.get_style_context().add_class("albumrow-hover")
         self.set_sensitive(True)
+        self.set_selectable(False)
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.__on_query_tooltip)
         row_widget = Gtk.EventBox()
         grid = Gtk.Grid()
+        grid.set_property("valign", Gtk.Align.CENTER)
         grid.set_column_spacing(8)
         if self._album.artists:
             artists = GLib.markup_escape_text(", ".join(self._album.artists))

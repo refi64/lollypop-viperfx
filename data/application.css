@@ -304,7 +304,7 @@ popover.background separator {
 }
 
 .albumrow {
-    padding: 4px;
+    padding: 0px;
     border-radius: 5px;
 	background-color: transparent;
   	color: inherit;
