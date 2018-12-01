@@ -12,10 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
-from gettext import gettext as _
-
 from lollypop.define import App, Type, RowListType, SelectionListMask
-from lollypop.objects import Album, Track
+from lollypop.objects import Album
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view import View
@@ -26,10 +24,11 @@ from lollypop.container_device import DeviceContainer
 from lollypop.container_donation import DonationContainer
 from lollypop.container_progress import ProgressContainer
 from lollypop.container_scanner import ScannerContainer
+from lollypop.container_playlists import PlaylistsContainer
 
 
 class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
-                ProgressContainer, ScannerContainer):
+                ProgressContainer, ScannerContainer, PlaylistsContainer):
     """
         Main view management
     """
@@ -43,13 +42,10 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         DonationContainer.__init__(self)
         ProgressContainer.__init__(self)
         ScannerContainer.__init__(self)
+        PlaylistsContainer.__init__(self)
         self._stack = AdaptiveStack()
         self._stack.show()
-
         self.__setup_view()
-
-        App().playlists.connect("playlists-changed",
-                                self.__update_playlists)
         self.add(self.__paned_one)
 
     def update_list_one(self, update=False):
@@ -71,7 +67,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         if self._list_one.get_visible():
             ids = self._list_one.selected_ids
             if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
-                self.__update_list_playlists(update, ids[0])
+                self._update_list_playlists(update, ids[0])
             elif App().settings.get_value("show-genres") and ids:
                 self.__update_list_artists(self._list_two, ids, update)
 
@@ -173,40 +169,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
-    def show_playlist_manager(self, obj):
-        """
-            Show playlist manager for object_id
-            Current view stay present in ViewContainer
-            @param obj as Track/Album
-        """
-        from lollypop.view_playlists_manager import PlaylistsManagerView
-        current = self._stack.get_visible_child()
-        view = PlaylistsManagerView(obj)
-        view.populate(App().playlists.get_ids())
-        view.show()
-        self._stack.add(view)
-        App().window.container.stack.set_navigation_enabled(True)
-        self._stack.set_visible_child(view)
-        App().window.container.stack.set_navigation_enabled(False)
-        current.disable_overlay()
-
-    def show_smart_playlist_editor(self, playlist_id):
-        """
-            Show a view allowing user to edit smart view
-            @param playlist_id as int
-        """
-        App().window.emit("can-go-back-changed", True)
-        from lollypop.view_playlist_smart import SmartPlaylistView
-        current = self._stack.get_visible_child()
-        view = SmartPlaylistView(playlist_id)
-        view.populate()
-        view.show()
-        self._stack.add(view)
-        App().window.container.stack.set_navigation_enabled(True)
-        self._stack.set_visible_child(view)
-        App().window.container.stack.set_navigation_enabled(False)
-        current.disable_overlay()
-
     def show_artists_albums(self, artist_ids):
         """
             Show albums from artists
@@ -253,7 +215,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             else:
                 view = self.__get_view_albums_years(data)
         elif item_id == Type.PLAYLISTS:
-            view = self.__get_view_playlists([] if data is None else data)
+            view = self._get_view_playlists([] if data is None else data)
         elif item_id == Type.COMPILATIONS:
             view = self.__get_view_albums([], [item_id])
         elif item_id == Type.RADIOS:
@@ -448,21 +410,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         elif state_two_ids:
             self.show_view(state_two_ids[0])
 
-    def __update_playlists(self, playlists, playlist_id):
-        """
-            Update playlists in second list
-            @param playlists as Playlists
-            @param playlist_id as int
-        """
-        ids = self._list_one.selected_ids
-        if ids and ids[0] == Type.PLAYLISTS:
-            if App().playlists.exists(playlist_id):
-                self._list_two.update_value(playlist_id,
-                                            App().playlists.get_name(
-                                                 playlist_id))
-            else:
-                self._list_two.remove_value(playlist_id)
-
     def __update_list_genres(self, selection_list, update):
         """
             Setup list for genres
@@ -515,26 +462,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         loader = Loader(target=load, view=selection_list,
                         on_finished=lambda r: setup(*r))
         loader.start()
-
-    def __update_list_playlists(self, update, type):
-        """
-            Setup list for playlists
-            @param update as bool
-            @param type as int
-        """
-        self._list_two.mark_as(SelectionListMask.PLAYLISTS)
-        if type == Type.PLAYLISTS:
-            items = self._list_two.get_playlist_headers()
-            items += App().playlists.get()
-        else:
-            (years, unknown) = App().albums.get_years()
-            items = [(year, str(year), str(year)) for year in sorted(years)]
-            if unknown:
-                items.insert(0, (Type.NONE, _("Unknown"), ""))
-        if update:
-            self._list_two.update_values(items)
-        else:
-            self._list_two.populate(items)
 
     def __get_view_artists_rounded(self, static=True):
         """
@@ -708,67 +635,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         view.show()
         return view
 
-    def __get_view_playlists(self, playlist_ids=[]):
-        """
-            Get playlists view for playlists
-            @param playlist ids as [int]
-            @return View
-        """
-        def load():
-            tracks = []
-            all_ids = []
-            for playlist_id in playlist_ids:
-                if playlist_id == Type.LOVED:
-                    ids = App().tracks.get_loved_track_ids()
-                else:
-                    ids = App().playlists.get_track_ids(playlist_id)
-                for id in ids:
-                    if id in all_ids:
-                        continue
-                    all_ids.append(id)
-                    track = Track(id)
-                    tracks.append(track)
-            return tracks
-
-        def load_smart():
-            tracks = []
-            request = App().playlists.get_smart_sql(playlist_ids[0])
-            ids = App().db.execute(request)
-            for id in ids:
-                track = Track(id)
-                # Smart playlist may report invalid tracks
-                # An album always have an artist so check
-                # object is valid. Others Lollypop widgets assume
-                # objects are valid
-                if not track.album.artist_ids:
-                    continue
-                tracks.append(track)
-            return tracks
-
-        self.stop_current_view()
-        if len(playlist_ids) == 1 and\
-                App().playlists.get_smart(playlist_ids[0]):
-            from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids,
-                                 RowListType.TWO_COLUMNS | RowListType.DND)
-            loader = Loader(target=load_smart, view=view)
-            loader.start()
-        elif playlist_ids:
-            from lollypop.view_playlists import PlaylistsView
-            if len(playlist_ids) == 1:
-                list_type = RowListType.TWO_COLUMNS | RowListType.DND
-            else:
-                list_type = RowListType.TWO_COLUMNS | RowListType.READ_ONLY
-            view = PlaylistsView(playlist_ids, list_type)
-            loader = Loader(target=load, view=view)
-            loader.start()
-        else:
-            from lollypop.view_playlists_manager import PlaylistsManagerView
-            view = PlaylistsManagerView()
-            view.populate(App().playlists.get_ids())
-        view.show()
-        return view
-
     def __get_view_radios(self):
         """
             Get radios view
@@ -801,7 +667,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             return
         # Update lists
         if selected_ids[0] in [Type.PLAYLISTS, Type.YEARS]:
-            self.__update_list_playlists(False, selected_ids[0])
+            self._update_list_playlists(False, selected_ids[0])
             self._list_two.show()
         elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
                 self._list_one.mask & SelectionListMask.GENRE:
@@ -812,7 +678,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         # Update view
         if selected_ids[0] == Type.PLAYLISTS:
             if not self._list_two.selected_ids:
-                view = self.__get_view_playlists()
+                view = self._get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             view = self._get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
@@ -878,7 +744,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         if not selected_ids or not genre_ids:
             return
         if genre_ids[0] == Type.PLAYLISTS:
-            view = self.__get_view_playlists(selected_ids)
+            view = self._get_view_playlists(selected_ids)
         elif genre_ids[0] == Type.YEARS:
             view = self.__get_view_albums_years(selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
