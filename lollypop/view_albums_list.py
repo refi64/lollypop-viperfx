@@ -93,6 +93,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                                                    ArtSize.MEDIUM,
                                                    "small-cover-frame")
         self._artwork.set_margin_start(self.__MARGIN)
+        # Little hack: we do not set margin_bottom because already set by
+        # get_best_height(): we are Align.FILL
+        # This allow us to not Align.CENTER row_widget and not jump up
+        # and down on reveal()
+        self._artwork.set_margin_top(self.__MARGIN)
         self.get_style_context().add_class("albumrow")
         self.get_style_context().add_class("albumrow-hover")
         self.set_sensitive(True)
@@ -101,7 +106,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.connect("query-tooltip", self.__on_query_tooltip)
         row_widget = Gtk.EventBox()
         grid = Gtk.Grid()
-        grid.set_property("valign", Gtk.Align.CENTER)
         grid.set_column_spacing(8)
         if self._album.artists:
             artists = GLib.markup_escape_text(", ".join(self._album.artists))
