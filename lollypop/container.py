@@ -147,32 +147,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
-    def show_artists_albums(self, artist_ids):
-        """
-            Show albums from artists
-            @param artist id as int
-        """
-        def select_list_two(selection_list, artist_ids):
-            self._list_two.select_ids(artist_ids)
-            self._list_two.disconnect_by_func(select_list_two)
-        self._list_one.select_ids()
-        self._list_two.select_ids()
-        if App().settings.get_value("show-genres"):
-            # Get artist genres
-            genre_ids = []
-            for artist_id in artist_ids:
-                album_ids = App().artists.get_albums(artist_ids)
-                for album_id in album_ids:
-                    for genre_id in App().albums.get_genre_ids(album_id):
-                        if genre_id not in genre_ids:
-                            genre_ids.append(genre_id)
-            # Select genres on list one
-            self._list_two.connect("populated", select_list_two, artist_ids)
-            self._list_one.select_ids(genre_ids)
-        else:
-            # Select artists on list one
-            self._list_one.select_ids(artist_ids)
-
     def show_view(self, item_id, data=None, switch=True):
         """
             Show view for item id
