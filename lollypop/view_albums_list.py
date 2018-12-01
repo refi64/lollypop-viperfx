@@ -96,6 +96,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                                                    ArtSize.MEDIUM,
                                                    "small-cover-frame")
         self.get_style_context().add_class("albumrow")
+        self.get_style_context().add_class("albumrow-hover")
         self.set_sensitive(True)
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.__on_query_tooltip)
@@ -177,6 +178,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
+            self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
                 self.set_state(Gtk.StateType.SELECTED)
         else:
@@ -185,6 +187,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.__revealer.add(self._responsive_widget)
                 self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
+            self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
             self.set_state(Gtk.StateType.NORMAL)
 
