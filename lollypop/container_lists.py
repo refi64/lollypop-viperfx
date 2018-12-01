@@ -244,23 +244,23 @@ class ListsContainer:
                                  Type.RECENTS,
                                  Type.NEVER,
                                  Type.RANDOMS]:
-            view = self.__get_view_albums(selected_ids, [])
+            view = self._get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
-            view = self.__get_view_radios()
+            view = self._get_view_radios()
         elif selected_ids[0] == Type.YEARS:
-            view = self.__get_view_albums_decades()
+            view = self._get_view_albums_decades()
         elif selected_ids[0] == Type.ARTISTS:
-            view = self.__get_view_artists_rounded(False)
+            view = self._get_view_artists_rounded(False)
             App().window.emit("show-can-go-back", True)
         elif selection_list.mask & SelectionListMask.ARTISTS:
             if selected_ids[0] == Type.ALL:
-                view = self.__get_view_albums(selected_ids, [])
+                view = self._get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:
-                view = self.__get_view_albums([], selected_ids)
+                view = self._get_view_albums([], selected_ids)
             else:
-                view = self.__get_view_artists([], selected_ids)
+                view = self._get_view_artists([], selected_ids)
         else:
-            view = self.__get_view_albums(selected_ids, [])
+            view = self._get_view_albums(selected_ids, [])
         if view is not None:
             if App().window.is_adaptive:
                 App().window.emit("can-go-back-changed", True)
@@ -304,11 +304,11 @@ class ListsContainer:
         if genre_ids[0] == Type.PLAYLISTS:
             view = self._get_view_playlists(selected_ids)
         elif genre_ids[0] == Type.YEARS:
-            view = self.__get_view_albums_years(selected_ids)
+            view = self._get_view_albums_years(selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
-            view = self.__get_view_albums(genre_ids, selected_ids)
+            view = self._get_view_albums(genre_ids, selected_ids)
         else:
-            view = self.__get_view_artists(genre_ids, selected_ids)
+            view = self._get_view_artists(genre_ids, selected_ids)
         self._stack.add(view)
         self._stack.set_visible_child(view)
 

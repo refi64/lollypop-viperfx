@@ -10,9 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.loader import Loader
-from lollypop.objects import Track
-from lollypop.define import App, Type, RowListType
+from lollypop.define import App, Type
 
 
 class PlaylistsContainer:
@@ -63,66 +61,6 @@ class PlaylistsContainer:
 ##############
 # PROTECTED  #
 ##############
-    def _get_view_playlists(self, playlist_ids=[]):
-        """
-            Get playlists view for playlists
-            @param playlist ids as [int]
-            @return View
-        """
-        def load():
-            tracks = []
-            all_ids = []
-            for playlist_id in playlist_ids:
-                if playlist_id == Type.LOVED:
-                    ids = App().tracks.get_loved_track_ids()
-                else:
-                    ids = App().playlists.get_track_ids(playlist_id)
-                for id in ids:
-                    if id in all_ids:
-                        continue
-                    all_ids.append(id)
-                    track = Track(id)
-                    tracks.append(track)
-            return tracks
-
-        def load_smart():
-            tracks = []
-            request = App().playlists.get_smart_sql(playlist_ids[0])
-            ids = App().db.execute(request)
-            for id in ids:
-                track = Track(id)
-                # Smart playlist may report invalid tracks
-                # An album always have an artist so check
-                # object is valid. Others Lollypop widgets assume
-                # objects are valid
-                if not track.album.artist_ids:
-                    continue
-                tracks.append(track)
-            return tracks
-
-        self.stop_current_view()
-        if len(playlist_ids) == 1 and\
-                App().playlists.get_smart(playlist_ids[0]):
-            from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids,
-                                 RowListType.TWO_COLUMNS | RowListType.DND)
-            loader = Loader(target=load_smart, view=view)
-            loader.start()
-        elif playlist_ids:
-            from lollypop.view_playlists import PlaylistsView
-            if len(playlist_ids) == 1:
-                list_type = RowListType.TWO_COLUMNS | RowListType.DND
-            else:
-                list_type = RowListType.TWO_COLUMNS | RowListType.READ_ONLY
-            view = PlaylistsView(playlist_ids, list_type)
-            loader = Loader(target=load, view=view)
-            loader.start()
-        else:
-            from lollypop.view_playlists_manager import PlaylistsManagerView
-            view = PlaylistsManagerView()
-            view.populate(App().playlists.get_ids())
-        view.show()
-        return view
 
 ############
 # PRIVATE  #

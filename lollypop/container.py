@@ -12,23 +12,21 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import App, Type, RowListType, SelectionListMask
-from lollypop.objects import Album
-from lollypop.loader import Loader
+from lollypop.define import App
 from lollypop.view import View
 from lollypop.adaptive import AdaptiveStack
-from lollypop.shown import ShownLists
 from lollypop.container_device import DeviceContainer
 from lollypop.container_donation import DonationContainer
 from lollypop.container_progress import ProgressContainer
 from lollypop.container_scanner import ScannerContainer
 from lollypop.container_playlists import PlaylistsContainer
 from lollypop.container_lists import ListsContainer
+from lollypop.container_views import ViewsContainer
 
 
 class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 ProgressContainer, ScannerContainer, PlaylistsContainer,
-                ListsContainer):
+                ListsContainer, ViewsContainer):
     """
         Main view management
     """
@@ -44,6 +42,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         ScannerContainer.__init__(self)
         PlaylistsContainer.__init__(self)
         ListsContainer.__init__(self)
+        ViewsContainer.__init__(self)
         self._stack = AdaptiveStack()
         self._stack.show()
         self.__setup_view()
@@ -130,75 +129,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 self._list_two.hide()
                 self._list_one.hide()
             self.__reload_navigation_view()
-
-    def show_lyrics(self, track=None):
-        """
-            Show lyrics for track
-            @pram track as Track
-        """
-        from lollypop.view_lyrics import LyricsView
-        current = self._stack.get_visible_child()
-        view = LyricsView()
-        view.populate(track or App().player.current_track)
-        view.show()
-        self._stack.add(view)
-        App().window.container.stack.set_navigation_enabled(True)
-        self._stack.set_visible_child(view)
-        App().window.container.stack.set_navigation_enabled(False)
-        current.disable_overlay()
-
-    def show_view(self, item_id, data=None, switch=True):
-        """
-            Show view for item id
-            @param item_ids as int
-            @param data as object
-            @param switch as bool
-        """
-        App().window.emit("can-go-back-changed", True)
-        if item_id in [Type.POPULARS,
-                       Type.LOVED,
-                       Type.RECENTS,
-                       Type.NEVER,
-                       Type.RANDOMS]:
-            view = self.__get_view_albums([item_id], [])
-        elif item_id == Type.YEARS:
-            if data is None:
-                view = self.__get_view_albums_decades()
-            else:
-                view = self.__get_view_albums_years(data)
-        elif item_id == Type.PLAYLISTS:
-            view = self._get_view_playlists([] if data is None else data)
-        elif item_id == Type.COMPILATIONS:
-            view = self.__get_view_albums([], [item_id])
-        elif item_id == Type.RADIOS:
-            view = self.__get_view_radios()
-        elif Type.DEVICES - 999 < item_id < Type.DEVICES:
-            from lollypop.view_device import DeviceView
-            # Search for an existing view
-            view = None
-            for child in self._stack.get_children():
-                if isinstance(child, DeviceView):
-                    view = child
-                    break
-            if view is None:
-                view = self._get_view_device(item_id)
-        else:
-            view = self.__get_view_artists([], [item_id])
-        view.show()
-        self._stack.add(view)
-        if switch:
-            self._stack.set_visible_child(view)
-        else:
-            self._stack.add_to_history(view)
-
-    def show_artists_view(self):
-        """
-            Show artists view (rounded artwork)
-        """
-        App().window.emit("can-go-back-changed", False)
-        view = self.__get_view_artists_rounded()
-        App().window.emit("show-can-go-back", True)
-        self._stack.set_visible_child(view)
 
     def stop_current_view(self):
         """
@@ -309,191 +239,3 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             self.show_view(state_one_ids[0])
         elif state_two_ids:
             self.show_view(state_two_ids[0])
-
-    def __get_view_artists_rounded(self, static=True):
-        """
-            Get rounded artists view
-            @param static as bool, show static entries
-            @return view
-        """
-        def load():
-            ids = App().artists.get()
-            compilations = App().albums.get_compilation_ids([])
-            return (ids, compilations)
-
-        def setup(artist_ids, compilation_ids):
-            items = []
-            if static:
-                mask = SelectionListMask.LIST_ONE |\
-                       SelectionListMask.ARTISTS |\
-                       SelectionListMask.ALL_ARTISTS
-                if compilation_ids:
-                    mask |= SelectionListMask.COMPILATIONS
-                items = ShownLists.get(mask)
-                for dev in self.devices.values():
-                    items.append((dev.id, dev.name, dev.name))
-            items += artist_ids
-            view.populate(items)
-
-        from lollypop.view_artists_rounded import RoundedArtistsView
-        self.stop_current_view()
-        view = self.view_artists_rounded
-        if view is None:
-            view = RoundedArtistsView()
-            self._stack.add(view)
-            loader = Loader(target=load, view=view,
-                            on_finished=lambda r: setup(*r))
-            loader.start()
-            view.show()
-        return view
-
-    def __get_view_artists(self, genre_ids, artist_ids):
-        """
-            Get artists view for genres/artists
-            @param genre ids as [int]
-            @param artist ids as [int]
-        """
-        def load():
-            if genre_ids and genre_ids[0] == Type.ALL:
-                items = App().albums.get_ids(artist_ids, [])
-            else:
-                items = []
-                if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                    items += App().albums.get_compilation_ids(genre_ids)
-                items += App().albums.get_ids(artist_ids, genre_ids)
-            return [Album(album_id, genre_ids, artist_ids)
-                    for album_id in items]
-        self.stop_current_view()
-        if App().window.is_adaptive:
-            from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, artist_ids, genre_ids)
-        else:
-            from lollypop.view_artist import ArtistView
-            view = ArtistView(artist_ids, genre_ids)
-        loader = Loader(target=load, view=view)
-        loader.start()
-        view.show()
-        return view
-
-    def __get_view_albums_decades(self):
-        """
-            Get album view for decades
-        """
-        def load():
-            (years, unknown) = App().albums.get_years()
-            decades = []
-            decade = []
-            current_d = None
-            for year in sorted(years):
-                d = year // 10
-                if current_d is not None and current_d != d:
-                    current_d = d
-                    decades.append(decade)
-                    decade = []
-                current_d = d
-                decade.append(year)
-            if decade:
-                decades.append(decade)
-            return decades
-        self.stop_current_view()
-        if App().window.is_adaptive:
-            view = Gtk.Grid()
-        else:
-            from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
-            view = AlbumsDecadeBoxView()
-            loader = Loader(target=load, view=view)
-            loader.start()
-        view.show()
-        return view
-
-    def __get_view_albums_years(self, years):
-        """
-            Get album view for years
-            @param years as [int]
-        """
-        def load():
-            items = []
-            for year in years:
-                items += App().albums.get_compilations_for_year(year)
-                items += App().albums.get_albums_for_year(year)
-            return [Album(album_id, [Type.YEARS], [])
-                    for album_id in items]
-        self.stop_current_view()
-        if App().window.is_adaptive:
-            from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, [Type.YEARS], years)
-        else:
-            from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView([Type.YEARS], years)
-        loader = Loader(target=load, view=view)
-        loader.start()
-        view.show()
-        return view
-
-    def __get_view_albums(self, genre_ids, artist_ids):
-        """
-            Get albums view for genres/artists
-            @param genre ids as [int]
-            @param is compilation as bool
-        """
-        def load():
-            items = []
-            is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
-            if genre_ids and genre_ids[0] == Type.ALL:
-                if is_compilation or\
-                        App().settings.get_value(
-                            "show-compilations-in-album-view"):
-                    items = App().albums.get_compilation_ids([])
-                if not is_compilation:
-                    items += App().albums.get_ids([], [])
-            elif genre_ids and genre_ids[0] == Type.POPULARS:
-                items = App().albums.get_rated()
-                count = 100 - len(items)
-                for album in App().albums.get_populars(count):
-                    if album not in items:
-                        items.append(album)
-            elif genre_ids and genre_ids[0] == Type.LOVED:
-                items = App().albums.get_loved_albums()
-            elif genre_ids and genre_ids[0] == Type.RECENTS:
-                items = App().albums.get_recents()
-            elif genre_ids and genre_ids[0] == Type.NEVER:
-                items = App().albums.get_never_listened_to()
-            elif genre_ids and genre_ids[0] == Type.RANDOMS:
-                items = App().albums.get_randoms()
-            else:
-                if is_compilation or\
-                        App().settings.get_value(
-                            "show-compilations-in-album-view"):
-                    items = App().albums.get_compilation_ids(genre_ids)
-                if not is_compilation:
-                    items += App().albums.get_ids([], genre_ids)
-            return [Album(album_id, genre_ids, artist_ids)
-                    for album_id in items]
-
-        self.stop_current_view()
-        if App().window.is_adaptive:
-            from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, genre_ids, artist_ids)
-        else:
-            from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView(genre_ids, artist_ids)
-        loader = Loader(target=load, view=view)
-        loader.start()
-        view.show()
-        return view
-
-    def __get_view_radios(self):
-        """
-            Get radios view
-        """
-        def load():
-            from lollypop.radios import Radios
-            radios = Radios()
-            return radios.get_ids()
-        self.stop_current_view()
-        from lollypop.view_radios import RadiosView
-        view = RadiosView()
-        loader = Loader(target=load, view=view)
-        loader.start()
-        view.show()
-        return view
