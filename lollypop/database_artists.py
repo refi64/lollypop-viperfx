@@ -149,22 +149,23 @@ class ArtistsDatabase:
             @param genre ids as [int]
             @return [int, str, str]
         """
+        if App().settings.get_value("show-artist-sort"):
+            select = "artists.rowid, artists.sortname, artists.sortname"
+        else:
+            select = "artists.rowid, artists.name, artists.sortname"
         with SqlCursor(App().db) as sql:
             result = []
             if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
                 result = sql.execute(
-                    "SELECT DISTINCT artists.rowid,\
-                                  artists.name, artists.sortname\
-                                  FROM artists, albums, album_artists\
+                    "SELECT DISTINCT %s FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
                                   ORDER BY artists.sortname\
-                                  COLLATE NOCASE COLLATE LOCALIZED")
+                                  COLLATE NOCASE COLLATE LOCALIZED" % select)
             else:
                 genres = tuple(genre_ids)
-                request = "SELECT DISTINCT artists.rowid,\
-                           artists.name, artists.sortname\
+                request = "SELECT DISTINCT %s\
                            FROM artists, albums, album_genres, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
                            AND albums.rowid=album_artists.album_id\
@@ -173,7 +174,7 @@ class ArtistsDatabase:
                     request += "album_genres.genre_id=? OR "
                 request += "1=0) ORDER BY artists.sortname\
                             COLLATE NOCASE COLLATE LOCALIZED"
-                result = sql.execute(request, genres)
+                result = sql.execute(request % select, genres)
             return [(row[0], row[1], row[2]) for row in result]
 
     def get_ids(self, genre_ids=[]):

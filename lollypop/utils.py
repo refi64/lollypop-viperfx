@@ -204,7 +204,7 @@ def format_artist_name(name):
     for special in _("The the").split():
         if name.startswith(special + " "):
             strlen = len(special) + 1
-            name = name[strlen:] + "@@@@" + special
+            name = name[strlen:] + ", " + special
     return name
 
 

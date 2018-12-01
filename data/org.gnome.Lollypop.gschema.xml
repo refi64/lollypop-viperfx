@@ -206,7 +206,12 @@
         <key type="b" name="smart-artist-sort">
             <default>true</default>
             <summary>Smart sort for artist</summary>
-            <description>Ex: The Beatles sorted as Beatles. Reset of database required.</description>
+            <description>Ex: The Beatles sorted as Beatles. Reset of database required</description>
+        </key>
+        <key type="b" name="show-artist-sort">
+            <default>false</default>
+            <summary>Show sort tag as artist. Reset of database may be required</summary>
+            <description>Ex: Beatles, The</description>
         </key>
         <key type="b" name="save-state">
             <default>false</default>
