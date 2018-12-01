@@ -130,7 +130,8 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
                                            1,
                                            1)
             self.__widget.attach(self.__coverbox, 0, 0, 1, 1)
-            if App().window.container.get_view_width() < Sizing.MEDIUM:
+            if App().window.container.stack.get_allocation().width <\
+                    Sizing.MEDIUM:
                 self.__coverbox.hide()
             if len(artist_ids) > 1:
                 self.__artist_label.set_text(

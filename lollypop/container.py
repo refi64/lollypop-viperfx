@@ -48,13 +48,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         self.__setup_view()
         self.add(self.__paned_one)
 
-    def get_view_width(self):
-        """
-            Return view width
-            @return width as int
-        """
-        return self._stack.get_allocation().width
-
     def stop_all(self):
         """
             Stop current view from processing
