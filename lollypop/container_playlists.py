@@ -10,11 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext as _
-
 from lollypop.loader import Loader
 from lollypop.objects import Track
-from lollypop.define import App, Type, RowListType, SelectionListMask
+from lollypop.define import App, Type, RowListType
 
 
 class PlaylistsContainer:
@@ -65,26 +63,6 @@ class PlaylistsContainer:
 ##############
 # PROTECTED  #
 ##############
-    def _update_list_playlists(self, update, type):
-        """
-            Setup list for playlists
-            @param update as bool
-            @param type as int
-        """
-        self._list_two.mark_as(SelectionListMask.PLAYLISTS)
-        if type == Type.PLAYLISTS:
-            items = self._list_two.get_playlist_headers()
-            items += App().playlists.get()
-        else:
-            (years, unknown) = App().albums.get_years()
-            items = [(year, str(year), str(year)) for year in sorted(years)]
-            if unknown:
-                items.insert(0, (Type.NONE, _("Unknown"), ""))
-        if update:
-            self._list_two.update_values(items)
-        else:
-            self._list_two.populate(items)
-
     def _get_view_playlists(self, playlist_ids=[]):
         """
             Get playlists view for playlists
