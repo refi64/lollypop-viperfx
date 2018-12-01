@@ -10,11 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
-
-from random import randint
 
 from lollypop.define import App, Type, RowListType, SelectionListMask
 from lollypop.objects import Album, Track
@@ -26,14 +24,13 @@ from lollypop.adaptive import AdaptiveStack
 from lollypop.shown import ShownLists
 from lollypop.logger import Logger
 from lollypop.container_device import DeviceContainer
+from lollypop.container_donation import DonationContainer
 
 
-class Container(Gtk.Overlay, DeviceContainer):
+class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
     """
         Container for main view
     """
-
-    __DONATION = 1
 
     def __init__(self):
         """
@@ -41,6 +38,7 @@ class Container(Gtk.Overlay, DeviceContainer):
         """
         Gtk.Overlay.__init__(self)
         DeviceContainer.__init__(self)
+        DonationContainer.__init__(self)
         self.__pulse_timeout = None
         self._stack = AdaptiveStack()
         self._stack.show()
@@ -51,11 +49,6 @@ class Container(Gtk.Overlay, DeviceContainer):
         App().playlists.connect("playlists-changed",
                                 self.__update_playlists)
         self.add(self.__paned_one)
-
-        # Show donation notification
-        if App().settings.get_value("donation").get_int32() != self.__DONATION:
-            GLib.timeout_add_seconds(randint(3600, 7200),
-                                     self.__show_donation)
 
     def update_list_one(self, update=False):
         """
@@ -848,28 +841,6 @@ class Container(Gtk.Overlay, DeviceContainer):
         loader.start()
         view.show()
         return view
-
-    def __show_donation(self):
-        """
-            Show a notification telling user to donate a little
-        """
-        from lollypop.app_notification import AppNotification
-        notification = AppNotification(
-            _("Please consider a donation to the project"),
-            [_("PayPal"), _("Patreon")],
-            [lambda: Gtk.show_uri_on_window(
-                App().window,
-                "https://www.paypal.me/lollypopgnome",
-                Gdk.CURRENT_TIME),
-             lambda: Gtk.show_uri_on_window(
-                App().window,
-                "https://www.patreon.com/gnumdk",
-                Gdk.CURRENT_TIME)])
-        self.add_overlay(notification)
-        notification.show()
-        notification.set_reveal_child(True)
-        App().settings.set_value("donation",
-                                 GLib.Variant("i", self.__DONATION))
 
     def __on_list_one_selected(self, selection_list):
         """

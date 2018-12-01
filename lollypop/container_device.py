@@ -29,7 +29,7 @@ class Device:
 
 class DeviceContainer:
     """
-        Container for main view
+        Devices management for main view
     """
 
     def __init__(self):
