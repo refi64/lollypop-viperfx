@@ -91,7 +91,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         if self.get_child() is not None:
             return
-        self.set_selectable(False)
         self._artwork = App().art_helper.get_image(ArtSize.MEDIUM,
                                                    ArtSize.MEDIUM,
                                                    "small-cover-frame")
@@ -100,6 +99,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.set_sensitive(True)
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.__on_query_tooltip)
+        row_widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         if self._album.artists:
@@ -163,8 +163,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
         grid.attach(self.__revealer, 0, 2, index, 1)
-        self.add(grid)
+        row_widget.add(grid)
+        self.add(row_widget)
         self.set_playing_indicator()
+        row_widget.connect("button-release-event",
+                           self.__on_button_release_event)
         if self.__reveal:
             self.reveal()
 
@@ -280,6 +283,14 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.emit("populated")
         self.show_all()
 
+    def __on_button_release_event(self, widget, event):
+        """
+            Show revealer with tracks
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self.reveal()
+
     def __on_action_button_release_event(self, button, event):
         """
             RowListType.SEARCH: Play album
@@ -371,12 +382,11 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self.__view = Gtk.ListBox()
         self.__view.get_style_context().add_class("trackswidget")
         self.__view.set_vexpand(True)
-        self.__view.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
         self.__view.show()
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
-        self.__view.connect("row-activated", lambda l, r: r.reveal())
 
     def set_reveal(self, album_ids):
         """
