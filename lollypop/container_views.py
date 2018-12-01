@@ -350,6 +350,29 @@ class ViewsContainer:
         view.show()
         return view
 
+    def _reload_navigation_view(self):
+        """
+            Reload navigation view
+        """
+        state_two_ids = App().settings.get_value("state-two-ids")
+        state_one_ids = App().settings.get_value("state-one-ids")
+        # We do not support genres in navigation mode
+        if App().settings.get_value("show-genres") and\
+                state_one_ids and state_one_ids[0] >= 0 and not state_two_ids:
+            state_one_ids = []
+        # Artist id with genre off or genre and artist id
+        elif (state_two_ids and not state_one_ids) or\
+                (state_one_ids and state_one_ids[0] >= 0 and state_two_ids):
+            state_one_ids = state_two_ids
+            state_two_ids = []
+        self.show_artists_view()
+        if state_one_ids and state_two_ids:
+            self.show_view(state_one_ids[0], None, False)
+            self.show_view(state_one_ids[0], state_two_ids)
+        elif state_one_ids:
+            self.show_view(state_one_ids[0])
+        elif state_two_ids:
+            self.show_view(state_two_ids[0])
 ############
 # PRIVATE  #
 ############

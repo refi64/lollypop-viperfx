@@ -83,7 +83,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         if App().settings.get_value("show-sidebar"):
             self._reload_list_view()
         else:
-            self.__reload_navigation_view()
+            self._reload_navigation_view()
 
     def save_internals(self):
         """
@@ -128,7 +128,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             if self._list_one.get_visible():
                 self._list_two.hide()
                 self._list_one.hide()
-            self.__reload_navigation_view()
+            self._reload_navigation_view()
 
     def stop_current_view(self):
         """
@@ -215,27 +215,3 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             App().settings.get_value("paned-listview-width").get_int32())
         self.__paned_one.show()
         self.__paned_two.show()
-
-    def __reload_navigation_view(self):
-        """
-            Reload navigation view
-        """
-        state_two_ids = App().settings.get_value("state-two-ids")
-        state_one_ids = App().settings.get_value("state-one-ids")
-        # We do not support genres in navigation mode
-        if App().settings.get_value("show-genres") and\
-                state_one_ids and state_one_ids[0] >= 0 and not state_two_ids:
-            state_one_ids = []
-        # Artist id with genre off or genre and artist id
-        elif (state_two_ids and not state_one_ids) or\
-                (state_one_ids and state_one_ids[0] >= 0 and state_two_ids):
-            state_one_ids = state_two_ids
-            state_two_ids = []
-        self.show_artists_view()
-        if state_one_ids and state_two_ids:
-            self.show_view(state_one_ids[0], None, False)
-            self.show_view(state_one_ids[0], state_two_ids)
-        elif state_one_ids:
-            self.show_view(state_one_ids[0])
-        elif state_two_ids:
-            self.show_view(state_two_ids[0])
