@@ -19,15 +19,16 @@ from lollypop.objects import Album, Track
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view import View
-from lollypop.progressbar import ProgressBar
 from lollypop.adaptive import AdaptiveStack
 from lollypop.shown import ShownLists
 from lollypop.logger import Logger
 from lollypop.container_device import DeviceContainer
 from lollypop.container_donation import DonationContainer
+from lollypop.container_progress import ProgressContainer
 
 
-class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
+class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
+                ProgressContainer):
     """
         Container for main view
     """
@@ -39,7 +40,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
         Gtk.Overlay.__init__(self)
         DeviceContainer.__init__(self)
         DonationContainer.__init__(self)
-        self.__pulse_timeout = None
+        ProgressContainer.__init__(self)
         self._stack = AdaptiveStack()
         self._stack.show()
 
@@ -109,21 +110,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
             self.__reload_list_view()
         else:
             self.__reload_navigation_view()
-
-    def pulse(self, pulse):
-        """
-            Make progress bar visible/pulse if pulse is True
-            @param pulse as bool
-        """
-        if pulse and not self.__progress.is_visible():
-            self.__progress.show()
-            if self.__pulse_timeout is None:
-                self.__pulse_timeout = GLib.timeout_add(500, self.__pulse)
-        else:
-            if self.__pulse_timeout is not None:
-                GLib.source_remove(self.__pulse_timeout)
-                self.__pulse_timeout = None
-                self.__progress.hide()
 
     def save_internals(self):
         """
@@ -334,14 +320,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
         return None
 
     @property
-    def progress(self):
-        """
-            Progress bar
-            @return ProgressBar
-        """
-        return self.__progress
-
-    @property
     def stack(self):
         """
             Container stack
@@ -382,19 +360,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
 ############
 # PRIVATE  #
 ############
-    def __pulse(self):
-        """
-            Make progress bar pulse while visible
-            @param pulse as bool
-        """
-        if self.__progress.is_visible() and not App().scanner.is_locked():
-            self.__progress.pulse()
-            return True
-        else:
-            self.__progress.set_fraction(0.0, self)
-            self.__pulse_timeout = None
-            return False
-
     def __setup_view(self):
         """
             Setup window main view:
@@ -416,11 +381,8 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer):
         self.__list_two.connect("item-selected", self.__on_list_two_selected)
         self.__list_two.connect("pass-focus", self.__on_pass_focus)
 
-        self.__progress = ProgressBar()
-        self.__progress.set_property("hexpand", True)
-
         vgrid.add(self._stack)
-        vgrid.add(self.__progress)
+        vgrid.add(self._progress)
         vgrid.show()
 
         self.__paned_two.add1(self.__list_two)
