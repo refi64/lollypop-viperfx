@@ -10,32 +10,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib, Gdk
+from gi.repository import Gtk, GLib, Gdk
 
 from gettext import gettext as _
 
-from urllib.parse import urlparse
 from random import randint
 
 from lollypop.define import App, Type, RowListType, SelectionListMask
 from lollypop.objects import Album, Track
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
-from lollypop.view import View, MessageView
+from lollypop.view import View
 from lollypop.progressbar import ProgressBar
 from lollypop.adaptive import AdaptiveStack
 from lollypop.shown import ShownLists
 from lollypop.logger import Logger
+from lollypop.container_device import DeviceContainer
 
 
-# This is a multimedia device
-class Device:
-    id = None
-    name = None
-    uri = None
-
-
-class Container(Gtk.Overlay):
+class Container(Gtk.Overlay, DeviceContainer):
     """
         Container for main view
     """
@@ -47,22 +40,13 @@ class Container(Gtk.Overlay):
             Init container
         """
         Gtk.Overlay.__init__(self)
+        DeviceContainer.__init__(self)
         self.__pulse_timeout = None
-        # Index will start at -VOLUMES
-        self.__devices = {}
-        self.__devices_index = Type.DEVICES
-        self.__stack = AdaptiveStack()
-        self.__stack.show()
+        self._stack = AdaptiveStack()
+        self._stack.show()
 
         self.__setup_view()
         self.__setup_scanner()
-
-        # Volume manager
-        self.__vm = Gio.VolumeMonitor.get()
-        self.__vm.connect("mount-added", self.__on_mount_added)
-        self.__vm.connect("mount-removed", self.__on_mount_removed)
-        for mount in self.__vm.get_mounts():
-            self.__add_device(mount, False)
 
         App().playlists.connect("playlists-changed",
                                 self.__update_playlists)
@@ -101,13 +85,13 @@ class Container(Gtk.Overlay):
             Return view width
             @return width as int
         """
-        return self.__stack.get_allocation().width
+        return self._stack.get_allocation().width
 
     def stop_all(self):
         """
             Stop current view from processing
         """
-        view = self.__stack.get_visible_child()
+        view = self._stack.get_visible_child()
         if view is not None:
             view.stop()
 
@@ -148,23 +132,6 @@ class Container(Gtk.Overlay):
                 self.__pulse_timeout = None
                 self.__progress.hide()
 
-    def add_fake_phone(self):
-        """
-            Emulate an Android Phone
-        """
-        self.__devices_index -= 1
-        dev = Device()
-        dev.id = self.__devices_index
-        dev.name = "Android phone"
-        dev.uri = "file:///tmp/android/"
-        d = Gio.File.new_for_uri(dev.uri + "Internal Memory")
-        if not d.query_exists():
-            d.make_directory_with_parents()
-        d = Gio.File.new_for_uri(dev.uri + "SD Card")
-        if not d.query_exists():
-            d.make_directory_with_parents()
-        self.__devices[self.__devices_index] = dev
-
     def save_internals(self):
         """
             Save paned position
@@ -189,8 +156,8 @@ class Container(Gtk.Overlay):
             self.__list_one.disconnect_by_func(select_list_one)
 
         adpative_window = App().window.is_adaptive
-        self.__stack.set_navigation_enabled(not show or adpative_window)
-        self.__stack.clear()
+        self._stack.set_navigation_enabled(not show or adpative_window)
+        self._stack.clear()
         # Destroy to force update (static vs non static)
         view = self.view_artists_rounded
         if view is not None:
@@ -217,13 +184,13 @@ class Container(Gtk.Overlay):
             @pram track as Track
         """
         from lollypop.view_lyrics import LyricsView
-        current = self.__stack.get_visible_child()
+        current = self._stack.get_visible_child()
         view = LyricsView()
         view.populate(track or App().player.current_track)
         view.show()
-        self.__stack.add(view)
+        self._stack.add(view)
         App().window.container.stack.set_navigation_enabled(True)
-        self.__stack.set_visible_child(view)
+        self._stack.set_visible_child(view)
         App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
@@ -234,13 +201,13 @@ class Container(Gtk.Overlay):
             @param obj as Track/Album
         """
         from lollypop.view_playlists_manager import PlaylistsManagerView
-        current = self.__stack.get_visible_child()
+        current = self._stack.get_visible_child()
         view = PlaylistsManagerView(obj)
         view.populate(App().playlists.get_ids())
         view.show()
-        self.__stack.add(view)
+        self._stack.add(view)
         App().window.container.stack.set_navigation_enabled(True)
-        self.__stack.set_visible_child(view)
+        self._stack.set_visible_child(view)
         App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
@@ -251,13 +218,13 @@ class Container(Gtk.Overlay):
         """
         App().window.emit("can-go-back-changed", True)
         from lollypop.view_playlist_smart import SmartPlaylistView
-        current = self.__stack.get_visible_child()
+        current = self._stack.get_visible_child()
         view = SmartPlaylistView(playlist_id)
         view.populate()
         view.show()
-        self.__stack.add(view)
+        self._stack.add(view)
         App().window.container.stack.set_navigation_enabled(True)
-        self.__stack.set_visible_child(view)
+        self._stack.set_visible_child(view)
         App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
@@ -316,20 +283,20 @@ class Container(Gtk.Overlay):
             from lollypop.view_device import DeviceView
             # Search for an existing view
             view = None
-            for child in self.__stack.get_children():
+            for child in self._stack.get_children():
                 if isinstance(child, DeviceView):
                     view = child
                     break
             if view is None:
-                view = self.__get_view_device(item_id)
+                view = self._get_view_device(item_id)
         else:
             view = self.__get_view_artists([], [item_id])
         view.show()
-        self.__stack.add(view)
+        self._stack.add(view)
         if switch:
-            self.__stack.set_visible_child(view)
+            self._stack.set_visible_child(view)
         else:
-            self.__stack.add_to_history(view)
+            self._stack.add_to_history(view)
 
     def show_artists_view(self):
         """
@@ -338,7 +305,16 @@ class Container(Gtk.Overlay):
         App().window.emit("can-go-back-changed", False)
         view = self.__get_view_artists_rounded()
         App().window.emit("show-can-go-back", True)
-        self.__stack.set_visible_child(view)
+        self._stack.set_visible_child(view)
+
+    def stop_current_view(self):
+        """
+            Stop current view
+        """
+        child = self._stack.get_visible_child()
+        if child is not None:
+            if hasattr(child, "stop"):
+                child.stop()
 
     @property
     def view(self):
@@ -346,7 +322,7 @@ class Container(Gtk.Overlay):
             Get current view
             @return View
         """
-        view = self.__stack.get_visible_child()
+        view = self._stack.get_visible_child()
         if view is not None and isinstance(view, View):
             return view
         return None
@@ -358,8 +334,8 @@ class Container(Gtk.Overlay):
             @return RoundedArtistsView
         """
         from lollypop.view_artists_rounded import RoundedArtistsView
-        self.__stop_current_view()
-        for view in self.__stack.get_children():
+        self.stop_current_view()
+        for view in self._stack.get_children():
             if isinstance(view, RoundedArtistsView):
                 return view
         return None
@@ -378,7 +354,7 @@ class Container(Gtk.Overlay):
             Container stack
             @return stack as Gtk.Stack
         """
-        return self.__stack
+        return self._stack
 
     @property
     def list_one(self):
@@ -450,7 +426,7 @@ class Container(Gtk.Overlay):
         self.__progress = ProgressBar()
         self.__progress.set_property("hexpand", True)
 
-        vgrid.add(self.__stack)
+        vgrid.add(self._stack)
         vgrid.add(self.__progress)
         vgrid.show()
 
@@ -624,15 +600,6 @@ class Container(Gtk.Overlay):
         else:
             self.__list_two.populate(items)
 
-    def __stop_current_view(self):
-        """
-            Stop current view
-        """
-        child = self.__stack.get_visible_child()
-        if child is not None:
-            if hasattr(child, "stop"):
-                child.stop()
-
     def __get_view_artists_rounded(self, static=True):
         """
             Get rounded artists view
@@ -653,54 +620,22 @@ class Container(Gtk.Overlay):
                 if compilation_ids:
                     mask |= SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
-                for dev in self.__devices.values():
+                for dev in self.devices.values():
                     items.append((dev.id, dev.name, dev.name))
             items += artist_ids
             view.populate(items)
 
         from lollypop.view_artists_rounded import RoundedArtistsView
-        self.__stop_current_view()
+        self.stop_current_view()
         view = self.view_artists_rounded
         if view is None:
             view = RoundedArtistsView()
-            self.__stack.add(view)
+            self._stack.add(view)
             loader = Loader(target=load, view=view,
                             on_finished=lambda r: setup(*r))
             loader.start()
             view.show()
         return view
-
-    def __get_view_device(self, device_id):
-        """
-            Get device view for id
-            Use existing view if available
-            @param device id as int
-            @return View
-        """
-        from lollypop.view_device import DeviceView
-        self.__stop_current_view()
-        device = self.__devices[device_id]
-        device_view = None
-
-        # Search a device child with uri
-        for child in self.__stack.get_children():
-            if isinstance(child, DeviceView):
-                if child.device.uri == device.uri:
-                    device_view = child
-                    break
-
-        # If no view available, get a new one
-        if device_view is None:
-            files = DeviceView.get_files(device.uri)
-            if files:
-                device_view = DeviceView(device)
-                self.__stack.add_named(device_view, device.uri)
-            else:
-                device_view = MessageView(_("Please unlock your device"))
-                self.__stack.add(device_view)
-            device_view.populate()
-            device_view.show()
-        return device_view
 
     def __get_view_artists(self, genre_ids, artist_ids):
         """
@@ -718,7 +653,7 @@ class Container(Gtk.Overlay):
                 items += App().albums.get_ids(artist_ids, genre_ids)
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
-        self.__stop_current_view()
+        self.stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(RowListType.DEFAULT, artist_ids, genre_ids)
@@ -750,7 +685,7 @@ class Container(Gtk.Overlay):
             if decade:
                 decades.append(decade)
             return decades
-        self.__stop_current_view()
+        self.stop_current_view()
         if App().window.is_adaptive:
             view = Gtk.Grid()
         else:
@@ -773,7 +708,7 @@ class Container(Gtk.Overlay):
                 items += App().albums.get_albums_for_year(year)
             return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]
-        self.__stop_current_view()
+        self.stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(RowListType.DEFAULT, [Type.YEARS], years)
@@ -825,7 +760,7 @@ class Container(Gtk.Overlay):
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
 
-        self.__stop_current_view()
+        self.stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(RowListType.DEFAULT, genre_ids, artist_ids)
@@ -874,7 +809,7 @@ class Container(Gtk.Overlay):
                 tracks.append(track)
             return tracks
 
-        self.__stop_current_view()
+        self.stop_current_view()
         if len(playlist_ids) == 1 and\
                 App().playlists.get_smart(playlist_ids[0]):
             from lollypop.view_playlists import PlaylistsView
@@ -906,61 +841,13 @@ class Container(Gtk.Overlay):
             from lollypop.radios import Radios
             radios = Radios()
             return radios.get_ids()
-        self.__stop_current_view()
+        self.stop_current_view()
         from lollypop.view_radios import RadiosView
         view = RadiosView()
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
         return view
-
-    def __add_device(self, mount, show=False):
-        """
-            Add a device
-            @param mount as Gio.Mount
-            @param show as bool
-        """
-        if mount.get_volume() is None:
-            return
-        uri = mount.get_default_location().get_uri()
-        drive = mount.get_drive()
-        if uri is None:
-            return
-        parsed = urlparse(uri)
-        is_removable = drive is not None and drive.is_removable() and\
-            Type.USB_DISKS in App().settings.get_value("shown-album-lists")
-        if is_removable or parsed.scheme == "mtp":
-            self.__devices_index -= 1
-            dev = Device()
-            dev.id = self.__devices_index
-            dev.name = mount.get_name()
-            dev.uri = uri
-            self.__devices[self.__devices_index] = dev
-            if show:
-                if App().settings.get_value("show-sidebar"):
-                    self.__list_one.add_value((dev.id, dev.name, dev.name))
-                else:
-                    self.view_artists_rounded.add_value((dev.id,
-                                                         dev.name,
-                                                         dev.name))
-
-    def __remove_device(self, mount):
-        """
-            Remove volume from device list
-            @param mount as Gio.Mount
-        """
-        uri = mount.get_default_location().get_uri()
-        for dev in self.__devices.values():
-            if dev.uri == uri:
-                if App().settings.get_value("show-sidebar"):
-                    self.__list_one.remove_value(dev.id)
-                else:
-                    self.view_artists_rounded.remove_value(dev.id)
-                child = self.__stack.get_child_by_name(uri)
-                if child is not None:
-                    child.destroy()
-                del self.__devices[dev.id]
-                break
 
     def __show_donation(self):
         """
@@ -990,7 +877,7 @@ class Container(Gtk.Overlay):
             @param list as SelectionList
         """
         Logger.debug("Container::__on_list_one_selected()")
-        self.__stack.destroy_non_visible_children()
+        self._stack.destroy_non_visible_children()
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
@@ -1013,7 +900,7 @@ class Container(Gtk.Overlay):
             if not self.__list_two.selected_ids:
                 view = self.__get_view_playlists()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
-            view = self.__get_view_device(selected_ids[0])
+            view = self._get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
@@ -1039,8 +926,8 @@ class Container(Gtk.Overlay):
         if view is not None:
             if App().window.is_adaptive:
                 App().window.emit("can-go-back-changed", True)
-            if view not in self.__stack.get_children():
-                self.__stack.add(view)
+            if view not in self._stack.get_children():
+                self._stack.add(view)
             # If we are in paned stack mode, show list two if wanted
             if App().window.is_adaptive\
                     and self.__list_two.is_visible()\
@@ -1050,16 +937,16 @@ class Container(Gtk.Overlay):
                         selected_ids[0] in [Type.PLAYLISTS,
                                             Type.YEARS,
                                             Type.ALL]):
-                self.__stack.set_visible_child(self.__list_two)
+                self._stack.set_visible_child(self.__list_two)
             else:
-                self.__stack.set_visible_child(view)
+                self._stack.set_visible_child(view)
 
     def __on_list_populated(self, selection_list):
         """
             Add device to list one
             @param selection_list as SelectionList
         """
-        for dev in self.__devices.values():
+        for dev in self.devices.values():
             self.__list_one.add_value((dev.id, dev.name, dev.name))
 
     def __on_list_two_selected(self, selection_list):
@@ -1068,7 +955,7 @@ class Container(Gtk.Overlay):
             @param selection_list as SelectionList
         """
         Logger.debug("Container::__on_list_two_selected()")
-        self.__stack.destroy_non_visible_children()
+        self._stack.destroy_non_visible_children()
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
@@ -1084,8 +971,8 @@ class Container(Gtk.Overlay):
             view = self.__get_view_albums(genre_ids, selected_ids)
         else:
             view = self.__get_view_artists(genre_ids, selected_ids)
-        self.__stack.add(view)
-        self.__stack.set_visible_child(view)
+        self._stack.add(view)
+        self._stack.set_visible_child(view)
 
     def __on_pass_focus(self, selection_list):
         """
@@ -1159,19 +1046,3 @@ class Container(Gtk.Overlay):
                                                      sortname))
             else:
                 self.view_artists_rounded.remove_value(artist_id)
-
-    def __on_mount_added(self, vm, mount):
-        """
-            On volume mounter
-            @param vm as Gio.VolumeMonitor
-            @param mount as Gio.Mount
-        """
-        self.__add_device(mount, True)
-
-    def __on_mount_removed(self, vm, mount):
-        """
-            On volume removed, clean selection list
-            @param vm as Gio.VolumeMonitor
-            @param mount as Gio.Mount
-        """
-        self.__remove_device(mount)
