@@ -397,5 +397,6 @@ class ArtistView(ArtistAlbumsView):
                                               Gtk.IconSize.DND)
         else:
             self.__artwork.set_from_surface(surface)
+            self.__artwork.get_style_context().remove_class("artwork-icon")
         self.__artwork.show()
         self.__set_header_height()
