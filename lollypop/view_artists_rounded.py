@@ -39,8 +39,7 @@ class RoundedArtistsView(FlowBoxView):
             Insert item
             @param item as (int, str, str)
         """
-        if self.__lazy_queue_backup is not None or\
-                self._lazy_queue is not None:
+        if self.__lazy_queue_backup is not None or self._lazy_queue:
             return
         for child in self._box.get_children():
             if child.data == item[0]:
