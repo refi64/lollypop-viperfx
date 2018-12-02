@@ -75,8 +75,11 @@ class LovedWidget(Gtk.Bin):
         self.__object.set_loved(loved)
         if isinstance(self.__object, Track):
             album = App().player.get_album_by_id(self.__object.album.id)
+            albums = App().player.albums
             if album is not None:
-                album.disallow_ignored_tracks()
+                new_album = album.clone(True)
+                index = albums.index(album)
+                App().player.albums[index] = new_album
             # Update state on Last.fm
             if App().lastfm is not None:
                 lastfm_status = True if loved == 1 else False
