@@ -103,11 +103,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
 
         adpative_window = App().window.is_adaptive
         self._stack.set_navigation_enabled(not show or adpative_window)
-        self._stack.clear()
-        # Destroy to force update (static vs non static)
-        view = self.view_artists_rounded
-        if view is not None:
-            view.destroy()
         if show or adpative_window:
             if not adpative_window:
                 App().window.emit("show-can-go-back", False)

@@ -59,6 +59,14 @@ class RoundedArtistsView(FlowBoxView):
                 child.destroy()
                 break
 
+    def clear_static(self):
+        """
+            Remove static entries
+        """
+        for child in self._box.get_children():
+            if child.data < 0:
+                child.destroy()
+
     def stop(self):
         """
             We want this view to be populated anyway (no sidebar mode)
@@ -106,7 +114,7 @@ class RoundedArtistsView(FlowBoxView):
         # If empty, it will load lazy loading queue anyway
         self._add_items(self._items)
         App().settings.set_value("state-one-ids",
-                                 GLib.Variant("ai", [Type.POPULARS]))
+                                 GLib.Variant("ai", [Type.ARTISTS]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
 

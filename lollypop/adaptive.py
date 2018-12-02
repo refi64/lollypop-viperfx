@@ -36,14 +36,6 @@ class AdaptiveView:
             GLib.timeout_add(1000, do_destroy)
 
     @property
-    def can_destroy(self):
-        """
-            True if view can be destroyed
-            @return bool
-        """
-        return True
-
-    @property
     def should_destroy(self):
         """
             True if view should be destroyed
@@ -85,15 +77,6 @@ class AdaptiveStack(Gtk.Stack):
             Reset history
         """
         self.__history = []
-
-    def clear(self):
-        """
-            Clear stack
-        """
-        for child in self.get_children():
-            if child.can_destroy:
-                child.stop()
-                child.destroy()
 
     def set_navigation_enabled(self, enabled):
         """

@@ -268,14 +268,6 @@ class SelectionList(BaseView, Gtk.Overlay):
         self.__view.set_model(self.__model)
 
     @property
-    def can_destroy(self):
-        """
-            True if view can be destroyed
-            @return bool
-        """
-        return False
-
-    @property
     def should_destroy(self):
         """
             True if view should be destroyed

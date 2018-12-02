@@ -173,7 +173,7 @@ class ViewsContainer:
             compilations = App().albums.get_compilation_ids([])
             return (ids, compilations)
 
-        def setup(artist_ids, compilation_ids):
+        def get_items(artist_ids, compilation_ids):
             items = []
             if static:
                 mask = SelectionListMask.LIST_ONE |\
@@ -185,7 +185,10 @@ class ViewsContainer:
                 for dev in self.devices.values():
                     items.append((dev.id, dev.name, dev.name))
             items += artist_ids
-            view.populate(items)
+            return items
+
+        def setup(artist_ids, compilation_ids):
+            view.populate(get_items(artist_ids, compilation_ids))
 
         from lollypop.view_artists_rounded import RoundedArtistsView
         self.stop_current_view()
@@ -197,6 +200,13 @@ class ViewsContainer:
                             on_finished=lambda r: setup(*r))
             loader.start()
             view.show()
+        else:
+            if static:
+                compilations = App().albums.get_compilation_ids([])
+                for item in get_items([], compilations):
+                    view.add_value(item)
+            else:
+                view.clear_static()
         return view
 
     def _get_view_artists(self, genre_ids, artist_ids):
@@ -369,7 +379,7 @@ class ViewsContainer:
         if state_one_ids and state_two_ids:
             self.show_view(state_one_ids[0], None, False)
             self.show_view(state_one_ids[0], state_two_ids)
-        elif state_one_ids:
+        elif state_one_ids and state_one_ids[0] != Type.ARTISTS:
             self.show_view(state_one_ids[0])
         elif state_two_ids:
             self.show_view(state_two_ids[0])
