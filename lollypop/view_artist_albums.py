@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib, GObject
 
-from gettext import gettext as _
-
 from lollypop.view import LazyLoadingView
 from lollypop.define import App, ArtSize
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
@@ -67,22 +65,9 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             Populate the view
             @param albums as [Album]
         """
-        if albums:
-            if len(albums) != 1:
-                self.__spinner.start()
-            self.__add_albums(albums)
-        else:
-            label = Gtk.Label.new()
-            string = GLib.markup_escape_text(_("Network access disabled"))
-            label.set_markup(
-                '<span font_weight="bold" size="xx-large">' +
-                string +
-                "</span>")
-            label.set_property("halign", Gtk.Align.CENTER)
-            label.set_hexpand(True)
-            label.show()
-            self.set_sensitive(False)
-            self._album_box.add(label)
+        if len(albums) != 1:
+            self.__spinner.start()
+        self.__add_albums(albums)
 
     def stop(self):
         """
