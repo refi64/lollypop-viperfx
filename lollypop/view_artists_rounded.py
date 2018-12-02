@@ -39,6 +39,9 @@ class RoundedArtistsView(FlowBoxView):
             Insert item
             @param item as (int, str, str)
         """
+        if self.__lazy_queue_backup is not None or\
+                self._lazy_queue is not None:
+            return
         for child in self._box.get_children():
             if child.data == item[0]:
                 return
@@ -104,7 +107,7 @@ class RoundedArtistsView(FlowBoxView):
         """
             Set active ids
         """
-        # Restpre lazy loading queue
+        # Restore lazy loading queue
         if self.__lazy_queue_backup:
             self._lazy_queue = self.__lazy_queue_backup
             self.__lazy_queue_backup = None
