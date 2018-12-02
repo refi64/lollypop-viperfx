@@ -138,7 +138,6 @@ class ViewsContainer:
                 tracks.append(track)
             return tracks
 
-        self.stop_current_view()
         if len(playlist_ids) == 1 and\
                 App().playlists.get_smart(playlist_ids[0]):
             from lollypop.view_playlists import PlaylistsView
@@ -191,7 +190,6 @@ class ViewsContainer:
             view.populate(get_items(artist_ids, compilation_ids))
 
         from lollypop.view_artists_rounded import RoundedArtistsView
-        self.stop_current_view()
         view = self.view_artists_rounded
         if view is None:
             view = RoundedArtistsView()
@@ -225,7 +223,6 @@ class ViewsContainer:
                 items += App().albums.get_ids(artist_ids, genre_ids)
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
-        self.stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(RowListType.DEFAULT, artist_ids, genre_ids)
@@ -257,7 +254,6 @@ class ViewsContainer:
             if decade:
                 decades.append(decade)
             return decades
-        self.stop_current_view()
         if App().window.is_adaptive:
             view = Gtk.Grid()
         else:
@@ -280,7 +276,6 @@ class ViewsContainer:
                 items += App().albums.get_albums_for_year(year)
             return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]
-        self.stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(RowListType.DEFAULT, [Type.YEARS], years)
@@ -332,7 +327,6 @@ class ViewsContainer:
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
 
-        self.stop_current_view()
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(RowListType.DEFAULT, genre_ids, artist_ids)
@@ -352,7 +346,6 @@ class ViewsContainer:
             from lollypop.radios import Radios
             radios = Radios()
             return radios.get_ids()
-        self.stop_current_view()
         from lollypop.view_radios import RadiosView
         view = RadiosView()
         loader = Loader(target=load, view=view)

@@ -83,7 +83,6 @@ class DeviceContainer:
             @return View
         """
         from lollypop.view_device import DeviceView
-        self.stop_current_view()
         device = self.__devices[device_id]
         device_view = None
 

@@ -118,15 +118,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 self._list_one.hide()
             self._reload_navigation_view()
 
-    def stop_current_view(self):
-        """
-            Stop current view
-        """
-        child = self._stack.get_visible_child()
-        if child is not None:
-            if hasattr(child, "stop"):
-                child.stop()
-
     @property
     def view(self):
         """
@@ -145,7 +136,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             @return RoundedArtistsView
         """
         from lollypop.view_artists_rounded import RoundedArtistsView
-        self.stop_current_view()
         for view in self._stack.get_children():
             if isinstance(view, RoundedArtistsView):
                 return view

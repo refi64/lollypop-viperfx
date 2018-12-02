@@ -31,8 +31,8 @@ class AdaptiveView:
         """
         def do_destroy():
             self.destroy()
+        self.stop()
         if self.should_destroy:
-            self.stop()
             GLib.timeout_add(1000, do_destroy)
 
     @property

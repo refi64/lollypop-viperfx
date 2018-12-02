@@ -88,6 +88,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         """
             Stop current loading widget
         """
+        LazyLoadingView.stop(self)
         for child in self.children:
             child.stop()
 
