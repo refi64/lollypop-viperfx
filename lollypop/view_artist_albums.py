@@ -10,10 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject
+from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
-from lollypop.define import App, ArtSize
+from lollypop.define import App
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
 from lollypop.controller_view import ViewController, ViewControllerType
 
@@ -22,9 +22,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
     """
         Show artist albums and tracks
     """
-    __gsignals__ = {
-        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
-    }
 
     def __init__(self, artist_ids, genre_ids, art_size):
         """
@@ -38,15 +35,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self.__art_size = art_size
-        self.__spinner = Gtk.Spinner()
-        self.__spinner.set_hexpand(True)
-        self.__spinner.set_vexpand(True)
-        spinner_size = int(ArtSize.BIG / 3)
-        self.__spinner.set_size_request(spinner_size, spinner_size)
-        self.__spinner.set_property("halign", Gtk.Align.CENTER)
-        self.__spinner.set_property("valign", Gtk.Align.CENTER)
-        self.__spinner.show()
-
         self._album_box = Gtk.Grid()
         self._album_box.set_row_spacing(5)
         self._album_box.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -56,7 +44,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         self._album_box.set_property("valign", Gtk.Align.START)
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._scrolled)
-        self._overlay.add_overlay(self.__spinner)
         self._overlay.show()
         self.add(self._overlay)
 
@@ -65,8 +52,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             Populate the view
             @param albums as [Album]
         """
-        if len(albums) != 1:
-            self.__spinner.start()
         self.__add_albums(albums)
 
     def stop(self):
@@ -158,7 +143,4 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             self._album_box.add(widget)
             GLib.idle_add(self.__add_albums, albums)
         else:
-            self.__spinner.stop()
-            self.__spinner.hide()
-            self.emit("populated")
             GLib.idle_add(self.lazy_loading)
