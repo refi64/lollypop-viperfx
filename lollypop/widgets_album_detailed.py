@@ -256,12 +256,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
 #######################
 # PROTECTED           #
 #######################
-    def _on_populated(self, disc_number):
+    def _on_tracks_populated(self, disc_number):
         """
             Emit populated signal
             @param disc_number as int
         """
-        if self._responsive_widget.get_parent() is None:
+        if self.is_populated:
             self._widget.add(self._responsive_widget)
         self.emit("populated")
 

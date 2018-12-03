@@ -258,12 +258,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
 #######################
 # PROTECTED           #
 #######################
-    def _on_populated(self, disc_number):
+    def _on_tracks_populated(self, disc_number):
         """
             Populate remaining discs
             @param disc_number as int
         """
-        TracksView._on_populated(self, disc_number)
         if not self.is_populated:
             TracksView.populate(self)
 

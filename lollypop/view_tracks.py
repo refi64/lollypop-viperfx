@@ -250,7 +250,7 @@ class TracksView:
             self.__set_duration()
             self.populate()
 
-    def _on_populated(self, disc_number):
+    def _on_tracks_populated(self, disc_number):
         """
             Tracks populated
             @param disc_number
@@ -312,14 +312,14 @@ class TracksView:
                     self._list_type & RowListType.TWO_COLUMNS:
                 self.emit("left-loaded")
             else:
-                self._on_populated(disc_number)
-            if self._list_type & RowListType.DND:
-                self.__linking()
-                # After prepend, we need to set last added next row
-                if i < len(self.children):
-                    self.children[i].set_previous_row(self.children[i - 1])
-                    self.children[i - 1].set_next_row(self.children[i])
-                    self.children[0].update_number(1)
+                self._on_tracks_populated(disc_number)
+                if self._list_type & RowListType.DND:
+                    self.__linking()
+                    # After prepend, we need to set last added next row
+                    if i < len(self.children):
+                        self.children[i].set_previous_row(self.children[i - 1])
+                        self.children[i - 1].set_next_row(self.children[i])
+                        self.children[0].update_number(1)
             return
 
         track = tracks.pop(0)
@@ -643,4 +643,5 @@ class TracksView:
             @param disc_number as int
             @param pos as int
         """
+        self.disconnect_by_func(self.__on_left_loaded)
         self.__add_tracks(tracks, self._tracks_widget_right, disc_number, pos)
