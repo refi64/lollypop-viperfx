@@ -337,6 +337,15 @@ popover.background separator {
     color: @theme_fg_color;
 }
 
+.transition-opacity-start {
+    opacity: 0;
+}
+
+.transition-opacity-end {
+    transition: 200ms linear;
+    opacity: 1;
+}
+
 .trackrow {
     padding: 0px;
 	background-color: transparent;
