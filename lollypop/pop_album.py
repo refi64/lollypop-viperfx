@@ -37,7 +37,7 @@ class AlbumPopover(Popover):
         view.populate([album])
         wanted_height = min(600,
                             min(self.__height,
-                                view.children[0].requested_height))
+                                view.children[0].requested_height[0]))
         view.set_property("height-request", wanted_height)
         view.show()
         self.add(view)

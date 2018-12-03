@@ -66,14 +66,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
+        TracksView.__init__(self, list_type)
         if list_type & RowListType.DND:
             DNDRow.__init__(self)
-        # Delayed => TracksView.__init__(self)
         self.__revealer = None
         self.__parent = parent
         self.__reveal = reveal
         self._artwork = None
-        self._responsive_widget = None
         self._album = album
         self.__list_type = list_type
         self.__play_indicator = None
@@ -191,10 +190,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.set_state(Gtk.StateType.SELECTED)
         else:
             if self._responsive_widget is None:
-                TracksView.__init__(self, self.__list_type)
-                self.__revealer.add(self._responsive_widget)
-                self.connect("size-allocate", self._on_size_allocate)
                 TracksView.populate(self)
+                self.__revealer.add(self._responsive_widget)
             self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
             self.set_state(Gtk.StateType.NORMAL)

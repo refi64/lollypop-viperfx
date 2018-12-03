@@ -26,7 +26,7 @@ from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, RowListType
 
 
-class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
+class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                           OverlayAlbumHelper, TracksView):
     """
         Widget with cover and tracks
@@ -43,149 +43,157 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             @param label_height as int
             @param genre ids as [int]
             @param artist ids as [int]
-            @param lazy as LazyLoadingView
             @param art size as ArtSize
         """
-        Gtk.EventBox.__init__(self)
+        Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, RowListType.TWO_COLUMNS)
-        OverlayAlbumHelper.__init__(self)
-        self.__context = None
-        # Cover + rating + spacing
-        self.__height = ArtSize.BIG + 26
-        self.set_property("height-request", self.__height)
-        self.connect("size-allocate", self._on_size_allocate)
-        self.__widget = Gtk.Grid()
-        self.__widget.set_margin_start(5)
-        self.__widget.set_margin_end(5)
-        self.__widget.set_row_spacing(1)
-        self.__widget.set_orientation(Gtk.Orientation.VERTICAL)
-        self.__widget.set_vexpand(True)
-        self.__widget.show()
-        self.__title_label = Gtk.Label()
-        self.__title_label.set_margin_end(10)
-        self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__title_label.get_style_context().add_class("dim-label")
-        self.__title_label.set_property("has-tooltip", True)
-        self.__title_label.connect("query-tooltip", self.__on_query_tooltip)
-        self.__title_label.show()
-        self.__artist_label = Gtk.Label()
-        self.__artist_label.set_margin_end(10)
-        self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.__artist_label.set_property("has-tooltip", True)
-        self.__artist_label.connect("query-tooltip", self.__on_query_tooltip)
-        self.__artist_label.show()
-        self.__year_label = Gtk.Label()
-        self.__year_label.set_margin_end(10)
-        self.__year_label.get_style_context().add_class("dim-label")
-        self.__year_label.show()
-        self.__duration_label = Gtk.Label()
-        self.__duration_label.get_style_context().add_class("dim-label")
-        self.__duration_label.show()
-        self.__context_button = Gtk.Button.new_from_icon_name(
-            "go-next-symbolic", Gtk.IconSize.BUTTON)
-        self.__context_button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__context_button.connect("clicked", self.__on_context_clicked)
-        self.__context_button.get_style_context().add_class("menu-button")
-        self.__context_button.get_style_context().add_class(
-                                                      "album-menu-button")
-        self.__context_button.show()
-        self.__header = Gtk.Grid()
-        self.__header.add(self.__artist_label)
-        self.__header.add(self.__title_label)
-        self.__header.add(self.__year_label)
-        self.__header.add(self.__context_button)
-        self.__header.show()
-        self.__widget.add(self.__header)
-        separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
-        separator.set_margin_bottom(1)
-        separator.show()
-        self.__widget.add(separator)
-        self.__widget.add(self._responsive_widget)
-        self._responsive_widget.set_vexpand(True)
+        self._widget = None
+        self.__width_allocation = 0
+        self.__art_size = art_size
+        self.connect("size-allocate", self.__on_size_allocate)
 
-        loved = LovedWidget(self._album)
-        loved.set_property("valign", Gtk.Align.CENTER)
-        loved.set_margin_end(10)
-        loved.show()
-
-        rating = RatingWidget(self._album)
-        rating.set_property("valign", Gtk.Align.CENTER)
-        rating.set_property("halign", Gtk.Align.END)
-        rating.set_margin_end(10)
-        rating.show()
-
-        # In Popovers, no artwork
-        if art_size == ArtSize.NONE:
-            self._artwork = None
-            loved.set_property("halign", Gtk.Align.END)
-            self.__header.add(rating)
-            self.__header.add(loved)
-            rating.set_hexpand(True)
-            self.__header.add(self.__duration_label)
-            self.__artist_label.set_text(", ".join(self._album.artists))
+    def populate(self):
+        """
+            Populate widget content
+        """
+        if self._widget is None:
+            OverlayAlbumHelper.__init__(self)
+            self.__context = None
+            grid = Gtk.Grid()
+            grid.set_margin_start(5)
+            grid.set_margin_end(5)
+            grid.set_row_spacing(1)
+            grid.set_vexpand(True)
+            grid.show()
+            self.__title_label = Gtk.Label()
+            self.__title_label.set_margin_end(10)
+            self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
+            self.__title_label.get_style_context().add_class("dim-label")
+            self.__title_label.set_property("has-tooltip", True)
+            self.__title_label.connect("query-tooltip",
+                                       self.__on_query_tooltip)
+            self.__title_label.show()
+            self.__artist_label = Gtk.Label()
+            self.__artist_label.set_margin_end(10)
+            self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+            self.__artist_label.set_property("has-tooltip", True)
+            self.__artist_label.connect("query-tooltip",
+                                        self.__on_query_tooltip)
             self.__artist_label.show()
-        else:
-            self.__header.add(self.__duration_label)
-            self.__duration_label.set_hexpand(True)
-            self.__duration_label.set_property("halign", Gtk.Align.END)
-            eventbox = Gtk.EventBox()
-            eventbox.connect("enter-notify-event", self._on_enter_notify)
-            eventbox.connect("leave-notify-event", self._on_leave_notify)
-            eventbox.show()
-            self.set_property("valign", Gtk.Align.CENTER)
-            self._artwork = App().art_helper.get_image(ArtSize.BIG,
-                                                       ArtSize.BIG,
-                                                       "cover-frame")
-            self._artwork.show()
-            eventbox.add(self._artwork)
-            self.__duration_label.set_hexpand(True)
-            self._overlay = Gtk.Overlay.new()
-            self._overlay.add(eventbox)
-            self._overlay.show()
-            self.__coverbox = Gtk.Grid()
-            self.__coverbox.set_row_spacing(2)
-            self.__coverbox.set_margin_end(10)
-            self.__coverbox.set_orientation(Gtk.Orientation.VERTICAL)
-            self.__coverbox.show()
-            self.__coverbox.attach(self._overlay, 0, 0, 2, 1)
-            self.set_artwork()
-            loved.set_property("halign", Gtk.Align.START)
-            self.__coverbox.attach(rating, 0, 1, 1, 1)
-            self.__coverbox.attach_next_to(loved,
-                                           rating,
-                                           Gtk.PositionType.RIGHT,
-                                           1,
-                                           1)
-            self.__widget.insert_column(0)
-            self.__widget.attach(self.__coverbox, 0, 0, 1, 3)
-            if App().window.container.stack.get_allocation().width <\
-                    Sizing.MEDIUM:
-                self.__coverbox.hide()
-            if len(artist_ids) > 1:
-                self.__artist_label.set_text(
-                    ", ".join(self._album.artists))
-                self.__artist_label.show()
-        self.__set_duration()
-        self.set_selection()
-        album_name = GLib.markup_escape_text(self._album.name)
-        artist_name = GLib.markup_escape_text(", ".join(self._album.artists))
-        self.__title_label.set_markup("<b>%s</b>" % album_name)
-        self.__artist_label.set_markup("<b>%s</b>" % artist_name)
-        if self._album.year is not None:
-            self.__year_label.set_label(str(self._album.year))
+            self.__year_label = Gtk.Label()
+            self.__year_label.set_margin_end(10)
+            self.__year_label.get_style_context().add_class("dim-label")
             self.__year_label.show()
-        self.add(self.__widget)
+            self.__duration_label = Gtk.Label()
+            self.__duration_label.get_style_context().add_class("dim-label")
+            self.__duration_label.show()
+            self.__context_button = Gtk.Button.new_from_icon_name(
+                "go-next-symbolic", Gtk.IconSize.BUTTON)
+            self.__context_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__context_button.connect("clicked", self.__on_context_clicked)
+            self.__context_button.get_style_context().add_class("menu-button")
+            self.__context_button.get_style_context().add_class(
+                                                          "album-menu-button")
+            self.__context_button.show()
+            self._widget = Gtk.Grid()
+            self._widget.set_orientation(Gtk.Orientation.VERTICAL)
+            self._widget.show()
+            self.__header = Gtk.Grid()
+            self.__header.add(self.__artist_label)
+            self.__header.add(self.__title_label)
+            self.__header.add(self.__year_label)
+            self.__header.add(self.__context_button)
+            self.__header.show()
+            self._widget.add(self.__header)
+            separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
+            separator.set_margin_bottom(1)
+            separator.show()
+            self._widget.add(separator)
 
-    def set_artwork(self):
-        """
-            Set album artwork
-        """
-        App().art_helper.set_album_artwork(self._album,
-                                           ArtSize.BIG,
-                                           ArtSize.BIG,
+            loved = LovedWidget(self._album)
+            loved.set_property("valign", Gtk.Align.CENTER)
+            loved.set_margin_end(10)
+            loved.show()
+
+            rating = RatingWidget(self._album)
+            rating.set_property("valign", Gtk.Align.CENTER)
+            rating.set_property("halign", Gtk.Align.END)
+            rating.set_margin_end(10)
+            rating.show()
+
+            # In Popovers, no artwork
+            if self.__art_size == ArtSize.NONE:
+                self._artwork = None
+                loved.set_property("halign", Gtk.Align.END)
+                self.__header.add(rating)
+                self.__header.add(loved)
+                rating.set_hexpand(True)
+                self.__header.add(self.__duration_label)
+                self.__artist_label.set_text(", ".join(self._album.artists))
+                self.__artist_label.show()
+            else:
+                self.__header.add(self.__duration_label)
+                self.__duration_label.set_hexpand(True)
+                self.__duration_label.set_property("halign", Gtk.Align.END)
+                eventbox = Gtk.EventBox()
+                eventbox.connect("enter-notify-event", self._on_enter_notify)
+                eventbox.connect("leave-notify-event", self._on_leave_notify)
+                eventbox.show()
+                self.set_property("valign", Gtk.Align.CENTER)
+                self._artwork = App().art_helper.get_image(self.__art_size,
+                                                           self.__art_size,
+                                                           "cover-frame")
+                self._artwork.show()
+                eventbox.add(self._artwork)
+                self.__duration_label.set_hexpand(True)
+                self._overlay = Gtk.Overlay.new()
+                self._overlay.add(eventbox)
+                self._overlay.show()
+                self.__coverbox = Gtk.Grid()
+                self.__coverbox.set_row_spacing(2)
+                self.__coverbox.set_margin_end(10)
+                self.__coverbox.set_orientation(Gtk.Orientation.VERTICAL)
+                self.__coverbox.show()
+                self.__coverbox.attach(self._overlay, 0, 0, 2, 1)
+                loved.set_property("halign", Gtk.Align.START)
+                self.__coverbox.attach(rating, 0, 1, 1, 1)
+                self.__coverbox.attach_next_to(loved,
+                                               rating,
+                                               Gtk.PositionType.RIGHT,
+                                               1,
+                                               1)
+                if App().window.container.stack.get_allocation().width <\
+                        Sizing.MEDIUM:
+                    self.__coverbox.hide()
+                if len(self._artist_ids) > 1:
+                    self.__artist_label.set_text(
+                        ", ".join(self._album.artists))
+                    self.__artist_label.show()
+            self.__set_duration()
+            album_name = GLib.markup_escape_text(self._album.name)
+            artist_name = GLib.markup_escape_text(
+                ", ".join(self._album.artists))
+            self.__title_label.set_markup("<b>%s</b>" % album_name)
+            self.__artist_label.set_markup("<b>%s</b>" % artist_name)
+            if self._album.year is not None:
+                self.__year_label.set_label(str(self._album.year))
+                self.__year_label.show()
+            self.set_selection()
+            if self._artwork is None:
+                TracksView.populate(self)
+            else:
+                grid.add(self.__coverbox)
+                App().art_helper.set_album_artwork(
+                                           self._album,
+                                           self.__art_size,
+                                           self.__art_size,
                                            self._artwork.get_scale_factor(),
                                            self.__on_album_artwork)
+            grid.add(self._widget)
+            self.add(grid)
+        else:
+            TracksView.populate(self)
 
     def get_current_ordinate(self, parent):
         """
@@ -219,11 +227,30 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
     def requested_height(self):
         """
             Requested height: Internal tracks or at least cover
+            @return (minimal: int, maximal: int)
         """
-        if self.height < self.__height:
-            return self.__height
+        from lollypop.widgets_row_track import TrackRow
+        minimal_height = 0
+        track_height = TrackRow.get_best_height(self) + 6
+        count = self._album.tracks_count
+        mid_tracks = int(0.5 + count / 2)
+        left_height = track_height * mid_tracks
+        right_height = track_height * (count - mid_tracks)
+        if left_height > right_height:
+            minimal_height += left_height
         else:
-            return self.height
+            minimal_height += right_height
+        maximal_height = left_height + right_height
+        # Add height for disc label
+        if len(self._album.discs) > 1:
+            minimal_height += track_height
+            maximal_height += track_height
+        # 26 is for loved and rating
+        cover_height = self.__art_size + 26
+        if minimal_height < cover_height:
+            return (cover_height, cover_height)
+        else:
+            return (minimal_height, maximal_height)
 
 #######################
 # PROTECTED           #
@@ -233,7 +260,8 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
             Emit populated signal
             @param disc_number as int
         """
-        TracksView._on_populated(self, disc_number)
+        if self._responsive_widget.get_parent() is None:
+            self._widget.add(self._responsive_widget)
         self.emit("populated")
 
     def _on_album_updated(self, scanner, album_id, destroy):
@@ -245,19 +273,6 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         """
         TracksView._on_album_updated(self, scanner, album_id, destroy)
         AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
-
-    def _on_size_allocate(self, widget, allocation):
-        """
-            Change box max/min children
-            @param widget as Gtk.Widget
-            @param allocation as Gtk.Allocation
-        """
-        TracksView._on_size_allocate(self, widget, allocation)
-        if self._artwork is not None:
-            if allocation.width < Sizing.MEDIUM:
-                self.__coverbox.hide()
-            else:
-                self.__coverbox.show()
 
     def _on_eventbox_button_press_event(self, widget, event):
         """
@@ -330,6 +345,7 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         else:
             self._artwork.set_from_surface(surface)
         self._artwork.show()
+        TracksView.populate(self)
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
@@ -371,3 +387,23 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
                                      Gtk.IconSize.MENU)
             self.__context.destroy()
             self.__context = None
+
+    def __on_size_allocate(self, widget, allocation):
+        """
+            Update internals
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if self.__width_allocation == allocation.width:
+            return
+        self.__width_allocation = allocation.width
+        (min_height, max_height) = self.requested_height
+        if allocation.width < Sizing.MONSTER:
+            self.set_size_request(-1, max_height)
+        else:
+            self.set_size_request(-1, min_height)
+        if self._artwork is not None:
+            if allocation.width < Sizing.MEDIUM:
+                self.__coverbox.hide()
+            else:
+                self.__coverbox.show()
