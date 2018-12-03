@@ -33,6 +33,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
     """
     __gsignals__ = {
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "left-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 

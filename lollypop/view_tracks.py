@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk, GObject, Pango
+from gi.repository import GLib, Gtk, Gio, GObject, Pango
 
 from gettext import gettext as _
 
@@ -28,6 +28,7 @@ class TracksView:
         Need to be inherited by an Album widget (AlbumListView, AlbumWidget)
     """
     __gsignals__ = {
+        "left-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
                         (int, GObject.TYPE_PYOBJECT)),
         "album-moved": (GObject.SignalFlags.RUN_FIRST, None,
@@ -50,6 +51,7 @@ class TracksView:
         self._width = None
         self._responsive_widget = None
         self._orientation = None
+        self.__cancellable = Gio.Cancellable()
 
     def set_playing_indicator(self):
         """
@@ -71,8 +73,6 @@ class TracksView:
         """
         if self._responsive_widget is None:
             self.connect("size-allocate", self.__on_size_allocate)
-            self._locked_widget_right = True
-
             self._responsive_widget = Gtk.Grid()
             self._responsive_widget.set_column_homogeneous(True)
             self._responsive_widget.set_property("valign", Gtk.Align.START)
@@ -95,47 +95,13 @@ class TracksView:
             tracks = list(disc.tracks)
             if self._list_type & RowListType.TWO_COLUMNS:
                 mid_tracks = int(0.5 + len(tracks) / 2)
-                self.populate_list_left(tracks[:mid_tracks],
-                                        disc_number,
-                                        0)
-                self.populate_list_right(tracks[mid_tracks:],
-                                         disc_number,
-                                         mid_tracks)
+                self.__populate_list_left(tracks[:mid_tracks], disc_number, 0)
+                self.connect("left-loaded", self.__on_left_loaded,
+                             tracks[mid_tracks:],
+                             disc_number,
+                             mid_tracks)
             else:
-                self.populate_list_left(tracks, disc_number, 0)
-
-    def populate_list_left(self, tracks, disc_number, pos):
-        """
-            Populate left list, thread safe
-            @param tracks as [Track]
-            @param disc_number as int
-            @param pos as int
-        """
-        GLib.idle_add(self.__add_tracks,
-                      tracks,
-                      self._tracks_widget_left,
-                      disc_number,
-                      pos)
-
-    def populate_list_right(self, tracks, disc_number, pos):
-        """
-            Populate right list, thread safe
-            @param tracks as [Track]
-            @param disc_number as int
-            @param pos as int
-        """
-        # If right list below left list, wait before loading
-        # FIXME use a signal for this
-        if self._orientation == Gtk.Orientation.VERTICAL and\
-           self._locked_widget_right:
-            GLib.timeout_add(100, self.populate_list_right,
-                             tracks, disc_number, pos)
-        else:
-            GLib.idle_add(self.__add_tracks,
-                          tracks,
-                          self._tracks_widget_right,
-                          disc_number,
-                          pos)
+                self.__populate_list_left(tracks, disc_number, 0)
 
     def append_rows(self, tracks):
         """
@@ -208,7 +174,7 @@ class TracksView:
         """
             Stop loading
         """
-        self.__loading = Loading.STOP
+        self.__cancellable.cancel()
 
     def get_populated(self):
         """
@@ -294,6 +260,15 @@ class TracksView:
 #######################
 # PRIVATE             #
 #######################
+    def __populate_list_left(self, tracks, disc_number, pos):
+        """
+            Populate left list, thread safe
+            @param tracks as [Track]
+            @param disc_number as int
+            @param pos as int
+        """
+        self.__add_tracks(tracks, self._tracks_widget_left, disc_number, pos)
+
     def __linking(self):
         """
             Handle linking between left and right
@@ -330,20 +305,14 @@ class TracksView:
             @param i as int
             @param previous_row as TrackRow
         """
-        if self.__loading == Loading.STOP:
-            self.__loading = Loading.NONE
+        if self.__cancellable.is_cancelled():
             return
         if not tracks:
-            if widget == self._tracks_widget_right:
-                self.__loading |= Loading.RIGHT
-            elif widget == self._tracks_widget_left:
-                if not self._list_type & RowListType.TWO_COLUMNS:
-                    self._on_populated(disc_number)
-                else:
-                    self.__loading |= Loading.LEFT
-            if self.__loading == Loading.ALL:
+            if widget == self._tracks_widget_left and\
+                    self._list_type & RowListType.TWO_COLUMNS:
+                self.emit("left-loaded")
+            else:
                 self._on_populated(disc_number)
-            self._locked_widget_right = False
             if self._list_type & RowListType.DND:
                 self.__linking()
                 # After prepend, we need to set last added next row
@@ -665,3 +634,13 @@ class TracksView:
                                self._tracks_widget_right[disc.number],
                                pos, idx, 1, 1)
                 idx += 1
+
+    def __on_left_loaded(self, widget, tracks, disc_number, pos):
+        """
+            Populate right list, thread safe
+            @param widget as Gtk.Widget
+            @param tracks as [Track]
+            @param disc_number as int
+            @param pos as int
+        """
+        self.__add_tracks(tracks, self._tracks_widget_right, disc_number, pos)
