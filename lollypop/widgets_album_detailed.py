@@ -330,7 +330,6 @@ class AlbumDetailedWidget(Gtk.EventBox, AlbumWidget,
         else:
             self._artwork.set_from_surface(surface)
         self._artwork.show()
-        self.emit("populated")
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
