@@ -190,6 +190,7 @@ popover.background separator {
 {
     border-left: 1px solid shade(@theme_bg_color, 0.95);
     border-right: 1px solid shade(@theme_bg_color, 0.95);
+    background-color: shade(@theme_bg_color, 1.5);
 }
 
 .small-cover-frame {
