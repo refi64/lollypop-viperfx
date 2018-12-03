@@ -265,6 +265,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         if self.is_populated:
             self._widget.add(self._responsive_widget)
+            self.show()
             self.get_style_context().add_class("transition-opacity-end")
         self.emit("populated")
 
