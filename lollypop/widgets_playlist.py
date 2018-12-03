@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gio, GObject
 
-from lollypop.define import App, Type, Sizing, Loading, RowListType
+from lollypop.define import App, Type, Sizing, RowListType
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
@@ -291,20 +291,6 @@ class PlaylistsWidget(Gtk.Grid):
         widget.insert(row, pos)
         GLib.idle_add(self.__add_tracks, tracks, widget, pos + 1, row)
 
-    def __get_row_tracks(self, loading):
-        """
-            Get tracks for loading
-            @param loading as Loading
-        """
-        if loading == Loading.LEFT:
-            widget = self.__tracks_widget_left
-        else:
-            widget = self.__tracks_widget_right
-        tracks = []
-        for row in widget.get_children():
-            tracks.append(row.track)
-        return tracks
-
     def __on_size_allocate(self, widget, allocation):
         """
             Change box max/min children
@@ -351,11 +337,11 @@ class PlaylistsWidget(Gtk.Grid):
         else:
             App().player.load(track)
             if not App().player.is_party:
-                row_tracks_left = self.__get_row_tracks(Loading.LEFT)
-                row_tracks_right = self.__get_row_tracks(Loading.RIGHT)
+                rows = self.__tracks_widget_left.get_children() +\
+                       self.__tracks_widget_right.get_children()
+                row_tracks = [row.track for row in rows]
                 App().player.populate_playlist_by_tracks(
-                    row_tracks_left +
-                    row_tracks_right,
+                    row_tracks,
                     self.__playlist_ids)
 
     def __on_insert_track(self, row, new_track_id, down):

@@ -14,7 +14,7 @@ from gi.repository import GLib, Gtk, Gio, GObject, Pango
 
 from gettext import gettext as _
 
-from lollypop.define import Sizing, Loading
+from lollypop.define import Sizing
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_track import TrackRow
 from lollypop.objects import Album, Track
@@ -47,7 +47,6 @@ class TracksView:
             @param list_type as RowListType
         """
         self._list_type = list_type
-        self.__loading = Loading.NONE
         self._width = None
         self._responsive_widget = None
         self._orientation = None
