@@ -404,7 +404,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         else:
             self.set_size_request(-1, min_height)
         if self._artwork is not None:
+            # Use mainloop to let GTK get the event
             if allocation.width < Sizing.MEDIUM:
-                self.__coverbox.hide()
+                GLib.idle_add(self.__coverbox.hide)
             else:
-                self.__coverbox.show()
+                GLib.idle_add(self.__coverbox.show)
