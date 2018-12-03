@@ -37,6 +37,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget.__init__(self, item[0], item[1],
                                       item[1], art_size)
         self.connect("realize", self.__on_realize)
+        self.connect("destroy", self.__on_destroy)
 
     def populate(self):
         """
@@ -122,6 +123,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Finish widget initialisation
             @param surface as cairo.Surface
         """
+        if self._artwork is None:
+            return
         if surface is None:
             self._artwork.set_from_icon_name("avatar-default-symbolic",
                                              Gtk.IconSize.DIALOG)
@@ -150,3 +153,10 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
             popover.popup()
+
+    def __on_destroy(self, widget):
+        """
+            Destroyed widget
+            @param widget as Gtk.Widget
+        """
+        self.__artwork = None
