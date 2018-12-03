@@ -21,23 +21,20 @@ class AlbumPopover(Popover):
         Not an AlbumDetailedWidget because we want a lazy loading view
     """
 
-    def __init__(self, album, width, height, art_size=ArtSize.NONE):
+    def __init__(self, album, width, art_size=ArtSize.NONE):
         """
             Init popover
             @param album as Album
             @param width as int
-            @param height as int
             @param art size as int
         """
         Popover.__init__(self)
-        self.__height = height
         self.__width = width
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(album.artist_ids, album.genre_ids, art_size)
         view.populate([album])
-        wanted_height = min(600,
-                            min(self.__height,
-                                view.children[0].requested_height[0]))
+        wanted_height = max(200,
+                            min(600, view.children[0].requested_height[0]))
         view.set_property("height-request", wanted_height)
         view.show()
         self.add(view)
