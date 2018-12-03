@@ -80,13 +80,13 @@ class PlaylistPlayer(BasePlayer):
         """
         track = Track()
         if force:
-            current_track = self._next_track
+            current_track_id = self._next_track.id
         else:
-            current_track = self._current_track
-        if self._playlist_tracks and\
-           current_track in self._playlist_tracks:
-            idx = self._playlist_tracks.index(current_track)
-            if idx + 1 >= len(self._playlist_tracks):
+            current_track_id = self._current_track.id
+        track_ids = self.playlist_track_ids
+        if track_ids and current_track_id in track_ids:
+            idx = track_ids.index(current_track_id)
+            if idx + 1 >= len(track_ids):
                 self._next_context = NextContext.STOP
                 idx = 0
             else:
@@ -100,11 +100,12 @@ class PlaylistPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._playlist_tracks and\
-           self._current_track in self._playlist_tracks:
-            idx = self._playlist_tracks.index(self._current_track)
+        current_track_id = self._current_track.id
+        track_ids = self.playlist_track_ids
+        if track_ids and current_track_id in track_ids:
+            idx = track_ids.index(current_track_id)
             if idx - 1 < 0:
-                idx = len(self._playlist_tracks) - 1
+                idx = len(track_ids) - 1
             else:
                 idx -= 1
             track = self._playlist_tracks[idx]
