@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject
+from gi.repository import Gtk, GLib, Gio, GObject
 
 from lollypop.define import App, Type, Sizing, Loading, RowListType
 from lollypop.widgets_tracks import TracksWidget
@@ -23,6 +23,7 @@ class PlaylistsWidget(Gtk.Grid):
         Show playlist tracks/albums
     """
     __gsignals__ = {
+        "left-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
@@ -35,6 +36,7 @@ class PlaylistsWidget(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
+        self.__cancellable = Gio.Cancellable()
         self.__playlist_ids = playlist_ids
         self.__list_type = list_type
         self.__duration = 0 if playlist_ids[0] < 0 else None
@@ -44,10 +46,6 @@ class PlaylistsWidget(Gtk.Grid):
         self.__width = None
         self.__last_drag_id = None
         self.__orientation = None
-        self.__loading = Loading.NONE
-        # Used to block widget2 populate while showing one column
-        self.__locked_widget_right = True
-
         self.set_margin_start(5)
         # 15 for scrollbar overlay
         self.set_margin_end(15)
@@ -103,6 +101,8 @@ class PlaylistsWidget(Gtk.Grid):
             Populate view with two columns
             @param tracks as [Track]
         """
+        # We reset width here to allow size allocation code to run
+        self.__width = None
         if self.__list_type & RowListType.TWO_COLUMNS:
             # We are looking for middle
             # Ponderate with this:
@@ -129,43 +129,11 @@ class PlaylistsWidget(Gtk.Grid):
                 if count >= half:
                     break
                 mid_tracks += 1
-            self.populate_list_left(tracks[:mid_tracks], 0)
-            self.populate_list_right(tracks[mid_tracks:], mid_tracks)
+            self.__populate_list_left(tracks[:mid_tracks], 0)
+            self.connect("left-loaded", self.__on_left_loaded,
+                         tracks[mid_tracks:], mid_tracks)
         else:
-            self.populate_list_left(tracks, 0)
-
-    def populate_list_left(self, tracks, pos):
-        """
-            Populate left list
-            @param tracks as [Track]
-            @param track position as int
-            @thread safe
-        """
-        # We reset width here to allow size allocation code to run
-        self.__width = None
-        GLib.idle_add(self.__add_tracks,
-                      tracks,
-                      self.__tracks_widget_left,
-                      pos)
-
-    def populate_list_right(self, tracks, pos):
-        """
-            Populate right list
-            @param tracks as [Track]
-            @param track position as int
-            @thread safe
-        """
-        # If we are showing only one column, wait for widget1
-        if self.__orientation == Gtk.Orientation.VERTICAL and\
-           self.__locked_widget_right:
-            GLib.timeout_add(100, self.populate_list_right, tracks, pos)
-        else:
-            # We reset width here to allow size allocation code to run
-            self.__width = None
-            GLib.idle_add(self.__add_tracks,
-                          tracks,
-                          self.__tracks_widget_right,
-                          pos)
+            self.__populate_list_left(tracks, 0)
 
     def set_playing_indicator(self):
         """
@@ -179,7 +147,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
             Stop loading
         """
-        self.__loading = Loading.STOP
+        self.__cancellable.cancel()
 
     def append(self, track_id):
         """
@@ -247,6 +215,15 @@ class PlaylistsWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __populate_list_left(self, tracks, pos):
+        """
+            Populate left list
+            @param tracks as [Track]
+            @param track position as int
+            @thread safe
+        """
+        self.__add_tracks(tracks, self.__tracks_widget_left, pos)
+
     def __make_homogeneous(self):
         """
             Move a track from right to left and vice versa
@@ -292,19 +269,14 @@ class PlaylistsWidget(Gtk.Grid):
             @param pos as int
             @param previous_row as Row
         """
-        if self.__loading == Loading.STOP:
-            self.__loading = Loading.NONE
+        if self.__cancellable.is_cancelled():
             return
         if not tracks:
-            if widget == self.__tracks_widget_right:
-                self.__loading |= Loading.RIGHT
-            elif widget == self.__tracks_widget_left:
-                self.__loading |= Loading.LEFT
-            if self.__loading == Loading.ALL:
+            if widget == self.__tracks_widget_left:
+                self.emit("left-loaded")
+            else:
                 self.emit("populated")
-            self.__locked_widget_right = False
             return
-
         track = tracks.pop(0)
         track.set_number(pos + 1)
         if self.__duration is not None:
@@ -453,3 +425,14 @@ class PlaylistsWidget(Gtk.Grid):
         if row.track.id != self.__last_drag_id:
             self.__make_homogeneous()
         self.__last_drag_id = None
+
+    def __on_left_loaded(self, widget, tracks, pos):
+        """
+            Populate right list
+            @param widget as Gtk.Widget
+            @param tracks as [Track]
+            @param track position as int
+            @thread safe
+        """
+        self.disconnect_by_func(self.__on_left_loaded)
+        self.__add_tracks(tracks, self.__tracks_widget_right, pos)
