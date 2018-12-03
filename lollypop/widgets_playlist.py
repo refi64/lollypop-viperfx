@@ -385,7 +385,8 @@ class PlaylistsWidget(Gtk.Grid):
             row.get_parent().insert(new_row, position)
         else:
             row.get_parent().insert(new_row, position - left_count)
-        App().player.insert_track(track, position)
+        if self.__playlist_ids == App().player.playlist_ids:
+            App().player.insert_track(track, position)
         if len(self.__playlist_ids) == 1 and self.__playlist_ids[0] >= 0:
             App().playlists.insert_track(self.__playlist_ids[0],
                                          track, position)
@@ -397,7 +398,8 @@ class PlaylistsWidget(Gtk.Grid):
             @param row as PlaylistRow
         """
         if row.track.id != self.__last_drag_id:
-            App().player.remove_track(row.track.id)
+            if self.__playlist_ids == App().player.playlist_ids:
+                App().player.remove_track(row.track.id)
             if len(self.__playlist_ids) == 1 or self.__playlist_ids[0] > 0:
                 App().playlists.remove_uri(self.__playlist_ids[0],
                                            row.track.uri)
