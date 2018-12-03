@@ -34,7 +34,11 @@ class PlaylistPlayer(BasePlayer):
             @param track as Track
             @param position as int
         """
+        # If we are removing track backward, position - 1
+        idx = self.playlist_track_ids.index(track.id)
         self.remove_track(track.id)
+        if idx < position:
+            position -= 1
         self._playlist_tracks.insert(position, track)
         self.set_next()
         self.set_prev()
