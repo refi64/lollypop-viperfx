@@ -44,7 +44,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         Gtk.FlowBoxChild.__init__(self)
         OverlayHelper.__init__(self)
         self._widget = None
-        self.__art_size = 110\
+        self.__art_size = 120\
             if App().window.is_adaptive\
             else ArtSize.BIG
         self.set_size_request(self.__art_size,
