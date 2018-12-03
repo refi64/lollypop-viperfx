@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.logger import Logger
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
-from lollypop.define import App, Sizing
+from lollypop.define import App, Sizing, Type
 
 
 class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
@@ -100,15 +100,22 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         height = App().window.get_size()[1]
         if App().player.current_track.id is not None and\
                 height > Sizing.MEDIUM:
-            if event.button == 1:
-                App().window.toolbar.end.show_list_popover(button)
-            elif App().player.current_track.id >= 0:
-                from lollypop.pop_menu import TrackMenuPopover, ToolbarMenu
-                popover = TrackMenuPopover(
-                    App().player.current_track,
-                    ToolbarMenu(App().player.current_track))
-                popover.set_relative_to(self)
-                popover.popup()
+            if App().player.current_track.id == Type.RADIOS:
+                from lollypop.pop_tunein import TuneinPopover
+                popover = TuneinPopover()
+                popover.populate()
+            elif App().player.current_track.id is not None:
+                if event.button == 1:
+                    from lollypop.pop_information import InformationPopover
+                    popover = InformationPopover(True)
+                    popover.populate()
+                elif App().player.current_track.id >= 0:
+                    from lollypop.pop_menu import TrackMenuPopover, ToolbarMenu
+                    popover = TrackMenuPopover(
+                        App().player.current_track,
+                        ToolbarMenu(App().player.current_track))
+            popover.set_relative_to(self)
+            popover.popup()
         return True
 
     def _on_labels_realize(self, eventbox):

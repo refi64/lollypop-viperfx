@@ -140,24 +140,6 @@ class ToolbarEnd(Gtk.Bin):
         self.__on_search_button_cancelled()
         self.__search_popover.set_text(search)
 
-    def show_list_popover(self, button):
-        """
-            Show a popover with current playlist
-            @param button as Gtk.Button
-        """
-        if App().player.queue:
-            from lollypop.pop_queue import QueuePopover
-            popover = QueuePopover()
-        elif App().player.playlist_ids:
-            from lollypop.pop_playlists import PlaylistsPopover
-            popover = PlaylistsPopover()
-        else:
-            from lollypop.pop_albums import AlbumsPopover
-            popover = AlbumsPopover()
-        popover.set_relative_to(button)
-        popover.popup()
-        return popover
-
     @property
     def next_popover(self):
         """
@@ -169,17 +151,25 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PROTECTED           #
 #######################
-    def _on_list_button_clicked(self, widget, unused=None):
+    def _on_list_button_clicked(self, widget):
         """
             Show current playback context popover
             @param widget as Gtk.Widget
         """
-        if self.__list_popover is not None:
-            return
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
-        self.__list_popover = self.show_list_popover(widget)
-        self.__list_popover.connect("closed", self.__on_list_popover_closed)
+        if App().player.queue:
+            from lollypop.pop_queue import QueuePopover
+            popover = QueuePopover()
+        elif App().player.playlist_ids:
+            from lollypop.pop_playlists import PlaylistsPopover
+            popover = PlaylistsPopover()
+        else:
+            from lollypop.pop_albums import AlbumsPopover
+            popover = AlbumsPopover()
+        popover.set_relative_to(widget)
+        popover.popup()
+        popover.connect("closed", self.__on_popover_closed)
         return True
 
     def _on_shuffle_button_toggled(self, button):
@@ -402,14 +392,6 @@ class ToolbarEnd(Gtk.Bin):
         """
         self.__set_shuffle_icon()
         self.__next_popover.hide()
-
-    def __on_list_popover_closed(self, popover):
-        """
-            Reset variable
-            @param popover as Popover
-        """
-        self.__list_popover = None
-        self.__on_popover_closed(popover)
 
     def __on_popover_closed(self, popover):
         """
