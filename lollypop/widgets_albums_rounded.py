@@ -62,6 +62,8 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             Set artwork from surface
             @param surface as cairo.Surface
         """
+        if self.__cancellable.is_cancelled():
+            return
         self._artwork.set_from_surface(
             get_round_surface(surface, self._scale_factor))
         self.emit("populated")
