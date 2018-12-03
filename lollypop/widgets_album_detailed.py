@@ -99,6 +99,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__context_button.show()
             self._widget = Gtk.Grid()
             self._widget.set_orientation(Gtk.Orientation.VERTICAL)
+            self._widget.set_row_spacing(2)
             self._widget.show()
             self.__header = Gtk.Grid()
             self.__header.add(self.__artist_label)
@@ -108,7 +109,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__header.show()
             self._widget.add(self.__header)
             separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
-            separator.set_margin_bottom(1)
             separator.show()
             self._widget.add(separator)
 
