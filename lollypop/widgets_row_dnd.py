@@ -29,6 +29,7 @@ class DNDRow:
         self.__next_row = None
         self.__previous_row = None
         self.__drag_data_delete_id = None
+        self.__timeout_id = None
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
@@ -168,26 +169,31 @@ class DNDRow:
             @param data as Gtk.SelectionData
             @param info as int
             @param time as int
+            @param timeout as bool
         """
-        height = self.get_allocated_height()
-        if y > height / 2:
-            down = True
-        else:
-            down = False
-        try:
-            import json
-            info = json.loads(data.get_text())
-            (wstr, item_id, track_ids) = info["data"]
-            if str(row) == wstr:
-                self.disconnect(self.__drag_data_delete_id)
-                self.__drag_data_delete_id = None
-                return
-            if wstr.find("AlbumRow") == -1:
-                self.emit("insert-track", item_id, down)
+        def on_drag_data_received(row, context, x, y, data, info, time):
+            height = self.get_allocated_height()
+            if y > height / 2:
+                down = True
             else:
-                self.emit("insert-album", item_id, track_ids, down)
-        except Exception as e:
-            Logger.error("DNDRow::__on_drag_data_received(): %s", e)
+                down = False
+            try:
+                import json
+                info = json.loads(data.get_text())
+                (wstr, item_id, track_ids) = info["data"]
+                if str(row) == wstr:
+                    self.disconnect(self.__drag_data_delete_id)
+                    self.__drag_data_delete_id = None
+                    return
+                if wstr.find("AlbumRow") == -1:
+                    self.emit("insert-track", item_id, down)
+                else:
+                    self.emit("insert-album", item_id, track_ids, down)
+            except Exception as e:
+                Logger.error("DNDRow::on_drag_data_received(): %s", e)
+        # We want delete before insert
+        GLib.idle_add(on_drag_data_received, row, context,
+                      x, y, data, info, time)
 
     def __on_drag_motion(self, row, context, x, y, time):
         """
