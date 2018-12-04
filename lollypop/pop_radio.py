@@ -62,6 +62,7 @@ class RadioPopover(Popover):
         self.__name_entry = builder.get_object("name")
         self.__uri_entry = builder.get_object("uri")
         self.__image_button = builder.get_object("image_button")
+        self.__save_button = builder.get_object("save_button")
         self.__spinner = builder.get_object("spinner")
         self.__stack.add_named(builder.get_object("spinner-grid"), "spinner")
         self.__stack.add_named(builder.get_object("notfound"), "notfound")
@@ -92,7 +93,8 @@ class RadioPopover(Popover):
         """
         self.__save_radio()
         name = self.__radios.get_name(self.__radio_id)
-        uri = App().art.get_google_search_uri(name + "+logo+radio")
+        uri = App().art.get_google_search_uri("%s+%s+%s" %
+                                              (name, "logo", "radio"))
         self.__stack.get_visible_child().hide()
         self.__stack.set_visible_child_name("spinner")
         helper = TaskHelper()
@@ -133,8 +135,10 @@ class RadioPopover(Popover):
         name = self.__name_entry.get_text()
         if name != "" and uri.find("://") != -1:
             self.__image_button.set_sensitive(True)
+            self.__save_button.set_sensitive(True)
         else:
             self.__image_button.set_sensitive(False)
+            self.__save_button.set_sensitive(False)
 
     def _on_button_clicked(self, button):
         """
@@ -166,14 +170,14 @@ class RadioPopover(Popover):
         """
             Save radio based on current widget content
         """
-        name = self.__radios.get_name(self.__radio_id)
         new_name = self.__name_entry.get_text()
         new_uri = self.__uri_entry.get_text()
-
         if new_name != "" and new_uri != "":
             if self.__radio_id is None:
-                self.__radios.add(new_name, new_uri.lstrip().rstrip())
+                self.__radio_id = self.__radios.add(
+                    new_name, new_uri.lstrip().rstrip())
             else:
+                name = self.__radios.get_name(self.__radio_id)
                 self.__radios.rename(self.__radio_id, new_name)
                 self.__radios.set_uri(self.__radio_id, new_uri)
                 App().art.rename_radio(name, new_name)

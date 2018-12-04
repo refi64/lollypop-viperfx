@@ -58,13 +58,14 @@ class Radios(GObject.GObject):
             Add a radio, update url if radio already exists in db
             @param radio name as str
             @param uri as str
-            @thread safe
+            @return radio id as int
         """
         with SqlCursor(self, True) as sql:
             result = sql.execute("INSERT INTO radios (name, url, popularity)\
                                   VALUES (?, ?, ?)",
                                  (name, uri, 0))
             GLib.idle_add(self.emit, "radio-changed", result.lastrowid)
+            return result.lastrowid
 
     def exists(self, radio_id):
         """
