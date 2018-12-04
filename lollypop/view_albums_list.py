@@ -191,6 +191,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         else:
             if self._responsive_widget is None:
                 TracksView.populate(self)
+                self._responsive_widget.show()
                 self.__revealer.add(self._responsive_widget)
             self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
