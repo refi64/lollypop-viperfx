@@ -92,18 +92,7 @@ class FlowBoxView(LazyLoadingView):
             child.set_selection()
 
     def _on_item_activated(self, flowbox, widget):
-        """
-            Show overlay
-            @param flowbox as Gtk.Flowbox
-            @param widget as PlaylistRoundedWidget
-        """
-        # Here some code for touch screens
-        # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
-        # as enter notify event enabled it
-        # Else, we are in touch screen, show overlay
-        if not widget.is_overlay:
-            widget.show_overlay(True)
-            return True
+        pass
 
 #######################
 # PRIVATE             #
