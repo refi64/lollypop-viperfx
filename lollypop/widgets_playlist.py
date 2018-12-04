@@ -12,10 +12,13 @@
 
 from gi.repository import Gtk, GLib, Gio, GObject
 
+from collections import OrderedDict
+
 from lollypop.define import App, Type, Sizing, RowListType
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
+from lollypop.utils import get_position_list
 
 
 class PlaylistsWidget(Gtk.Grid):
@@ -23,7 +26,6 @@ class PlaylistsWidget(Gtk.Grid):
         Show playlist tracks/albums
     """
     __gsignals__ = {
-        "left-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
@@ -128,11 +130,14 @@ class PlaylistsWidget(Gtk.Grid):
                 if count >= half:
                     break
                 mid_tracks += 1
-            self.__populate_list_left(tracks[:mid_tracks], 0)
-            self.connect("left-loaded", self.__on_left_loaded,
-                         tracks[mid_tracks:], mid_tracks)
+            tracks = get_position_list(tracks, 0)
+            widgets = {self.__tracks_widget_left: tracks[:mid_tracks],
+                       self.__tracks_widget_right: tracks[mid_tracks:]}
+            self.__add_tracks(OrderedDict(widgets))
         else:
-            self.__populate_list_left(tracks, 0)
+            tracks = get_position_list(tracks, 0)
+            widgets = {self.__tracks_widget_left: tracks}
+            self.__add_tracks(OrderedDict(widgets))
 
     def set_playing_indicator(self):
         """
@@ -154,12 +159,9 @@ class PlaylistsWidget(Gtk.Grid):
             @param track id as int
         """
         length = len(self.children)
-        if length == 0:
-            widget = self.__tracks_widget_left
-        else:
-            widget = self.__tracks_widget_right
-        pos = length + 1
-        self.__add_tracks([Track(track_id)], widget, pos)
+        position = length + 1
+        widgets = {self.__tracks_widget_left: ([Track(track_id)], position)}
+        self.__add_tracks(OrderedDict(widgets))
         self.__make_homogeneous()
 
     def remove(self, track_id, position):
@@ -214,15 +216,6 @@ class PlaylistsWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def __populate_list_left(self, tracks, pos):
-        """
-            Populate left list
-            @param tracks as [Track]
-            @param track position as int
-            @thread safe
-        """
-        self.__add_tracks(tracks, self.__tracks_widget_left, pos)
-
     def __make_homogeneous(self):
         """
             Move a track from right to left and vice versa
@@ -259,36 +252,39 @@ class PlaylistsWidget(Gtk.Grid):
             last_left.set_next_row(None)
             first_right.set_previous_row(None)
 
-    def __add_tracks(self, tracks, widget, pos, previous_row=None):
+    def __add_tracks(self, widgets):
         """
             Add tracks to list
-            @param tracks id as array of [int]
-            @param widget TracksWidget
-            @param track position as int
-            @param pos as int
+            @param widgets as OrderedDict
             @param previous_row as Row
         """
         if self.__cancellable.is_cancelled():
             return
+
+        widget = next(iter(widgets))
+        widgets.move_to_end(widget)
+        tracks = widgets[widget]
+
         if not tracks:
-            if widget == self.__tracks_widget_left:
-                self.emit("left-loaded")
-            else:
-                self.emit("populated")
+            self.emit("populated")
+            if not self.__list_type & RowListType.TWO_COLUMNS:
+                self.__linking(True)
             return
-        track = tracks.pop(0)
-        track.set_number(pos + 1)
+        (track, position) = tracks.pop(0)
+        track.set_number(position + 1)
         if self.__duration is not None:
             self.__duration += track.duration
         row = PlaylistRow(track, self.__list_type)
+        children = widget.get_children()
+        previous_row = children[-1] if children else None
         row.set_previous_row(previous_row)
         if previous_row is not None:
             previous_row.set_next_row(row)
         row.connect("insert-track", self.__on_insert_track)
         row.connect("remove-track", self.__on_remove_track)
         row.show()
-        widget.insert(row, pos)
-        GLib.idle_add(self.__add_tracks, tracks, widget, pos + 1, row)
+        widget.insert(row, position)
+        GLib.idle_add(self.__add_tracks, widgets)
 
     def __on_size_allocate(self, widget, allocation):
         """
@@ -399,14 +395,3 @@ class PlaylistsWidget(Gtk.Grid):
         else:
             row.next_row.set_previous_row(row.previous_row)
             row.previous_row.set_next_row(row.next_row)
-
-    def __on_left_loaded(self, widget, tracks, pos):
-        """
-            Populate right list
-            @param widget as Gtk.Widget
-            @param tracks as [Track]
-            @param track position as int
-            @thread safe
-        """
-        self.disconnect_by_func(self.__on_left_loaded)
-        self.__add_tracks(tracks, self.__tracks_widget_right, pos)

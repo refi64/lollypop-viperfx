@@ -13,12 +13,14 @@
 from gi.repository import GLib, Gtk, Gio, GObject, Pango
 
 from gettext import gettext as _
+from collections import OrderedDict
 
 from lollypop.define import Sizing
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_track import TrackRow
 from lollypop.objects import Album, Track
 from lollypop.logger import Logger
+from lollypop.utils import get_position_list
 from lollypop.define import App, Type, RowListType
 
 
@@ -28,7 +30,6 @@ class TracksView:
         Need to be inherited by an Album widget (AlbumListView, AlbumWidget)
     """
     __gsignals__ = {
-        "left-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "album-added": (GObject.SignalFlags.RUN_FIRST, None,
                         (int, GObject.TYPE_PYOBJECT)),
         "album-moved": (GObject.SignalFlags.RUN_FIRST, None,
@@ -90,16 +91,17 @@ class TracksView:
         if self.__discs_to_load:
             disc = self.__discs_to_load.pop(0)
             disc_number = disc.number
-            tracks = list(disc.tracks)
+            tracks = get_position_list(disc.tracks, 0)
             if self._list_type & RowListType.TWO_COLUMNS:
                 mid_tracks = int(0.5 + len(tracks) / 2)
-                self.__populate_list_left(tracks[:mid_tracks], disc_number, 0)
-                self.connect("left-loaded", self.__on_left_loaded,
-                             tracks[mid_tracks:],
-                             disc_number,
-                             mid_tracks)
+                widgets = {self._tracks_widget_left[disc_number]:
+                           tracks[:mid_tracks],
+                           self._tracks_widget_right[disc_number]:
+                           tracks[mid_tracks:]}
+                self.__add_tracks(OrderedDict(widgets), disc_number)
             else:
-                self.__populate_list_left(tracks, disc_number, 0)
+                widgets = {self._tracks_widget_left[disc_number]: tracks}
+                self.__add_tracks(OrderedDict(widgets), disc_number)
 
     def append_rows(self, tracks):
         """
@@ -108,16 +110,18 @@ class TracksView:
         """
         position = len(self.children)
         previous_row = None if position == 1 else self.children[-1]
-        self.__add_tracks(tracks, self._tracks_widget_left,
-                          0, position, previous_row)
+        widgets = {self._tracks_widget_left[0]:
+                   get_position_list(tracks, position)}
+        self.__add_tracks(OrderedDict(widgets), 0, previous_row)
 
     def prepend_rows(self, tracks):
         """
             Add track rows (only works for albums with merged discs)
             @param tracks as [Track]
         """
-        self.__add_tracks(tracks, self._tracks_widget_left,
-                          0, 0, None)
+        widgets = {self._tracks_widget_left[0]:
+                   get_position_list(tracks, 0)}
+        self.__add_tracks(OrderedDict(widgets), 0)
 
     def rows_animation(self, x, y, widget):
         """
@@ -258,15 +262,6 @@ class TracksView:
 #######################
 # PRIVATE             #
 #######################
-    def __populate_list_left(self, tracks, disc_number, pos):
-        """
-            Populate left list, thread safe
-            @param tracks as [Track]
-            @param disc_number as int
-            @param pos as int
-        """
-        self.__add_tracks(tracks, self._tracks_widget_left, disc_number, pos)
-
     def __linking(self):
         """
             Handle linking between left and right
@@ -294,35 +289,29 @@ class TracksView:
         self._tracks_widget_left[disc_number].show()
         self._tracks_widget_right[disc_number].show()
 
-    def __add_tracks(self, tracks, widget, disc_number, i, previous_row=None):
+    def __add_tracks(self, widgets, disc_number, previous_row=None):
         """
             Add tracks for to tracks widget
-            @param tracks as [Track]
-            @param widget as TracksWidget
+            @param widgets as OrderedDict
             @param disc number as int
-            @param i as int
             @param previous_row as TrackRow
         """
         if self.__cancellable.is_cancelled():
             return
+
+        widget = next(iter(widgets))
+        widgets.move_to_end(widget)
+        tracks = widgets[widget]
+
         if not tracks:
-            if widget == self._tracks_widget_left and\
-                    self._list_type & RowListType.TWO_COLUMNS:
-                self.emit("left-loaded")
-            else:
-                self._on_tracks_populated(disc_number)
-                if self._list_type & RowListType.DND:
-                    self.__linking()
-                    # After prepend, we need to set last added next row
-                    if i < len(self.children):
-                        self.children[i].set_previous_row(self.children[i - 1])
-                        self.children[i - 1].set_next_row(self.children[i])
-                        self.children[0].update_number(1)
+            self._on_tracks_populated(disc_number)
+            if self._list_type & RowListType.DND:
+                self.__linking()
             return
 
-        track = tracks.pop(0)
+        (track, position) = tracks.pop(0)
         if not App().settings.get_value("show-tag-tracknumber"):
-            track.set_number(i + 1)
+            track.set_number(position + 1)
         track.set_featuring_ids(self._album.artist_ids)
         row = TrackRow(track, self._list_type)
         if self._list_type & RowListType.DND:
@@ -334,9 +323,8 @@ class TracksView:
             row.connect("insert-album", self.__on_insert_album)
             row.connect("remove-track", self.__on_remove_track)
         row.show()
-        widget[disc_number].insert(row, i)
-        GLib.idle_add(self.__add_tracks, tracks, widget,
-                      disc_number, i + 1, row)
+        widget.insert(row, position)
+        GLib.idle_add(self.__add_tracks, widgets, disc_number, row)
 
     def __get_split_tracks(self, row, down):
         """
@@ -632,14 +620,3 @@ class TracksView:
                                self._tracks_widget_right[disc.number],
                                pos, idx, 1, 1)
                 idx += 1
-
-    def __on_left_loaded(self, widget, tracks, disc_number, pos):
-        """
-            Populate right list, thread safe
-            @param widget as Gtk.Widget
-            @param tracks as [Track]
-            @param disc_number as int
-            @param pos as int
-        """
-        self.disconnect_by_func(self.__on_left_loaded)
-        self.__add_tracks(tracks, self._tracks_widget_right, disc_number, pos)
