@@ -101,10 +101,10 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             self._reload_list_view()
             self._list_one.disconnect_by_func(select_list_one)
 
-        adpative_window = App().window.is_adaptive
-        self._stack.set_navigation_enabled(not show or adpative_window)
-        if show or adpative_window:
-            if not adpative_window:
+        adaptive_window = App().window.is_adaptive
+        self._stack.set_navigation_enabled(not show or adaptive_window)
+        if show or adaptive_window:
+            if not adaptive_window:
                 App().window.emit("show-can-go-back", False)
             self._list_one.show()
             if self._list_one.count == 0:
@@ -112,7 +112,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 self.update_list_one()
             else:
                 self._reload_list_view()
-        elif not adpative_window:
+        elif not adaptive_window:
             if self._list_one.get_visible():
                 self._list_two.hide()
                 self._list_one.hide()
