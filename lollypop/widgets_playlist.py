@@ -365,7 +365,7 @@ class PlaylistsWidget(Gtk.Grid):
             if row.previous_row is not None:
                 row.previous_row.set_next_row(new_row)
             row.set_previous_row(new_row)
-        new_row.update_number(position)
+        new_row.update_number(position + 1)
         left_count = len(self.__tracks_widget_left.get_children())
         if position < left_count:
             row.get_parent().insert(new_row, position)
