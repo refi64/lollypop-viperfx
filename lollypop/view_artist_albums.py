@@ -146,6 +146,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
                                          self._genre_ids,
                                          self._artist_ids,
                                          self.__art_size)
+            widget.show()
             self._lazy_queue.append(widget)
             self._album_box.add(widget)
             GLib.idle_add(self.__add_albums, albums)

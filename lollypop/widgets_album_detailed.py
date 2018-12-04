@@ -53,7 +53,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         self.__width_allocation = 0
         self.__art_size = art_size
         self.connect("size-allocate", self.__on_size_allocate)
-        self.get_style_context().add_class("transition-opacity-start")
 
     def populate(self):
         """
@@ -265,8 +264,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         if self.is_populated:
             self._widget.add(self._responsive_widget)
-            self.show()
-            self.get_style_context().add_class("transition-opacity-end")
+            self._responsive_widget.show()
         self.emit("populated")
 
     def _on_album_updated(self, scanner, album_id, destroy):

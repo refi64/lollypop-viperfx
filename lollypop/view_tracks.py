@@ -75,7 +75,6 @@ class TracksView:
             self._responsive_widget = Gtk.Grid()
             self._responsive_widget.set_column_homogeneous(True)
             self._responsive_widget.set_property("valign", Gtk.Align.START)
-            self._responsive_widget.show()
 
             self._tracks_widget_left = {}
             self._tracks_widget_right = {}
