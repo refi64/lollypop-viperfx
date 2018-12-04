@@ -44,6 +44,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self.__gesture = Gtk.GestureLongPress.new(self._infobox)
         self.__gesture.connect("begin", self.__on_infobox_gesture_begin)
         self.__gesture.connect("pressed", self.__on_infobox_gesture_pressed)
+        self.__gesture.set_button(0)
         self._spinner = builder.get_object("spinner")
 
         self.__labels = builder.get_object("nowplaying_labels")
@@ -58,6 +59,11 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self.connect("realize", self.__on_realize)
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
+
+        # Block default widget event handler for gesture (right click)
+        def on_button_event(widget, event):
+            return True
+        self.connect("button-press-event", on_button_event)
 
     def do_get_preferred_width(self):
         """
