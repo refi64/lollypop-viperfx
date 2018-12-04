@@ -40,7 +40,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.__miniplayer = None
         self.__mediakeys = None
         self.__media_keys_busnames = []
-        self.connect("hide", self.__on_hide)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
         App().player.connect("current-changed", self.__on_current_changed)
         self.__timeout_configure = None
         seek_action = Gio.SimpleAction.new("seek",
@@ -375,10 +376,22 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         except:
             pass
 
-    def __on_hide(self, window):
+    def __on_map(self, window):
         """
-            Remove callbacks we don"t want to save an invalid value on hide
-            @param window as GtkApplicationWindow
+            Connect signals
+            @param window as Window
+        """
+        if self.__signal1 is None:
+            self.__signal1 = self.connect("window-state-event",
+                                          self.__on_window_state_event)
+        if self.__signal2 is None:
+            self.__signal2 = self.connect("configure-event",
+                                          self.__on_configure_event)
+
+    def __on_unmap(self, window):
+        """
+            Disconnect signals
+            @param window as Window
         """
         if self.__signal1 is not None:
             self.disconnect(self.__signal1)
@@ -421,18 +434,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                                  GLib.Variant("ai", [width, height]))
         (x, y) = widget.get_position()
         App().settings.set_value("window-position", GLib.Variant("ai", [x, y]))
-
-    def __connect_state_signals(self):
-        """
-            Connect state signals
-        """
-        self.__toolbar.set_content_width(self.get_size()[0])
-        if self.__signal1 is None:
-            self.__signal1 = self.connect("window-state-event",
-                                          self.__on_window_state_event)
-        if self.__signal2 is None:
-            self.__signal2 = self.connect("configure-event",
-                                          self.__on_configure_event)
 
     def __on_window_state_event(self, widget, event):
         """
@@ -544,7 +545,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             # initialisation is finished...
             GLib.timeout_add(2000, App().scanner.update)
         # Here we ignore initial configure events
-        self.__connect_state_signals()
+        self.__toolbar.set_content_width(self.get_size()[0])
 
     def __on_current_changed(self, player):
         """
