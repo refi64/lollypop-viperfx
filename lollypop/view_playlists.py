@@ -191,7 +191,6 @@ class PlaylistsView(View, ViewController):
             Play playlist
             @param button as Gtk.Button
         """
-        App().lookup_action("party").change_state(GLib.Variant("b", False))
         tracks = []
         for child in self.__playlists_widget.children:
             tracks.append(child.track)
@@ -205,7 +204,6 @@ class PlaylistsView(View, ViewController):
             Play playlist shuffled
             @param button as Gtk.Button
         """
-        App().lookup_action("party").change_state(GLib.Variant("b", False))
         tracks = []
         for child in self.__playlists_widget.children:
             tracks.append(child.track)

@@ -10,8 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
 
-from lollypop.define import NextContext
+from lollypop.define import NextContext, App
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
@@ -54,8 +55,7 @@ class PlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @param playlist ids as [int]
         """
-        if self.is_party:
-            self.set_party(False)
+        App().lookup_action("party").change_state(GLib.Variant("b", False))
         self._albums = []
         self._playlist_tracks = tracks
         self._playlist_ids = playlist_ids
