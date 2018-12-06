@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gdk
 from gettext import gettext as _
 
 from lollypop.logger import Logger
+from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.define import App, Sizing, Type
@@ -32,7 +33,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         """
         self.__width = width
         Gtk.Bin.__init__(self)
-        InformationController.__init__(self)
+        InformationController.__init__(self, True, ArtHelperEffect.BLUR)
         ProgressController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")

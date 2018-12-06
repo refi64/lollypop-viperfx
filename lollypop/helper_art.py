@@ -22,8 +22,9 @@ class ArtHelperEffect:
     NONE = 1 << 1
     ROUNDED = 1 << 2
     BLUR = 1 << 3
-    NO_RATIO = 1 << 4
-    FALLBACK = 1 << 5
+    BLUR_HARD = 1 << 4
+    NO_RATIO = 1 << 5
+    FALLBACK = 1 << 6
 
 
 class ArtHelper(GObject.Object):
@@ -173,38 +174,35 @@ class ArtHelper(GObject.Object):
 #######################
 # PRIVATE             #
 #######################
-    def __get_blur(self, pixbuf, w, h):
+    def __get_blur(self, pixbuf, w, h, gaussian):
         """
             Blur surface using PIL
             @param pixbuf as GdkPixbuf.Pixbuf
             @param w as int
             @param h as int
+            @param gaussian as int
             @return cairo.Surface
         """
         if pixbuf is None:
             return None
-        try:
-            from PIL import Image, ImageFilter
-            width = pixbuf.get_width()
-            height = pixbuf.get_height()
-            data = pixbuf.get_pixels()
-            stride = pixbuf.get_rowstride()
-            tmp = Image.frombytes("RGB", (width, height),
-                                  data, "raw", "RGB", stride)
+        from PIL import Image, ImageFilter
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        data = pixbuf.get_pixels()
+        stride = pixbuf.get_rowstride()
+        tmp = Image.frombytes("RGB", (width, height),
+                              data, "raw", "RGB", stride)
 
-            tmp = tmp.filter(ImageFilter.GaussianBlur(30))
-            imgd = tmp.tobytes()
-            data = GLib.Bytes.new(imgd)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_data(imgd,
-                                                    GdkPixbuf.Colorspace.RGB,
-                                                    False,
-                                                    8,
-                                                    width,
-                                                    height,
-                                                    width * 3)
-        except Exception as e:
-            Logger.error("ArtHelper::__get_blur(): %s", e)
-            return pixbuf
+        tmp = tmp.filter(ImageFilter.GaussianBlur(gaussian))
+        imgd = tmp.tobytes()
+        data = GLib.Bytes.new(imgd)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_data(imgd,
+                                                GdkPixbuf.Colorspace.RGB,
+                                                False,
+                                                8,
+                                                width,
+                                                height,
+                                                width * 3)
         return pixbuf
 
     def __get_album_artwork(self, album, width, height, scale_factor, effect):
@@ -220,8 +218,15 @@ class ArtHelper(GObject.Object):
         pixbuf = App().art.get_album_artwork(
             album, width, height, scale_factor,
             not effect & ArtHelperEffect.NO_RATIO)
-        if effect & ArtHelperEffect.BLUR:
-            pixbuf = self.__get_blur(pixbuf, width, height)
+        try:
+            if effect & ArtHelperEffect.BLUR:
+                pixbuf = self.__get_blur(pixbuf, width, height, 10)
+            elif effect & ArtHelperEffect.BLUR_HARD:
+                pixbuf = self.__get_blur(pixbuf, width, height, 20)
+        except Exception as e:
+            Logger.warning("ArtHelper::__get_album_artwork(): %s", e)
+            if effect & ArtHelperEffect.NO_RATIO:
+                return None
         return pixbuf
 
     def __get_artist_artwork(self, artist, width, height,
