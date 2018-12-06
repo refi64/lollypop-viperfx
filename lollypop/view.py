@@ -247,9 +247,17 @@ class LazyLoadingView(View):
         self._lazy_queue = []  # Widgets not initialized
         self.__priority_queue = []
         self._scroll_value = 0
+        self.__slow_down = False
         self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
         self.__start_time = time()
+
+    def slow_down(self, slow_down):
+        """
+            Slow down loading
+            @param slow_down as bool
+        """
+        self.__slow_down = slow_down
 
     def stop(self):
         """
@@ -273,7 +281,10 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.connect("populated", self._on_populated, scroll_value)
-            widget.populate()
+            if self.__slow_down:
+                GLib.timeout_add(250, widget.populate)
+            else:
+                widget.populate()
         else:
             Logger.debug("LazyLoadingView::lazy_loading(): %s",
                          time() - self.__start_time)
