@@ -35,9 +35,13 @@ class FullScreen(Gtk.Window, InformationController,
         """
         Gtk.Window.__init__(self)
         self.set_title("Lollypop")
+        rotate_album = App().settings.get_value("rotate-fullscreen-album")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
-        InformationController.__init__(self, True, ArtHelperEffect.ROUNDED)
+        if rotate_album:
+            InformationController.__init__(self, True, ArtHelperEffect.ROUNDED)
+        else:
+            InformationController.__init__(self, True, ArtHelperEffect.NONE)
         self.set_application(app)
         self.__timeout_id = None
         self.__signal1_id = self.__signal2_id = self.__signal3_id = None
@@ -74,7 +78,10 @@ class FullScreen(Gtk.Window, InformationController,
             grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._artwork = builder.get_object("cover")
-        self._artwork.get_style_context().add_class("image-rotate")
+        if rotate_album:
+            self._artwork.get_style_context().add_class("image-rotate")
+        else:
+            self._artwork.get_style_context().add_class("cover-frame")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._album_label = builder.get_object("album")
@@ -164,7 +171,8 @@ class FullScreen(Gtk.Window, InformationController,
         ProgressController.on_status_changed(self, player)
         PlaybackController.on_status_changed(self, player)
         context = self._artwork.get_style_context()
-        if player.is_playing:
+        if player.is_playing and\
+                App().settings.get_value("rotate-fullscreen-album"):
             context.add_class("image-rotate")
         else:
             context.remove_class("image-rotate")

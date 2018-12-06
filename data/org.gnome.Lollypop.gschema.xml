@@ -231,6 +231,10 @@
             <default>false</default>
             <summary>Disable notifications upon change of song</summary>
         </key>
+        <key type="b" name="rotate-fullscreen-album">
+            <default>true</default>
+            <summary>Fullscreen album rotates</summary>
+        </key>
         <key type="b" name="show-tag-tracknumber">
             <default>false</default>
             <summary>Show track number from tags</summary>
