@@ -105,7 +105,9 @@ class NotificationManager:
                 App().is_fullscreen():
             return
 
-        if player.current_track.id == Type.RADIOS:
+        if self.__is_gnome:
+            cover_path = None
+        elif player.current_track.id == Type.RADIOS:
             cover_path = App().art.get_radio_cache_path(
                 player.current_track.album_artists[0], ArtSize.BIG)
         else:
