@@ -56,14 +56,15 @@ class PlaylistsView(View, ViewController):
             ", ".join(App().playlists.get_names(playlist_ids)))
 
         self.__jump_button = builder.get_object("jump_button")
-        split_button = builder.get_object("split_button")
+        self.__split_button = builder.get_object("split_button")
         smart_button = builder.get_object("smart_button")
 
         if editable:
-            split_button.set_active(not App().settings.get_value("split-view"))
+            self.__split_button.set_active(not App().settings.get_value(
+                "split-view"))
         else:
             self.__jump_button.set_hexpand(True)
-            split_button.hide()
+            self.__split_button.hide()
             self.__play_button.hide()
             self.__shuffle_button.hide()
         if not editable or len(playlist_ids) > 1 or playlist_ids[0] < 0:
@@ -90,6 +91,8 @@ class PlaylistsView(View, ViewController):
         else:
             self.__playlists_widget.connect("populated",
                                             self.__on_playlist_populated)
+        self.__playlists_widget.connect("orientation-changed",
+                                        self.__on_orientation_changed)
 
     def populate(self, tracks):
         """
@@ -317,3 +320,14 @@ class PlaylistsView(View, ViewController):
             @param widget as PlaylistsWidget
         """
         self.__set_duration(widget.duration)
+
+    def __on_orientation_changed(self, widget, orientation):
+        """
+            Show/Hide split button
+            @param widget as Gtk.Widget
+            @param orientation as Gtk.Orientation
+        """
+        if orientation == Gtk.Orientation.VERTICAL:
+            self.__split_button.hide()
+        else:
+            self.__split_button.show()
