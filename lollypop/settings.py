@@ -603,15 +603,18 @@ class SettingsDialog:
             argv = ["flatpak-spawn", "--host", "pacmd", "list-sinks"]
         else:
             argv = ["pacmd", "list-sinks"]
-        (pid, stdin, stdout, stderr) = GLib.spawn_async(
-            argv, flags=GLib.SpawnFlags.SEARCH_PATH |
-            GLib.SpawnFlags.DO_NOT_REAP_CHILD,
-            standard_input=False,
-            standard_output=True,
-            standard_error=False
-        )
-        GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE, pid,
-                             self.__on_pacmd_result, stdout, combo)
+        try:
+            (pid, stdin, stdout, stderr) = GLib.spawn_async(
+                argv, flags=GLib.SpawnFlags.SEARCH_PATH |
+                GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+                standard_input=False,
+                standard_output=True,
+                standard_error=False
+            )
+            GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE, pid,
+                                 self.__on_pacmd_result, stdout, combo)
+        except Exception as e:
+            Logger.error("SettingsDialog::__set_outputs(): %s" % e)
 
     def __add_chooser(self, directory=None):
         """
