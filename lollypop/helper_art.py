@@ -222,7 +222,7 @@ class ArtHelper(GObject.Object):
             if effect & ArtHelperEffect.BLUR:
                 pixbuf = self.__get_blur(pixbuf, width, height, 10)
             elif effect & ArtHelperEffect.BLUR_HARD:
-                pixbuf = self.__get_blur(pixbuf, width, height, 20)
+                pixbuf = self.__get_blur(pixbuf, width, height, 30)
         except Exception as e:
             Logger.warning("ArtHelper::__get_album_artwork(): %s", e)
             if effect & ArtHelperEffect.NO_RATIO:
