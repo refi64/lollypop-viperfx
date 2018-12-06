@@ -18,6 +18,7 @@ from lollypop.view import View
 from lollypop.define import App, Sizing, Type
 from lollypop.controller_information import InformationController
 from lollypop.utils import escape
+from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 from lollypop.helper_art import ArtHelperEffect
 
@@ -47,6 +48,8 @@ class LyricsView(View, InformationController):
         self._artwork = builder.get_object("cover")
         self.__lyrics_label = builder.get_object("lyrics_label")
         self.__translate_button = builder.get_object("translate_button")
+        # We do not use View scrolled window because it does not work with
+        # an overlay
         self.add(builder.get_object("widget"))
         self.connect("size-allocate", self.__on_size_allocate)
 
@@ -247,15 +250,15 @@ class LyricsView(View, InformationController):
         if self.__lyrics_set:
             return
         if status:
-            from bs4 import BeautifulSoup
-            soup = BeautifulSoup(data, 'html.parser')
             try:
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(data, 'html.parser')
                 lyrics_text = soup.find_all(
                     "div", class_=cls)[0].get_text(separator=separator)
                 self.__lyrics_label.set_text(lyrics_text)
                 self.__lyrics_set = True
-            except:
-                pass
+            except Exception as e:
+                Logger.warning("LyricsView::__on_lyrics_downloaded(): %s", e)
         if not self.__lyrics_set and self.__downloads_running == 0:
             self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
 
