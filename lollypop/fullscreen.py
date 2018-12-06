@@ -37,9 +37,9 @@ class FullScreen(Gtk.Window, InformationController,
         self.set_title("Lollypop")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
-        InformationController.__init__(self, ArtHelperEffect.NONE)
+        InformationController.__init__(self, True, ArtHelperEffect.ROUNDED)
         self.set_application(app)
-        self.__timeout1 = self.__timeout2 = None
+        self.__timeout_id = None
         self.__signal1_id = self.__signal2_id = self.__signal3_id = None
         self.set_decorated(False)
 
@@ -74,6 +74,7 @@ class FullScreen(Gtk.Window, InformationController,
             grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._artwork = builder.get_object("cover")
+        self._artwork.get_style_context().add_class("image-rotate")
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._album_label = builder.get_object("album")
@@ -100,22 +101,22 @@ class FullScreen(Gtk.Window, InformationController,
                                                  self.on_current_changed)
         self.__signal2_id = App().player.connect("status-changed",
                                                  self.on_status_changed)
+        self.__signal3_id = App().player.connect("party-changed",
+                                                 self.__on_party_changed)
         self.on_status_changed(App().player)
         self.on_current_changed(App().player)
         self.__view.populate(App().player.albums)
-        if self.__timeout1 is None:
-            self.__timeout1 = GLib.timeout_add(1000, self.update_position)
         Gtk.Window.do_show(self)
-        if self.__timeout2 is None:
+        if self.__timeout_id is None:
             try:
                 interface = Gio.Settings.new("org.gnome.desktop.interface")
                 show_seconds = interface.get_value("clock-show-seconds")
             except:
                 show_seconds = False
             self.__update_datetime(show_seconds)
-            self.__timeout2 = GLib.timeout_add(1000,
-                                               self.__update_datetime,
-                                               show_seconds)
+            self.__timeout_id = GLib.timeout_add(1000,
+                                                 self.__update_datetime,
+                                                 show_seconds)
         self.update_position(App().player.position / Gst.SECOND)
         screen = Gdk.Screen.get_default()
         monitor = screen.get_monitor_at_window(App().window.get_window())
@@ -125,8 +126,6 @@ class FullScreen(Gtk.Window, InformationController,
         App().inhibitor.manual_inhibit(
                 Gtk.ApplicationInhibitFlags.IDLE |
                 Gtk.ApplicationInhibitFlags.SUSPEND)
-        self.__signal3_id = App().player.connect("party-changed",
-                                                 self.__on_party_changed)
 
     def do_hide(self):
         """
@@ -144,12 +143,11 @@ class FullScreen(Gtk.Window, InformationController,
         if self.__signal3_id is not None:
             App().player.disconnect(self.__signal3_id)
             self.__signal3_id = None
-        if self.__timeout1 is not None:
-            GLib.source_remove(self.__timeout1)
-            self.__timeout1 = None
-        if self.__timeout2 is not None:
-            GLib.source_remove(self.__timeout2)
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
         App().inhibitor.manual_uninhibit()
+        ProgressController.do_destroy(self)
 
     def show_hide_volume_control(self):
         """
@@ -158,9 +156,22 @@ class FullScreen(Gtk.Window, InformationController,
         self._show_volume_control = not self._show_volume_control
         self._update_state()
 
+    def on_status_changed(self, player):
+        """
+            Update controller
+            @param player as Player
+        """
+        ProgressController.on_status_changed(self, player)
+        PlaybackController.on_status_changed(self, player)
+        context = self._artwork.get_style_context()
+        if player.is_playing:
+            context.add_class("image-rotate")
+        else:
+            context.remove_class("image-rotate")
+
     def on_current_changed(self, player):
         """
-            Update infos and show/hide popover
+            Update controllers
             @param player as Player
         """
         InformationController.on_current_changed(self,
@@ -210,8 +221,8 @@ class FullScreen(Gtk.Window, InformationController,
             self._datetime.set_label(now.strftime("%a %d %b, %X"))
         else:
             self._datetime.set_label(now.strftime("%a %d %b, %X")[:-3])
-        if self.__timeout2 is None:
-            self.__timeout2 = GLib.timeout_add(60000, self.__update_datetime)
+        if self.__timeout_id is None:
+            self.__timeout_id = GLib.timeout_add(60000, self.__update_datetime)
             return False
         return True
 
