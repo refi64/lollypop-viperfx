@@ -125,8 +125,9 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             @param widget as AlbumWidget/TracksView
         """
         LazyLoadingView._on_populated(self, widget)
-        widget.set_filter_func(self._filter_func)
-        widget.connect("overlayed", self.on_overlayed)
+        if widget.is_populated:
+            widget.set_filter_func(self._filter_func)
+            widget.connect("overlayed", self.on_overlayed)
 
 #######################
 # PRIVATE             #

@@ -51,6 +51,7 @@ class TracksView:
         self._width = None
         self._responsive_widget = None
         self._orientation = None
+        self.__populated = False
         self.__cancellable = Gio.Cancellable()
 
     def set_playing_indicator(self):
@@ -183,7 +184,7 @@ class TracksView:
             Return True if populated
             @return bool
         """
-        return len(self.__discs_to_load) == 0
+        return self.__populated
 
     @property
     def children(self):
@@ -304,6 +305,8 @@ class TracksView:
         tracks = widgets[widget]
 
         if not tracks:
+            if len(self.__discs_to_load) == 0:
+                self.__populated = True
             self._on_tracks_populated(disc_number)
             if self._list_type & RowListType.DND:
                 self.__linking()
