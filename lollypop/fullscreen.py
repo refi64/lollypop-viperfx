@@ -39,9 +39,10 @@ class FullScreen(Gtk.Window, InformationController,
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
         if rotate_album:
-            InformationController.__init__(self, True, ArtHelperEffect.ROUNDED)
+            InformationController.__init__(self, False,
+                                           ArtHelperEffect.ROUNDED)
         else:
-            InformationController.__init__(self, True, ArtHelperEffect.NONE)
+            InformationController.__init__(self, False, ArtHelperEffect.NONE)
         self.set_application(app)
         self.__timeout_id = None
         self.__signal1_id = self.__signal2_id = self.__signal3_id = None
