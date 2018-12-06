@@ -87,7 +87,6 @@ class FullScreen(Gtk.Window, InformationController,
 
         # Add an AlbumListView on the right
         self.__view = AlbumsListView(RowListType.DND)
-        self.__view.slow_down(True)
         self.__view.get_style_context().add_class("background-opacity")
         self.__view.show()
         self.__revealer.add(self.__view)
@@ -209,7 +208,6 @@ class FullScreen(Gtk.Window, InformationController,
             reveal = event.x > widget.get_allocated_width() -\
                      self.__view.get_allocated_width() - 100
             self.__revealer.set_reveal_child(reveal)
-            self.__view.slow_down(not reveal)
 
 #######################
 # PRIVATE             #

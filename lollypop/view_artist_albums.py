@@ -119,13 +119,12 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             for box in child.boxes:
                 box.invalidate_filter()
 
-    def _on_populated(self, widget, scroll_value):
+    def _on_populated(self, widget):
         """
             Add another album/disc
             @param widget as AlbumWidget/TracksView
-            @param scroll value as float
         """
-        LazyLoadingView._on_populated(self, widget, scroll_value)
+        LazyLoadingView._on_populated(self, widget)
         widget.set_filter_func(self._filter_func)
         widget.connect("overlayed", self.on_overlayed)
 

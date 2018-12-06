@@ -246,18 +246,10 @@ class LazyLoadingView(View):
         View.__init__(self, filtered)
         self._lazy_queue = []  # Widgets not initialized
         self.__priority_queue = []
-        self._scroll_value = 0
-        self.__slow_down = False
+        self.__scroll_timeout_id = None
         self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
         self.__start_time = time()
-
-    def slow_down(self, slow_down):
-        """
-            Slow down loading
-            @param slow_down as bool
-        """
-        self.__slow_down = slow_down
 
     def stop(self):
         """
@@ -266,13 +258,12 @@ class LazyLoadingView(View):
         self._lazy_queue = None
         View.stop(self)
 
-    def lazy_loading(self, scroll_value=0):
+    def lazy_loading(self):
         """
             Load the view in a lazy way
-            @param scroll_value as float
         """
         widget = None
-        if self._lazy_queue is None or self._scroll_value != scroll_value:
+        if self._lazy_queue is None:
             return
         if self.__priority_queue:
             widget = self.__priority_queue.pop(0)
@@ -280,11 +271,8 @@ class LazyLoadingView(View):
         elif self._lazy_queue:
             widget = self._lazy_queue.pop(0)
         if widget is not None:
-            widget.connect("populated", self._on_populated, scroll_value)
-            if self.__slow_down:
-                GLib.timeout_add(250, widget.populate)
-            else:
-                widget.populate()
+            widget.connect("populated", self._on_populated)
+            widget.populate()
         else:
             Logger.debug("LazyLoadingView::lazy_loading(): %s",
                          time() - self.__start_time)
@@ -299,21 +287,21 @@ class LazyLoadingView(View):
         """
         if not self._lazy_queue:
             return False
-        self._scroll_value = adj.get_value()
-        GLib.idle_add(self.__lazy_or_not, self._scroll_value)
+        if self.__scroll_timeout_id is not None:
+            GLib.source_remove(self.__scroll_timeout_id)
+        self.__scroll_timeout_id = GLib.timeout_add(200, self.__lazy_or_not)
 
-    def _on_populated(self, widget, scroll_value):
+    def _on_populated(self, widget):
         """
             Add another album/disc
             @param widget as AlbumWidget/TracksView
-            @param scroll value as float
         """
         if self._lazy_queue is None:
             return
         if not widget.is_populated:
             widget.populate()
         else:
-            GLib.idle_add(self.lazy_loading, scroll_value)
+            GLib.idle_add(self.lazy_loading)
 
 #######################
 # PRIVATE             #
@@ -332,18 +320,18 @@ class LazyLoadingView(View):
         except:
             return True
 
-    def __lazy_or_not(self, scroll_value):
+    def __lazy_or_not(self):
         """
             Add visible widgets to lazy queue
-            @param scroll value as float
         """
+        self.__scroll_timeout_id = None
         self.__priority_queue = []
         if self._lazy_queue is None:
             return
         for child in self._lazy_queue:
             if self.__is_visible(child):
                 self.__priority_queue.append(child)
-        GLib.idle_add(self.lazy_loading, self._scroll_value)
+        GLib.idle_add(self.lazy_loading)
 
 
 class MessageView(View):
