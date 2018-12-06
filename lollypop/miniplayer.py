@@ -32,6 +32,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
             @param width as int
         """
         self.__width = width
+        self.__height = 0
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, True, ArtHelperEffect.BLUR)
         ProgressController.__init__(self)
@@ -58,6 +59,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
             self.update_position()
             ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
+        self.connect("size-allocate", self.__on_size_allocate)
 
     def update_cover(self, width):
         """
@@ -148,3 +150,18 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
             @param player as Player
         """
         ProgressController.on_status_changed(self, player)
+
+    def __on_size_allocate(self, widget, allocation):
+        """
+            Update cover based on current height
+            @param widget as Gtk.Widget
+            @param allocation as Gdk.Rectangle
+        """
+        if self.__height == allocation.height:
+            return
+        self.__height = allocation.height
+        if self.__height == widget.get_preferred_height()[0]:
+            InformationController.__init__(self, True, ArtHelperEffect.BLUR)
+        else:
+            InformationController.__init__(self, True, ArtHelperEffect.NONE)
+        InformationController.on_current_changed(self, self.__width, None)
