@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 
 from datetime import datetime
+from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, RowListType
 from lollypop.view_albums_list import AlbumsListView
@@ -20,6 +21,7 @@ from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
 from lollypop.controller_progress import ProgressController
+from lollypop.logger import Logger
 
 
 class FullScreen(Gtk.Window, InformationController,
@@ -172,8 +174,9 @@ class FullScreen(Gtk.Window, InformationController,
         ProgressController.on_status_changed(self, player)
         PlaybackController.on_status_changed(self, player)
         context = self._artwork.get_style_context()
-        if player.is_playing and\
-                App().settings.get_value("rotate-fullscreen-album"):
+        if not App().settings.get_value("rotate-fullscreen-album"):
+            return
+        if player.is_playing:
             context.add_class("image-rotate")
         else:
             context.remove_class("image-rotate")
@@ -217,6 +220,39 @@ class FullScreen(Gtk.Window, InformationController,
             reveal = event.x > widget.get_allocated_width() -\
                      self.__view.get_allocated_width() - 100
             self.__revealer.set_reveal_child(reveal)
+
+    def _on_image_realize(self, eventbox):
+        """
+            Set cursor
+            @param eventbox as Gtk.EventBox
+        """
+        try:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
+
+    def _on_image_button_release_event(self, widget, event):
+        """
+            Change artwork type
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        rotate_album = not App().settings.get_value("rotate-fullscreen-album")
+        App().settings.set_value("rotate-fullscreen-album",
+                                 GLib.Variant("b", rotate_album))
+        context = self._artwork.get_style_context()
+        if rotate_album:
+            context.add_class("image-rotate")
+            context.remove_class("cover-frame")
+            InformationController.__init__(self, False,
+                                           ArtHelperEffect.ROUNDED)
+        else:
+            context.remove_class("image-rotate")
+            context.add_class("cover-frame")
+            InformationController.__init__(self, False, ArtHelperEffect.NONE)
+        InformationController.on_current_changed(self,
+                                                 self.__artsize,
+                                                 self.__font_size)
 
 #######################
 # PRIVATE             #

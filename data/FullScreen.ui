@@ -254,19 +254,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="cover">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-            <property name="width">3</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkRevealer" id="reveal">
             <property name="width_request">350</property>
             <property name="visible">True</property>
@@ -281,6 +268,27 @@
             <property name="left_attach">2</property>
             <property name="top_attach">1</property>
             <property name="height">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <signal name="button-release-event" handler="_on_image_button_release_event" swapped="no"/>
+            <signal name="realize" handler="_on_image_realize" swapped="no"/>
+            <child>
+              <object class="GtkImage" id="cover">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+            <property name="width">3</property>
           </packing>
         </child>
         <child>
