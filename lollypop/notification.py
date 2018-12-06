@@ -26,6 +26,7 @@ class NotificationManager:
         """
             Init notification object with lollypop infos
         """
+        self.__notification_timeout_id = None
         self.__notification_handler_id = None
         self.__disable_all_notifications = True
         self.__is_gnome = is_gnome()
@@ -68,6 +69,13 @@ class NotificationManager:
 #######################
 # PRIVATE             #
 #######################
+    def __withdraw_notification(self):
+        """
+            Remove notification
+        """
+        self.__notification_timeout_id = None
+        App().withdraw_notification("current-changed")
+
     def __on_current_changed(self, player):
         """
             Send notification with track_id infos
@@ -105,6 +113,10 @@ class NotificationManager:
                 (", ".join(player.current_track.artists),
                  player.current_track.album.name))
         App().send_notification("current-changed", self.__action)
+        if self.__notification_timeout_id is not None:
+            GLib.source_remove(self.__notification_timeout_id)
+        self.__notification_timeout_id = GLib.timeout_add(
+            2000, self.__withdraw_notification)
 
     def __on_notifications_settings_changed(self, *ignore):
         self.__disable_all_notifications = App().settings.get_value(
