@@ -141,6 +141,7 @@ class FullScreen(Gtk.Window, InformationController,
         """
             Remove signals and unset color
         """
+        App().window.setup()
         App().window.show()
         self.__view.stop()
         Gtk.Window.do_hide(self)

@@ -109,7 +109,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             App().set_accels_for_action("app.shortcut::prev", [None])
             App().set_accels_for_action("app.shortcut::loved", [None])
 
-    def setup_window(self):
+    def setup(self):
         """
             Setup window position and size, callbacks
         """
@@ -538,7 +538,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             Run scanner on realize
             @param widget as Gtk.Widget
         """
-        self.setup_window()
+        self.setup()
         if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
