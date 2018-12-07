@@ -445,7 +445,7 @@ class Application(Gtk.Application):
             else:
                 self.__on_parse_finished(None, None, uris)
         elif self.window is not None:
-            self.window.setup_window()
+            self.window.setup()
             if not self.window.is_visible():
                 # https://bugzilla.gnome.org/show_bug.cgi?id=766284
                 monotonic_time = int(GLib.get_monotonic_time() / 1000)

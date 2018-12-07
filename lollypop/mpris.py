@@ -202,7 +202,7 @@ class MPRIS(Server):
         App().settings.connect("changed::playback", self.__on_playback_changed)
 
     def Raise(self):
-        self.__app.window.setup_window()
+        self.__app.window.setup()
         self.__app.window.present_with_time(Gtk.get_current_event_time())
 
     def Quit(self):
