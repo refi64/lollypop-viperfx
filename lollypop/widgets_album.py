@@ -45,32 +45,12 @@ class AlbumWidget:
         else:
             self._artwork.set_state(Gtk.StateType.NORMAL)
 
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-        """
-        self.__filtered = b
-
     @property
     def album(self):
         """
             @return Album
         """
         return self._album
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-        """
-        return self.__filtered
-
-    @property
-    def filter(self):
-        """
-            @return str
-        """
-        return " ".join([self._album.name] + self._album.artists)
 
 #######################
 # PROTECTED           #

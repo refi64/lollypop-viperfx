@@ -62,7 +62,7 @@ class View(BaseView, Gtk.Grid):
                                         self._on_search_changed)
             self.__search_entry.connect("key-press-event",
                                         self.__on_key_press)
-            self.__search_entry.set_size_request(400, -1)
+            self.__search_entry.set_size_request(300, -1)
             self.__search_entry.show()
             button = Gtk.Button.new_from_icon_name("window-close-symbolic",
                                                    Gtk.IconSize.MENU)

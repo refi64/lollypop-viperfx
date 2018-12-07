@@ -248,6 +248,26 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         return True if self._responsive_widget is None\
             else TracksView.get_populated(self)
 
+    def set_filtered(self, b):
+        """
+            Set widget filtered
+        """
+        self.__filtered = b
+
+    @property
+    def filtered(self):
+        """
+            True if filtered by parent
+        """
+        return self.__filtered
+
+    @property
+    def filter(self):
+        """
+            @return str
+        """
+        return " ".join([self._album.name] + self._album.artists)
+
     @property
     def album(self):
         """
@@ -370,7 +390,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param artist_ids as int
             @param genre_ids as int
         """
-        LazyLoadingView.__init__(self)
+        LazyLoadingView.__init__(self, True)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self.__list_type = list_type
         self.__genre_ids = genre_ids
@@ -381,12 +401,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
         self.__height = AlbumRow.get_best_height(self)
-        self.__view = Gtk.ListBox()
-        self.__view.get_style_context().add_class("trackswidget")
-        self.__view.set_vexpand(True)
-        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.__view.set_activate_on_single_click(True)
-        self.__view.show()
+        self._box = Gtk.ListBox()
+        self._box.get_style_context().add_class("trackswidget")
+        self._box.set_vexpand(True)
+        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._box.set_activate_on_single_click(True)
+        self._box.set_filter_func(self._filter_func)
+        self._box.show()
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
 
@@ -403,7 +424,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param albums as [Album]
         """
         self._lazy_queue = []
-        for child in self.__view.get_children():
+        for child in self._box.get_children():
             GLib.idle_add(child.destroy)
         self.__add_albums(list(albums))
 
@@ -415,7 +436,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         """
         # FIXME autoscroll continue after drop
         self.clear_animation()
-        for row in self.__view.get_children():
+        for row in self._box.get_children():
             coordinates = row.translate_coordinates(self, 0, 0)
             if coordinates is None:
                 continue
@@ -462,7 +483,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         """
             Clear the view
         """
-        for child in self.__view.get_children():
+        for child in self._box.get_children():
             GLib.idle_add(child.destroy)
         if clear_albums:
             App().player.clear_albums()
@@ -473,7 +494,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Get view children
             @return [AlbumRow]
         """
-        return self.__view.get_children()
+        return self._box.get_children()
 
 #######################
 # PROTECTED           #
@@ -483,7 +504,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Update children state
             @param player as Player
         """
-        for child in self.__view.get_children():
+        for child in self._box.get_children():
             child.set_playing_indicator()
 
     def _on_artwork_changed(self, artwork, album_id):
@@ -492,7 +513,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param artwork as Artwork
             @param album_id as int
         """
-        for child in self.__view.get_children():
+        for child in self._box.get_children():
             if child.album.id == album_id:
                 child.set_artwork()
 
@@ -540,13 +561,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
             if previous_row is not None:
                 previous_row.set_next_row(row)
             row.show()
-            self.__view.add(row)
+            self._box.add(row)
             self._lazy_queue.append(row)
             GLib.idle_add(self.__add_albums, albums, row)
         else:
             # If only one album, we want to reveal it
             # Stop lazy loading and populate
-            children = self.__view.get_children()
+            children = self._box.get_children()
             if len(children) == 1:
                 self.stop()
                 children[0].populate()
@@ -554,7 +575,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             else:
                 GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
-                self._viewport.add(self.__view)
+                self._viewport.add(self._box)
 
     def __row_for_album(self, album, reveal=False):
         """
@@ -606,11 +627,11 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @return y as int
         """
         y = None
-        for child in self.__view.get_children():
+        for child in self._box.get_children():
             if child.album == App().player.current_track.album:
                 child.populate()
                 child.reveal(True)
-                y = child.translate_coordinates(self.__view, 0, 0)[1]
+                y = child.translate_coordinates(self._box, 0, 0)[1]
         return y
 
     def __on_insert_track(self, row, new_track_id, down):
@@ -621,7 +642,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param down as bool
         """
         new_track = Track(new_track_id)
-        children = self.__view.get_children()
+        children = self._box.get_children()
         position = children.index(row)
         if down:
             # Append track to album
@@ -642,7 +663,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
                 new_row = self.__row_for_album(album)
                 new_row.populate()
                 new_row.show()
-                self.__view.insert(new_row, position + 1)
+                self._box.insert(new_row, position + 1)
                 App().player.add_album(album, position + 1)
                 if row.previous_row is not None and\
                         row.previous_row.album.id ==\
@@ -655,7 +676,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             new_row = self.__row_for_album(album)
             new_row.populate()
             new_row.show()
-            self.__view.insert(new_row, position)
+            self._box.insert(new_row, position)
             if row.previous_row is not None and\
                     row.previous_row.album.id ==\
                     App().player.current_track.album.id:
@@ -671,7 +692,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param track_ids as [int]
             @param down as bool
         """
-        position = self.__view.get_children().index(row)
+        position = self._box.get_children().index(row)
         if down:
             position += 1
         album = Album(new_album_id)
@@ -679,7 +700,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         new_row = self.__row_for_album(album)
         new_row.populate()
         new_row.show()
-        self.__view.insert(new_row, position)
+        self._box.insert(new_row, position)
         App().player.add_album(album, position)
 
     def __on_insert_album_after(self, view, after_album, album):
@@ -690,7 +711,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album as Album
         """
         position = 0
-        children = self.__view.get_children()
+        children = self._box.get_children()
         # If after_album is undefined, prepend)
         if after_album.id is not None:
             for row in children:
@@ -705,7 +726,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         if new_row.next_row is not None:
             new_row.next_row.set_previous_row(new_row)
         new_row.show()
-        self.__view.insert(new_row, position + 1)
+        self._box.insert(new_row, position + 1)
         App().player.add_album(album, position + 1)
 
     def __on_remove_album(self, row):
