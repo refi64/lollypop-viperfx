@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
-from lollypop.define import App, Shuffle, NextContext
+from lollypop.define import App, Shuffle, NextContext, Type
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -90,10 +90,7 @@ class ToolbarEnd(Gtk.Bin):
 
         search_action = Gio.SimpleAction.new("search", None)
         self.__search_button = builder.get_object("search-button")
-        search_action.connect(
-            "activate",
-            lambda x, y: self.__search_button.set_active(
-                not self.__search_button.get_active()))
+        search_action.connect("activate", self.__on_search_activate)
         App().add_action(search_action)
         App().set_accels_for_action("app.search", ["<Control>f"])
 
@@ -405,6 +402,17 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover.inhibit(False)
         if self.__next_popover.should_be_shown():
             self.__next_popover.popup()
+
+    def __on_search_activate(self, action, variant):
+        """
+            @param action as Gio.SimpleAction
+            @param variant as GLib.Variant
+        """
+        if self.__search_button.get_visible():
+            self.__search_button.set_active(
+                not self.__search_button.get_active())
+        else:
+            App().window.container.show_view(Type.SEARCH)
 
     def __on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

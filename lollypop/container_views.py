@@ -59,6 +59,8 @@ class ViewsContainer:
                        Type.NEVER,
                        Type.RANDOMS]:
             view = self._get_view_albums([item_id], [])
+        elif item_id == Type.SEARCH:
+            view = self._get_view_search()
         elif item_id == Type.YEARS:
             if data is None:
                 view = self._get_view_albums_decades()
@@ -353,7 +355,7 @@ class ViewsContainer:
         view.show()
         return view
 
-    def _get_search_view(self):
+    def _get_view_search(self):
         """
             Get view for search
             @return View
@@ -366,7 +368,7 @@ class ViewsContainer:
         view.show()
         return view
 
-    def _get_current_view(self):
+    def _get_view_current(self):
         """
             Get view for current playlist
             @return View
