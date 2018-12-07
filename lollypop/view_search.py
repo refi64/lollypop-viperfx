@@ -183,7 +183,7 @@ class SearchView(BaseView, Gtk.Bin):
             Grab focus
             @param widget as Gtk.Widget
         """
-        self.__entry.grab_focus()
+        GLib.idle_add(self.__entry.grab_focus)
 
     def __on_unmap(self, widget):
         """
