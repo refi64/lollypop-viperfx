@@ -132,8 +132,8 @@ class ToolbarEnd(Gtk.Bin):
             self.__search_button.hide()
             self.__list_button.hide()
         else:
-            self.__search_button.hide()
-            self.__list_button.hide()
+            self.__search_button.show()
+            self.__list_button.show()
 
     def search(self, search):
         """
