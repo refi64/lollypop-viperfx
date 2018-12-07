@@ -260,7 +260,7 @@ class LyricsView(View, InformationController):
             except Exception as e:
                 Logger.warning("LyricsView::__on_lyrics_downloaded(): %s", e)
         if not self.__lyrics_set and self.__downloads_running == 0:
-            self.__lyrics_label.set_text(_("No lyrics found ") + "😐")
+            self.__lyrics_label.set_text(_("No lyrics found ") + "😓")
 
     def __on_current_changed(self, player):
         """
