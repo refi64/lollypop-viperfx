@@ -32,11 +32,11 @@ class PlaylistsPopover(Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
-        self._widget = PlaylistsView(App().player.playlist_ids,
-                                     RowListType.DND | RowListType.Popover,
-                                     False)
-        self._widget.show()
-        self.add(self._widget)
+        self.__view = PlaylistsView(App().player.playlist_ids,
+                                    RowListType.DND | RowListType.Popover,
+                                    False)
+        self.__view.show()
+        self.add(self.__view)
 
     def populate(self):
         """
@@ -44,7 +44,7 @@ class PlaylistsPopover(Popover):
         """
         def load():
             return list(App().player.playlist_tracks)
-        loader = Loader(target=load, view=self._widget)
+        loader = Loader(target=load, view=self.__view)
         loader.start()
 
 #######################
@@ -63,7 +63,8 @@ class PlaylistsPopover(Popover):
 
     def __on_unmap(self, widget):
         """
-            Disconnect signals, clear view
+            Stop view
             @param widget as Gtk.Widget
         """
-        self.destroy()
+        self.__view.stop()
+        self.__view.destroy()
