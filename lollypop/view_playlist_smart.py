@@ -211,14 +211,6 @@ class SmartPlaylistView(View):
         if App().settings.get_value("show-sidebar"):
             App().window.emit("can-go-back-changed", True)
             App().window.emit("show-can-go-back", True)
-        App().window.enable_global_shortcuts(False)
-
-    def _on_unmap(self, widget):
-        """
-            Enable global shortcuts
-            @param widget as Gtk.Widget
-        """
-        App().window.enable_global_shortcuts(True)
 
 #######################
 # PRIVATE             #

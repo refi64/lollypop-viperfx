@@ -61,55 +61,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
 
         # FIXME Remove this, handled by MPRIS in GNOME 3.26
         self.__setup_media_keys()
-        self.__enabled_shortcuts = False
-        self.enable_global_shortcuts(True)
         self.set_auto_startup_notification(False)
         self.connect("realize", self.__on_realize)
         self.connect("adaptive-changed", self.__on_adaptive_changed)
-
-    def enable_global_shortcuts(self, enable):
-        """
-            Enable/Disable special global shortcuts
-            @param enable as bool
-        """
-        if self.__enabled_shortcuts == enable:
-            return
-        self.__enabled_shortcuts = enable
-        if enable:
-            if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                App().set_accels_for_action("app.seek(10)", ["Left"])
-                App().set_accels_for_action("app.seek(20)", ["<Control>Left"])
-                App().set_accels_for_action("app.seek(-10)", ["Right"])
-                App().set_accels_for_action("app.seek(-20)",
-                                            ["<Control>Right"])
-            else:
-                App().set_accels_for_action("app.seek(10)", ["Right"])
-                App().set_accels_for_action("app.seek(20)", ["<Control>Right"])
-                App().set_accels_for_action("app.seek(-10)", ["Left"])
-                App().set_accels_for_action("app.seek(-20)", ["<Control>Left"])
-
-            App().set_accels_for_action("app.shortcut::play_pause",
-                                        ["space", "c"])
-            App().set_accels_for_action("app.shortcut::play", ["x"])
-            App().set_accels_for_action("app.shortcut::stop", ["v"])
-            App().set_accels_for_action("app.shortcut::next", ["n"])
-            App().set_accels_for_action("app.shortcut::prev", ["p"])
-            App().set_accels_for_action("app.shortcut::loved", ["l"])
-        else:
-            App().set_accels_for_action("app.seek(10)", [None])
-            App().set_accels_for_action("app.seek(20)", [None])
-            App().set_accels_for_action("app.seek(-10)", [None])
-            App().set_accels_for_action("app.seek(-20)", [None])
-            App().set_accels_for_action("app.shortcut::play_pause", [None])
-            App().set_accels_for_action("app.shortcut::play", [None])
-            App().set_accels_for_action("app.shortcut::stop", [None])
-            App().set_accels_for_action("app.shortcut::play_pause", [None])
-            App().set_accels_for_action("app.shortcut::play", [None])
-            App().set_accels_for_action("app.shortcut::stop", [None])
-            App().set_accels_for_action("app.shortcut::next", [None])
-            App().set_accels_for_action("app.shortcut::next_album", [None])
-            App().set_accels_for_action("app.shortcut::prev", [None])
-            App().set_accels_for_action("app.shortcut::loved", [None])
 
     def setup(self):
         """
@@ -188,6 +142,30 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         App().set_accels_for_action("app.shortcuts", ["F2"])
         App().set_accels_for_action("app.help", ["F1"])
         App().set_accels_for_action("app.quit", ["<Control>q"])
+        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
+            App().set_accels_for_action("app.seek(10)", ["<Alt>Left"])
+            App().set_accels_for_action("app.seek(20)",
+                                        ["<Control><Shift>Left"])
+            App().set_accels_for_action("app.seek(-10)", ["<Alt>Right"])
+            App().set_accels_for_action("app.seek(-20)",
+                                        ["<Control><Shift>Right"])
+        else:
+            App().set_accels_for_action("app.seek(10)",
+                                        ["<Alt>Right"])
+            App().set_accels_for_action("app.seek(20)",
+                                        ["<Control><Shift>Right"])
+            App().set_accels_for_action("app.seek(-10)",
+                                        ["<Alt>Left"])
+            App().set_accels_for_action("app.seek(-20)",
+                                        ["<Control><Shift>Left"])
+
+        App().set_accels_for_action("app.shortcut::play_pause",
+                                    ["space", "<Alt>c"])
+        App().set_accels_for_action("app.shortcut::play", ["<Alt>x"])
+        App().set_accels_for_action("app.shortcut::stop", ["<Alt>v"])
+        App().set_accels_for_action("app.shortcut::next", ["<Alt>n"])
+        App().set_accels_for_action("app.shortcut::prev", ["<Alt>p"])
+        App().set_accels_for_action("app.shortcut::loved", ["<Alt>l"])
 
     def __show_miniplayer(self, show):
         """

@@ -515,8 +515,6 @@ class SelectionList(BaseView, Gtk.Overlay):
                 self.__mask & SelectionListMask.ARTISTS and\
                 self.__fast_scroll is not None:
             self.__fast_scroll.show()
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(False)
 
     def __on_leave_notify(self, widget, event):
         """
@@ -532,8 +530,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             if self.__mask & SelectionListMask.ARTISTS\
                     and self.__fast_scroll is not None:
                 self.__fast_scroll.hide()
-        # FIXME Not needed with GTK >= 3.18
-        App().window.enable_global_shortcuts(True)
 
     def __on_artist_artwork_changed(self, art, artist):
         """
