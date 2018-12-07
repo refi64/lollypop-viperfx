@@ -408,8 +408,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if self.__miniplayer is not None:
             self.__miniplayer.update_cover(width)
         # Keep a minimal height
-        if height < Sizing.BIG:
-            height = Sizing.BIG
+        if height < Sizing.MEDIUM:
+            height = Sizing.MEDIUM
         App().settings.set_value("window-size",
                                  GLib.Variant("ai", [width, height]))
         (x, y) = widget.get_position()
