@@ -113,10 +113,10 @@ class Type:
     RADIOS = -8
     SMART = -9
     SEARCH = -10
-#    NOPARTY = -11  Free for use
     YEARS = -12
     ARTISTS = -13
     ALL = -100
+    CURRENT = -101
     USB_DISKS = -200
     DEVICES = -1000
     SEPARATOR = -2000

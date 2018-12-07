@@ -10,45 +10,58 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 from random import shuffle
 
-from lollypop.define import App, Type, Shuffle
-from lollypop.view_search import SearchView
+from lollypop.define import App, RowListType, Type, Shuffle
+from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
+from lollypop.view import BaseView
 from lollypop.logger import Logger
 
 
-class SearchPopover(Gtk.Popover):
+class SearchView(BaseView, Gtk.Bin):
     """
-        Popover allowing user to search for tracks/albums
+        View for searching albums/tracks
     """
 
     def __init__(self):
         """
             Init Popover
         """
-        Gtk.Popover.__init__(self)
-        self.__width = 0
-        self.set_position(Gtk.PositionType.BOTTOM)
+        BaseView.__init__(self)
+        Gtk.Bin.__init__(self)
         self.connect("map", self.__on_map)
-        search_view = SearchView()
-        search_view.show()
-        self.add(search_view)
+        self.connect("unmap", self.__on_unmap)
+        self.__timeout_id = None
+        self.__current_search = ""
+        self.__cancellable = Gio.Cancellable()
+        self.__history = []
+
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/SearchView.ui")
+        builder.connect_signals(self)
+        self.__widget = builder.get_object("widget")
+        self.__new_button = builder.get_object("new_button")
+        self.__play_button = builder.get_object("play_button")
+        self.__entry = builder.get_object("entry")
+        self.__spinner = builder.get_object("spinner")
+        self.__header_stack = builder.get_object("header_stack")
+        self.__stack = builder.get_object("stack")
+        self.__placeholder = builder.get_object("placeholder")
+        self.__view = AlbumsListView(RowListType.SEARCH)
+        self.__view.show()
+        self.__stack.add_named(self.__view, "view")
+        self.__set_default_placeholder()
+        self.add(self.__widget)
 
     def set_text(self, text):
         """
             Set search text
         """
         self.__entry.set_text(text)
-
-    def do_get_preferred_width(self):
-        if self.__width == 0:
-            return Gtk.Popover.do_get_preferred_width(self)
-        else:
-            return (self.__width, self.__width)
 
 #######################
 # PROTECTED           #
@@ -167,13 +180,20 @@ class SearchPopover(Gtk.Popover):
 
     def __on_map(self, widget):
         """
-            Set popover size
+            Grab focus
             @param widget as Gtk.Widget
         """
-        window_size = App().window.get_size()
-        height = window_size[1]
-        self.__width = min(500, window_size[0])
-        self.set_size_request(self.__width, height * 0.7)
+        self.__entry.grab_focus()
+
+    def __on_unmap(self, widget):
+        """
+            Stop loading
+            @param widget as Gtk.Widget
+        """
+        self.__cancellable.cancel()
+        self.__view.stop()
+        self.__header_stack.set_visible_child(self.__new_button)
+        self.__spinner.stop()
 
     def __on_search_changed_timeout(self):
         """

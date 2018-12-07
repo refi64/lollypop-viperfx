@@ -353,6 +353,40 @@ class ViewsContainer:
         view.show()
         return view
 
+    def _get_search_view(self):
+        """
+            Get view for search
+            @return View
+        """
+        from lollypop.view_search import SearchView
+        view = SearchView()
+        view.set_margin_top(5)
+        view.set_margin_start(5)
+        view.set_margin_end(5)
+        view.show()
+        return view
+
+    def _get_current_view(self):
+        """
+            Get view for current playlist
+            @return View
+        """
+        if App().player.playlist_ids:
+            from lollypop.view_playlists import PlaylistsView
+            view = PlaylistsView(App().player.playlist_ids,
+                                 RowListType.DND | RowListType.Popover,
+                                 False)
+            view.populate(App().player.playlist_tracks)
+        else:
+            from lollypop.view_current_albums import CurrentAlbumsView
+            view = CurrentAlbumsView()
+            view.populate(App().player.albums)
+        view.set_margin_top(5)
+        view.set_margin_start(5)
+        view.set_margin_end(5)
+        view.show()
+        return view
+
     def _reload_navigation_view(self):
         """
             Reload navigation view

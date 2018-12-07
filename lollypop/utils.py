@@ -295,4 +295,8 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
         icon = "audio-speakers-symbolic"
     elif object_id == Type.YEARS:
         icon = "view-sort-ascending-symbolic"
+    elif object_id == Type.CURRENT:
+        icon = "view-list-symbolic"
+    elif object_id == Type.SEARCH:
+        icon = "edit-find-symbolic"
     return icon

@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk
 
-from lollypop.loader import Loader
 from lollypop.define import App, RowListType
 from lollypop.widgets_utils import Popover
 from lollypop.view_playlists import PlaylistsView
@@ -42,10 +41,7 @@ class PlaylistsPopover(Popover):
         """
             Populate view
         """
-        def load():
-            return list(App().player.playlist_tracks)
-        loader = Loader(target=load, view=self.__view)
-        loader.start()
+        self.__view.populate(list(App().player.playlist_tracks))
 
 #######################
 # PRIVATE             #

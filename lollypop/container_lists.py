@@ -237,6 +237,10 @@ class ListsContainer:
         if selected_ids[0] == Type.PLAYLISTS:
             if not self._list_two.selected_ids:
                 view = self._get_view_playlists()
+        elif selected_ids[0] == Type.CURRENT:
+            view = self._get_current_view()
+        elif selected_ids[0] == Type.SEARCH:
+            view = self._get_search_view()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             view = self._get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,

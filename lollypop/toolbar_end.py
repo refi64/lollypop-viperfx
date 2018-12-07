@@ -89,11 +89,11 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover.set_relative_to(self.__shuffle_button)
 
         search_action = Gio.SimpleAction.new("search", None)
-        search_button = builder.get_object("search-button")
+        self.__search_button = builder.get_object("search-button")
         search_action.connect(
             "activate",
-            lambda x, y: search_button.set_active(
-                not search_button.get_active()))
+            lambda x, y: self.__search_button.set_active(
+                not self.__search_button.get_active()))
         App().add_action(search_action)
         App().set_accels_for_action("app.search", ["<Control>f"])
 
@@ -122,6 +122,18 @@ class ToolbarEnd(Gtk.Bin):
                 self.__next_popover.popup()
         else:
             self.__next_popover.hide()
+
+    def set_mini(self, mini):
+        """
+            Set mini mode
+            @param mini as bool
+        """
+        if mini:
+            self.__search_button.hide()
+            self.__list_button.hide()
+        else:
+            self.__search_button.hide()
+            self.__list_button.hide()
 
     def search(self, search):
         """

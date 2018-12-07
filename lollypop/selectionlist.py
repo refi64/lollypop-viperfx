@@ -240,6 +240,10 @@ class SelectionList(BaseView, Gtk.Overlay):
             @return items as [(int, str)]
         """
         lists = ShownLists.get(mask)
+        if mask & SelectionListMask.LIST_ONE and App().window.is_adaptive:
+            lists += [(Type.SEARCH, _("Search"), _("Search"))]
+            lists += [
+                (Type.CURRENT, _("Current playlist"), _("Current playlist"))]
         if lists:
             lists.append((Type.SEPARATOR, "", ""))
         return lists

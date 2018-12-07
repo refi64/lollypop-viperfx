@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 
+from gettext import gettext as _
+
 from lollypop.container import Container
 from lollypop.define import App, Sizing, Type
 from lollypop.toolbar import Toolbar
@@ -566,9 +568,16 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         if adaptive_stack:
             self.__container.show_sidebar(True)
-            self.__toolbar.set_show_close_button(False)
+            self.__toolbar.end.set_mini(True)
+            self.__container.list_one.add_value((Type.SEARCH,
+                                                _("Search"),
+                                                _("Search")))
+            self.__container.list_one.add_value((Type.CURRENT,
+                                                _("Current playlist"),
+                                                _("Current playlist")))
         else:
             value = App().settings.get_value("show-sidebar")
-            self.__toolbar.set_show_close_button(
-                not App().settings.get_value("disable-csd"))
+            self.__toolbar.end.set_mini(False)
             self.__container.show_sidebar(value)
+            self.__container.list_one.remove_value(Type.CURRENT)
+            self.__container.list_one.remove_value(Type.SEARCH)
