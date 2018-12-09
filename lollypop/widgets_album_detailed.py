@@ -191,6 +191,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                                            self.__art_size,
                                            self._artwork.get_scale_factor(),
                                            self.__on_album_artwork)
+            self._widget.add(self._responsive_widget)
+            self._responsive_widget.show()
             grid.add(self._widget)
             self.add(grid)
         else:
@@ -262,9 +264,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             Emit populated signal
             @param disc_number as int
         """
-        if self.is_populated:
-            self._widget.add(self._responsive_widget)
-            self._responsive_widget.show()
         self.emit("populated")
 
     def _on_album_updated(self, scanner, album_id, destroy):

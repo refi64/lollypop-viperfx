@@ -287,8 +287,6 @@ class TracksView:
                                                       self.__on_activated)
         self._tracks_widget_right[disc_number].connect("activated",
                                                        self.__on_activated)
-        self._tracks_widget_left[disc_number].show()
-        self._tracks_widget_right[disc_number].show()
 
     def __add_tracks(self, widgets, disc_number, previous_row=None):
         """
@@ -308,6 +306,8 @@ class TracksView:
             if len(self.__discs_to_load) == 0:
                 self.__populated = True
             self._on_tracks_populated(disc_number)
+            self._tracks_widget_left[disc_number].show()
+            self._tracks_widget_right[disc_number].show()
             if self._list_type & RowListType.DND:
                 self.__linking()
             return
