@@ -11,7 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.view_artist_albums import ArtistAlbumsView
-from lollypop.define import ArtSize
+from lollypop.define import ArtSize, App
 from lollypop.widgets_utils import Popover
 
 
@@ -33,19 +33,16 @@ class AlbumPopover(Popover):
         self.get_style_context().add_class("box-shadow")
         view = ArtistAlbumsView(album.artist_ids, album.genre_ids, art_size)
         view.populate([album])
+        window_width = App().window.get_allocated_width()
+        window_height = App().window.get_allocated_height()
+        wanted_width = min(900, window_width * 0.5)
         wanted_height = max(200,
-                            min(600, view.children[0].requested_height[0]))
+                            min(window_height * 0.8,
+                                view.children[0].requested_height[0]))
+        view.set_property("width-request", wanted_width)
         view.set_property("height-request", wanted_height)
         view.show()
         self.add(view)
-
-    def do_get_preferred_width(self):
-        """
-            Set maximum width
-        """
-        width = min(900, self.__width)
-        return (width, width)
-
 #######################
 # PRIVATE             #
 #######################

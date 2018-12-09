@@ -76,11 +76,8 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             y = album_widget.translate_coordinates(self._box, 0, 0)[1]
             self._scrolled.get_allocation().height + y
             self._scrolled.get_vadjustment().set_value(y)
-        allocation = self.get_allocation()
         from lollypop.pop_album import AlbumPopover
-        popover = AlbumPopover(album_widget.album,
-                               allocation.width,
-                               ArtSize.NONE)
+        popover = AlbumPopover(album_widget.album, ArtSize.NONE)
         popover.set_relative_to(album_widget.artwork)
         popover.set_position(Gtk.PositionType.BOTTOM)
         album_widget.show_overlay(False)
