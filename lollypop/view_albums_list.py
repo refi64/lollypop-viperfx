@@ -321,7 +321,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param event as Gdk.Event
         """
         if self.__list_type & RowListType.SEARCH:
-            App().player.play_album(Album(self._album.id))
+            album = Album(self._album.id)
+            App().player.add_album(album)
+            App().player.load(album.tracks[0])
         else:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
