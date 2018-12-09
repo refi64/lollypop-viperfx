@@ -245,7 +245,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Return True if populated
             @return bool
         """
-        return True if self._responsive_widget is None\
+        return True if self._responsive_widget is None or self.__reveal\
             else TracksView.get_populated(self)
 
     def set_filtered(self, b):
