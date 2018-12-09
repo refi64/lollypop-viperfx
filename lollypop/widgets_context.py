@@ -152,10 +152,14 @@ class ContextWidget(Gtk.EventBox):
         """
         try:
             App().player.clear_albums()
-            album = self.__object.album
-            album.set_tracks(self.__object.tracks)
+            album = Album(self.__object.album.id)
+            # search wanted disc
+            for disc in album.discs:
+                if disc.number == self.__object.number:
+                    album.set_tracks(disc.tracks)
+                    break
             App().player.add_album(album)
-            App().player.load(self.__object.album.tracks[0])
+            App().player.load(album.tracks[0])
         except Exception as e:
             Logger.error("ContextWidget::__on_play_button_clicked(): %s", e)
 
