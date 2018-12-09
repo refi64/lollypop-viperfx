@@ -72,6 +72,7 @@ class SearchView(BaseView, Gtk.Bin):
             @param button as Gtk.Button
         """
         try:
+            App().player.clear_albums()
             shuffle_setting = App().settings.get_enum("shuffle")
             children = self.__view.children
             if shuffle_setting == Shuffle.ALBUMS:
