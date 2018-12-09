@@ -10,15 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
-from gettext import gettext as _
-from random import shuffle
-
-from lollypop.define import App, Type, Shuffle
+from lollypop.define import App
 from lollypop.view_search import SearchView
-from lollypop.search import Search
-from lollypop.logger import Logger
 
 
 class SearchPopover(Gtk.Popover):
@@ -53,118 +48,10 @@ class SearchPopover(Gtk.Popover):
 #######################
 # PROTECTED           #
 #######################
-    def _on_play_button_clicked(self, button):
-        """
-            Play search
-            @param button as Gtk.Button
-        """
-        try:
-            App().player.clear_albums()
-            shuffle_setting = App().settings.get_enum("shuffle")
-            children = self.__view.children
-            if shuffle_setting == Shuffle.ALBUMS:
-                shuffle(children)
-            for child in children:
-                App().player.add_album(child.album)
-            App().player.load(App().player.albums[0].tracks[0])
-        except Exception as e:
-            Logger.error("SearchPopover::_on_play_button_clicked(): %s", e)
-
-    def _on_new_button_clicked(self, button):
-        """
-            Create a new playlist based on search
-            @param button as Gtk.Button
-        """
-        button.set_sensitive(False)
-        App().task_helper.run(self.__search_to_playlist)
-
-    def _on_search_changed(self, widget):
-        """
-            Timeout filtering
-            @param widget as Gtk.TextEntry
-        """
-        if self.__timeout_id:
-            GLib.source_remove(self.__timeout_id)
-            self.__timeout_id = None
-        self.__cancellable.cancel()
-        self.__view.stop()
-        self.__current_search = widget.get_text().strip()
-        self.__timeout_id = GLib.timeout_add(
-                500,
-                self.__on_search_changed_timeout)
 
 #######################
 # PRIVATE             #
 #######################
-    def __set_no_result_placeholder(self):
-        """
-            Set placeholder for no result
-        """
-        self.__placeholder.set_markup(
-            _("<big>No results for this search</big>"))
-
-    def __set_default_placeholder(self):
-        """
-            Set placeholder for no result
-        """
-        self.__placeholder.set_markup(
-            _("<big>Search for artists, albums and tracks</big>"))
-
-    def __populate(self):
-        """
-            Populate searching items
-            in db based on text entry current text
-        """
-        self.__cancellable.reset()
-        self.__header_stack.set_visible_child(self.__spinner)
-        self.__spinner.start()
-        self.__history = []
-        if self.__current_search:
-            search = Search()
-            search.get(self.__current_search,
-                       self.__cancellable,
-                       callback=(self.__on_search_get,))
-        else:
-            self.__stack.set_visible_child_name("placeholder")
-            self.__set_default_placeholder()
-            self.__header_stack.set_visible_child(self.__new_button)
-            GLib.idle_add(self.__spinner.stop)
-
-    def __search_to_playlist(self):
-        """
-            Create a new playlist based on search
-        """
-        tracks = []
-        for child in self.__view.children:
-            tracks += child.album.tracks
-        if tracks:
-            playlist_id = App().playlists.get_id(self.__current_search)
-            if playlist_id == Type.NONE:
-                App().playlists.add(self.__current_search)
-                playlist_id = App().playlists.get_id(self.__current_search)
-            App().playlists.add_tracks(playlist_id, tracks)
-
-    def __on_search_get(self, result):
-        """
-            Add rows for internal results
-            @param result as [(int, Album, bool)]
-        """
-        if result:
-            albums = []
-            reveal_albums = []
-            for (score, album, in_tracks) in result:
-                albums.append(album)
-                if in_tracks:
-                    reveal_albums.append(album.id)
-            self.__view.set_reveal(reveal_albums)
-            self.__view.populate(albums)
-            self.__stack.set_visible_child_name("view")
-        else:
-            self.__stack.set_visible_child_name("placeholder")
-            self.__set_no_result_placeholder()
-        self.__header_stack.set_visible_child(self.__new_button)
-        GLib.idle_add(self.__spinner.stop)
-
     def __on_map(self, widget):
         """
             Set popover size
@@ -174,20 +61,3 @@ class SearchPopover(Gtk.Popover):
         height = window_size[1]
         self.__width = min(500, window_size[0])
         self.set_size_request(self.__width, height * 0.7)
-
-    def __on_search_changed_timeout(self):
-        """
-            Populate widget
-        """
-        if self.__view.children:
-            self.__view.stop()
-            self.__view.clear()
-            return True
-        self.__timeout_id = None
-        self.__populate()
-        if self.__current_search != "":
-            self.__play_button.set_sensitive(True)
-            self.__new_button.set_sensitive(True)
-        else:
-            self.__play_button.set_sensitive(False)
-            self.__new_button.set_sensitive(False)
