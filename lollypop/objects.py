@@ -259,22 +259,25 @@ class Album(Base):
 
     def set_tracks(self, tracks):
         """
-            Set album tracks
+            Set album tracks (cloned tracks)
             @param tracks as [Track]
         """
-        self._tracks = tracks
+        self._tracks = []
+        for track in tracks:
+            new_track = Track(track.id, self)
+            self._tracks.append(new_track)
 
     def insert_track(self, track, position=-1):
         """
-            Add track to album
+            Add track to album (cloned track)
             @param track as Track
             @param position as int
         """
+        new_track = Track(track.id, self)
         if position == -1:
-            self._tracks.append(track)
+            self._tracks.append(new_track)
         else:
-            self._tracks.insert(position, track)
-        track.set_album(self)
+            self._tracks.insert(position, new_track)
 
     def remove_track(self, track):
         """
@@ -317,6 +320,17 @@ class Album(Base):
         if self.id >= 0:
             App().albums.set_uri(self.id, uri)
             self.uri = uri
+
+    def get_track(self, track_id):
+        """
+            Get track
+            @param track_id as int
+            @return Track/None
+        """
+        for track in self._tracks:
+            if track.id == track_id:
+                return track
+        return None
 
     @property
     def title(self):

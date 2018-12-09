@@ -427,8 +427,7 @@ class TracksView:
                     not App().player.track_in_playback(track):
                 album = self._album.clone(True)
                 App().player.add_album(album)
-                track.set_album(album)
-            App().player.load(track)
+            App().player.load(album.get_track(track.id))
 
     def __on_insert_track(self, row, new_track_id, down):
         """
