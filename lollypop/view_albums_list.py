@@ -321,7 +321,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param event as Gdk.Event
         """
         if self.__list_type & RowListType.SEARCH:
-            album = Album(self._album.id)
+            album = self._album.clone(True)
             App().player.add_album(album)
             App().player.load(album.tracks[0])
         else:

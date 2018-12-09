@@ -245,8 +245,10 @@ class Album(Base):
             Clone album
             @param disallow_ignored_tracks as bool
         """
-        return Album(self.id, self.genre_ids,
-                     self.artist_ids, disallow_ignored_tracks)
+        album = Album(self.id, self.genre_ids,
+                      self.artist_ids, disallow_ignored_tracks)
+        album.set_tracks(self.tracks)
+        return album
 
     def set_discs(self, discs):
         """
@@ -261,8 +263,6 @@ class Album(Base):
             @param tracks as [Track]
         """
         self._tracks = tracks
-        for track in tracks:
-            track.set_album(self)
 
     def insert_track(self, track, position=-1):
         """
