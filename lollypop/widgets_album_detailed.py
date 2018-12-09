@@ -183,6 +183,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.set_selection()
             if self._artwork is None:
                 TracksView.populate(self)
+                self._widget.add(self._responsive_widget)
+                self._responsive_widget.show()
             else:
                 grid.add(self.__coverbox)
                 App().art_helper.set_album_artwork(
@@ -191,8 +193,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                                            self.__art_size,
                                            self._artwork.get_scale_factor(),
                                            self.__on_album_artwork)
-            self._widget.add(self._responsive_widget)
-            self._responsive_widget.show()
             grid.add(self._widget)
             self.add(grid)
         else:
@@ -348,6 +348,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self._artwork.set_from_surface(surface)
         self._artwork.show()
         TracksView.populate(self)
+        self._widget.add(self._responsive_widget)
+        self._responsive_widget.show()
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
