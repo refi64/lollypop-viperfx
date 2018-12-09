@@ -37,7 +37,7 @@ class AlbumPopover(Popover):
         window_height = App().window.get_allocated_height()
         wanted_width = min(900, window_width * 0.5)
         wanted_height = max(200,
-                            min(window_height * 0.8,
+                            min(window_height * 0.5,
                                 view.children[0].requested_height[0]))
         view.set_property("width-request", wanted_width)
         view.set_property("height-request", wanted_height)
