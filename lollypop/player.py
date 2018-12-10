@@ -468,16 +468,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                         return True
         return False
 
-    def get_album_by_id(self, album_id):
+    def get_albums_for_id(self, album_id):
         """
-            Get album by id
+            Get albums for id
             @param album_id as int
-            @return Album
+            @return [Album]
         """
-        for album in self._albums:
-            if album.id == album_id:
-                return album
-        return None
+        return [album for album in self._albums if album.id == album_id]
 
     @property
     def next_track(self):
