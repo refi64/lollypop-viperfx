@@ -247,7 +247,8 @@ class Album(Base):
         """
         album = Album(self.id, self.genre_ids,
                       self.artist_ids, disallow_ignored_tracks)
-        album.set_tracks(self.tracks)
+        if not disallow_ignored_tracks:
+            album.set_tracks(self.tracks)
         return album
 
     def set_discs(self, discs):
@@ -327,7 +328,7 @@ class Album(Base):
             @param track_id as int
             @return Track/None
         """
-        for track in self._tracks:
+        for track in self.tracks:
             if track.id == track_id:
                 return track
         return None
