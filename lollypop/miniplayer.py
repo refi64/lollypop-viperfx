@@ -104,21 +104,17 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         if App().player.current_track.id is not None and\
                 height > Sizing.MEDIUM:
             if App().player.current_track.id == Type.RADIOS:
-                from lollypop.pop_tunein import TuneinPopover
-                popover = TuneinPopover()
-                popover.populate()
+                pass
             elif App().player.current_track.id is not None:
                 if event.button == 1:
-                    from lollypop.pop_information import InformationPopover
-                    popover = InformationPopover(True)
-                    popover.populate()
+                    App().window.container.show_view(Type.INFO)
                 elif App().player.current_track.id >= 0:
                     from lollypop.pop_menu import TrackMenuPopover, ToolbarMenu
                     popover = TrackMenuPopover(
                         App().player.current_track,
                         ToolbarMenu(App().player.current_track))
-            popover.set_relative_to(self)
-            popover.popup()
+                    popover.set_relative_to(self)
+                    popover.popup()
         return True
 
     def _on_labels_realize(self, eventbox):

@@ -61,6 +61,8 @@ class ViewsContainer:
             view = self._get_view_albums([item_id], [])
         elif item_id == Type.SEARCH:
             view = self._get_view_search()
+        elif item_id == Type.INFO:
+            view = self._get_view_info()
         elif item_id == Type.YEARS:
             if data is None:
                 view = self._get_view_albums_decades()
@@ -343,6 +345,7 @@ class ViewsContainer:
     def _get_view_radios(self):
         """
             Get radios view
+            @return RadiosView
         """
         def load():
             from lollypop.radios import Radios
@@ -355,10 +358,24 @@ class ViewsContainer:
         view.show()
         return view
 
+    def _get_view_info(self):
+        """
+            Get view for information
+            @return InformationView
+        """
+        from lollypop.view_information import InformationView
+        view = InformationView(True)
+        view.populate()
+        view.set_margin_top(5)
+        view.set_margin_start(5)
+        view.set_margin_end(5)
+        view.show()
+        return view
+
     def _get_view_search(self):
         """
             Get view for search
-            @return View
+            @return SearchView
         """
         from lollypop.view_search import SearchView
         view = SearchView()

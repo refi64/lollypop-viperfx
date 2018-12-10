@@ -113,6 +113,7 @@ class Type:
     RADIOS = -8
     SMART = -9
     SEARCH = -10
+    INFO = -11
     YEARS = -12
     ARTISTS = -13
     ALL = -100
