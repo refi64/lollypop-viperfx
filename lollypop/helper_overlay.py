@@ -254,7 +254,7 @@ class OverlayAlbumHelper(OverlayHelper):
         if App().player.is_party:
             action = App().lookup_action("party")
             action.change_state(GLib.Variant("b", False))
-        App().player.play_album(self._album)
+        App().player.play_album(self._album.clone(True))
         self._show_append(False)
         return True
 
