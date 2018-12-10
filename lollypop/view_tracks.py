@@ -49,6 +49,7 @@ class TracksView:
         """
         self._list_type = list_type
         self._width = None
+        self.__discs = []
         self._responsive_widget = None
         self._orientation = None
         self.__populated = False
