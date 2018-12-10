@@ -646,32 +646,22 @@ class AlbumsListView(LazyLoadingView, ViewController):
         new_track = Track(new_track_id)
         children = self._box.get_children()
         position = children.index(row)
+        lenght = len(children)
         if down:
-            # Append track to album
-            if position + 1 < len(children) and\
-                    children[position + 1].album.id == new_track.album.id:
-                new_track.set_album(children[position + 1].album)
-                children[position + 1].prepend_rows([new_track])
-                children[position + 1].album.insert_track(new_track, 0)
-            # Append track to current album
-            elif children[position].album.id == new_track.album.id:
-                new_track.set_album(children[position].album)
-                children[position].append_rows([new_track])
-                children[position].album.insert_track(new_track)
-            # Add a new album
-            else:
-                album = Album(new_track.album.id)
-                album.set_tracks([new_track])
-                new_row = self.__row_for_album(album)
-                new_row.populate()
-                new_row.show()
-                self._box.insert(new_row, position + 1)
-                App().player.add_album(album, position + 1)
-                if row.previous_row is not None and\
-                        row.previous_row.album.id ==\
-                        App().player.current_track.album.id:
-                    App().player.set_next()
-                    App().player.set_prev()
+            position += 1
+        # Append track to current/next album
+        if position < lenght and\
+                children[position].album.id == new_track.album.id:
+            new_track.set_album(children[position].album)
+            children[position].prepend_rows([new_track])
+            children[position].album.insert_track(new_track, 0)
+        # Append track to previous/current album
+        elif position - 1 < lenght and\
+                children[position - 1].album.id == new_track.album.id:
+            new_track.set_album(children[position - 1].album)
+            children[position - 1].append_rows([new_track])
+            children[position - 1].album.insert_track(new_track)
+        # Add a new album
         else:
             album = Album(new_track.album.id)
             album.set_tracks([new_track])
@@ -679,12 +669,12 @@ class AlbumsListView(LazyLoadingView, ViewController):
             new_row.populate()
             new_row.show()
             self._box.insert(new_row, position)
+            App().player.add_album(album, position)
             if row.previous_row is not None and\
                     row.previous_row.album.id ==\
                     App().player.current_track.album.id:
                 App().player.set_next()
                 App().player.set_prev()
-            App().player.add_album(album, position)
 
     def __on_insert_album(self, row, new_album_id, track_ids, down):
         """

@@ -510,17 +510,23 @@ class TracksView:
             @param row as PlaylistRow
             @param position as int
         """
-        row.track.album.remove_track(row.track)
+        empty = row.track.album.remove_track(row.track)
+        if empty:
+            App().player.remove_album(row.track.album)
         if row.track.id == App().player.current_track.id:
             App().player.set_next()
             App().player.set_prev()
         if row.previous_row is None:
-            row.next_row.set_previous_row(None)
+            if row.next_row is not None:
+                row.next_row.set_previous_row(None)
         elif row.next_row is None:
-            row.previous_row.set_next_row(None)
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(None)
         else:
-            row.next_row.set_previous_row(row.previous_row)
-            row.previous_row.set_next_row(row.next_row)
+            if row.next_row is not None:
+                row.next_row.set_previous_row(row.previous_row)
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(row.next_row)
             if row.previous_row.track.id == App().player.current_track.id:
                 App().player.set_next()
                 App().player.set_prev()
