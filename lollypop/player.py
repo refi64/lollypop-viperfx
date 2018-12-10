@@ -470,7 +470,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 
     def get_album_by_id(self, album_id):
         """
-            Get track by object name
+            Get album by id
             @param album_id as int
             @return Album
         """

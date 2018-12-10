@@ -74,6 +74,8 @@ class LovedWidget(Gtk.Bin):
             loved = Type.NONE
         self.__object.set_loved(loved)
         if isinstance(self.__object, Track):
+            # 0.9.900 FIXME
+            # Il faut passer en revu tous les albums
             album = App().player.get_album_by_id(self.__object.album.id)
             albums = App().player.albums
             if album is not None:

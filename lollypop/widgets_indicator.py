@@ -181,10 +181,19 @@ class IndicatorWidget(Gtk.EventBox):
             @param event as Gdk.EventButton
         """
         if self.__image.get_icon_name()[0] == "list-remove-symbolic":
-            self.__row.emit("remove-track")
-            ancestor = self.get_ancestor(Gtk.ListBoxRow)
-            if ancestor is not None:
-                ancestor.destroy()
+            if self.__list_type & RowListType.DND:
+                self.__row.emit("remove-track")
+                ancestor = self.get_ancestor(Gtk.ListBoxRow)
+                if ancestor is not None:
+                    ancestor.destroy()
+            else:
+                for album in App().player.albums:
+                    if album.id == self.__row.track.album.id:
+                        if self.__row.track.id in album.track_ids:
+                            index = album.track_ids.index(self.__row.track.id)
+                            track = album.tracks[index]
+                            album.remove_track(track)
+                            break
         else:
             albums = App().player.albums
             # If album last in list, merge
