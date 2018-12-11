@@ -289,6 +289,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             Clear all albums
         """
         self._albums = []
+        self.set_next()
+        self.set_prev()
 
     def get_current_artists(self):
         """
