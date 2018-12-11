@@ -423,7 +423,10 @@ class ViewsContainer:
             state_one_ids = state_two_ids
             state_two_ids = []
         # Be sure to have an initial artist view
-        artist_view = self._get_view_artists_rounded()
+        artist_view = self.view_artists_rounded
+        if artist_view is None:
+            artist_view = self._get_view_artists_rounded()
+            self._stack.set_visible_child(artist_view)
         if state_one_ids and state_two_ids:
             self.show_view(state_one_ids[0], None, False)
             self.show_view(state_one_ids[0], state_two_ids)
