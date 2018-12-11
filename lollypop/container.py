@@ -117,10 +117,16 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             if self._list_one.get_visible():
                 self._list_two.hide()
                 self._list_one.hide()
+            children = []
             for child in self._stack.get_children():
                 if not isinstance(child, RoundedArtistsView):
-                    child.destroy()
+                    children.append(child)
             self._reload_navigation_view()
+            # We need to destroy after reload
+            # Otherwise, we will go back to artist view
+            # settings wrong state ids
+            for child in children:
+                child.destroy()
 
     @property
     def view(self):

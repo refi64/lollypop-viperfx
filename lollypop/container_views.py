@@ -410,6 +410,7 @@ class ViewsContainer:
         """
             Reload navigation view
         """
+        App().window.emit("show-can-go-back", True)
         state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
         # We do not support genres in navigation mode
@@ -421,7 +422,8 @@ class ViewsContainer:
                 (state_one_ids and state_one_ids[0] >= 0 and state_two_ids):
             state_one_ids = state_two_ids
             state_two_ids = []
-        self.show_artists_view()
+        # Be sure to have an initial artist view
+        artist_view = self._get_view_artists_rounded()
         if state_one_ids and state_two_ids:
             self.show_view(state_one_ids[0], None, False)
             self.show_view(state_one_ids[0], state_two_ids)
@@ -429,6 +431,10 @@ class ViewsContainer:
             self.show_view(state_one_ids[0])
         elif state_two_ids:
             self.show_view(state_two_ids[0])
+        else:
+            App().window.emit("can-go-back-changed", False)
+            self._stack.set_visible_child(artist_view)
+
 ############
 # PRIVATE  #
 ############
