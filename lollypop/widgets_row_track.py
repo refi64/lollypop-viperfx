@@ -84,5 +84,16 @@ class TrackRow(Row, DNDRow):
         return self.__filtered
 
 #######################
+# PROTECTED           #
+#######################
+    def _on_destroy(self, widget):
+        """
+            Destroyed widget
+            @param widget as Gtk.Widget
+        """
+        Row._on_destroy(self, widget)
+        DNDRow._on_destroy(self, widget)
+
+#######################
 # PRIVATE             #
 #######################

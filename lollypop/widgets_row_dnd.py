@@ -85,6 +85,18 @@ class DNDRow:
         return self.__previous_row
 
 #######################
+# PROTECTED           #
+#######################
+    def _on_destroy(self, widget):
+        """
+            Update label
+            @param widget as Gtk.Widget
+        """
+        if self.__next_row is not None:
+            position = self._track.number
+            self.next_row.update_number(position)
+
+#######################
 # PRIVATE             #
 #######################
     def __auto_scroll(self, up):

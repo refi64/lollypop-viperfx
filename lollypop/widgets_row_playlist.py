@@ -162,6 +162,7 @@ class PlaylistRow(Row, DNDRow):
             @param widget as Gtk.Widget
         """
         Row._on_destroy(self, widget)
+        DNDRow._on_destroy(self, widget)
         self.__artwork = None
         if self._list_type & RowListType.POPOVER:
             App().player.remove_track(self._track.id)
