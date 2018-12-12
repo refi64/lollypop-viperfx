@@ -92,7 +92,8 @@ class TrackRow(Row, DNDRow):
             @param widget as Gtk.Widget
         """
         Row._on_destroy(self, widget)
-        DNDRow._on_destroy(self, widget)
+        if self._list_type & RowListType.DND:
+            DNDRow._on_destroy(self, widget)
 
 #######################
 # PRIVATE             #
