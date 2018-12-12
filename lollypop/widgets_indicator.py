@@ -41,12 +41,25 @@ class IndicatorWidget(Gtk.EventBox):
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
 
-    def empty(self):
+    def button(self):
         """
             Show no indicator
         """
-        if self.__button is not None:
-            self.__stack.set_visible_child_name("button")
+        self.__init()
+        self.__stack.set_visible_child_name("button")
+        if self.__list_type & RowListType.PLAYLISTS:
+            self.__button.set_tooltip_text(_("Remove from playlist"))
+            self.__image.set_from_icon_name("list-remove-symbolic",
+                                            Gtk.IconSize.MENU)
+        elif self.__is_in_current_playlist():
+            self.__button.set_tooltip_text(
+                _("Remove from current playlist"))
+            self.__image.set_from_icon_name("list-remove-symbolic",
+                                            Gtk.IconSize.MENU)
+        else:
+            self.__button.set_tooltip_text(_("Add to current playlist"))
+            self.__image.set_from_icon_name("list-add-symbolic",
+                                            Gtk.IconSize.MENU)
 
     def play(self):
         """
@@ -86,25 +99,6 @@ class IndicatorWidget(Gtk.EventBox):
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
-
-    def update_button(self):
-        """
-            Update button based on queue status
-        """
-        self.__init()
-        if self.__list_type & RowListType.PLAYLISTS:
-            self.__button.set_tooltip_text(_("Remove from playlist"))
-            self.__image.set_from_icon_name("list-remove-symbolic",
-                                            Gtk.IconSize.MENU)
-        elif self.__is_in_current_playlist():
-            self.__button.set_tooltip_text(
-                _("Remove from current playlist"))
-            self.__image.set_from_icon_name("list-remove-symbolic",
-                                            Gtk.IconSize.MENU)
-        else:
-            self.__button.set_tooltip_text(_("Add to current playlist"))
-            self.__image.set_from_icon_name("list-add-symbolic",
-                                            Gtk.IconSize.MENU)
 
 #######################
 # PRIVATE             #
@@ -161,7 +155,7 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self.empty()
+        self.button()
 
     def __on_leave_notify(self, widget, event):
         """
@@ -210,7 +204,7 @@ class IndicatorWidget(Gtk.EventBox):
                     App().player.add_album(album)
                 else:
                     App().player.play_album(album)
-        self.update_button()
+        self.button()
         return True
 
     def __on_destroy(self, widget):

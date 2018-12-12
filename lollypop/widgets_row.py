@@ -125,7 +125,7 @@ class Row(Gtk.ListBoxRow):
             if loved != 0 and self.__context is None:
                 self._indicator.loved(loved)
             else:
-                self._indicator.empty()
+                self._indicator.button()
 
     def update_number_label(self):
         """
@@ -228,7 +228,7 @@ class Row(Gtk.ListBoxRow):
             self.__menu_button.connect(
                 "button-release-event",
                 self.__on_indicator_button_release_event)
-            self._indicator.update_button()
+            self._indicator.button()
 
     def __on_leave_notify_event(self, widget, event):
         """
