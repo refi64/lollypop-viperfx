@@ -181,6 +181,7 @@ class IndicatorWidget(Gtk.EventBox):
                 if ancestor is not None:
                     ancestor.destroy()
             else:
+                self.button()
                 for album in App().player.albums:
                     if album.id == self.__row.track.album.id:
                         if self.__row.track.id in album.track_ids:
@@ -189,6 +190,7 @@ class IndicatorWidget(Gtk.EventBox):
                             album.remove_track(track)
                             break
         else:
+            self.button()
             albums = App().player.albums
             # If album last in list, merge
             if albums and albums[-1].id == self.__row.track.album.id:
@@ -204,7 +206,6 @@ class IndicatorWidget(Gtk.EventBox):
                     App().player.add_album(album)
                 else:
                     App().player.play_album(album)
-        self.button()
         return True
 
     def __on_destroy(self, widget):
