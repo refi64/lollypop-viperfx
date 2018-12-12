@@ -145,7 +145,9 @@ class ViewsContainer:
         if App().window.is_adaptive:
             list_type = RowListType.DND
         else:
-            list_type = RowListType.TWO_COLUMNS | RowListType.DND
+            list_type = RowListType.TWO_COLUMNS |\
+                        RowListType.DND |\
+                        RowListType.PLAYLISTS
         if len(playlist_ids) == 1 and\
                 App().playlists.get_smart(playlist_ids[0]):
             from lollypop.view_playlists import PlaylistsView
