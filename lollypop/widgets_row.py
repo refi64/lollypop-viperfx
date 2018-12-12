@@ -32,6 +32,7 @@ class Row(Gtk.ListBoxRow):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
+        self._list_type = list_type
         self._artists_label = None
         self._track = track
         self.__preview_timeout_id = None
@@ -43,7 +44,7 @@ class Row(Gtk.ListBoxRow):
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
         self._row_widget = Gtk.EventBox()
-        self._row_widget.connect("destroy", self.__on_destroy)
+        self._row_widget.connect("destroy", self._on_destroy)
         self._row_widget.connect("button-release-event",
                                  self.__on_button_release_event)
         self._row_widget.connect("enter-notify-event",
@@ -91,7 +92,7 @@ class Row(Gtk.ListBoxRow):
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
-        if list_type & (RowListType.READ_ONLY | RowListType.Popover):
+        if list_type & (RowListType.READ_ONLY | RowListType.POPOVER):
             self.__menu_button.set_opacity(0)
             self.__menu_button.set_sensitive(False)
         self._grid.add(self._num_label)
@@ -157,6 +158,15 @@ class Row(Gtk.ListBoxRow):
             Return TrackMenu
         """
         return TrackMenu(self._track)
+
+    def _on_destroy(self, widget):
+        """
+            We need to stop timeout idle to prevent
+            __on_indicator_button_release_event() segfaulting
+        """
+        if self.__context_timeout_id is not None:
+            GLib.source_remove(self.__context_timeout_id)
+            self.__context_timeout_id = None
 
 #######################
 # PRIVATE             #
@@ -309,15 +319,6 @@ class Row(Gtk.ListBoxRow):
             self.set_indicator(App().player.current_track.id == self._track.id,
                                self._track.loved)
         return True
-
-    def __on_destroy(self, widget):
-        """
-            We need to stop timeout idle to prevent
-            __on_indicator_button_release_event() segfaulting
-        """
-        if self.__context_timeout_id is not None:
-            GLib.source_remove(self.__context_timeout_id)
-            self.__context_timeout_id = None
 
     def __on_closed(self, widget):
         """

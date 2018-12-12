@@ -32,7 +32,7 @@ class PlaylistsPopover(Popover):
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
         self.__view = PlaylistsView(App().player.playlist_ids,
-                                    RowListType.DND | RowListType.Popover,
+                                    RowListType.DND | RowListType.POPOVER,
                                     False)
         self.__view.show()
         self.add(self.__view)

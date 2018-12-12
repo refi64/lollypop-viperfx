@@ -79,7 +79,6 @@ class PlaylistRow(Row, DNDRow):
             self._grid.attach(self.__header, 1, 0, 4, 1)
         self.set_indicator(App().player.current_track.id == self._track.id,
                            self._track.loved)
-        self.connect("destroy", self.__on_destroy)
 
     def set_previous_row(self, row):
         """
@@ -157,6 +156,16 @@ class PlaylistRow(Row, DNDRow):
         """
         return TrackMenu(self._track, True)
 
+    def _on_destroy(self, widget):
+        """
+            Destroyed widget
+            @param widget as Gtk.Widget
+        """
+        Row._on_destroy(self, widget)
+        self.__artwork = None
+        if self._list_type & RowListType.POPOVER:
+            App().player.remove_track(self._track.id)
+
 #######################
 # PRIVATE             #
 #######################
@@ -174,10 +183,3 @@ class PlaylistRow(Row, DNDRow):
             self.__artwork.set_from_surface(surface)
         self.__artwork.show()
         self.show_all()
-
-    def __on_destroy(self, widget):
-        """
-            Destroyed widget
-            @param widget as Gtk.Widget
-        """
-        self.__artwork = None

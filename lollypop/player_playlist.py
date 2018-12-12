@@ -48,6 +48,8 @@ class PlaylistPlayer(BasePlayer):
             if track.id == track_id:
                 self._playlist_tracks.remove(track)
                 break
+        self.set_next()
+        self.set_prev()
 
     def populate_playlist_by_tracks(self, tracks, playlist_ids):
         """

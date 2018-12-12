@@ -45,7 +45,7 @@ class RowListType:
     SEARCH = 1 << 3
     READ_ONLY = 1 << 4
     PLAYLISTS = 1 << 5
-    Popover = 1 << 6
+    POPOVER = 1 << 6
 
 
 class ArtSize:

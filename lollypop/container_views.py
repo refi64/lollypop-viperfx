@@ -393,7 +393,7 @@ class ViewsContainer:
         if App().player.playlist_ids:
             from lollypop.view_playlists import PlaylistsView
             view = PlaylistsView(App().player.playlist_ids,
-                                 RowListType.DND | RowListType.Popover,
+                                 RowListType.DND | RowListType.POPOVER,
                                  False)
             view.populate(App().player.playlist_tracks)
         else:

@@ -27,7 +27,7 @@ class CurrentAlbumsView(AlbumsListView):
         """
             Init popover
         """
-        AlbumsListView.__init__(self, RowListType.DND | RowListType.Popover)
+        AlbumsListView.__init__(self, RowListType.DND | RowListType.POPOVER)
         self.__clear_button = Gtk.Button.new_from_icon_name(
             "edit-clear-all-symbolic",
             Gtk.IconSize.MENU)
