@@ -142,19 +142,20 @@ class ViewsContainer:
                 tracks.append(track)
             return tracks
 
+        if App().window.is_adaptive:
+            list_type = RowListType.DND
+        else:
+            list_type = RowListType.TWO_COLUMNS | RowListType.DND
         if len(playlist_ids) == 1 and\
                 App().playlists.get_smart(playlist_ids[0]):
             from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids,
-                                 RowListType.TWO_COLUMNS | RowListType.DND)
+            view = PlaylistsView(playlist_ids, list_type)
             loader = Loader(target=load_smart, view=view)
             loader.start()
         elif playlist_ids:
             from lollypop.view_playlists import PlaylistsView
-            if len(playlist_ids) == 1:
-                list_type = RowListType.TWO_COLUMNS | RowListType.DND
-            else:
-                list_type = RowListType.TWO_COLUMNS | RowListType.READ_ONLY
+            if len(playlist_ids) > 1:
+                list_type |= RowListType.READ_ONLY
             view = PlaylistsView(playlist_ids, list_type)
             loader = Loader(target=load, view=view)
             loader.start()
