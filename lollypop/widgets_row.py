@@ -38,11 +38,13 @@ class Row(Gtk.ListBoxRow):
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
-        self._indicator = None
-        if self._indicator is None:
-            self._indicator = IndicatorWidget(self, list_type)
-        self.set_indicator(App().player.current_track.id == self._track.id,
-                           self._track.loved)
+        self._indicator = IndicatorWidget(self, list_type)
+        # We do not use set_indicator() here, we do not want widget to be
+        # populated
+        if App().player.current_track.id == self._track.id:
+            self._indicator.play()
+        elif self._track.loved:
+            self._indicator.loved(self._track.loved)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("destroy", self._on_destroy)
         self._row_widget.connect("button-release-event",
