@@ -258,12 +258,12 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         elif shuffle_setting == Shuffle.ALBUMS:
             if album_id is None:
                 shuffle(album_ids)
-                album = Album(album_ids.pop(0))
+                album = Album(album_ids.pop(0), filter1_ids, filter2_ids, True)
             else:
-                album = Album(album_ids.pop(0))
+                album = Album(album_ids.pop(0), filter1_ids, filter2_ids, True)
                 shuffle(album_ids)
         else:
-            album = Album(album_ids.pop(0))
+            album = Album(album_ids.pop(0), filter1_ids, filter2_ids, True)
         # Select a track and start playback
         track = None
         self._albums = [album]
