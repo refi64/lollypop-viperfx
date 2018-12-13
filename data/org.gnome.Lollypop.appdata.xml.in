@@ -47,7 +47,9 @@
   </categories>
   <screenshots>
     <screenshot type="default">
-      <image type="source" width="1920" height="1053">https://adishatz.org/lollypop.jpg</image>
+      <image type="source" width="1680" height="1023">https://adishatz.org/lollypop1.jpg</image>
+      <image type="source" width="1680" height="1023">https://adishatz.org/lollypop2.jpg</image>
+      <image type="source" width="400" height="617">https://adishatz.org/lollypop3.jpg</image>
     </screenshot>
   </screenshots>
   <url type="homepage">https://wiki.gnome.org/Apps/Lollypop</url>
