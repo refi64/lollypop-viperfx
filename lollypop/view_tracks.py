@@ -380,10 +380,11 @@ class TracksView:
         if not contain_children:
             self.destroy()
 
-    def __on_indicator_button_clicked(self, button, box, disc):
+    def __on_indicator_button_release_event(self, button, event, box, disc):
         """
             Popup menu for track relative to button
             @param button as Gtk.Button
+            @param event as Gdk.EventButton
             @param box as Gtk.Box
             @param disc as Disc
         """
@@ -609,8 +610,8 @@ class TracksView:
                         "go-next-symbolic",
                         Gtk.IconSize.BUTTON)
                     indicator.get_style_context().add_class("menu-button")
-                    indicator.connect("clicked",
-                                      self.__on_indicator_button_clicked,
+                    indicator.connect("button-release-event",
+                                      self.__on_indicator_button_release_event,
                                       box,
                                       disc)
                     indicator.show()
