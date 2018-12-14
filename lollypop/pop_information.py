@@ -20,13 +20,13 @@ class InformationPopover(Popover):
         Popover with artist information
     """
 
-    def __init__(self):
+    def __init__(self, minimal=False):
         """
             Init artist infos
-            @param follow_player as bool
+            @param minimal as bool
         """
         Popover.__init__(self)
-        self.__view = InformationView()
+        self.__view = InformationView(minimal)
         self.__view.show()
         self.connect("map", self.__on_map)
         self.add(self.__view)
