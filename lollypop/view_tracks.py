@@ -89,7 +89,6 @@ class TracksView:
             self.__discs_to_load = list(self.__discs)
             for disc in self.__discs:
                 self.__add_disc_container(disc.number)
-
         if self.__discs_to_load:
             disc = self.__discs_to_load.pop(0)
             disc_number = disc.number

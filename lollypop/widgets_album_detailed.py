@@ -234,8 +234,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         from lollypop.widgets_row_track import TrackRow
         track_height = TrackRow.get_best_height(self)
-        # Header height + 3 => separator + 10 (margin_start/end)
-        minimal_height = maximal_height = track_height + 13
+        minimal_height = maximal_height = track_height + 20
         count = self._album.tracks_count
         mid_tracks = int(0.5 + count / 2)
         left_height = track_height * mid_tracks
