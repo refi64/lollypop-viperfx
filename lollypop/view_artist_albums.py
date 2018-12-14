@@ -128,6 +128,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         if widget.is_populated:
             widget.set_filter_func(self._filter_func)
             widget.connect("overlayed", self.on_overlayed)
+            widget.set_opacity(1)
 
 #######################
 # PRIVATE             #
@@ -146,6 +147,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
                                          self._genre_ids,
                                          self._artist_ids,
                                          self.__art_size)
+            widget.set_opacity(0)
             widget.show()
             self._lazy_queue.append(widget)
             self._album_box.add(widget)
