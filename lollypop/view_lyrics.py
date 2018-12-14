@@ -124,12 +124,15 @@ class LyricsView(View, InformationController):
         try:
             locales = GLib.get_language_names()
             user_code = locales[0].split(".")[0]
-            from textblob.blob import TextBlob
+            try:
+                from textblob.blob import TextBlob
+            except:
+                return _("You need to install python3-textblob module")
             blob = TextBlob(text)
             return str(blob.translate(to=user_code))
         except Exception as e:
             Logger.error("LyricsView::__get_blob(): %s", e)
-            return _("You need to install python-textblob module")
+            return _("Can't translate this lyrics")
 
     def __download_wikia_lyrics(self):
         """
