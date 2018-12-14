@@ -68,14 +68,14 @@
         <property name="margin_top">15</property>
         <property name="column_spacing">5</property>
         <child>
-          <object class="GtkButton" id="translate_button">
+          <object class="GtkToggleButton" id="translate_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Translate</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
-            <signal name="clicked" handler="_on_translate_clicked" swapped="no"/>
+            <signal name="toggled" handler="_on_translate_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">0</property>

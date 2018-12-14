@@ -39,7 +39,7 @@ class LyricsView(View, InformationController):
         self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
-        self.__lyrics_set = False
+        self.__lyrics_text = ""
         self.__current_width = self.__current_height = 0
         self.__cancellable = Gio.Cancellable()
         builder = Gtk.Builder()
@@ -60,7 +60,7 @@ class LyricsView(View, InformationController):
         """
         self.__current_track = track
         self.update_artwork(self.__current_width, self.__current_height)
-        self.__lyrics_set = False
+        self.__lyrics_text = ""
         self.__update_lyrics_style()
         self.__lyrics_label.set_text(_("Loading…"))
         self.__cancellable.cancel()
@@ -85,21 +85,16 @@ class LyricsView(View, InformationController):
 ##############
 # PROTECTED  #
 ##############
-    def _on_close_clicked(self, button):
-        """
-            Close lyrics view
-            @param button as Gtk.Button
-        """
-        App().window.container.destroy_current_view()
-
-    def _on_translate_clicked(self, button):
+    def _on_translate_toggled(self, button):
         """
             Translate lyrics
             @param button as Gtk.Button
         """
-        button.set_sensitive(False)
-        App().task_helper.run(self.__get_blob, self.__lyrics_label.get_text(),
-                              callback=(self.__lyrics_label.set_text,))
+        if button.get_active():
+            App().task_helper.run(self.__get_blob, self.__lyrics_text,
+                                  callback=(self.__lyrics_label.set_text,))
+        else:
+            self.__lyrics_label.set_text(self.__lyrics_text)
 
     def _on_map(self, widget):
         """
@@ -247,20 +242,20 @@ class LyricsView(View, InformationController):
             @param separator as str
         """
         self.__downloads_running -= 1
-        if self.__lyrics_set:
+        if self.__lyrics_text:
             return
         if status:
             try:
                 from bs4 import BeautifulSoup
                 soup = BeautifulSoup(data, 'html.parser')
-                lyrics_text = soup.find_all(
+                self.__lyrics_text = soup.find_all(
                     "div", class_=cls)[0].get_text(separator=separator)
-                self.__lyrics_label.set_text(lyrics_text)
-                self.__lyrics_set = True
+                self.__lyrics_label.set_text(self.__lyrics_text)
             except Exception as e:
                 Logger.warning("LyricsView::__on_lyrics_downloaded(): %s", e)
-        if not self.__lyrics_set and self.__downloads_running == 0:
+        if not self.__lyrics_text and self.__downloads_running == 0:
             self.__lyrics_label.set_text(_("No lyrics found ") + "😓")
+            self.__translate_button.set_sensitive(False)
 
     def __on_current_changed(self, player):
         """
