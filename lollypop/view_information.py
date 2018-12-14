@@ -232,7 +232,9 @@ class InformationView(BaseView, Gtk.Bin):
             @param button as Gtk.Button
             @param track as Track
         """
-        self.hide()
+        popover = self.get_ancestor(Gtk.Popover)
+        if popover is not None:
+            popover.popdown()
         App().window.container.show_lyrics(track)
 
     def __on_label_button_release_event(self, button, event, artist):
