@@ -67,7 +67,6 @@ class LyricsView(View, InformationController):
         self.__cancellable.reset()
         # First try to get lyrics from tags
         from lollypop.tagreader import TagReader
-        lyrics = None
         reader = TagReader()
         try:
             info = reader.get_info(self.__current_track.uri)
@@ -75,9 +74,9 @@ class LyricsView(View, InformationController):
             info = None
         if info is not None:
             tags = info.get_tags()
-            lyrics = reader.get_lyrics(tags)
-        if lyrics:
-            self.__lyrics_label.set_label(lyrics)
+            self.__lyrics_text = reader.get_lyrics(tags)
+        if self.__lyrics_text:
+            self.__lyrics_label.set_label(self.__lyrics_text)
         else:
             self.__download_wikia_lyrics()
             self.__download_genius_lyrics()
