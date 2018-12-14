@@ -127,7 +127,8 @@ class LyricsView(View, InformationController):
             from textblob.blob import TextBlob
             blob = TextBlob(text)
             return str(blob.translate(to=user_code))
-        except:
+        except Exception as e:
+            Logger.error("LyricsView::__get_blob(): %s", e)
             return _("You need to install python-textblob module")
 
     def __download_wikia_lyrics(self):
