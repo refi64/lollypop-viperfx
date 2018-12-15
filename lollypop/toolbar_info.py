@@ -173,7 +173,9 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param x as float
             @param y as float
         """
-        event = gesture.get_last_event(sequence) if sequence is None else None
+        event = None
+        if sequence is not None:
+            event = gesture.get_last_event(sequence)
         if event is None or event.button.button == 1:
             if App().player.current_track.id == Type.RADIOS:
                 from lollypop.pop_tunein import TuneinPopover
