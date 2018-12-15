@@ -147,7 +147,6 @@ class InformationView(BaseView, Gtk.Bin):
             albums_view = AlbumsListView(RowListType.READ_ONLY)
             albums_view.set_size_request(300, -1)
             albums_view.show()
-            widget.insert_column(2)
             widget.attach(albums_view, 2, 1, 1, 2)
             albums = []
             for album_id in App().albums.get_ids([artist_id], []):
@@ -158,7 +157,10 @@ class InformationView(BaseView, Gtk.Bin):
             bio_label.set_markup(
                 GLib.markup_escape_text(content.decode("utf-8")))
         elif not App().settings.get_value("network-access"):
-            builder.get_object("scrolled").hide()
+            if self.__minimal:
+                bio_label.set_text(_("No information for %s") % artist_name)
+            else:
+                builder.get_object("scrolled").hide()
         else:
             bio_label.set_text(_("Loading information"))
             App().task_helper.run(

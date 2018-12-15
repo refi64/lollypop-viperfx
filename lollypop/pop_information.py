@@ -26,6 +26,7 @@ class InformationPopover(Popover):
             @param minimal as bool
         """
         Popover.__init__(self)
+        self.__minimal = minimal
         self.__view = InformationView(minimal)
         self.__view.show()
         self.connect("map", self.__on_map)
@@ -51,5 +52,9 @@ class InformationPopover(Popover):
             @param widget as Gtk.Widget
         """
         size = App().window.get_size()
-        self.set_size_request(min(size[0] * 0.6, 1000),
-                              min(size[1] * 0.7, 800))
+        if self.__minimal:
+            self.set_size_request(min(size[0] * 0.6, 500),
+                                  min(size[1] * 0.5, 600))
+        else:
+            self.set_size_request(min(size[0] * 0.6, 1000),
+                                  min(size[1] * 0.7, 800))
