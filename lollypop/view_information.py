@@ -124,6 +124,7 @@ class InformationView(BaseView, Gtk.Bin):
         eventbox = builder.get_object("eventbox")
         self.__bio_label = builder.get_object("bio_label")
         if artist_id is None and App().player.current_track.id is not None:
+            builder.get_object("header").show()
             builder.get_object("lyrics_button").show()
             builder.get_object("lyrics_button").connect(
                 "clicked",
@@ -135,6 +136,7 @@ class InformationView(BaseView, Gtk.Bin):
         if self.__minimal:
             self.__artist_artwork.hide()
         else:
+            builder.get_object("header").show()
             self.__artist_label.set_text(self.__artist_name)
             self.__artist_label.show()
             title_label.show()
@@ -148,6 +150,7 @@ class InformationView(BaseView, Gtk.Bin):
             albums_view = AlbumsListView(RowListType.READ_ONLY)
             albums_view.set_size_request(300, -1)
             albums_view.show()
+            albums_view.set_margin_start(5)
             widget.attach(albums_view, 2, 1, 1, 2)
             albums = []
             for album_id in App().albums.get_ids([artist_id], []):
@@ -229,7 +232,6 @@ class InformationView(BaseView, Gtk.Bin):
             self.__bio_label.set_markup(
                 GLib.markup_escape_text(content.decode("utf-8")))
         else:
-            self.__bio_label.set_margin_top(20)
             self.__bio_label.set_text(
                 _("No information for %s") % self.__artist_name)
 

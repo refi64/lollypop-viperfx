@@ -267,6 +267,10 @@ popover.background separator {
     background-color: alpha(black, 0.9);
 }
 
+.padding {
+    padding: 5px;
+}
+
 .no-padding {
     padding: 0px;
 }

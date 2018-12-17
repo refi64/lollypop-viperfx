@@ -10,13 +10,12 @@
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="row_spacing">5</property>
-    <property name="column_spacing">5</property>
     <child>
       <object class="GtkImage" id="artist_artwork">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">start</property>
+        <property name="margin_right">5</property>
         <property name="stock">gtk-missing-image</property>
       </object>
       <packing>
@@ -53,6 +52,9 @@
                         <property name="wrap">True</property>
                         <property name="width_chars">30</property>
                         <property name="max_width_chars">30</property>
+                        <style>
+                          <class name="padding"/>
+                        </style>
                       </object>
                     </child>
                   </object>
@@ -110,15 +112,13 @@
       </packing>
     </child>
     <child>
-      <object class="GtkGrid">
-        <property name="visible">True</property>
+      <object class="GtkGrid" id="header">
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="margin_bottom">5</property>
         <property name="column_spacing">15</property>
         <child>
           <object class="GtkLabel" id="artist_label">
-            <property name="visible">False</property>
             <property name="can_focus">False</property>
             <property name="ellipsize">end</property>
             <attributes>
@@ -133,7 +133,6 @@
         </child>
         <child>
           <object class="GtkLabel" id="title_label">
-            <property name="visible">False</property>
             <property name="can_focus">False</property>
             <property name="ellipsize">end</property>
             <attributes>
