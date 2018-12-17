@@ -43,7 +43,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">No result</property>
+                        <property name="label" translatable="yes">No results</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
