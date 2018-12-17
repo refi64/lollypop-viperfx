@@ -187,16 +187,23 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 self._responsive_widget.show()
             else:
                 grid.add(self.__coverbox)
-                App().art_helper.set_album_artwork(
-                                           self._album,
-                                           self.__art_size,
-                                           self.__art_size,
-                                           self._artwork.get_scale_factor(),
-                                           self.__on_album_artwork)
+                self.set_artwork()
             grid.add(self._widget)
             self.add(grid)
         else:
             TracksView.populate(self)
+
+    def set_artwork(self):
+        """
+            Set album artwork
+        """
+        if self._artwork is None:
+            return
+        App().art_helper.set_album_artwork(self._album,
+                                           self.__art_size,
+                                           self.__art_size,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_album_artwork)
 
     def get_current_ordinate(self, parent):
         """
@@ -345,10 +352,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                                              Gtk.IconSize.DIALOG)
         else:
             self._artwork.set_from_surface(surface)
-        self._artwork.show()
-        TracksView.populate(self)
-        self._widget.add(self._responsive_widget)
-        self._responsive_widget.show()
+        if self._responsive_widget is None:
+            self._artwork.show()
+            TracksView.populate(self)
+            self._widget.add(self._responsive_widget)
+            self._responsive_widget.show()
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
