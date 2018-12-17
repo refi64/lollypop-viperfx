@@ -122,6 +122,8 @@ class InformationView(BaseView, Gtk.Bin):
         title_label = builder.get_object("title_label")
         self.__artist_artwork = builder.get_object("artist_artwork")
         eventbox = builder.get_object("eventbox")
+        eventbox.connect("button-release-event",
+                         self.__on_label_button_release_event)
         self.__bio_label = builder.get_object("bio_label")
         if artist_id is None and App().player.current_track.id is not None:
             builder.get_object("header").show()
@@ -170,8 +172,6 @@ class InformationView(BaseView, Gtk.Bin):
                 builder.get_object("scrolled").hide()
         else:
             self.__bio_label.set_text(_("Loading information"))
-            eventbox.connect("button-release-event",
-                             self.__on_label_button_release_event)
             App().task_helper.run(self.__get_bio_content,
                                   callback=(self.__set_bio_content,))
 
