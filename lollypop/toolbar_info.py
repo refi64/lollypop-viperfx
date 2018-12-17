@@ -41,10 +41,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self._infobox = builder.get_object("info")
         self.add(self._infobox)
 
-        self.__gesture = Gtk.GestureLongPress.new(self._infobox)
-        self.__gesture.connect("begin", self.__on_infobox_gesture_begin)
-        self.__gesture.connect("pressed", self.__on_infobox_gesture_pressed)
-        self.__gesture.set_button(0)
         self._spinner = builder.get_object("spinner")
 
         self.__labels = builder.get_object("nowplaying_labels")
@@ -59,11 +55,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self.connect("realize", self.__on_realize)
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
-
-        # Block default widget event handler for gesture (right click)
-        def on_button_event(widget, event):
-            return True
-        self.connect("button-press-event", on_button_event)
+        self.connect("button-press-event", self.__on_button_press_event)
 
     def do_get_preferred_width(self):
         """
@@ -139,44 +131,13 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             pixbuf = App().art.get_radio_artwork(name, self.art_size)
             self._artwork.set_from_surface(pixbuf)
 
-    def __on_infobox_gesture_begin(self, gesture, sequence):
-        """
-            Connect end signal
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-            @param y as float
-        """
-        gesture.connect("end", self.__on_infobox_gesture_end)
-
-    def __on_infobox_gesture_pressed(self, gesture, x, y):
+    def __on_button_press_event(self, widget, event):
         """
             Show current track menu
-            @param gesture as Gtk.GestureLongPress
-            @param x as float
-            @param y as float
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        gesture.disconnect_by_func(self.__on_infobox_gesture_end)
-        from lollypop.pop_menu import ToolbarMenu
-        menu = ToolbarMenu(App().player.current_track)
-        if App().player.current_track.id >= 0:
-            from lollypop.pop_menu import TrackMenuPopover
-            popover = TrackMenuPopover(App().player.current_track, menu)
-            popover.set_relative_to(self._infobox)
-        elif App().player.current_track.id == Type.RADIOS:
-            popover = Popover.new_from_model(self._infobox, menu)
-        popover.popup()
-
-    def __on_infobox_gesture_end(self, gesture, sequence):
-        """
-            Show current track menu
-            @param gesture as Gtk.GestureLongPress
-            @param x as float
-            @param y as float
-        """
-        event = None
-        if sequence is not None:
-            event = gesture.get_last_event(sequence)
-        if event is None or event.button.button == 1:
+        if event.button == 1:
             if App().player.current_track.id == Type.RADIOS:
                 from lollypop.pop_tunein import TuneinPopover
                 popover = TuneinPopover()
@@ -188,7 +149,16 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             popover.set_relative_to(self._infobox)
             popover.popup()
         else:
-            self.__on_infobox_gesture_pressed(gesture, 0, 0)
+            from lollypop.pop_menu import ToolbarMenu
+            menu = ToolbarMenu(App().player.current_track)
+            if App().player.current_track.id >= 0:
+                from lollypop.pop_menu import TrackMenuPopover
+                popover = TrackMenuPopover(App().player.current_track, menu)
+                popover.set_relative_to(self._infobox)
+            elif App().player.current_track.id == Type.RADIOS:
+                popover = Popover.new_from_model(self._infobox, menu)
+            popover.popup()
+        return True
 
     def __on_realize(self, toolbar):
         """
