@@ -33,7 +33,7 @@ class ArtistView(ArtistAlbumsView):
             @param artist id as int (Current if None)
             @param genre id as int
         """
-        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, ArtSize.BIG)
+        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, True)
         self.__art_signal_id = None
 
         builder = Gtk.Builder()

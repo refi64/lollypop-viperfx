@@ -90,18 +90,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__widget.connect("button-press-event", self.__on_button_press)
         self.connect("destroy", self.__on_destroy)
 
-    def set_artwork(self):
-        """
-            Set album artwork
-        """
-        if self._artwork is None:
-            return
-        App().art_helper.set_album_artwork(self._album,
-                                           ArtSize.BIG,
-                                           ArtSize.BIG,
-                                           self._artwork.get_scale_factor(),
-                                           self.__on_album_artwork)
-
     def do_get_preferred_width(self):
         """
             Return preferred width
@@ -179,6 +167,21 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         if self._album.id == album_id and destroy:
             self.destroy()
 
+    def _on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if self.__widget is None:
+            return
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
+        self.show_all()
+        self.emit("populated")
+
 #######################
 # PRIVATE             #
 #######################
@@ -209,21 +212,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                  self._genre_ids,
                                  self._artist_ids)
         return True
-
-    def __on_album_artwork(self, surface):
-        """
-            Set album artwork
-            @param surface as str
-        """
-        if self.__widget is None:
-            return
-        if surface is None:
-            self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             Gtk.IconSize.DIALOG)
-        else:
-            self._artwork.set_from_surface(surface)
-        self.show_all()
-        self.emit("populated")
 
     def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
         """

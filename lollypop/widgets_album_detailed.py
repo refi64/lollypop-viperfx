@@ -37,21 +37,21 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album, genre_ids, artist_ids, art_size):
+    def __init__(self, album, genre_ids, artist_ids, show_cover):
         """
             Init detailed album widget
             @param album as Album
             @param label_height as int
             @param genre ids as [int]
             @param artist ids as [int]
-            @param art size as ArtSize
+            @param show_cover as bool
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, RowListType.TWO_COLUMNS)
         self._widget = None
+        self.__show_cover = show_cover
         self.__width_allocation = 0
-        self.__art_size = art_size
         self.connect("size-allocate", self.__on_size_allocate)
 
     def populate(self):
@@ -123,17 +123,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             rating.set_margin_end(10)
             rating.show()
 
-            # In Popovers, no artwork
-            if self.__art_size == ArtSize.NONE:
-                self._artwork = None
-                loved.set_property("halign", Gtk.Align.END)
-                self.__header.add(rating)
-                self.__header.add(loved)
-                rating.set_hexpand(True)
-                self.__header.add(self.__duration_label)
-                self.__artist_label.set_text(", ".join(self._album.artists))
-                self.__artist_label.show()
-            else:
+            if self.__show_cover:
                 self.__header.add(self.__duration_label)
                 self.__duration_label.set_hexpand(True)
                 self.__duration_label.set_property("halign", Gtk.Align.END)
@@ -142,8 +132,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 eventbox.connect("leave-notify-event", self._on_leave_notify)
                 eventbox.show()
                 self.set_property("valign", Gtk.Align.CENTER)
-                self._artwork = App().art_helper.get_image(self.__art_size,
-                                                           self.__art_size,
+                self._artwork = App().art_helper.get_image(ArtSize.BIG,
+                                                           ArtSize.BIG,
                                                            "cover-frame")
                 self._artwork.show()
                 eventbox.add(self._artwork)
@@ -171,6 +161,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                     self.__artist_label.set_text(
                         ", ".join(self._album.artists))
                     self.__artist_label.show()
+            else:
+                self._artwork = None
+                loved.set_property("halign", Gtk.Align.END)
+                self.__header.add(rating)
+                self.__header.add(loved)
+                rating.set_hexpand(True)
+                self.__header.add(self.__duration_label)
+                self.__artist_label.set_text(", ".join(self._album.artists))
+                self.__artist_label.show()
             self.__set_duration()
             album_name = GLib.markup_escape_text(self._album.name)
             artist_name = GLib.markup_escape_text(
@@ -192,18 +191,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.add(grid)
         else:
             TracksView.populate(self)
-
-    def set_artwork(self):
-        """
-            Set album artwork
-        """
-        if self._artwork is None:
-            return
-        App().art_helper.set_album_artwork(self._album,
-                                           self.__art_size,
-                                           self.__art_size,
-                                           self._artwork.get_scale_factor(),
-                                           self.__on_album_artwork)
 
     def get_current_ordinate(self, parent):
         """
@@ -256,7 +243,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             minimal_height += track_height
             maximal_height += track_height
         # 26 is for loved and rating
-        cover_height = self.__art_size + 26
+        cover_height = ArtSize.BIG + 26
         if minimal_height < cover_height:
             return (cover_height, cover_height)
         else:
@@ -296,6 +283,22 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         if not self.is_overlay:
             self.show_overlay(True)
             return
+
+    def _on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
+        if self._responsive_widget is None:
+            self._artwork.show()
+            TracksView.populate(self)
+            self._widget.add(self._responsive_widget)
+            self._responsive_widget.show()
 
 #######################
 # PRIVATE             #
@@ -341,22 +344,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             @param widget as Popover
         """
         self.get_style_context().remove_class("album-menu-selected")
-
-    def __on_album_artwork(self, surface):
-        """
-            Set album artwork
-            @param surface as str
-        """
-        if surface is None:
-            self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             Gtk.IconSize.DIALOG)
-        else:
-            self._artwork.set_from_surface(surface)
-        if self._responsive_widget is None:
-            self._artwork.show()
-            TracksView.populate(self)
-            self._widget.add(self._responsive_widget)
-            self._responsive_widget.show()
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

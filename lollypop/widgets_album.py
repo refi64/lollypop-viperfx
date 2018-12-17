@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 
 
 class AlbumWidget:
@@ -51,6 +51,18 @@ class AlbumWidget:
         """
         self.__filtered = b
 
+    def set_artwork(self):
+        """
+            Set album artwork
+        """
+        if self._artwork is None:
+            return
+        App().art_helper.set_album_artwork(self._album,
+                                           ArtSize.BIG,
+                                           ArtSize.BIG,
+                                           self._artwork.get_scale_factor(),
+                                           self._on_album_artwork)
+
     @property
     def album(self):
         """
@@ -76,6 +88,9 @@ class AlbumWidget:
 # PROTECTED           #
 #######################
     def _on_album_updated(self, scanner, album_id, destroy):
+        pass
+
+    def _on_album_artwork(self, surface):
         pass
 
 #######################
