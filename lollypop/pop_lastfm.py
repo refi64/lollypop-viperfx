@@ -87,7 +87,10 @@ class LastfmPopover(Popover):
             GLib.idle_add(self.__populate, artists)
         else:
             self.__spinner.stop()
-            self.__stack.set_visible_child(self.__view)
+            if self.__view.get_children():
+                self.__stack.set_visible_child(self.__view)
+            else:
+                self.__stack.set_visible_child_name("no-result")
 
     def __on_map(self, widget):
         """
