@@ -76,6 +76,7 @@
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">Turn on background data</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -87,7 +88,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Turn on background data</property>
-                        <property name="halign">end</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
                         <signal name="state-set" handler="_on_enable_network_access_state_set" swapped="no"/>
                       </object>
                       <packing>
