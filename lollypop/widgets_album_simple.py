@@ -10,13 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gdk, Gtk, Pango, GObject
+from gi.repository import GLib, Gtk, Pango, GObject
 
 from gettext import gettext as _
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
-from lollypop.widgets_utils import Popover
 from lollypop.define import App, ArtSize, Shuffle
 
 
@@ -87,7 +86,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.set_selection()
         self.__widget.connect("enter-notify-event", self._on_enter_notify)
         self.__widget.connect("leave-notify-event", self._on_leave_notify)
-        self.__widget.connect("button-press-event", self.__on_button_press)
+        self.__widget.connect("button-press-event", self._on_button_press)
         self.connect("destroy", self.__on_destroy)
 
     def do_get_preferred_width(self):
@@ -228,25 +227,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             tooltip.set_markup(markup)
             return True
 
-    def __on_button_press(self, eventbox, event):
-        """
-            Handle album mouse click
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.EventButton
-        """
-        if event.button != 1:
-            from lollypop.pop_menu import AlbumMenu
-            popover = Popover.new_from_model(self._artwork,
-                                             AlbumMenu(self._album, True))
-            popover.set_position(Gtk.PositionType.BOTTOM)
-            rect = Gdk.Rectangle()
-            rect.x = event.x
-            rect.y = event.y
-            rect.width = rect.height = 1
-            popover.set_pointing_to(rect)
-            popover.connect("closed", self.__on_album_popover_closed)
-            popover.popup()
-
     def __on_artist_button_press(self, eventbox, event):
         """
             Go to artist page
@@ -255,14 +235,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         App().window.container.show_artists_albums(self._album.artist_ids)
         return True
-
-    def __on_album_popover_closed(self, popover):
-        """
-            Remove overlay
-            @param popover as Popover
-            @param album_widget as AlbumWidget
-        """
-        self.lock_overlay(False)
 
     def __on_destroy(self, widget):
         """

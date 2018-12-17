@@ -17,8 +17,6 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
-from lollypop.pop_menu import AlbumMenu
-from lollypop.widgets_utils import Popover
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.widgets_context import ContextWidget
 from lollypop.define import Sizing
@@ -130,6 +128,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 eventbox = Gtk.EventBox()
                 eventbox.connect("enter-notify-event", self._on_enter_notify)
                 eventbox.connect("leave-notify-event", self._on_leave_notify)
+                eventbox.connect("button-press-event", self._on_button_press)
                 eventbox.show()
                 self.set_property("valign", Gtk.Align.CENTER)
                 self._artwork = App().art_helper.get_image(ArtSize.BIG,
@@ -319,31 +318,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 self.__duration_label.set_text(_("%s h") % hours)
         else:
             self.__duration_label.set_text(_("%s m") % mins)
-
-    def __pop_menu(self, widget):
-        """
-            Popup menu for album
-            @param widget as Gtk.Button
-            @param album id as int
-        """
-        ancestor = self.get_ancestor(Popover)
-        # Get album real genre ids (not contextual)
-        popover = Popover.new_from_model(widget,
-                                         AlbumMenu(self._album,
-                                                   ancestor is not None))
-        if ancestor is not None and App().window.container.view is not None:
-            App().window.container.view.show_popover(popover)
-        else:
-            popover.connect("closed", self.__on_pop_menu_closed)
-            self.get_style_context().add_class("album-menu-selected")
-            popover.popup()
-
-    def __on_pop_menu_closed(self, widget):
-        """
-            Remove selected style
-            @param widget as Popover
-        """
-        self.get_style_context().remove_class("album-menu-selected")
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

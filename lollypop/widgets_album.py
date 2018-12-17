@@ -10,9 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from lollypop.define import App, ArtSize
+from lollypop.widgets_utils import Popover
 
 
 class AlbumWidget:
@@ -92,6 +93,35 @@ class AlbumWidget:
 
     def _on_album_artwork(self, surface):
         pass
+
+    def _on_button_press(self, eventbox, event):
+        """
+            Handle album mouse click
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventButton
+        """
+        if event.button != 1:
+            from lollypop.pop_menu import AlbumMenu
+            popover = Popover.new_from_model(self._artwork,
+                                             AlbumMenu(
+                                                self._album,
+                                                self._artist_ids == []))
+            popover.set_position(Gtk.PositionType.BOTTOM)
+            rect = Gdk.Rectangle()
+            rect.x = event.x
+            rect.y = event.y
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+            popover.connect("closed", self._on_album_popover_closed)
+            popover.popup()
+
+    def _on_album_popover_closed(self, popover):
+        """
+            Remove overlay
+            @param popover as Popover
+            @param album_widget as AlbumWidget
+        """
+        self.lock_overlay(False)
 
 #######################
 # PRIVATE             #
