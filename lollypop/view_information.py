@@ -170,7 +170,7 @@ class InformationView(BaseView, Gtk.Bin):
             eventbox.connect("button-release-event",
                              self.__on_label_button_release_event)
             App().task_helper.run(self.__get_bio_content,
-                                  callback=(self.__set_bio_content))
+                                  callback=(self.__set_bio_content,))
 
 #######################
 # PROTECTED           #
@@ -196,7 +196,7 @@ class InformationView(BaseView, Gtk.Bin):
         self.__artist_label.hide()
         self.__bio_label.set_text(_("Loading information"))
         App().task_helper.run(
-            self.__get_bio_content, callback=(self.__set_bio_content))
+            self.__get_bio_content, callback=(self.__set_bio_content,))
 
 #######################
 # PRIVATE             #
