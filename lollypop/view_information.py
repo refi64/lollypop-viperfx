@@ -118,7 +118,7 @@ class InformationView(BaseView, Gtk.Bin):
         widget = builder.get_object("widget")
         self.add(widget)
         self.__stack = builder.get_object("stack")
-        artist_label = builder.get_object("artist_label")
+        self.__artist_label = builder.get_object("artist_label")
         title_label = builder.get_object("title_label")
         self.__artist_artwork = builder.get_object("artist_artwork")
         eventbox = builder.get_object("eventbox")
@@ -132,10 +132,12 @@ class InformationView(BaseView, Gtk.Bin):
             artist_id = App().player.current_track.artist_ids[0]
             title_label.set_text(App().player.current_track.title)
         self.__artist_name = App().artists.get_name(artist_id)
-        artist_label.set_text(self.__artist_name)
         if self.__minimal:
             self.__artist_artwork.hide()
         else:
+            self.__artist_label.set_text(self.__artist_name)
+            self.__artist_label.show()
+            title_label.show()
             App().art_helper.set_artist_artwork(
                                     self.__artist_name,
                                     ArtSize.ARTIST_SMALL * 3,
@@ -158,8 +160,9 @@ class InformationView(BaseView, Gtk.Bin):
         elif not App().settings.get_value("network-access"):
             if self.__minimal:
                 self.__stack.set_visible_child_name("data")
-                artist_label.set_text(
+                self.__artist_label.set_text(
                     _("No information for %s") % self.__artist_name)
+                self.__artist_label.show()
             else:
                 builder.get_object("scrolled").hide()
         else:
@@ -190,6 +193,7 @@ class InformationView(BaseView, Gtk.Bin):
         App().settings.set_value("network-access",
                                  GLib.Variant("b", state))
         self.__stack.set_visible_child_name("bio")
+        self.__artist_label.hide()
         self.__bio_label.set_text(_("Loading information"))
         App().task_helper.run(
             self.__get_bio_content, callback=(self.__set_bio_content))
