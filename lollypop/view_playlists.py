@@ -99,7 +99,7 @@ class PlaylistsView(View, ViewController):
             Populate view with tracks from playlist
             @param tracks as [track]
         """
-        self.__playlists_widget.populate(list(tracks))
+        self.__playlists_widget.populate(tracks)
         self.__update_jump_button()
 
     def stop(self):
