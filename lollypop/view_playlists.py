@@ -72,6 +72,7 @@ class PlaylistsView(View, ViewController):
 
         self.__playlists_widget = PlaylistsWidget(playlist_ids, list_type)
         self.__playlists_widget.set_filter_func(self._filter_func)
+        self.__playlists_widget.connect("populated", self.__on_populated)
         self.__playlists_widget.show()
         self.add(builder.get_object("widget"))
         self._viewport.add(self.__playlists_widget)
@@ -287,6 +288,13 @@ class PlaylistsView(View, ViewController):
                 stream.close()
         except:
             pass
+
+    def __on_populated(self, playlists_widget):
+        """
+            Update jump button on populated
+            @param playlists_widget as PlaylistsWidget
+        """
+        self.__update_jump_button()
 
     def __on_playlist_track_added(self, playlists, playlist_id, uri, pos):
         """
