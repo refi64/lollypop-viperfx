@@ -38,6 +38,7 @@ class PlaylistPlayer(BasePlayer):
         self._playlist_tracks.insert(position, track)
         self.set_next()
         self.set_prev()
+        self.emit("playlist-changed")
 
     def remove_track(self, track_id):
         """
@@ -50,6 +51,7 @@ class PlaylistPlayer(BasePlayer):
                 break
         self.set_next()
         self.set_prev()
+        self.emit("playlist-changed")
 
     def populate_playlist_by_tracks(self, tracks, playlist_ids):
         """
@@ -63,6 +65,7 @@ class PlaylistPlayer(BasePlayer):
         self._playlist_ids = playlist_ids
         self.set_next()
         self.set_prev()
+        self.emit("playlist-changed")
 
     def update_playlist(self, tracks):
         """
@@ -72,6 +75,7 @@ class PlaylistPlayer(BasePlayer):
         if self._albums:
             return
         self._playlist_tracks = tracks
+        self.emit("playlist-changed")
 
     def next(self, force):
         """
