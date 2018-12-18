@@ -115,6 +115,7 @@ class InformationView(BaseView, Gtk.Bin):
         builder.add_from_resource(
             "/org/gnome/Lollypop/ArtistInformation.ui")
         builder.connect_signals(self)
+        self.__scrolled = builder.get_object("scrolled")
         widget = builder.get_object("widget")
         self.add(widget)
         self.__stack = builder.get_object("stack")
@@ -158,22 +159,8 @@ class InformationView(BaseView, Gtk.Bin):
             for album_id in App().albums.get_ids([artist_id], []):
                 albums.append(Album(album_id))
             albums_view.populate(albums)
-        content = InformationStore.get_bio(self.__artist_name)
-        if content is not None:
-            self.__bio_label.set_markup(
-                GLib.markup_escape_text(content.decode("utf-8")))
-        elif not App().settings.get_value("network-access"):
-            if self.__minimal:
-                self.__stack.set_visible_child_name("data")
-                self.__artist_label.set_text(
-                    _("No information for %s") % self.__artist_name)
-                self.__artist_label.show()
-            else:
-                builder.get_object("scrolled").hide()
-        else:
-            self.__bio_label.set_text(_("Loading information"))
-            App().task_helper.run(self.__get_bio_content,
-                                  callback=(self.__set_bio_content,))
+        App().task_helper.run(InformationStore.get_bio, self.__artist_name,
+                              callback=(self.__on_get_bio,))
 
 #######################
 # PROTECTED           #
@@ -228,7 +215,8 @@ class InformationView(BaseView, Gtk.Bin):
             @param content as bytes
         """
         if content is not None:
-            InformationStore.add_artist_bio(self.__artist_name, content)
+            App().task_helper.run(InformationStore.add_artist_bio,
+                                  self.__artist_name, content)
             self.__bio_label.set_markup(
                 GLib.markup_escape_text(content.decode("utf-8")))
         else:
@@ -291,3 +279,24 @@ class InformationView(BaseView, Gtk.Bin):
             self.__artist_artwork.hide()
         else:
             self.__artist_artwork.set_from_surface(surface)
+
+    def __on_get_bio(self, content):
+        """
+            Set bio content or get a new one if None
+            @param content as bytes
+        """
+        if content is not None:
+            self.__bio_label.set_markup(
+                GLib.markup_escape_text(content.decode("utf-8")))
+        elif not App().settings.get_value("network-access"):
+            if self.__minimal:
+                self.__stack.set_visible_child_name("data")
+                self.__artist_label.set_text(
+                    _("No information for %s") % self.__artist_name)
+                self.__artist_label.show()
+            else:
+                self.__scrolled.hide()
+        else:
+            self.__bio_label.set_text(_("Loading information"))
+            App().task_helper.run(self.__get_bio_content,
+                                  callback=(self.__set_bio_content,))
