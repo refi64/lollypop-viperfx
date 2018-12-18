@@ -125,7 +125,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             action_icon = "media-playback-start-symbolic"
             action_tooltip_text = _("Play")
         elif self.__list_type & RowListType.DND:
-            action_icon = "user-trash-symbolic"
+            action_icon = "list-remove-symbolic"
             action_tooltip_text = _("Remove from current playlist")
         if self.__list_type & (RowListType.SEARCH | RowListType.DND):
             self.__action_button = Gtk.Button.new_from_icon_name(
