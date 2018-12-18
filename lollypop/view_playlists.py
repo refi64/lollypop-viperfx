@@ -17,7 +17,7 @@ from random import shuffle
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App, Type
+from lollypop.define import App, Type, RowListType
 from lollypop.controller_view import ViewController, ViewControllerType
 
 
@@ -35,6 +35,7 @@ class PlaylistsView(View, ViewController):
         """
         View.__init__(self, True)
         ViewController.__init__(self, ViewControllerType.ALBUM)
+        self.__list_type = list_type
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect(
                                             "playlist-track-added",
@@ -335,8 +336,9 @@ class PlaylistsView(View, ViewController):
             @param widget as Gtk.Widget
             @param orientation as Gtk.Orientation
         """
-        if orientation == Gtk.Orientation.VERTICAL and\
-                App().window.is_adaptive:
+        if orientation == Gtk.Orientation.VERTICAL and (
+                App().window.is_adaptive or
+                self.__list_type & RowListType.POPOVER):
             self.__split_button.hide()
         else:
             self.__split_button.show()
