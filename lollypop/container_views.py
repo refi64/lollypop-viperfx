@@ -10,11 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
-
 from lollypop.shown import ShownLists
 from lollypop.loader import Loader
 from lollypop.objects import Track, Album
+from lollypop.view import View
 from lollypop.define import App, Type, RowListType, SelectionListMask
 
 
@@ -262,7 +261,7 @@ class ViewsContainer:
                 decades.append(decade)
             return decades
         if App().window.is_adaptive:
-            view = Gtk.Grid()
+            view = View()
         else:
             from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
             view = AlbumsDecadeBoxView()
