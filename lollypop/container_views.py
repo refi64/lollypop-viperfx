@@ -284,7 +284,7 @@ class ViewsContainer:
                     for album_id in items]
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, [Type.YEARS], years)
+            view = AlbumsListView(RowListType.DEFAULT, years, [Type.YEARS])
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView([Type.YEARS], years)
