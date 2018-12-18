@@ -335,7 +335,8 @@ class PlaylistsView(View, ViewController):
             @param widget as Gtk.Widget
             @param orientation as Gtk.Orientation
         """
-        if orientation == Gtk.Orientation.VERTICAL:
+        if orientation == Gtk.Orientation.VERTICAL and\
+                App().window.is_adaptive:
             self.__split_button.hide()
         else:
             self.__split_button.show()
