@@ -258,10 +258,9 @@ class Row(Gtk.ListBoxRow):
                 if self.__preview_timeout_id is not None:
                     GLib.source_remove(self.__preview_timeout_id)
                     self.__preview_timeout_id = None
-                self.set_indicator(
-                    App().player.current_track.id == self._track.id,
-                    self._track.loved)
                 App().player.preview.set_state(Gst.State.NULL)
+            self.set_indicator(App().player.current_track.id == self._track.id,
+                               self._track.loved)
 
     def __on_button_release_event(self, widget, event):
         """
