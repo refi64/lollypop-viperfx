@@ -115,6 +115,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 self.set_next()
             self.set_prev()
         self.emit("album-added", album.id)
+        self.emit("playlist-changed")
 
     def remove_album(self, album):
         """
@@ -129,6 +130,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                 self.set_next()
             self.set_prev()
             self.emit("album-removed", album.id)
+            self.emit("playlist-changed")
         except Exception as e:
             Logger.error("Player::remove_album(): %s" % e)
 
@@ -141,12 +143,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             for album in self._albums:
                 if album.id == album_id:
                     self.remove_album(album)
+            self.emit("playlist-changed")
         except Exception as e:
             Logger.error("Player::remove_album_by_id(): %s" % e)
 
     def remove_disc(self, disc, album_id):
         """
-            Remove all instance of album with id from albums
+            Remove disc for album_id
             @param disc as Disc
             @param album_id as int
         """
@@ -161,6 +164,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                                 removed.append(album)
             for album in removed:
                 self._albums.remove(album)
+            self.emit("playlist-changed")
         except Exception as e:
             Logger.error("Player::remove_disc(): %s" % e)
 
@@ -181,6 +185,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             track = album.tracks[0]
         self.load(track)
         self._albums = [album]
+        self.emit("playlist-changed")
 
     def play_albums(self, album_id, filter1_ids, filter2_ids):
         """
@@ -283,6 +288,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self._albums.append(album)
         if track is not None:
             self.load(track)
+        self.emit("playlist-changed")
 
     def clear_albums(self):
         """
@@ -291,6 +297,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self._albums = []
         self.set_next()
         self.set_prev()
+        self.emit("playlist-changed")
 
     def get_current_artists(self):
         """
@@ -361,6 +368,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     self.seek(position / Gst.SECOND)
                 else:
                     Logger.info("Player::restore_state(): track missing")
+                self.emit("playlist-changed")
         except Exception as e:
             Logger.error("Player::restore_state(): %s" % e)
 

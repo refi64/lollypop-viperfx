@@ -147,6 +147,7 @@
     </child>
     <child>
       <object class="GtkToggleButton" id="list-button">
+        <property name="sensitive">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="receives_default">False</property>

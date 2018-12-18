@@ -105,6 +105,7 @@ class ToolbarEnd(Gtk.Bin):
                                    self.__on_list_button_query_tooltip)
         self.__list_popover = None
         App().player.connect("lock-changed", self.__on_lock_changed)
+        App().player.connect("playlist-changed", self.__on_playlist_changed)
         self.__set_shuffle_icon()
 
     def on_next_changed(self, player):
@@ -429,3 +430,13 @@ class ToolbarEnd(Gtk.Bin):
             widget.set_tooltip_text(_("Playing playlists"))
         else:
             widget.set_tooltip_text(_("Playing albums"))
+
+    def __on_playlist_changed(self, player):
+        """
+            Update playback button status
+            @param player as Player
+        """
+        if player.albums or player.playlist_ids or player.queue:
+            self.__list_button.set_sensitive(True)
+        else:
+            self.__list_button.set_sensitive(False)

@@ -108,3 +108,7 @@ class CurrentAlbumsView(AlbumsListView):
         self.__clear_button.set_sensitive(False)
         self.__jump_button.set_sensitive(False)
         self.__save_button.set_sensitive(False)
+        App().player.emit("status-changed")
+        popover = self.get_ancestor(Gtk.Popover)
+        if popover is not None:
+            popover.popdown()

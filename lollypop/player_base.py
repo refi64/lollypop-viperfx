@@ -24,6 +24,7 @@ class BasePlayer(GObject.GObject):
         "current-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "album-added": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         "album-removed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        "playlist-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "next-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "prev-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "seeked": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
