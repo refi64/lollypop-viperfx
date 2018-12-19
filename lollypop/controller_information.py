@@ -129,6 +129,7 @@ class InformationController:
         if surface is None:
             self._artwork.hide()
         else:
+            self._artwork.show()
             self._artwork.set_from_surface(surface)
 
     def __on_radio_artwork(self, surface):
