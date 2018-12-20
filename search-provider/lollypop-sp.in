@@ -175,16 +175,18 @@ class SearchLollypopService(Server, Gio.Application):
                     album = Album(int(search_id[2:]))
                     name = " ".join(album.artists) or " "
                     description = album.name
-                    surface = self.art.get_album_artwork(album, ArtSize.BIG, 1)
-                    gicon = self.art.get_album_cache_path(album, ArtSize.BIG)
+                    surface = self.art.get_album_artwork(
+                        album, ArtSize.BIG, ArtSize.BIG, 1)
+                    gicon = self.art.get_album_cache_path(
+                        album, ArtSize.BIG, ArtSize.BIG)
                 else:
                     track = Track(int(search_id[2:]))
                     name = "♫ " + track.name
                     description = " ".join(track.artists) or " "
-                    surface = self.art.get_album_artwork(track.album,
-                                                         ArtSize.BIG, 1)
-                    gicon = self.art.get_album_cache_path(track.album,
-                                                          ArtSize.BIG)
+                    surface = self.art.get_album_artwork(
+                        track.album, ArtSize.BIG, ArtSize.BIG, 1)
+                    gicon = self.art.get_album_cache_path(
+                        track.album, ArtSize.BIG, ArtSize.BIG)
                 if surface is not None:
                     del surface
                 d = { 'id': GLib.Variant('s', search_id),
