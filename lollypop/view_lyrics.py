@@ -182,7 +182,7 @@ class LyricsView(View, InformationController):
             artist = split[0]
             title = split[1]
         else:
-            artist = self.__current_track.artists[0]
+            artist = self.__current_track.artists
             title = self.__current_track.name
         string = escape("%s %s" % (artist, title))
         uri = "https://genius.com/%s-lyrics" % string.replace(" ", "-")
