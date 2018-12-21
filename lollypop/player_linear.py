@@ -12,6 +12,7 @@
 
 from lollypop.define import NextContext
 from lollypop.player_base import BasePlayer
+from lollypop.logger import Logger
 
 
 class LinearPlayer(BasePlayer):
@@ -38,14 +39,15 @@ class LinearPlayer(BasePlayer):
         # next album
         if new_track_position >= len(album.track_ids):
             try:
-                pos = self._albums.index(album)
+                pos = self.album_ids.index(album.id)
                 # we are on last album, go to first
                 if pos + 1 >= len(self._albums):
                     self._next_context = NextContext.STOP
                     pos = 0
                 else:
                     pos += 1
-            except:
+            except Exception as e:
+                Logger.error("LinearPlayer::next(): %s", e)
                 pos = 0  # Happens if current album has been removed
             track = self._albums[pos].tracks[0]
         # next track
@@ -66,12 +68,13 @@ class LinearPlayer(BasePlayer):
         # Previous album
         if new_track_position < 0:
             try:
-                pos = self._albums.index(album)
+                pos = self.album_ids.index(album.id)
                 if pos - 1 < 0:  # we are on last album, go to first
                     pos = len(self._albums) - 1
                 else:
                     pos -= 1
-            except:
+            except Exception as e:
+                Logger.error("LinearPlayer::prev(): %s", e)
                 pos = 0  # Happens if current album has been removed
             track = self._albums[pos].tracks[-1]
         # Previous track
