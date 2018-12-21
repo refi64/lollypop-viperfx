@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Pango, GLib, Gst
+from gi.repository import Gtk, Pango, GLib, Gst, Gdk
 
 from lollypop.define import App, RowListType
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
@@ -284,6 +284,10 @@ class Row(Gtk.ListBoxRow):
                 App().player.remove_from_queue(self._track.id)
             else:
                 App().player.append_to_queue(self._track.id)
+        elif event.state & Gdk.ModifierType.SHIFT_MASK:
+            App().player.clear_albums()
+            App().player.reset_history()
+            App().player.load(self._track)
         else:
             self.activate()
         return True
