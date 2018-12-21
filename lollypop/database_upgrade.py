@@ -88,8 +88,25 @@ class DatabasePlaylistsUpgrade(DatabaseUpgrade):
         self._UPGRADES = {
            1: "ALTER TABLE playlists ADD synced INT NOT NULL DEFAULT 0",
            2: "ALTER TABLE playlists ADD smart_enabled INT NOT NULL DEFAULT 0",
-           3: "ALTER TABLE playlists ADD smart_sql TEXT"
+           3: "ALTER TABLE playlists ADD smart_sql TEXT",
+           4: self.__upgrade_4,
         }
+
+#######################
+# PRIVATE             #
+#######################
+    def __upgrade_4(self, db):
+        """
+            Import tracks from loved playlist to DB
+        """
+        with SqlCursor(db, True) as sql1:
+            result = sql1.execute("SELECT uri\
+                                   FROM tracks\
+                                   WHERE playlist_id=?", (Type.LOVED,))
+            with SqlCursor(App().db, True) as sql2:
+                for uri in list(itertools.chain(*result)):
+                    sql2.execute("UPDATE tracks SET loved=1 WHERE uri=?",
+                                 (uri,))
 
 
 class DatabaseAlbumsUpgrade(DatabaseUpgrade):
