@@ -215,11 +215,13 @@ class FullScreen(Gtk.Window, InformationController,
         """
             Show/Hide track list if mouse on the right
             @param widget as Gtk.Widget
-            @param event as Gdk.Event
+            @param event as Gdk.EventMotion
         """
         if event.window == widget.get_window():
-            reveal = event.x > widget.get_allocated_width() -\
-                     self.__view.get_allocated_width() - 100
+            allocated_width = widget.get_allocated_width()
+            reveal = event.x > allocated_width -\
+                self.__view.get_allocated_width() - 100 and\
+                event.x < allocated_width + 100
             self.__revealer.set_reveal_child(reveal)
 
     def _on_image_realize(self, eventbox):
