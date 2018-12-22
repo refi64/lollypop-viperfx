@@ -336,6 +336,7 @@ class Downloader:
                             InformationStore.add_artist_artwork(
                                 artist,
                                 None)
+                        break
                 except Exception as e:
                     Logger.error("Downloader::__cache_artists_info(): %s, %s" %
                                  (e, artist))
