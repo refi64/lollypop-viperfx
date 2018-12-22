@@ -100,6 +100,8 @@ class AdaptiveStack(Gtk.Stack):
             Set visible child in stack
             @param widget as Gtk.Widget
         """
+        if widget == self.__visible_child:
+            return
         if self.__visible_child is not None:
             self.__visible_child.stop()
         if not self.__navigation_enabled and self.__visible_child is not None:
