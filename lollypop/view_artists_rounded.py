@@ -73,7 +73,8 @@ class RoundedArtistsView(FlowBoxView):
         """
             We want this view to be populated anyway (no sidebar mode)
         """
-        self.__lazy_queue_backup = self._lazy_queue
+        if self._lazy_queue is not None:
+            self.__lazy_queue_backup = self._lazy_queue
         FlowBoxView.stop(self)
 
     @property
