@@ -110,8 +110,6 @@ class RoundedArtistsView(FlowBoxView):
         if self.__lazy_queue_backup:
             self._lazy_queue = self.__lazy_queue_backup
             self.__lazy_queue_backup = None
-        else:
-            self._lazy_queue = []
         # Force reloading remaining items
         # If empty, it will load lazy loading queue anyway
         self._add_items(self._items)
