@@ -121,10 +121,10 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             for child in self._stack.get_children():
                 if not isinstance(child, RoundedArtistsView):
                     children.append(child)
+            self._get_view_artists_rounded(True)
             self._reload_navigation_view()
             # We need to destroy after reload
             # Otherwise, we will go back to artist view
-            # settings wrong state ids
             for child in children:
                 child.destroy()
 

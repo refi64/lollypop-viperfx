@@ -92,15 +92,6 @@ class ViewsContainer:
         else:
             self._stack.add_to_history(view)
 
-    def show_artists_view(self):
-        """
-            Show artists view (rounded artwork)
-        """
-        App().window.emit("can-go-back-changed", False)
-        view = self._get_view_artists_rounded()
-        App().window.emit("show-can-go-back", True)
-        self._stack.set_visible_child(view)
-
 ##############
 # PROTECTED  #
 ##############
