@@ -68,7 +68,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         eventbox = Gtk.EventBox()
         eventbox.add(self.__label)
         eventbox.set_property("has-tooltip", True)
-        eventbox.connect("query-tooltip", self._on_query_tooltip)
+        eventbox.connect("query-tooltip", self.__on_query_tooltip)
         eventbox.connect("realize", self._on_realize)
         eventbox.connect("button-press-event",
                          self.__on_artist_button_press)
@@ -212,7 +212,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                  self._artist_ids)
         return True
 
-    def _on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
+    def __on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
             @param eventbox as Gtk.EventBox
