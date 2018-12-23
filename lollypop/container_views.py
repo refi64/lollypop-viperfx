@@ -89,8 +89,6 @@ class ViewsContainer:
         self._stack.add(view)
         if switch:
             self._stack.set_visible_child(view)
-        else:
-            self._stack.add_to_history(view)
 
 ##############
 # PROTECTED  #
