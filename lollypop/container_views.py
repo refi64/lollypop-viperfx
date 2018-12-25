@@ -156,10 +156,9 @@ class ViewsContainer:
         view.show()
         return view
 
-    def _get_view_artists_rounded(self, static=True):
+    def _get_view_artists_rounded(self, static):
         """
             Get rounded artists view
-            @param static as bool, show static entries
             @return view
         """
         def load():
@@ -185,21 +184,12 @@ class ViewsContainer:
             view.populate(get_items(artist_ids, compilation_ids))
 
         from lollypop.view_artists_rounded import RoundedArtistsView
-        view = self.view_artists_rounded
-        if view is None:
-            view = RoundedArtistsView()
-            self._stack.add(view)
-            loader = Loader(target=load, view=view,
-                            on_finished=lambda r: setup(*r))
-            loader.start()
-            view.show()
-        else:
-            if static:
-                compilations = App().albums.get_compilation_ids([])
-                for item in get_items([], compilations):
-                    view.add_value(item)
-            else:
-                view.clear_static()
+        view = RoundedArtistsView()
+        self._stack.add(view)
+        loader = Loader(target=load, view=view,
+                        on_finished=lambda r: setup(*r))
+        loader.start()
+        view.show()
         return view
 
     def _get_view_artists(self, genre_ids, artist_ids):
@@ -414,10 +404,9 @@ class ViewsContainer:
             state_one_ids = state_two_ids
             state_two_ids = []
         # Be sure to have an initial artist view
-        artist_view = self.view_artists_rounded
-        if artist_view is None:
-            artist_view = self._get_view_artists_rounded()
-            self._stack.set_visible_child(artist_view)
+        if self._rounded_artists_view is None:
+            self._rounded_artists_view = self._get_view_artists_rounded(True)
+            self._stack.set_visible_child(self._rounded_artists_view)
         if state_one_ids and state_two_ids:
             self.show_view(state_one_ids[0], None, False)
             self.show_view(state_one_ids[0], state_two_ids)
@@ -427,7 +416,7 @@ class ViewsContainer:
             self.show_view(state_two_ids[0])
         else:
             App().window.emit("can-go-back-changed", False)
-            self._stack.set_visible_child(artist_view)
+            self._stack.set_visible_child(self._rounded_artists_view)
 
 ############
 # PRIVATE  #

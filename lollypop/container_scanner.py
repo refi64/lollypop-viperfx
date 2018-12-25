@@ -90,8 +90,8 @@ class ScannerContainer:
                 l.remove_value(artist_id)
         else:
             if add:
-                self.view_artists_rounded.add_value((artist_id,
+                self._rounded_artists_view.add_value((artist_id,
                                                      artist_name,
                                                      sortname))
             else:
-                self.view_artists_rounded.remove_value(artist_id)
+                self._rounded_artists_view.remove_value(artist_id)

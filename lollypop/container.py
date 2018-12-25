@@ -43,6 +43,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         PlaylistsContainer.__init__(self)
         ListsContainer.__init__(self)
         ViewsContainer.__init__(self)
+        self._rounded_artists_view = None
         self._stack = AdaptiveStack()
         self._stack.show()
         self.__setup_view()
@@ -103,6 +104,9 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
 
         adaptive_window = App().window.is_adaptive
         self._stack.set_navigation_enabled(not show or adaptive_window)
+        if self._rounded_artists_view is not None:
+            self._rounded_artists_view.destroy()
+            self._rounded_artists_view = None
         if show or adaptive_window:
             if not adaptive_window:
                 App().window.emit("show-can-go-back", False)
@@ -121,7 +125,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             for child in self._stack.get_children():
                 if not isinstance(child, RoundedArtistsView):
                     children.append(child)
-            self._get_view_artists_rounded(True)
             self._reload_navigation_view()
             # We need to destroy after reload
             # Otherwise, we will go back to artist view
@@ -137,18 +140,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         view = self._stack.get_visible_child()
         if view is not None and isinstance(view, View):
             return view
-        return None
-
-    @property
-    def view_artists_rounded(self):
-        """
-            Get existing rounded artists view
-            @return RoundedArtistsView
-        """
-        from lollypop.view_artists_rounded import RoundedArtistsView
-        for view in self._stack.get_children():
-            if isinstance(view, RoundedArtistsView):
-                return view
         return None
 
     @property
