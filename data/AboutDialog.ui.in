@@ -59,7 +59,17 @@ Bilal Elmoussaoui
               </object>
             </child>
             <child>
-              <object class="GtkLinkButton" id="liberapay">
+              <object class="GtkLinkButton" id="liberapat">
+                <property name="label" translatable="yes">Liberapay</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="relief">none</property>
+                <property name="uri">https://liberapay.com/cedric.bellegarde</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLinkButton" id="patreon">
                 <property name="label" translatable="yes">Patreon</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
