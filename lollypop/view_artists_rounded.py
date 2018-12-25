@@ -77,7 +77,7 @@ class RoundedArtistsView(FlowBoxView):
 
     @property
     def should_destroy(self):
-        return False
+        return App().settings.get_value("show-sidebar")
 
 #######################
 # PROTECTED           #

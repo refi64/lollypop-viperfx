@@ -88,7 +88,7 @@ class ScannerContainer:
                 l.add_value((artist_id, artist_name, sortname))
             else:
                 l.remove_value(artist_id)
-        else:
+        elif self._rounded_artists_view is not None:
             if add:
                 self._rounded_artists_view.add_value((artist_id,
                                                      artist_name,

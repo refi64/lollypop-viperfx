@@ -255,7 +255,6 @@ class ListsContainer:
             view = self._get_view_albums_decades()
         elif selected_ids[0] == Type.ARTISTS:
             view = self._get_view_artists_rounded(False)
-            self._rounded_artists_view = view
             App().window.emit("show-can-go-back", True)
         elif selection_list.mask & SelectionListMask.ARTISTS:
             if selected_ids[0] == Type.ALL:
