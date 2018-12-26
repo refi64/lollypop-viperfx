@@ -59,14 +59,6 @@ class RoundedArtistsView(FlowBoxView):
                 child.destroy()
                 break
 
-    def clear_static(self):
-        """
-            Remove static entries
-        """
-        for child in self._box.get_children():
-            if child.data < 0:
-                child.destroy()
-
     def stop(self):
         """
             We want this view to be populated anyway (no sidebar mode)
