@@ -82,9 +82,13 @@
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Go to current track</property>
             <property name="halign">end</property>
+            <property name="valign">center</property>
             <property name="image">image2</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+            <style>
+              <class name="light-button"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">4</property>
@@ -97,9 +101,13 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Unsplit view</property>
+            <property name="valign">center</property>
             <property name="image">image3</property>
             <property name="relief">none</property>
             <signal name="toggled" handler="_on_split_button_toggled" swapped="no"/>
+            <style>
+              <class name="light-button"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -126,9 +134,13 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Save playlist</property>
+            <property name="valign">center</property>
             <property name="image">image4</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_save_button_clicked" swapped="no"/>
+            <style>
+              <class name="light-button"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">5</property>
@@ -142,9 +154,13 @@
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Play</property>
             <property name="halign">start</property>
+            <property name="valign">center</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
+            <style>
+              <class name="light-button"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -158,10 +174,15 @@
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Play playlist randomized</property>
             <property name="halign">start</property>
+            <property name="valign">center</property>
             <property name="hexpand">True</property>
             <property name="image">image5</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
+            <style>
+              <class name="light-button"/>
+              <class name="light-button-no-right-border"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">2</property>
@@ -174,9 +195,13 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Configure</property>
+            <property name="valign">center</property>
             <property name="image">image6</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_smart_button_clicked" swapped="no"/>
+            <style>
+              <class name="light-button"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">6</property>
