@@ -102,6 +102,9 @@
                 <property name="tooltip_text" translatable="yes">Play albums</property>
                 <property name="image">image1</property>
                 <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
+                <style>
+                  <class name="light-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -117,6 +120,9 @@
                 <property name="tooltip_text" translatable="yes" context="artist context">Add to current playlist</property>
                 <property name="image">image3</property>
                 <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
+                <style>
+                  <class name="light-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -132,6 +138,9 @@
                 <property name="tooltip_text" translatable="yes">Similar artists</property>
                 <property name="image">image4</property>
                 <signal name="toggled" handler="_on_lastfm_button_toggled" swapped="no"/>
+                <style>
+                  <class name="light-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -149,6 +158,10 @@
                 <property name="margin_end">2</property>
                 <property name="image">image2</property>
                 <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+                <style>
+                  <class name="light-button"/>
+                  <class name="light-button-no-right-border"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>

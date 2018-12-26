@@ -438,6 +438,36 @@ popover.background separator {
   	color: inherit;
 }
 
+.light-button {
+    opacity: 0.5;
+    box-shadow: none;
+	min-height: 24px;
+	min-width: 24px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	background-image: none;
+	border-style: solid;
+	border-image-source: none;
+    border-bottom-width: 0px;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 1px;
+    border-radius: 0px;
+    border-color: alpha(@theme_fg_color, 0.3);
+    color: inherit;
+}
+
+.light-button-no-right-border {
+    border-right-width: 0px;
+}
+
+.light-button:hover {
+    color: inherit;
+  	opacity: 1;
+}
+
 .menu-button {
     opacity: 0.2;
 	box-shadow: none;
