@@ -33,6 +33,9 @@ class CurrentAlbumsView(AlbumsListView):
             Gtk.IconSize.MENU)
         self.__clear_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__clear_button.set_tooltip_text(_("Clear albums"))
+        self.__clear_button.get_style_context().add_class("light-button")
+        self.__clear_button.get_style_context().add_class(
+            "light-button-no-right-border")
         self.__clear_button.set_sensitive(App().player.albums)
         self.__clear_button.connect("clicked", self.__on_clear_clicked)
         self.__save_button = Gtk.Button.new_from_icon_name(
@@ -40,6 +43,7 @@ class CurrentAlbumsView(AlbumsListView):
             Gtk.IconSize.MENU)
         self.__save_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__save_button.set_tooltip_text(_("Create a new playlist"))
+        self.__save_button.get_style_context().add_class("light-button")
         self.__save_button.set_sensitive(App().player.albums)
         self.__save_button.connect("clicked", self.__on_save_clicked)
         self.__jump_button = Gtk.Button.new_from_icon_name(
@@ -47,6 +51,7 @@ class CurrentAlbumsView(AlbumsListView):
             Gtk.IconSize.MENU)
         self.__jump_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__jump_button.connect("clicked", self.__on_jump_clicked)
+        self.__jump_button.get_style_context().add_class("light-button")
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__jump_button.set_sensitive(App().player.albums)
         label = Gtk.Label.new("<b>" + _("Playing albums") + "</b>")
@@ -58,6 +63,7 @@ class CurrentAlbumsView(AlbumsListView):
         grid = Gtk.Grid()
         grid.set_column_spacing(5)
         grid.add(label)
+        grid.set_property("valign", Gtk.Align.CENTER)
         grid.add(self.__jump_button)
         grid.add(self.__save_button)
         grid.add(self.__clear_button)
