@@ -113,5 +113,8 @@
         <property name="top_attach">1</property>
       </packing>
     </child>
+    <style>
+      <class name="borders"/>
+    </style>
   </object>
 </interface>
