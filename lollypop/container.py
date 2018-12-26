@@ -117,19 +117,12 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             else:
                 self._reload_list_view()
         elif not adaptive_window:
-            from lollypop.view_artists_rounded import RoundedArtistsView
             if self._list_one.get_visible():
                 self._list_two.hide()
                 self._list_one.hide()
-            children = []
             for child in self._stack.get_children():
-                if not isinstance(child, RoundedArtistsView):
-                    children.append(child)
-            self._reload_navigation_view()
-            # We need to destroy after reload
-            # Otherwise, we will go back to artist view
-            for child in children:
                 child.destroy()
+            self._reload_navigation_view()
 
     @property
     def view(self):

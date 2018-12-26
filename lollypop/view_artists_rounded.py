@@ -101,9 +101,12 @@ class RoundedArtistsView(FlowBoxView):
         if self.__lazy_queue_backup:
             self._lazy_queue = self.__lazy_queue_backup
             self.__lazy_queue_backup = None
+        elif self._items:
+            self._lazy_queue = []
         # Force reloading remaining items
         # If empty, it will load lazy loading queue anyway
-        self._add_items(self._items)
+        if self._items:
+            self._add_items(self._items)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.ARTISTS]))
         App().settings.set_value("state-two-ids",
