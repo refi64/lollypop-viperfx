@@ -112,7 +112,7 @@ class PlaylistEditWidget(Gtk.Bin):
         """
         count = selection.count_selected_rows()
         if count > 0:
-            self.__infobar_label.set_markup(_("Remove?"))
+            self.__infobar_label.set_markup(_("Remove ?"))
             self.__infobar.show()
             # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
             self.__infobar.queue_resize()
