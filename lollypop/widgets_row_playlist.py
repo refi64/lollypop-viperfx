@@ -49,6 +49,9 @@ class PlaylistRow(Row, DNDRow):
                                                     ArtSize.MEDIUM,
                                                     "small-cover-frame")
         self.__artwork.set_no_show_all(True)
+        self.__artwork.set_margin_top(2)
+        self.__artwork.set_margin_start(2)
+        self.__artwork.set_margin_bottom(2)
         # We force width with a Box
         box = Gtk.Box()
         box.set_homogeneous(True)
@@ -112,15 +115,11 @@ class PlaylistRow(Row, DNDRow):
                                            ArtSize.MEDIUM,
                                            self.__artwork.get_scale_factor(),
                                            self.__on_album_artwork)
-            self.__artwork.set_margin_top(2)
-            self.set_margin_bottom(2)
 
     def hide_artwork(self):
         """
             Hide row artwork
         """
-        self.__artwork.set_margin_top(0)
-        self.set_margin_bottom(0)
         self.__artwork.set_tooltip_text("")
         self.__artwork.clear()
         self.__artwork.hide()

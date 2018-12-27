@@ -338,10 +338,16 @@ popover.background separator {
 }
 
 .albumrow:selected {
+    border-radius: 0px;
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+.albumrow:visited {
     color: @theme_fg_color;
     background-color: alpha(@theme_selected_bg_color, 0.1);
 }
-.albumrow:selected label {
+.albumrow:visited label {
     color: @theme_fg_color;
 }
 

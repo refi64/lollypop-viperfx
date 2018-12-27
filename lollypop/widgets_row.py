@@ -288,7 +288,6 @@ class Row(Gtk.ListBoxRow):
         elif event.state & Gdk.ModifierType.SHIFT_MASK and\
                 self._list_type & RowListType.DND:
             self.emit("do-selection")
-            return True
         elif event.button == 3:
             window = widget.get_window()
             if window == event.window:

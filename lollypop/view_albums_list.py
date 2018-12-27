@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Pango
+from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from gettext import gettext as _
 
@@ -35,7 +35,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         "insert-album-after": (GObject.SignalFlags.RUN_FIRST, None,
                                (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT)),
         "remove-album": (GObject.SignalFlags.RUN_FIRST, None, ()),
-        "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "do-selection": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     __MARGIN = 4
@@ -203,7 +204,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.__revealer.set_reveal_child(False)
             self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
-                self.set_state_flags(Gtk.StateFlags.SELECTED, True)
+                self.set_state_flags(Gtk.StateFlags.VISITED, True)
         else:
             if self._responsive_widget is None:
                 TracksView.populate(self)
@@ -225,7 +226,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             TracksView.set_playing_indicator(self)
             self.set_state_flags(Gtk.StateFlags.NORMAL, True)
         elif selected:
-            self.set_state_flags(Gtk.StateFlags.SELECTED, True)
+            self.set_state_flags(Gtk.StateFlags.VISITED, True)
         else:
             self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
@@ -327,7 +328,17 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self.reveal()
+        if event.state & Gdk.ModifierType.CONTROL_MASK and\
+                self.__list_type & RowListType.DND:
+            if self.get_state_flags() & Gtk.StateFlags.SELECTED:
+                self.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            else:
+                self.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        elif event.state & Gdk.ModifierType.SHIFT_MASK and\
+                self.__list_type & RowListType.DND:
+            self.emit("do-selection")
+        else:
+            self.reveal()
 
     def __on_action_button_release_event(self, button, event):
         """
@@ -606,6 +617,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         row.connect("insert-album", self.__on_insert_album)
         row.connect("insert-album-after", self.__on_insert_album_after)
         row.connect("remove-album", self.__on_remove_album)
+        row.connect("do-selection", self.__on_do_selection)
         return row
 
     def __auto_scroll(self, up):
@@ -743,3 +755,25 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param row as AlbumRow
         """
         App().player.remove_album(row.album)
+
+    def __on_do_selection(self, row):
+        """
+            Select rows from start (or any selected row) to track
+            @param row as AlbumRow
+        """
+        children = self._box.get_children()
+        selected = None
+        end = children.index(row) + 1
+        for child in children:
+            if child == row:
+                break
+            if child.get_state_flags() & Gtk.StateFlags.SELECTED:
+                selected = child
+        if selected is None:
+            start = 0
+        else:
+            start = children.index(selected)
+        for child in children[start:end]:
+            child.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        for child in children[end:]:
+            child.set_state_flags(Gtk.StateFlags.NORMAL, True)

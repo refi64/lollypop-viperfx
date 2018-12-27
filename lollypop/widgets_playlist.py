@@ -283,6 +283,7 @@ class PlaylistsWidget(Gtk.Grid):
             previous_row.set_next_row(row)
         row.connect("insert-track", self.__on_insert_track)
         row.connect("remove-track", self.__on_remove_track)
+        row.connect("do-selection", self.__on_do_selection)
         row.show()
         widget.insert(row, position)
         GLib.idle_add(self.__add_tracks, widgets)
@@ -353,6 +354,7 @@ class PlaylistsWidget(Gtk.Grid):
         new_row = PlaylistRow(track, self.__list_type)
         new_row.connect("insert-track", self.__on_insert_track)
         new_row.connect("remove-track", self.__on_remove_track)
+        new_row.connect("do-selection", self.__on_do_selection)
         new_row.show()
         if down:
             position += 1
@@ -397,3 +399,25 @@ class PlaylistsWidget(Gtk.Grid):
         else:
             row.next_row.set_previous_row(row.previous_row)
             row.previous_row.set_next_row(row.next_row)
+
+    def __on_do_selection(self, row):
+        """
+            Select rows from start (or any selected row) to track
+            @param row as Row
+        """
+        children = self.children
+        selected = None
+        end = children.index(row) + 1
+        for child in children:
+            if child == row:
+                break
+            if child.get_state_flags() & Gtk.StateFlags.SELECTED:
+                selected = child
+        if selected is None:
+            start = 0
+        else:
+            start = children.index(selected)
+        for child in children[start:end]:
+            child.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        for child in children[end:]:
+            child.set_state_flags(Gtk.StateFlags.NORMAL, True)

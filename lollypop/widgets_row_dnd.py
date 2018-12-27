@@ -193,9 +193,22 @@ class DNDRow:
                 if r.get_state_flags() & Gtk.StateFlags.SELECTED:
                     track_ids.append(r.track.id)
                 r = r.next_row
-            info = {"data": (wstr, track_ids, None)}
+            info = {"data": (wstr, track_ids)}
         elif hasattr(self, "_album"):
-            info = {"data": (wstr, self._album.track_ids, self._album.id)}
+            album_ids = {}
+            # Delete all selected rows
+            r = row.previous_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    album_ids[r.album.id] = r.album.track_ids
+                r = r.previous_row
+            album_ids[row.album.id] = row.album.track_ids
+            r = row.next_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    album_ids[r.album.id] = r.album.track_ids
+                r = r.next_row
+            info = {"data": (wstr, album_ids)}
         text = json.dumps(info)
         data.set_text(text, len(text))
 
@@ -220,16 +233,17 @@ class DNDRow:
             try:
                 import json
                 info = json.loads(data.get_text())
-                (wstr, track_ids, album_id) = info["data"]
+                (wstr, ids) = info["data"]
                 if str(row) == wstr:
                     self.disconnect(self.__drag_data_delete_id)
                     self.__drag_data_delete_id = None
                     return
                 if wstr.find("AlbumRow") == -1:
-                    for track_id in track_ids:
+                    for track_id in ids:
                         self.emit("insert-track", track_id, down)
                 else:
-                    self.emit("insert-album", album_id, track_ids, down)
+                    for key in ids.keys():
+                        self.emit("insert-album", int(key), ids[key], down)
             except Exception as e:
                 Logger.error("DNDRow::on_drag_data_received(): %s", e)
         # We want delete before insert
