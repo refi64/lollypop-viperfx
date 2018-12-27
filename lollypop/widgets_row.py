@@ -301,6 +301,7 @@ class Row(Gtk.ListBoxRow):
                 self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
                 self.set_state_flags(Gtk.StateFlags.SELECTED, True)
+                self.grab_focus()
         elif event.state & Gdk.ModifierType.SHIFT_MASK and\
                 self._list_type & RowListType.DND:
             self.emit("do-selection")

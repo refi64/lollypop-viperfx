@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk, Gio, GObject, Pango
+from gi.repository import GLib, Gtk, Gdk, Gio, GObject, Pango
 
 from gettext import gettext as _
 from collections import OrderedDict
@@ -75,6 +75,8 @@ class TracksView:
         """
         if self._responsive_widget is None:
             self.connect("size-allocate", self.__on_size_allocate)
+            if self._list_type & RowListType.DND:
+                self.connect("key-press-event", self.__on_key_press_event)
             self._responsive_widget = Gtk.Grid()
             self._responsive_widget.set_column_homogeneous(True)
             self._responsive_widget.set_property("valign", Gtk.Align.START)
@@ -410,6 +412,18 @@ class TracksView:
                                      Gtk.IconSize.MENU)
             context_widget.destroy()
         return True
+
+    def __on_key_press_event(self, widget, event):
+        """
+            Handle keyboard events (DEL, ...)
+            @param widget as Gtk.Widget
+            @param event as Gdk.EventKey
+        """
+        if event.keyval == Gdk.KEY_Delete:
+            from lollypop.widgets_row_dnd import DNDRow
+            for child in self.children:
+                if child.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    DNDRow.destroy_track_row(child)
 
     def __on_activated(self, widget, track):
         """
