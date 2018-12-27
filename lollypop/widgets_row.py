@@ -280,7 +280,11 @@ class Row(Gtk.ListBoxRow):
             @param event as Gdk.EventButton
         """
         if event.state & Gdk.ModifierType.CONTROL_MASK:
-            widget.get_style_context().add_class("trackrow-selected")
+            context = widget.get_style_context()
+            if context.has_class("trackrow-selected"):
+                context.remove_class("trackrow-selected")
+            else:
+                context.add_class("trackrow-selected")
         elif event.button == 3:
             window = widget.get_window()
             if window == event.window:
