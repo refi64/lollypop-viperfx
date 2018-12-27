@@ -147,7 +147,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Repeat track</property>
-                <property name="accelerator">&lt;Shift&gt;</property>
+                <property name="accelerator">&lt;Alt&gt;</property>
               </object>
             </child>
             <child>
