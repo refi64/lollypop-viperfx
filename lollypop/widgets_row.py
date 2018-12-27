@@ -279,12 +279,14 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.EventButton
         """
-        if event.state & Gdk.ModifierType.CONTROL_MASK:
+        if event.state & Gdk.ModifierType.CONTROL_MASK and\
+                self._list_type & RowListType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
                 self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
                 self.set_state_flags(Gtk.StateFlags.SELECTED, True)
-        elif event.state & Gdk.ModifierType.SHIFT_MASK:
+        elif event.state & Gdk.ModifierType.SHIFT_MASK and\
+                self._list_type & RowListType.DND:
             self.emit("do-selection")
             return True
         elif event.button == 3:
