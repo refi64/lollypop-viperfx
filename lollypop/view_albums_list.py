@@ -175,6 +175,22 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         if self.__reveal:
             self.reveal()
 
+    def append_rows(self, tracks):
+        """
+            Add track rows (only works for albums with merged discs)
+            @param tracks as [Track]
+        """
+        if self._responsive_widget is not None:
+            TracksView.append_rows(self, tracks)
+
+    def prepend_rows(self, tracks):
+        """
+            Add track rows (only works for albums with merged discs)
+            @param tracks as [Track]
+        """
+        if self._responsive_widget is not None:
+            TracksView.prepend_rows(self, tracks)
+
     def reveal(self, reveal=None,
                transition_type=Gtk.RevealerTransitionType.SLIDE_DOWN):
         """
