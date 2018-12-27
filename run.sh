@@ -1,3 +1,3 @@
-ninja -C build install >/dev/null
+ninja -C build install
 echo "Running lollypop"
 lollypop -e

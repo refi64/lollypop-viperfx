@@ -12,13 +12,11 @@
 
 from gi.repository import Gtk
 
-from gettext import gettext as _
 
 from lollypop.widgets_playlist_smart import SmartPlaylistRow
-from lollypop.widgets_playlist_edit import PlaylistEditWidget
 from lollypop.view import View
 from lollypop.logger import Logger
-from lollypop.define import App, Sizing
+from lollypop.define import App
 
 
 class SmartPlaylistView(View):
@@ -39,15 +37,8 @@ class SmartPlaylistView(View):
         builder.add_from_resource("/org/gnome/Lollypop/SmartPlaylistView.ui")
         builder.connect_signals(self)
         widget = builder.get_object("widget")
-        grid = Gtk.Grid()
-        grid.set_orientation(Gtk.Orientation.VERTICAL)
-        grid.show()
-        grid.add(widget)
-        self.__playlist_editor = PlaylistEditWidget(playlist_id)
-        self.__playlist_editor.set_property("halign", Gtk.Align.CENTER)
-        grid.add(self.__playlist_editor)
-        self.connect("size-allocate", self.__on_size_allocate)
-        self._viewport.add(grid)
+        self.connect("size-allocate", self.__on_size_allocate, widget)
+        self._viewport.add(widget)
         self.__listbox = builder.get_object("listbox")
         self._scrolled.set_property("expand", True)
         self.__match_toggle = builder.get_object("match_toggle")
@@ -55,14 +46,10 @@ class SmartPlaylistView(View):
         self.__select_combobox = builder.get_object("select_combobox")
         self.__limit_spin = builder.get_object("limit_spin")
         self.__add_rule_button = builder.get_object("add_rule_button")
-        self.__top_box = builder.get_object("top_box")
-        self.__sub_top_box = builder.get_object("sub_top_box")
+        self.__up_box = builder.get_object("up_box")
         self.__bottom_box = builder.get_object("bottom_box")
         if App().playlists.get_smart(playlist_id):
             self.__match_toggle.set_active(True)
-        else:
-            self.__playlist_editor.populate()
-            self.__playlist_editor.show()
         self.add(self._scrolled)
 
     def populate(self):
@@ -95,7 +82,7 @@ class SmartPlaylistView(View):
             limit = int(split_limit[1].split(" ")[1])
             self.__limit_spin.set_value(limit)
         except Exception as e:
-            Logger.warning("SmartPlaylistView::populate: %s", e)
+                Logger.warning("SmartPlaylistView::populate: %s", e)
         try:
             split_order = sql.split("ORDER BY")
             split_spaces = split_order[1].split(" ")
@@ -107,8 +94,8 @@ class SmartPlaylistView(View):
                 orderby += " %s" % split_spaces[2]
             self.__select_combobox.set_active_id(orderby)
         except Exception as e:
-            self.__select_combobox.set_active(0)
-            Logger.warning("SmartPlaylistView::populate: %s", e)
+                self.__select_combobox.set_active(0)
+                Logger.warning("SmartPlaylistView::populate: %s", e)
 
 #######################
 # PROTECTED           #
@@ -206,20 +193,15 @@ class SmartPlaylistView(View):
         """
         App().playlists.set_smart(self.__playlist_id, button.get_active())
         if button.get_active():
-            button.set_label(_("Match music for "))
-            self.__sub_top_box.show()
-            self.__bottom_box.show()
-            self.__add_rule_button.show()
-            self.__listbox.show()
-            self.__playlist_editor.hide()
+            self.__up_box.set_sensitive(True)
+            self.__bottom_box.set_sensitive(True)
+            self.__add_rule_button.set_sensitive(True)
+            self.__listbox.set_sensitive(True)
         else:
-            button.set_label(_("Smart playlist"))
-            self.__sub_top_box.hide()
-            self.__bottom_box.hide()
-            self.__add_rule_button.hide()
-            self.__listbox.hide()
-            self.__playlist_editor.populate()
-            self.__playlist_editor.show()
+            self.__up_box.set_sensitive(False)
+            self.__bottom_box.set_sensitive(False)
+            self.__add_rule_button.set_sensitive(False)
+            self.__listbox.set_sensitive(False)
 
     def _on_map(self, widget):
         """
@@ -241,17 +223,12 @@ class SmartPlaylistView(View):
         widget.show()
         self.__listbox.add(widget)
 
-    def __on_size_allocate(self, widget, allocation):
+    def __on_size_allocate(self, widget, allocation, child_widget):
         """
             Set child widget size
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
+            @param child_widget as Gtk.Widget
         """
-        if allocation.width < Sizing.BIG:
-            self.__top_box.set_orientation(Gtk.Orientation.VERTICAL)
-            self.__bottom_box.set_orientation(Gtk.Orientation.VERTICAL)
-        else:
-            self.__top_box.set_orientation(Gtk.Orientation.HORIZONTAL)
-            self.__bottom_box.set_orientation(Gtk.Orientation.HORIZONTAL)
-        width = max(Sizing.SMALL - 100, allocation.width / 2)
-        self.__playlist_editor.set_size_request(width, -1)
+        width = max(400, allocation.width / 2)
+        child_widget.set_size_request(width, -1)

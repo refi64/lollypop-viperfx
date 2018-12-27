@@ -38,6 +38,8 @@
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkListBox" id="listbox">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="selection_mode">none</property>
                 <style>
@@ -52,6 +54,8 @@
             </child>
             <child>
               <object class="GtkButton" id="add_rule_button">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">center</property>
@@ -79,6 +83,8 @@
         </child>
         <child>
           <object class="GtkBox" id="bottom_box">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="spacing">2</property>
             <child>
@@ -170,13 +176,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="top_box">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">2</property>
             <child>
               <object class="GtkCheckButton" id="match_toggle">
-                <property name="label" translatable="yes">Smart playlist</property>
+                <property name="label" translatable="yes">Match music for </property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -190,7 +196,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="sub_top_box">
+              <object class="GtkBox" id="up_box">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkComboBoxText" id="operand_combobox">
