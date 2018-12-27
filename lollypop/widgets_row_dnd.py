@@ -125,6 +125,7 @@ class DNDRow:
             @param row as RowDND
             @param context as Gdk.DragContext
         """
+        row.set_state_flags(Gtk.StateFlags.SELECTED, True)
         if self.__drag_data_delete_id is None:
             self.__drag_data_delete_id = self.connect(
                                                   "drag-data-delete",
@@ -136,26 +137,40 @@ class DNDRow:
             @param row as RowDND
             @param context as Gdk.DragContext
         """
+        def destroy_track_row(r):
+            r.emit("remove-track")
+            r.destroy()
+            if r.previous_row is not None:
+                r.previous_row.set_next_row(r.next_row)
+                r.previous_row.update_number(
+                    r.previous_row.track.number)
+            else:
+                r.update_number(r.track.number - 1)
+            if r.next_row is not None:
+                r.next_row.set_previous_row(r.previous_row)
+
         if row.get_parent() != self.get_parent():
             return
         if hasattr(row, "_track"):
-            self.emit("remove-track")
-            row.destroy()
-            if row.previous_row is not None:
-                row.previous_row.set_next_row(row.next_row)
-                row.previous_row.update_number(
-                    row.previous_row.track.number)
-            else:
-                row.update_number(row.track.number - 1)
-            if row.next_row is not None:
-                row.next_row.set_previous_row(row.previous_row)
+            # Delete all selected rows
+            r = row.previous_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    destroy_track_row(r)
+                r = r.previous_row
+            r = row.next_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    destroy_track_row(r)
+                r = r.next_row
+            destroy_track_row(row)
         elif hasattr(row, "_album"):
             self.emit("remove-album")
             row.destroy()
 
     def __on_drag_data_get(self, row, context, data, info, time):
         """
-            Send track id
+            Get DND data for current row
             @param row as RowDND
             @param context as Gdk.DragContext
             @param data as Gtk.SelectionData
@@ -165,9 +180,22 @@ class DNDRow:
         import json
         wstr = str(row)
         if hasattr(self, "_track"):
-            info = {"data": (wstr, self._track.id, None)}
+            track_ids = []
+            # Delete all selected rows
+            r = row.previous_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    track_ids.append(r.track.id)
+                r = r.previous_row
+            track_ids.append(self.track.id)
+            r = row.next_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    track_ids.append(r.track.id)
+                r = r.next_row
+            info = {"data": (wstr, track_ids, None)}
         elif hasattr(self, "_album"):
-            info = {"data": (wstr, self._album.id, self._album.track_ids)}
+            info = {"data": (wstr, self._album.track_ids, self._album.id)}
         text = json.dumps(info)
         data.set_text(text, len(text))
 
@@ -192,15 +220,16 @@ class DNDRow:
             try:
                 import json
                 info = json.loads(data.get_text())
-                (wstr, item_id, track_ids) = info["data"]
+                (wstr, track_ids, album_id) = info["data"]
                 if str(row) == wstr:
                     self.disconnect(self.__drag_data_delete_id)
                     self.__drag_data_delete_id = None
                     return
                 if wstr.find("AlbumRow") == -1:
-                    self.emit("insert-track", item_id, down)
+                    for track_id in track_ids:
+                        self.emit("insert-track", track_id, down)
                 else:
-                    self.emit("insert-album", item_id, track_ids, down)
+                    self.emit("insert-album", album_id, track_ids, down)
             except Exception as e:
                 Logger.error("DNDRow::on_drag_data_received(): %s", e)
         # We want delete before insert
