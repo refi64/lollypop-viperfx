@@ -416,6 +416,9 @@ class TracksView:
             @param widget as TracksWidget
             @param track as Track
         """
+        for child in self.children:
+            child.row_widget.get_style_context().remove_class(
+                "trackrow-selected")
         # Add to queue by default
         if App().player.is_locked:
             if track.id in App().player.queue:

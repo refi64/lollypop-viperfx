@@ -145,6 +145,14 @@ class Row(Gtk.ListBoxRow):
             self._num_label.set_text("")
 
     @property
+    def row_widget(self):
+        """
+            Get row main widget
+            @return Gtk.Widget
+        """
+        return self._row_widget
+
+    @property
     def track(self):
         """
             Get row track
@@ -271,7 +279,9 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.EventButton
         """
-        if event.button == 3:
+        if event.state & Gdk.ModifierType.CONTROL_MASK:
+            widget.get_style_context().add_class("trackrow-selected")
+        elif event.button == 3:
             window = widget.get_window()
             if window == event.window:
                 self.__popup_menu(widget, event.x, event.y)

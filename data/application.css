@@ -357,6 +357,10 @@ popover.background separator {
   	color: inherit;
 }
 
+.trackrow-selected {
+    background-color: alpha(@theme_selected_bg_color, 0.2);
+}
+
 .trackrowplaying {
     border-radius: 5px;
     padding: 0px;
