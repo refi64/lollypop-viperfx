@@ -13,7 +13,6 @@
 from gi.repository import Gtk, Pango, GLib, Gst, Gdk
 
 from lollypop.define import App, RowListType
-from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_context import ContextWidget
 from lollypop.utils import seconds_to_string
@@ -167,6 +166,7 @@ class Row(Gtk.ListBoxRow):
         """
             Return TrackMenu
         """
+        from lollypop.pop_menu import TrackMenu
         return TrackMenu(self._track)
 
     def _on_destroy(self, widget):
@@ -191,20 +191,36 @@ class Row(Gtk.ListBoxRow):
         self.set_indicator(True, False)
         self.__preview_timeout_id = None
 
-    def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
+    def __popup_menu(self, eventbox, xcoordinate=None, ycoordinate=None):
         """
             Popup menu for track
-            @param widget as Gtk.Button
+            @param eventbox as Gtk.EventBox
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        popover = TrackMenuPopover(self._track, self._get_menu())
+        from lollypop.pop_menu import TrackMenuPopover, RemoveMenuPopover
+        if self.get_state_flags() & Gtk.StateFlags.SELECTED:
+            # Get all selected rows
+            rows = [self]
+            r = self.previous_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    rows.append(r)
+                r = r.previous_row
+            r = self.next_row
+            while r is not None:
+                if r.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    rows.append(r)
+                r = r.next_row
+            popover = RemoveMenuPopover(rows)
+        else:
+            popover = TrackMenuPopover(self._track, self._get_menu())
         if xcoordinate is not None and ycoordinate is not None:
-            rect = widget.get_allocation()
+            rect = eventbox.get_allocation()
             rect.x = xcoordinate
             rect.y = ycoordinate
             rect.width = rect.height = 1
-        popover.set_relative_to(widget)
+        popover.set_relative_to(eventbox)
         popover.set_pointing_to(rect)
         popover.connect("closed", self.__on_closed)
         self.get_style_context().add_class("track-menu-selected")

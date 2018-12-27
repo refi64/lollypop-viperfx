@@ -378,6 +378,48 @@ class TrackMenu(Gio.Menu):
                             EditMenu(track))
 
 
+class RemoveMenuPopover(Gtk.PopoverMenu):
+    """
+        Contextual menu for removing Rows
+    """
+
+    def __init__(self, rows):
+        """
+            Init menu
+            @param rows as [Row]
+        """
+        Gtk.PopoverMenu.__init__(self)
+        self.__rows = rows
+        button = Gtk.ModelButton.new()
+        if len(rows) == 1:
+            button.set_label(_("Remove track"))
+        else:
+            button.set_label(_("Remove tracks"))
+        button.show()
+        button.connect("clicked", self.__on_button_clicked)
+        self.add(button)
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_button_clicked(self, button):
+        """
+            Remove rows
+            @param button as Gtk.ModelButton
+        """
+        for r in self.__rows:
+            r.emit("remove-track")
+            r.destroy()
+            if r.previous_row is not None:
+                r.previous_row.set_next_row(r.next_row)
+                r.previous_row.update_number(
+                    r.previous_row.track.number)
+            else:
+                r.update_number(r.track.number - 1)
+            if r.next_row is not None:
+                r.next_row.set_previous_row(r.previous_row)
+
+
 class TrackMenuPopover(Popover):
     """
         Contextual menu widget for a track
