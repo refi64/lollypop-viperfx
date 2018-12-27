@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GObject
+from gi.repository import Gtk, Gdk, GLib, Gio, GObject
 
 from collections import OrderedDict
 
@@ -139,6 +139,8 @@ class PlaylistsWidget(Gtk.Grid):
             tracks = get_position_list(tracks, 0)
             widgets = {self.__tracks_widget_left: tracks}
             self.__add_tracks(OrderedDict(widgets))
+        if self.__list_type & RowListType.DND:
+            self.connect("key-press-event", self.__on_key_press_event)
 
     def set_playing_indicator(self):
         """
@@ -421,3 +423,15 @@ class PlaylistsWidget(Gtk.Grid):
             child.set_state_flags(Gtk.StateFlags.SELECTED, True)
         for child in children[end:]:
             child.set_state_flags(Gtk.StateFlags.NORMAL, True)
+
+    def __on_key_press_event(self, widget, event):
+        """
+            Handle keyboard events (DEL, ...)
+            @param widget as Gtk.Widget
+            @param event as Gdk.EventKey
+        """
+        if event.keyval == Gdk.KEY_Delete:
+            from lollypop.widgets_row_dnd import DNDRow
+            for child in self.children:
+                if child.get_state_flags() & Gtk.StateFlags.SELECTED:
+                    DNDRow.destroy_track_row(child)
