@@ -325,6 +325,7 @@ class TracksView:
             row.connect("insert-track", self.__on_insert_track)
             row.connect("insert-album", self.__on_insert_album)
             row.connect("remove-track", self.__on_remove_track)
+            row.connect("do-selection", self.__on_do_selection)
         row.show()
         widget.insert(row, position)
         GLib.idle_add(self.__add_tracks, widgets, disc_number, row)
@@ -417,8 +418,7 @@ class TracksView:
             @param track as Track
         """
         for child in self.children:
-            child.row_widget.get_style_context().remove_class(
-                "trackrow-selected")
+            child.set_state_flags(Gtk.StateFlags.NORMAL, True)
         # Add to queue by default
         if App().player.is_locked:
             if track.id in App().player.queue:
@@ -540,7 +540,7 @@ class TracksView:
     def __on_insert_album(self, row, new_album_id, track_ids, down):
         """
             Insert a new row at position
-            @param row as AlbumRow
+            @param row as Row
             @param new_album_id as int
             @param track_ids as int
             @param down as bool
@@ -556,6 +556,26 @@ class TracksView:
         self.emit("insert-album-after", album, new_album)
         self.emit("insert-album-after", new_album, split_album)
         self.__destroy_split(row, down)
+
+    def __on_do_selection(self, row):
+        """
+            Select rows from start (or any selected row) to track
+            @param row as Row
+        """
+        children = self.children
+        selected = None
+        end = children.index(row) + 1
+        for child in children:
+            if child == row:
+                break
+            if child.get_state_flags() & Gtk.StateFlags.SELECTED:
+                selected = child
+        if selected is None:
+            start = 0
+        else:
+            start = children.index(selected)
+        for child in children[start:end]:
+            child.set_state_flags(Gtk.StateFlags.SELECTED, True)
 
     def __on_size_allocate(self, widget, allocation):
         """

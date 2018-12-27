@@ -42,9 +42,9 @@ class AlbumWidget:
             return
         selected = self._album.id == App().player.current_track.album.id
         if selected:
-            self._artwork.set_state(Gtk.StateType.SELECTED)
+            self._artwork.set_state_flags(Gtk.StateFlags.SELECTED, True)
         else:
-            self._artwork.set_state(Gtk.StateType.NORMAL)
+            self._artwork.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_filtered(self, b):
         """

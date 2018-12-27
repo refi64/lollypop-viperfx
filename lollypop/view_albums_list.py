@@ -187,7 +187,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.__revealer.set_reveal_child(False)
             self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
-                self.set_state(Gtk.StateType.SELECTED)
+                self.set_state_flags(Gtk.StateFlags.SELECTED, True)
         else:
             if self._responsive_widget is None:
                 TracksView.populate(self)
@@ -195,7 +195,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.__revealer.add(self._responsive_widget)
             self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
-            self.set_state(Gtk.StateType.NORMAL)
+            self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_playing_indicator(self):
         """
@@ -207,11 +207,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         selected = self.album.id == App().player.current_track.album.id
         if self.__revealer.get_reveal_child():
             TracksView.set_playing_indicator(self)
-            self.set_state(Gtk.StateType.NORMAL)
+            self.set_state_flags(Gtk.StateFlags.NORMAL, True)
         elif selected:
-            self.set_state(Gtk.StateType.SELECTED)
+            self.set_state_flags(Gtk.StateFlags.SELECTED, True)
         else:
-            self.set_state(Gtk.StateType.NORMAL)
+            self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def stop(self):
         """

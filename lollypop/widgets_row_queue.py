@@ -26,6 +26,8 @@ class QueueRow(Row, DNDRow):
         "insert-track": (
             GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         "remove-track": (
+            GObject.SignalFlags.RUN_FIRST, None, ()),
+        "do-selection": (
             GObject.SignalFlags.RUN_FIRST, None, ())
     }
 

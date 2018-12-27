@@ -130,9 +130,9 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         selected = App().player.current_track.id == Type.RADIOS and\
             name == App().player.current_track.radio_name
         if selected:
-            self._artwork.set_state(Gtk.StateType.SELECTED)
+            self._artwork.set_state_flags(Gtk.StateFlags.SELECTED, True)
         else:
-            self._artwork.set_state(Gtk.StateType.NORMAL)
+            self._artwork.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     @property
     def is_populated(self):

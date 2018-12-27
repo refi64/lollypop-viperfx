@@ -280,11 +280,13 @@ class Row(Gtk.ListBoxRow):
             @param event as Gdk.EventButton
         """
         if event.state & Gdk.ModifierType.CONTROL_MASK:
-            context = widget.get_style_context()
-            if context.has_class("trackrow-selected"):
-                context.remove_class("trackrow-selected")
+            if self.get_state_flags() & Gtk.StateFlags.SELECTED:
+                self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
-                context.add_class("trackrow-selected")
+                self.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        elif event.state & Gdk.ModifierType.SHIFT_MASK:
+            self.emit("do-selection")
+            return True
         elif event.button == 3:
             window = widget.get_window()
             if window == event.window:
@@ -298,7 +300,7 @@ class Row(Gtk.ListBoxRow):
                 App().player.remove_from_queue(self._track.id)
             else:
                 App().player.append_to_queue(self._track.id)
-        elif event.state & Gdk.ModifierType.SHIFT_MASK:
+        elif event.state & Gdk.ModifierType.MOD1_MASK:
             App().player.clear_albums()
             App().player.reset_history()
             App().player.load(self._track)
