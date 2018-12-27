@@ -447,8 +447,11 @@ class TracksView:
         if track.album.id == row.track.album.id:
             position = self.children.index(row)
             new_row = TrackRow(track, self._list_type)
+            new_row.connect("destroy", self.__on_row_destroy)
             new_row.connect("insert-track", self.__on_insert_track)
+            new_row.connect("insert-album", self.__on_insert_album)
             new_row.connect("remove-track", self.__on_remove_track)
+            new_row.connect("do-selection", self.__on_do_selection)
             new_row.show()
             if down:
                 position += 1
@@ -576,6 +579,8 @@ class TracksView:
             start = children.index(selected)
         for child in children[start:end]:
             child.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        for child in children[end:]:
+            child.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def __on_size_allocate(self, widget, allocation):
         """
