@@ -407,17 +407,9 @@ class RemoveMenuPopover(Gtk.PopoverMenu):
             Remove rows
             @param button as Gtk.ModelButton
         """
+        from lollypop.widgets_row_dnd import DNDRow
         for r in self.__rows:
-            r.emit("remove-track")
-            r.destroy()
-            if r.previous_row is not None:
-                r.previous_row.set_next_row(r.next_row)
-                r.previous_row.update_number(
-                    r.previous_row.track.number)
-            else:
-                r.update_number(r.track.number - 1)
-            if r.next_row is not None:
-                r.next_row.set_previous_row(r.previous_row)
+            DNDRow.destroy_track_row(r)
 
 
 class TrackMenuPopover(Popover):
