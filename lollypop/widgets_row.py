@@ -254,7 +254,7 @@ class Row(Gtk.ListBoxRow):
             self.__menu_button.connect(
                 "button-release-event",
                 self.__on_indicator_button_release_event)
-            self._indicator.button()
+        self._indicator.button()
 
     def __on_leave_notify_event(self, widget, event):
         """
