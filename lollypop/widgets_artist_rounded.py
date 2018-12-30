@@ -74,6 +74,9 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
             Set artist artwork
         """
+        if self._artwork is None:
+            return
+
         def set_icon_name():
             icon_name = get_icon_name(self._data) or "avatar-default-symbolic"
             self._artwork.set_from_icon_name(icon_name, Gtk.IconSize.DIALOG)

@@ -35,6 +35,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
+        self._artwork = None
         self._art_size = art_size
         self._data = data
         self.__name = name
