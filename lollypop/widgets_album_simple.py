@@ -124,7 +124,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         if self._lock_overlay or\
                 self._show_overlay == show_overlay or\
-                App().player.is_locked:
+                (App().player.is_locked and show_overlay):
             return
         OverlayAlbumHelper._show_overlay_func(self, show_overlay)
         if show_overlay:

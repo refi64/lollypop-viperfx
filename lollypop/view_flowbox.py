@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
+from lollypop.define import App
 
 
 class FlowBoxView(LazyLoadingView):
@@ -101,7 +102,7 @@ class FlowBoxView(LazyLoadingView):
         # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
         # as enter notify event enabled it
         # Else, we are in touch screen, show overlay
-        if not widget.is_overlay:
+        if not widget.is_overlay and not App().player.is_locked:
             widget.show_overlay(True)
             return True
 

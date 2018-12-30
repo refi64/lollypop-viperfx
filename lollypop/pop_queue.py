@@ -119,6 +119,7 @@ class QueuePopover(Popover):
         self.populate()
         self._signal_id1 = App().player.connect("current-changed",
                                                 self.__on_current_changed)
+        self.set_sensitive(not App().player.is_locked)
 
     def __on_unmap(self, widget):
         """

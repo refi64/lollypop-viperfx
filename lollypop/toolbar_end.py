@@ -104,7 +104,6 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_button.connect("query-tooltip",
                                    self.__on_list_button_query_tooltip)
         self.__list_popover = None
-        App().player.connect("lock-changed", self.__on_lock_changed)
         App().player.connect("playlist-changed", self.__on_playlist_changed)
         self.__set_shuffle_icon()
 
@@ -376,14 +375,6 @@ class ToolbarEnd(Gtk.Bin):
         """
         self.__shuffle_button.set_active(
             not self.__shuffle_button.get_active())
-
-    def __on_lock_changed(self, player):
-        """
-            Lock toolbar
-            @param player as Player
-        """
-        self.__list_button.set_sensitive(not player.is_locked)
-        self.__shuffle_button.set_sensitive(not player.is_locked)
 
     def __on_playback_changed(self, settings, value):
         """
