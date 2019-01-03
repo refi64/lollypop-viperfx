@@ -27,15 +27,10 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.610" date="2018-10-28">
+    <release version="0.9.909" date="2019-01-03">
       <description>
-        <ul>New navigation mode when sidebar is off</ul>
-        <ul>New smart playlists</ul>
-        <ul>Faster album loading</ul>
-        <ul>Faster track loading</ul>
-        <ul>Better sync to device</ul>
-        <ul>Restore playback position on start</ul>
-        <ul>Better adaptive mode: radio support, toolbar buttons, search, ...</ul>
+        <ul>Enhanced Drag & Drop/ul>
+        <ul>Bug Fixes</ul>
       </description>
     </release>
   </releases>
