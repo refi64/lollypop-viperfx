@@ -37,6 +37,8 @@ class FullScreen(Gtk.Window, InformationController,
         """
         Gtk.Window.__init__(self)
         self.set_title("Lollypop")
+        self.connect("motion-notify-event", self.__on_motion_notify_event)
+        self.connect("leave-notify-event", self.__on_leave_notify_event)
         rotate_album = App().settings.get_value("rotate-fullscreen-album")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
@@ -65,7 +67,6 @@ class FullScreen(Gtk.Window, InformationController,
             self.__artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
         widget = builder.get_object("widget")
-        grid = builder.get_object("grid")
         self._play_button = builder.get_object("play_btn")
         self._next_button = builder.get_object("next_btn")
         self._prev_button = builder.get_object("prev_btn")
@@ -75,10 +76,10 @@ class FullScreen(Gtk.Window, InformationController,
         preferences = Gio.Settings.new("org.gnome.desktop.wm.preferences")
         layout = preferences.get_value("button-layout").get_string()
         if layout.split(":")[0] == "close":
-            grid.attach(close_btn, 0, 0, 1, 1)
+            widget.attach(close_btn, 0, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.START)
         else:
-            grid.attach(close_btn, 2, 0, 1, 1)
+            widget.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._artwork = builder.get_object("cover")
         if rotate_album:
@@ -211,19 +212,6 @@ class FullScreen(Gtk.Window, InformationController,
         self.__view.stop()
         self.destroy()
 
-    def _on_motion_notify_event(self, widget, event):
-        """
-            Show/Hide track list if mouse on the right
-            @param widget as Gtk.Widget
-            @param event as Gdk.EventMotion
-        """
-        if event.window == widget.get_window():
-            allocated_width = widget.get_allocated_width()
-            reveal = event.x > allocated_width -\
-                self.__view.get_allocated_width() - 100 and\
-                event.x < allocated_width + 100
-            self.__revealer.set_reveal_child(reveal)
-
     def _on_image_realize(self, eventbox):
         """
             Set cursor
@@ -274,6 +262,30 @@ class FullScreen(Gtk.Window, InformationController,
             self.__timeout_id = GLib.timeout_add(60000, self.__update_datetime)
             return False
         return True
+
+    def __on_leave_notify_event(self, widget, event):
+        """
+            Hide tracks
+            @param widget as Gtk.Widget
+            @param event as Gdk.EventCrossing
+        """
+        allocation = widget.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
+            self.__revealer.set_reveal_child(False)
+
+    def __on_motion_notify_event(self, widget, event):
+        """
+            Show/Hide track list if mouse on the right
+            @param widget as Gtk.Widget
+            @param event as Gdk.EventMotion
+        """
+        if event.window == widget.get_window():
+            reveal = event.x > widget.get_allocated_width() -\
+                self.__view.get_allocated_width() - 100
+            self.__revealer.set_reveal_child(reveal)
 
     def __on_party_changed(self, player, party):
         """
