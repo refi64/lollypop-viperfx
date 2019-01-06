@@ -453,6 +453,15 @@ class AlbumsDatabase:
                 return v[0]
             return 1
 
+    def get_uris(self):
+        """
+            Get all albums uri
+            @return [str]
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT uri FROM albums")
+            return list(itertools.chain(*result))
+
     def get_tracks_count(self, album_id):
         """
             Return tracks count
