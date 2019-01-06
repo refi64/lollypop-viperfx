@@ -16,6 +16,8 @@ from math import pi
 from gettext import gettext as _
 import unicodedata
 import cairo
+import time
+from functools import wraps
 
 from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListMask
@@ -191,6 +193,31 @@ def is_pls(f):
     return False
 
 
+def __get_mtime(f, flag):
+    """
+        Return Last modified time of a given file following a flag
+        @param f as Gio.File
+        @param flag as str (ex : "time:changed")
+    """
+    info = f.query_info(flag, Gio.FileQueryInfoFlags.NONE, None)
+    return int(info.get_attribute_as_string(flag))
+
+
+def get_mtime(f):
+    """
+        Return Last modified time of a given file
+        @param f as Gio.File
+    """
+    try:
+        # We do not use time::modified because many tag editors
+        # just preserve this setting
+        return __get_mtime(f, "time::changed")
+    except:
+        pass
+    # Fallback for remote fs
+    return __get_mtime(f, "time::modified")
+
+
 def format_artist_name(name):
     """
         Return formated artist name
@@ -300,3 +327,21 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
     elif object_id == Type.SEARCH:
         icon = "edit-find-symbolic"
     return icon
+
+
+def profile(f):
+    """
+        Decorator to get execution time of a function
+    """
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+
+        ret = f(*args, **kwargs)
+
+        elapsed_time = time.perf_counter() - start_time
+        Logger.debug("%s::%s: execution time %d:%f" %(f.__module__,f.__name__, elapsed_time / 60, elapsed_time % 60))
+
+        return ret
+
+    return wrapper
