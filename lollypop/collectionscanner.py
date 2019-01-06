@@ -430,7 +430,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                 except Exception as e:
                     Logger.error("""CollectionScanner: : __scan_deep:
                                     % s: % s""" % (uri, e))
-                    raise
 
             if to_add:
                 Logger.debug("%d file(s) to add or update" % len(to_add))
