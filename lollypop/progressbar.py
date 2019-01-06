@@ -74,12 +74,14 @@ class ProgressBar(Gtk.ProgressBar):
             self.__progress_running = False
             return
         current = self.get_fraction()
+        # Compute a smoothly progress
         if self.__fraction < 1:
             progress = (self.__fraction - current) / 10
         else:
             progress = 0.01
-        if current < self.__fraction:
-            Gtk.ProgressBar.set_fraction(self, current + progress)
+        # Apply new fraction with smoothly effect
+        Gtk.ProgressBar.set_fraction(self, current + progress)
+        # Call next update
         if current < 1.0:
             GLib.timeout_add(10, self.__progress_update, caller)
         else:
