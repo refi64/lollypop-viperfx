@@ -432,10 +432,10 @@ class TracksDatabase:
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT MAX(mtime)\
-                                  FROM tracks")
-            result = result.fetchone()
-            if result is not None:
-                return result[0]
+                         FROM tracks")
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
 
             return None
 
