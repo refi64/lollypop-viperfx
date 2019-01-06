@@ -12,9 +12,11 @@
 
 from gi.repository import GLib, GObject, Gio
 
+from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, FILE_ATTRIBUTE_STANDARD_TYPE, FILE_ATTRIBUTE_STANDARD_IS_HIDDEN
+
 from gettext import gettext as _
 from threading import Thread
-from time import time
+from time import time, localtime, strftime
 
 from lollypop.inotify import Inotify
 from lollypop.define import App, Type
@@ -23,7 +25,11 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.database_history import History
-from lollypop.utils import is_audio, is_pls
+from lollypop.utils import is_audio, is_pls, get_mtime, profile
+import os
+
+
+SCAN_QUERY_INFO = "{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME, FILE_ATTRIBUTE_STANDARD_TYPE, FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -71,10 +77,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                 uris = App().settings.get_music_uris()
                 if not uris:
                     return
-
+            # Add a progress bar
             App().window.container.progress.add(self)
-            App().window.container.progress.set_fraction(0.0, self)
-
+            # Launch scan in a separate thread
             self.__thread = Thread(target=self.__scan, args=(uris, saved))
             self.__thread.daemon = True
             self.__thread.start()
@@ -94,60 +99,6 @@ class CollectionScanner(GObject.GObject, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def __get_objects_for_uris(self, uris):
-        """
-            Return all tracks/dirs for uris
-            @param uris as string
-            @return (track uri as [str], track dirs as [str])
-        """
-        tracks = []
-        files = []
-        track_dirs = []
-        walk_uris = list(uris)
-        while walk_uris:
-            uri = walk_uris.pop(0)
-            try:
-                # Directly add files, walk through directories
-                f = Gio.File.new_for_uri(uri)
-                info = f.query_info(
-                    "standard::name,standard::type,standard::is-hidden",
-                    Gio.FileQueryInfoFlags.NONE,
-                    None)
-                if info.get_file_type() == Gio.FileType.DIRECTORY:
-                    track_dirs.append(uri)
-                    infos = f.enumerate_children(
-                        "standard::name,standard::type,standard::is-hidden",
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
-                    for info in infos:
-                        f = infos.get_child(info)
-                        child_uri = f.get_uri()
-                        if info.get_is_hidden():
-                            continue
-                        elif info.get_file_type() == Gio.FileType.DIRECTORY:
-                            track_dirs.append(child_uri)
-                            walk_uris.append(child_uri)
-                        else:
-                            files.append(f)
-                else:
-                    files.append(f)
-            except Exception as e:
-                Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
-                             % e)
-        for f in files:
-            try:
-                if is_pls(f):
-                    App().playlists.import_tracks(f)
-                elif is_audio(f):
-                    tracks.append(f.get_uri())
-                else:
-                    Logger.debug("%s not detected as a music file" %
-                                 f.get_uri())
-            except Exception as e:
-                Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
-                             % e)
-        return (tracks, track_dirs)
-
     def __update_progress(self, current, total):
         """
             Update progress bar status
@@ -168,6 +119,23 @@ class CollectionScanner(GObject.GObject, TagReader):
         if App().settings.get_value("artist-artwork"):
             App().art.cache_artists_info()
 
+    def __add_monitor(self, dirs):
+        """
+            Monitor any change in a list of directory
+            @param dirs as str or list of directory to be monitored
+        """
+        if self.__inotify is None:
+            return
+
+        if not isinstance(dirs, list):
+            dirs = [dirs]
+
+        # Add monitors on dirs
+        for d in dirs:
+            if d.startswith("file://"):
+                self.__inotify.add_monitor(d)
+
+    @profile
     def __scan(self, uris, saved):
         """
             Scan music collection for music files
@@ -175,103 +143,323 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param saved as bool
             @thread safe
         """
+
         modifications = False
+
         if self.__history is None:
             self.__history = History()
-        mtimes = App().tracks.get_mtimes()
-        (new_tracks, new_dirs) = self.__get_objects_for_uris(uris)
-        orig_tracks = App().tracks.get_uris()
-        was_empty = len(orig_tracks) == 0
 
-        count = len(new_tracks) + len(orig_tracks)
-        # Add monitors on dirs
+        # Launch a quick scan that just detect last changes (add or update)
+        modifications, uris_scanned = self.__scan_quick(uris)
+
+        # Launch a deep scan which
+        modifications |= self.__scan_deep(uris, saved, uris_scanned)
+
+        # Handle auto-update
         if self.__inotify is not None:
-            for d in new_dirs:
-                if d.startswith("file://"):
-                    self.__inotify.add_monitor(d)
+            to_monitor = []
 
-        i = 0
-        # Look for new files/modified file
-        SqlCursor.add(App().db)
-        try:
-            to_add = []
-            for uri in new_tracks:
-                if self.__thread is None:
-                    SqlCursor.remove(App().db)
-                    return
+            # Traverse upward directories from albums to uris
+            walk_uris = App().albums.get_uris()
+            while walk_uris:
+                uri = walk_uris.pop(0)
                 try:
-                    GLib.idle_add(self.__update_progress, i, count)
                     f = Gio.File.new_for_uri(uri)
-                    # We do not use time::modified because many tag editors
-                    # just preserve this setting
-                    try:
-                        info = f.query_info("time::changed",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
-                        mtime = int(info.get_attribute_as_string(
-                            "time::changed"))
-                    except:  # Fallback for remote fs
-                        info = f.query_info("time::modified",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
-                        mtime = int(info.get_attribute_as_string(
-                            "time::modified"))
-                    # If songs exists and mtime unchanged, continue,
-                    # else rescan
-                    if uri in orig_tracks:
-                        orig_tracks.remove(uri)
-                        i += 1
-                        if not saved or mtime <= mtimes.get(uri, mtime + 1):
-                            i += 1
-                            continue
-                        else:
-                            SqlCursor.allow_thread_execution(App().db)
-                            self.__del_from_db(uri)
-                    # If not saved, use 0 as mtime, easy delete on quit
-                    if not saved:
-                        mtime = 0
-                    # On first scan, use modification time
-                    # Else, use current time
-                    elif not was_empty:
-                        mtime = int(time())
-                    to_add.append((uri, mtime))
+                    info = f.query_info(SCAN_QUERY_INFO,
+                        Gio.FileQueryInfoFlags.NONE,
+                        None)
+
+                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+                        to_monitor.append(uri)
+
+                    # Check if parent has to be monitored
+                    parent = f.get_parent()
+                    if parent:
+                        avoid = False
+                        parent_uri = parent.get_uri()
+
+                        infos = parent.enumerate_children(SCAN_QUERY_INFO,
+                            Gio.FileQueryInfoFlags.NONE,
+                            None)
+                        for info in infos:
+                            child_uri = infos.get_child(info).get_uri()
+                            if child_uri in uris:
+                                # If the directory is beyond the uris
+                                avoid = True
+                                break
+
+                        if not avoid and parent_uri not in walk_uris:
+                            walk_uris.append(parent_uri)
                 except Exception as e:
-                    Logger.error("CollectionScanner::__scan(mtime): %s" % e)
-            if to_add or orig_tracks:
-                modifications = True
-            # Clean deleted files
-            # Now because we need to populate history
-            # Only if we are saving
-            if saved:
-                for uri in orig_tracks:
-                    i += 1
-                    GLib.idle_add(self.__update_progress, i, count)
-                    self.__del_from_db(uri)
-                    SqlCursor.allow_thread_execution(App().db)
-            # Add files to db
-            for (uri, mtime) in to_add:
-                try:
-                    Logger.debug("Adding file: %s" % uri)
-                    i += 1
-                    GLib.idle_add(self.__update_progress, i, count)
-                    self.__add2db(uri, mtime)
-                    SqlCursor.allow_thread_execution(App().db)
-                except Exception as e:
-                    Logger.error("CollectionScanner::__scan(add): %s, %s" %
-                                 (e, uri))
-        except Exception as e:
-            Logger.error("CollectionScanner::__scan(): %s" % e)
-        SqlCursor.commit(App().db)
-        SqlCursor.remove(App().db)
+                    Logger.error("""CollectionScanner::__scan(): %s""" % e)
+
+            Logger.debug("%d directory(ies) to monitor" % len(to_monitor))
+            self.__add_monitor(to_monitor)
+
         GLib.idle_add(self.__finish, modifications and saved)
+
         if not saved:
             self.__play_new_tracks(new_tracks)
+
         del self.__history
         self.__history = None
 
+        return
+
+    def __scan_to_handle(self, f, mtime_offset, to_handle):
+        """
+            Check if file has to be handle by scanner
+            @param f as Gio.File
+            @param mtime_offset as last modified time offset
+            @param to_handle as list to update if file has to be handle
+            @return True if the file has been scanned
+            @thread safe
+        """
+
+        try:
+            # Do not handle file with last modified time below given offset
+            mtime = get_mtime(f)
+            if mtime_offset and mtime <= mtime_offset:
+                return False
+
+            # Scan file
+            if is_pls(f):
+                # Handle playlist
+                App().playlists.import_tracks(f)
+            elif is_audio(f):
+                # File to handle
+                to_handle.append((f.get_uri(), mtime))
+            else:
+                Logger.debug("Not detected as a music file: %s" % f.get_uri())
+        except Exception as e:
+            Logger.error("""CollectionScanner::__scan_to_handle(): %s""" % e)
+            return False
+
+        return True
+
+
+    def __scan_add(self, to_add):
+        """
+            Add audio files to database
+            @param to_add as list of uri and mtime couple
+        """
+        SqlCursor.add(App().db)
+        # Add files to db
+        for (uri, mtime) in to_add:
+            try:
+                Logger.debug("Adding file: %s" % uri)
+                self.__add2db(uri, mtime)
+                SqlCursor.allow_thread_execution(App().db)
+            except Exception as e:
+                Logger.error("CollectionScanner::__scan_add(add): %s, %s" % (e, uri))
+        SqlCursor.commit(App().db)
+        SqlCursor.remove(App().db)
+
+
+    @profile
+    def __scan_quick(self, uris):
+        """
+            Quick scan music collection for new audio files
+            @param uris as [str]
+            @return True if modification and list of files already scanned
+            @thread safe
+        """
+
+        modifications = False
+        uris_scanned = []
+
+        # Get last modified time over all tracks
+        max_mtime = App().tracks.get_max_mtime()
+        if max_mtime is None:
+            Logger.debug("CollectionScanner::__scan_quick() : no tracks, quick scan aborted")
+            return modifications, uris_scanned
+
+        Logger.debug("CollectionScanner::__scan_quick() : quick scan begun (max mtime : %s)" % strftime("%a, %d %b %Y %H:%M:%S %Z", localtime(max_mtime)))
+
+        try:
+            to_add = []
+
+            walk_uris = list(uris)
+            while walk_uris:
+                uri = walk_uris.pop(0)
+                try:
+                    # Directly add files, walk through directories
+                    f = Gio.File.new_for_uri(uri)
+                    info = f.query_info(SCAN_QUERY_INFO,
+                        Gio.FileQueryInfoFlags.NONE,
+                        None)
+                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+                        infos = f.enumerate_children(SCAN_QUERY_INFO,
+                            Gio.FileQueryInfoFlags.NONE,
+                            None)
+                        for info in infos:
+                            f = infos.get_child(info)
+                            child_uri = f.get_uri()
+                            if info.get_is_hidden():
+                                continue
+                            elif info.get_file_type() == Gio.FileType.DIRECTORY:
+                                walk_uris.append(child_uri)
+                                continue
+                            else:
+                                if self.__scan_to_handle(f, max_mtime, to_add):
+                                    uris_scanned.append(child_uri)
+
+                        if to_add:
+                            # Add to db new directory (like an album)
+                            modifications = True
+                            self.__scan_add(to_add)
+                            # Reset list of files to add
+                            to_add = []
+                    else:
+                        if self.__scan_to_handle(f, max_mtime, to_add):
+                            uris_scanned.append(uri)
+
+                except Exception as e:
+                    Logger.error("""CollectionScanner::__scan_quick: %s""" % e)
+
+            if to_add:
+                modifications = True
+                # Add unstanged changes and commit
+                self.__scan_add(to_add)
+
+        except Exception as e:
+            Logger.error("""CollectionScanner::__scan_quick: %s""" % e)
+
+        return modifications, uris_scanned
+
+
+    @profile
+    def __scan_deep(self, uris, saved, uris_scanned=None):
+        """
+            Quick scan music collection for new music files
+            @param uris as [str]
+            @param saved as bool
+            @return True if modification and list of files already scanned
+            @thread safe
+        """
+
+        Logger.debug("CollectionScanner::__scan_deep() : deep scan begun")
+        modifications = False
+
+        # Get mtime of all tracks to detect which has to be updated
+        mtimes = App().tracks.get_mtimes()
+        # Get uris of all tracks to detect which has to be deleted
+        to_delete = App().tracks.get_uris()
+
+        try:
+            to_add = []
+
+            walk_uris = list(uris)
+            i = 0
+            count = 0
+            while walk_uris:
+                uri = walk_uris.pop(0)
+                try:
+                    i += 1
+                    # Directly add files, walk through directories
+                    f = Gio.File.new_for_uri(uri)
+                    info = f.query_info(SCAN_QUERY_INFO,
+                        Gio.FileQueryInfoFlags.NONE,
+                        None)
+                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+                        # If is a directory
+                        infos = f.enumerate_children(SCAN_QUERY_INFO,
+                            Gio.FileQueryInfoFlags.NONE,
+                            None)
+
+                        for info in infos:
+                            f = infos.get_child(info)
+                            child_uri = f.get_uri()
+                            if info.get_is_hidden():
+                                i += 1
+                                count += 1
+                                continue
+                            elif info.get_file_type() == Gio.FileType.DIRECTORY:
+                                # If is a directory
+                                # Compute count for progress bar
+                                for path, dirs, files in os.walk(f.get_path()):
+                                    count += len(dirs)
+                                    break
+
+                                walk_uris.append(child_uri)
+                                continue
+                            else:
+                                i += 1
+                                count += 1
+                                try:
+                                    to_delete.remove(child_uri)
+                                except ValueError as e:
+                                    pass
+
+                                if child_uri in uris_scanned:
+                                    # Skip already scanned files
+                                    continue
+                                # Scan file
+                                self.__scan_to_handle(f, mtimes.get(child_uri, None), to_add)
+
+                        if to_add:
+                            # Add to db new directory (like an album)
+                            modifications = True
+                            self.__scan_add(to_add)
+                            # Reset list of files to add
+                            to_add = []
+                    else:
+                        # If is a file
+                        count += 1
+                        try:
+                            to_delete.remove(uri)
+                        except ValueError as e:
+                            pass
+
+                        if uri in uris_scanned:
+                            # Skip already scanned files
+                            continue
+                        # Scan file
+                        self.__scan_to_handle(f, mtimes.get(uri, None), to_add)
+
+                    GLib.idle_add(self.__update_progress, i, count)
+
+                except Exception as e:
+                    Logger.error("""CollectionScanner::__scan_deep: %s: %s""" % (uri, e))
+                    raise
+
+            if to_add:
+                Logger.debug("%d file(s) to add or update" % len(to_add))
+                # Add unstanged changes and commit
+                self.__scan_add(to_add)
+
+            # Clean deleted files
+            # Now because we need to populate history
+            # Only if we are saving
+            if saved and to_delete:
+                Logger.debug("%d file(s) to delete" % len(to_delete))
+                SqlCursor.add(App().db)
+
+                for uri in to_delete:
+                    i += 1
+                    Logger.debug("Deleting file: %s" % uri)
+                    GLib.idle_add(self.__update_progress, i, count)
+                    try:
+                        self.__del_from_db(uri)
+                        SqlCursor.allow_thread_execution(App().db)
+                    except Exception as e:
+                        Logger.error("CollectionScanner::__scan_deep: %s" % e)
+
+                SqlCursor.commit(App().db)
+                SqlCursor.remove(App().db)
+
+            if to_add or to_delete:
+                modifications = True
+
+        except Exception as e:
+            Logger.error("""CollectionScanner::__scan_deep: %s""" % e)
+
+        return modifications
+
+
     def __add2db(self, uri, mtime):
         """
-            Add new file to db with information
+            Add new file (or update one) to db with information
             @param uri as string
             @param mtime as int
             @return track id as int
