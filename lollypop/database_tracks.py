@@ -423,6 +423,22 @@ class TracksDatabase:
                 mtimes.update((row,))
             return mtimes
 
+    def get_max_mtime(self):
+        """
+            Get maximal mtime for tracks
+            WARNING: Should be called before anything is shown on screen
+            @param None
+            @return mtime as int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT MAX(mtime)\
+                                  FROM tracks")
+            result = result.fetchone()
+            if result is not None:
+                return result[0]
+
+            return None
+
     def get_non_persistent(self):
         """
             Return non persistent tracks
