@@ -305,7 +305,7 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
     elif object_id == Type.ALL:
         icon = "media-optical-cd-audio-symbolic"
     elif object_id == Type.ARTISTS:
-            icon = "avatar-default-symbolic"
+        icon = "avatar-default-symbolic"
     elif object_id == Type.COMPILATIONS:
         icon = "system-users-symbolic"
     elif object_id == Type.RECENTS:
@@ -340,7 +340,8 @@ def profile(f):
         ret = f(*args, **kwargs)
 
         elapsed_time = time.perf_counter() - start_time
-        Logger.debug("%s::%s: execution time %d:%f" %(f.__module__,f.__name__, elapsed_time / 60, elapsed_time % 60))
+        Logger.debug("%s::%s: execution time %d:%f" % (
+            f.__module__, f.__name__, elapsed_time / 60, elapsed_time % 60))
 
         return ret
 

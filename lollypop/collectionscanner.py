@@ -12,7 +12,9 @@
 
 from gi.repository import GLib, GObject, Gio
 
-from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, FILE_ATTRIBUTE_STANDARD_TYPE, FILE_ATTRIBUTE_STANDARD_IS_HIDDEN
+from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
+                              FILE_ATTRIBUTE_STANDARD_TYPE, \
+                              FILE_ATTRIBUTE_STANDARD_IS_HIDDEN
 
 from gettext import gettext as _
 from threading import Thread
@@ -29,7 +31,9 @@ from lollypop.utils import is_audio, is_pls, get_mtime, profile
 import os
 
 
-SCAN_QUERY_INFO = "{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME, FILE_ATTRIBUTE_STANDARD_TYPE, FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)
+SCAN_QUERY_INFO = "{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
+                                    FILE_ATTRIBUTE_STANDARD_TYPE,
+                                    FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -166,8 +170,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                 try:
                     f = Gio.File.new_for_uri(uri)
                     info = f.query_info(SCAN_QUERY_INFO,
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
+                                        Gio.FileQueryInfoFlags.NONE,
+                                        None)
 
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         to_monitor.append(uri)
@@ -179,8 +183,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                         parent_uri = parent.get_uri()
 
                         infos = parent.enumerate_children(SCAN_QUERY_INFO,
-                            Gio.FileQueryInfoFlags.NONE,
-                            None)
+                                                          Gio.FileQueryInfoFlags.NONE,
+                                                          None)
                         for info in infos:
                             child_uri = infos.get_child(info).get_uri()
                             if child_uri in uris:
@@ -237,7 +241,6 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         return True
 
-
     def __scan_add(self, to_add):
         """
             Add audio files to database
@@ -251,10 +254,10 @@ class CollectionScanner(GObject.GObject, TagReader):
                 self.__add2db(uri, mtime)
                 SqlCursor.allow_thread_execution(App().db)
             except Exception as e:
-                Logger.error("CollectionScanner::__scan_add(add): %s, %s" % (e, uri))
+                Logger.error(
+                    "CollectionScanner::__scan_add(add): %s, %s" % (e, uri))
         SqlCursor.commit(App().db)
         SqlCursor.remove(App().db)
-
 
     @profile
     def __scan_quick(self, uris):
@@ -271,10 +274,14 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Get last modified time over all tracks
         max_mtime = App().tracks.get_max_mtime()
         if max_mtime is None:
-            Logger.debug("CollectionScanner::__scan_quick() : no tracks, quick scan aborted")
+            Logger.debug("""CollectionScanner::__scan_quick() :
+                            no tracks, quick scan aborted""")
             return modifications, uris_scanned
 
-        Logger.debug("CollectionScanner::__scan_quick() : quick scan begun (max mtime : %s)" % strftime("%a, %d %b %Y %H:%M:%S %Z", localtime(max_mtime)))
+        Logger.debug("""CollectionScanner::__scan_quick() :
+                        quick scan begun (max mtime: % s)"""
+                     % strftime("%a, %d %b %Y %H:%M:%S %Z",
+                                localtime(max_mtime)))
 
         try:
             to_add = []
@@ -286,12 +293,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # Directly add files, walk through directories
                     f = Gio.File.new_for_uri(uri)
                     info = f.query_info(SCAN_QUERY_INFO,
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
+                                        Gio.FileQueryInfoFlags.NONE,
+                                        None)
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         infos = f.enumerate_children(SCAN_QUERY_INFO,
-                            Gio.FileQueryInfoFlags.NONE,
-                            None)
+                                                     Gio.FileQueryInfoFlags.NONE,
+                                                     None)
                         for info in infos:
                             f = infos.get_child(info)
                             child_uri = f.get_uri()
@@ -315,7 +322,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                             uris_scanned.append(uri)
 
                 except Exception as e:
-                    Logger.error("""CollectionScanner::__scan_quick: %s""" % e)
+                    Logger.error(
+                        """CollectionScanner:: __scan_quick: % s""" % e)
 
             if to_add:
                 modifications = True
@@ -323,10 +331,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                 self.__scan_add(to_add)
 
         except Exception as e:
-            Logger.error("""CollectionScanner::__scan_quick: %s""" % e)
+            Logger.error("""CollectionScanner:: __scan_quick: % s""" % e)
 
         return modifications, uris_scanned
-
 
     @profile
     def __scan_deep(self, uris, saved, uris_scanned=None):
@@ -359,13 +366,13 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # Directly add files, walk through directories
                     f = Gio.File.new_for_uri(uri)
                     info = f.query_info(SCAN_QUERY_INFO,
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
+                                        Gio.FileQueryInfoFlags.NONE,
+                                        None)
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         # If is a directory
                         infos = f.enumerate_children(SCAN_QUERY_INFO,
-                            Gio.FileQueryInfoFlags.NONE,
-                            None)
+                                                     Gio.FileQueryInfoFlags.NONE,
+                                                     None)
 
                         for info in infos:
                             f = infos.get_child(info)
@@ -395,7 +402,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                                     # Skip already scanned files
                                     continue
                                 # Scan file
-                                self.__scan_to_handle(f, mtimes.get(child_uri, None), to_add)
+                                self.__scan_to_handle(
+                                    f, mtimes.get(child_uri, None), to_add)
 
                         if to_add:
                             # Add to db new directory (like an album)
@@ -420,7 +428,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     GLib.idle_add(self.__update_progress, i, count)
 
                 except Exception as e:
-                    Logger.error("""CollectionScanner::__scan_deep: %s: %s""" % (uri, e))
+                    Logger.error("""CollectionScanner: : __scan_deep:
+                                    % s: % s""" % (uri, e))
                     raise
 
             if to_add:
@@ -452,14 +461,13 @@ class CollectionScanner(GObject.GObject, TagReader):
                 modifications = True
 
         except Exception as e:
-            Logger.error("""CollectionScanner::__scan_deep: %s""" % e)
+            Logger.error("""CollectionScanner:: __scan_deep: % s""" % e)
 
         return modifications
 
-
     def __add2db(self, uri, mtime):
         """
-            Add new file (or update one) to db with information
+            Add new file(or update one) to db with information
             @param uri as string
             @param mtime as int
             @return track id as int
