@@ -195,7 +195,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                         if not avoid and parent_uri not in walk_uris:
                             walk_uris.append(parent_uri)
                 except Exception as e:
-                    Logger.error("""CollectionScanner::__scan(): %s""" % e)
+                    Logger.error("CollectionScanner::__scan(): %s" % e)
 
             Logger.debug("%d directory(ies) to monitor" % len(to_monitor))
             self.__add_monitor(to_monitor)
@@ -236,7 +236,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             else:
                 Logger.debug("Not detected as a music file: %s" % f.get_uri())
         except Exception as e:
-            Logger.error("""CollectionScanner::__scan_to_handle(): %s""" % e)
+            Logger.error("CollectionScanner::__scan_to_handle(): %s" % e)
             return False
 
         return True
@@ -254,8 +254,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                 self.__add2db(uri, mtime)
                 SqlCursor.allow_thread_execution(App().db)
             except Exception as e:
-                Logger.error(
-                    "CollectionScanner::__scan_add(add): %s, %s" % (e, uri))
+                Logger.error("CollectionScanner::__scan_add(add): "
+                             "%s, %s" % (e, uri))
         SqlCursor.commit(App().db)
         SqlCursor.remove(App().db)
 
@@ -274,12 +274,12 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Get last modified time over all tracks
         max_mtime = App().tracks.get_max_mtime()
         if max_mtime is None:
-            Logger.debug("""CollectionScanner::__scan_quick() :
-                            no tracks, quick scan aborted""")
+            Logger.debug("CollectionScanner::__scan_quick() : "
+                         "no tracks, quick scan aborted")
             return modifications, uris_scanned
 
-        Logger.debug("""CollectionScanner::__scan_quick() :
-                        quick scan begun (max mtime: % s)"""
+        Logger.debug("CollectionScanner::__scan_quick() : "
+                     "quick scan begun (max mtime: % s)"
                      % strftime("%a, %d %b %Y %H:%M:%S %Z",
                                 localtime(max_mtime)))
 
@@ -322,8 +322,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             uris_scanned.append(uri)
 
                 except Exception as e:
-                    Logger.error(
-                        """CollectionScanner:: __scan_quick: % s""" % e)
+                    Logger.error("CollectionScanner:: __scan_quick: % s" % e)
 
             if to_add:
                 modifications = True
@@ -331,7 +330,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 self.__scan_add(to_add)
 
         except Exception as e:
-            Logger.error("""CollectionScanner:: __scan_quick: % s""" % e)
+            Logger.error("CollectionScanner:: __scan_quick: % s" % e)
 
         return modifications, uris_scanned
 
@@ -428,8 +427,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     GLib.idle_add(self.__update_progress, i, count)
 
                 except Exception as e:
-                    Logger.error("""CollectionScanner: : __scan_deep:
-                                    % s: % s""" % (uri, e))
+                    Logger.error("CollectionScanner: : __scan_deep: "
+                                 "% s: % s" % (uri, e))
 
             if to_add:
                 Logger.debug("%d file(s) to add or update" % len(to_add))
@@ -460,7 +459,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 modifications = True
 
         except Exception as e:
-            Logger.error("""CollectionScanner:: __scan_deep: % s""" % e)
+            Logger.error("CollectionScanner:: __scan_deep: %s" % e)
 
         return modifications
 
