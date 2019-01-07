@@ -136,6 +136,11 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         # Add monitors on dirs
         for d in dirs:
+
+            # Handle a stop request
+            if self.__thread is None:
+                break
+
             if d.startswith("file://"):
                 self.__inotify.add_monitor(d)
 
@@ -156,6 +161,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Launch a quick scan that just detect last changes (add or update)
         modifications, uris_scanned = self.__scan_quick(uris)
 
+        # Handle a stop request
+        if self.__thread is None:
+            return
+
         # Launch a deep scan which
         modifications |= self.__scan_deep(uris, saved, uris_scanned)
 
@@ -166,6 +175,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             # Traverse upward directories from albums to uris
             walk_uris = App().albums.get_uris()
             while walk_uris:
+
+                # Handle a stop request
+                if self.__thread is None:
+                    return
+
                 uri = walk_uris.pop(0)
                 try:
                     f = Gio.File.new_for_uri(uri)
@@ -249,6 +263,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         SqlCursor.add(App().db)
         # Add files to db
         for (uri, mtime) in to_add:
+
+            # Handle a stop request
+            if self.__thread is None:
+                break
+
             try:
                 Logger.debug("Adding file: %s" % uri)
                 self.__add2db(uri, mtime)
@@ -256,6 +275,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             except Exception as e:
                 Logger.error("CollectionScanner::__scan_add(add): "
                              "%s, %s" % (e, uri))
+
         SqlCursor.commit(App().db)
         SqlCursor.remove(App().db)
 
@@ -288,6 +308,11 @@ class CollectionScanner(GObject.GObject, TagReader):
 
             walk_uris = list(uris)
             while walk_uris:
+
+                # Handle a stop request
+                if self.__thread is None:
+                    return modifications, uris_scanned
+
                 uri = walk_uris.pop(0)
                 try:
                     # Directly add files, walk through directories
@@ -337,10 +362,10 @@ class CollectionScanner(GObject.GObject, TagReader):
     @profile
     def __scan_deep(self, uris, saved, uris_scanned=None):
         """
-            Quick scan music collection for new music files
+            Scan music collection (new, modified, deleted)
             @param uris as [str]
             @param saved as bool
-            @return True if modification and list of files already scanned
+            @return True if modification
             @thread safe
         """
 
@@ -359,6 +384,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             i = 0
             count = 0
             while walk_uris:
+
+                # Handle a stop request
+                if self.__thread is None:
+                    return modifications
+
                 uri = walk_uris.pop(0)
                 try:
                     i += 1
@@ -443,6 +473,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                 SqlCursor.add(App().db)
 
                 for uri in to_delete:
+
+                    # Handle a stop request
+                    if self.__thread is None:
+                        break
+
                     i += 1
                     Logger.debug("Deleting file: %s" % uri)
                     GLib.idle_add(self.__update_progress, i, count)
