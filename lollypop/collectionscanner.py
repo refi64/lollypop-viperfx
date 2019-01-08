@@ -15,7 +15,9 @@ from gi.repository import GLib, GObject, Gio
 
 from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
                               FILE_ATTRIBUTE_STANDARD_TYPE, \
-                              FILE_ATTRIBUTE_STANDARD_IS_HIDDEN
+                              FILE_ATTRIBUTE_STANDARD_IS_HIDDEN,\
+                              FILE_ATTRIBUTE_TIME_CHANGED,\
+                              FILE_ATTRIBUTE_TIME_MODIFIED
 
 from gettext import gettext as _
 from threading import Thread
@@ -31,9 +33,11 @@ from lollypop.database_history import History
 from lollypop.utils import is_audio, is_pls, get_mtime, profile
 
 
-SCAN_QUERY_INFO = "{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
-                                    FILE_ATTRIBUTE_STANDARD_TYPE,
-                                    FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)
+SCAN_QUERY_INFO = "{},{},{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
+                                          FILE_ATTRIBUTE_STANDARD_TYPE,
+                                          FILE_ATTRIBUTE_STANDARD_IS_HIDDEN,
+                                          FILE_ATTRIBUTE_TIME_CHANGED,
+                                          FILE_ATTRIBUTE_TIME_MODIFIED)
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -155,18 +159,14 @@ class CollectionScanner(GObject.GObject, TagReader):
             try:
                 # Directly add files, walk through directories
                 f = Gio.File.new_for_uri(uri)
-                info = f.query_info(
-                    "standard::name,standard::type," +
-                    "standard::is-hidden,time::modified, time:changed",
-                    Gio.FileQueryInfoFlags.NONE,
-                    None)
+                info = f.query_info(SCAN_QUERY_INFO,
+                                    Gio.FileQueryInfoFlags.NONE,
+                                    None)
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
                     dirs.append(uri)
-                    infos = f.enumerate_children(
-                        "standard::name,standard::type," +
-                        "standard::is-hidden,time::modified, time:changed",
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
+                    infos = f.enumerate_children(SCAN_QUERY_INFO,
+                                                 Gio.FileQueryInfoFlags.NONE,
+                                                 None)
                     for info in infos:
                         f = infos.get_child(info)
                         child_uri = f.get_uri()
