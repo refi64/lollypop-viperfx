@@ -293,10 +293,10 @@ class CollectionScanner(GObject.GObject, TagReader):
                     GLib.idle_add(self.__update_progress, i, count)
                 except Exception as e:
                     Logger.error(
-                               "CollectionScanner:: __scan_for_mtime: % s" % e)
+                               "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
         except Exception as e:
-            Logger.error("CollectionScanner:: __scan_for_mtime: % s" % e)
+            Logger.error("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
         SqlCursor.remove(App().db)
         return new_tracks
