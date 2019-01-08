@@ -232,7 +232,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
     def __scan_add(self, uri, mtime):
         """
-            Add audio files to database
+            Add audio file to database
             @param uri as str
             @param mtime as float
         """
@@ -246,7 +246,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
     def __scan_del(self, uri):
         """
-            Delete files from DB
+            Delete file from DB
             @param uri as str
         """
         try:
