@@ -17,15 +17,15 @@ from lollypop.view import View
 from lollypop.adaptive import AdaptiveStack
 from lollypop.container_device import DeviceContainer
 from lollypop.container_donation import DonationContainer
-from lollypop.container_progress import ProgressContainer
 from lollypop.container_scanner import ScannerContainer
 from lollypop.container_playlists import PlaylistsContainer
 from lollypop.container_lists import ListsContainer
 from lollypop.container_views import ViewsContainer
+from lollypop.progressbar import ProgressBar
 
 
 class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
-                ProgressContainer, ScannerContainer, PlaylistsContainer,
+                ScannerContainer, PlaylistsContainer,
                 ListsContainer, ViewsContainer):
     """
         Main view management
@@ -38,7 +38,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         Gtk.Overlay.__init__(self)
         DeviceContainer.__init__(self)
         DonationContainer.__init__(self)
-        ProgressContainer.__init__(self)
         ScannerContainer.__init__(self)
         PlaylistsContainer.__init__(self)
         ListsContainer.__init__(self)
@@ -157,6 +156,14 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         """
         return self.__paned_two
 
+    @property
+    def progress(self):
+        """
+            Progress bar
+            @return ProgressBar
+        """
+        return self.__progress
+
 ############
 # PRIVATE  #
 ############
@@ -174,7 +181,9 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         vgrid.add(self._stack)
-        vgrid.add(self._progress)
+        self.__progress = ProgressBar()
+        self.__progress.set_property("hexpand", True)
+        vgrid.add(self.__progress)
         vgrid.show()
 
         self.__paned_two.add1(self._list_two)

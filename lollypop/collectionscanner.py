@@ -81,8 +81,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                 uris = App().settings.get_music_uris()
                 if not uris:
                     return
-            # Add a progress bar
-            App().window.container.progress.add(self)
             # Launch scan in a separate thread
             self.__thread = Thread(target=self.__scan, args=(uris, saved))
             self.__thread.daemon = True
@@ -197,6 +195,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__history = History()
 
         (files, dirs) = self.__get_objects_for_uris(uris)
+        # Add a progress bar
+        App().window.container.progress.add(self)
         self.__add_monitor(dirs)
 
         new_tracks = self.__scan_files(files, saved)

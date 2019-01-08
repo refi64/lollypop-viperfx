@@ -36,7 +36,7 @@ class CollectionImporter:
         """
             Add uris to collection
         """
-        GLib.idle_add(App().window.container.pulse, True)
+        GLib.idle_add(App().window.container.progress.pulse, True)
         walk_uris = list(uris)
         while walk_uris:
             uri = walk_uris.pop(0)
@@ -67,7 +67,7 @@ class CollectionImporter:
                     Logger.info("Not an audio file %s" % uri)
             except Exception as e:
                 Logger.error("CollectionImporter::add(): %s" % e)
-        GLib.idle_add(App().window.container.pulse, False)
+        GLib.idle_add(App().window.container.progress.pulse, False)
 
 #######################
 # PRIVATE             #

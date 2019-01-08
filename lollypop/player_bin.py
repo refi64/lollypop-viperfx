@@ -338,7 +338,7 @@ class BinPlayer(BasePlayer):
             @param message as Gst.Message
         """
         Logger.info("Player::_on_bus_error(): %s" % message.parse_error()[1])
-        App().window.container.pulse(False)
+        App().window.container.progress.pulse(False)
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
             App().scanner.stop()

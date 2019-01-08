@@ -26,6 +26,7 @@ class ProgressBar(Gtk.ProgressBar):
         Gtk.ProgressBar.__init__(self)
         self.__callers = []
         self.__fraction = 0.0
+        self.__pulse_timeout = None
         self.__progress_running = False
 
     def add(self, caller):
@@ -51,6 +52,24 @@ class ProgressBar(Gtk.ProgressBar):
                 self.__progress_running = True
                 self.__progress_update(caller)
 
+    def pulse(self, pulse):
+        """
+            Make progress bar visible/pulse if pulse is True
+            @param pulse as bool
+        """
+        # Only pulse if nobody is using the progressbar
+        if self.__callers:
+            return
+        if pulse:
+            self.show()
+            if self.__pulse_timeout is None:
+                self.__pulse_timeout = GLib.timeout_add(500, self.__pulse)
+        else:
+            self.hide()
+            if self.__pulse_timeout is not None:
+                GLib.source_remove(self.__pulse_timeout)
+                self.__pulse_timeout = None
+
 #######################
 # PRIVATE             #
 #######################
@@ -64,6 +83,19 @@ class ProgressBar(Gtk.ProgressBar):
         Gtk.ProgressBar.set_fraction(self, 0.0)
         self.__progress_running = False
         self.__callers.remove(caller)
+
+    def __pulse(self):
+        """
+            Make progress bar pulse while visible
+            @param pulse as bool
+        """
+        if self.is_visible():
+            Gtk.ProgressBar.pulse(self)
+            return True
+        else:
+            Gtk.ProgressBar.set_fraction(self, 0.0)
+            self.__pulse_timeout = None
+            return False
 
     def __progress_update(self, caller):
         """
