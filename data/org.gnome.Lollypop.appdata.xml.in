@@ -27,10 +27,9 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.909" date="2019-01-03">
+    <release version="0.9.910" date="2019-01-08">
       <description>
-        <ul>Enhanced Drag and Drop</ul>
-        <ul>Bug Fixes</ul>
+        <ul>Fix an issue with adaptive mode</ul>
       </description>
     </release>
   </releases>
