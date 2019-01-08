@@ -86,9 +86,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                 if not uris:
                     return
 
-            App().window.container.progress.pulse(True)
             # Register to progressbar
             App().window.container.progress.add(self)
+            App().window.container.progress.set_fraction(0, self)
             # Launch scan in a separate thread
             self.__thread = Thread(target=self.__scan, args=(uris, saved))
             self.__thread.daemon = True
