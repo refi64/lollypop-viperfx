@@ -216,7 +216,9 @@ class ListsContainer:
         """
         Logger.debug("Container::__on_list_one_selected()")
         self._stack.destroy_non_visible_children()
-        if not App().window.is_adaptive:
+        if App().window.is_adaptive:
+            App().window.emit("can-go-back-changed", True)
+        else:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)
         view = None
@@ -263,25 +265,22 @@ class ListsContainer:
                 view = self._get_view_albums([], selected_ids)
             else:
                 view = self._get_view_artists([], selected_ids)
-        else:
+        elif not App().window.is_adaptive:
             view = self._get_view_albums(selected_ids, [])
-        if view is not None:
-            if App().window.is_adaptive:
-                App().window.emit("can-go-back-changed", True)
-            if view not in self._stack.get_children():
+        if view is not None and view not in self._stack.get_children():
                 self._stack.add(view)
-            # If we are in paned stack mode, show list two if wanted
-            if App().window.is_adaptive\
-                    and self._list_two.is_visible()\
-                    and (
-                        selected_ids[0] >= 0 or
-                        Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES or
-                        selected_ids[0] in [Type.PLAYLISTS,
-                                            Type.YEARS,
-                                            Type.ALL]):
-                self._stack.set_visible_child(self._list_two)
-            else:
-                self._stack.set_visible_child(view)
+        # If we are in paned stack mode, show list two if wanted
+        if App().window.is_adaptive\
+                and self._list_two.is_visible()\
+                and (
+                    selected_ids[0] >= 0 or
+                    Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES or
+                    selected_ids[0] in [Type.PLAYLISTS,
+                                        Type.YEARS,
+                                        Type.ALL]):
+            self._stack.set_visible_child(self._list_two)
+        else:
+            self._stack.set_visible_child(view)
 
     def __on_list_one_populated(self, selection_list):
         """
