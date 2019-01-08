@@ -63,10 +63,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__inotify = None
         App().albums.update_max_count()
 
-    def update(self, full=False,  uris=[], saved=True):
+    def update(self, uris=[], saved=True):
         """
             Update database
-            @param full as bool
             @param uris as [str]
             @param saved as bool
         """
