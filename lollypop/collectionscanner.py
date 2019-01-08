@@ -1,4 +1,5 @@
 # Copyright (c) 2014-2018 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# Copyright (c) 2019 Jordi Romera <jordiromera@users.sourceforge.net>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -18,7 +19,7 @@ from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
 
 from gettext import gettext as _
 from threading import Thread
-from time import time, localtime, strftime
+from time import time
 
 from lollypop.inotify import Inotify
 from lollypop.define import App, Type
@@ -28,7 +29,6 @@ from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.database_history import History
 from lollypop.utils import is_audio, is_pls, get_mtime, profile
-import os
 
 
 SCAN_QUERY_INFO = "{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
@@ -195,9 +195,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         (files, dirs) = self.__get_objects_for_uris(uris)
         self.__add_monitor(dirs)
 
-        modifications = self.__scan_files(files, saved)
+        new_tracks = self.__scan_files(files, saved)
 
-        GLib.idle_add(self.__finish, modifications and saved)
+        GLib.idle_add(self.__finish, new_tracks and saved)
 
         if not saved:
             self.__play_new_tracks(new_tracks)
@@ -284,10 +284,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Scan music collection for new audio files
             @param files as [Gio.File]
-            @return True if modification
+            @return new track uris as [str]
             @thread safe
         """
-        modifications = False
+        new_tracks = []
         # Get mtime of all tracks to detect which has to be updated
         mtimes = App().tracks.get_mtimes()
         # Get uris of all tracks to detect which has to be deleted
@@ -299,7 +299,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             while files:
                 # Handle a stop request
                 if self.__thread is None:
-                    return modifications
+                    return new_tracks
                 try:
                     f = files.pop(0)
                     uri = f.get_uri()
@@ -310,21 +310,20 @@ class CollectionScanner(GObject.GObject, TagReader):
                         if handled:
                             # If not saved, use 0 as mtime, easy delete on quit
                             to_add.append((mtime if saved else 0, uri))
+                            new_tracks.append(uri)
                     if uri in to_delete:
                         to_delete.remove(uri)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_for_mtime: % s" % e)
             if to_delete and saved:
-                modifications = True
                 self.__scan_del(to_delete, i, count)
             if to_add:
-                modifications = True
                 # Add unstanged changes and commit
                 self.__scan_add(to_add, i, count)
         except Exception as e:
             Logger.error("CollectionScanner:: __scan_for_mtime: % s" % e)
-        return modifications
+        return new_tracks
 
     def __add2db(self, uri, mtime):
         """
