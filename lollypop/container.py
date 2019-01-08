@@ -177,17 +177,13 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         self.__paned_one = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         self.__paned_two = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
 
-        vgrid = Gtk.Grid()
-        vgrid.set_orientation(Gtk.Orientation.VERTICAL)
-
-        vgrid.add(self._stack)
         self.__progress = ProgressBar()
-        self.__progress.set_property("hexpand", True)
-        vgrid.add(self.__progress)
-        vgrid.show()
+        self.__progress.get_style_context().add_class("progress-bottom")
+        self.__progress.set_property("valign", Gtk.Align.END)
+        self.add_overlay(self.__progress)
 
         self.__paned_two.add1(self._list_two)
-        self.__paned_two.add2(vgrid)
+        self.__paned_two.add2(self._stack)
         self.__paned_one.add1(self._list_one)
         self.__paned_one.add2(self.__paned_two)
         self.__paned_one.set_position(
