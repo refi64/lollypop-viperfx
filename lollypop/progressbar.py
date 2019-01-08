@@ -45,6 +45,9 @@ class ProgressBar(Gtk.ProgressBar):
         """
         if not self.__callers:
             return
+        if self.__pulse_timeout is not None:
+            GLib.source_remove(self.__pulse_timeout)
+            self.__pulse_timeout = None
         if caller == self.__callers[0]:
             self.show()
             self.__fraction = fraction
