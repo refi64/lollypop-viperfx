@@ -193,29 +193,19 @@ def is_pls(f):
     return False
 
 
-def __get_mtime(f, flag):
-    """
-        Return Last modified time of a given file following a flag
-        @param f as Gio.File
-        @param flag as str (ex : "time:changed")
-    """
-    info = f.query_info(flag, Gio.FileQueryInfoFlags.NONE, None)
-    return int(info.get_attribute_as_string(flag))
-
-
-def get_mtime(f):
+def get_mtime(info):
     """
         Return Last modified time of a given file
-        @param f as Gio.File
+        @param info as Gio.FileInfo
     """
     try:
         # We do not use time::modified because many tag editors
         # just preserve this setting
-        return __get_mtime(f, "time::changed")
+        return int(info.get_attribute_as_string("time::changed"))
     except:
         pass
     # Fallback for remote fs
-    return __get_mtime(f, "time::modified")
+    return int(info.get_attribute_as_string("time::modified"))
 
 
 def format_artist_name(name):

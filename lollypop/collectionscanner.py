@@ -141,9 +141,9 @@ class CollectionScanner(GObject.GObject, TagReader):
     @profile
     def __get_objects_for_uris(self, uris):
         """
-            Return all tracks/dirs for uris
+            Get all tracks and dirs in uris
             @param uris as string
-            @return (track uri as [str], track dirs as [str])
+            @return (tracks as [mtime: int, uri: str], dirs as [uri: str])
         """
         files = []
         dirs = []
@@ -154,13 +154,15 @@ class CollectionScanner(GObject.GObject, TagReader):
                 # Directly add files, walk through directories
                 f = Gio.File.new_for_uri(uri)
                 info = f.query_info(
-                    "standard::name,standard::type,standard::is-hidden",
+                    "standard::name,standard::type," +
+                    "standard::is-hidden,time::modified, time:changed",
                     Gio.FileQueryInfoFlags.NONE,
                     None)
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
                     dirs.append(uri)
                     infos = f.enumerate_children(
-                        "standard::name,standard::type,standard::is-hidden",
+                        "standard::name,standard::type," +
+                        "standard::is-hidden,time::modified, time:changed",
                         Gio.FileQueryInfoFlags.NONE,
                         None)
                     for info in infos:
@@ -172,12 +174,15 @@ class CollectionScanner(GObject.GObject, TagReader):
                             dirs.append(child_uri)
                             walk_uris.append(child_uri)
                         else:
-                            files.append(f)
+                            mtime = get_mtime(info)
+                            files.append((mtime, child_uri))
                 else:
-                    files.append(f)
+                    mtime = get_mtime(info)
+                    files.append((mtime, uri))
             except Exception as e:
                 Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
                              % e)
+        files.sort(reverse=True)
         return (files, dirs)
 
     @profile
@@ -252,7 +257,7 @@ class CollectionScanner(GObject.GObject, TagReader):
     def __scan_files(self, files, saved):
         """
             Scan music collection for new audio files
-            @param files as [Gio.File]
+            @param files as [(int, str)]
             @return new track uris as [str]
             @thread safe
         """
@@ -270,9 +275,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                 if self.__thread is None:
                     return new_tracks
                 try:
-                    f = files.pop(0)
-                    uri = f.get_uri()
-                    mtime = get_mtime(f)
+                    (mtime, uri) = files.pop(0)
+                    f = Gio.File.new_for_uri(uri)
                     if mtime > mtimes.get(uri, 0):
                         handled = self.__scan_to_handle(f)
                         if handled:
