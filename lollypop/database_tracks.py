@@ -412,7 +412,6 @@ class TracksDatabase:
         """
             Get mtime for tracks
             WARNING: Should be called before anything is shown on screen
-            @param None
             @return dict of {uri as string: mtime as int}
         """
         with SqlCursor(App().db) as sql:
@@ -422,22 +421,6 @@ class TracksDatabase:
             for row in result:
                 mtimes.update((row,))
             return mtimes
-
-    def get_max_mtime(self):
-        """
-            Get maximal mtime for tracks
-            WARNING: Should be called before anything is shown on screen
-            @param None
-            @return mtime as int
-        """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT MAX(mtime)\
-                         FROM tracks")
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-
-            return None
 
     def get_non_persistent(self):
         """
