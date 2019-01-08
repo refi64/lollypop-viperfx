@@ -294,8 +294,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         to_delete = App().tracks.get_uris()
         try:
             to_add = []
-            count = len(files)
-            i = 0
             while files:
                 # Handle a stop request
                 if self.__thread is None:
@@ -303,11 +301,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                 try:
                     f = files.pop(0)
                     uri = f.get_uri()
-                    # On first scan, we want file mtime
-                    mtime = int(time()) if mtimes else get_mtime(f)
+                    mtime = get_mtime(f)
                     if mtime > mtimes.get(uri, 0):
                         handled = self.__scan_to_handle(f)
                         if handled:
+                            # On first scan, we want file mtime
+                            mtime = int(time()) if mtimes else mtime
                             # If not saved, use 0 as mtime, easy delete on quit
                             to_add.append((mtime if saved else 0, uri))
                             new_tracks.append(uri)
@@ -316,10 +315,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_for_mtime: % s" % e)
+            count = len(to_delete) + len(to_add)
+            i = 0
             if to_delete and saved:
                 self.__scan_del(to_delete, i, count)
             if to_add:
-                # Add unstanged changes and commit
                 self.__scan_add(to_add, i, count)
         except Exception as e:
             Logger.error("CollectionScanner:: __scan_for_mtime: % s" % e)
