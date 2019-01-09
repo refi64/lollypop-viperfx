@@ -87,7 +87,7 @@ class PowerManagement:
 
 
 class Sizing:
-    SMALL = 400
+    SMALL = 350
     MEDIUM = 500
     BIG = 700
     MONSTER = 800
