@@ -205,7 +205,7 @@ class ProgressController:
                 volume = App().player.volume
                 if y > 0:
                     volume -= 0.1
-                else:
+                elif y < 0:
                     volume += 0.1
                 if volume < 0:
                     volume = 0.0
@@ -217,7 +217,7 @@ class ProgressController:
                 position = App().player.position
                 if y > 0:
                     seek = position - 5 * Gst.SECOND
-                else:
+                elif y < 0:
                     seek = position + 5 * Gst.SECOND
                 if seek < 0:
                     seek = 0
