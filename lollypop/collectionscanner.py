@@ -199,9 +199,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__history = History()
 
         (files, dirs) = self.__get_objects_for_uris(uris)
-        self.__add_monitor(dirs)
 
         new_tracks = self.__scan_files(files, saved)
+        self.__add_monitor(dirs)
 
         GLib.idle_add(self.__finish, new_tracks and saved)
 
