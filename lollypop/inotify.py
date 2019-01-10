@@ -75,12 +75,14 @@ class Inotify:
         else:
             uri = changed_file.get_uri()
             d = Gio.File.new_for_uri(uri)
+            is_dir = False
             if d.query_exists():
                 # If a directory, monitor it
                 if changed_file.query_file_type(
                         Gio.FileQueryInfoFlags.NONE,
                         None) == Gio.FileType.DIRECTORY:
                     self.add_monitor(uri)
+                    is_dir = True
                 # If not an audio file, exit
                 elif is_audio(changed_file):
                     update = True
@@ -90,12 +92,21 @@ class Inotify:
                 if self.__timeout is not None:
                     GLib.source_remove(self.__timeout)
                     self.__timeout = None
+                # Launch collection update from this directory
+                # (and not the entire collection)
+                uris = None
+                if is_dir:
+                    uris = [uri]
+                elif changed_file.has_parent():
+                    uris = [changed_file.get_parent().get_uri()]
                 self.__timeout = GLib.timeout_add(self.__TIMEOUT,
-                                                  self.__run_collection_update)
+                                                  self.__run_collection_update,
+                                                  uris)
 
-    def __run_collection_update(self):
+    def __run_collection_update(self, uris=None):
         """
             Run a collection update
+            @param uris as [str]
         """
         self.__timeout = None
-        App().scanner.update()
+        App().scanner.update(uris)
