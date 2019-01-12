@@ -291,6 +291,14 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                     password_hash=md5(self.__password))
             if full_sync:
                 App().task_helper.run(self.__populate_loved_tracks)
+            track = App().player.current_track
+            if track.id is not None:
+                self.__now_playing(
+                       ", ".join(track.artists),
+                       track.album_name,
+                       track.title,
+                       int(track.duration),
+                       track.mb_track_id)
         except Exception as e:
             Logger.debug("LastFM::__connect(): %s" % e)
 
