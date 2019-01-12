@@ -28,7 +28,10 @@ except:
             @param string as str
             @return str
         """
-        return string[0]
+        if string:
+            return string[0]
+        else:
+            return ""
 
 
 class LocalizedCollation(object):
