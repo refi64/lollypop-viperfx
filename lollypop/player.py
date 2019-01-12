@@ -330,8 +330,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                     radios = Radios()
                     track = Track()
                     name = radios.get_name(current_track_id)
-                    url = radios.get_url(name)
-                    track.set_radio(name, url)
+                    uri = radios.get_uri(current_track_id)
+                    track.set_radio(name, uri)
                     self.load(track, is_playing)
                 elif App().tracks.get_uri(current_track_id) != "":
                     if albums:

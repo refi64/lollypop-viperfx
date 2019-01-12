@@ -309,7 +309,7 @@ class Application(Gtk.Application):
                 from lollypop.radios import Radios
                 radios = Radios()
                 track_id = radios.get_id(
-                    self.player.current_track.album_artists[0])
+                    self.player.current_track.radio_name)
             else:
                 track_id = self.player.current_track.id
                 # Save albums context
