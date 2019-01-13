@@ -279,15 +279,17 @@ class CollectionScanner(GObject.GObject, TagReader):
                 try:
                     (mtime, uri) = files.pop(0)
                     f = Gio.File.new_for_uri(uri)
+                    already_in_db = uri in to_delete
+                    if already_in_db:
+                        to_delete.remove(uri)
                     if mtime > mtimes.get(uri, 0):
                         handled = self.__scan_to_handle(f)
                         if handled:
                             # On first scan, we want file mtime
                             mtime = int(time()) if mtimes else mtime
-                            if uri in to_delete:
-                                to_delete.remove(uri)
-                                self.__scan_del(uri)
                             # If not saved, use 0 as mtime, easy delete on quit
+                            if already_in_db:
+                                self.__scan_del(uri)
                             self.__scan_add(uri, mtime if saved else 0)
                             new_tracks.append(uri)
                     GLib.idle_add(self.__update_progress, i, count)
@@ -295,6 +297,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
+            # This files are not in collection anymore
+            for uri in to_delete:
+                self.__scan_del(uri)
         except Exception as e:
             Logger.error("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
