@@ -248,7 +248,8 @@ class MtpSync(GObject.Object):
             # New tracks for playlists
             playlist_ids = App().playlists.get_synced_ids()
             for playlist_id in playlist_ids:
-                playlists.append(App().playlists.get_name(playlist_id))
+                name = App().playlists.get_name(playlist_id)
+                playlists.append(escape(name))
                 if App().playlists.get_smart(playlist_id):
                     request = App().playlists.get_smart_sql(playlist_id)
                     track_ids = App().db.execute(request)
@@ -552,7 +553,7 @@ class MtpSync(GObject.Object):
                 break
             m3u = None
             stream = None
-            playlist = App().playlists.get_name(playlist_id)
+            playlist = escape(App().playlists.get_name(playlist_id))
             try:
                 # Create playlist
                 m3u = Gio.File.new_for_path(
@@ -597,7 +598,6 @@ class MtpSync(GObject.Object):
             if stream is not None:
                 stream.close()
             if m3u is not None:
-                playlist = escape(playlist)
                 dst = Gio.File.new_for_uri(
                     self.__uri + "/" + playlist + ".m3u")
                 self.__retry(m3u.move,
