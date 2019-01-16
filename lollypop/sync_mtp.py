@@ -628,6 +628,9 @@ class MtpSync(GObject.Object):
             @param dst as Gio.File
             @return Gst.Pipeline
         """
+        if src.get_path() is None:
+            Logger.error("Can't convert files over sftp, smb, ...")
+            return None
         try:
             # We need to escape \ in path
             src_path = src.get_path().replace("\\", "\\\\\\")
