@@ -15,6 +15,6 @@ configure_file(
   install_dir: service_dir
 )
 install_data(
-  'lollypop-search-provider.ini',
+  'org.gnome.Lollypop.SearchProvider.ini',
   install_dir: serarch_provider_dir
 )
