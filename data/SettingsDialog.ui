@@ -20,7 +20,6 @@
   <object class="GtkWindow" id="settings_dialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Preferences</property>
-    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
@@ -1024,8 +1023,8 @@
                   <object class="GtkEntry" id="listenbrainz_user_token_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="halign">start</property>
-                    <property name="width_chars">34</property>
+                    <property name="hexpand">True</property>
+                    <property name="width_chars">15</property>
                     <property name="placeholder_text">00000000-0000-0000-0000-000000000000</property>
                     <signal name="changed" handler="_on_entry_listenbrainz_token_changed" swapped="no"/>
                   </object>
@@ -1082,6 +1081,7 @@
 &lt;small&gt;Otherwise you will soon reach the default quota…
 Lollypop needs this to search for artwork.&lt;/small&gt;</property>
                     <property name="use_markup">True</property>
+                    <property name="wrap">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1124,6 +1124,7 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">&lt;small&gt;You need to enable "Custom Search API"  for your project.&lt;/small&gt;</property>
                     <property name="use_markup">True</property>
+                    <property name="wrap">True</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
