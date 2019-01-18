@@ -195,7 +195,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param filter2_ids as [int]
         """
         self._albums = []
-        album_ids = [] if album_id is None else [album_id]
+        album_ids = []
         self.reset_history()
         # We are not playing a user playlist anymore
         self._playlist_tracks = []
@@ -263,15 +263,17 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         elif shuffle_setting == Shuffle.ALBUMS:
             if album_id is None:
                 shuffle(album_ids)
-                album = Album(album_ids.pop(0), filter1_ids, filter2_ids, True)
+                album = Album(album_id, filter1_ids, filter2_ids, True)
             else:
-                album = Album(album_ids.pop(0), filter1_ids, filter2_ids, True)
+                album = Album(album_id, filter1_ids, filter2_ids, True)
                 shuffle(album_ids)
         else:
-            album = Album(album_ids.pop(0), filter1_ids, filter2_ids, True)
+            album = Album(album_id, filter1_ids, filter2_ids, True)
         # Select a track and start playback
         track = None
-        self._albums = [album]
+        if shuffle_setting == Shuffle.ALBUMS:
+            self._albums = [album]
+            album_ids.remove(album_id)
         if shuffle_setting == Shuffle.TRACKS:
             track = choice(album.tracks)
         elif shuffle_setting == Shuffle.ALBUMS:
@@ -282,8 +284,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 
         # Create album objects
         for _album_id in album_ids:
-            if _album_id == album_id:
-                continue
             album = Album(_album_id, filter1_ids, filter2_ids, True)
             self._albums.append(album)
         if track is not None:
