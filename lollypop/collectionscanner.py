@@ -263,15 +263,16 @@ class CollectionScanner(GObject.GObject, TagReader):
             @return new track uris as [str]
             @thread safe
         """
+        i = 0
+        to_add = []
         new_tracks = []
         # Get mtime of all tracks to detect which has to be updated
         mtimes = App().tracks.get_mtimes()
         # Get uris of all tracks to detect which has to be deleted
         to_delete = App().tracks.get_uris()
+        count = len(files) + len(to_delete)
         SqlCursor.add(App().db)
         try:
-            count = len(files)
-            i = 0
             while files:
                 # Handle a stop request
                 if self.__thread is None:
@@ -282,25 +283,34 @@ class CollectionScanner(GObject.GObject, TagReader):
                     already_in_db = uri in to_delete
                     if already_in_db:
                         to_delete.remove(uri)
+                        i += 1
                     if mtime > mtimes.get(uri, 0):
                         handled = self.__scan_to_handle(f)
                         if handled:
+                            if already_in_db:
+                                self.__scan_del(uri)
                             # On first scan, we want file mtime
                             mtime = int(time()) if mtimes else mtime
                             # If not saved, use 0 as mtime, easy delete on quit
-                            if already_in_db:
-                                self.__scan_del(uri)
-                            self.__scan_add(uri, mtime if saved else 0)
+                            to_add.append((uri, mtime if saved else 0))
                             new_tracks.append(uri)
+                            i -= 1
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
                 GLib.idle_add(self.__update_progress, i, count)
             # This files are not in collection anymore
+            # We do this before __scan_add() to populate history
             if saved:
                 for uri in to_delete:
+                    i += 1
+                    GLib.idle_add(self.__update_progress, i, count)
                     self.__scan_del(uri)
+            for (uri, mtime) in to_add:
+                i += 1
+                GLib.idle_add(self.__update_progress, i, count)
+                self.__scan_add(uri, mtime)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
