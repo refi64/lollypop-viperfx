@@ -27,9 +27,9 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.912" date="2019-01-18">
+    <release version="0.9.913" date="2019-01-23">
       <description>
-        <ul>Fix an issue with playback</ul>
+        <ul>Fix issues in collection scanner</ul>
       </description>
     </release>
   </releases>
