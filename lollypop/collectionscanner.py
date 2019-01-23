@@ -292,11 +292,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                                 self.__scan_del(uri)
                             self.__scan_add(uri, mtime if saved else 0)
                             new_tracks.append(uri)
-                    GLib.idle_add(self.__update_progress, i, count)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
+                GLib.idle_add(self.__update_progress, i, count)
             # This files are not in collection anymore
             if saved:
                 for uri in to_delete:
