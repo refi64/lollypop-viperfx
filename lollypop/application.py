@@ -112,6 +112,8 @@ class Application(Gtk.Application):
         self.debug = False
         self.shown_sidebar_tooltip = False
         self.__fs = None
+        self.__scanner_timeout_id = None
+        self.__scanner_uris = []
         GLib.set_application_name("Lollypop")
         GLib.set_prgname("lollypop")
         self.add_main_option("play-ids", b"a", GLib.OptionFlags.NONE,
@@ -462,7 +464,16 @@ class Application(Gtk.Application):
             @param result as Gio.AsyncResult
             @param uris as [str]
         """
-        GLib.timeout_add(500, self.scanner.update, uris, False)
+        def scanner_update():
+            self.__scanner_timeout_id = None
+            self.scanner.update(self.__scanner_uris, False)
+            self.__scanner_uris = []
+
+        if self.__scanner_timeout_id is not None:
+            GLib.source_remove(self.__scanner_timeout_id)
+        self.__scanner_uris += uris
+        self.__scanner_timeout_id = GLib.timeout_add(500,
+                                                     scanner_update)
 
     def __on_entry_parsed(self, parser, uri, metadata, uris):
         """
