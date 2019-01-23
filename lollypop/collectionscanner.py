@@ -302,7 +302,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 for uri in to_delete:
                     self.__scan_del(uri)
         except Exception as e:
-            Logger.error("CollectionScanner:: __scan_files: % s" % e)
+            Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
         SqlCursor.remove(App().db)
         return new_tracks
