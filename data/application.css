@@ -242,6 +242,16 @@ popover.background separator {
     border-radius: 50%;
 }
 
+.slow-show {
+    transition: 1000ms linear;
+    opacity: 1;
+}
+
+.slow-hide {
+    transition: 1000ms linear;
+    opacity: 0;
+}
+
 .rounded-icon {
     background: none;
     border: none;

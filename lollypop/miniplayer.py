@@ -127,6 +127,33 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
+    def _on_enter_notify_event(self, eventbox, event):
+        """
+            Show controls
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventCrossing
+        """
+        context = self.__grid.get_style_context()
+        context.remove_class("slow-hide")
+        context.add_class("slow-show")
+
+    def _on_leave_notify_event(self, eventbox, event):
+        """
+            Hide controls
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventCrossing
+        """
+        if self.__height == self.get_preferred_height()[0]:
+            return
+        allocation = eventbox.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
+            context = self.__grid.get_style_context()
+            context.add_class("slow-hide")
+            context.remove_class("slow-show")
+
 #######################
 # PRIVATE             #
 #######################
@@ -156,8 +183,13 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         if self.__height == allocation.height:
             return
         self.__height = allocation.height
+        context = self.__grid.get_style_context()
         if self.__height == widget.get_preferred_height()[0]:
             InformationController.__init__(self, True, ArtHelperEffect.BLUR)
+            context.remove_class("slow-hide")
+            context.add_class("slow-show")
         else:
             InformationController.__init__(self, True, ArtHelperEffect.NONE)
+            context.add_class("slow-hide")
+            context.remove_class("slow-show")
         InformationController.on_current_changed(self, self.__width, None)
