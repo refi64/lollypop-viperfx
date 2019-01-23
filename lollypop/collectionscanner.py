@@ -76,7 +76,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Stop previous scan
         if self.is_locked():
             self.stop()
-            GLib.timeout_add(250, self.update)
+            GLib.timeout_add(250, self.update, uris, saved)
         else:
             self.__disable_compilations = not App().settings.get_value(
                 "show-compilations")
@@ -205,7 +205,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         GLib.idle_add(self.__finish, new_tracks and saved)
 
-        if not saved:
+        if not saved and self.__thread is not None:
             self.__play_new_tracks(new_tracks)
 
         del self.__history
@@ -275,7 +275,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             while files:
                 # Handle a stop request
                 if self.__thread is None:
-                    return new_tracks
+                    raise Exception("Scan cancelled")
                 try:
                     (mtime, uri) = files.pop(0)
                     f = Gio.File.new_for_uri(uri)
