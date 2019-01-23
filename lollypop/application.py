@@ -438,6 +438,12 @@ class Application(Gtk.Application):
                     uris.append(uri)
                 elif is_pls(f):
                     pls.append(uri)
+                else:
+                    info = f.query_info(Gio.FILE_ATTRIBUTE_STANDARD_TYPE,
+                                        Gio.FileQueryInfoFlags.NONE,
+                                        None)
+                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+                        uris.append(uri)
             if pls:
                 from gi.repository import TotemPlParser
                 parser = TotemPlParser.Parser.new()
