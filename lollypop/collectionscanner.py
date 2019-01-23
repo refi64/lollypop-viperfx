@@ -298,8 +298,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
             # This files are not in collection anymore
-            for uri in to_delete:
-                self.__scan_del(uri)
+            if saved:
+                for uri in to_delete:
+                    self.__scan_del(uri)
         except Exception as e:
             Logger.error("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
