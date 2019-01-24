@@ -375,6 +375,7 @@ class TagReader(Discoverer):
     def get_lyrics(self, tags):
         """
             Return lyrics for tags
+            All this code sucks
             @parma tags as Gst.TagList
             @return lyrics as str
         """
@@ -387,9 +388,11 @@ class TagReader(Discoverer):
                     else:
                         return None
                 elif bytes[0:4] == b"USLT":
-                    # This code sucks, if someone know how to handle this
-                    # UTF8
-                    lyrics = bytes.split(b"\x00")[-1]
+                    # Search for lyrics (more than 10 chars)
+                    for value in bytes.split(b"\x00"):
+                        if len(value) > 10:
+                            lyrics = value
+                            break
                     # UTF-16
                     if not lyrics:
                         lyrics = bytes.split(
