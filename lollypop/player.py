@@ -535,7 +535,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         track = None
         if album is None:
-            album = albums[0]
+            album = choice(albums)
         else:
             self._albums = [album]
             albums.remove(album)
