@@ -553,7 +553,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param albums as [albums]
         """
         if album is None:
-            album = albums[0]
+            album = choice(albums)
         if album.tracks:
             track = choice(album.tracks)
         else:
