@@ -21,7 +21,7 @@ from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
 
 from gettext import gettext as _
 from threading import Thread
-from time import time
+from time import time, sleep
 
 from lollypop.inotify import Inotify
 from lollypop.define import App, Type
@@ -295,6 +295,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                             to_add.append((uri, mtime if saved else 0))
                             new_tracks.append(uri)
                             i -= 1
+                    # Previous code (<= 0.9.910) was reading mtime in this loop
+                    # Since we are looping faster, seems it's makes python
+                    # lagging. If someone has a better idea
+                    elif i % 1000:
+                        sleep(0.00001)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
