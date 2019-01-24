@@ -257,37 +257,25 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             else:
                 album_ids += App().albums.get_ids([], filter1_ids, True)
 
-        shuffle_setting = App().settings.get_enum("shuffle")
         if not album_ids:
             return
-        elif shuffle_setting == Shuffle.ALBUMS:
-            if album_id is None:
-                shuffle(album_ids)
-                album = Album(album_id, filter1_ids, filter2_ids, True)
-            else:
-                album = Album(album_id, filter1_ids, filter2_ids, True)
-                shuffle(album_ids)
-        else:
-            album = Album(album_id, filter1_ids, filter2_ids, True)
-        # Select a track and start playback
-        track = None
-        if shuffle_setting == Shuffle.ALBUMS:
-            self._albums = [album]
-            album_ids.remove(album_id)
-        if shuffle_setting == Shuffle.TRACKS:
-            track = choice(album.tracks)
-        elif shuffle_setting == Shuffle.ALBUMS:
-            if self._albums and self._albums[0].tracks:
-                track = self._albums[0].tracks[0]
-        elif album.tracks:
-            track = album.tracks[0]
 
         # Create album objects
+        albums = []
+        album = None
         for _album_id in album_ids:
-            album = Album(_album_id, filter1_ids, filter2_ids, True)
-            self._albums.append(album)
-        if track is not None:
-            self.load(track)
+            _album = Album(_album_id, filter1_ids, filter2_ids, True)
+            if album_id == _album_id:
+                album = _album
+            albums.append(_album)
+
+        shuffle_setting = App().settings.get_enum("shuffle")
+        if shuffle_setting == Shuffle.ALBUMS:
+            self.__play_shuffle_albums(album, albums)
+        elif shuffle_setting == Shuffle.TRACKS:
+            self.__play_shuffle_tracks(album, albums)
+        else:
+            self.__play_albums(album, albums)
         self.emit("playlist-changed")
 
     def clear_albums(self):
@@ -539,6 +527,57 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 #######################
 # PRIVATE             #
 #######################
+    def __play_shuffle_albums(self, album, albums):
+        """
+            Start shuffle albums playback. Prepend album if not None
+            @param album as Album
+            @param albums as [albums]
+        """
+        track = None
+        if album is None:
+            album = albums[0]
+        else:
+            self._albums = [album]
+            albums.remove(album)
+        shuffle(albums)
+        self._albums += albums
+        if album.tracks:
+            track = album.tracks[0]
+        if track is not None:
+            self.load(track)
+
+    def __play_shuffle_tracks(self, album, albums):
+        """
+            Start shuffle tracks playback.
+            @param album as Album
+            @param albums as [albums]
+        """
+        if album is None:
+            album = albums[0]
+        if album.tracks:
+            track = choice(album.tracks)
+        else:
+            track = None
+        self._albums = albums
+        if track is not None:
+            self.load(track)
+
+    def __play_albums(self, album, albums):
+        """
+            Start albums playback.
+            @param album as Album
+            @param albums as [albums]
+        """
+        if album is None:
+            album = albums[0]
+        if album.tracks:
+            track = album.tracks[0]
+        else:
+            track = None
+        self._albums = albums
+        if track is not None:
+            self.load(track)
+
     def __on_playback_changed(self, settings, value):
         """
             reset next/prev
