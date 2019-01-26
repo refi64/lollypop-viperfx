@@ -38,7 +38,7 @@ except Exception as e:
 from lollypop.utils import set_proxy_from_gnome
 from lollypop.application_actions import ApplicationActions
 from lollypop.utils import is_audio, is_pls
-from lollypop.define import Type, LOLLYPOP_DATA_PATH
+from lollypop.define import Type, LOLLYPOP_DATA_PATH, ScanType
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -472,7 +472,7 @@ class Application(Gtk.Application):
         """
         def scanner_update():
             self.__scanner_timeout_id = None
-            self.scanner.update(self.__scanner_uris, False)
+            self.scanner.update(ScanType.EPHEMERAL, self.__scanner_uris)
             self.__scanner_uris = []
 
         if self.__scanner_timeout_id is not None:

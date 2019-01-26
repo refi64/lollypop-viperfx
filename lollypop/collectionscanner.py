@@ -194,9 +194,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                     mtime = get_mtime(info)
                     if scan_type == ScanType.QUICK:
                         if mtime > max_mtime:
-                            files.append((mtime, child_uri))
+                            files.append((mtime, uri))
                     else:
-                        files.append((mtime, child_uri))
+                        files.append((mtime, uri))
             except Exception as e:
                 Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
                              % e)
@@ -220,6 +220,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             full_db_uris = App().tracks.get_uris(uris)
         elif scan_type == ScanType.QUICK:
             full_db_uris = [uri for (mtime, uri) in files]
+        elif scan_type == ScanType.EPHEMERAL:
+            full_db_uris = uris
         else:
             full_db_uris = App().tracks.get_uris()
         new_tracks = self.__scan_files(files, full_db_uris, scan_type)
