@@ -432,14 +432,24 @@ class TracksDatabase:
                                   WHERE mtime=0")
             return list(itertools.chain(*result))
 
-    def get_uris(self):
+    def get_uris(self, uris_concerned=None):
         """
             Get all tracks uri
+            @param uris_concerned as [uri as str]
             @return [str]
         """
         with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT uri FROM tracks")
-            return list(itertools.chain(*result))
+            uris = []
+            if uris_concerned:
+                for uri in uris_concerned:
+                    result = sql.execute("SELECT uri\
+                                          FROM tracks\
+                                          WHERE uri LIKE ?", (uri + "%",))
+                    uris += list(itertools.chain(*result))
+            else:
+                result = sql.execute("SELECT uri FROM tracks")
+                uris = list(itertools.chain(*result))
+            return uris
 
     def get_number(self, track_id):
         """

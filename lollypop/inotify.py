@@ -74,9 +74,8 @@ class Inotify:
         # Run update delayed
         else:
             uri = changed_file.get_uri()
-            d = Gio.File.new_for_uri(uri)
             is_dir = False
-            if d.query_exists():
+            if changed_file.query_exists():
                 # If a directory, monitor it
                 if changed_file.query_file_type(
                         Gio.FileQueryInfoFlags.NONE,

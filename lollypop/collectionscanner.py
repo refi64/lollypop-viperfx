@@ -81,7 +81,10 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__disable_compilations = not App().settings.get_value(
                 "show-compilations")
 
-            if not uris:
+            if uris:
+                full_scan = False
+            else:
+                full_scan = True
                 uris = App().settings.get_music_uris()
                 if not uris:
                     return
@@ -90,7 +93,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().window.container.progress.add(self)
             App().window.container.progress.set_fraction(0, self)
             # Launch scan in a separate thread
-            self.__thread = Thread(target=self.__scan, args=(uris, saved))
+            self.__thread = Thread(target=self.__scan,
+                                   args=(uris, full_scan, saved))
             self.__thread.daemon = True
             self.__thread.start()
 
@@ -195,10 +199,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         return (files, dirs)
 
     @profile
-    def __scan(self, uris, saved):
+    def __scan(self, uris, full, saved):
         """
             Scan music collection for music files
             @param uris as [str]
+            @param full as bool
             @param saved as bool
             @thread safe
         """
@@ -207,7 +212,9 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         (files, dirs) = self.__get_objects_for_uris(uris)
 
-        new_tracks = self.__scan_files(files, saved)
+        db_uris = App().tracks.get_uris() if full\
+            else App().tracks.get_uris(uris)
+        new_tracks = self.__scan_files(files, db_uris, saved)
         self.__add_monitor(dirs)
 
         GLib.idle_add(self.__finish, new_tracks and saved)
@@ -263,10 +270,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             Logger.error("CollectionScanner::__scan_del: %s" % e)
 
     @profile
-    def __scan_files(self, files, saved):
+    def __scan_files(self, files, full_db_uris, saved):
         """
             Scan music collection for new audio files
             @param files as [str]
+            @param full_db_uris as [str]
             @return new track uris as [str]
             @thread safe
         """
@@ -275,15 +283,14 @@ class CollectionScanner(GObject.GObject, TagReader):
         new_tracks = []
         # Get mtime of all tracks to detect which has to be updated
         db_mtimes = App().tracks.get_mtimes()
-        to_delete = App().tracks.get_uris()
-        count = len(files) + len(to_delete)
+        count = len(files) + len(full_db_uris)
         try:
             # We delete missing tracks from DB as soon as possible
             # This allow metadata to be saved in history for example
             # if user moved an album in collection
             uris = [uri for (mtime, uri) in files]
             db_uris = []
-            for uri in to_delete:
+            for uri in full_db_uris:
                 # Handle a stop request
                 if self.__thread is None:
                     raise Exception("Scan cancelled")
