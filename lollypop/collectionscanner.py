@@ -161,7 +161,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         files = []
         dirs = []
         walk_uris = list(uris)
-        max_mtime = App().albums.get_max_mtime()
+        if scan_type == ScanType.QUICK:
+            max_mtime = App().albums.get_max_mtime()
         while walk_uris:
             uri = walk_uris.pop(0)
             try:
