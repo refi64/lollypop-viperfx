@@ -944,7 +944,8 @@ class AlbumsDatabase:
             result = sql.execute("SELECT MAX(mtime) FROM albums")
             result = result.fetchone()
             if result is not None:
-                return result[0]
+                if result[0] is not None:
+                    return result[0]
             return 0
 
     def search(self, string, limit=25):
