@@ -102,7 +102,7 @@ class Inotify:
                                                   self.__run_collection_update,
                                                   uris)
 
-    def __run_collection_update(self, uris=None):
+    def __run_collection_update(self, uris=[]):
         """
             Run a collection update
             @param uris as [str]
