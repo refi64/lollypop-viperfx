@@ -277,19 +277,23 @@ class CollectionScanner(GObject.GObject, TagReader):
         db_mtimes = App().tracks.get_mtimes()
         to_delete = App().tracks.get_uris()
         count = len(files) + len(to_delete)
-        # We delete missing tracks from DB as soon as possible
-        # This allow metadata to be saved in history for example
-        # if user moved an album in collection
-        uris = [uri for (mtime, uri) in files]
-        db_uris = []
-        for uri in to_delete:
-            if uri in uris:
-                db_uris.append(uri)
-            else:
-                self.__scan_del(uri)
-            i += 1
-            self.__update_progress(i, count)
         try:
+            # We delete missing tracks from DB as soon as possible
+            # This allow metadata to be saved in history for example
+            # if user moved an album in collection
+            uris = [uri for (mtime, uri) in files]
+            db_uris = []
+            for uri in to_delete:
+                # Handle a stop request
+                if self.__thread is None:
+                    raise Exception("Scan cancelled")
+                if uri in uris:
+                    db_uris.append(uri)
+                else:
+                    self.__scan_del(uri)
+                i += 1
+                self.__update_progress(i, count)
+            # Scan new files
             while files:
                 # Handle a stop request
                 if self.__thread is None:
