@@ -27,9 +27,12 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.913" date="2019-01-23">
+    <release version="0.9.915" date="2019-01-26">
       <description>
-        <ul>Fix issues in collection scanner</ul>
+        <ul>Fix an issue with artist playback</ul>
+        <ul>Fix an issue in collection scanner</ul>
+        <ul>Fix an issue with lyrics</ul>
+        <ul>Fix an issue with collection history</ul>
       </description>
     </release>
   </releases>
