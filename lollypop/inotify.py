@@ -21,8 +21,8 @@ class Inotify:
     """
         Inotify support
     """
-    # 10 second before updating database
-    __TIMEOUT = 10000
+    # 2 seconds before updating database
+    __TIMEOUT = 2000
 
     def __init__(self):
         """
