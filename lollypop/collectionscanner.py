@@ -484,10 +484,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                               album_id, True)
             for artist_id in album_artist_ids + artist_ids:
                 cleaned = App().artists.clean(artist_id)
-                # Force update even if not cleaned as artist may
-                # have been removed from a selected genre
-                GLib.idle_add(self.emit, "artist-updated",
-                              artist_id, False)
+                if cleaned:
+                    GLib.idle_add(self.emit, "artist-updated",
+                                  artist_id, False)
             for genre_id in genre_ids:
                 cleaned = App().genres.clean(genre_id)
                 if cleaned:
