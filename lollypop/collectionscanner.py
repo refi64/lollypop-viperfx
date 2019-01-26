@@ -114,7 +114,14 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        App().window.container.progress.set_fraction(current / total, self)
+        # Previous code (<= 0.9.910) was reading mtime in this loop
+        # Since we are looping faster, seems it's makes python
+        # lagging. If someone has a better idea
+        if current % 1000:
+            sleep(0.00001)
+        GLib.idle_add(App().window.container.progress.set_fraction,
+                      current / total,
+                      self)
 
     def __finish(self, modifications):
         """
@@ -149,7 +156,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Get all tracks and dirs in uris
             @param uris as string
-            @return (tracks as [mtime: int, uri: str], dirs as [uri: str])
+            @return (tracks [mtimes: int, uri: str], dirs as [uri: str])
         """
         files = []
         dirs = []
@@ -175,12 +182,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                         elif info.get_file_type() == Gio.FileType.DIRECTORY:
                             dirs.append(child_uri)
                             walk_uris.append(child_uri)
-                        else:
+                        elif self.__scan_to_handle(f):
                             mtime = get_mtime(info)
                             files.append((mtime, child_uri))
-                else:
+                elif self.__scan_to_handle(f):
                     mtime = get_mtime(info)
-                    files.append((mtime, uri))
+                    files.append((mtime, child_uri))
             except Exception as e:
                 Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
                              % e)
@@ -259,19 +266,29 @@ class CollectionScanner(GObject.GObject, TagReader):
     def __scan_files(self, files, saved):
         """
             Scan music collection for new audio files
-            @param files as [(int, str)]
+            @param files as [str]
             @return new track uris as [str]
             @thread safe
         """
+        SqlCursor.add(App().db)
         i = 0
-        to_add = []
         new_tracks = []
         # Get mtime of all tracks to detect which has to be updated
-        mtimes = App().tracks.get_mtimes()
-        # Get uris of all tracks to detect which has to be deleted
+        db_mtimes = App().tracks.get_mtimes()
         to_delete = App().tracks.get_uris()
         count = len(files) + len(to_delete)
-        SqlCursor.add(App().db)
+        # We delete missing tracks from DB as soon as possible
+        # This allow metadata to be saved in history for example
+        # if user moved an album in collection
+        uris = [uri for (mtime, uri) in files]
+        db_uris = []
+        for uri in to_delete:
+            if uri in uris:
+                db_uris.append(uri)
+            else:
+                self.__scan_del(uri)
+            i += 1
+            self.__update_progress(i, count)
         try:
             while files:
                 # Handle a stop request
@@ -279,43 +296,22 @@ class CollectionScanner(GObject.GObject, TagReader):
                     raise Exception("Scan cancelled")
                 try:
                     (mtime, uri) = files.pop(0)
-                    f = Gio.File.new_for_uri(uri)
-                    already_in_db = uri in to_delete
+                    already_in_db = uri in db_uris
                     if already_in_db:
-                        to_delete.remove(uri)
-                        i += 1
-                    if mtime > mtimes.get(uri, 0):
-                        handled = self.__scan_to_handle(f)
-                        if handled:
-                            if already_in_db:
-                                self.__scan_del(uri)
-                            # On first scan, we want file mtime
-                            mtime = int(time()) if mtimes else mtime
-                            # If not saved, use 0 as mtime, easy delete on quit
-                            to_add.append((uri, mtime if saved else 0))
-                            new_tracks.append(uri)
-                            i -= 1
-                    # Previous code (<= 0.9.910) was reading mtime in this loop
-                    # Since we are looping faster, seems it's makes python
-                    # lagging. If someone has a better idea
-                    elif i % 1000:
-                        sleep(0.00001)
+                        db_uris.remove(uri)
+                    if mtime > db_mtimes.get(uri, 0):
+                        if already_in_db:
+                            self.__scan_del(uri)
+                        # On first scan, we want file mtime
+                        mtime = int(time()) if db_mtimes else mtime
+                        # If not saved, use 0 as mtime, easy delete on quit
+                        self.__scan_add(uri, mtime)
+                        new_tracks.append(uri)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
-                GLib.idle_add(self.__update_progress, i, count)
-            # This files are not in collection anymore
-            # We do this before __scan_add() to populate history
-            if saved:
-                for uri in to_delete:
-                    i += 1
-                    GLib.idle_add(self.__update_progress, i, count)
-                    self.__scan_del(uri)
-            for (uri, mtime) in to_add:
-                i += 1
-                GLib.idle_add(self.__update_progress, i, count)
-                self.__scan_add(uri, mtime)
+                self.__update_progress(i, count)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
