@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, Gdk, GLib, Gst
 from gettext import gettext as _
 
 from lollypop.container import Container
-from lollypop.define import App, Sizing, Type
+from lollypop.define import App, Sizing, Type, ScanType
 from lollypop.toolbar import Toolbar
 from lollypop.logger import Logger
 from lollypop.adaptive import AdaptiveWindow
@@ -523,7 +523,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
-            GLib.timeout_add(2000, App().scanner.update)
+            GLib.timeout_add(2000, App().scanner.update, ScanType.QUICK)
         # Here we ignore initial configure events
         self.__toolbar.set_content_width(self.get_size()[0])
 

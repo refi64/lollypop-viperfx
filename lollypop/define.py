@@ -62,6 +62,13 @@ class ArtSize:
     MAX = 4000
 
 
+class ScanType:
+    EPHEMERAL = 0
+    NEW_FILES = 1
+    QUICK = 2
+    FULL = 3
+
+
 class SelectionListMask:
         LIST_ONE = 1 << 1
         LIST_TWO = 1 << 2

@@ -12,7 +12,7 @@
 
 from gi.repository import Gio, GLib, Gtk
 
-from lollypop.define import App
+from lollypop.define import App, ScanType
 from lollypop.settings import SettingsDialog
 
 
@@ -72,7 +72,7 @@ class ApplicationActions:
         """
         if App().window:
             App().task_helper.run(App().art.clean_all_cache)
-            App().scanner.update()
+            App().scanner.update(ScanType.FULL)
 
     def __on_about_activate_response(self, dialog, response_id):
         """

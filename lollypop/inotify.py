@@ -12,7 +12,7 @@
 
 from gi.repository import Gio, GLib
 
-from lollypop.define import App
+from lollypop.define import App, ScanType
 from lollypop.utils import is_audio
 from lollypop.logger import Logger
 
@@ -108,4 +108,4 @@ class Inotify:
             @param uris as [str]
         """
         self.__timeout = None
-        App().scanner.update(uris)
+        App().scanner.update(ScanType.NEW_FILES, uris)

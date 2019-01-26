@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Pango
 from gettext import gettext as _
 from gettext import ngettext as ngettext
 
-from lollypop.define import App
+from lollypop.define import App, ScanType
 from lollypop.logger import Logger
 from lollypop.database import Database
 from lollypop.database_history import History
@@ -671,12 +671,12 @@ class SettingsDialog:
             to_delete = [uri for uri in previous if uri not in uris]
             if to_delete:
                 # We need to do a full scan
-                App().scanner.update()
+                App().scanner.update(ScanType.FULL)
             else:
                 # Only scan new folders
                 to_scan = [uri for uri in uris if uri not in previous]
                 if to_scan:
-                    App().scanner.update(to_scan)
+                    App().scanner.update(ScanType.NEW_FILES, to_scan)
 
     def __test_lastfm_connection(self, result, fm):
         """

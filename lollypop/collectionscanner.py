@@ -24,7 +24,7 @@ from threading import Thread
 from time import time, sleep
 
 from lollypop.inotify import Inotify
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ScanType
 from lollypop.objects import Track, Album
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
@@ -67,34 +67,29 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__inotify = None
         App().albums.update_max_count()
 
-    def update(self, uris=[], saved=True):
+    def update(self, scan_type, uris=[]):
         """
             Update database
+            @param scan_type as ScanType
             @param uris as [str]
-            @param saved as bool
         """
         # Stop previous scan
         if self.is_locked():
             self.stop()
-            GLib.timeout_add(250, self.update, uris, saved)
+            GLib.timeout_add(250, self.update, scan_type, uris)
         else:
             self.__disable_compilations = not App().settings.get_value(
                 "show-compilations")
 
-            if uris:
-                full_scan = False
-            else:
-                full_scan = True
+            if scan_type in [ScanType.FULL, ScanType.QUICK]:
                 uris = App().settings.get_music_uris()
-                if not uris:
-                    return
-
+            if not uris:
+                return
             # Register to progressbar
             App().window.container.progress.add(self)
             App().window.container.progress.set_fraction(0, self)
             # Launch scan in a separate thread
-            self.__thread = Thread(target=self.__scan,
-                                   args=(uris, full_scan, saved))
+            self.__thread = Thread(target=self.__scan, args=(scan_type, uris))
             self.__thread.daemon = True
             self.__thread.start()
 
@@ -156,15 +151,17 @@ class CollectionScanner(GObject.GObject, TagReader):
                 self.__inotify.add_monitor(d)
 
     @profile
-    def __get_objects_for_uris(self, uris):
+    def __get_objects_for_uris(self, scan_type, uris):
         """
             Get all tracks and dirs in uris
+            @param scan_type as ScanType
             @param uris as string
             @return (tracks [mtimes: int, uri: str], dirs as [uri: str])
         """
         files = []
         dirs = []
         walk_uris = list(uris)
+        max_mtime = App().albums.get_max_mtime()
         while walk_uris:
             uri = walk_uris.pop(0)
             try:
@@ -188,10 +185,18 @@ class CollectionScanner(GObject.GObject, TagReader):
                             walk_uris.append(child_uri)
                         elif self.__scan_to_handle(f):
                             mtime = get_mtime(info)
-                            files.append((mtime, child_uri))
+                            if scan_type == ScanType.QUICK:
+                                if mtime > max_mtime:
+                                    files.append((mtime, child_uri))
+                            else:
+                                files.append((mtime, child_uri))
                 elif self.__scan_to_handle(f):
                     mtime = get_mtime(info)
-                    files.append((mtime, child_uri))
+                    if scan_type == ScanType.QUICK:
+                        if mtime > max_mtime:
+                            files.append((mtime, child_uri))
+                    else:
+                        files.append((mtime, child_uri))
             except Exception as e:
                 Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
                              % e)
@@ -199,27 +204,32 @@ class CollectionScanner(GObject.GObject, TagReader):
         return (files, dirs)
 
     @profile
-    def __scan(self, uris, full, saved):
+    def __scan(self, scan_type, uris):
         """
             Scan music collection for music files
+            @param scan_type as ScanType
             @param uris as [str]
-            @param full as bool
-            @param saved as bool
             @thread safe
         """
         if self.__history is None:
             self.__history = History()
 
-        (files, dirs) = self.__get_objects_for_uris(uris)
+        (files, dirs) = self.__get_objects_for_uris(scan_type, uris)
 
-        db_uris = App().tracks.get_uris() if full\
-            else App().tracks.get_uris(uris)
-        new_tracks = self.__scan_files(files, db_uris, saved)
+        if scan_type == ScanType.NEW_FILES:
+            full_db_uris = App().tracks.get_uris(uris)
+        elif scan_type == ScanType.QUICK:
+            full_db_uris = [uri for (mtime, uri) in files]
+        else:
+            full_db_uris = App().tracks.get_uris()
+        new_tracks = self.__scan_files(files, full_db_uris, scan_type)
+
         self.__add_monitor(dirs)
 
-        GLib.idle_add(self.__finish, new_tracks and saved)
+        GLib.idle_add(self.__finish,
+                      new_tracks and scan_type != ScanType.EPHEMERAL)
 
-        if not saved and self.__thread is not None:
+        if scan_type == ScanType.EPHEMERAL and self.__thread is not None:
             self.__play_new_tracks(new_tracks)
 
         del self.__history
@@ -270,11 +280,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             Logger.error("CollectionScanner::__scan_del: %s" % e)
 
     @profile
-    def __scan_files(self, files, full_db_uris, saved):
+    def __scan_files(self, files, full_db_uris, scan_type):
         """
             Scan music collection for new audio files
             @param files as [str]
             @param full_db_uris as [str]
+            @param scan_type as ScanType
             @return new track uris as [str]
             @thread safe
         """
@@ -313,9 +324,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                     if mtime > db_mtimes.get(uri, 0):
                         if already_in_db:
                             self.__scan_del(uri)
-                        # On first scan, we want file mtime
-                        mtime = int(time()) if db_mtimes else mtime
                         # If not saved, use 0 as mtime, easy delete on quit
+                        if scan_type == ScanType.EPHEMERAL:
+                            mtime = 0
+                        # Do not use mtime if not intial scan
+                        elif db_mtimes:
+                            mtime = int(time())
                         self.__scan_add(uri, mtime)
                         new_tracks.append(uri)
                 except Exception as e:
