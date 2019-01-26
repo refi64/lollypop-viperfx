@@ -668,7 +668,15 @@ class SettingsDialog:
         self.__settings_dialog.hide()
         self.__settings_dialog.destroy()
         if set(previous) != set(uris):
-            App().scanner.update()
+            to_delete = [uri for uri in previous if uri not in uris]
+            if to_delete:
+                # We need to do a full scan
+                App().scanner.update()
+            else:
+                # Only scan new folders
+                to_scan = [uri for uri in uris if uri not in previous]
+                if to_scan:
+                    App().scanner.update(to_scan)
 
     def __test_lastfm_connection(self, result, fm):
         """
