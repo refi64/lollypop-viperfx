@@ -113,11 +113,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        # Previous code (<= 0.9.910) was reading mtime in this loop
-        # Since we are looping faster, seems it's makes python
-        # lagging. If someone has a better idea
-        if current % 1000:
-            sleep(0.00001)
         GLib.idle_add(App().window.container.progress.set_fraction,
                       current / total,
                       self)
@@ -298,6 +293,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     raise Exception("Scan cancelled")
                 if uri in uris:
                     db_uris.append(uri)
+                    sleep(0.001)
                 else:
                     self.__scan_del(uri)
                 i += 1
@@ -323,6 +319,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                             mtime = int(time())
                         self.__scan_add(uri, mtime)
                         new_tracks.append(uri)
+                    else:
+                        sleep(0.001)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
