@@ -182,6 +182,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             files.append((mtime, child_uri))
                 # Only happens if files passed as args
                 elif self.__scan_to_handle(f):
+                    mtime = get_mtime(info)
                     files.append((mtime, uri))
             except Exception as e:
                 Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
