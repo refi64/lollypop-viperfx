@@ -65,8 +65,7 @@ class ArtSize:
 class ScanType:
     EPHEMERAL = 0
     NEW_FILES = 1
-    QUICK = 2
-    FULL = 3
+    FULL = 2
 
 
 class SelectionListMask:

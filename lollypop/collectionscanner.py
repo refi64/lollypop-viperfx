@@ -81,7 +81,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__disable_compilations = not App().settings.get_value(
                 "show-compilations")
 
-            if scan_type in [ScanType.FULL, ScanType.QUICK]:
+            if scan_type == ScanType.FULL:
                 uris = App().settings.get_music_uris()
             if not uris:
                 return
@@ -161,8 +161,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         files = []
         dirs = []
         walk_uris = list(uris)
-        if scan_type == ScanType.QUICK:
-            max_mtime = App().albums.get_max_mtime()
         while walk_uris:
             uri = walk_uris.pop(0)
             try:
@@ -186,11 +184,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             walk_uris.append(child_uri)
                         elif self.__scan_to_handle(f):
                             mtime = get_mtime(info)
-                            if scan_type == ScanType.QUICK:
-                                if mtime > max_mtime:
-                                    files.append((mtime, child_uri))
-                            else:
-                                files.append((mtime, child_uri))
+                            files.append((mtime, child_uri))
                 # Only happens if files passed as args
                 elif self.__scan_to_handle(f):
                     files.append((mtime, uri))
@@ -215,8 +209,6 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         if scan_type == ScanType.NEW_FILES:
             full_db_uris = App().tracks.get_uris(uris)
-        elif scan_type == ScanType.QUICK:
-            full_db_uris = [uri for (mtime, uri) in files]
         elif scan_type == ScanType.EPHEMERAL:
             full_db_uris = uris
         else:
