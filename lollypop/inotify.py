@@ -76,7 +76,7 @@ class Inotify:
         # Stop collection scanner and wait
         if App().scanner.is_locked():
             App().scanner.stop()
-            GLib.timeout_add(self.__timeout_id,
+            GLib.timeout_add(self.__TIMEOUT,
                              self.__on_dir_changed,
                              monitor,
                              changed_file,
@@ -84,6 +84,8 @@ class Inotify:
                              event)
         # Run update delayed
         else:
+            if self.__timeout_id is not None:
+                GLib.source_remove(self.__timeout_id)
             if changed_file.has_parent():
                 uris = [changed_file.get_parent().get_uri()]
             else:
