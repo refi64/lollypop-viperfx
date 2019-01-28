@@ -73,6 +73,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param scan_type as ScanType
             @param uris as [str]
         """
+        App().lookup_action("update_db").set_enabled(False)
         # Stop previous scan
         if self.is_locked() and scan_type != ScanType.EPHEMERAL:
             self.stop()
@@ -123,6 +124,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             Notify from main thread when scan finished
             @param modifications as bool
         """
+        App().lookup_action("update_db").set_enabled(True)
         App().window.container.progress.set_fraction(1.0, self)
         self.stop()
         self.emit("scan-finished", modifications)
