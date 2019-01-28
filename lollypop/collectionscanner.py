@@ -255,22 +255,23 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         SqlCursor.add(App().db)
         i = 0
+        # New tracks present in collection
         new_tracks = []
+        # All tracks present in collection
+        tracks = []
         # Get mtime of all tracks to detect which has to be updated
         db_mtimes = App().tracks.get_mtimes()
-        count = len(files)
+        count = len(files) + len(db_uris)
         try:
             # Scan new files
-            while files:
+            for (mtime, uri) in files:
                 # Handle a stop request
                 if self.__thread is None:
                     raise Exception("Scan cancelled")
                 try:
-                    (mtime, uri) = files.pop(0)
-                    if uri in db_uris:
-                        db_uris.remove(uri)
                     if not self.__scan_to_handle(uri):
                         continue
+                    tracks.append(uri)
                     if mtime > db_mtimes.get(uri, 0):
                         # If not saved, use 0 as mtime, easy delete on quit
                         if scan_type == ScanType.EPHEMERAL:
@@ -282,16 +283,19 @@ class CollectionScanner(GObject.GObject, TagReader):
                         self.__add2db(uri, mtime)
                         SqlCursor.allow_thread_execution(App().db)
                         new_tracks.append(uri)
-                    else:
-                        sleep(0.0001)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
                 self.__update_progress(i, count)
             for uri in db_uris:
-                self.__del_from_db(uri)
-                SqlCursor.allow_thread_execution(App().db)
+                if uri not in tracks:
+                    self.__del_from_db(uri)
+                    SqlCursor.allow_thread_execution(App().db)
+                else:
+                    sleep(0.0001)
+                i += 1
+                self.__update_progress(i, count)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)

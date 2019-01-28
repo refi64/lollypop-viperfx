@@ -814,7 +814,7 @@ class SettingsDialog:
             App().db = Database()
             App().window.container.show_genres(
                 App().settings.get_value("show-genres"))
-            App().scanner.update()
+            App().scanner.update(ScanType.FULL)
             self.__progress.get_toplevel().set_deletable(True)
 
 
