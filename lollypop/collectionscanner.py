@@ -483,8 +483,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                     album_artist_ids = new_artist_ids
                 App().albums.set_artist_ids(album_id, new_artist_ids)
         # Update UI based on previous artist calculation
-        for artist_id in album_artist_ids:
-            GLib.idle_add(self.emit, "artist-updated", artist_id, add)
+        if App().albums.get_tracks_count(album_id) > 1:
+            for artist_id in album_artist_ids:
+                GLib.idle_add(self.emit, "artist-updated", artist_id, add)
         # Update album genres
         for genre_id in genre_ids:
             App().albums.add_genre(album_id, genre_id)
