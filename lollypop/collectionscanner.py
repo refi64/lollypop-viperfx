@@ -74,7 +74,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as [str]
         """
         # Stop previous scan
-        if self.is_locked():
+        if self.is_locked() and scan_type != ScanType.EPHEMERAL:
             self.stop()
             GLib.timeout_add(250, self.update, scan_type, uris)
         else:
@@ -86,8 +86,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             if not uris:
                 return
             # Register to progressbar
-            App().window.container.progress.add(self)
-            App().window.container.progress.set_fraction(0, self)
+            if scan_type != ScanType.EPHEMERAL:
+                App().window.container.progress.add(self)
+                App().window.container.progress.set_fraction(0, self)
             # Launch scan in a separate thread
             self.__thread = Thread(target=self.__scan, args=(scan_type, uris))
             self.__thread.daemon = True
@@ -198,7 +199,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as [str]
             @thread safe
         """
-        if self.__history is None:
+        if scan_type != ScanType.EPHEMERAL and self.__history is None:
             self.__history = History()
 
         (files, dirs) = self.__get_objects_for_uris(scan_type, uris)
@@ -211,16 +212,16 @@ class CollectionScanner(GObject.GObject, TagReader):
             full_db_uris = App().tracks.get_uris()
         new_tracks = self.__scan_files(files, full_db_uris, scan_type)
 
-        self.__add_monitor(dirs)
-
-        GLib.idle_add(self.__finish,
-                      new_tracks and scan_type != ScanType.EPHEMERAL)
+        if scan_type != ScanType.EPHEMERAL:
+            self.__add_monitor(dirs)
+            GLib.idle_add(self.__finish, new_tracks)
 
         if scan_type == ScanType.EPHEMERAL and self.__thread is not None:
             self.__play_new_tracks(new_tracks)
 
-        del self.__history
-        self.__history = None
+        if scan_type != ScanType.EPHEMERAL:
+            del self.__history
+            self.__history = None
 
     def __scan_to_handle(self, uri):
         """
