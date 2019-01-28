@@ -13,7 +13,6 @@
 from gi.repository import Gio, GLib
 
 from lollypop.define import App, ScanType
-from lollypop.utils import is_audio
 from lollypop.logger import Logger
 
 
@@ -29,7 +28,7 @@ class Inotify:
             Init inode notification
         """
         self.__monitors = {}
-        self.__timeout = None
+        self.__timeout_id = None
 
     def add_monitor(self, uri):
         """
@@ -61,11 +60,14 @@ class Inotify:
             @param other_file as Gio.File/None
             @param event as Gio.FileMonitorEvent
         """
-        update = False
+        changed_uri = changed_file.get_uri()
+        if changed_uri in self.__monitors.keys() and\
+                self.__monitors[changed_uri] == monitor:
+            return
         # Stop collection scanner and wait
         if App().scanner.is_locked():
             App().scanner.stop()
-            GLib.timeout_add(self.__TIMEOUT,
+            GLib.timeout_add(self.__timeout_id,
                              self.__on_dir_changed,
                              monitor,
                              changed_file,
@@ -73,39 +75,18 @@ class Inotify:
                              event)
         # Run update delayed
         else:
-            uri = changed_file.get_uri()
-            is_dir = False
-            if changed_file.query_exists():
-                # If a directory, monitor it
-                if changed_file.query_file_type(
-                        Gio.FileQueryInfoFlags.NONE,
-                        None) == Gio.FileType.DIRECTORY:
-                    self.add_monitor(uri)
-                    is_dir = True
-                # If not an audio file, exit
-                elif is_audio(changed_file):
-                    update = True
+            if changed_file.has_parent():
+                uris = [changed_file.get_parent().get_uri()]
             else:
-                update = True
-            if update:
-                if self.__timeout is not None:
-                    GLib.source_remove(self.__timeout)
-                    self.__timeout = None
-                # Launch collection update from this directory
-                # (and not the entire collection)
-                uris = None
-                if is_dir:
-                    uris = [uri]
-                elif changed_file.has_parent():
-                    uris = [changed_file.get_parent().get_uri()]
-                self.__timeout = GLib.timeout_add(self.__TIMEOUT,
-                                                  self.__run_collection_update,
-                                                  uris)
+                uris = [changed_uri]
+            self.__timeout_id = GLib.timeout_add(self.__TIMEOUT,
+                                                 self.__run_collection_update,
+                                                 uris)
 
     def __run_collection_update(self, uris=[]):
         """
             Run a collection update
             @param uris as [str]
         """
-        self.__timeout = None
+        self.__timeout_id = None
         App().scanner.update(ScanType.NEW_FILES, uris)
