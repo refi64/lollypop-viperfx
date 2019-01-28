@@ -255,8 +255,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         i = 0
         # New tracks present in collection
         new_tracks = []
-        # All tracks present in collection
-        tracks = []
         # Get mtime of all tracks to detect which has to be updated
         db_mtimes = App().tracks.get_mtimes()
         count = len(files) + 1
@@ -269,7 +267,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                 try:
                     if not self.__scan_to_handle(uri):
                         continue
-                    tracks.append(uri)
                     if mtime > db_mtimes.get(uri, 0):
                         # If not saved, use 0 as mtime, easy delete on quit
                         if scan_type == ScanType.EPHEMERAL:
