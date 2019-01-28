@@ -177,11 +177,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                         elif info.get_file_type() == Gio.FileType.DIRECTORY:
                             dirs.append(child_uri)
                             walk_uris.append(child_uri)
-                        elif self.__scan_to_handle(f):
+                        else:
                             mtime = get_mtime(info)
                             files.append((mtime, child_uri))
                 # Only happens if files passed as args
-                elif self.__scan_to_handle(f):
+                else:
                     mtime = get_mtime(info)
                     files.append((mtime, uri))
             except Exception as e:
@@ -222,13 +222,14 @@ class CollectionScanner(GObject.GObject, TagReader):
         del self.__history
         self.__history = None
 
-    def __scan_to_handle(self, f):
+    def __scan_to_handle(self, uri):
         """
             Check if file has to be handle by scanner
             @param f as Gio.File
             @return bool
         """
         try:
+            f = Gio.File.new_for_uri(uri)
             # Scan file
             if is_pls(f):
                 # Handle playlist
@@ -267,6 +268,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     (mtime, uri) = files.pop(0)
                     if uri in db_uris:
                         db_uris.remove(uri)
+                    if not self.__scan_to_handle(uri):
+                        continue
                     if mtime > db_mtimes.get(uri, 0):
                         # If not saved, use 0 as mtime, easy delete on quit
                         if scan_type == ScanType.EPHEMERAL:
