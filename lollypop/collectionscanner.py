@@ -21,7 +21,7 @@ from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
 
 from gettext import gettext as _
 from threading import Thread
-from time import time, sleep
+from time import time
 
 from lollypop.inotify import Inotify
 from lollypop.define import App, Type, ScanType
@@ -205,12 +205,10 @@ class CollectionScanner(GObject.GObject, TagReader):
         (files, dirs) = self.__get_objects_for_uris(scan_type, uris)
 
         if scan_type == ScanType.NEW_FILES:
-            full_db_uris = App().tracks.get_uris(uris)
-        elif scan_type == ScanType.EPHEMERAL:
-            full_db_uris = uris
+            db_uris = App().tracks.get_uris(uris)
         else:
-            full_db_uris = App().tracks.get_uris()
-        new_tracks = self.__scan_files(files, full_db_uris, scan_type)
+            db_uris = App().tracks.get_uris()
+        new_tracks = self.__scan_files(files, db_uris, scan_type)
 
         if scan_type != ScanType.EPHEMERAL:
             self.__add_monitor(dirs)
@@ -261,7 +259,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         tracks = []
         # Get mtime of all tracks to detect which has to be updated
         db_mtimes = App().tracks.get_mtimes()
-        count = len(files) + len(db_uris)
+        count = len(files) + 1
         try:
             # Scan new files
             for (mtime, uri) in files:
@@ -292,13 +290,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                 # Handle a stop request
                 if self.__thread is None:
                     raise Exception("Scan cancelled")
-                if uri not in tracks:
+                f = Gio.File.new_for_uri(uri)
+                if not f.query_exists():
                     self.__del_from_db(uri)
                     SqlCursor.allow_thread_execution(App().db)
-                else:
-                    sleep(0.0001)
-                i += 1
-                self.__update_progress(i, count)
+            self.__update_progress(1, 1)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
