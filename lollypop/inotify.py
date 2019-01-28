@@ -13,6 +13,7 @@
 from gi.repository import Gio, GLib
 
 from lollypop.define import App, ScanType
+from lollypop.utils import is_audio
 from lollypop.logger import Logger
 
 
@@ -61,9 +62,16 @@ class Inotify:
             @param event as Gio.FileMonitorEvent
         """
         changed_uri = changed_file.get_uri()
+        # Do not monitor our self
         if changed_uri in self.__monitors.keys() and\
                 self.__monitors[changed_uri] == monitor:
             return
+        # Ignore non audio/dir
+        if not is_audio(changed_file) and\
+            changed_file.query_file_type(Gio.FileQueryInfoFlags.NONE,
+                                         None) != Gio.FileType.DIRECTORY:
+            return
+
         # Stop collection scanner and wait
         if App().scanner.is_locked():
             App().scanner.stop()
