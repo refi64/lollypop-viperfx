@@ -286,14 +286,15 @@ class CollectionScanner(GObject.GObject, TagReader):
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
                 self.__update_progress(i, count)
-            for uri in db_uris:
-                # Handle a stop request
-                if self.__thread is None:
-                    raise Exception("Scan cancelled")
-                f = Gio.File.new_for_uri(uri)
-                if not f.query_exists():
-                    self.__del_from_db(uri)
-                    SqlCursor.allow_thread_execution(App().db)
+            if scan_type != ScanType.EPHEMERAL:
+                for uri in db_uris:
+                    # Handle a stop request
+                    if self.__thread is None:
+                        raise Exception("Scan cancelled")
+                    f = Gio.File.new_for_uri(uri)
+                    if not f.query_exists():
+                        self.__del_from_db(uri)
+                        SqlCursor.allow_thread_execution(App().db)
             self.__update_progress(1, 1)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
