@@ -144,6 +144,21 @@ class TracksDatabase:
                 return v[0]
             return None
 
+    def get_id_by_basename(self, basename):
+        """
+            Get track id by basename
+            @param basename as str
+            @return track_id as int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE uri like ?",
+                                 ("%" + basename,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
     def get_id_by(self, name, album_id, artist_ids):
         """
             Return track id for name/album/artists

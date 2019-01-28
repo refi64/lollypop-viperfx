@@ -352,6 +352,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         Logger.debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
         track_id = App().tracks.get_id_by_uri(uri)
+        if track_id is None:
+            basename = f.get_basename()
+            track_id = App().tracks.get_id_by_basename(basename)
         # Restore from history
         if track_id is None:
             (track_pop, track_rate, track_ltime,
