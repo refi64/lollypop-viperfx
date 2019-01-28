@@ -216,7 +216,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__add_monitor(dirs)
             GLib.idle_add(self.__finish, new_tracks)
 
-        if scan_type == ScanType.EPHEMERAL and self.__thread is not None:
+        if scan_type == ScanType.EPHEMERAL:
             self.__play_new_tracks(new_tracks)
 
         if scan_type != ScanType.EPHEMERAL:
@@ -264,7 +264,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             # Scan new files
             for (mtime, uri) in files:
                 # Handle a stop request
-                if self.__thread is None:
+                if self.__thread is None and scan_type != ScanType.EPHEMERAL:
                     raise Exception("Scan add cancelled")
                 try:
                     if not self.__scan_to_handle(uri):
@@ -357,7 +357,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             track_id = App().tracks.get_id_by_basename_duration(basename,
                                                                 duration)
         # Restore from history
-        if track_id is None:
+        if self.__history is None:
+            (track_pop, track_rate, track_ltime,
+             album_mtime, track_loved, album_loved,
+             album_pop, album_rate) = (0, 0, 0, 0, False, False, 0, 0)
+        elif track_id is None:
             (track_pop, track_rate, track_ltime,
              album_mtime, track_loved, album_loved,
              album_pop, album_rate) = self.__history.get(name, duration)
