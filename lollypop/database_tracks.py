@@ -144,16 +144,17 @@ class TracksDatabase:
                 return v[0]
             return None
 
-    def get_id_by_basename(self, basename):
+    def get_id_by_basename_duration(self, basename, duration):
         """
             Get track id by basename
             @param basename as str
+            @param duration as int
             @return track_id as int
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE uri like ?",
-                                 ("%" + basename,))
+                                  WHERE uri like ? AND duration=?",
+                                 ("%" + basename, duration))
             v = result.fetchone()
             if v is not None:
                 return v[0]
