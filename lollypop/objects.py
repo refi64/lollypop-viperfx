@@ -326,12 +326,12 @@ class Album(Base):
         """
             Get track
             @param track_id as int
-            @return Track/None
+            @return Track
         """
         for track in self.tracks:
             if track.id == track_id:
                 return track
-        return None
+        return Track()
 
     @property
     def title(self):
