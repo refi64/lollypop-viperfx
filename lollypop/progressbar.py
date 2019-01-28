@@ -51,7 +51,9 @@ class ProgressBar(Gtk.ProgressBar):
         if caller == self.__callers[0]:
             self.show()
             self.__fraction = fraction
-            if not self.__progress_running:
+            if fraction == 0:
+                Gtk.ProgressBar.set_fraction(self, 0.0)
+            elif not self.__progress_running:
                 self.__progress_running = True
                 self.__progress_update(caller)
 

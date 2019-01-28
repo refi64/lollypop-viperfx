@@ -263,7 +263,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             for (mtime, uri) in files:
                 # Handle a stop request
                 if self.__thread is None:
-                    raise Exception("Scan cancelled")
+                    raise Exception("Scan add cancelled")
                 try:
                     if not self.__scan_to_handle(uri):
                         continue
@@ -280,19 +280,18 @@ class CollectionScanner(GObject.GObject, TagReader):
                         new_tracks.append(uri)
                 except Exception as e:
                     Logger.error(
-                               "CollectionScanner:: __scan_files: % s" % e)
+                               "CollectionScanner:: __scan_add_files: % s" % e)
                 i += 1
                 self.__update_progress(i, count)
-            if scan_type != ScanType.EPHEMERAL:
+            if scan_type != ScanType.EPHEMERAL and self.__thread is not None:
                 for uri in db_uris:
                     # Handle a stop request
                     if self.__thread is None:
-                        raise Exception("Scan cancelled")
+                        raise Exception("Scan del cancelled")
                     f = Gio.File.new_for_uri(uri)
                     if not f.query_exists():
                         self.__del_from_db(uri)
                         SqlCursor.allow_thread_execution(App().db)
-            self.__update_progress(1, 1)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
