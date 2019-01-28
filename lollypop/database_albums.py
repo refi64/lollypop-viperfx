@@ -935,19 +935,6 @@ class AlbumsDatabase:
                 result = sql.execute(request, filter)
             return list(itertools.chain(*result))
 
-    def get_max_mtime(self):
-        """
-            Get maximal mtime for albums
-            @return mtime as int
-        """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT MAX(mtime) FROM albums")
-            result = result.fetchone()
-            if result is not None:
-                if result[0] is not None:
-                    return result[0]
-            return 0
-
     def search(self, string, limit=25):
         """
             Search for albums looking like string
