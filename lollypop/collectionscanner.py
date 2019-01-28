@@ -241,37 +241,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             Logger.error("CollectionScanner::__scan_to_handle(): %s" % e)
         return False
 
-    def __scan_add(self, uri, mtime):
-        """
-            Add audio file to database
-            @param uri as str
-            @param mtime as float
-        """
-        try:
-            Logger.debug("Adding file: %s" % uri)
-            self.__add2db(uri, mtime)
-            SqlCursor.allow_thread_execution(App().db)
-        except Exception as e:
-            Logger.error("CollectionScanner::__scan_add(add): "
-                         "%s, %s" % (e, uri))
-
-    def __scan_del(self, uri):
-        """
-            Delete file from DB
-            @param uri as str
-        """
-        try:
-            self.__del_from_db(uri)
-            SqlCursor.allow_thread_execution(App().db)
-        except Exception as e:
-            Logger.error("CollectionScanner::__scan_del: %s" % e)
-
     @profile
-    def __scan_files(self, files, full_db_uris, scan_type):
+    def __scan_files(self, files, db_uris, scan_type):
         """
             Scan music collection for new audio files
             @param files as [str]
-            @param full_db_uris as [str]
+            @param db_uris as [str]
             @param scan_type as ScanType
             @return new track uris as [str]
             @thread safe
@@ -281,24 +256,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         new_tracks = []
         # Get mtime of all tracks to detect which has to be updated
         db_mtimes = App().tracks.get_mtimes()
-        count = len(files) + len(full_db_uris)
+        count = len(files)
         try:
-            # We delete missing tracks from DB as soon as possible
-            # This allow metadata to be saved in history for example
-            # if user moved an album in collection
-            uris = [uri for (mtime, uri) in files]
-            db_uris = []
-            for uri in full_db_uris:
-                # Handle a stop request
-                if self.__thread is None:
-                    raise Exception("Scan cancelled")
-                if uri in uris:
-                    db_uris.append(uri)
-                    sleep(0.001)
-                else:
-                    self.__scan_del(uri)
-                i += 1
-                self.__update_progress(i, count)
             # Scan new files
             while files:
                 # Handle a stop request
@@ -306,27 +265,29 @@ class CollectionScanner(GObject.GObject, TagReader):
                     raise Exception("Scan cancelled")
                 try:
                     (mtime, uri) = files.pop(0)
-                    already_in_db = uri in db_uris
-                    if already_in_db:
+                    if uri in db_uris:
                         db_uris.remove(uri)
                     if mtime > db_mtimes.get(uri, 0):
-                        if already_in_db:
-                            self.__scan_del(uri)
                         # If not saved, use 0 as mtime, easy delete on quit
                         if scan_type == ScanType.EPHEMERAL:
                             mtime = 0
                         # Do not use mtime if not intial scan
                         elif db_mtimes:
                             mtime = int(time())
-                        self.__scan_add(uri, mtime)
+                        Logger.debug("Adding file: %s" % uri)
+                        self.__add2db(uri, mtime)
+                        SqlCursor.allow_thread_execution(App().db)
                         new_tracks.append(uri)
                     else:
-                        sleep(0.001)
+                        sleep(0.0001)
                 except Exception as e:
                     Logger.error(
                                "CollectionScanner:: __scan_files: % s" % e)
                 i += 1
                 self.__update_progress(i, count)
+            for uri in db_uris:
+                self.__del_from_db(uri)
+                SqlCursor.allow_thread_execution(App().db)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
         SqlCursor.commit(App().db)
@@ -384,9 +345,17 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         Logger.debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
-        (track_pop, track_rate, track_ltime, album_mtime,
-         track_loved, album_loved, album_pop, album_rate) = self.__history.get(
-            name, duration)
+        track_id = App().tracks.get_id_by_uri(uri)
+        # Restore from history
+        if track_id is None:
+            (track_pop, track_rate, track_ltime,
+             album_mtime, track_loved, album_loved,
+             album_pop, album_rate) = self.__history.get(name, duration)
+        # Delete track and restore from it
+        else:
+            (track_pop, track_rate, track_ltime,
+             album_mtime, track_loved, album_loved,
+             album_pop, album_rate) = self.__del_from_db(uri)
         # If nothing in stats, use track mtime
         if album_mtime == 0:
             album_mtime = mtime
@@ -440,28 +409,24 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Delete track from db
             @param uri as str
+            @return (popularity, ltime, mtime,
+                     loved album, album_popularity)
         """
         try:
-            f = Gio.File.new_for_uri(uri)
-            name = f.get_basename()
             track_id = App().tracks.get_id_by_uri(uri)
             album_id = App().tracks.get_album_id(track_id)
             genre_ids = App().tracks.get_genre_ids(track_id)
             album_artist_ids = App().albums.get_artist_ids(album_id)
             artist_ids = App().tracks.get_artist_ids(track_id)
-            popularity = App().tracks.get_popularity(track_id)
-            rate = App().tracks.get_rate(track_id)
-            ltime = App().tracks.get_ltime(track_id)
-            mtime = App().tracks.get_mtime(track_id)
-            loved_track = App().tracks.get_loved(track_id)
-            duration = App().tracks.get_duration(track_id)
-            album_popularity = App().albums.get_popularity(album_id)
+            track_pop = App().tracks.get_popularity(track_id)
+            track_rate = App().tracks.get_rate(track_id)
+            track_ltime = App().tracks.get_ltime(track_id)
+            album_mtime = App().tracks.get_mtime(track_id)
+            track_loved = App().tracks.get_loved(track_id)
+            album_pop = App().albums.get_popularity(album_id)
             album_rate = App().albums.get_rate(album_id)
-            loved_album = App().albums.get_loved(album_id)
+            album_loved = App().albums.get_loved(album_id)
             uri = App().tracks.get_uri(track_id)
-            self.__history.add(name, duration, popularity, rate,
-                               ltime, mtime, loved_track, loved_album,
-                               album_popularity, album_rate)
             App().tracks.remove(track_id)
             App().tracks.clean(track_id)
             cleaned = App().albums.clean(album_id)
@@ -480,6 +445,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     SqlCursor.commit(App().db)
                     GLib.idle_add(self.emit, "genre-updated",
                                   genre_id, False)
+            return (track_pop, track_rate, track_ltime, album_mtime,
+                    track_loved, album_loved, album_pop, album_rate)
         except Exception as e:
             Logger.error("CollectionScanner::__del_from_db: %s" % e)
 
