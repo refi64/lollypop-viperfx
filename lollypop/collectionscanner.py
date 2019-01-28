@@ -289,6 +289,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                 i += 1
                 self.__update_progress(i, count)
             for uri in db_uris:
+                # Handle a stop request
+                if self.__thread is None:
+                    raise Exception("Scan cancelled")
                 if uri not in tracks:
                     self.__del_from_db(uri)
                     SqlCursor.allow_thread_execution(App().db)
