@@ -158,6 +158,8 @@ class InformationView(BaseView, Gtk.Bin):
             albums = []
             for album_id in App().albums.get_ids([artist_id], []):
                 albums.append(Album(album_id))
+            if not albums:
+                albums = [App().player.current_track.album]
             albums_view.populate(albums)
         App().task_helper.run(InformationStore.get_bio, self.__artist_name,
                               callback=(self.__on_get_bio,))
