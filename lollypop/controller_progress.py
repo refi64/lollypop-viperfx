@@ -214,11 +214,11 @@ class ProgressController:
                 App().player.set_volume(volume)
                 self.update_position(volume)
             elif App().player.is_playing:
-                position = App().player.position
+                position = App().player.position / Gst.SECOND
                 if y >= 0:
-                    seek = position - 5 * Gst.SECOND
+                    seek = position - 5
                 elif y < 0:
-                    seek = position + 5 * Gst.SECOND
+                    seek = position + 5
                 if seek < 0:
                     seek = 0
                 if seek > App().player.current_track.duration:
