@@ -203,7 +203,7 @@ class ProgressController:
         if smooth:
             if self.__show_volume_control:
                 volume = App().player.volume
-                if y > 0:
+                if y >= 0:
                     volume -= 0.1
                 elif y < 0:
                     volume += 0.1
@@ -215,7 +215,7 @@ class ProgressController:
                 self.update_position(volume)
             elif App().player.is_playing:
                 position = App().player.position
-                if y > 0:
+                if y >= 0:
                     seek = position - 5 * Gst.SECOND
                 elif y < 0:
                     seek = position + 5 * Gst.SECOND
