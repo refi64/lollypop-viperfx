@@ -7,210 +7,286 @@
     <property name="can_focus">False</property>
     <property name="icon_name">preferences-system-symbolic</property>
   </object>
-  <object class="GtkGrid" id="widget">
+  <object class="GtkBox" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">center</property>
-    <property name="valign">center</property>
     <property name="margin_left">10</property>
     <property name="margin_right">10</property>
-    <property name="margin_start">10</property>
-    <property name="margin_end">10</property>
     <property name="margin_top">10</property>
     <property name="margin_bottom">10</property>
-    <property name="row_spacing">10</property>
-    <property name="column_spacing">10</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">10</property>
     <child>
-      <object class="GtkLabel" id="darken">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="margin_right">50</property>
-        <property name="margin_end">50</property>
-        <property name="label" translatable="yes">Use dark theme variant</property>
-        <property name="ellipsize">end</property>
+        <child>
+          <object class="GtkLabel" id="darken">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="margin_end">50</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">Use dark theme variant</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="switch_dark">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Use dark theme variant</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <signal name="state-set" handler="_on_switch_dark_state_set" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
       </packing>
     </child>
     <child>
-      <object class="GtkSwitch" id="switch_dark">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="tooltip_text" translatable="yes">Use dark theme variant</property>
-        <property name="halign">end</property>
-        <property name="hexpand">True</property>
-        <signal name="state-set" handler="_on_switch_dark_state_set" swapped="no"/>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="genres">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">Show genres</property>
-        <property name="ellipsize">end</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkSwitch" id="switch_genres">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="tooltip_text" translatable="yes">Show genres</property>
-        <property name="halign">end</property>
-        <property name="hexpand">True</property>
-        <signal name="state-set" handler="_on_switch_genres_state_set" swapped="no"/>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="compilations">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">Show compilations</property>
+        <child>
+          <object class="GtkLabel" id="genres">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">Show genres</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="switch_genres">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Show genres</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <signal name="state-set" handler="_on_switch_genres_state_set" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
-      <object class="GtkSwitch" id="switch_compilations">
+      <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="tooltip_text" translatable="yes">Show compilations</property>
-        <property name="halign">end</property>
+        <property name="can_focus">False</property>
         <property name="valign">center</property>
-        <signal name="state-set" handler="_on_switch_compilations_state_set" object="compilations_button" swapped="no"/>
+        <child>
+          <object class="GtkLabel" id="compilations">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">Show compilations</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="compilations_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">image3</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_compilations_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="switch_compilations">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Show compilations</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <signal name="state-set" handler="_on_switch_compilations_state_set" object="compilations_button" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">2</property>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="coversize">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">Albums cover size</property>
+        <child>
+          <object class="GtkLabel" id="artwork">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">Show artist artwork</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="switch_artwork">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Show artist artwork</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <signal name="state-set" handler="_on_switch_artwork_state_set" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">5</property>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="scale_coversize">
-        <property name="width_request">200</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="halign">end</property>
-        <property name="draw_value">False</property>
-        <signal name="value-changed" handler="_on_scale_coversize_value_changed" swapped="no"/>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">5</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="artwork">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">Show artist artwork</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkSwitch" id="switch_artwork">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="tooltip_text" translatable="yes">Show artist artwork</property>
-        <property name="halign">end</property>
-        <signal name="state-set" handler="_on_switch_artwork_state_set" swapped="no"/>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="orderby_label">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">Order albums by</property>
+        <child>
+          <object class="GtkLabel" id="orderby_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">Order albums by</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="combo_orderby">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <items>
+              <item id="artist" translatable="yes">Artist</item>
+              <item id="album" translatable="yes">Name</item>
+              <item id="year" translatable="yes">Year</item>
+              <item id="popularity" translatable="yes">Popularity</item>
+            </items>
+            <signal name="changed" handler="_on_combo_order_by_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">4</property>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">4</property>
       </packing>
     </child>
     <child>
-      <object class="GtkComboBoxText" id="combo_orderby">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">end</property>
-        <items>
-          <item id="artist" translatable="yes">Artist</item>
-          <item id="album" translatable="yes">Name</item>
-          <item id="year" translatable="yes">Year</item>
-          <item id="popularity" translatable="yes">Popularity</item>
-        </items>
-        <signal name="changed" handler="_on_combo_order_by_changed" swapped="no"/>
+        <child>
+          <object class="GtkLabel" id="coversize">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="label" translatable="yes">Albums cover size</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScale" id="scale_coversize">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="draw_value">False</property>
+            <signal name="value-changed" handler="_on_scale_coversize_value_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">4</property>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">5</property>
       </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="compilations_button">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="image">image3</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_compilations_button_clicked" swapped="no"/>
-      </object>
-      <packing>
-        <property name="left_attach">2</property>
-        <property name="top_attach">2</property>
-      </packing>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
   <object class="GtkPopover" id="popover-compilations">

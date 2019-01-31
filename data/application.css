@@ -388,6 +388,10 @@ popover.background separator {
     color: @theme_fg_color;
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .trackrow {
     padding: 0px;
 	background-color: transparent;

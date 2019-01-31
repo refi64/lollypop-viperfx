@@ -12,8 +12,7 @@
 
 from gi.repository import Gio, GLib, Gtk
 
-from lollypop.define import App, ScanType
-from lollypop.dialog_settings import SettingsDialog
+from lollypop.define import App, ScanType, Type
 
 
 class ApplicationActions:
@@ -110,8 +109,12 @@ class ApplicationActions:
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        dialog = SettingsDialog()
-        dialog.show()
+        if App().window.is_adaptive:
+            App().window.container.show_view(Type.SETTINGS)
+        else:
+            from lollypop.dialog_settings import SettingsDialog
+            dialog = SettingsDialog()
+            dialog.show()
 
     def __on_about_activate(self, action, param):
         """

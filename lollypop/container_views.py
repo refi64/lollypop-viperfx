@@ -73,6 +73,12 @@ class ViewsContainer:
             view = self._get_view_albums([], [item_id])
         elif item_id == Type.RADIOS:
             view = self._get_view_radios()
+        elif item_id in [Type.SETTINGS,
+                         Type.SETTINGS_APPEARANCE,
+                         Type.SETTINGS_BEHAVIOUR,
+                         Type.SETTINGS_COLLECTIONS,
+                         Type.SETTINGS_WEB]:
+            view = self._get_view_settings(item_id)
         elif Type.DEVICES - 999 < item_id < Type.DEVICES:
             from lollypop.view_device import DeviceView
             # Search for an existing view
@@ -385,6 +391,19 @@ class ViewsContainer:
         view.set_margin_start(5)
         view.set_margin_end(5)
         view.show()
+        return view
+
+    def _get_view_settings(self, item_id):
+        """
+            Show settings views
+            @param item_id as int
+        """
+        if item_id == Type.SETTINGS:
+            from lollypop.view_settings import SettingsView
+            view = SettingsView()
+        else:
+            from lollypop.view_settings import SettingsChildView
+            view = SettingsChildView(item_id)
         return view
 
     def _reload_navigation_view(self):
