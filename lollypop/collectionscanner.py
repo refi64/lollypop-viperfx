@@ -286,12 +286,24 @@ class CollectionScanner(GObject.GObject, TagReader):
                 i += 1
                 self.__update_progress(i, count)
             if scan_type != ScanType.EPHEMERAL and self.__thread is not None:
+                # We need to check files are always in our collections
+                if scan_type == ScanType.FULL:
+                    collections = App().settings.get_music_uris()
+                else:
+                    collections = None
                 for uri in db_uris:
                     # Handle a stop request
                     if self.__thread is None:
                         raise Exception("Scan del cancelled")
+                    in_collection = True
+                    if collections is not None:
+                        in_collection = False
+                        for collection in collections:
+                            if collection in uri:
+                                in_collection = True
+                                break
                     f = Gio.File.new_for_uri(uri)
-                    if not f.query_exists():
+                    if not in_collection or not f.query_exists():
                         self.__del_from_db(uri)
                         SqlCursor.allow_thread_execution(App().db)
         except Exception as e:
