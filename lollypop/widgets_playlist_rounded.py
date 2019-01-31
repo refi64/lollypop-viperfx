@@ -17,53 +17,8 @@ from gettext import gettext as _
 
 from lollypop.define import App, Shuffle, Type, ArtSize
 from lollypop.objects import Track, Album, Disc
-from lollypop.widgets_utils import Popover
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
-
-
-class PlayListPopover(Popover):
-    """
-        Edit a playlist
-    """
-
-    def __init__(self, playlist_id, obj):
-        """
-            @param playlist_id as int
-            @param obj as Object
-        """
-        Popover.__init__(self)
-        self.__playlist_id = playlist_id
-        self.__obj = obj
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/PlaylistPopover.ui")
-        builder.connect_signals(self)
-        widget = builder.get_object("widget")
-        self.__name_entry = builder.get_object("name")
-        if playlist_id < 0:
-            widget.set_sensitive(False)
-        self.__name_entry.set_text(App().playlists.get_name(playlist_id))
-        self.add(widget)
-
-#######################
-# PROTECTED           #
-#######################
-    def _on_save_button_clicked(self, button):
-        """
-            Save playlist
-            @param button as Gtk.Button
-        """
-        new_name = self.__name_entry.get_text()
-        App().playlists.rename(self.__playlist_id, new_name)
-        self.popdown()
-
-    def _on_delete_button_clicked(self, button):
-        """
-            Delete playlist
-            @param button as Gtk.Button
-        """
-        App().playlists.remove(self.__playlist_id)
-        self.popdown()
 
 
 class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
@@ -284,7 +239,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             Edit playlist
             @param button as Gtk.Button
         """
-        popover = PlayListPopover(self._data, self.__obj)
+        from lollypop.pop_playlist_edit import PlaylistEditPopover
+        popover = PlaylistEditPopover(self._data)
         popover.set_relative_to(button)
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
