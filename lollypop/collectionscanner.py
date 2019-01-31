@@ -286,7 +286,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 i += 1
                 self.__update_progress(i, count)
             if scan_type != ScanType.EPHEMERAL and self.__thread is not None:
-                # We need to check files are always in our collections
+                # We need to check files are always in collections
                 if scan_type == ScanType.FULL:
                     collections = App().settings.get_music_uris()
                 else:
