@@ -55,9 +55,9 @@ class BehaviourSettingsWidget(Gtk.Bin):
         switch_mix_party.set_state(App().settings.get_value("party-mix"))
 
         switch_artwork_tags = builder.get_object("switch_artwork_tags")
-        grid_behaviour = builder.get_object("grid_behaviour")
+
         # Check for kid3-cli
-        self.__check_for_kid3(switch_artwork_tags, grid_behaviour)
+        self.__check_for_kid3(switch_artwork_tags)
 
         combo_preview = builder.get_object("combo_preview")
 
@@ -205,23 +205,19 @@ class BehaviourSettingsWidget(Gtk.Bin):
         except Exception as e:
             Logger.error("SettingsDialog::__set_outputs(): %s" % e)
 
-    def __check_for_kid3(self, switch, grid):
+    def __check_for_kid3(self, switch):
         """
             Update grid/switch based on result
             @param switch as Gtk.Switch
-            @param grid as Gtk.Grid
         """
         if not App().art.kid3_available:
-            h = grid.child_get_property(switch, "height")
-            w = grid.child_get_property(switch, "width")
-            l = grid.child_get_property(switch, "left-attach")
-            t = grid.child_get_property(switch, "top-attach")
+            box = switch.get_parent()
             switch.destroy()
             label = Gtk.Label.new(_("You need to install kid3-cli"))
             label.get_style_context().add_class("dim-label")
             label.set_property("halign", Gtk.Align.END)
             label.show()
-            grid.attach(label, l, t, w, h)
+            box.pack_end(label, False, False, 0)
         else:
             switch.set_state(App().settings.get_value("save-to-tags"))
 
