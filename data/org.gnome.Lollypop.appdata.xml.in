@@ -29,8 +29,6 @@
   <releases>
     <release version="0.9.916" date="2019-01-28">
       <description>
-        <ul>Fix inotify code</ul>
-        <ul>Faster collection scanner</ul>
       </description>
     </release>
   </releases>
