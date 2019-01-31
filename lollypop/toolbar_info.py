@@ -87,16 +87,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         if self.get_realized():
             InformationController.on_current_changed(self, self.art_size, None)
 
-    def set_mini(self, mini):
-        """
-            Show/hide
-            @param mini as bool
-        """
-        if mini:
-            self.hide()
-        else:
-            self.show()
-
 #######################
 # PROTECTED           #
 #######################

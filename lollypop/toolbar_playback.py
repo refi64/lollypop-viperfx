@@ -40,6 +40,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self.__back_button = builder.get_object("back_button")
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
+        self.__buttons = builder.get_object("buttons")
 
         App().player.connect("lock-changed", self.__on_lock_changed)
         window.connect("can-go-back-changed", self.__on_can_go_back_changed)
@@ -55,6 +56,16 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
             self.__back_button.set_sensitive(sensitive)
         else:
             self.__back_button.hide()
+
+    def set_mini(self, mini):
+        """
+            Show/hide
+            @param mini as bool
+        """
+        if mini:
+            self.__buttons.hide()
+        else:
+            self.__buttons.show()
 
 #######################
 # Protected           #

@@ -93,6 +93,7 @@ class PowerManagement:
 
 
 class Sizing:
+    MINI = 200
     SMALL = 350
     MEDIUM = 500
     BIG = 700

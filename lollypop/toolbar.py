@@ -63,19 +63,22 @@ class Toolbar(Gtk.HeaderBar):
             Calculate infos/title width
             @param window width as int
         """
-        width = self.__toolbar_playback.get_preferred_width()[1]
-        width += self.__toolbar_end.get_preferred_width()[1]
-        window = self.get_window()
-        if window is not None:
-            available = window.get_width() - width
-            if available > 0:
-                if window_width >= Sizing.MEDIUM:
-                    title = available / 2
-                else:
-                    title = available
-                self.__toolbar_title.set_width(title)
-                self.__toolbar_info.set_width((available - title) / 2)
-            self.__width = window.get_width()
+        if self.__toolbar_title.get_visible():
+            width = self.__toolbar_playback.get_preferred_width()[1]
+            width += self.__toolbar_end.get_preferred_width()[1]
+            window = self.get_window()
+            if window is not None:
+                available = window.get_width() - width
+                if available > 0:
+                    if window_width >= Sizing.MEDIUM:
+                        title = available / 2
+                    else:
+                        title = available
+                    self.__toolbar_title.set_width(title)
+                    self.__toolbar_info.set_width((available - title) / 2)
+                self.__width = window.get_width()
+        else:
+            self.__toolbar_info.set_width(window_width / 2)
 
     def update_position(self, value=None):
         """
@@ -90,7 +93,7 @@ class Toolbar(Gtk.HeaderBar):
             Set toolbar working when small
             @param mini as bool
         """
-        self.__toolbar_info.set_mini(mini)
+        self.__toolbar_playback.set_mini(mini)
         self.__toolbar_title.set_mini(mini)
 
     @property

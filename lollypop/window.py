@@ -312,18 +312,13 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         if width < Sizing.MONSTER:
             self.__show_miniplayer(True)
-            self.__miniplayer.set_vexpand(False)
             self.__container.stack.show()
-            if self.__miniplayer is not None:
-                self.__miniplayer.set_vexpand(False)
         else:
             self.__show_miniplayer(False)
             self.__container.stack.show()
-            if self.__miniplayer is not None:
-                self.__miniplayer.set_vexpand(False)
-        if height < Sizing.MEDIUM and\
-                self.__miniplayer is not None and\
-                self.__miniplayer.is_visible():
+        if self.__miniplayer is not None and\
+                self.__miniplayer.is_visible() and\
+                height < Sizing.MINI:
             self.__container.stack.hide()
             self.__miniplayer.set_vexpand(True)
         elif self.__miniplayer is not None:

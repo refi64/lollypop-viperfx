@@ -118,6 +118,14 @@ popover.background separator {
     opacity: 0.95;
 }
 
+.miniplayer-buttons {
+    background: transparent;
+    background-image: none;
+    border: none;
+    color: white;
+    box-shadow: none;
+}
+
 .lyrics {
     font-weight: bold;
     background-color: alpha(@theme_bg_color, 0.8);

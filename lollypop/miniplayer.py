@@ -18,10 +18,12 @@ from lollypop.logger import Logger
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
+from lollypop.controller_playback import PlaybackController
 from lollypop.define import App, Sizing, Type
 
 
-class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
+class MiniPlayer(Gtk.Bin, InformationController,
+                 ProgressController, PlaybackController):
     """
         Toolbar end
     """
@@ -34,17 +36,27 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         self.__width = width
         self.__height = 0
         Gtk.Bin.__init__(self)
-        InformationController.__init__(self, True, ArtHelperEffect.BLUR)
+        InformationController.__init__(self, False, ArtHelperEffect.BLUR)
         ProgressController.__init__(self)
+        PlaybackController.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
         builder.connect_signals(self)
+
+        self.__grid = builder.get_object("grid")
 
         self._progress = builder.get_object("progress_scale")
         self._progress.set_sensitive(False)
         self._progress.set_hexpand(True)
         self._timelabel = builder.get_object("playback")
         self._total_time_label = builder.get_object("duration")
+
+        self._prev_button = builder.get_object("previous_button")
+        self._play_button = builder.get_object("play_button")
+        self._next_button = builder.get_object("next_button")
+        self.__back_button = builder.get_object("back_button")
+        self._play_image = builder.get_object("play_image")
+        self._pause_image = builder.get_object("pause_image")
 
         self.__grid = builder.get_object("grid")
         self._title_label = builder.get_object("title")
@@ -54,12 +66,19 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
                                                  self.__on_current_changed)
         self.__signal_id2 = App().player.connect("status-changed",
                                                  self.__on_status_changed)
+        self.__signal_id3 = App().player.connect("lock-changed",
+                                                 self.__on_lock_changed)
         self.__on_current_changed(App().player)
         if App().player.current_track.id is not None:
             self.update_position()
             ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
-        self.connect("size-allocate", self.__on_size_allocate)
+
+    def update_labels(self, *ignore):
+        """
+            No labels here
+        """
+        pass
 
     def update_cover(self, width):
         """
@@ -90,6 +109,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         ProgressController.do_destroy(self)
         App().player.disconnect(self.__signal_id1)
         App().player.disconnect(self.__signal_id2)
+        App().player.disconnect(self.__signal_id3)
 
 #######################
 # PROTECTED           #
@@ -127,33 +147,6 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
-    def _on_enter_notify_event(self, eventbox, event):
-        """
-            Show controls
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.EventCrossing
-        """
-        context = self.__grid.get_style_context()
-        context.remove_class("slow-hide")
-        context.add_class("slow-show")
-
-    def _on_leave_notify_event(self, eventbox, event):
-        """
-            Hide controls
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.EventCrossing
-        """
-        if self.__height == self.get_preferred_height()[0]:
-            return
-        allocation = eventbox.get_allocation()
-        if event.x <= 0 or\
-           event.x >= allocation.width or\
-           event.y <= 0 or\
-           event.y >= allocation.height:
-            context = self.__grid.get_style_context()
-            context.add_class("slow-hide")
-            context.remove_class("slow-show")
-
 #######################
 # PRIVATE             #
 #######################
@@ -166,6 +159,7 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
             self.show()
         InformationController.on_current_changed(self, self.__width, None)
         ProgressController.on_current_changed(self, player)
+        PlaybackController.on_current_changed(self, player)
 
     def __on_status_changed(self, player):
         """
@@ -173,23 +167,12 @@ class MiniPlayer(Gtk.Bin, InformationController, ProgressController):
             @param player as Player
         """
         ProgressController.on_status_changed(self, player)
+        PlaybackController.on_status_changed(self, player)
 
-    def __on_size_allocate(self, widget, allocation):
+    def __on_lock_changed(self, player):
         """
-            Update cover based on current height
-            @param widget as Gtk.Widget
-            @param allocation as Gdk.Rectangle
+            Lock toolbar
+            @param player as Player
         """
-        if self.__height == allocation.height:
-            return
-        self.__height = allocation.height
-        context = self.__grid.get_style_context()
-        if self.__height == widget.get_preferred_height()[0]:
-            InformationController.__init__(self, True, ArtHelperEffect.BLUR)
-            context.remove_class("slow-hide")
-            context.add_class("slow-show")
-        else:
-            InformationController.__init__(self, True, ArtHelperEffect.NONE)
-            context.add_class("slow-hide")
-            context.remove_class("slow-show")
-        InformationController.on_current_changed(self, self.__width, None)
+        self._prev_button.set_sensitive(not player.is_locked)
+        self._next_button.set_sensitive(not player.is_locked)
