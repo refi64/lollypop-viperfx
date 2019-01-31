@@ -60,6 +60,25 @@ class ListsContainer:
             elif App().settings.get_value("show-genres") and ids:
                 self.__update_list_artists(self._list_two, ids, update)
 
+    def show_lists(self, list_one_ids, list_two_ids):
+        """
+            Show list one and two
+            @param list_one_ids as [int]
+            @param list_two_ids as [int]
+        """
+        def select_list_two(selection_list, list_two_ids):
+            self._list_two.select_ids(list_two_ids)
+            self._list_two.disconnect_by_func(select_list_two)
+
+        self._list_one.select_ids()
+        self._list_two.select_ids()
+        if list_two_ids:
+            # Select genres on list one
+            self._list_two.connect("populated", select_list_two, list_two_ids)
+            self._list_one.select_ids(list_one_ids)
+        else:
+            self._list_one.select_ids(list_one_ids)
+
     def show_artists_albums(self, artist_ids):
         """
             Show albums from artists
@@ -68,8 +87,6 @@ class ListsContainer:
         def select_list_two(selection_list, artist_ids):
             self._list_two.select_ids(artist_ids)
             self._list_two.disconnect_by_func(select_list_two)
-        self._list_one.select_ids()
-        self._list_two.select_ids()
         if App().settings.get_value("show-genres"):
             # Get artist genres
             genre_ids = []
@@ -79,12 +96,10 @@ class ListsContainer:
                     for genre_id in App().albums.get_genre_ids(album_id):
                         if genre_id not in genre_ids:
                             genre_ids.append(genre_id)
-            # Select genres on list one
-            self._list_two.connect("populated", select_list_two, artist_ids)
-            self._list_one.select_ids(genre_ids)
+            self.show_lists(genre_ids, artist_ids)
         else:
             # Select artists on list one
-            self._list_one.select_ids(artist_ids)
+            self.show_lists(artist_ids, [])
 
     @property
     def list_one(self):
@@ -279,7 +294,7 @@ class ListsContainer:
                                         Type.YEARS,
                                         Type.ALL]):
             self._stack.set_visible_child(self._list_two)
-        else:
+        elif view is not None:
             self._stack.set_visible_child(view)
 
     def __on_list_one_populated(self, selection_list):

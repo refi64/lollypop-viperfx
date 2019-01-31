@@ -88,7 +88,6 @@ class SearchView(BaseView, Gtk.Bin):
             Create a new playlist based on search
             @param button as Gtk.Button
         """
-        button.set_sensitive(False)
         App().task_helper.run(self.__search_to_playlist)
 
     def _on_search_changed(self, widget):
@@ -156,6 +155,22 @@ class SearchView(BaseView, Gtk.Bin):
                 App().playlists.add(self.__current_search)
                 playlist_id = App().playlists.get_id(self.__current_search)
             App().playlists.add_tracks(playlist_id, tracks)
+        GLib.idle_add(self.__show_playlist, playlist_id)
+
+    def __show_playlist(self, playlist_id):
+        """
+            Hide if in a popover and show playlist
+        """
+        if App().settings.get_value("show-sidebar"):
+            App().window.container.show_lists([Type.PLAYLISTS],
+                                              [playlist_id])
+        else:
+            App().window.container.show_view(Type.PLAYLISTS, [playlist_id])
+        popover = self.get_ancestor(Gtk.Popover)
+        if popover is not None:
+            popover.hide()
+        else:
+            self.destroy()
 
     def __on_search_get(self, result):
         """
