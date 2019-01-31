@@ -98,7 +98,7 @@ class ContextWidget(Gtk.EventBox):
             if len(set(player_album_track_ids) &
                     set(object.track_ids)) == len(object.track_ids):
                 add = False
-                string = _("Remove from current playlist")
+                string = _("Remove from playback")
                 icon = "list-remove-symbolic"
             current_playlist_button = Gtk.Button.new_from_icon_name(
                 icon,
@@ -117,7 +117,7 @@ class ContextWidget(Gtk.EventBox):
                                                         Gtk.IconSize.BUTTON)
         playlist_button.connect("clicked", self.__on_playlist_button_clicked)
         playlist_button.get_style_context().add_class("dim-button")
-        playlist_button.set_tooltip_text(_("Add to playlist"))
+        playlist_button.set_tooltip_text(_("Add to playback"))
         playlist_button.show()
         grid.add(playlist_button)
 
