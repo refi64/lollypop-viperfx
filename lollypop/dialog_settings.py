@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import App
+from lollypop.define import App, Type
 from lollypop.widgets_settings_appearance import AppearanceSettingsWidget
 from lollypop.widgets_settings_behaviour import BehaviourSettingsWidget
 from lollypop.widgets_settings_collections import CollectionsSettingsWidget
@@ -26,9 +26,10 @@ class SettingsDialog:
         Dialog showing lollypop options
     """
 
-    def __init__(self):
+    def __init__(self, dialog_type):
         """
             Init dialog
+            @param dialog_type as int
         """
         self.__choosers = []
         self.__mix_tid = None
@@ -62,6 +63,13 @@ class SettingsDialog:
         notebook.append_page(behaviour_widget, behaviour_label)
         notebook.append_page(collections_widget, collections_label)
         notebook.append_page(web_widget, web_label)
+
+        if dialog_type == Type.SETTINGS_BEHAVIOUR:
+            notebook.set_current_page(1)
+        elif dialog_type == Type.SETTINGS_COLLECTIONS:
+            notebook.set_current_page(2)
+        elif dialog_type == Type.SETTINGS_WEB:
+            notebook.set_current_page(3)
 
         self.__settings_dialog = builder.get_object("settings_dialog")
         self.__settings_dialog.set_transient_for(App().window)

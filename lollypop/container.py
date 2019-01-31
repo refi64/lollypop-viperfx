@@ -114,6 +114,13 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 self._list_one.connect("populated", select_list_one)
                 self.update_list_one()
             else:
+                from lollypop.view_settings import SettingsChildView
+                from lollypop.view_settings import SettingsView
+                if isinstance(self.view, SettingsChildView) or\
+                        isinstance(self.view, SettingsView):
+                    action = App().lookup_action("settings")
+                    GLib.idle_add(action.activate,
+                                  GLib.Variant("i", self.view.type))
                 self._reload_list_view()
         elif not adaptive_window:
             if self._list_one.get_visible():

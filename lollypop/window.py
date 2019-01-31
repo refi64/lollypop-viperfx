@@ -135,7 +135,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                                     ["<Control>g"])
         App().set_accels_for_action("app.shortcut::show_sidebar", ["F9"])
         App().set_accels_for_action("app.update_db", ["<Control>u"])
-        App().set_accels_for_action("app.settings", ["<Control>s"])
+        App().set_accels_for_action("app.settings(-14)", ["<Control>s"])
         App().set_accels_for_action("app.fullscreen", ["F11", "F7"])
         App().set_accels_for_action("app.mini", ["<Control>m"])
         App().set_accels_for_action("app.about", ["F3"])

@@ -24,7 +24,8 @@ class ApplicationActions:
         """
             Init actions
         """
-        settings_action = Gio.SimpleAction.new("settings", None)
+        settings_action = Gio.SimpleAction.new("settings",
+                                               GLib.VariantType("i"))
         settings_action.connect("activate", self.__on_settings_activate)
         App().add_action(settings_action)
 
@@ -113,7 +114,7 @@ class ApplicationActions:
             App().window.container.show_view(Type.SETTINGS)
         else:
             from lollypop.dialog_settings import SettingsDialog
-            dialog = SettingsDialog()
+            dialog = SettingsDialog(param.get_int32())
             dialog.show()
 
     def __on_about_activate(self, action, param):

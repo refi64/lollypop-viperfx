@@ -91,6 +91,14 @@ class SettingsView(View):
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
 
+    @property
+    def type(self):
+        """
+            Get view type
+            @return type as int
+        """
+        return Type.SETTINGS
+
 ##############
 # PROTECTED  #
 ##############
@@ -125,25 +133,26 @@ class SettingsChildView(View):
         Show settings widget
     """
 
-    def __init__(self, item_id):
+    def __init__(self, view_type):
         """
             Init view
-            @param item_id as int
+            @param view_type as int
         """
         View.__init__(self)
-        if item_id == Type.SETTINGS_APPEARANCE:
+        self.__view_type = view_type
+        if view_type == Type.SETTINGS_APPEARANCE:
             from lollypop.widgets_settings_appearance\
                 import AppearanceSettingsWidget
             widget = AppearanceSettingsWidget()
-        elif item_id == Type.SETTINGS_BEHAVIOUR:
+        elif view_type == Type.SETTINGS_BEHAVIOUR:
             from lollypop.widgets_settings_behaviour\
                 import BehaviourSettingsWidget
             widget = BehaviourSettingsWidget()
-        elif item_id == Type.SETTINGS_COLLECTIONS:
+        elif view_type == Type.SETTINGS_COLLECTIONS:
             from lollypop.widgets_settings_collections\
                 import CollectionsSettingsWidget
             widget = CollectionsSettingsWidget()
-        elif item_id == Type.SETTINGS_WEB:
+        elif view_type == Type.SETTINGS_WEB:
             from lollypop.widgets_settings_web\
                 import WebSettingsWidget
             widget = WebSettingsWidget()
@@ -154,6 +163,14 @@ class SettingsChildView(View):
         self._viewport.add(widget)
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
+
+    @property
+    def type(self):
+        """
+            Get type
+            @return type as int
+        """
+        return self.__view_type
 
 ##############
 # PROTECTED  #
