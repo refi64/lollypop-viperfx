@@ -13,7 +13,7 @@
 from gi.repository import Gio, GLib, Gtk
 
 from lollypop.define import App, ScanType
-from lollypop.settings import SettingsDialog
+from lollypop.dialog_settings import SettingsDialog
 
 
 class ApplicationActions:
