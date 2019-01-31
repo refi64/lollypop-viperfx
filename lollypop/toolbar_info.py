@@ -36,6 +36,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)
         self.__timeout_id = None
+        self.__mini = False
         self.__width = 0
 
         self._infobox = builder.get_object("info")
@@ -79,6 +80,23 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self.__width = width
         self.set_property("width-request", width)
 
+    def set_mini(self, mini):
+        """
+            Set mini mode
+            @param mini as bool
+        """
+        self.__mini = mini
+        try:
+            window = self._infobox.get_window()
+            if window is None:
+                return
+            if mini:
+                window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+            else:
+                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
+
     def on_current_changed(self, player):
         """
             Update widgets
@@ -94,6 +112,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show hand cursor over
         """
+        if self.__mini:
+            return
         try:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
         except:
@@ -127,6 +147,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        if self.__mini:
+            return
         if event.button == 1:
             if App().player.current_track.id == Type.RADIOS:
                 from lollypop.pop_tunein import TuneinPopover

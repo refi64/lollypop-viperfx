@@ -95,6 +95,7 @@ class Toolbar(Gtk.HeaderBar):
         """
         self.__toolbar_playback.set_mini(mini)
         self.__toolbar_title.set_mini(mini)
+        self.__toolbar_info.set_mini(mini)
 
     @property
     def end(self):
