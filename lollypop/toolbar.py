@@ -32,6 +32,7 @@ class Toolbar(Gtk.HeaderBar):
         """
         Gtk.HeaderBar.__init__(self)
         self.__width = Sizing.SMALL
+        self.__mini = False
         self.set_title("Lollypop")
         self.__toolbar_playback = ToolbarPlayback(window)
         self.__toolbar_playback.show()
@@ -63,7 +64,7 @@ class Toolbar(Gtk.HeaderBar):
             Calculate infos/title width
             @param window width as int
         """
-        if self.__toolbar_title.get_visible():
+        if not self.__mini:
             width = self.__toolbar_playback.get_preferred_width()[1]
             width += self.__toolbar_end.get_preferred_width()[1]
             window = self.get_window()
@@ -93,6 +94,7 @@ class Toolbar(Gtk.HeaderBar):
             Set toolbar working when small
             @param mini as bool
         """
+        self.__mini = mini
         self.__toolbar_playback.set_mini(mini)
         self.__toolbar_title.set_mini(mini)
         self.__toolbar_info.set_mini(mini)
