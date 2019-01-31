@@ -5,7 +5,8 @@
   <object class="GtkNotebook" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <property name="tab_pos">left</property>
+    <property name="tab_pos">bottom</property>
+    <property name="scrollable">True</property>
     <child>
       <object class="GtkGrid" id="lastfm_grid">
         <property name="visible">True</property>
@@ -246,6 +247,8 @@
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
         <property name="row_spacing">10</property>
@@ -314,6 +317,8 @@
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
         <property name="row_spacing">10</property>
@@ -396,12 +401,6 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
         <property name="position">3</property>
         <property name="tab_fill">False</property>
       </packing>
-    </child>
-    <child type="action-start">
-      <placeholder/>
-    </child>
-    <child type="action-end">
-      <placeholder/>
     </child>
   </object>
 </interface>
