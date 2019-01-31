@@ -18,6 +18,7 @@
     <section>
       <item>
         <attribute name="action">app.settings</attribute>
+        <attribute name="target" type="i">1</attribute>
         <attribute name="label" translatable="yes">_Preferences</attribute>
       </item>
     </section>
