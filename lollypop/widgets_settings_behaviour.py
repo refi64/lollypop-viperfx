@@ -28,7 +28,6 @@ class BehaviourSettingsWidget(Gtk.Bin):
             Init widget
         """
         Gtk.Bin.__init__(self)
-        self.__cover_tid = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SettingsBehaviour.ui")
 
