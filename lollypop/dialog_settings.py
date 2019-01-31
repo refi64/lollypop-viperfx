@@ -19,6 +19,7 @@ from lollypop.define import App, ScanType
 from lollypop.logger import Logger
 from lollypop.database import Database
 from lollypop.database_history import History
+from lollypop.widgets_settings_appearance import AppearanceSettingsWidget
 
 
 class SettingsDialog:
@@ -31,12 +32,18 @@ class SettingsDialog:
             Init dialog
         """
         self.__choosers = []
-        self.__cover_tid = None
         self.__mix_tid = None
         self.__popover = None
 
+        appearance_widget = AppearanceSettingsWidget()
+        appearance_widget.show()
+        appearance_label = Gtk.Label(_("Appearance"))
+        appearance_label.show()
+
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SettingsDialog.ui")
+        notebook = builder.get_object("notebook")
+        notebook.append_page(appearance_widget, appearance_label)
         self.__progress = builder.get_object("progress")
         self.__infobar = builder.get_object("infobar")
         self.__reset_button = builder.get_object("reset_button")
@@ -62,9 +69,6 @@ class SettingsDialog:
         self.__scale_transition_duration.set_value(
             App().settings.get_value("transition-duration").get_int32())
 
-        self.__popover_compilations = builder.get_object(
-            "popover-compilations")
-
         self.__settings_dialog = builder.get_object("settings_dialog")
         self.__settings_dialog.set_transient_for(App().window)
 
@@ -77,12 +81,6 @@ class SettingsDialog:
 
         switch_scan = builder.get_object("switch_scan")
         switch_scan.set_state(App().settings.get_value("auto-update"))
-
-        switch_view = builder.get_object("switch_dark")
-        if App().gtk_application_prefer_dark_theme:
-            switch_view.set_sensitive(False)
-        else:
-            switch_view.set_state(App().settings.get_value("dark-ui"))
 
         switch_background = builder.get_object("switch_background")
         switch_background.set_state(
@@ -109,32 +107,8 @@ class SettingsDialog:
         # Check for kid3-cli
         self.__check_for_kid3(switch_artwork_tags, grid_behaviour)
 
-        switch_genres = builder.get_object("switch_genres")
-        switch_genres.set_state(App().settings.get_value("show-genres"))
-
-        switch_compilations_in_album_view = builder.get_object(
-            "switch_compilations_in_album_view")
-        switch_compilations_in_album_view.set_state(
-            App().settings.get_value("show-compilations-in-album-view"))
-
-        switch_compilations = builder.get_object("switch_compilations")
-        show_compilations = App().settings.get_value("show-compilations")
-        switch_compilations.set_state(show_compilations)
-        builder.get_object("compilations_button").set_sensitive(
-            show_compilations)
-
-        switch_artwork = builder.get_object("switch_artwork")
-        switch_artwork.set_state(App().settings.get_value("artist-artwork"))
-
-        combo_orderby = builder.get_object("combo_orderby")
-        combo_orderby.set_active(App().settings.get_enum(("orderby")))
-
         combo_preview = builder.get_object("combo_preview")
 
-        scale_coversize = builder.get_object("scale_coversize")
-        scale_coversize.set_range(170, 300)
-        scale_coversize.set_value(
-            App().settings.get_value("cover-size").get_int32())
         self.__settings_dialog.connect("destroy", self.__edit_settings_close)
 
         self.__flowbox = builder.get_object("flowbox")
@@ -232,29 +206,6 @@ class SettingsDialog:
         App().settings.set_value("network-access",
                                  GLib.Variant("b", state))
 
-    def _on_scale_coversize_value_changed(self, widget):
-        """
-            Delayed update cover size
-            @param widget as Gtk.Range
-        """
-        if self.__cover_tid is not None:
-            GLib.source_remove(self.__cover_tid)
-            self.__cover_tid = None
-        self.__cover_tid = GLib.timeout_add(500,
-                                            self.__really_update_coversize,
-                                            widget)
-
-    def _on_switch_dark_state_set(self, widget, state):
-        """
-            Update view setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        App().settings.set_value("dark-ui", GLib.Variant("b", state))
-        if not App().player.is_party:
-            settings = Gtk.Settings.get_default()
-            settings.set_property("gtk-application-prefer-dark-theme", state)
-
     def _on_switch_scan_state_set(self, widget, state):
         """
             Update scan setting
@@ -281,16 +232,6 @@ class SettingsDialog:
         """
         App().settings.set_value("save-state",
                                  GLib.Variant("b", state))
-
-    def _on_switch_genres_state_set(self, widget, state):
-        """
-            Update show genre setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        App().settings.set_value("show-genres",
-                                 GLib.Variant("b", state))
-        App().window.container.show_genres(state)
 
     def _on_transitions_button_clicked(self, widget):
         """
@@ -336,60 +277,6 @@ class SettingsDialog:
             @param state as bool
         """
         App().settings.set_value("save-to-tags", GLib.Variant("b", state))
-
-    def _on_compilations_button_clicked(self, widget):
-        """
-            Show compilations popover
-            @param widget as Gtk.Button
-        """
-        self.__popover_compilations.popup()
-
-    def _on_switch_compilations_state_set(self, widget, state):
-        """
-            Update show compilations setting
-            @param widget as Gtk.Button
-            @param state as bool
-        """
-        widget.set_sensitive(state)
-        App().settings.set_value("show-compilations",
-                                 GLib.Variant("b", state))
-
-    def _on_switch_compilations_in_album_view_state_set(self, widget, state):
-        """
-            Update show compilations in album view setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        App().settings.set_value("show-compilations-in-album-view",
-                                 GLib.Variant("b", state))
-
-    def _on_switch_artwork_state_set(self, widget, state):
-        """
-            Update artist artwork setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        App().settings.set_value("artist-artwork",
-                                 GLib.Variant("b", state))
-        if App().settings.get_value("show-sidebar"):
-            App().window.container.list_one.redraw()
-            App().window.container.list_two.redraw()
-        else:
-            from lollypop.view_artists_rounded import RoundedArtistsView
-            for child in App().window.container.stack.get_children():
-                if isinstance(child, RoundedArtistsView):
-                    child.destroy()
-                    break
-            App().window.container.reload_view()
-        if state:
-            App().art.cache_artists_info()
-
-    def _on_combo_order_by_changed(self, widget):
-        """
-            Update orderby setting
-            @param widget as Gtk.ComboBoxText
-        """
-        App().settings.set_enum("orderby", widget.get_active())
 
     def _on_entry_cs_changed(self, entry):
         """
@@ -592,17 +479,6 @@ class SettingsDialog:
         if directory is not None:
             chooser.set_dir(directory)
         self.__flowbox.add(chooser)
-
-    def __really_update_coversize(self, widget):
-        """
-            Update cover size
-            @param widget as Gtk.Range
-        """
-        self.__cover_tid = None
-        value = widget.get_value()
-        App().settings.set_value("cover-size", GLib.Variant("i", value))
-        App().art.update_art_size()
-        App().window.container.reload_view()
 
     def __edit_settings_close(self, widget):
         """
