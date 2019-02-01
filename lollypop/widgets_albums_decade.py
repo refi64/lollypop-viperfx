@@ -139,9 +139,9 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             Open decade
             @param button as Gtk.Button
         """
-        if App().player.is_locked:
-            return True
-        if App().settings.get_value("show-sidebar"):
+        show_sidebar = App().settings.get_value("show-sidebar")
+        show_genres = App().settings.get_value("show-genres")
+        if show_sidebar and show_genres:
             App().window.container.list_two.select_ids(self._data)
         else:
             App().window.container.show_view(Type.YEARS, self._data)

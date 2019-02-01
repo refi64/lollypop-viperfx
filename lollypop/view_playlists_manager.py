@@ -59,6 +59,14 @@ class PlaylistsManagerView(FlowBoxView):
             items = [i[0] for i in ShownPlaylists.get()] + items
         FlowBoxView.populate(self, items)
 
+    @property
+    def should_destroy(self):
+        """
+            True if view should be destroyed
+            @return bool
+        """
+        return App().settings.get_value("show-genres")
+
 #######################
 # PROTECTED           #
 #######################

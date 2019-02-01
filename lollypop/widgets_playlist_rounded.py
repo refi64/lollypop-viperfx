@@ -53,7 +53,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
             Populate widget content
         """
-
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
@@ -228,7 +227,9 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             Open playlist
             @param button as Gtk.Button
         """
-        if App().settings.get_value("show-sidebar"):
+        show_sidebar = App().settings.get_value("show-sidebar")
+        show_genres = App().settings.get_value("show-genres")
+        if show_sidebar and show_genres:
             App().window.container.list_two.select_ids([self._data])
         else:
             App().window.container.show_view(Type.PLAYLISTS, [self._data])

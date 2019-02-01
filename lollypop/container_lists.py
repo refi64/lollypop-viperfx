@@ -241,7 +241,8 @@ class ListsContainer:
         if not selected_ids:
             return
         # Update lists
-        if selected_ids[0] in [Type.PLAYLISTS, Type.YEARS]:
+        if selected_ids[0] in [Type.PLAYLISTS, Type.YEARS] and\
+                self._list_one.mask & SelectionListMask.GENRE:
             self.__update_list_playlists(False, selected_ids[0])
             self._list_two.show()
         elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
