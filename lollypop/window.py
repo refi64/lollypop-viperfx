@@ -176,8 +176,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             miniplayer.set_vexpand(revealed)
             if revealed:
                 self.__container.hide()
+                App().window.emit("show-can-go-back", False)
             else:
                 self.__container.show()
+                App().window.emit("show-can-go-back", True)
         if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
             self.__miniplayer = MiniPlayer(self.get_size()[0])
@@ -326,7 +328,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             self.__show_miniplayer(True)
         else:
             self.__show_miniplayer(False)
-        self.__container.stack.show()
+            self.__container.show()
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
