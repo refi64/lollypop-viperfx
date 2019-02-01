@@ -13,7 +13,6 @@
         <property name="halign">start</property>
         <child>
           <object class="GtkImage" id="artwork">
-            <property name="visible">True</property>
             <property name="can_focus">True</property>
             <style>
               <class name="toolbar-cover-frame"/>

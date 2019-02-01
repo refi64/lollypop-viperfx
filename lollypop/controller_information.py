@@ -126,11 +126,7 @@ class InformationController:
             Set album artwork
             @param surface as str
         """
-        if surface is None:
-            self._artwork.hide()
-        else:
-            self._artwork.show()
-            self._artwork.set_from_surface(surface)
+        self._artwork.set_from_surface(surface)
 
     def __on_radio_artwork(self, surface):
         """
