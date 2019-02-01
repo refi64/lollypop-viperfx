@@ -334,6 +334,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
+        def on_closed(self, widget):
+            self.get_style_context().remove_class("track-menu-selected")
+
         if self.__list_type & RowListType.DND:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
@@ -351,6 +354,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             from lollypop.pop_menu import AlbumMenu
             menu = AlbumMenu(self._album, True)
             popover = Gtk.Popover.new_from_model(button, menu)
+            popover.connect("closed", on_closed)
+            self.get_style_context().add_class("track-menu-selected")
             popover.popup()
         return True
 

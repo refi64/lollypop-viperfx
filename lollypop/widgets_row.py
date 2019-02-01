@@ -213,6 +213,9 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
+        def on_closed(self, widget):
+            self.get_style_context().remove_class("track-menu-selected")
+
         from lollypop.pop_menu import TrackMenuPopover, RemoveMenuPopover
         if self.get_state_flags() & Gtk.StateFlags.SELECTED:
             # Get all selected rows
@@ -342,13 +345,6 @@ class Row(Gtk.ListBoxRow):
         """
         self.__popup_menu(button)
         return True
-
-    def __on_closed(self, widget):
-        """
-            Remove selected style
-            @param widget as Popover
-        """
-        self.get_style_context().remove_class("track-menu-selected")
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
