@@ -37,12 +37,6 @@ class Row(Gtk.ListBoxRow):
         self.__context_timeout_id = None
         self.__context = None
         self._indicator = IndicatorWidget(self, list_type)
-        # We do not use set_indicator() here, we do not want widget to be
-        # populated
-        if App().player.current_track.id == self._track.id:
-            self._indicator.play()
-        elif self._track.loved:
-            self._indicator.loved(self._track.loved)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("destroy", self._on_destroy)
         self._row_widget.connect("button-release-event",
@@ -105,7 +99,14 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
-        self.__finish_setup()
+        # We do not use set_indicator() here, we do not want widget to be
+        # populated
+        if App().player.current_track.id == self._track.id:
+            self._indicator.play()
+        elif self._track.loved:
+            self._indicator.loved(self._track.loved)
+        elif App().librem:
+            self.__finish_setup()
 
     def set_indicator(self, playing, loved):
         """
@@ -194,7 +195,7 @@ class Row(Gtk.ListBoxRow):
             self.__menu_button.connect(
                 "button-release-event",
                 self.__on_menu_button_release_event)
-        self._indicator.button()
+            self._indicator.button()
 
     def __play_preview(self):
         """
