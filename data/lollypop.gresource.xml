@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/Lollypop">
-    <file compressed="true">application.css</file>
+     <file compressed="true">application.css</file>
+     <file compressed="true">application_phone.css</file>
      <file compressed="true" preprocess="xml-stripblanks">Appmenu.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ArtistInformation.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">ArtistView.ui</file>

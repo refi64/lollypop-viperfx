@@ -104,6 +104,8 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
+        if App().librem:
+            self.__finish_setup()
 
     def set_indicator(self, playing, loved):
         """
@@ -181,6 +183,19 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def __finish_setup(self):
+        """
+            Delayed setup for maximum performances on slow devices
+        """
+        if self.__menu_button.get_image() is None:
+            image = Gtk.Image.new_from_icon_name("go-previous-symbolic",
+                                                 Gtk.IconSize.MENU)
+            self.__menu_button.set_image(image)
+            self.__menu_button.connect(
+                "button-release-event",
+                self.__on_indicator_button_release_event)
+        self._indicator.button()
+
     def __play_preview(self):
         """
             Play track
@@ -247,14 +262,7 @@ class Row(Gtk.ListBoxRow):
         if App().settings.get_value("preview-output").get_string() != "":
             self.__preview_timeout_id = GLib.timeout_add(500,
                                                          self.__play_preview)
-        if self.__menu_button.get_image() is None:
-            image = Gtk.Image.new_from_icon_name("go-previous-symbolic",
-                                                 Gtk.IconSize.MENU)
-            self.__menu_button.set_image(image)
-            self.__menu_button.connect(
-                "button-release-event",
-                self.__on_indicator_button_release_event)
-        self._indicator.button()
+        self.__finish_setup()
 
     def __on_leave_notify_event(self, widget, event):
         """
