@@ -91,8 +91,10 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             if window is None:
                 return
             if mini:
+                self._artwork.hide()
                 window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
             else:
+                self._artwork.show()
                 window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
@@ -115,6 +117,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         if self.__mini:
             return
         try:
+            self._artwork.show()
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
