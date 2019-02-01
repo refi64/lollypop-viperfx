@@ -14,7 +14,6 @@ from gi.repository import Gtk, Pango, GLib, Gst, Gdk
 
 from lollypop.define import App, RowListType
 from lollypop.widgets_indicator import IndicatorWidget
-from lollypop.widgets_context import ContextWidget
 from lollypop.utils import seconds_to_string
 
 
@@ -89,14 +88,7 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class("dim-label")
         self.update_number_label()
-        if App().librem:
-            self.__menu_button = Gtk.Button.new_from_icon_name(
-                "view-more-symbolic", Gtk.IconSize.MENU)
-            self.__menu_button.connect(
-                "button-release-event",
-                self.__on_menu_button_release_event)
-        else:
-            self.__menu_button = Gtk.Button.new()
+        self.__menu_button = Gtk.Button.new()
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
@@ -111,6 +103,7 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
+        self.__finish_setup()
 
     def set_indicator(self, playing, loved):
         """
@@ -193,12 +186,12 @@ class Row(Gtk.ListBoxRow):
             Delayed setup for maximum performances on slow devices
         """
         if self.__menu_button.get_image() is None:
-            image = Gtk.Image.new_from_icon_name("go-previous-symbolic",
+            image = Gtk.Image.new_from_icon_name("view-more-symbolic",
                                                  Gtk.IconSize.MENU)
             self.__menu_button.set_image(image)
             self.__menu_button.connect(
                 "button-release-event",
-                self.__on_indicator_button_release_event)
+                self.__on_menu_button_release_event)
         self._indicator.button()
 
     def __play_preview(self):
@@ -240,8 +233,8 @@ class Row(Gtk.ListBoxRow):
             rect.x = xcoordinate
             rect.y = ycoordinate
             rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
         popover.set_relative_to(eventbox)
-        popover.set_pointing_to(rect)
         popover.connect("closed", self.__on_closed)
         self.get_style_context().add_class("track-menu-selected")
         popover.popup()
@@ -345,40 +338,7 @@ class Row(Gtk.ListBoxRow):
             @param button as Gtk.Button
             @param event as Gdk.EventButton
         """
-        self.__popup_menu(button, event.x, event.y)
-        return True
-
-    def __on_indicator_button_release_event(self, button, event):
-        """
-            Popup menu for track relative to button
-            @param button as Gtk.Button
-            @param event as Gdk.EventButton
-        """
-        def on_hide(widget):
-            self.__on_indicator_button_release_event(button, event)
-        self.__context_timeout_id = None
-        image = self.__menu_button.get_image()
-        if self.__context is None:
-            image.set_from_icon_name("go-next-symbolic",
-                                     Gtk.IconSize.MENU)
-            self.__context = ContextWidget(self._track, button)
-            self.__context.connect("hide", on_hide)
-            self.__context.set_property("halign", Gtk.Align.END)
-            self.__context.show()
-            self._duration_label.hide()
-            self._grid.insert_next_to(button, Gtk.PositionType.LEFT)
-            self._grid.attach_next_to(self.__context, button,
-                                      Gtk.PositionType.LEFT, 1, 1)
-            self.set_indicator(App().player.current_track.id == self._track.id,
-                               False)
-        else:
-            image.set_from_icon_name("go-previous-symbolic",
-                                     Gtk.IconSize.MENU)
-            self.__context.destroy()
-            self._duration_label.show()
-            self.__context = None
-            self.set_indicator(App().player.current_track.id == self._track.id,
-                               self._track.loved)
+        self.__popup_menu(button)
         return True
 
     def __on_closed(self, widget):
