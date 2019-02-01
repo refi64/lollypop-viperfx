@@ -18,7 +18,6 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
-from lollypop.widgets_context import ContextWidget
 from lollypop.define import Sizing
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, RowListType
@@ -58,7 +57,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         if self._widget is None:
             OverlayAlbumHelper.__init__(self)
-            self.__context = None
             grid = Gtk.Grid()
             grid.set_margin_start(5)
             grid.set_margin_end(5)
@@ -87,14 +85,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__duration_label = Gtk.Label()
             self.__duration_label.get_style_context().add_class("dim-label")
             self.__duration_label.show()
-            self.__context_button = Gtk.Button.new_from_icon_name(
-                "go-next-symbolic", Gtk.IconSize.BUTTON)
-            self.__context_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__context_button.connect("clicked", self.__on_context_clicked)
-            self.__context_button.get_style_context().add_class("menu-button")
-            self.__context_button.get_style_context().add_class(
+            self.__menu_button = Gtk.Button.new_from_icon_name(
+                "view-more-symbolic", Gtk.IconSize.MENU)
+            self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__menu_button.connect("clicked",
+                                       self.__on_menu_button_clicked)
+            self.__menu_button.get_style_context().add_class("menu-button")
+            self.__menu_button.get_style_context().add_class(
                                                           "album-menu-button")
-            self.__context_button.show()
+            self.__menu_button.show()
             self._widget = Gtk.Grid()
             self._widget.set_orientation(Gtk.Orientation.VERTICAL)
             self._widget.set_row_spacing(2)
@@ -103,7 +102,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__header.add(self.__artist_label)
             self.__header.add(self.__title_label)
             self.__header.add(self.__year_label)
-            self.__header.add(self.__context_button)
+            self.__header.add(self.__menu_button)
             self.__header.show()
             self._widget.add(self.__header)
             separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
@@ -319,6 +318,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         else:
             self.__duration_label.set_text(_("%s m") % mins)
 
+    def __on_menu_button_clicked(self, button):
+        """
+            Show album menu
+            @param button as Gtk.Button
+        """
+        from lollypop.pop_menu import AlbumMenu
+        menu = AlbumMenu(self._album, True)
+        popover = Gtk.Popover.new_from_model(button, menu)
+        popover.popup()
+
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -334,31 +343,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         else:
             return False
         return True
-
-    def __on_context_clicked(self, button):
-        """
-            Show context widget
-            @param button as Gtk.Button
-        """
-        def on_hide(widget):
-            button.emit("clicked")
-        image = button.get_image()
-        if self.__context is None:
-            image.set_from_icon_name("go-previous-symbolic",
-                                     Gtk.IconSize.MENU)
-            self.__context = ContextWidget(self._album, button)
-            self.__context.connect("hide", on_hide)
-            self.__context.set_property("halign", Gtk.Align.START)
-            self.__context.set_property("valign", Gtk.Align.CENTER)
-            self.__context.show()
-            self.__header.insert_next_to(button, Gtk.PositionType.RIGHT)
-            self.__header.attach_next_to(self.__context, button,
-                                         Gtk.PositionType.RIGHT, 1, 1)
-        else:
-            image.set_from_icon_name("go-next-symbolic",
-                                     Gtk.IconSize.MENU)
-            self.__context.destroy()
-            self.__context = None
 
     def __on_size_allocate(self, widget, allocation):
         """
