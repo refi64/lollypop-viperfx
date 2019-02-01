@@ -89,7 +89,14 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class("dim-label")
         self.update_number_label()
-        self.__menu_button = Gtk.Button.new()
+        if App().librem:
+            self.__menu_button = Gtk.Button.new_from_icon_name(
+                "view-more-symbolic", Gtk.IconSize.MENU)
+            self.__menu_button.connect(
+                "button-release-event",
+                self.__on_menu_button_release_event)
+        else:
+            self.__menu_button = Gtk.Button.new()
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
@@ -104,8 +111,6 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
-        if App().librem:
-            self.__finish_setup()
 
     def set_indicator(self, playing, loved):
         """
@@ -332,6 +337,15 @@ class Row(Gtk.ListBoxRow):
             App().player.load(self._track)
         else:
             self.activate()
+        return True
+
+    def __on_menu_button_release_event(self, button, event):
+        """
+            Show row menu
+            @param button as Gtk.Button
+            @param event as Gdk.EventButton
+        """
+        self.__popup_menu(button, event.x, event.y)
         return True
 
     def __on_indicator_button_release_event(self, button, event):

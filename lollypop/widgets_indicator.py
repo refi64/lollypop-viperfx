@@ -40,6 +40,8 @@ class IndicatorWidget(Gtk.EventBox):
         self.connect("destroy", self.__on_destroy)
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
+        if App().librem:
+            self.__init()
 
     def button(self):
         """
@@ -47,7 +49,9 @@ class IndicatorWidget(Gtk.EventBox):
         """
         self.__init()
         self.__stack.set_visible_child_name("button")
-        if self.__list_type & RowListType.PLAYLISTS:
+        if not self.__button.get_sensitive():
+            pass
+        elif self.__list_type & RowListType.PLAYLISTS:
             self.__button.set_tooltip_text(_("Remove from playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
@@ -133,7 +137,7 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
         self.__button.get_style_context().add_class("menu-button")
         self.__button.get_style_context().add_class("track-menu-button")
-        if self.__list_type & RowListType.READ_ONLY:
+        if self.__list_type & RowListType.READ_ONLY or App().librem:
             self.__button.set_sensitive(False)
             self.__button.set_opacity(0)
         self.__button.connect("button-release-event",

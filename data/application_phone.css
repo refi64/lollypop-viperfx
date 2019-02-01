@@ -1,8 +1,12 @@
 .menu-button {
-    padding: 5px;
+    padding: 10px;
 }
 
 .trackrow .menu-button {
+  	color: inherit;
+}
+
+.trackrowplaying .menu-button {
   	color: inherit;
 }
 
@@ -14,4 +18,8 @@
 
 .dim-button {
     padding: 5px;
+}
+
+modelbutton {
+    padding: 10px;
 }
