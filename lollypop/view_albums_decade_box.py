@@ -22,10 +22,12 @@ class AlbumsDecadeBoxView(FlowBoxView):
         Show decades in a FlowBox
     """
 
-    def __init__(self):
+    def __init__(self, art_size):
         """
             Init decade view
+            @param art_size as int
         """
+        self._art_size = art_size
         FlowBoxView.__init__(self)
         self._widget_class = AlbumsDecadeWidget
 
@@ -38,7 +40,7 @@ class AlbumsDecadeBoxView(FlowBoxView):
             Start lazy loading
             @param item ids as [int]
         """
-        widget = FlowBoxView._add_items(self, item_ids)
+        widget = FlowBoxView._add_items(self, item_ids, self._art_size)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 

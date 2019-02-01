@@ -26,12 +26,14 @@ class PlaylistsManagerView(FlowBoxView):
         Show playlists in a FlowBox
     """
 
-    def __init__(self, obj=None):
+    def __init__(self, obj, art_size):
         """
             Init decade view
             @param obj as Track/Album
+            @param art_size as int
         """
         self.__obj = obj
+        self._art_size = art_size
         self.__signal_id = None
         new_playlist_button = Gtk.Button(_("New playlist"))
         new_playlist_button.connect("clicked", self.__on_new_button_clicked)
@@ -76,7 +78,9 @@ class PlaylistsManagerView(FlowBoxView):
             Start lazy loading
             @param playlist ids as [int]
         """
-        widget = FlowBoxView._add_items(self, playlist_ids, self.__obj)
+        widget = FlowBoxView._add_items(self, playlist_ids,
+                                        self.__obj,
+                                        self._art_size)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 

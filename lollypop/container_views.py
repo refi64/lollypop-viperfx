@@ -13,7 +13,7 @@
 from lollypop.shown import ShownLists
 from lollypop.loader import Loader
 from lollypop.objects import Track, Album
-from lollypop.define import App, Type, RowListType, SelectionListMask
+from lollypop.define import App, Type, RowListType, SelectionListMask, ArtSize
 
 
 class ViewsContainer:
@@ -156,13 +156,15 @@ class ViewsContainer:
             view.show()
             loader = Loader(target=load, view=view)
             loader.start()
-        elif not App().window.is_adaptive:
+        else:
             from lollypop.view_playlists_manager import PlaylistsManagerView
-            view = PlaylistsManagerView()
+            if App().window.is_adaptive:
+                art_size = ArtSize.BIG
+            else:
+                art_size = ArtSize.ROUNDED
+            view = PlaylistsManagerView(None, art_size)
             view.populate(App().playlists.get_ids())
             view.show()
-        else:
-            view = None
         return view
 
     def _get_view_artists_rounded(self, static):
@@ -248,14 +250,15 @@ class ViewsContainer:
             if decade:
                 decades.append(decade)
             return decades
+        from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
         if App().window.is_adaptive:
-            view = None
+            art_size = ArtSize.BIG
         else:
-            from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
-            view = AlbumsDecadeBoxView()
-            view.show()
-            loader = Loader(target=load, view=view)
-            loader.start()
+            art_size = ArtSize.ROUNDED
+        view = AlbumsDecadeBoxView(art_size)
+        view.show()
+        loader = Loader(target=load, view=view)
+        loader.start()
         return view
 
     def _get_view_albums_years(self, years):

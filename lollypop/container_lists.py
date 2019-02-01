@@ -253,8 +253,7 @@ class ListsContainer:
             self._list_two.hide()
         # Update view
         if selected_ids[0] == Type.PLAYLISTS:
-            if not self._list_two.selected_ids:
-                view = self._get_view_playlists()
+            view = self._get_view_playlists()
         elif selected_ids[0] == Type.CURRENT:
             view = self._get_view_current()
         elif selected_ids[0] == Type.SEARCH:
@@ -291,9 +290,7 @@ class ListsContainer:
                 and (
                     selected_ids[0] >= 0 or
                     Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES or
-                    selected_ids[0] in [Type.PLAYLISTS,
-                                        Type.YEARS,
-                                        Type.ALL]):
+                    selected_ids[0] == Type.ALL):
             self._stack.set_visible_child(self._list_two)
         elif view is not None:
             self._stack.set_visible_child(view)

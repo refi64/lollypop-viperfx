@@ -26,14 +26,16 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
     """
     _pixel_size = ArtSize.ROUNDED / 10
 
-    def __init__(self, item_ids):
+    def __init__(self, item_ids, art_size):
         """
             Init widget
             @param decade as [int]
+            @param art_size as int
         """
         OverlayHelper.__init__(self)
         decade_str = "%s - %s" % (item_ids[0], item_ids[-1])
-        RoundedAlbumsWidget.__init__(self, item_ids, decade_str, decade_str)
+        RoundedAlbumsWidget.__init__(self, item_ids, decade_str,
+                                     decade_str, art_size)
 
     def populate(self):
         """

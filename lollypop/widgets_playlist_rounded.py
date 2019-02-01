@@ -27,7 +27,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
     """
     _pixel_size = ArtSize.ROUNDED / 10
 
-    def __init__(self, playlist_id, obj):
+    def __init__(self, playlist_id, obj, art_size):
         """
             Init widget
             @param playlist_id as playlist_id
@@ -35,7 +35,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
         OverlayHelper.__init__(self)
         name = sortname = App().playlists.get_name(playlist_id)
-        RoundedAlbumsWidget.__init__(self, playlist_id, name, sortname)
+        RoundedAlbumsWidget.__init__(self, playlist_id, name,
+                                     sortname, art_size)
         self.__track_ids = []
         self.__obj = obj
         if obj is not None:
