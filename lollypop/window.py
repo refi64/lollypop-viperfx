@@ -318,6 +318,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param width as int
             @param height as int
         """
+        if height < Sizing.MEDIUM and self.__miniplayer is not None:
+            self.__miniplayer.reveal()
         if width < Sizing.MONSTER:
             self.__show_miniplayer(True)
             self.__container.stack.show()

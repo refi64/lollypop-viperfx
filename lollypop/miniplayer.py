@@ -105,6 +105,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__back_button = builder.get_object("back_button")
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
+        self.__reveal_button = builder.get_object("reveal_button")
 
         self.__grid = builder.get_object("grid")
         self._title_label = builder.get_object("title")
@@ -123,6 +124,13 @@ class MiniPlayer(Gtk.Bin, InformationController,
             ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
         self.connect("destroy", self.__on_destroy)
+
+    def reveal(self):
+        """
+            Reveal cover
+        """
+        if not self.__revealer.get_reveal_child():
+            self._on_reveal_button_clicked(self.__reveal_button)
 
     def update_labels(self, *ignore):
         """
