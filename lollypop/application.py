@@ -121,8 +121,6 @@ class Application(Gtk.Application):
                              GLib.OptionArg.STRING, "Play ids", None)
         self.add_main_option("debug", b"d", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Debug Lollypop", None)
-        self.add_main_option("librem", b"l", GLib.OptionFlags.NONE,
-                             GLib.OptionArg.NONE, "Librem interface", None)
         self.add_main_option("set-rating", b"r", GLib.OptionFlags.NONE,
                              GLib.OptionArg.STRING, "Rate the current track",
                              None)
@@ -181,6 +179,17 @@ class Application(Gtk.Application):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        librem = GLib.environ_getenv(GLib.get_environ(), "LIBREM")
+        if librem is not None:
+            self.librem = True
+            cssProviderFile = Gio.File.new_for_uri(
+                "resource:///org/gnome/Lollypop/application_phone.css")
+            cssProvider = Gtk.CssProvider()
+            cssProvider.load_from_file(cssProviderFile)
+            screen = Gdk.Screen.get_default()
+            styleContext = Gtk.StyleContext()
+            styleContext.add_provider_for_screen(
+                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
         self.db = Database()
         self.playlists = Playlists()
         self.albums = AlbumsDatabase()
@@ -392,16 +401,6 @@ class Application(Gtk.Application):
         options = app_cmd_line.get_options_dict()
         if options.contains("debug"):
             self.debug = True
-        if options.contains("librem"):
-            self.librem = True
-            cssProviderFile = Gio.File.new_for_uri(
-                "resource:///org/gnome/Lollypop/application_phone.css")
-            cssProvider = Gtk.CssProvider()
-            cssProvider.load_from_file(cssProviderFile)
-            screen = Gdk.Screen.get_default()
-            styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_screen(
-                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
         if options.contains("set-rating"):
             value = options.lookup_value("set-rating").get_string()
             try:
