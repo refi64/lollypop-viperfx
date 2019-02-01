@@ -132,15 +132,19 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.__action_button = Gtk.Button.new_from_icon_name(
                 action_icon,
                 Gtk.IconSize.MENU)
-            self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__action_button.get_style_context().add_class(
-                "album-menu-button")
-            self.__action_button.get_style_context().add_class(
-                "track-menu-button")
             self.__action_button.set_tooltip_text(action_tooltip_text)
-            self.__action_button.set_property("valign", Gtk.Align.CENTER)
-            self.__action_button.connect("button-release-event",
-                                         self.__on_action_button_release_event)
+        else:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "view-more-symbolic",
+                Gtk.IconSize.MENU)
+        self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
+        self.__action_button.get_style_context().add_class(
+            "album-menu-button")
+        self.__action_button.get_style_context().add_class(
+            "track-menu-button")
+        self.__action_button.set_property("valign", Gtk.Align.CENTER)
+        self.__action_button.connect("button-release-event",
+                                     self.__on_action_button_release_event)
         self.__artists_button = None
         if self.__list_type & RowListType.SEARCH:
             self.__artists_button = Gtk.Button.new_from_icon_name(
@@ -351,7 +355,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             album = self._album.clone(True)
             App().player.add_album(album)
             App().player.load(album.tracks[0])
-        else:
+        elif self.__list_type & RowListType.DND:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(App().player.albums) > 1:
@@ -364,6 +368,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             else:
                 App().player.remove_album(self._album)
             self.destroy()
+        else:
+            from lollypop.pop_menu import AlbumMenu
+            menu = AlbumMenu(self._album, True)
+            popover = Gtk.Popover.new_from_model(button, menu)
+            popover.popup()
         return True
 
     def __on_artists_button_release_event(self, button, event):
