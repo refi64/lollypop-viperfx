@@ -240,7 +240,7 @@ class Row(Gtk.ListBoxRow):
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
         popover.set_relative_to(eventbox)
-        popover.connect("closed", self.__on_closed)
+        popover.connect("closed", on_closed)
         self.get_style_context().add_class("track-menu-selected")
         popover.popup()
 
