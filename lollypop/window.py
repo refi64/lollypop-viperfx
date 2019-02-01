@@ -172,9 +172,16 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             Show/hide subtoolbar
             @param show as bool
         """
+        def on_revealed(miniplayer, revealed):
+            miniplayer.set_vexpand(revealed)
+            if revealed:
+                self.__container.hide()
+            else:
+                self.__container.show()
         if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
             self.__miniplayer = MiniPlayer(self.get_size()[0])
+            self.__miniplayer.connect("revealed", on_revealed)
             self.__miniplayer.set_vexpand(False)
             self.__vgrid.add(self.__miniplayer)
             self.__toolbar.set_mini(True)
@@ -378,7 +385,10 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.__handle_miniplayer(width, height)
         self.__toolbar.set_content_width(width)
         if self.__miniplayer is not None:
-            self.__miniplayer.update_cover(width)
+            if height > width:
+                self.__miniplayer.update_cover(height)
+            else:
+                self.__miniplayer.update_cover(width)
         if self.__timeout_configure:
             GLib.source_remove(self.__timeout_configure)
             self.__timeout_configure = None

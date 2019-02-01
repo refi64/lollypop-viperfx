@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
@@ -69,6 +69,9 @@ class MiniPlayer(Gtk.Bin, InformationController,
     """
         Mini player shown in adaptive mode
     """
+    __gsignals__ = {
+        "revealed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
+    }
 
     def __init__(self, width):
         """
@@ -132,6 +135,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
             Update cover for width
             @param width as int
         """
+        if self.__width == width:
+            return
         self.__width = width
         InformationController.on_current_changed(self, width, None)
 
@@ -161,6 +166,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
             button.get_image().set_from_icon_name("pan-up-symbolic",
                                                   Gtk.IconSize.BUTTON)
             self.__revealer.set_reveal_child(False)
+            self.emit("revealed", False)
             if self.__cover_widget is not None:
                 self.__cover_widget.destroy()
                 self.__cover_widget = None
@@ -173,6 +179,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                 self.__revealer_box.pack_start(self.__cover_widget,
                                                True, True, 0)
             self.__revealer.set_reveal_child(True)
+            self.emit("revealed", True)
 
 #######################
 # PRIVATE             #
