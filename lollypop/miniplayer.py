@@ -132,6 +132,16 @@ class MiniPlayer(Gtk.Bin, InformationController,
         if not self.__revealer.get_reveal_child():
             self._on_reveal_button_clicked(self.__reveal_button)
 
+    def show_reveal_button(self, show):
+        """
+            Show/hide reveal button
+            @param show as bool
+        """
+        if show:
+            self.__reveal_button.show()
+        else:
+            self.__reveal_button.hide()
+
     def update_labels(self, *ignore):
         """
             No labels here

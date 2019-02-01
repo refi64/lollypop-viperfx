@@ -320,10 +320,12 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param width as int
             @param height as int
         """
-        if height < Sizing.MEDIUM and\
-                self.__miniplayer is not None and\
-                App().player.current_track.id is not None:
-            self.__miniplayer.reveal()
+        if self.__miniplayer is not None:
+            if height < Sizing.SMALL and\
+                    App().player.current_track.id is not None:
+                self.__miniplayer.reveal()
+            self.__miniplayer.show_reveal_button(height >= Sizing.SMALL)
+
         if width < Sizing.MONSTER:
             self.__show_miniplayer(True)
         else:
