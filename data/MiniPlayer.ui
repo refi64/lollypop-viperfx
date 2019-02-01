@@ -2,6 +2,11 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">pan-up-symbolic</property>
+  </object>
   <object class="GtkImage" id="next_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -54,65 +59,15 @@
             <property name="row_spacing">5</property>
             <property name="column_spacing">5</property>
             <child>
-              <object class="GtkLabel" id="playback">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="margin_left">10</property>
-                <property name="margin_start">10</property>
-                <property name="justify">right</property>
-                <property name="width_chars">5</property>
-                <attributes>
-                  <attribute name="foreground" value="#ffffffffffff"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="duration">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="margin_right">10</property>
-                <property name="margin_end">10</property>
-                <property name="width_chars">5</property>
-                <attributes>
-                  <attribute name="foreground" value="#ffffffffffff"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="progress_scale">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="vexpand">True</property>
-                <property name="draw_value">False</property>
-                <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
-                <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
-                <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
-                <style>
-                  <class name="mini-scale"/>
-                </style>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkBox" id="buttons">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="margin_right">10</property>
+                <property name="halign">end</property>
+                <property name="margin_left">5</property>
+                <property name="margin_right">5</property>
                 <property name="margin_end">10</property>
+                <property name="margin_top">5</property>
+                <property name="margin_bottom">5</property>
                 <property name="vexpand">True</property>
                 <child>
                   <object class="GtkButton" id="previous_button">
@@ -188,9 +143,108 @@
                 </style>
               </object>
               <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRevealer" id="revealer">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="transition_type">slide-up</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="spacing">5</property>
+                    <child>
+                      <object class="GtkLabel" id="playback">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_left">10</property>
+                        <property name="margin_start">10</property>
+                        <property name="justify">right</property>
+                        <property name="width_chars">5</property>
+                        <attributes>
+                          <attribute name="foreground" value="#ffffffffffff"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScale" id="progress_scale">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="draw_value">False</property>
+                        <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
+                        <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
+                        <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
+                        <style>
+                          <class name="mini-scale"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="duration">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_right">10</property>
+                        <property name="margin_end">10</property>
+                        <property name="width_chars">5</property>
+                        <attributes>
+                          <attribute name="foreground" value="#ffffffffffff"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="reveal_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">start</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">5</property>
+                <property name="margin_top">5</property>
+                <property name="margin_bottom">5</property>
+                <property name="image">image1</property>
+                <signal name="clicked" handler="_on_reveal_button_clicked" swapped="no"/>
+                <style>
+                  <class name="miniplayer-buttons"/>
+                </style>
+              </object>
+              <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="width">3</property>
               </packing>
             </child>
             <style>

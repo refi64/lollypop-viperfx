@@ -10,16 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
-from gettext import gettext as _
-
-from lollypop.logger import Logger
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
-from lollypop.define import App, Sizing, Type
+from lollypop.define import App
 
 
 class MiniPlayer(Gtk.Bin, InformationController,
@@ -44,6 +41,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         builder.connect_signals(self)
 
         self.__grid = builder.get_object("grid")
+        self.__revealer = builder.get_object("revealer")
 
         self._progress = builder.get_object("progress_scale")
         self._progress.set_sensitive(False)
@@ -114,38 +112,19 @@ class MiniPlayer(Gtk.Bin, InformationController,
 #######################
 # PROTECTED           #
 #######################
-    def _on_button_release_event(self, button, event):
+    def _on_reveal_button_clicked(self, button):
         """
-            Show track menu
+            Set revealer on/off
             @param button as Gtk.Button
-            @param event as Gdk.Event
         """
-        height = App().window.get_size()[1]
-        if App().player.current_track.id is not None and\
-                height > Sizing.MEDIUM:
-            if App().player.current_track.id == Type.RADIOS:
-                pass
-            elif App().player.current_track.id is not None:
-                if event.button == 1:
-                    App().window.container.show_view(Type.INFO)
-                elif App().player.current_track.id >= 0:
-                    from lollypop.pop_menu import TrackMenuPopover, ToolbarMenu
-                    popover = TrackMenuPopover(
-                        App().player.current_track,
-                        ToolbarMenu(App().player.current_track))
-                    popover.set_relative_to(self)
-                    popover.popup()
-        return True
-
-    def _on_labels_realize(self, eventbox):
-        """
-            Set mouse cursor
-            @param eventbox as Gtk.EventBox
-        """
-        try:
-            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-        except:
-            Logger.warning(_("You are using a broken cursor theme!"))
+        if self.__revealer.get_reveal_child():
+            button.get_image().set_from_icon_name("pan-up-symbolic",
+                                                  Gtk.IconSize.BUTTON)
+            self.__revealer.set_reveal_child(False)
+        else:
+            button.get_image().set_from_icon_name("pan-down-symbolic",
+                                                  Gtk.IconSize.BUTTON)
+            self.__revealer.set_reveal_child(True)
 
 #######################
 # PRIVATE             #
