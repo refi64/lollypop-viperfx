@@ -324,10 +324,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             self.__miniplayer.reveal()
         if width < Sizing.MONSTER:
             self.__show_miniplayer(True)
-            self.__container.stack.show()
         else:
             self.__show_miniplayer(False)
-            self.__container.stack.show()
+        self.__container.stack.show()
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
