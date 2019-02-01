@@ -71,7 +71,7 @@
                 <property name="vexpand">True</property>
                 <child>
                   <object class="GtkButton" id="previous_button">
-                    <property name="width_request">100</property>
+                    <property name="width_request">80</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -94,7 +94,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="play_button">
-                    <property name="width_request">150</property>
+                    <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -117,7 +117,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="next_button">
-                    <property name="width_request">100</property>
+                    <property name="width_request">80</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
