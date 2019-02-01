@@ -206,6 +206,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
+            self.__action_button.show()
             self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
                 self.set_state_flags(Gtk.StateFlags.VISITED, True)
@@ -216,6 +217,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.__revealer.add(self._responsive_widget)
             self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
+            self.__action_button.hide()
             self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_playing_indicator(self):
