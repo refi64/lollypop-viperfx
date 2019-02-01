@@ -16,22 +16,68 @@ from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
-from lollypop.define import App
+from lollypop.define import App, ArtSize
+
+
+class CoverWidget(Gtk.Bin, InformationController):
+    """
+        Widget showing current album cover
+    """
+
+    def __init__(self):
+        """
+            Init cover widget
+        """
+        Gtk.Bin.__init__(self)
+        InformationController.__init__(self, False, ArtHelperEffect.NONE)
+        builder = Gtk.Builder()
+        builder.add_from_resource("/org/gnome/Lollypop/CoverWidget.ui")
+        builder.connect_signals(self)
+        self._artwork = builder.get_object("cover")
+        self.add(builder.get_object("widget"))
+        self.__signal_id1 = App().player.connect("current-changed",
+                                                 self.__on_current_changed)
+        self.__on_current_changed(App().player)
+        self.connect("destroy", self.__on_destroy)
+
+    def update_labels(self, *ignore):
+        """
+            No labels here
+        """
+        pass
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_destroy(self, widget):
+        """
+            Remove signal
+            @param widget as Gtk.Widget
+        """
+        App().player.disconnect(self.__signal_id1)
+
+    def __on_current_changed(self, player):
+        """
+            Update controllers
+            @param player as Player
+        """
+        InformationController.on_current_changed(self, ArtSize.BIG, None)
 
 
 class MiniPlayer(Gtk.Bin, InformationController,
                  ProgressController, PlaybackController):
     """
-        Toolbar end
+        Mini player shown in adaptive mode
     """
 
     def __init__(self, width):
         """
-            Init toolbar
+            Init mini player
             @param width as int
         """
         self.__width = width
         self.__height = 0
+        self.__cover_widget = None
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, False, ArtHelperEffect.BLUR)
         ProgressController.__init__(self)
@@ -42,6 +88,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
 
         self.__grid = builder.get_object("grid")
         self.__revealer = builder.get_object("revealer")
+        self.__revealer_box = builder.get_object("revealer_box")
 
         self._progress = builder.get_object("progress_scale")
         self._progress.set_sensitive(False)
@@ -68,9 +115,11 @@ class MiniPlayer(Gtk.Bin, InformationController,
                                                  self.__on_lock_changed)
         self.__on_current_changed(App().player)
         if App().player.current_track.id is not None:
+            PlaybackController.on_status_changed(self, App().player)
             self.update_position()
             ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
+        self.connect("destroy", self.__on_destroy)
 
     def update_labels(self, *ignore):
         """
@@ -100,15 +149,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         return self.__grid.get_preferred_height()
 
-    def do_destroy(self):
-        """
-            Remove signal
-        """
-        ProgressController.do_destroy(self)
-        App().player.disconnect(self.__signal_id1)
-        App().player.disconnect(self.__signal_id2)
-        App().player.disconnect(self.__signal_id3)
-
 #######################
 # PROTECTED           #
 #######################
@@ -121,14 +161,32 @@ class MiniPlayer(Gtk.Bin, InformationController,
             button.get_image().set_from_icon_name("pan-up-symbolic",
                                                   Gtk.IconSize.BUTTON)
             self.__revealer.set_reveal_child(False)
+            if self.__cover_widget is not None:
+                self.__cover_widget.destroy()
+                self.__cover_widget = None
         else:
             button.get_image().set_from_icon_name("pan-down-symbolic",
                                                   Gtk.IconSize.BUTTON)
+            if self.__cover_widget is None:
+                self.__cover_widget = CoverWidget()
+                self.__cover_widget.show()
+                self.__revealer_box.pack_start(self.__cover_widget,
+                                               True, True, 0)
             self.__revealer.set_reveal_child(True)
 
 #######################
 # PRIVATE             #
 #######################
+    def __on_destroy(self, widget):
+        """
+            Handle widget cleanup
+            @param widget as Gtk.Widget
+        """
+        ProgressController.do_destroy(self)
+        App().player.disconnect(self.__signal_id1)
+        App().player.disconnect(self.__signal_id2)
+        App().player.disconnect(self.__signal_id3)
+
     def __on_current_changed(self, player):
         """
             Update controllers

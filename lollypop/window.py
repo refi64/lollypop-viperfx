@@ -175,6 +175,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
             self.__miniplayer = MiniPlayer(self.get_size()[0])
+            self.__miniplayer.set_vexpand(False)
             self.__vgrid.add(self.__miniplayer)
             self.__toolbar.set_mini(True)
         elif not show and self.__miniplayer is not None:
@@ -316,14 +317,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         else:
             self.__show_miniplayer(False)
             self.__container.stack.show()
-        if self.__miniplayer is not None and\
-                self.__miniplayer.is_visible() and\
-                height < Sizing.MINI:
-            self.__container.stack.hide()
-            self.__miniplayer.set_vexpand(True)
-        elif self.__miniplayer is not None:
-            self.__container.stack.show()
-            self.__miniplayer.set_vexpand(False)
 
     def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
@@ -384,6 +377,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         (width, height) = window.get_size()
         self.__handle_miniplayer(width, height)
         self.__toolbar.set_content_width(width)
+        if self.__miniplayer is not None:
+            self.__miniplayer.update_cover(width)
         if self.__timeout_configure:
             GLib.source_remove(self.__timeout_configure)
             self.__timeout_configure = None
@@ -400,8 +395,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
         self.__timeout_configure = None
         (width, height) = widget.get_size()
-        if self.__miniplayer is not None:
-            self.__miniplayer.update_cover(width)
         # Keep a minimal height
         if height < Sizing.MEDIUM:
             height = Sizing.MEDIUM
