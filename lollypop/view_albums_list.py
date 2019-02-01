@@ -334,7 +334,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        def on_closed(self, widget):
+        def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
 
         if self.__list_type & RowListType.DND:

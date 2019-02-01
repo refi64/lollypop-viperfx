@@ -213,7 +213,7 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        def on_closed(self, widget):
+        def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
 
         from lollypop.pop_menu import TrackMenuPopover, RemoveMenuPopover
