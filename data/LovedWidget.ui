@@ -18,6 +18,9 @@
           <object class="GtkImage" id="artwork">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <style>
+              <class name="touch-widget"/>
+            </style>
           </object>
         </child>
       </object>
