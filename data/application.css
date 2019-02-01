@@ -122,8 +122,12 @@ popover.background separator {
     background: transparent;
     background-image: none;
     border: none;
-    color: white;
+    color: alpha(white, 0.6);
     box-shadow: none;
+}
+
+.miniplayer-buttons:hover {
+    color: white;
 }
 
 .lyrics {
