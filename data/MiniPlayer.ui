@@ -7,6 +7,11 @@
     <property name="can_focus">False</property>
     <property name="icon_name">pan-up-symbolic</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">audio-input-microphone-symbolic</property>
+  </object>
   <object class="GtkImage" id="next_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -164,7 +169,7 @@
                         <property name="margin_right">5</property>
                         <property name="margin_top">10</property>
                         <property name="margin_bottom">10</property>
-                        <property name="spacing">5</property>
+                        <property name="spacing">10</property>
                         <child>
                           <object class="GtkLabel" id="playback">
                             <property name="visible">True</property>
@@ -221,6 +226,24 @@
                             <property name="position">2</property>
                           </packing>
                         </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">center</property>
+                            <property name="image">image2</property>
+                            <signal name="clicked" handler="_on_lyrics_button_clicked" swapped="no"/>
+                            <style>
+                              <class name="miniplayer-buttons"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -228,12 +251,6 @@
                         <property name="pack_type">end</property>
                         <property name="position">0</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                   </object>
                 </child>

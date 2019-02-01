@@ -165,6 +165,14 @@ class MiniPlayer(Gtk.Bin, InformationController,
 #######################
 # PROTECTED           #
 #######################
+    def _on_lyrics_button_clicked(self, button):
+        """
+            Show lyrics view
+            @param button as Gtk.Button
+        """
+        self._on_reveal_button_clicked(self.__reveal_button)
+        App().window.container.show_lyrics()
+
     def _on_reveal_button_clicked(self, button):
         """
             Set revealer on/off
