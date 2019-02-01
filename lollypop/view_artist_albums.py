@@ -23,18 +23,18 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         Show artist albums and tracks
     """
 
-    def __init__(self, artist_ids, genre_ids, show_covers):
+    def __init__(self, artist_ids, genre_ids, list_type):
         """
             Init ArtistAlbumsView
             @param artist ids as [int]
             @param genre ids as [int]
-            @param show_covers as bool
+            @param list_type as RowListType
         """
         LazyLoadingView.__init__(self, True)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
-        self.__show_covers = show_covers
+        self.__list_type = list_type
         self._album_box = Gtk.Grid()
         self._album_box.set_row_spacing(5)
         self._album_box.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -146,7 +146,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             widget = AlbumDetailedWidget(album,
                                          self._genre_ids,
                                          self._artist_ids,
-                                         self.__show_covers)
+                                         self.__list_type)
             widget.set_opacity(0)
             widget.show()
             self._lazy_queue.append(widget)

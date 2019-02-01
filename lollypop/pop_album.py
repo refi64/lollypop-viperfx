@@ -11,7 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.view_artist_albums import ArtistAlbumsView
-from lollypop.define import App
+from lollypop.define import App, RowListType
 from lollypop.widgets_utils import Popover
 
 
@@ -31,7 +31,8 @@ class AlbumPopover(Popover):
         Popover.__init__(self)
         self.__width = width
         self.get_style_context().add_class("box-shadow")
-        view = ArtistAlbumsView(album.artist_ids, album.genre_ids, False)
+        view = ArtistAlbumsView(album.artist_ids, album.genre_ids,
+                                RowListType.TWO_COLUMNS | RowListType.POPOVER)
         view.populate([album])
         window_width = App().window.get_allocated_width()
         window_height = App().window.get_allocated_height()

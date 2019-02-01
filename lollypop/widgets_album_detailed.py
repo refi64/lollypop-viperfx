@@ -34,21 +34,21 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album, genre_ids, artist_ids, show_cover):
+    def __init__(self, album, genre_ids, artist_ids, list_type):
         """
             Init detailed album widget
             @param album as Album
             @param label_height as int
             @param genre ids as [int]
             @param artist ids as [int]
-            @param show_cover as bool
+            @param list_type as RowListType
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
-        TracksView.__init__(self, RowListType.TWO_COLUMNS)
+        TracksView.__init__(self, list_type)
         self._widget = None
-        self.__show_cover = show_cover
         self.__width_allocation = 0
+        self._list_type = list_type
         self.connect("size-allocate", self.__on_size_allocate)
 
     def populate(self):
@@ -85,25 +85,26 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__duration_label = Gtk.Label()
             self.__duration_label.get_style_context().add_class("dim-label")
             self.__duration_label.show()
-            self.__menu_button = Gtk.Button.new_from_icon_name(
-                "view-more-symbolic", Gtk.IconSize.MENU)
-            self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__menu_button.connect("clicked",
-                                       self.__on_menu_button_clicked)
-            self.__menu_button.get_style_context().add_class("menu-button")
-            self.__menu_button.get_style_context().add_class(
+            self.__header = Gtk.Grid()
+            self.__header.show()
+            self.__header.add(self.__artist_label)
+            self.__header.add(self.__title_label)
+            self.__header.add(self.__year_label)
+            if not self._list_type & RowListType.POPOVER:
+                self.__menu_button = Gtk.Button.new_from_icon_name(
+                    "view-more-symbolic", Gtk.IconSize.MENU)
+                self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
+                self.__menu_button.connect("clicked",
+                                           self.__on_menu_button_clicked)
+                self.__menu_button.get_style_context().add_class("menu-button")
+                self.__menu_button.get_style_context().add_class(
                                                           "album-menu-button")
-            self.__menu_button.show()
+                self.__menu_button.show()
+                self.__header.add(self.__menu_button)
             self._widget = Gtk.Grid()
             self._widget.set_orientation(Gtk.Orientation.VERTICAL)
             self._widget.set_row_spacing(2)
             self._widget.show()
-            self.__header = Gtk.Grid()
-            self.__header.add(self.__artist_label)
-            self.__header.add(self.__title_label)
-            self.__header.add(self.__year_label)
-            self.__header.add(self.__menu_button)
-            self.__header.show()
             self._widget.add(self.__header)
             separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
             separator.show()
@@ -120,7 +121,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             rating.set_margin_end(10)
             rating.show()
 
-            if self.__show_cover:
+            if not self._list_type & RowListType.POPOVER:
                 self.__header.add(self.__duration_label)
                 self.__duration_label.set_hexpand(True)
                 self.__duration_label.set_property("halign", Gtk.Align.END)
