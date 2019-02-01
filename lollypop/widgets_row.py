@@ -92,7 +92,9 @@ class Row(Gtk.ListBoxRow):
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
-        if list_type & (RowListType.READ_ONLY | RowListType.POPOVER):
+        if list_type & (RowListType.READ_ONLY |
+                        RowListType.POPOVER |
+                        RowListType.SEARCH):
             self.__menu_button.set_opacity(0)
             self.__menu_button.set_sensitive(False)
         self._grid.add(self._num_label)

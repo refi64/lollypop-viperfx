@@ -122,17 +122,18 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.get_style_context().add_class("dim-label")
         self.set_artwork()
         self.__action_button = None
-        if self.__list_type & RowListType.SEARCH:
-            action_icon = "media-playback-start-symbolic"
-            action_tooltip_text = _("Play")
-        elif self.__list_type & RowListType.DND:
-            action_icon = "list-remove-symbolic"
-            action_tooltip_text = _("Remove from current playlist")
-        if self.__list_type & (RowListType.SEARCH | RowListType.DND):
+        self.__artists_button = None
+        if self.__list_type & RowListType.DND:
             self.__action_button = Gtk.Button.new_from_icon_name(
-                action_icon,
+                "list-remove-symbolic",
                 Gtk.IconSize.MENU)
-            self.__action_button.set_tooltip_text(action_tooltip_text)
+            self.__action_button.set_tooltip_text(
+                _("Remove from current playlist"))
+        elif self.__list_type & RowListType.SEARCH:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                    'avatar-default-symbolic',
+                    Gtk.IconSize.MENU)
+            self.__action_button.set_tooltip_text(_("Go to artist view"))
         else:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "view-more-symbolic",
@@ -145,33 +146,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__action_button.set_property("valign", Gtk.Align.CENTER)
         self.__action_button.connect("button-release-event",
                                      self.__on_action_button_release_event)
-        self.__artists_button = None
-        if self.__list_type & RowListType.SEARCH:
-            self.__artists_button = Gtk.Button.new_from_icon_name(
-                    'avatar-default-symbolic',
-                    Gtk.IconSize.MENU)
-            self.__artists_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__artists_button.get_style_context().add_class(
-                "album-menu-button")
-            self.__artists_button.set_tooltip_text(_("Go to artist view"))
-            self.__artists_button.set_property("valign", Gtk.Align.CENTER)
-            self.__artists_button.connect(
-                                      "button-release-event",
-                                      self.__on_artists_button_release_event)
-        index = 1
-        grid.attach(self.__artist_label, index, 0, 1, 1)
-        index += 1
-        if self.__artists_button is not None:
-            grid.attach(self.__artists_button, index, 0, 1, 2)
-            index += 1
-        if self.__action_button is not None:
-            grid.attach(self.__action_button, index, 0, 1, 2)
-            index += 1
         grid.attach(self._artwork, 0, 0, 1, 2)
+        grid.attach(self.__artist_label, 1, 0, 1, 1)
         grid.attach(self.__title_label, 1, 1, 1, 1)
+        grid.attach(self.__action_button, 2, 0, 1, 2)
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
-        grid.attach(self.__revealer, 0, 2, index, 1)
+        grid.attach(self.__revealer, 0, 2, 3, 1)
         row_widget.add(grid)
         self.add(row_widget)
         self.set_playing_indicator()
@@ -353,11 +334,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        if self.__list_type & RowListType.SEARCH:
-            album = self._album.clone(True)
-            App().player.add_album(album)
-            App().player.load(album.tracks[0])
-        elif self.__list_type & RowListType.DND:
+        if self.__list_type & RowListType.DND:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(App().player.albums) > 1:
