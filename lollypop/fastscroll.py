@@ -33,6 +33,7 @@ class FastScroll(Gtk.ScrolledWindow):
             @param scrolled as Gtk.ScrolledWindow
         """
         Gtk.ScrolledWindow.__init__(self)
+        self.get_style_context().add_class("fastscroll")
         self.__leave_timeout_id = None
         self.set_vexpand(True)
         self.set_margin_end(10)
