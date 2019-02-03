@@ -54,6 +54,7 @@ class EqualizerWidget(Gtk.Bin):
             Init widget
         """
         Gtk.Bin.__init__(self)
+        self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/EqualizerWidget.ui")
         builder.connect_signals(self)
@@ -61,8 +62,10 @@ class EqualizerWidget(Gtk.Bin):
         value = App().player.volume
         self.__volume.set_value(value)
         self.__combobox = builder.get_object("combobox")
+        equalizer = App().settings.get_value("equalizer")
         for i in range(0, 10):
             scale = builder.get_object("scale%s" % i)
+            scale.set_value(equalizer[i])
             setattr(self, "__scale%s" % i, scale)
             scale.connect("value-changed", self.__on_scale_value_changed, i)
         self.add(builder.get_object("widget"))
@@ -71,8 +74,7 @@ class EqualizerWidget(Gtk.Bin):
             preset += (i,)
         for key in PRESETS.keys():
             self.__combobox.append(key, key)
-            if preset == PRESETS[key]:
-                self.__combobox.set_active_id(key)
+        self.__set_combobox_value()
 
 #######################
 # PROTECTED           #
@@ -101,15 +103,33 @@ class EqualizerWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def __set_combobox_value(self):
+        """
+            Set combobox value based on current equalizer
+        """
+        combo_set = False
+        preset = ()
+        for i in App().settings.get_value("equalizer"):
+            preset += (i,)
+        for key in PRESETS.keys():
+            if preset == PRESETS[key]:
+                self.__combobox.set_active_id(key)
+                combo_set = True
+                break
+        if not combo_set:
+            self.__combobox.set_active_id(None)
+
     def __save_equalizer(self):
         """
             Save equalizer to gsettings
         """
+        self.__timeout_id = None
         preset = []
         for i in range(0, 10):
             attr = getattr(self, "__scale%s" % i)
             preset.append(attr.get_value())
         App().settings.set_value("equalizer", GLib.Variant("ai", preset))
+        self.__set_combobox_value()
 
     def __on_scale_value_changed(self, scale, band):
         """
@@ -119,5 +139,6 @@ class EqualizerWidget(Gtk.Bin):
         """
         for plugin in App().player.plugins:
             plugin.set_equalizer(band, scale.get_value())
-        if band == 9:
-            GLib.idle_add(self.__save_equalizer)
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+        self.__timeout_id = GLib.timeout_add(250, self.__save_equalizer)
