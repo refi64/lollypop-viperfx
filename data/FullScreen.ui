@@ -217,7 +217,6 @@
             <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
             <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
             <signal name="scroll-event" handler="_on_scroll_event" swapped="no"/>
-            <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>

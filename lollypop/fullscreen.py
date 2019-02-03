@@ -161,13 +161,6 @@ class FullScreen(Gtk.Window, InformationController,
         App().inhibitor.manual_uninhibit()
         ProgressController.do_destroy(self)
 
-    def show_hide_volume_control(self):
-        """
-            Show/Hide volume control
-        """
-        self._show_volume_control = not self._show_volume_control
-        self._update_state()
-
     def on_status_changed(self, player):
         """
             Update controller

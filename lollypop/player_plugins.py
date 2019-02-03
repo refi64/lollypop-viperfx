@@ -35,6 +35,8 @@ class PluginsPlayer:
                                                    "audioconvert2")
         rg_audioconvert3 = Gst.ElementFactory.make("audioconvert",
                                                    "audioconvert3")
+        rg_audioconvert4 = Gst.ElementFactory.make("audioconvert",
+                                                   "audioconvert4")
         self.volume = Gst.ElementFactory.make("volume",
                                               "volume")
         self.volume.props.volume = 0.0
@@ -44,7 +46,8 @@ class PluginsPlayer:
                                             "rglimiter")
         rg_audiosink = Gst.ElementFactory.make("autoaudiosink",
                                                "autoaudiosink")
-
+        self.__equalizer = Gst.ElementFactory.make("equalizer-10bands",
+                                                   "equalizer-10bands")
         if not bin or not rg_audioconvert1 or\
            not rg_audioconvert2 or not self.rgvolume or\
            not rglimiter or not rg_audiosink:
@@ -62,17 +65,39 @@ class PluginsPlayer:
         bin.add(rg_audioconvert1)
         bin.add(rg_audioconvert2)
         bin.add(rg_audioconvert3)
+        bin.add(rg_audioconvert4)
         bin.add(rglimiter)
+        bin.add(self.__equalizer)
         bin.add(rg_audiosink)
-
+        i = 0
+        for value in App().settings.get_value("equalizer"):
+            self.set_equalizer(i, value)
+            i += 1
         rg_audioconvert1.link(self.rgvolume)
         self.rgvolume.link(rg_audioconvert2)
         self.rgvolume.link(rglimiter)
         rg_audioconvert2.link(self.volume)
         self.volume.link(rg_audioconvert3)
-        rg_audioconvert3.link(rg_audiosink)
+        rg_audioconvert3.link(self.__equalizer)
+        self.__equalizer.link(rg_audioconvert4)
+        rg_audioconvert4.link(rg_audiosink)
 
         bin.add_pad(Gst.GhostPad.new(
             "sink",
             rg_audioconvert1.get_static_pad("sink")))
         playbin.set_property("audio-sink", bin)
+
+    def set_equalizer(self, band, value):
+        """
+            Set 10bands equalizer
+            @param band as int
+            @param value as int
+        """
+        try:
+            self.__equalizer.set_property("band%s" % band, value)
+        except Exception as e:
+            Logger.error("PluginsPlayer::set_equalizer():", e)
+
+#######################
+# PRIVATE             #
+#######################

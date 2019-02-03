@@ -481,10 +481,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             if self.container.view is not None:
                 self.container.view.enable_filter()
         elif string == "volume":
-            if self.__miniplayer is None:
-                self.__toolbar.title.show_hide_volume_control()
-            else:
-                self.__miniplayer.show_hide_volume_control()
+            App().window.container.show_view(Type.EQUALIZER)
         elif string == "current_artist":
             if App().player.current_track.id is not None and\
                     App().player.current_track.id > 0:

@@ -260,6 +260,11 @@
             <summary>JPG cover quality</summary>
             <description>0-100</description>
         </key>
+        <key type="ai" name="equalizer">
+            <default>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="ai" name="state-one-ids">
             <default>[]</default>
             <summary>INTERNAL</summary>

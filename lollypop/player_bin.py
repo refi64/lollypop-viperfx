@@ -167,6 +167,14 @@ class BinPlayer(BasePlayer):
             self.emit("seeked", position)
 
     @property
+    def plugins(self):
+        """
+            Get plugins
+            @return [PluginsPlayer]
+        """
+        return [self._plugins1, self._plugins2]
+
+    @property
     def is_playing(self):
         """
             True if player is playing

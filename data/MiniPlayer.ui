@@ -197,7 +197,6 @@
                             <property name="draw_value">False</property>
                             <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
                             <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
-                            <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
                             <style>
                               <class name="mini-scale"/>
                             </style>

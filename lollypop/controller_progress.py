@@ -12,8 +12,6 @@
 
 from gi.repository import GLib, Gst
 
-from gettext import gettext as _
-
 from lollypop.define import Type, App
 from lollypop.utils import seconds_to_string
 
@@ -31,24 +29,12 @@ class ProgressController:
         self.__seeking = False
         # Update pogress position
         self.__timeout_id = None
-        # Show volume control
-        self.__show_volume_control = False
-
-    def show_hide_volume_control(self):
-        """
-            Show/Hide volume control
-        """
-        self._progress.clear_marks()
-        self.__show_volume_control = not self.__show_volume_control
-        self._update_state()
 
     def on_current_changed(self, player):
         """
             Update scale on current changed
             @param player as Player
         """
-        if self.__show_volume_control:
-            return
         self._progress.clear_marks()
         if player.current_track.id is None:
             self._progress.set_sensitive(False)
@@ -88,15 +74,7 @@ class ProgressController:
             Update progress bar position
             @param value as int
         """
-        if self.__show_volume_control:
-            # We need this to allow crossfade while volume is shown
-            App().player.position
-            if value is None:
-                value = App().player.volume
-            self._progress.set_value(value)
-            volume = str(int(value * 100)) + " %"
-            self._total_time_label.set_text(volume)
-        elif not self.__seeking:
+        if not self.__seeking:
             if value is None and App().player.get_status() != Gst.State.PAUSED:
                 value = App().player.position / Gst.SECOND
             if value is not None:
@@ -112,14 +90,6 @@ class ProgressController:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
 
-    @property
-    def show_volume_control(self):
-        """
-            True if volume control is shown
-            @return bool
-        """
-        return self.__show_volume_control
-
 #######################
 # PROTECTED           #
 #######################
@@ -127,42 +97,14 @@ class ProgressController:
         """
             Update controller state volume vs progress
         """
-        if self.__show_volume_control:
-            self._timelabel.set_text(_("Volume"))
-            # Inhibit _on_value_changed()
-            self.__show_volume_control = False
-            self._progress.set_range(0.0, 1.0)
-            self.__show_volume_control = True
-            self._progress.set_sensitive(True)
-            self.update_position()
+        ProgressController.on_current_changed(self, App().player)
+        if App().player.current_track.id is None:
+            self._timelabel.set_text("")
+            self._progress.set_value(0.0)
+            self._progress.set_range(0.0, 0.0)
+            self._progress.set_sensitive(False)
         else:
-            ProgressController.on_current_changed(self, App().player)
-            if App().player.current_track.id is None:
-                self._timelabel.set_text("")
-                self._progress.set_value(0.0)
-                self._progress.set_range(0.0, 0.0)
-                self._progress.set_sensitive(False)
-            else:
-                self.update_position()
-
-    def _on_value_changed(self, scale):
-        """
-            Adjust volume
-        """
-        if not self.__show_volume_control:
-            return
-        App().player.set_volume(scale.get_value())
-        self.update_position(scale.get_value())
-
-    def _on_title_press_button(self, widget, event):
-        """
-            Show/Hide volume control
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        if event.button != 1:
-            self.show_hide_volume_control()
-        return True
+            self.update_position()
 
     def _on_progress_press_button(self, scale, event):
         """
@@ -170,11 +112,6 @@ class ProgressController:
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
-        if event.button != 1:
-            self.show_hide_volume_control()
-            return True
-        if self.__show_volume_control:
-            return
         if App().player.is_locked:
             return True
         self.__seeking = True
@@ -186,7 +123,7 @@ class ProgressController:
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
-        if self.__show_volume_control or event.button != 1:
+        if event.button != 1:
             return
         value = scale.get_value()
         App().player.seek(value)
@@ -200,31 +137,18 @@ class ProgressController:
             @param event as Gdk.Event
         """
         (smooth, x, y) = event.get_scroll_deltas()
-        if smooth:
-            if self.__show_volume_control:
-                volume = App().player.volume
-                if y >= 0:
-                    volume -= 0.1
-                elif y < 0:
-                    volume += 0.1
-                if volume < 0:
-                    volume = 0.0
-                elif volume > 1:
-                    volume = 1.0
-                App().player.set_volume(volume)
-                self.update_position(volume)
-            elif App().player.is_playing:
-                position = App().player.position / Gst.SECOND
-                if y >= 0:
-                    seek = position - 5
-                elif y < 0:
-                    seek = position + 5
-                if seek < 0:
-                    seek = 0
-                if seek > App().player.current_track.duration:
-                    seek = App().player.current_track.duration - 2
-                App().player.seek(seek)
-                self.update_position(seek)
+        if smooth and App().player.is_playing:
+            position = App().player.position / Gst.SECOND
+            if y >= 0:
+                seek = position - 5
+            elif y < 0:
+                seek = position + 5
+            if seek < 0:
+                seek = 0
+            if seek > App().player.current_track.duration:
+                seek = App().player.current_track.duration - 2
+            App().player.seek(seek)
+            self.update_position(seek)
 
 #######################
 # PRIVATE             #

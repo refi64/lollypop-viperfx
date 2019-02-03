@@ -72,6 +72,9 @@ class ViewsContainer:
             view = self._get_view_albums([], [item_id])
         elif item_id == Type.RADIOS:
             view = self._get_view_radios()
+        elif item_id == Type.EQUALIZER:
+            from lollypop.view_equalizer import EqualizerView
+            view = EqualizerView()
         elif item_id in [Type.SETTINGS,
                          Type.SETTINGS_APPEARANCE,
                          Type.SETTINGS_BEHAVIOUR,

@@ -41,6 +41,10 @@ class ApplicationActions:
         fullscreen_action.connect("activate", self.__on_fullscreen_activate)
         App().add_action(fullscreen_action)
 
+        equalizer_action = Gio.SimpleAction.new("equalizer", None)
+        equalizer_action.connect("activate", self.__on_equalizer_activate)
+        App().add_action(equalizer_action)
+
         show_sidebar = App().settings.get_value("show-sidebar")
         sidebar_action = Gio.SimpleAction.new_stateful(
             "sidebar",
@@ -103,6 +107,14 @@ class ApplicationActions:
             from lollypop.fullscreen import FullScreen
             fs = FullScreen(App())
             fs.show()
+
+    def __on_equalizer_activate(self, action, param):
+        """
+            Show equalizer view
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        App().window.container.show_view(Type.EQUALIZER)
 
     def __on_settings_activate(self, action, param):
         """

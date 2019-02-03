@@ -11,6 +11,10 @@
         <attribute name="label" translatable="yes">_Fullscreen</attribute>
       </item>
       <item>
+        <attribute name="action">app.equalizer</attribute>
+        <attribute name="label" translatable="yes">_Equalizer</attribute>
+      </item>
+      <item>
         <attribute name="action">app.sidebar</attribute>
         <attribute name="label" translatable="yes">_Sidebar</attribute>
       </item>
