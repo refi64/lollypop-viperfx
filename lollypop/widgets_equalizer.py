@@ -54,6 +54,8 @@ class EqualizerWidget(Gtk.Bin):
             Init widget
         """
         Gtk.Bin.__init__(self)
+        self.set_property("valign", Gtk.Align.START)
+        self.set_property("halign", Gtk.Align.CENTER)
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/EqualizerWidget.ui")
@@ -75,6 +77,9 @@ class EqualizerWidget(Gtk.Bin):
         for key in PRESETS.keys():
             self.__combobox.append(key, key)
         self.__set_combobox_value()
+
+    def do_get_preferred_width(self):
+        return (250, 600)
 
 #######################
 # PROTECTED           #
