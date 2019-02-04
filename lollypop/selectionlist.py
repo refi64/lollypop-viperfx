@@ -191,6 +191,7 @@ class SelectionList(BaseView, Gtk.Overlay):
             Make treeview select first default item
             @param object id as int
         """
+        self.__selection.unselect_all()
         if ids:
             try:
                 # Check if items are available for selection
@@ -214,8 +215,6 @@ class SelectionList(BaseView, Gtk.Overlay):
                                                0, 0)
             except:
                 self.__last_motion_event = None
-        else:
-            self.__selection.unselect_all()
 
     def grab_focus(self):
         """

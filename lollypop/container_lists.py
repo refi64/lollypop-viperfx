@@ -70,8 +70,6 @@ class ListsContainer:
             self._list_two.select_ids(list_two_ids)
             self._list_two.disconnect_by_func(select_list_two)
 
-        self._list_one.select_ids()
-        self._list_two.select_ids()
         if list_two_ids:
             # Select genres on list one
             self._list_two.connect("populated", select_list_two, list_two_ids)
@@ -142,7 +140,6 @@ class ListsContainer:
                 state_two_ids = []
         if state_two_ids:
             self._list_two.connect("populated", select_list_two, state_two_ids)
-        self._list_one.select_ids()
         if state_one_ids:
             self._list_one.select_ids(state_one_ids)
         else:
