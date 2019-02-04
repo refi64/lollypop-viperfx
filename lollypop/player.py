@@ -367,8 +367,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param party as bool
         """
         ShufflePlayer.set_party(self, party)
-        self.set_next()
-        self.set_prev()
         self.update_crossfading()
 
     def set_prev(self):
@@ -401,6 +399,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param sql as sqlite cursor
             @param force as bool
         """
+        print("set_next")
         try:
             # Reset finished context
             self._next_context = NextContext.NONE
@@ -518,7 +517,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         if self.track_in_queue(self._current_track):
             self.remove_from_queue(self._current_track.id)
         else:
-            if self.shuffle_has_next or not self.__do_not_update_next:
+            if self.shuffle_has_next and not self.__do_not_update_next:
                 self.set_next()
             self.__do_not_update_next = False
             self.set_prev()
