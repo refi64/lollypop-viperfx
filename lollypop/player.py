@@ -43,7 +43,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         PlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
         self.update_crossfading()
-        self.__do_not_update_next = False
         App().settings.connect("changed::playback", self.__on_playback_changed)
         self._albums_backup = []
 
@@ -83,9 +82,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             RadioPlayer.load(self, track, play)
         else:
             if play:
-                # Do not update next if user clicked on a track
-                if self.is_party and track != self._next_track:
-                    self.__do_not_update_next = True
                 BinPlayer.load(self, track)
             else:
                 BinPlayer._load_track(self, track)
@@ -339,14 +335,15 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                                 self._load_track(track)
                                 break
                     else:
+                        tracks = []
+                        track = Track()
                         for playlist_id in playlist_ids:
-                            tracks = App().playlists.get_tracks(playlist_id)
-                            App().player.populate_playlist_by_tracks(
-                                tracks, playlist_ids)
+                            tracks += App().playlists.get_tracks(playlist_id)
                             for track in tracks:
                                 if track.id == current_track_id:
-                                    self._load_track(track)
                                     break
+                        App().player.populate_playlist_by_tracks(
+                            tracks, playlist_ids, track)
                     if is_playing:
                         self.play()
                     else:
@@ -399,7 +396,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param sql as sqlite cursor
             @param force as bool
         """
-        print("set_next")
         try:
             # Reset finished context
             self._next_context = NextContext.NONE
@@ -517,9 +513,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         if self.track_in_queue(self._current_track):
             self.remove_from_queue(self._current_track.id)
         else:
-            if self.shuffle_has_next and not self.__do_not_update_next:
+            # Do not update next if user clicked on a track
+            if self.is_party and self._current_track != self._next_track:
+                pass
+            else:
                 self.set_next()
-            self.__do_not_update_next = False
             self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)
 

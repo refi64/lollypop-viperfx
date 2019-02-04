@@ -203,12 +203,13 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                     App().lookup_action("party").change_state(
                         GLib.Variant("b", False))
                 tracks = [Track(track_id) for track_id in self.__track_ids]
-                App().player.populate_playlist_by_tracks(tracks, [self._data])
                 if App().settings.get_enum("shuffle") == Shuffle.TRACKS:
                     track = choice(tracks)
                 else:
                     track = tracks[0]
-                App().player.load(track)
+                App().player.populate_playlist_by_tracks(tracks,
+                                                         [self._data],
+                                                         track)
         else:
             if isinstance(self.__obj, Disc):
                 tracks = self.__obj.tracks

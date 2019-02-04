@@ -53,19 +53,19 @@ class PlaylistPlayer(BasePlayer):
         self.set_prev()
         self.emit("playlist-changed")
 
-    def populate_playlist_by_tracks(self, tracks, playlist_ids):
+    def populate_playlist_by_tracks(self, tracks, playlist_ids, track):
         """
             Set user playlist as current playback playlist
             @param array of tracks as [Track]
             @param playlist ids as [int]
+            @param track as Track
         """
         App().lookup_action("party").change_state(GLib.Variant("b", False))
         self._albums = []
         self._playlist_tracks = tracks
         self._playlist_ids = playlist_ids
-        self.set_next()
-        self.set_prev()
         self.emit("playlist-changed")
+        App().player.load(track)
 
     def update_playlist(self, tracks):
         """

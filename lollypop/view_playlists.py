@@ -162,9 +162,9 @@ class PlaylistsView(View, ViewController):
         for child in self.__playlists_widget.children:
             tracks.append(child.track)
         if tracks:
-            App().player.load(tracks[0])
             App().player.populate_playlist_by_tracks(tracks,
-                                                     self.__playlist_ids)
+                                                     self.__playlist_ids,
+                                                     tracks[0])
 
     def _on_shuffle_button_clicked(self, button):
         """
@@ -176,9 +176,9 @@ class PlaylistsView(View, ViewController):
             tracks.append(child.track)
         if tracks:
             shuffle(tracks)
-            App().player.load(tracks[0])
             App().player.populate_playlist_by_tracks(tracks,
-                                                     self.__playlist_ids)
+                                                     self.__playlist_ids,
+                                                     tracks[0])
 
     def _on_menu_button_clicked(self, button):
         """

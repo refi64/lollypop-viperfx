@@ -340,7 +340,8 @@ class PlaylistsWidget(Gtk.Grid):
                 row_tracks = [row.track for row in rows]
                 App().player.populate_playlist_by_tracks(
                     row_tracks,
-                    self.__playlist_ids)
+                    self.__playlist_ids,
+                    track)
 
     def __on_insert_track(self, row, new_track_id, down):
         """
