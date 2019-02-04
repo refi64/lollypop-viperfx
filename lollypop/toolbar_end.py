@@ -384,7 +384,8 @@ class ToolbarEnd(Gtk.Bin):
     def __on_playback_changed(self, settings, value):
         """
             Update shuffle icon
-            @param settings as Gio.Settings, value as str
+            @param settings as Gio.Settings
+            @param value as GLib.Variant
         """
         self.__set_shuffle_icon()
         self.__next_popover.hide()

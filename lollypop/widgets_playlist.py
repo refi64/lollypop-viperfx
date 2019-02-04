@@ -26,7 +26,6 @@ class PlaylistsWidget(Gtk.Grid):
         Show playlist tracks/albums
     """
     __gsignals__ = {
-        "orientation-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
@@ -315,7 +314,6 @@ class PlaylistsWidget(Gtk.Grid):
             self.__orientation = orientation
             redraw = True
         self.__grid.set_orientation(orientation)
-        self.emit("orientation-changed", orientation)
         if redraw:
             for child in self.__grid.get_children():
                 self.__grid.remove(child)

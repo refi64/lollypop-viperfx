@@ -514,7 +514,7 @@ popover.background separator {
 }
 
 .light-button {
-    opacity: 0.5;
+    opacity: 0.4;
     box-shadow: none;
 	min-height: 24px;
 	min-width: 24px;
@@ -544,7 +544,7 @@ popover.background separator {
 }
 
 .menu-button {
-    opacity: 0.2;
+    opacity: 0.4;
 	box-shadow: none;
 	min-height: 24px;
 	min-width: 24px;
@@ -566,7 +566,7 @@ popover.background separator {
 .menu-button:hover {
     color: inherit;
     border-color: alpha(@theme_fg_color, 0.1);
-  	opacity: 0.5;
+  	opacity: 1;
 }
 
 .menu-button-no-border:hover
@@ -574,32 +574,8 @@ popover.background separator {
     border-color: transparent;
 }
 
-.dim-button {
-    opacity: 0.2;
-    box-shadow: none;
-	min-height: 24px;
-	min-width: 24px;
-	padding-left: 0px;
-	padding-right: 0px;
-	padding-top: 0px;
-	padding-bottom: 0px;
-	background-image: none;
-	border-style: solid;
-	border-image-source: none;
-    border-bottom-width: 1px;
-    border-top-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-color: transparent;
-    color: inherit;
-}
-
-.dim-button:hover {
-    opacity: 0.5
-}
-
 .album-menu-button {
-    opacity: 0.2;
+    opacity: 0.4;
 	box-shadow: none;
 	min-height: 24px;
 	min-width: 24px;
@@ -620,7 +596,7 @@ popover.background separator {
 
 .album-menu-button:hover {
     border-color: alpha(@theme_fg_color, 0.1);
-    opacity: 0.5;
+    opacity: 1;
   	color: inherit;
 }
 
