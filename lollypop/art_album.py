@@ -13,7 +13,6 @@
 from gi.repository import GLib, GdkPixbuf, Gio, Gst
 
 import re
-import cairo
 
 from lollypop.tagreader import TagReader
 from lollypop.define import App, ArtSize
@@ -272,30 +271,6 @@ class AlbumArt:
                 GLib.idle_add(self.album_artwork_update, album.id)
         except Exception as e:
             Logger.error("AlbumArt::save_album_artwork(): %s" % e)
-
-    def save_surface(self, surface, string):
-        """
-            Save surface with string suffix
-            @param surface as cairo.Surface
-            @param string as str
-        """
-        try:
-            path = "%s/%s.png" % (self._CACHE_PATH, string)
-            surface.write_to_png(path)
-        except Exception as e:
-            Logger.error("AlbumArt::save_surface(): %s" % e)
-
-    def load_surface(self, string):
-        """
-            Load surface with string
-            @param string as str
-        """
-        try:
-            path = "%s/%s.png" % (self._CACHE_PATH, string)
-            return cairo.ImageSurface.create_from_png(path)
-        except Exception as e:
-            Logger.warning("AlbumArt::save_surface(): %s" % e)
-        return None
 
     def album_artwork_update(self, album_id):
         """

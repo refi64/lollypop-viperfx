@@ -61,18 +61,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             self._scale_factor = self.get_scale_factor()
             App().task_helper.run(self._create_surface)
         else:
-            self._set_surface(surface)
-
-    def _set_surface(self, surface):
-        """
-            Set artwork from surface
-            @param surface as cairo.Surface
-        """
-        if self.__cancellable.is_cancelled():
-            return
-        self._artwork.set_from_surface(
-            get_round_surface(surface, self._scale_factor))
-        self.emit("populated")
+            self.__set_surface(surface)
 
     def _create_surface(self):
         """
@@ -89,9 +78,28 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                      (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]
         self.__draw_surface(album_ids, surface, ctx, positions)
 
+    def _save_surface(self, surface):
+        """
+            Save surface to cache
+            @param surface as cairo.Surface
+        """
+        string = "%s_%s" % (self._genre, self._data)
+        App().art.save_surface(surface, string)
+
 #######################
 # PRIVATE             #
 #######################
+    def __set_surface(self, surface):
+        """
+            Set artwork from surface
+            @param surface as cairo.Surface
+        """
+        if self.__cancellable.is_cancelled():
+            return
+        self._artwork.set_from_surface(
+            get_round_surface(surface, self._scale_factor))
+        self.emit("populated")
+
     def __draw_surface(self, album_ids, surface, ctx, positions):
         """
             Draw surface for first available album
@@ -128,9 +136,8 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             else:
                 GLib.idle_add(draw_pixbuf, surface, ctx, pixbuf, positions)
         else:
-            GLib.idle_add(self._set_surface, surface)
-            string = "%s_%s" % (self._genre, self._data)
-            App().art.save_surface(surface, string)
+            GLib.idle_add(self.__set_surface, surface)
+            self._save_surface(surface)
 
     def __on_unmap(self, widget):
         """

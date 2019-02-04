@@ -184,9 +184,13 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__overlay_grid.destroy()
             self.__overlay_grid = None
 
-#######################
-# PROTECTED           #
-#######################
+    def _save_surface(self, surface):
+        """
+            Save surface to cache
+            @param surface as cairo.Surface
+        """
+        if self._data != Type.RANDOMS:
+            RoundedAlbumsWidget._save_surface(self, surface)
 
 #######################
 # PRIVATE             #

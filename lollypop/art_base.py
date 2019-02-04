@@ -12,6 +12,8 @@
 
 from gi.repository import GObject, GdkPixbuf, Gio, GLib
 
+import cairo
+
 from lollypop.define import ArtSize, App, TAG_EDITORS
 from lollypop.logger import Logger
 
@@ -63,6 +65,32 @@ class BaseArt(GObject.GObject):
                 f.delete()
         except Exception as e:
             Logger.error("Art::clean_store(): %s" % e)
+
+    def save_surface(self, surface, string):
+        """
+            Save surface with string suffix
+            @param surface as cairo.Surface
+            @param string as str
+        """
+        try:
+            path = "%s/%s.png" % (self._CACHE_PATH, string)
+            surface.write_to_png(path)
+        except Exception as e:
+            Logger.error("BaseArt::save_surface(): %s" % e)
+
+    def load_surface(self, string):
+        """
+            Load surface with string
+            @param string as str
+        """
+        try:
+            path = "%s/%s.png" % (self._CACHE_PATH, string)
+            f = Gio.File.new_for_path(path)
+            if f.query_exists():
+                return cairo.ImageSurface.create_from_png(path)
+        except Exception as e:
+            Logger.warning("BaseArt::save_surface(): %s" % e)
+        return None
 
     @property
     def kid3_available(self):
