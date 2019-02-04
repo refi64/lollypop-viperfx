@@ -34,6 +34,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param obj as Track/Album
         """
         OverlayHelper.__init__(self)
+        self._genre = Type.PLAYLISTS
         name = sortname = App().playlists.get_name(playlist_id)
         RoundedAlbumsWidget.__init__(self, playlist_id, name,
                                      sortname, art_size)

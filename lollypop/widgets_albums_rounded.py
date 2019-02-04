@@ -15,7 +15,7 @@ from gi.repository import GLib, Gdk, Gio
 import cairo
 from random import shuffle
 
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Album
 from lollypop.utils import get_round_surface
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
@@ -36,6 +36,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             @param art_size as int
         """
         RoundedFlowBoxWidget.__init__(self, data, name, sortname, art_size)
+        self._genre = Type.NONE
         self.__cover_size = art_size / 3
         self.__cancellable = Gio.Cancellable()
         self.connect("unmap", self.__on_unmap)
@@ -54,8 +55,13 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
             Set artwork
         """
-        self._scale_factor = self.get_scale_factor()
-        App().task_helper.run(self._create_surface)
+        string = "%s_%s" % (self._genre, self._data)
+        surface = App().art.load_surface(string)
+        if surface is None:
+            self._scale_factor = self.get_scale_factor()
+            App().task_helper.run(self._create_surface)
+        else:
+            self._set_surface(surface)
 
     def _set_surface(self, surface):
         """
@@ -123,6 +129,8 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                 GLib.idle_add(draw_pixbuf, surface, ctx, pixbuf, positions)
         else:
             GLib.idle_add(self._set_surface, surface)
+            string = "%s_%s" % (self._genre, self._data)
+            App().art.save_surface(surface, string)
 
     def __on_unmap(self, widget):
         """

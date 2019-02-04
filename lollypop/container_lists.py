@@ -280,7 +280,7 @@ class ListsContainer:
         elif not App().window.is_adaptive:
             view = self._get_view_albums(selected_ids, [])
         if view is not None and view not in self._stack.get_children():
-                self._stack.add(view)
+            self._stack.add(view)
         # If we are in paned stack mode, show list two if wanted
         if App().window.is_adaptive\
                 and self._list_two.is_visible()\

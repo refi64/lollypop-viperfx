@@ -82,7 +82,7 @@ class SmartPlaylistView(View):
             limit = int(split_limit[1].split(" ")[1])
             self.__limit_spin.set_value(limit)
         except Exception as e:
-                Logger.warning("SmartPlaylistView::populate: %s", e)
+            Logger.warning("SmartPlaylistView::populate: %s", e)
         try:
             split_order = sql.split("ORDER BY")
             split_spaces = split_order[1].split(" ")
@@ -94,8 +94,8 @@ class SmartPlaylistView(View):
                 orderby += " %s" % split_spaces[2]
             self.__select_combobox.set_active_id(orderby)
         except Exception as e:
-                self.__select_combobox.set_active(0)
-                Logger.warning("SmartPlaylistView::populate: %s", e)
+            self.__select_combobox.set_active(0)
+            Logger.warning("SmartPlaylistView::populate: %s", e)
 
 #######################
 # PROTECTED           #

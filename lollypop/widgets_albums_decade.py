@@ -36,6 +36,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
         decade_str = "%s - %s" % (item_ids[0], item_ids[-1])
         RoundedAlbumsWidget.__init__(self, item_ids, decade_str,
                                      decade_str, art_size)
+        self._genre = Type.YEARS
 
     def populate(self):
         """
