@@ -61,6 +61,9 @@ class ViewsContainer:
             view = self._get_view_search()
         elif item_id == Type.INFO:
             view = self._get_view_info()
+        elif item_id == Type.GENRES:
+            print(data)
+            view = self._get_view_albums([data], [])
         elif item_id == Type.YEARS:
             if data is None:
                 view = self._get_view_albums_decades()
@@ -259,6 +262,24 @@ class ViewsContainer:
         else:
             art_size = ArtSize.ROUNDED
         view = AlbumsDecadeBoxView(art_size)
+        view.show()
+        loader = Loader(target=load, view=view)
+        loader.start()
+        return view
+
+    def _get_view_genres(self):
+        """
+            Get view for genres
+        """
+        def load():
+            return App().genres.get_ids()
+
+        from lollypop.view_albums_genre_box import AlbumsGenreBoxView
+        if App().window.is_adaptive:
+            art_size = ArtSize.BIG
+        else:
+            art_size = ArtSize.ROUNDED
+        view = AlbumsGenreBoxView(art_size)
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()

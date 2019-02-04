@@ -267,6 +267,8 @@ class ListsContainer:
             view = self._get_view_radios()
         elif selected_ids[0] == Type.YEARS:
             view = self._get_view_albums_decades()
+        elif selected_ids[0] == Type.GENRES:
+            view = self._get_view_genres()
         elif selected_ids[0] == Type.ARTISTS:
             view = self._get_view_artists_rounded(False)
             App().window.emit("show-can-go-back", True)

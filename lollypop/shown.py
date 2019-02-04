@@ -44,6 +44,8 @@ class ShownLists:
                 lists.append((Type.RADIOS, _("Radios"), ""))
             if get_all or Type.YEARS in wanted:
                 lists.append((Type.YEARS, _("Years"), ""))
+            if get_all or Type.GENRES in wanted:
+                lists.append((Type.GENRES, _("Genres"), ""))
             if get_all or Type.ALL in wanted:
                 lists.append((Type.ALL, _("All albums"), ""))
             if get_all or (Type.ARTISTS in wanted and

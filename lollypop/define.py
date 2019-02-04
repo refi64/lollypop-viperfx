@@ -129,6 +129,7 @@ class Type:
     SETTINGS_COLLECTIONS = -17
     SETTINGS_WEB = -18
     EQUALIZER = -19
+    GENRES = -20
     ALL = -100
     CURRENT = -101
     USB_DISKS = -200
