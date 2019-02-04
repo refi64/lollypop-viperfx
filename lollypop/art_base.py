@@ -92,6 +92,19 @@ class BaseArt(GObject.GObject):
             Logger.warning("BaseArt::save_surface(): %s" % e)
         return None
 
+    def clean_surface(self, string):
+        """
+            Remove surface from cache
+            @param string as str
+        """
+        try:
+            path = "%s/%s.png" % (self._CACHE_PATH, string)
+            f = Gio.File.new_for_path(path)
+            if f.query_exists():
+                f.delete()
+        except Exception as e:
+            Logger.warning("BaseArt::clean_surface(): %s" % e)
+
     @property
     def kid3_available(self):
         """
