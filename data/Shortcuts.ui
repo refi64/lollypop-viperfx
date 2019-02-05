@@ -154,14 +154,14 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Skip backward in track</property>
-                <property name="accelerator">&lt;Alt&gt;Left</property>
+                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;Left</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Skip forward in track</property>
-                <property name="accelerator">&lt;Alt&gt;Right</property>
+                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;Right</property>
               </object>
             </child>
             <child>

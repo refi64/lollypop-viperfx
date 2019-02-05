@@ -143,22 +143,19 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         App().set_accels_for_action("app.help", ["F1"])
         App().set_accels_for_action("app.quit", ["<Control>q"])
         if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-            App().set_accels_for_action("app.seek(10)", ["<Alt>Left"])
-            App().set_accels_for_action("app.seek(20)",
-                                        ["<Control><Shift>Left"])
-            App().set_accels_for_action("app.seek(-10)", ["<Alt>Right"])
-            App().set_accels_for_action("app.seek(-20)",
-                                        ["<Control><Shift>Right"])
+            App().set_accels_for_action("app.seek(10)",
+                                        ["<Shift><Alt>Left"])
+            App().set_accels_for_action("app.seek(-10)",
+                                        ["<Shift><Alt>Right"])
+            App().set_accels_for_action("app.shortcut::go_back",
+                                        ["<Alt>Right"])
         else:
             App().set_accels_for_action("app.seek(10)",
-                                        ["<Alt>Right"])
-            App().set_accels_for_action("app.seek(20)",
-                                        ["<Control><Shift>Right"])
+                                        ["<Shift><Alt>Right"])
             App().set_accels_for_action("app.seek(-10)",
+                                        ["<Shift><Alt>Left"])
+            App().set_accels_for_action("app.shortcut::go_back",
                                         ["<Alt>Left"])
-            App().set_accels_for_action("app.seek(-20)",
-                                        ["<Control><Shift>Left"])
-
         App().set_accels_for_action("app.shortcut::play_pause",
                                     ["space", "<Alt>c"])
         App().set_accels_for_action("app.shortcut::play", ["<Alt>x"])
@@ -470,6 +467,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             App().player.prev()
         elif string == "locked":
             App().player.lock()
+        elif string == "go_back":
+            App().window.go_back()
         elif string == "lyrics":
             App().window.container.show_lyrics()
         elif string == "show_sidebar":
