@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App, Shuffle, Type, ArtSize
+from lollypop.define import App, Shuffle, Type
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -25,7 +25,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
     """
         Playlist widget showing cover for 9 albums
     """
-    _pixel_size = ArtSize.ROUNDED / 10
 
     def __init__(self, playlist_id, obj, art_size):
         """
@@ -115,8 +114,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_button.set_property("halign", Gtk.Align.CENTER)
             self.__play_button.connect("realize", self._on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
-            self.__play_button.get_image().set_pixel_size(
-                PlaylistRoundedWidget._pixel_size + 20)
+            self.__play_button.get_image().set_pixel_size(self._pixel_size +
+                                                          20)
             # Open button
             self.__open_button = Gtk.Button.new_from_icon_name(
                 "folder-open-symbolic",
@@ -126,8 +125,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__open_button.set_tooltip_text(_("Open"))
             self.__open_button.connect("realize", self._on_realize)
             self.__open_button.connect("clicked", self.__on_open_clicked)
-            self.__open_button.get_image().set_pixel_size(
-                PlaylistRoundedWidget._pixel_size)
+            self.__open_button.get_image().set_pixel_size(self._pixel_size)
             # Edit button
             self.__edit_button = Gtk.Button.new_from_icon_name(
                 "document-properties-symbolic",
@@ -137,8 +135,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__edit_button.set_tooltip_text(_("Modify playlist"))
             self.__edit_button.connect("realize", self._on_realize)
             self.__edit_button.connect("clicked", self.__on_edit_clicked)
-            self.__edit_button.get_image().set_pixel_size(
-                PlaylistRoundedWidget._pixel_size)
+            self.__edit_button.get_image().set_pixel_size(self._pixel_size)
             self._overlay.add_overlay(self.__play_button)
             self.__overlay_grid = Gtk.Grid()
             self.__overlay_grid.set_property("valign", Gtk.Align.END)

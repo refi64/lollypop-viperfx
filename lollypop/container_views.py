@@ -164,11 +164,7 @@ class ViewsContainer:
             loader.start()
         else:
             from lollypop.view_playlists_manager import PlaylistsManagerView
-            if App().window.is_adaptive:
-                art_size = ArtSize.BIG
-            else:
-                art_size = ArtSize.ROUNDED
-            view = PlaylistsManagerView(None, art_size)
+            view = PlaylistsManagerView(None, int(ArtSize.BIG * 1.2))
             view.populate(App().playlists.get_ids())
             view.show()
         return view
@@ -257,11 +253,7 @@ class ViewsContainer:
                 decades.append(decade)
             return decades
         from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
-        if App().window.is_adaptive:
-            art_size = ArtSize.BIG
-        else:
-            art_size = ArtSize.ROUNDED
-        view = AlbumsDecadeBoxView(art_size)
+        view = AlbumsDecadeBoxView(int(ArtSize.BIG * 1.2))
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()
@@ -275,11 +267,7 @@ class ViewsContainer:
             return App().genres.get_ids()
 
         from lollypop.view_albums_genre_box import AlbumsGenreBoxView
-        if App().window.is_adaptive:
-            art_size = ArtSize.BIG
-        else:
-            art_size = ArtSize.ROUNDED
-        view = AlbumsGenreBoxView(art_size)
+        view = AlbumsGenreBoxView(int(ArtSize.BIG * 1.2))
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()

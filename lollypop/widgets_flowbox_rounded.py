@@ -25,7 +25,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, data, name, sortname, art_size=ArtSize.ROUNDED):
+    def __init__(self, data, name, sortname, art_size=ArtSize.BIG):
         """
             Init widget
             @param data as object

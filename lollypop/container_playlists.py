@@ -32,11 +32,7 @@ class PlaylistsContainer:
         """
         from lollypop.view_playlists_manager import PlaylistsManagerView
         current = self._stack.get_visible_child()
-        if App().window.is_adaptive:
-            art_size = ArtSize.BIG
-        else:
-            art_size = ArtSize.ROUNDED
-        view = PlaylistsManagerView(obj, art_size)
+        view = PlaylistsManagerView(obj, int(ArtSize.BIG * 1.2))
         view.populate(App().playlists.get_ids())
         view.show()
         self._stack.add(view)

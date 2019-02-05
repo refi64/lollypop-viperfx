@@ -15,7 +15,7 @@ from gi.repository import Gdk, Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.define import App, Type, ArtSize
+from lollypop.define import App, Type
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
@@ -24,7 +24,6 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
     """
         Decade widget showing cover for 9 albums
     """
-    _pixel_size = ArtSize.ROUNDED / 10
 
     def __init__(self, item_ids, art_size):
         """
@@ -68,8 +67,8 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
                 Gtk.IconSize.INVALID)
             self.__play_button.set_tooltip_text(_("Play"))
             self.__play_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__play_button.get_image().set_pixel_size(
-                AlbumsDecadeWidget._pixel_size + 20)
+            self.__play_button.get_image().set_pixel_size(self._pixel_size +
+                                                          20)
             self.__play_button.set_property("has-tooltip", True)
             self.__play_button.set_hexpand(True)
             self.__play_button.set_property("valign", Gtk.Align.CENTER)
@@ -80,8 +79,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__open_button = Gtk.Button.new_from_icon_name(
                 "folder-open-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__open_button.get_image().set_pixel_size(
-                AlbumsDecadeWidget._pixel_size)
+            self.__open_button.get_image().set_pixel_size(self._pixel_size)
             self.__open_button.set_property("has-tooltip", True)
             self.__open_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__open_button.set_tooltip_text(_("Open"))

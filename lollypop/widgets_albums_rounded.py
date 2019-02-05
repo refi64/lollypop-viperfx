@@ -27,7 +27,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
     """
     _ALBUMS_COUNT = 9
 
-    def __init__(self, data, name, sortname, art_size=ArtSize.ROUNDED):
+    def __init__(self, data, name, sortname, art_size=ArtSize.BIG):
         """
             Init widget
             @param data as object
@@ -39,6 +39,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         self._genre = Type.NONE
         self._album_ids = []
         self.__cover_size = art_size / 3
+        self._pixel_size = art_size / 10
         self.__cancellable = Gio.Cancellable()
         self._scale_factor = self.get_scale_factor()
         self.connect("unmap", self.__on_unmap)
