@@ -126,6 +126,10 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             Open Genre
             @param button as Gtk.Button
         """
+        show_genres = App().settings.get_value("show-genres")
+        if not show_genres:
+            App().window.emit("show-can-go-back", True)
+            App().window.emit("can-go-back-changed", True)
         App().window.container.show_view(Type.GENRES, self._data)
 
     def __on_eventbox_realize(self, eventbox):

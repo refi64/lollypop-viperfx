@@ -234,6 +234,9 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
         show_sidebar = App().settings.get_value("show-sidebar")
         show_genres = App().settings.get_value("show-genres")
+        if not show_genres:
+            App().window.emit("show-can-go-back", True)
+            App().window.emit("can-go-back-changed", True)
         if show_sidebar and show_genres:
             App().window.container.list_two.select_ids([self._data])
         else:
