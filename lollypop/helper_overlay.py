@@ -15,15 +15,13 @@ from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 
 
 class OverlayHelper:
     """
         An overlay helper
     """
-    _pixel_size = App().settings.get_value(
-            "cover-size").get_int32() / 9
 
     def __init__(self):
         """
@@ -32,6 +30,7 @@ class OverlayHelper:
         self._show_overlay = False
         self._lock_overlay = False
         self.__timeout_id = None
+        self._pixel_size = ArtSize.BIG / 9
 
     def lock_overlay(self, lock):
         """
@@ -160,8 +159,7 @@ class OverlayAlbumHelper(OverlayHelper):
                 "media-playback-start-symbolic",
                 Gtk.IconSize.INVALID)
             self._play_button.set_relief(Gtk.ReliefStyle.NONE)
-            self._play_button.get_image().set_pixel_size(
-                OverlayAlbumHelper._pixel_size + 20)
+            self._play_button.get_image().set_pixel_size(self._pixel_size + 20)
             self._play_button.set_property("has-tooltip", True)
             self._play_button.set_tooltip_text(_("Play"))
             self._play_button.connect("realize", self._on_realize)
@@ -182,8 +180,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._artwork_button.set_property("valign", Gtk.Align.END)
             self._artwork_button.connect("realize", self._on_realize)
             self._artwork_button.connect("clicked", self.__on_artwork_clicked)
-            self._artwork_button.get_image().set_pixel_size(
-                OverlayAlbumHelper._pixel_size)
+            self._artwork_button.get_image().set_pixel_size(self._pixel_size)
             self._artwork_button.show()
             # Action button
             self._action_button = Gtk.Button.new()
@@ -194,8 +191,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._action_button.connect("realize", self._on_realize)
             self._action_button.connect("clicked", self.__on_action_clicked)
             self._action_button.set_image(Gtk.Image())
-            self._action_button.get_image().set_pixel_size(
-                OverlayAlbumHelper._pixel_size)
+            self._action_button.get_image().set_pixel_size(self._pixel_size)
             self._action_button.show()
             self._show_append(self._album.id not in App().player.album_ids)
             self._overlay.add_overlay(self._play_button)

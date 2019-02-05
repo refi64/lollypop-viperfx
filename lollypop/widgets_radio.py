@@ -192,14 +192,13 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             self.__play_button.set_property("halign", Gtk.Align.START)
             self.__play_button.connect("realize", self._on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
-            self.__play_button.get_image().set_pixel_size(
-                OverlayHelper._pixel_size + 20)
+            self.__play_button.get_image().set_pixel_size(self._pixel_size +
+                                                          20)
             # Edit button
             self.__artwork_button = Gtk.Button.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__artwork_button.get_image().set_pixel_size(
-                OverlayHelper._pixel_size)
+            self.__artwork_button.get_image().set_pixel_size(self._pixel_size)
             self.__artwork_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__artwork_button.set_property("has-tooltip", True)
             self.__artwork_button.set_tooltip_text(_("Modify radio"))
