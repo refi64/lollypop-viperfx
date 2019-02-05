@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk
 
+from gettext import gettext as _
+
 from lollypop.define import App
 from lollypop.widgets_utils import Popover
 
@@ -54,5 +56,13 @@ class PlaylistEditPopover(Popover):
             Delete playlist
             @param button as Gtk.Button
         """
-        App().playlists.remove(self.__playlist_id)
+        def remove_playlist():
+            App().playlists.remove(self.__playlist_id)
+        from lollypop.app_notification import AppNotification
+        notification = AppNotification(_("Remove this playlist?"),
+                                       [_("Confirm")],
+                                       [remove_playlist])
+        notification.show()
+        App().window.container.add_overlay(notification)
+        notification.set_reveal_child(True)
         self.popdown()
