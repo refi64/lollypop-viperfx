@@ -47,6 +47,10 @@ class PlaylistMenu(Gio.Menu):
                                  self.__on_split_action_change_state)
             App().add_action(split_action)
             self.append(_("Split view"), "app.split_action")
+        remove_action = Gio.SimpleAction(name="remove_pl_action")
+        App().add_action(remove_action)
+        remove_action.connect("activate", self.__on_remove_action_activate)
+        self.append(_("Remove playlist"), "app.remove_pl_action")
 
 #######################
 # PRIVATE             #
@@ -58,6 +62,22 @@ class PlaylistMenu(Gio.Menu):
             @param GLib.Variant
         """
         App().window.container.show_smart_playlist_editor(self.__playlist_id)
+
+    def __on_remove_action_activate(self, action, variant):
+        """
+            Remove playlist
+            @param Gio.SimpleAction
+            @param GLib.Variant
+        """
+        def remove_playlist():
+            App().playlists.remove(self.__playlist_id)
+        from lollypop.app_notification import AppNotification
+        notification = AppNotification(_("Remove this playlist?"),
+                                       [_("Confirm")],
+                                       [remove_playlist])
+        notification.show()
+        App().window.container.add_overlay(notification)
+        notification.set_reveal_child(True)
 
     def __on_save_action_activate(self, action, variant):
         """
