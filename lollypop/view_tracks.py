@@ -74,10 +74,11 @@ class TracksView:
             @thread safe
         """
         if self._responsive_widget is None:
-            self.connect("size-allocate", self.__on_size_allocate)
             if self._list_type & RowListType.DND:
                 self.connect("key-press-event", self.__on_key_press_event)
             self._responsive_widget = Gtk.Grid()
+            self._responsive_widget.connect("size-allocate",
+                                            self.__on_size_allocate)
             self._responsive_widget.set_column_homogeneous(True)
             self._responsive_widget.set_property("valign", Gtk.Align.START)
 
@@ -613,7 +614,7 @@ class TracksView:
         redraw = False
         # We want vertical orientation
         # when not enought place for cover or tracks
-        if allocation.width < Sizing.MONSTER:
+        if allocation.width < Sizing.BIG:
             orientation = Gtk.Orientation.VERTICAL
         else:
             orientation = Gtk.Orientation.HORIZONTAL
