@@ -698,7 +698,7 @@ class Playlists(GObject.GObject):
             @param playlist_id as int
         """
         string = "%s_%s" % (Type.PLAYLISTS, playlist_id)
-        App().art.clean_surface(string)
+        App().art.clean_pixbuf(string)
 
     def __on_parse_finished(self, parser, result, playlist_id, uris):
         """
