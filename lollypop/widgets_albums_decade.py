@@ -43,6 +43,7 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             Populate widget content
         """
         self._lock_overlay = False
+        self.__set_album_ids()
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
@@ -50,22 +51,6 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _get_album_ids(self):
-        """
-            Get ids for widget
-            @return [int]
-        """
-        album_ids = []
-        for year in self._data:
-            album_ids += App().albums.get_albums_for_year(year,
-                                                          self._ALBUMS_COUNT)
-            l = len(album_ids)
-            if l < self._ALBUMS_COUNT:
-                album_ids += App().albums.get_compilations_for_year(
-                                                       year,
-                                                       self._ALBUMS_COUNT)
-        return album_ids
-
     def _show_overlay_func(self, show_overlay):
         """
             Set overlay
@@ -125,6 +110,20 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PRIVATE             #
 #######################
+    def __set_album_ids(self):
+        """
+            Set album ids
+        """
+        for year in self._data:
+            self._album_ids += App().albums.get_albums_for_year(
+                                                          year,
+                                                          self._ALBUMS_COUNT)
+            l = len(self._album_ids)
+            if l < self._ALBUMS_COUNT:
+                self._album_ids += App().albums.get_compilations_for_year(
+                                                       year,
+                                                       self._ALBUMS_COUNT)
+
     def __on_play_clicked(self, button):
         """
             Play decade

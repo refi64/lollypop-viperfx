@@ -55,6 +55,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
             Populate widget content
         """
+        self.__set_album_ids()
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
@@ -78,27 +79,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _get_album_ids(self):
-        """
-            Get ids for widget
-            @return [int]
-        """
-        album_ids = []
-        if App().playlists.get_smart(self._data):
-            request = App().playlists.get_smart_sql(self._data)
-            if request is not None:
-                self.__track_ids = App().db.execute(request)
-        else:
-            self.__track_ids = App().playlists.get_track_ids(self._data)
-        sample(self.__track_ids, len(self.__track_ids))
-        for track_id in self.__track_ids:
-            track = Track(track_id)
-            if track.album.id not in album_ids:
-                album_ids.append(track.album.id)
-            if len(album_ids) == self._ALBUMS_COUNT:
-                break
-        return album_ids
-
     def _show_overlay_func(self, show_overlay):
         """
             Set overlay
@@ -195,6 +175,24 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PRIVATE             #
 #######################
+    def __set_album_ids(self):
+        """
+            Set album ids
+        """
+        if App().playlists.get_smart(self._data):
+            request = App().playlists.get_smart_sql(self._data)
+            if request is not None:
+                self.__track_ids = App().db.execute(request)
+        else:
+            self.__track_ids = App().playlists.get_track_ids(self._data)
+        sample(self.__track_ids, len(self.__track_ids))
+        for track_id in self.__track_ids:
+            track = Track(track_id)
+            if track.album.id not in self._album_ids:
+                self._album_ids.append(track.album.id)
+            if len(self._album_ids) == self._ALBUMS_COUNT:
+                break
+
     def __on_play_clicked(self, button):
         """
             Play playlist
