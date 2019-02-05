@@ -46,6 +46,7 @@ class RowListType:
     READ_ONLY = 1 << 4
     PLAYLISTS = 1 << 5
     POPOVER = 1 << 6
+    MULTIPLE = 1 << 7
 
 
 class ArtSize:

@@ -48,7 +48,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         TracksView.__init__(self, list_type)
         self._widget = None
         self.__width_allocation = 0
-        self._list_type = list_type
         self.connect("size-allocate", self.__on_size_allocate)
 
     def populate(self):
@@ -63,6 +62,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             grid.set_row_spacing(1)
             grid.set_vexpand(True)
             grid.show()
+            self.__header = Gtk.Grid()
+            self.__header.show()
             self.__title_label = Gtk.Label()
             self.__title_label.set_margin_end(10)
             self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -71,13 +72,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__title_label.connect("query-tooltip",
                                        self.__on_query_tooltip)
             self.__title_label.show()
-            self.__artist_label = Gtk.Label()
-            self.__artist_label.set_margin_end(10)
-            self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-            self.__artist_label.set_property("has-tooltip", True)
-            self.__artist_label.connect("query-tooltip",
-                                        self.__on_query_tooltip)
-            self.__artist_label.show()
+            if self._list_type & (RowListType.POPOVER | RowListType.MULTIPLE):
+                self.__artist_label = Gtk.Label()
+                self.__artist_label.set_margin_end(10)
+                self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+                self.__artist_label.set_property("has-tooltip", True)
+                self.__artist_label.connect("query-tooltip",
+                                            self.__on_query_tooltip)
+                self.__artist_label.show()
+                self.__header.add(self.__artist_label)
             self.__year_label = Gtk.Label()
             self.__year_label.set_margin_end(10)
             self.__year_label.get_style_context().add_class("dim-label")
@@ -85,9 +88,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__duration_label = Gtk.Label()
             self.__duration_label.get_style_context().add_class("dim-label")
             self.__duration_label.show()
-            self.__header = Gtk.Grid()
-            self.__header.show()
-            self.__header.add(self.__artist_label)
             self.__header.add(self.__title_label)
             self.__header.add(self.__year_label)
             if not self._list_type & RowListType.POPOVER:
@@ -156,10 +156,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 if App().window.container.stack.get_allocation().width <\
                         Sizing.MEDIUM:
                     self.__coverbox.hide()
-                if len(self._artist_ids) > 1:
-                    self.__artist_label.set_text(
-                        ", ".join(self._album.artists))
-                    self.__artist_label.show()
             else:
                 self._artwork = None
                 loved.set_property("halign", Gtk.Align.END)
@@ -167,14 +163,13 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 self.__header.add(loved)
                 rating.set_hexpand(True)
                 self.__header.add(self.__duration_label)
-                self.__artist_label.set_text(", ".join(self._album.artists))
-                self.__artist_label.show()
             self.__set_duration()
             album_name = GLib.markup_escape_text(self._album.name)
-            artist_name = GLib.markup_escape_text(
-                ", ".join(self._album.artists))
+            if self._list_type & (RowListType.POPOVER | RowListType.MULTIPLE):
+                artist_name = GLib.markup_escape_text(
+                    ", ".join(self._album.artists))
+                self.__artist_label.set_markup("<b>%s</b>" % artist_name)
             self.__title_label.set_markup("<b>%s</b>" % album_name)
-            self.__artist_label.set_markup("<b>%s</b>" % artist_name)
             if self._album.year is not None:
                 self.__year_label.set_label(str(self._album.year))
                 self.__year_label.show()

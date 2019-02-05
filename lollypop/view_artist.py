@@ -33,8 +33,10 @@ class ArtistView(ArtistAlbumsView):
             @param artist id as int (Current if None)
             @param genre id as int
         """
-        ArtistAlbumsView.__init__(self, artist_ids,
-                                  genre_ids, RowListType.TWO_COLUMNS)
+        list_type = RowListType.TWO_COLUMNS
+        if len(artist_ids) > 1:
+            list_type |= RowListType.MULTIPLE
+        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, list_type)
         self.__art_signal_id = None
 
         builder = Gtk.Builder()
