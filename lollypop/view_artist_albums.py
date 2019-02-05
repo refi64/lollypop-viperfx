@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
-from lollypop.define import App
+from lollypop.define import App, RowListType
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
 from lollypop.controller_view import ViewController, ViewControllerType
 
@@ -129,6 +129,15 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             widget.set_filter_func(self._filter_func)
             widget.connect("overlayed", self.on_overlayed)
             widget.set_opacity(1)
+
+    def _on_map(self, widget):
+        """
+            Show button to go back
+            @param widget as Gtk.Widget
+        """
+        if self.__list_type & RowListType.NAVIGATION:
+            App().window.emit("show-can-go-back", True)
+            App().window.emit("can-go-back-changed", True)
 
 #######################
 # PRIVATE             #

@@ -52,15 +52,17 @@ class AlbumWidget:
         """
         self.__filtered = b
 
-    def set_artwork(self):
+    def set_artwork(self, width=ArtSize.BIG, height=ArtSize.BIG):
         """
             Set album artwork
+            @param width as int
+            @param height as int
         """
         if self._artwork is None:
             return
         App().art_helper.set_album_artwork(self._album,
-                                           ArtSize.BIG,
-                                           ArtSize.BIG,
+                                           width,
+                                           height,
                                            self._artwork.get_scale_factor(),
                                            self._on_album_artwork)
 
@@ -112,16 +114,7 @@ class AlbumWidget:
             rect.y = event.y
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
-            popover.connect("closed", self._on_album_popover_closed)
             popover.popup()
-
-    def _on_album_popover_closed(self, popover):
-        """
-            Remove overlay
-            @param popover as Popover
-            @param album_widget as AlbumWidget
-        """
-        self.lock_overlay(False)
 
 #######################
 # PRIVATE             #

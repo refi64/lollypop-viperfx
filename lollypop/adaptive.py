@@ -61,7 +61,6 @@ class AdaptiveStack(Gtk.Stack):
         self.set_vexpand(True)
         self.__visible_child = None
         self.__history = []
-        self.__navigation_enabled = False
 
     def add(self, widget):
         """
@@ -79,13 +78,6 @@ class AdaptiveStack(Gtk.Stack):
         """
         self.__history = []
 
-    def set_navigation_enabled(self, enabled):
-        """
-            Do not destroy views on set_visible_child*()
-            @param enabled as bool
-        """
-        self.__navigation_enabled = enabled
-
     def set_visible_child(self, widget):
         """
             Set visible child in stack
@@ -95,8 +87,6 @@ class AdaptiveStack(Gtk.Stack):
             return
         if self.__visible_child is not None:
             self.__visible_child.stop()
-        if not self.__navigation_enabled and self.__visible_child is not None:
-            self.destroy_child(self.__visible_child)
         self.__visible_child = widget
         Gtk.Stack.set_visible_child(self, widget)
         self.__add_to_history(widget)
@@ -107,8 +97,6 @@ class AdaptiveStack(Gtk.Stack):
             @param widget as Gtk.Widget
             @param name as str
         """
-        if not self.__navigation_enabled and self.__visible_child is not None:
-            self.destroy_child(self.__visible_child)
         self.__visible_child = widget
         Gtk.Stack.set_visible_child_name(self, widget, name)
         self.__add_to_history(widget)
@@ -123,20 +111,12 @@ class AdaptiveStack(Gtk.Stack):
             self.__history.remove(widget)
         Gtk.Stack.remove(self, widget)
 
-    def destroy_non_visible_children(self):
-        """
-            Destroy not visible children
-        """
-        for child in self.get_children():
-            if child != self.__visible_child:
-                child.destroy_later()
-
     def destroy_child(self, widget):
         """
             Destroy child
             @param widget as Gtk.Widget
         """
-        if widget.should_destroy:
+        if widget is not None and widget.should_destroy:
             if widget in self.__history:
                 self.__history.remove(widget)
             widget.destroy_later()

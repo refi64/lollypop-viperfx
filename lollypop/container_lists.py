@@ -227,7 +227,7 @@ class ListsContainer:
             @param list as SelectionList
         """
         Logger.debug("Container::__on_list_one_selected()")
-        self._stack.destroy_non_visible_children()
+        self._stack.destroy_child(self._stack.get_visible_child())
         if App().window.is_adaptive:
             App().window.emit("can-go-back-changed", True)
         else:
@@ -308,7 +308,7 @@ class ListsContainer:
             @param selection_list as SelectionList
         """
         Logger.debug("Container::__on_list_two_selected()")
-        self._stack.destroy_non_visible_children()
+        self._stack.destroy_child(self._stack.get_visible_child())
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
             App().window.emit("can-go-back-changed", False)

@@ -47,6 +47,7 @@ class RowListType:
     PLAYLISTS = 1 << 5
     POPOVER = 1 << 6
     MULTIPLE = 1 << 7
+    NAVIGATION = 1 << 8
 
 
 class ArtSize:
@@ -130,6 +131,7 @@ class Type:
     SETTINGS_WEB = -18
     EQUALIZER = -19
     GENRES = -20
+    ALBUM = -21
     ALL = -100
     CURRENT = -101
     USB_DISKS = -200

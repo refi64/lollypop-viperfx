@@ -10,11 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import GLib
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
-from lollypop.define import ArtSize, App
+from lollypop.define import App, Type
 from lollypop.controller_view import ViewController, ViewControllerType
 
 
@@ -71,25 +71,15 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             return
         # If widget top not on screen, popover will fail to show
         # FIXME: Report a bug and check always true
-        (x, y) = album_widget.translate_coordinates(self._scrolled, 0, 0)
-        if y < 0:
-            y = album_widget.translate_coordinates(self._box, 0, 0)[1]
-            self._scrolled.get_allocation().height + y
-            self._scrolled.get_vadjustment().set_value(y)
-        from lollypop.pop_album import AlbumPopover
-        popover = AlbumPopover(album_widget.album, ArtSize.NONE)
-        popover.set_relative_to(album_widget.artwork)
-        popover.set_position(Gtk.PositionType.BOTTOM)
-        album_widget.show_overlay(False)
-        album_widget.lock_overlay(True)
-        popover.connect("closed", self.__on_album_popover_closed, album_widget)
-        popover.popup()
-        album_widget.artwork.set_opacity(0.9)
+        App().window.container.show_view(Type.ALBUM, album_widget.album)
 
     def _on_map(self, widget):
         """
             Set active ids
         """
+        if App().settings.get_value("show-sidebar"):
+            App().window.emit("can-go-back-changed", False)
+
         if self.__genre_ids:
             App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self.__genre_ids))

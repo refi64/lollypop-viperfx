@@ -47,6 +47,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, list_type)
         self._widget = None
+        self.__art_size = ArtSize.BIG
         self.__width_allocation = 0
         self.connect("size-allocate", self.__on_size_allocate)
 
@@ -56,6 +57,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         if self._widget is None:
             OverlayAlbumHelper.__init__(self)
+            if self._list_type & RowListType.NAVIGATION:
+                self.__art_size *= 1.5
             grid = Gtk.Grid()
             grid.set_margin_start(5)
             grid.set_margin_end(5)
@@ -131,8 +134,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 eventbox.connect("button-press-event", self._on_button_press)
                 eventbox.show()
                 self.set_property("valign", Gtk.Align.CENTER)
-                self._artwork = App().art_helper.get_image(ArtSize.BIG,
-                                                           ArtSize.BIG,
+                self._artwork = App().art_helper.get_image(self.__art_size,
+                                                           self.__art_size,
                                                            "cover-frame")
                 self._artwork.show()
                 eventbox.add(self._artwork)
@@ -180,7 +183,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 self._responsive_widget.show()
             else:
                 grid.add(self.__coverbox)
-                self.set_artwork()
+                self.set_artwork(self.__art_size, self.__art_size)
             grid.add(self._widget)
             self.add(grid)
         else:
@@ -356,7 +359,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.set_size_request(-1, min_height)
         if self._artwork is not None:
             # Use mainloop to let GTK get the event
-            if allocation.width < Sizing.MEDIUM:
+            if allocation.width - self.__art_size < Sizing.MEDIUM:
                 GLib.idle_add(self.__coverbox.hide)
             else:
                 GLib.idle_add(self.__coverbox.show)

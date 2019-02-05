@@ -36,9 +36,7 @@ class PlaylistsContainer:
         view.populate(App().playlists.get_ids())
         view.show()
         self._stack.add(view)
-        App().window.container.stack.set_navigation_enabled(True)
         self._stack.set_visible_child(view)
-        App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
     def show_smart_playlist_editor(self, playlist_id):
@@ -53,9 +51,7 @@ class PlaylistsContainer:
         view.populate()
         view.show()
         self._stack.add(view)
-        App().window.container.stack.set_navigation_enabled(True)
         self._stack.set_visible_child(view)
-        App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
 ##############

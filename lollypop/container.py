@@ -102,7 +102,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             self._list_one.disconnect_by_func(select_list_one)
 
         adaptive_window = App().window.is_adaptive
-        self._stack.set_navigation_enabled(not show or adaptive_window)
         if self._rounded_artists_view is not None:
             self._rounded_artists_view.destroy()
             self._rounded_artists_view = None

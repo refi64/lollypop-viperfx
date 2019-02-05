@@ -38,9 +38,7 @@ class ViewsContainer:
         view.populate(track or App().player.current_track)
         view.show()
         self._stack.add(view)
-        App().window.container.stack.set_navigation_enabled(True)
         self._stack.set_visible_child(view)
-        App().window.container.stack.set_navigation_enabled(False)
         current.disable_overlay()
 
     def show_view(self, item_id, data=None, switch=True):
@@ -62,8 +60,9 @@ class ViewsContainer:
         elif item_id == Type.INFO:
             view = self._get_view_info()
         elif item_id == Type.GENRES:
-            print(data)
             view = self._get_view_albums([data], [])
+        elif item_id == Type.ALBUM:
+            view = self._get_view_album(data)
         elif item_id == Type.YEARS:
             if data is None:
                 view = self._get_view_albums_decades()
@@ -257,6 +256,22 @@ class ViewsContainer:
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()
+        return view
+
+    def _get_view_album(self, album):
+        """
+            Show album
+            @param album as Album
+        """
+        from lollypop.view_artist_albums import ArtistAlbumsView
+        view = ArtistAlbumsView(album.artist_ids, album.genre_ids,
+                                RowListType.TWO_COLUMNS |
+                                RowListType.NAVIGATION)
+        view.set_margin_start(30)
+        view.set_margin_end(30)
+        view.set_margin_top(30)
+        view.set_margin_bottom(30)
+        view.populate([album])
         return view
 
     def _get_view_genres(self):
