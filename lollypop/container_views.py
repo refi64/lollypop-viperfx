@@ -266,7 +266,8 @@ class ViewsContainer:
         from lollypop.view_artist_albums import ArtistAlbumsView
         view = ArtistAlbumsView(album.artist_ids, album.genre_ids,
                                 RowListType.TWO_COLUMNS |
-                                RowListType.NAVIGATION)
+                                RowListType.NAVIGATION |
+                                RowListType.MULTIPLE)
         view.set_margin_start(30)
         view.set_margin_end(30)
         view.set_margin_top(30)
