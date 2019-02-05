@@ -164,6 +164,7 @@ class AppearanceSettingsWidget(Gtk.Bin):
             @param widget as Gtk.Range
         """
         self.__cover_tid = None
+        App().task_helper.run(App().art.clean_all_cache)
         value = widget.get_value()
         App().settings.set_value("cover-size", GLib.Variant("i", value))
         App().art.update_art_size()
