@@ -81,13 +81,14 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self._overlay.add(self._artwork)
         grid.add(self._overlay)
         grid.add(eventbox)
-        self.add(self.__widget)
         self.set_artwork()
         self.set_selection()
         self.__widget.connect("enter-notify-event", self._on_enter_notify)
         self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self._on_button_press)
+        self.__widget.connect("realize", self._on_realize)
         self.connect("destroy", self.__on_destroy)
+        self.add(self.__widget)
 
     def do_get_preferred_width(self):
         """
