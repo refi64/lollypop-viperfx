@@ -122,7 +122,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.get_style_context().add_class("dim-label")
         self.set_artwork()
         self.__action_button = None
-        self.__artists_button = None
         if self.__list_type & RowListType.DND:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "list-remove-symbolic",
@@ -134,22 +133,24 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                     'avatar-default-symbolic',
                     Gtk.IconSize.MENU)
             self.__action_button.set_tooltip_text(_("Go to artist view"))
-        else:
+        elif not self.__list_type & RowListType.POPOVER:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "view-more-symbolic",
                 Gtk.IconSize.MENU)
-        self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__action_button.get_style_context().add_class(
-            "album-menu-button")
-        self.__action_button.get_style_context().add_class(
-            "track-menu-button")
-        self.__action_button.set_property("valign", Gtk.Align.CENTER)
-        self.__action_button.connect("button-release-event",
-                                     self.__on_action_button_release_event)
+        if self.__action_button is not None:
+            self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__action_button.get_style_context().add_class(
+                "album-menu-button")
+            self.__action_button.get_style_context().add_class(
+                "track-menu-button")
+            self.__action_button.set_property("valign", Gtk.Align.CENTER)
+            self.__action_button.connect("button-release-event",
+                                         self.__on_action_button_release_event)
         grid.attach(self._artwork, 0, 0, 1, 2)
         grid.attach(self.__artist_label, 1, 0, 1, 1)
         grid.attach(self.__title_label, 1, 1, 1, 1)
-        grid.attach(self.__action_button, 2, 0, 1, 2)
+        if self.__action_button is not None:
+            grid.attach(self.__action_button, 2, 0, 1, 2)
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
         grid.attach(self.__revealer, 0, 2, 3, 1)
@@ -187,7 +188,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
-            self.__action_button.show()
+            if self.__action_button is not None:
+                self.__action_button.show()
             self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
                 self.set_state_flags(Gtk.StateFlags.VISITED, True)
@@ -198,7 +200,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.__revealer.add(self._responsive_widget)
             self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
-            self.__action_button.hide()
+            if self.__action_button is not None:
+                self.__action_button.hide()
             self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_playing_indicator(self):

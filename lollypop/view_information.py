@@ -150,7 +150,8 @@ class InformationView(BaseView, Gtk.Bin):
                                     self.__artist_artwork.get_scale_factor(),
                                     self.__on_artist_artwork,
                                     ArtHelperEffect.ROUNDED)
-            albums_view = AlbumsListView(RowListType.READ_ONLY)
+            albums_view = AlbumsListView(RowListType.READ_ONLY |
+                                         RowListType.POPOVER)
             albums_view.set_size_request(300, -1)
             albums_view.show()
             albums_view.set_margin_start(5)
