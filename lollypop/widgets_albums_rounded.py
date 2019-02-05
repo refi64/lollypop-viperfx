@@ -40,6 +40,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         self._album_ids = []
         self.__cover_size = art_size / 3
         self.__cancellable = Gio.Cancellable()
+        self._scale_factor = self.get_scale_factor()
         self.connect("unmap", self.__on_unmap)
 
     def populate(self):
@@ -56,13 +57,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
             Set artwork
         """
-        string = "%s_%s" % (self._genre, self._data)
-        surface = App().art.load_surface(string)
-        if surface is None:
-            self._scale_factor = self.get_scale_factor()
-            App().task_helper.run(self._create_surface)
-        else:
-            self.__set_surface(surface)
+        App().task_helper.run(self.__load_surface)
 
     def _create_surface(self):
         """
@@ -89,6 +84,17 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
 #######################
 # PRIVATE             #
 #######################
+    def __load_surface(self):
+        """
+            Load surface from art cache
+        """
+        string = "%s_%s" % (self._genre, self._data)
+        surface = App().art.load_surface(string)
+        if surface is None:
+            self._create_surface()
+        else:
+            self.__set_surface(surface)
+
     def __set_surface(self, surface):
         """
             Set artwork from surface
