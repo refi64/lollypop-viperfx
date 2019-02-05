@@ -64,10 +64,13 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             Get artwork surface
             @return cairo.Surface
         """
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+        surface = cairo.ImageSurface(cairo.FORMAT_RGB24,
                                      self._art_size,
                                      self._art_size)
         ctx = cairo.Context(surface)
+        ctx.rectangle(0, 0, self._art_size, self._art_size)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill()
         shuffle(self._album_ids)
         positions = [(1, 1), (0, 0), (0, 1), (0, 2),
                      (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]
@@ -78,8 +81,14 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             Save surface to cache
             @param surface as cairo.Surface
         """
+        pixbuf = Gdk.pixbuf_get_from_surface(surface,
+                                             0, 0,
+                                             surface.get_width(),
+                                             surface.get_height())
         string = "%s_%s" % (self._genre, self._data)
-        App().art.save_surface(surface, string)
+        App().task_helper.run(App().art.save_pixbuf,
+                              pixbuf,
+                              string)
 
 #######################
 # PRIVATE             #
@@ -89,11 +98,21 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             Load surface from art cache
         """
         string = "%s_%s" % (self._genre, self._data)
-        surface = App().art.load_surface(string)
-        if surface is None:
+        pixbuf = App().art.load_pixbuf(string)
+        if pixbuf is None:
             self._create_surface()
         else:
-            self.__set_surface(surface)
+            GLib.idle_add(self.__set_pixbuf, pixbuf)
+
+    def __set_pixbuf(self, pixbuf):
+        """
+            Set artwork from pixbuf
+            @param pixbuf as Gdk.Pixbuf
+        """
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
+                                                       self._scale_factor,
+                                                       None)
+        self.__set_surface(surface)
 
     def __set_surface(self, surface):
         """
@@ -112,6 +131,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             @param surface as cairo.Surface
             @param ctx as Cairo.context
             @param positions as {}
+            @thread safe
         """
         # Workaround Gdk not being thread safe
         def draw_pixbuf(surface, ctx, pixbuf, positions):
@@ -141,7 +161,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                 GLib.idle_add(draw_pixbuf, surface, ctx, pixbuf, positions)
         else:
             GLib.idle_add(self.__set_surface, surface)
-            self._save_surface(surface)
+            GLib.idle_add(self._save_surface, surface)
 
     def __on_unmap(self, widget):
         """
