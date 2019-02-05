@@ -42,6 +42,7 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             Populate widget content
         """
         self._lock_overlay = False
+        self._album_ids = App().albums.get_ids([], [self._data])
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
@@ -49,13 +50,6 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _get_album_ids(self):
-        """
-            Get ids for widget
-            @return [int]
-        """
-        return App().albums.get_ids([], [self._data])
-
     def _show_overlay_func(self, show_overlay):
         """
             Set overlay
