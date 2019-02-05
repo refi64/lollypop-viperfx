@@ -48,9 +48,6 @@ class AlbumsGenreBoxView(FlowBoxView):
         """
             Set active ids
         """
-        if not App().settings.get_value("show-genres"):
-            App().window.emit("show-can-go-back", True)
-            App().window.emit("can-go-back-changed", True)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.GENRES]))
         App().settings.set_value("state-two-ids",
