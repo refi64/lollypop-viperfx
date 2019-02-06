@@ -6,33 +6,39 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">media-playback-start-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">go-jump-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">list-add-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">system-users-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkGrid" id="buttons">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
-    <property name="column_spacing">10</property>
     <child>
       <object class="GtkEventBox" id="eventbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">start</property>
         <property name="valign">center</property>
         <property name="margin_right">10</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <signal name="button-release-event" handler="_on_label_button_release" swapped="no"/>
         <signal name="realize" handler="_on_label_realize" swapped="no"/>
         <child>
@@ -44,14 +50,15 @@
             <property name="margin_right">2</property>
             <property name="ellipsize">end</property>
             <property name="xalign">0</property>
-            <style>
-              <class name="header-dim"/>
-            </style>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="4"/>
+            </attributes>
           </object>
         </child>
       </object>
       <packing>
-        <property name="left_attach">2</property>
+        <property name="left_attach">1</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
@@ -60,6 +67,10 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">Photo</property>
+        <property name="valign">center</property>
+        <property name="margin_left">20</property>
+        <property name="margin_right">10</property>
+        <property name="vexpand">True</property>
         <signal name="button-release-event" handler="_on_image_button_release" swapped="no"/>
         <signal name="realize" handler="_on_artwork_box_realize" swapped="no"/>
         <child>
@@ -72,7 +83,7 @@
         </child>
       </object>
       <packing>
-        <property name="left_attach">1</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
@@ -80,7 +91,10 @@
       <object class="GtkEventBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="valign">center</property>
         <property name="margin_left">10</property>
+        <property name="margin_right">20</property>
+        <property name="vexpand">True</property>
         <child>
           <object class="GtkBox" id="box-button">
             <property name="visible">True</property>
@@ -90,6 +104,7 @@
             <property name="margin_right">3</property>
             <property name="margin_top">3</property>
             <property name="margin_bottom">4</property>
+            <property name="spacing">20</property>
             <child>
               <object class="GtkButton" id="play-button">
                 <property name="width_request">-1</property>
@@ -166,14 +181,11 @@
                 <property name="position">3</property>
               </packing>
             </child>
-            <style>
-              <class name="linked"/>
-            </style>
           </object>
         </child>
       </object>
       <packing>
-        <property name="left_attach">0</property>
+        <property name="left_attach">2</property>
         <property name="top_attach">0</property>
       </packing>
     </child>

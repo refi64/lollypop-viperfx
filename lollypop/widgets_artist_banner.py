@@ -12,6 +12,9 @@
 
 from gi.repository import Gtk, GLib
 
+from random import choice
+
+from lollypop.objects import Album
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.define import App, ArtSize
 
@@ -66,14 +69,27 @@ class ArtistBannerWidget(Gtk.Overlay):
         if allocation.width == 1 or self.__width == allocation.width:
             return
         self.__width = allocation.width
-        artist = App().artists.get_name(self.__artist_id)
-        App().art_helper.set_artist_artwork(
-                                    artist,
-                                    allocation.width,
-                                    allocation.width,
-                                    self.get_scale_factor(),
-                                    self.__on_artist_artwork,
-                                    ArtHelperEffect.BLUR)
+        if App().settings.get_value("artist-artwork"):
+            artist = App().artists.get_name(self.__artist_id)
+            App().art_helper.set_artist_artwork(
+                                        artist,
+                                        allocation.width,
+                                        allocation.width,
+                                        self.get_scale_factor(),
+                                        self.__on_artist_artwork,
+                                        ArtHelperEffect.BLUR)
+        else:
+            album_ids = App().albums.get_ids([self.__artist_id], [])
+            if album_ids:
+                album_id = choice(album_ids)
+                album = Album(album_id)
+                App().art_helper.set_album_artwork(
+                    album,
+                    allocation.width,
+                    allocation.width,
+                    self.__artwork.get_scale_factor(),
+                    self.__on_artist_artwork,
+                    ArtHelperEffect.BLUR)
 
     def __on_artist_artwork(self, surface):
         """
