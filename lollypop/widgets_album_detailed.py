@@ -12,15 +12,13 @@
 
 from gi.repository import Gtk, GObject, GLib, Pango
 
-from gettext import gettext as _
-
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
-from lollypop.define import Sizing
+from lollypop.utils import get_human_duration
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, ArtSize, ViewType
+from lollypop.define import App, ArtSize, ViewType, Sizing
 
 
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
@@ -30,7 +28,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
     """
     __gsignals__ = {
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
-        "left-loaded": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
@@ -306,16 +303,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         duration = App().albums.get_duration(self._album.id,
                                              self._album.genre_ids)
-        hours = int(duration / 3600)
-        mins = int(duration / 60)
-        if hours > 0:
-            mins -= hours * 60
-            if mins > 0:
-                self.__duration_label.set_text(_("%s h  %s m") % (hours, mins))
-            else:
-                self.__duration_label.set_text(_("%s h") % hours)
-        else:
-            self.__duration_label.set_text(_("%s m") % mins)
+        self.__duration_label.set_text(get_human_duration(duration))
 
     def __on_menu_button_clicked(self, button):
         """

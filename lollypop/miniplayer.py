@@ -16,52 +16,8 @@ from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
-from lollypop.define import App, ArtSize
-
-
-class CoverWidget(Gtk.Bin, InformationController):
-    """
-        Widget showing current album cover
-    """
-
-    def __init__(self):
-        """
-            Init cover widget
-        """
-        Gtk.Bin.__init__(self)
-        InformationController.__init__(self, False, ArtHelperEffect.NONE)
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/CoverWidget.ui")
-        builder.connect_signals(self)
-        self._artwork = builder.get_object("cover")
-        self.add(builder.get_object("widget"))
-        self.__signal_id1 = App().player.connect("current-changed",
-                                                 self.__on_current_changed)
-        self.__on_current_changed(App().player)
-        self.connect("destroy", self.__on_destroy)
-
-    def update_labels(self, *ignore):
-        """
-            No labels here
-        """
-        pass
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_destroy(self, widget):
-        """
-            Remove signal
-            @param widget as Gtk.Widget
-        """
-        App().player.disconnect(self.__signal_id1)
-
-    def __on_current_changed(self, player):
-        """
-            Update controllers
-            @param player as Player
-        """
-        InformationController.on_current_changed(self, ArtSize.BIG, None)
+from lollypop.widgets_cover import CoverWidget
+from lollypop.define import App
 
 
 class MiniPlayer(Gtk.Bin, InformationController,
@@ -201,6 +157,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                                                   Gtk.IconSize.BUTTON)
             if self.__cover_widget is None:
                 self.__cover_widget = CoverWidget()
+                self.__cover_widget.update(App().player.current_track.album)
                 self.__cover_widget.show()
                 self.__revealer_box.pack_start(self.__cover_widget,
                                                True, True, 0)
@@ -230,6 +187,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
         InformationController.on_current_changed(self, self.__width, None)
         ProgressController.on_current_changed(self, player)
         PlaybackController.on_current_changed(self, player)
+        if self.__cover_widget is not None:
+            self.__cover_widget.update(App().player.current_track.album)
 
     def __on_status_changed(self, player):
         """

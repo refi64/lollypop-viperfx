@@ -36,11 +36,10 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         self._genre_ids = genre_ids
         self._album_box = Gtk.Grid()
         self._album_box.set_row_spacing(5)
-        self._album_box.set_property("orientation", Gtk.Orientation.VERTICAL)
+        self._album_box.set_orientation(Gtk.Orientation.VERTICAL)
+        self._album_box.set_property("valign", Gtk.Align.START)
         self._album_box.show()
         self._viewport.add(self._album_box)
-
-        self._album_box.set_property("valign", Gtk.Align.START)
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._scrolled)
         self._overlay.show()

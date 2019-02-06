@@ -23,6 +23,24 @@ from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListMask
 
 
+def get_human_duration(duration):
+    """
+        Get human readable duration
+        @param duration in seconds
+        @return str
+    """
+    hours = int(duration / 3600)
+    mins = int(duration / 60)
+    if hours > 0:
+        mins -= hours * 60
+        if mins > 0:
+            return _("%s h  %s m") % (hours, mins)
+        else:
+            return _("%s h") % hours
+    else:
+        return _("%s m") % mins
+
+
 def get_round_surface(image, scale_factor):
     """
         Get rounded surface from pixbuf

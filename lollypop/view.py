@@ -51,7 +51,7 @@ class View(BaseView, Gtk.Grid):
         Gtk.Grid.__init__(self)
         self._view_type = view_type
         self.__overlayed = None
-        self.set_property("orientation", Gtk.Orientation.VERTICAL)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
 

@@ -53,6 +53,7 @@ class TracksView:
         self._responsive_widget = None
         self._orientation = None
         self.__populated = False
+        self.__allocation_timeout_id = None
         self.__cancellable = Gio.Cancellable()
 
     def set_playing_indicator(self):
@@ -371,6 +372,85 @@ class TracksView:
         if down:
             row.set_next_row(None)
 
+    def __handle_size_allocate(self, allocation):
+        """
+            Change box max/min children
+            @param allocation as Gtk.Allocation
+        """
+        self.__allocation_timeout_id = None
+        # We need an initial orientation but we only need to follow allocation
+        # in TWO_COLUMNS mode
+        if allocation.width != 1 and\
+                not self._view_type & ViewType.TWO_COLUMNS and\
+                self._orientation is not None:
+            return
+        if self._width == allocation.width:
+            return
+        self._width = allocation.width
+        redraw = False
+        # We want vertical orientation
+        # when not enought place for cover or tracks
+        if allocation.width < Sizing.BIG:
+            orientation = Gtk.Orientation.VERTICAL
+        else:
+            orientation = Gtk.Orientation.HORIZONTAL
+        if orientation != self._orientation:
+            self._orientation = orientation
+            redraw = True
+
+        if redraw:
+            for child in self._responsive_widget.get_children():
+                self._responsive_widget.remove(child)
+            # Grid index
+            idx = 0
+            # Disc label width / right box position
+            if orientation == Gtk.Orientation.VERTICAL:
+                width = 1
+                pos = 0
+            else:
+                width = 2
+                pos = 1
+            for disc in self.__discs:
+                show_label = len(self.__discs) > 1
+                disc_names = self._album.disc_names(disc.number)
+                if show_label or disc_names:
+                    if disc_names:
+                        disc_text = ", ".join(disc_names)
+                    elif show_label:
+                        disc_text = _("Disc %s") % disc.number
+                    box = Gtk.Box()
+                    label = Gtk.Label()
+                    label.set_ellipsize(Pango.EllipsizeMode.END)
+                    label.set_text(disc_text)
+                    label.set_property("halign", Gtk.Align.START)
+                    label.get_style_context().add_class("dim-label")
+                    label.show()
+                    indicator = Gtk.Button.new_from_icon_name(
+                        "go-next-symbolic",
+                        Gtk.IconSize.BUTTON)
+                    indicator.get_style_context().add_class("menu-button")
+                    indicator.connect("button-release-event",
+                                      self.__on_indicator_button_release_event,
+                                      box,
+                                      disc)
+                    indicator.show()
+                    box.set_spacing(5)
+                    box.add(label)
+                    box.add(indicator)
+                    box.show()
+                    self._responsive_widget.attach(box, 0, idx, width, 1)
+                    idx += 1
+                self._responsive_widget.attach(
+                              self._tracks_widget_left[disc.number],
+                              0, idx, 1, 1)
+                if orientation == Gtk.Orientation.VERTICAL:
+                    idx += 1
+                if self._view_type & ViewType.TWO_COLUMNS:
+                    self._responsive_widget.attach(
+                               self._tracks_widget_right[disc.number],
+                               pos, idx, 1, 1)
+                idx += 1
+
     def __on_row_destroy(self, row):
         """
             Destroy self if no more row
@@ -603,74 +683,7 @@ class TracksView:
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
-        # We need an initial orientation but we only need to follow allocation
-        # in TWO_COLUMNS mode
-        if not self._view_type & ViewType.TWO_COLUMNS and\
-                self._orientation is not None:
-            return
-        if self._width == allocation.width:
-            return
-        self._width = allocation.width
-        redraw = False
-        # We want vertical orientation
-        # when not enought place for cover or tracks
-        if allocation.width < Sizing.BIG:
-            orientation = Gtk.Orientation.VERTICAL
-        else:
-            orientation = Gtk.Orientation.HORIZONTAL
-        if orientation != self._orientation:
-            self._orientation = orientation
-            redraw = True
-
-        if redraw:
-            for child in self._responsive_widget.get_children():
-                self._responsive_widget.remove(child)
-            # Grid index
-            idx = 0
-            # Disc label width / right box position
-            if orientation == Gtk.Orientation.VERTICAL:
-                width = 1
-                pos = 0
-            else:
-                width = 2
-                pos = 1
-            for disc in self.__discs:
-                show_label = len(self.__discs) > 1
-                disc_names = self._album.disc_names(disc.number)
-                if show_label or disc_names:
-                    if disc_names:
-                        disc_text = ", ".join(disc_names)
-                    elif show_label:
-                        disc_text = _("Disc %s") % disc.number
-                    box = Gtk.Box()
-                    label = Gtk.Label()
-                    label.set_ellipsize(Pango.EllipsizeMode.END)
-                    label.set_text(disc_text)
-                    label.set_property("halign", Gtk.Align.START)
-                    label.get_style_context().add_class("dim-label")
-                    label.show()
-                    indicator = Gtk.Button.new_from_icon_name(
-                        "go-next-symbolic",
-                        Gtk.IconSize.BUTTON)
-                    indicator.get_style_context().add_class("menu-button")
-                    indicator.connect("button-release-event",
-                                      self.__on_indicator_button_release_event,
-                                      box,
-                                      disc)
-                    indicator.show()
-                    box.set_spacing(5)
-                    box.add(label)
-                    box.add(indicator)
-                    box.show()
-                    self._responsive_widget.attach(box, 0, idx, width, 1)
-                    idx += 1
-                self._responsive_widget.attach(
-                              self._tracks_widget_left[disc.number],
-                              0, idx, 1, 1)
-                if orientation == Gtk.Orientation.VERTICAL:
-                    idx += 1
-                if self._view_type & ViewType.TWO_COLUMNS:
-                    self._responsive_widget.attach(
-                               self._tracks_widget_right[disc.number],
-                               pos, idx, 1, 1)
-                idx += 1
+        if self.__allocation_timeout_id is not None:
+            GLib.source_remove(self.__allocation_timeout_id)
+        self.__allocation_timeout_id = GLib.idle_add(
+            self.__handle_size_allocate, allocation)
