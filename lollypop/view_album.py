@@ -14,8 +14,9 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ViewType
+from lollypop.define import App, ViewType, Type
 from lollypop.objects import Album
+from lollypop.utils import remove_static_genres
 from lollypop.view_artist_albums import ArtistAlbumsView
 
 
@@ -32,7 +33,11 @@ class AlbumView(ArtistAlbumsView):
         """
         view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
-        self.__album_ids = App().albums.get_ids(artist_ids, genre_ids)
+        genre_ids = remove_static_genres(genre_ids)
+        if artist_ids and artist_ids[0] == Type.COMPILATIONS:
+            self.__album_ids = App().albums.get_compilation_ids(genre_ids)
+        else:
+            self.__album_ids = App().albums.get_ids(artist_ids, genre_ids)
         self.__label = None
         self._album_box.set_margin_top(30)
         self._album_box.set_margin_start(10)
@@ -55,7 +60,7 @@ class AlbumView(ArtistAlbumsView):
             @param albums as [Album]
         """
         # Remove album from artist albums
-        if albums:
+        if albums and albums[0].id in self.__album_ids:
             self.__album_ids.remove(albums[0].id)
         ArtistAlbumsView.populate(self, albums)
 
