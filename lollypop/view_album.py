@@ -63,6 +63,7 @@ class AlbumView(View, TracksView):
                          (_("Others albums from"), artist))
         self.__label.set_property("halign", Gtk.Align.START)
         self.__label.set_margin_top(30)
+        self.__label.set_margin_start(20)
         self.__label.show()
 
     def populate(self):
@@ -77,6 +78,8 @@ class AlbumView(View, TracksView):
         self.__grid.add(self._responsive_widget)
         self._viewport.add(self.__grid)
         self.add(self._scrolled)
+        self._responsive_widget.set_margin_start(15)
+        self._responsive_widget.set_margin_end(15)
         self._responsive_widget.show()
 
 #######################
@@ -107,6 +110,8 @@ class AlbumView(View, TracksView):
                                            self.__artist_ids,
                                            ViewType.SMALL)
                 others_box.show()
+                others_box.set_margin_start(30)
+                others_box.set_margin_end(30)
                 self.__grid.add(others_box)
                 others_box.populate([Album(id) for id in self.__album_ids])
         else:
