@@ -22,12 +22,9 @@
     <property name="can_focus">False</property>
     <property name="icon_name">system-users-symbolic</property>
   </object>
-  <object class="GtkGrid" id="header">
+  <object class="GtkGrid" id="buttons">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">start</property>
-    <property name="valign">start</property>
-    <property name="margin_right">20</property>
     <property name="orientation">vertical</property>
     <property name="column_spacing">10</property>
     <child>
@@ -181,7 +178,7 @@
       </packing>
     </child>
     <style>
-      <class name="header"/>
+      <class name="black"/>
     </style>
   </object>
 </interface>

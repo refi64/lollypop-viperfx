@@ -14,45 +14,26 @@ from gi.repository import Gtk, GLib
 
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.define import App, ArtSize
-from lollypop.widgets_cover import CoverWidget
-from lollypop.utils import get_human_duration
 
 
-class AlbumBannerWidget(Gtk.Bin):
+class ArtistBannerWidget(Gtk.Overlay):
     """
-        Banner for album
+        Banner for artist
     """
 
-    def __init__(self, album):
+    def __init__(self, artist_id):
         """
-            Init cover widget
-            @param album
+            Init artist banner
+            @param artist_id as int
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Overlay.__init__(self)
         self.__width = 0
+        self.__artist_id = artist_id
         self.__allocation_timeout_id = None
-        self.__album = album
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
-        builder.connect_signals(self)
-        name_label = builder.get_object("name_label")
-        year_label = builder.get_object("year_label")
-        duration_label = builder.get_object("duration_label")
-        name_label.set_text(album.name)
-        year_label.set_text(str(album.year))
-        duration = App().albums.get_duration(self.__album.id,
-                                             self.__album.genre_ids)
-        duration_label.set_text(get_human_duration(duration))
-        self.__artwork = builder.get_object("artwork")
-        self.__grid = builder.get_object("grid")
-        self.__widget = builder.get_object("widget")
-        cover_widget = CoverWidget()
-        cover_widget.update(album)
-        cover_widget.set_margin_start(20)
-        cover_widget.set_margin_top(18)
-        cover_widget.show()
-        self.__grid.attach(cover_widget, 0, 0, 1, 3)
-        self.add(self.__widget)
+        self.__artwork = Gtk.Image()
+        self.__artwork.get_style_context().add_class("black")
+        self.__artwork.show()
+        self.add(self.__artwork)
         self.connect("size-allocate", self.__on_size_allocate)
 
     def do_get_preferred_width(self):
@@ -72,15 +53,6 @@ class AlbumBannerWidget(Gtk.Bin):
 #######################
 # PROTECTED           #
 #######################
-    def _on_menu_button_clicked(self, button):
-        """
-            Show album menu
-            @param button as Gtk.Button
-        """
-        from lollypop.pop_menu import AlbumMenu
-        menu = AlbumMenu(self.__album, True)
-        popover = Gtk.Popover.new_from_model(button, menu)
-        popover.popup()
 
 #######################
 # PRIVATE             #
@@ -94,15 +66,16 @@ class AlbumBannerWidget(Gtk.Bin):
         if allocation.width == 1 or self.__width == allocation.width:
             return
         self.__width = allocation.width
-        App().art_helper.set_album_artwork(
-                self.__album,
-                allocation.width,
-                allocation.width,
-                self.__artwork.get_scale_factor(),
-                self.__on_album_artwork,
-                ArtHelperEffect.BLUR)
+        artist = App().artists.get_name(self.__artist_id)
+        App().art_helper.set_artist_artwork(
+                                    artist,
+                                    allocation.width,
+                                    allocation.width,
+                                    self.get_scale_factor(),
+                                    self.__on_artist_artwork,
+                                    ArtHelperEffect.BLUR)
 
-    def __on_album_artwork(self, surface):
+    def __on_artist_artwork(self, surface):
         """
             Set album artwork
             @param surface as str

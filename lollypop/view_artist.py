@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Pango, GLib
+from gi.repository import Gtk, Gdk, GLib
 
 from gettext import gettext as _
 
@@ -18,6 +18,7 @@ from lollypop.define import App, ArtSize, ViewType
 from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
+from lollypop.widgets_artist_banner import ArtistBannerWidget
 from lollypop.view_artist_albums import ArtistAlbumsView
 from lollypop.logger import Logger
 
@@ -38,33 +39,29 @@ class ArtistView(ArtistAlbumsView):
             view_type |= ViewType.MULTIPLE
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
         self.__art_signal_id = None
-
+        self.__allocation_timeout_id = None
+        self.__width = 0
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
         builder.connect_signals(self)
         self.__artwork = builder.get_object("artwork")
-        self.__artwork_box = builder.get_object("artwork-box")
         self.__label = builder.get_object("artist")
         self.__jump_button = builder.get_object("jump-button")
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__add_button = builder.get_object("add-button")
         self.__play_button = builder.get_object("play-button")
-        self.__grid = builder.get_object("header")
+        banner = ArtistBannerWidget(artist_ids[0])
+        banner.add_overlay(builder.get_object("buttons"))
+        banner.show()
         if App().lastfm is None:
             builder.get_object("lastfm-button").hide()
         elif not get_network_available():
             builder.get_object("lastfm-button").set_sensitive(False)
             builder.get_object("lastfm-button").set_tooltip_text(
                 _("Network access disabled"))
-        self._overlay.add_overlay(self.__grid)
-        self.__empty = Gtk.Grid()
-        self.__empty.show()
-        self._album_box.add(self.__empty)
+        self._album_box.add(banner)
         self._album_box.set_row_spacing(20)
-        self._album_box.set_margin_start(10)
-        self._album_box.set_margin_end(10)
 
-        self.__scale_factor = self.__artwork.get_scale_factor()
         self.__set_artwork()
         self.__on_album_changed(App().player)
         self.__on_lock_changed(App().player)
@@ -94,29 +91,11 @@ class ArtistView(ArtistAlbumsView):
                 break
         if widget is not None:
             y = widget.get_current_ordinate(self._album_box)
-            self._scrolled.get_vadjustment().set_value(
-                y - self.__empty.get_property("height-request"))
+            self._scrolled.get_vadjustment().set_value(y)
 
 #######################
 # PROTECTED           #
 #######################
-    def _on_value_changed(self, adj):
-        """
-            Update scroll value and check for lazy queue
-            @param adj as Gtk.Adjustment
-        """
-        ArtistAlbumsView._on_value_changed(self, adj)
-        if adj.get_value() == adj.get_lower():
-            if self.__artwork.get_visible():
-                self.__artwork_box.show()
-            self.__grid.get_style_context().remove_class("header-borders")
-            self.__grid.get_style_context().add_class("header")
-        else:
-            if self.__artwork.get_visible():
-                self.__artwork_box.hide()
-            self.__grid.get_style_context().add_class("header-borders")
-            self.__grid.get_style_context().remove_class("header")
-
     def _on_label_realize(self, eventbox):
         """
             Change cursor on label
@@ -288,26 +267,6 @@ class ArtistView(ArtistAlbumsView):
 #######################
 # PRIVATE             #
 #######################
-    def __set_header_height(self):
-        """
-            Set header height based on font height and artwork height
-        """
-        # Create an self.__empty widget with header height
-        ctx = self.__label.get_pango_context()
-        layout = Pango.Layout.new(ctx)
-        layout.set_text("a", 1)
-        # Font scale 2
-        font_height = int(layout.get_pixel_size()[1]) * 2
-        if self.__artwork.props.surface is not None:
-            artwork_height = self.__artwork.props.surface.get_height()
-        else:
-            self.__artwork.get_style_context().add_class("artwork-icon")
-            artwork_height = 32
-        if artwork_height > font_height:
-            self.__empty.set_property("height-request", artwork_height)
-        else:
-            self.__empty.set_property("height-request", font_height)
-
     def __set_artwork(self):
         """
             Set artist artwork
@@ -315,17 +274,12 @@ class ArtistView(ArtistAlbumsView):
         if len(self._artist_ids) == 1 and\
                 App().settings.get_value("artist-artwork"):
             artist = App().artists.get_name(self._artist_ids[0])
-            size = ArtSize.ARTIST_SMALL
-            if not App().window.is_adaptive:
-                size *= 2
             App().art_helper.set_artist_artwork(
                                         artist,
-                                        size,
-                                        size,
-                                        self.__artwork.get_scale_factor(),
+                                        ArtSize.BIG,
+                                        ArtSize.BIG,
+                                        self.get_scale_factor(),
                                         self.__on_artist_artwork)
-        else:
-            self.__set_header_height()
 
     def __update_jump_button(self):
         """
@@ -395,10 +349,11 @@ class ArtistView(ArtistAlbumsView):
             @param surface as cairo.Surface
         """
         if surface is None:
-            self.__artwork.set_from_icon_name("avatar-default-symbolic",
+            self.__artwork.set_from_icon_name(
+                                              "avatar-default-symbolic",
                                               Gtk.IconSize.DND)
         else:
             self.__artwork.set_from_surface(surface)
-            self.__artwork.get_style_context().remove_class("artwork-icon")
+            self.__artwork.get_style_context().remove_class(
+                "artwork-icon")
         self.__artwork.show()
-        self.__set_header_height()

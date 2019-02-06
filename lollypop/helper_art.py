@@ -245,6 +245,6 @@ class ArtHelper(GObject.Object):
         if path is not None:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
             if effect & ArtHelperEffect.BLUR:
-                pixbuf = self.__get_blur(pixbuf, width, height)
+                pixbuf = self.__get_blur(pixbuf, width, height, 10)
             return pixbuf
         return None
