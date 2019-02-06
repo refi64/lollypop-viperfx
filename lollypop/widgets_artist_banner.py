@@ -60,6 +60,22 @@ class ArtistBannerWidget(Gtk.Overlay):
 #######################
 # PRIVATE             #
 #######################
+    def __use_album_artwork(self):
+        """
+            Set artwork with album artwork
+        """
+        album_ids = App().albums.get_ids([self.__artist_id], [])
+        if album_ids:
+            album_id = choice(album_ids)
+            album = Album(album_id)
+            App().art_helper.set_album_artwork(
+                album,
+                self.__width,
+                self.__width,
+                self.__artwork.get_scale_factor(),
+                self.__on_album_artwork,
+                ArtHelperEffect.BLUR)
+
     def __handle_size_allocate(self, allocation):
         """
             Change box max/min children
@@ -73,30 +89,30 @@ class ArtistBannerWidget(Gtk.Overlay):
             artist = App().artists.get_name(self.__artist_id)
             App().art_helper.set_artist_artwork(
                                         artist,
-                                        allocation.width,
-                                        allocation.width,
+                                        self.__width,
+                                        self.__width,
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork,
                                         ArtHelperEffect.BLUR)
         else:
-            album_ids = App().albums.get_ids([self.__artist_id], [])
-            if album_ids:
-                album_id = choice(album_ids)
-                album = Album(album_id)
-                App().art_helper.set_album_artwork(
-                    album,
-                    allocation.width,
-                    allocation.width,
-                    self.__artwork.get_scale_factor(),
-                    self.__on_artist_artwork,
-                    ArtHelperEffect.BLUR)
+            self.__use_album_artwork()
 
-    def __on_artist_artwork(self, surface):
+    def __on_album_artwork(self, surface):
         """
             Set album artwork
             @param surface as str
         """
         self.__artwork.set_from_surface(surface)
+
+    def __on_artist_artwork(self, surface):
+        """
+            Set artist artwork
+            @param surface as str
+        """
+        if surface is None:
+            self.__use_album_artwork()
+        else:
+            self.__artwork.set_from_surface(surface)
 
     def __on_size_allocate(self, widget, allocation):
         """
