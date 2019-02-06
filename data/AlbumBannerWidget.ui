@@ -33,6 +33,7 @@
             <property name="can_focus">False</property>
             <property name="margin_left">15</property>
             <property name="ellipsize">end</property>
+            <property name="yalign">0.25</property>
             <attributes>
               <attribute name="weight" value="bold"/>
               <attribute name="scale" value="4"/>
