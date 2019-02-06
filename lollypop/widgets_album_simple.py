@@ -71,7 +71,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__label.set_property("halign", Gtk.Align.CENTER)
         album_name = GLib.markup_escape_text(self._album.name)
         if self.__view_type & ViewType.SMALL:
-            self.__label.set_markup("<b><span alpha='40000'>%s</span></b>" %
+            self.__label.set_markup("<span alpha='40000'>%s</span>" %
                                     album_name)
         else:
             artist_name = GLib.markup_escape_text(", ".join(

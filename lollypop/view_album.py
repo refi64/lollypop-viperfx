@@ -33,12 +33,13 @@ class AlbumView(ArtistAlbumsView):
         view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
         self.__album_ids = App().albums.get_ids(artist_ids, genre_ids)
+        self.__label = None
         if len(self.__album_ids) == 1 or len(artist_ids) != 1:
             return
         artist = App().artists.get_name(artist_ids[0])
         self.__label = Gtk.Label()
         self.__label.set_markup(
-                         '''<span size="x-large" alpha="40000"
+                         '''<span size="large" alpha="40000"
                              weight="bold">%s %s</span>''' %
                          (_("Others albums from"), artist))
         self.__label.set_property("halign", Gtk.Align.START)
@@ -78,7 +79,8 @@ class AlbumView(ArtistAlbumsView):
         ArtistAlbumsView._on_populated(self, widget)
         if widget.is_populated:
             from lollypop.view_albums_box import AlbumsBoxView
-            self._album_box.add(self.__label)
+            if self.__label is not None:
+                self._album_box.add(self.__label)
             others_box = AlbumsBoxView(self._genre_ids,
                                        self._artist_ids,
                                        ViewType.SMALL)
