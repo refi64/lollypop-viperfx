@@ -215,9 +215,11 @@ class ArtHelper(GObject.Object):
             @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
+        cache = False if effect & (ArtHelperEffect.BLUR |
+                                   ArtHelperEffect.BLUR_HARD) else True
         pixbuf = App().art.get_album_artwork(
             album, width, height, scale_factor,
-            not effect & ArtHelperEffect.NO_RATIO)
+            not effect & ArtHelperEffect.NO_RATIO, cache)
         try:
             if effect & ArtHelperEffect.BLUR:
                 pixbuf = self.__get_blur(pixbuf, width, height, 10)
