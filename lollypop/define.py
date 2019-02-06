@@ -49,6 +49,7 @@ class ViewType:
     MULTIPLE = 1 << 7
     NAVIGATION = 1 << 8
     SMALL = 1 << 9
+    SCROLLED = 1 << 10
 
 
 class ArtSize:

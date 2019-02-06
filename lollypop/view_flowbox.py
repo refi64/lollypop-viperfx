@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
-from lollypop.define import App
+from lollypop.define import App, ViewType
 
 
 class FlowBoxView(LazyLoadingView):
@@ -21,12 +21,14 @@ class FlowBoxView(LazyLoadingView):
         Lazy loading FlowBox
     """
 
-    def __init__(self):
+    def __init__(self, view_type=ViewType.SCROLLED):
         """
-            Init decade view
+            Init flowbox view
+            @param view_type as ViewType
         """
         LazyLoadingView.__init__(self, True)
         self._widget_class = None
+        self.__view_type = view_type
         self._items = []
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
@@ -37,11 +39,11 @@ class FlowBoxView(LazyLoadingView):
         self._box.connect("child-activated", self._on_item_activated)
         self._box.show()
 
-        self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.set_property("margin", 5)
-        self._scrolled.set_property("expand", True)
-
-        self.add(self._scrolled)
+        if view_type & ViewType.SCROLLED:
+            self._viewport.set_property("valign", Gtk.Align.START)
+            self._viewport.set_property("margin", 5)
+            self._scrolled.set_property("expand", True)
+            self.add(self._scrolled)
 
     def populate(self, items):
         """
@@ -80,8 +82,11 @@ class FlowBoxView(LazyLoadingView):
             return widget
         else:
             GLib.idle_add(self.lazy_loading)
-            if self._viewport.get_child() is None:
-                self._viewport.add(self._box)
+            if self.__view_type & ViewType.SCROLLED:
+                if self._viewport.get_child() is None:
+                    self._viewport.add(self._box)
+            elif self._box not in self.get_children():
+                self.add(self._box)
         return None
 
     def _on_current_changed(self, player):

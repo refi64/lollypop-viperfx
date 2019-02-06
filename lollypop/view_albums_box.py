@@ -23,14 +23,14 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         Show albums in a box
     """
 
-    def __init__(self, genre_ids, artist_ids, view_type=ViewType.DEFAULT):
+    def __init__(self, genre_ids, artist_ids, view_type=ViewType.SCROLLED):
         """
             Init album view
             @param genre ids as [int]
             @param artist ids as [int]
             @param view_type as ViewType
         """
-        FlowBoxView.__init__(self)
+        FlowBoxView.__init__(self, view_type)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
