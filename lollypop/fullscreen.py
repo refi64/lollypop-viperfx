@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 from datetime import datetime
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, RowListType
+from lollypop.define import App, ArtSize, ViewType
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
@@ -97,7 +97,7 @@ class FullScreen(Gtk.Window, InformationController,
         self.connect("key-release-event", self.__on_key_release_event)
 
         # Add an AlbumListView on the right
-        self.__view = AlbumsListView(RowListType.DND)
+        self.__view = AlbumsListView(ViewType.DND)
         self.__view.get_style_context().add_class("background-opacity")
         self.__view.show()
         self.__revealer.add(self.__view)

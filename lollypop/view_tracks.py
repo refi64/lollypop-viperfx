@@ -21,7 +21,7 @@ from lollypop.widgets_row_track import TrackRow
 from lollypop.objects import Album, Track
 from lollypop.logger import Logger
 from lollypop.utils import get_position_list
-from lollypop.define import App, Type, RowListType
+from lollypop.define import App, Type, ViewType
 
 
 class TracksView:
@@ -42,12 +42,12 @@ class TracksView:
                                (GObject.TYPE_PYOBJECT, GObject.TYPE_PYOBJECT))
     }
 
-    def __init__(self, list_type):
+    def __init__(self, view_type):
         """
             Init widget
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
-        self._list_type = list_type
+        self._view_type = view_type
         self._width = None
         self.__discs = []
         self._responsive_widget = None
@@ -74,7 +74,7 @@ class TracksView:
             @thread safe
         """
         if self._responsive_widget is None:
-            if self._list_type & RowListType.DND:
+            if self._view_type & ViewType.DND:
                 self.connect("key-press-event", self.__on_key_press_event)
             self._responsive_widget = Gtk.Grid()
             self._responsive_widget.connect("size-allocate",
@@ -85,7 +85,7 @@ class TracksView:
             self._tracks_widget_left = {}
             self._tracks_widget_right = {}
 
-            if self._list_type & (RowListType.DND | RowListType.SEARCH):
+            if self._view_type & (ViewType.DND | ViewType.SEARCH):
                 self.__discs = [self._album.one_disc]
             else:
                 self.__discs = self._album.discs
@@ -96,7 +96,7 @@ class TracksView:
             disc = self.__discs_to_load.pop(0)
             disc_number = disc.number
             tracks = get_position_list(disc.tracks, 0)
-            if self._list_type & RowListType.TWO_COLUMNS:
+            if self._view_type & ViewType.TWO_COLUMNS:
                 mid_tracks = int(0.5 + len(tracks) / 2)
                 widgets = {self._tracks_widget_left[disc_number]:
                            tracks[:mid_tracks],
@@ -269,7 +269,7 @@ class TracksView:
     def __linking(self):
         """
             Handle linking between left and right
-            Only used with RowListType.DND
+            Only used with ViewType.DND
         """
         if len(self._tracks_widget_left[0]) == 0 or\
                 len(self._tracks_widget_right[0]) == 0:
@@ -311,7 +311,7 @@ class TracksView:
             self._on_tracks_populated(disc_number)
             self._tracks_widget_left[disc_number].show()
             self._tracks_widget_right[disc_number].show()
-            if self._list_type & RowListType.DND:
+            if self._view_type & ViewType.DND:
                 self.__linking()
             return
 
@@ -319,8 +319,8 @@ class TracksView:
         if not App().settings.get_value("show-tag-tracknumber"):
             track.set_number(position + 1)
         track.set_featuring_ids(self._album.artist_ids)
-        row = TrackRow(track, self._list_type)
-        if self._list_type & RowListType.DND:
+        row = TrackRow(track, self._view_type)
+        if self._view_type & ViewType.DND:
             row.set_previous_row(previous_row)
             if previous_row is not None:
                 previous_row.set_next_row(row)
@@ -461,7 +461,7 @@ class TracksView:
         # If same album, add track to album
         if track.album.id == row.track.album.id:
             position = self.children.index(row)
-            new_row = TrackRow(track, self._list_type)
+            new_row = TrackRow(track, self._view_type)
             new_row.connect("destroy", self.__on_row_destroy)
             new_row.connect("insert-track", self.__on_insert_track)
             new_row.connect("insert-album", self.__on_insert_album)
@@ -605,7 +605,7 @@ class TracksView:
         """
         # We need an initial orientation but we only need to follow allocation
         # in TWO_COLUMNS mode
-        if not self._list_type & RowListType.TWO_COLUMNS and\
+        if not self._view_type & ViewType.TWO_COLUMNS and\
                 self._orientation is not None:
             return
         if self._width == allocation.width:
@@ -669,7 +669,7 @@ class TracksView:
                               0, idx, 1, 1)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
-                if self._list_type & RowListType.TWO_COLUMNS:
+                if self._view_type & ViewType.TWO_COLUMNS:
                     self._responsive_widget.attach(
                                self._tracks_widget_right[disc.number],
                                pos, idx, 1, 1)

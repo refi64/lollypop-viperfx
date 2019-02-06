@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Pango, GLib
 
-from lollypop.define import App, ArtSize, Type, RowListType
+from lollypop.define import App, ArtSize, Type, ViewType
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -36,7 +36,7 @@ class QueueRow(Row, DNDRow):
             Init row widgets
             @param track as Track
         """
-        Row.__init__(self, track, RowListType.READ_ONLY)
+        Row.__init__(self, track, ViewType.READ_ONLY)
         DNDRow.__init__(self)
         self.__filtered = False
         self._grid.insert_row(0)

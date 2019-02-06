@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Pango
 
-from lollypop.define import RowListType
+from lollypop.define import ViewType
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -51,18 +51,18 @@ class TrackRow(Row, DNDRow):
             height = menu_height
         return height
 
-    def __init__(self, track, list_type):
+    def __init__(self, track, view_type):
         """
             Init row widget and show it
             @param track as Track
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
-        Row.__init__(self, track, list_type)
+        Row.__init__(self, track, view_type)
         self.__filtered = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
-        if list_type & RowListType.DND:
+        if view_type & ViewType.DND:
             DNDRow.__init__(self)
 
     @property
@@ -94,7 +94,7 @@ class TrackRow(Row, DNDRow):
             @param widget as Gtk.Widget
         """
         Row._on_destroy(self, widget)
-        if self._list_type & RowListType.DND:
+        if self._view_type & ViewType.DND:
             DNDRow._on_destroy(self, widget)
 
 #######################

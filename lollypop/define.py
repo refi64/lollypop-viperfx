@@ -38,7 +38,7 @@ class GstPlayFlags:
     GST_PLAY_FLAG_TEXT = 1 << 3   # We want subtitle output
 
 
-class RowListType:
+class ViewType:
     DEFAULT = 1 << 0
     TWO_COLUMNS = 1 << 1
     DND = 1 << 2

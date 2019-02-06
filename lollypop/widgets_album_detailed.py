@@ -20,7 +20,7 @@ from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.define import Sizing
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, ArtSize, RowListType
+from lollypop.define import App, ArtSize, ViewType
 
 
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
@@ -34,18 +34,18 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album, genre_ids, artist_ids, list_type):
+    def __init__(self, album, genre_ids, artist_ids, view_type):
         """
             Init detailed album widget
             @param album as Album
             @param label_height as int
             @param genre ids as [int]
             @param artist ids as [int]
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
-        TracksView.__init__(self, list_type)
+        TracksView.__init__(self, view_type)
         self._widget = None
         self.__art_size = ArtSize.BIG
         self.__width_allocation = 0
@@ -57,7 +57,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
         if self._widget is None:
             OverlayAlbumHelper.__init__(self)
-            if self._list_type & RowListType.NAVIGATION:
+            if self._view_type & ViewType.NAVIGATION:
                 self.__art_size *= 1.5
             grid = Gtk.Grid()
             grid.set_margin_start(5)
@@ -75,7 +75,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__title_label.connect("query-tooltip",
                                        self.__on_query_tooltip)
             self.__title_label.show()
-            if self._list_type & (RowListType.POPOVER | RowListType.MULTIPLE):
+            if self._view_type & (ViewType.POPOVER | ViewType.MULTIPLE):
                 self.__artist_label = Gtk.Label()
                 self.__artist_label.set_margin_end(10)
                 self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -93,7 +93,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__duration_label.show()
             self.__header.add(self.__title_label)
             self.__header.add(self.__year_label)
-            if not self._list_type & RowListType.POPOVER:
+            if not self._view_type & ViewType.POPOVER:
                 self.__menu_button = Gtk.Button.new_from_icon_name(
                     "view-more-symbolic", Gtk.IconSize.MENU)
                 self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
@@ -124,7 +124,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             rating.set_margin_end(10)
             rating.show()
 
-            if not self._list_type & RowListType.POPOVER:
+            if not self._view_type & ViewType.POPOVER:
                 self.__header.add(self.__duration_label)
                 self.__duration_label.set_hexpand(True)
                 self.__duration_label.set_property("halign", Gtk.Align.END)
@@ -168,7 +168,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 self.__header.add(self.__duration_label)
             self.__set_duration()
             album_name = GLib.markup_escape_text(self._album.name)
-            if self._list_type & (RowListType.POPOVER | RowListType.MULTIPLE):
+            if self._view_type & (ViewType.POPOVER | ViewType.MULTIPLE):
                 artist_name = GLib.markup_escape_text(
                     ", ".join(self._album.artists))
                 self.__artist_label.set_markup("<b>%s</b>" % artist_name)

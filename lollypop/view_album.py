@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, RowListType
+from lollypop.define import App, ViewType
 from lollypop.objects import Album
 from lollypop.view_artist_albums import ArtistAlbumsView
 
@@ -30,8 +30,8 @@ class AlbumView(ArtistAlbumsView):
             @param artist id as int (Current if None)
             @param genre id as int
         """
-        list_type = RowListType.TWO_COLUMNS | RowListType.MULTIPLE
-        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, list_type)
+        view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
+        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
         self.__album_ids = App().albums.get_ids(artist_ids, genre_ids)
         if len(self.__album_ids) == 1 or len(artist_ids) != 1:
             return
@@ -81,7 +81,7 @@ class AlbumView(ArtistAlbumsView):
             self._album_box.add(self.__label)
             others_box = AlbumsBoxView(self._genre_ids,
                                        self._artist_ids,
-                                       RowListType.SMALL)
+                                       ViewType.SMALL)
             others_box.show()
             self._album_box.add(others_box)
             others_box.populate([Album(id) for id in self.__album_ids])

@@ -17,7 +17,7 @@ from random import shuffle
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App, Type, RowListType
+from lollypop.define import App, Type, ViewType
 from lollypop.controller_view import ViewController, ViewControllerType
 
 
@@ -26,16 +26,16 @@ class PlaylistsView(View, ViewController):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_ids, list_type, editable=True):
+    def __init__(self, playlist_ids, view_type, editable=True):
         """
             Init PlaylistView
             @parma playlist ids as [int]
-            @param list_type as RowListType
+            @param view_type as ViewType
             @param editable as bool
         """
         View.__init__(self, True)
         ViewController.__init__(self, ViewControllerType.ALBUM)
-        self.__list_type = list_type
+        self.__view_type = view_type
         self.__playlist_ids = playlist_ids
         self.__signal_id1 = App().playlists.connect(
                                             "playlist-track-added",
@@ -54,7 +54,7 @@ class PlaylistsView(View, ViewController):
         self.__shuffle_button = builder.get_object("shuffle_button")
         self.__jump_button = builder.get_object("jump_button")
         self.__menu_button = builder.get_object("menu_button")
-        if self.__list_type & RowListType.POPOVER:
+        if self.__view_type & ViewType.POPOVER:
             self.__play_button.hide()
             self.__jump_button.hide()
             self.__shuffle_button.hide()
@@ -65,7 +65,7 @@ class PlaylistsView(View, ViewController):
         self.__duration_label = builder.get_object("duration")
         builder.get_object("title").set_label(
             ", ".join(App().playlists.get_names(playlist_ids)))
-        self.__playlists_widget = PlaylistsWidget(playlist_ids, list_type)
+        self.__playlists_widget = PlaylistsWidget(playlist_ids, view_type)
         self.__playlists_widget.set_filter_func(self._filter_func)
         self.__playlists_widget.connect("populated", self.__on_populated)
         self.__playlists_widget.show()

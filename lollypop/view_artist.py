@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, Pango, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, RowListType
+from lollypop.define import App, ArtSize, ViewType
 from lollypop.utils import get_network_available
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
@@ -33,10 +33,10 @@ class ArtistView(ArtistAlbumsView):
             @param artist id as int (Current if None)
             @param genre id as int
         """
-        list_type = RowListType.TWO_COLUMNS
+        view_type = ViewType.TWO_COLUMNS
         if len(artist_ids) > 1:
-            list_type |= RowListType.MULTIPLE
-        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, list_type)
+            view_type |= ViewType.MULTIPLE
+        ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
         self.__art_signal_id = None
 
         builder = Gtk.Builder()

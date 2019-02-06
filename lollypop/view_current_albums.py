@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.view_albums_list import AlbumsListView
-from lollypop.define import App, RowListType
+from lollypop.define import App, ViewType
 
 
 class CurrentAlbumsView(AlbumsListView):
@@ -27,7 +27,7 @@ class CurrentAlbumsView(AlbumsListView):
         """
             Init popover
         """
-        AlbumsListView.__init__(self, RowListType.DND | RowListType.POPOVER)
+        AlbumsListView.__init__(self, ViewType.DND | ViewType.POPOVER)
         self.__clear_button = Gtk.Button.new_from_icon_name(
             "edit-clear-all-symbolic",
             Gtk.IconSize.MENU)

@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gio, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, RowListType
+from lollypop.define import App, ArtSize, ViewType
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
@@ -150,8 +150,8 @@ class InformationView(BaseView, Gtk.Bin):
                                     self.__artist_artwork.get_scale_factor(),
                                     self.__on_artist_artwork,
                                     ArtHelperEffect.ROUNDED)
-            albums_view = AlbumsListView(RowListType.READ_ONLY |
-                                         RowListType.POPOVER)
+            albums_view = AlbumsListView(ViewType.READ_ONLY |
+                                         ViewType.POPOVER)
             albums_view.set_size_request(300, -1)
             albums_view.show()
             albums_view.set_margin_start(5)

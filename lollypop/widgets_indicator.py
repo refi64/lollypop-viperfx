@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, RowListType
+from lollypop.define import App, ViewType
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -24,15 +24,15 @@ class IndicatorWidget(Gtk.EventBox):
         playlists
     """
 
-    def __init__(self, row, list_type):
+    def __init__(self, row, view_type):
         """
             Init indicator widget, ui will be set when needed
             @param row as Row
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
         Gtk.EventBox.__init__(self)
         self.__row = row
-        self.__list_type = list_type
+        self.__view_type = view_type
         self.__pass = 1
         self.__timeout_id = None
         self.__button = None
@@ -51,7 +51,7 @@ class IndicatorWidget(Gtk.EventBox):
         self.__stack.set_visible_child_name("button")
         if not self.__button.get_sensitive():
             pass
-        elif self.__list_type & RowListType.PLAYLISTS:
+        elif self.__view_type & ViewType.PLAYLISTS:
             self.__button.set_tooltip_text(_("Remove from playlist"))
             self.__image.set_from_icon_name("list-remove-symbolic",
                                             Gtk.IconSize.MENU)
@@ -137,7 +137,7 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
         self.__button.get_style_context().add_class("menu-button")
         self.__button.get_style_context().add_class("track-menu-button")
-        if self.__list_type & RowListType.READ_ONLY or App().librem:
+        if self.__view_type & ViewType.READ_ONLY or App().librem:
             self.__button.set_sensitive(False)
             self.__button.set_opacity(0)
         self.__button.connect("button-release-event",
@@ -179,7 +179,7 @@ class IndicatorWidget(Gtk.EventBox):
             @param event as Gdk.EventButton
         """
         if self.__image.get_icon_name()[0] == "list-remove-symbolic":
-            if self.__list_type & RowListType.DND:
+            if self.__view_type & ViewType.DND:
                 self.__row.emit("remove-track")
                 ancestor = self.get_ancestor(Gtk.ListBoxRow)
                 if ancestor is not None:

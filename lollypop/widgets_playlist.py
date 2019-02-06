@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GObject
 
 from collections import OrderedDict
 
-from lollypop.define import App, Type, Sizing, RowListType
+from lollypop.define import App, Type, Sizing, ViewType
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
@@ -29,18 +29,18 @@ class PlaylistsWidget(Gtk.Grid):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, playlist_ids, list_type):
+    def __init__(self, playlist_ids, view_type):
         """
             Init playlist Widget
             @param playlist ids as [int]
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
         Gtk.Grid.__init__(self)
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__cancellable = Gio.Cancellable()
         self.__playlist_ids = playlist_ids
-        self.__list_type = list_type
+        self.__view_type = view_type
         self.__duration = 0 if playlist_ids[0] < 0 else None
         self.__tracks = {}
         self.__row_tracks_left = []
@@ -104,7 +104,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         # We reset width here to allow size allocation code to run
         self.__width = None
-        if self.__list_type & RowListType.TWO_COLUMNS:
+        if self.__view_type & ViewType.TWO_COLUMNS:
             # We are looking for middle
             # Ponderate with this:
             # Tracks with cover == 2
@@ -138,7 +138,7 @@ class PlaylistsWidget(Gtk.Grid):
             tracks = get_position_list(tracks, 0)
             widgets = {self.__tracks_widget_left: tracks}
             self.__add_tracks(OrderedDict(widgets))
-        if self.__list_type & RowListType.DND:
+        if self.__view_type & ViewType.DND:
             self.connect("key-press-event", self.__on_key_press_event)
 
     def set_playing_indicator(self):
@@ -269,14 +269,14 @@ class PlaylistsWidget(Gtk.Grid):
 
         if not tracks:
             self.emit("populated")
-            if not self.__list_type & RowListType.TWO_COLUMNS:
+            if not self.__view_type & ViewType.TWO_COLUMNS:
                 self.__linking(True)
             return
         (track, position) = tracks.pop(0)
         track.set_number(position + 1)
         if self.__duration is not None:
             self.__duration += track.duration
-        row = PlaylistRow(track, self.__list_type)
+        row = PlaylistRow(track, self.__view_type)
         children = widget.get_children()
         previous_row = children[-1] if children else None
         row.set_previous_row(previous_row)
@@ -352,7 +352,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         position = self.children.index(row)
         track = Track(new_track_id)
-        new_row = PlaylistRow(track, self.__list_type)
+        new_row = PlaylistRow(track, self.__view_type)
         new_row.connect("insert-track", self.__on_insert_track)
         new_row.connect("remove-track", self.__on_remove_track)
         new_row.connect("do-selection", self.__on_do_selection)

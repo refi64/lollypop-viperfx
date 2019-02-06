@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Pango, GLib
 
-from lollypop.define import App, ArtSize, Type, RowListType
+from lollypop.define import App, ArtSize, Type, ViewType
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
@@ -31,14 +31,14 @@ class PlaylistRow(Row, DNDRow):
             GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, track, list_type):
+    def __init__(self, track, view_type):
         """
             Init row widget
             @param track as Track
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
-        Row.__init__(self, track, list_type)
-        if list_type & RowListType.DND:
+        Row.__init__(self, track, view_type)
+        if view_type & ViewType.DND:
             DNDRow.__init__(self)
         self.__filtered = False
         self._grid.insert_row(0)

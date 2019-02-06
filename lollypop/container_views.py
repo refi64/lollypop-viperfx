@@ -13,7 +13,7 @@
 from lollypop.shown import ShownLists
 from lollypop.loader import Loader
 from lollypop.objects import Track, Album
-from lollypop.define import App, Type, RowListType, SelectionListMask, ArtSize
+from lollypop.define import App, Type, ViewType, SelectionListMask, ArtSize
 
 
 class ViewsContainer:
@@ -141,23 +141,23 @@ class ViewsContainer:
             return tracks
 
         if App().window.is_adaptive:
-            list_type = RowListType.DND
+            view_type = ViewType.DND
         else:
-            list_type = RowListType.TWO_COLUMNS |\
-                        RowListType.DND |\
-                        RowListType.PLAYLISTS
+            view_type = ViewType.TWO_COLUMNS |\
+                        ViewType.DND |\
+                        ViewType.PLAYLISTS
         if len(playlist_ids) == 1 and\
                 App().playlists.get_smart(playlist_ids[0]):
             from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(playlist_ids, list_type)
+            view = PlaylistsView(playlist_ids, view_type)
             view.show()
             loader = Loader(target=load_smart, view=view)
             loader.start()
         elif playlist_ids:
             from lollypop.view_playlists import PlaylistsView
             if len(playlist_ids) > 1:
-                list_type |= RowListType.READ_ONLY
-            view = PlaylistsView(playlist_ids, list_type)
+                view_type |= ViewType.READ_ONLY
+            view = PlaylistsView(playlist_ids, view_type)
             view.show()
             loader = Loader(target=load, view=view)
             loader.start()
@@ -222,7 +222,7 @@ class ViewsContainer:
                     for album_id in items]
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, artist_ids, genre_ids)
+            view = AlbumsListView(ViewType.DEFAULT, artist_ids, genre_ids)
         else:
             from lollypop.view_artist import ArtistView
             view = ArtistView(artist_ids, genre_ids)
@@ -299,7 +299,7 @@ class ViewsContainer:
                     for album_id in items]
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, years, [Type.YEARS])
+            view = AlbumsListView(ViewType.DEFAULT, years, [Type.YEARS])
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView([Type.YEARS], years)
@@ -350,7 +350,7 @@ class ViewsContainer:
 
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(RowListType.DEFAULT, genre_ids, artist_ids)
+            view = AlbumsListView(ViewType.DEFAULT, genre_ids, artist_ids)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView(genre_ids, artist_ids)
@@ -410,7 +410,7 @@ class ViewsContainer:
         if App().player.playlist_ids:
             from lollypop.view_playlists import PlaylistsView
             view = PlaylistsView(App().player.playlist_ids,
-                                 RowListType.DND | RowListType.POPOVER,
+                                 ViewType.DND | ViewType.POPOVER,
                                  False)
             view.populate(App().player.playlist_tracks)
         else:

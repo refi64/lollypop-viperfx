@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
-from lollypop.define import App, ArtSize, Shuffle, RowListType
+from lollypop.define import App, ArtSize, Shuffle, ViewType
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
@@ -35,19 +35,19 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
     LABEL_HEIGHT = int(layout.get_pixel_size()[1])
 
     def __init__(self, album, genre_ids, artist_ids,
-                 list_type=RowListType.DEFAULT):
+                 view_type=ViewType.DEFAULT):
         """
             Init simple album widget
             @param album as Album
             @param genre ids as [int]
             @param artist_ids as [int]
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
         self.__widget = None
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
-        self.__list_type = list_type
-        if self.__list_type & RowListType.SMALL:
+        self.__view_type = view_type
+        if self.__view_type & ViewType.SMALL:
             self.__art_size = ArtSize.LARGE
         else:
             self.__art_size = ArtSize.BIG
@@ -70,7 +70,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_property("halign", Gtk.Align.CENTER)
         album_name = GLib.markup_escape_text(self._album.name)
-        if self.__list_type & RowListType.SMALL:
+        if self.__view_type & ViewType.SMALL:
             self.__label.set_markup("<b><span alpha='40000'>%s</span></b>" %
                                     album_name)
         else:
@@ -101,7 +101,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         grid.add(eventbox)
         self.set_artwork(self.__art_size, self.__art_size)
         self.set_selection()
-        if not self.__list_type & RowListType.SMALL:
+        if not self.__view_type & ViewType.SMALL:
             self.__widget.connect("enter-notify-event", self._on_enter_notify)
             self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self._on_button_press)

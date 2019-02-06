@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
-from lollypop.define import ArtSize, App, RowListType
+from lollypop.define import ArtSize, App, ViewType
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -57,25 +57,25 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         else:
             return cover_height + 2
 
-    def __init__(self, album, height, list_type, reveal, parent):
+    def __init__(self, album, height, view_type, reveal, parent):
         """
             Init row widgets
             @param album as Album
             @param height as int
-            @param list_type as RowListType
+            @param view_type as ViewType
             @param reveal as bool
             @param parent as AlbumListView
         """
         Gtk.ListBoxRow.__init__(self)
-        TracksView.__init__(self, list_type)
-        if list_type & RowListType.DND:
+        TracksView.__init__(self, view_type)
+        if view_type & ViewType.DND:
             DNDRow.__init__(self)
         self.__revealer = None
         self.__parent = parent
         self.__reveal = reveal
         self._artwork = None
         self._album = album
-        self.__list_type = list_type
+        self.__view_type = view_type
         self.__play_indicator = None
         self.set_sensitive(False)
         self.set_property("height-request", height)
@@ -122,18 +122,18 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.get_style_context().add_class("dim-label")
         self.set_artwork()
         self.__action_button = None
-        if self.__list_type & RowListType.DND:
+        if self.__view_type & ViewType.DND:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "list-remove-symbolic",
                 Gtk.IconSize.MENU)
             self.__action_button.set_tooltip_text(
                 _("Remove from current playlist"))
-        elif self.__list_type & RowListType.SEARCH:
+        elif self.__view_type & ViewType.SEARCH:
             self.__action_button = Gtk.Button.new_from_icon_name(
                     'avatar-default-symbolic',
                     Gtk.IconSize.MENU)
             self.__action_button.set_tooltip_text(_("Go to artist view"))
-        elif not self.__list_type & RowListType.POPOVER:
+        elif not self.__view_type & ViewType.POPOVER:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "view-more-symbolic",
                 Gtk.IconSize.MENU)
@@ -319,20 +319,20 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param event as Gdk.Event
         """
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
-                self.__list_type & RowListType.DND:
+                self.__view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
                 self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
                 self.set_state_flags(Gtk.StateFlags.SELECTED, True)
         elif event.state & Gdk.ModifierType.SHIFT_MASK and\
-                self.__list_type & RowListType.DND:
+                self.__view_type & ViewType.DND:
             self.emit("do-selection")
         else:
             self.reveal()
 
     def __on_action_button_release_event(self, button, event):
         """
-            RowListType.SEARCH: Play album
+            ViewType.SEARCH: Play album
             Else: Delete album
             @param button as Gtk.Button
             @param event as Gdk.Event
@@ -340,7 +340,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
 
-        if self.__list_type & RowListType.DND:
+        if self.__view_type & ViewType.DND:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(App().player.albums) > 1:
@@ -408,16 +408,16 @@ class AlbumsListView(LazyLoadingView, ViewController):
         View showing albums
     """
 
-    def __init__(self, list_type, artist_ids=[], genre_ids=[]):
+    def __init__(self, view_type, artist_ids=[], genre_ids=[]):
         """
             Init widget
-            @param list_type as RowListType
+            @param view_type as ViewType
             @param artist_ids as int
             @param genre_ids as int
         """
         LazyLoadingView.__init__(self, True)
         ViewController.__init__(self, ViewControllerType.ALBUM)
-        self.__list_type = list_type
+        self.__view_type = view_type
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
         self.__autoscroll_timeout_id = None
@@ -608,7 +608,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album as Album
             @param reveal as bool
         """
-        row = AlbumRow(album, self.__height, self.__list_type, reveal, self)
+        row = AlbumRow(album, self.__height, self.__view_type, reveal, self)
         row.connect("insert-track", self.__on_insert_track)
         row.connect("insert-album", self.__on_insert_album)
         row.connect("insert-album-after", self.__on_insert_album_after)

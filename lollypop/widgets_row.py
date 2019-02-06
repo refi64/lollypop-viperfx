@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Pango, GLib, Gst, Gdk
 
-from lollypop.define import App, RowListType
+from lollypop.define import App, ViewType
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.utils import seconds_to_string
 
@@ -22,21 +22,21 @@ class Row(Gtk.ListBoxRow):
         A row
     """
 
-    def __init__(self, track, list_type):
+    def __init__(self, track, view_type):
         """
             Init row widgets
             @param track as Track
-            @param list_type as RowListType
+            @param view_type as ViewType
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
-        self._list_type = list_type
+        self._view_type = view_type
         self._artists_label = None
         self._track = track
         self.__preview_timeout_id = None
         self.__context_timeout_id = None
         self.__context = None
-        self._indicator = IndicatorWidget(self, list_type)
+        self._indicator = IndicatorWidget(self, view_type)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("destroy", self._on_destroy)
         self._row_widget.connect("button-release-event",
@@ -86,9 +86,9 @@ class Row(Gtk.ListBoxRow):
         self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__menu_button.get_style_context().add_class("menu-button")
         self.__menu_button.get_style_context().add_class("track-menu-button")
-        if list_type & (RowListType.READ_ONLY |
-                        RowListType.POPOVER |
-                        RowListType.SEARCH):
+        if view_type & (ViewType.READ_ONLY |
+                        ViewType.POPOVER |
+                        ViewType.SEARCH):
             self.__menu_button.set_opacity(0)
             self.__menu_button.set_sensitive(False)
         self._grid.add(self._num_label)
@@ -308,14 +308,14 @@ class Row(Gtk.ListBoxRow):
             @param event as Gdk.EventButton
         """
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
-                self._list_type & RowListType.DND:
+                self._view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
                 self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
                 self.set_state_flags(Gtk.StateFlags.SELECTED, True)
                 self.grab_focus()
         elif event.state & Gdk.ModifierType.SHIFT_MASK and\
-                self._list_type & RowListType.DND:
+                self._view_type & ViewType.DND:
             self.emit("do-selection")
         elif event.button == 3:
             window = widget.get_window()
