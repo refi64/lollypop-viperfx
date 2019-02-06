@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
-from lollypop.define import App, ArtSize, Shuffle
+from lollypop.define import App, ArtSize, Shuffle, RowListType
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
@@ -34,17 +34,25 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
     # * 2 => two labels
     LABEL_HEIGHT = int(layout.get_pixel_size()[1])
 
-    def __init__(self, album, genre_ids, artist_ids):
+    def __init__(self, album, genre_ids, artist_ids,
+                 list_type=RowListType.DEFAULT):
         """
             Init simple album widget
             @param album as Album
             @param genre ids as [int]
             @param artist_ids as [int]
+            @param list_type as RowListType
         """
         self.__widget = None
         # We do not use Gtk.Builder for speed reasons
         Gtk.FlowBoxChild.__init__(self)
-        self.set_size_request(ArtSize.BIG, ArtSize.BIG + self.LABEL_HEIGHT)
+        self.__list_type = list_type
+        if self.__list_type & RowListType.SMALL:
+            self.__art_size = ArtSize.LARGE
+        else:
+            self.__art_size = ArtSize.BIG
+        self.set_size_request(self.__art_size,
+                              self.__art_size + self.LABEL_HEIGHT)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
 
     def populate(self):
@@ -62,9 +70,15 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_property("halign", Gtk.Align.CENTER)
         album_name = GLib.markup_escape_text(self._album.name)
-        artist_name = GLib.markup_escape_text(", ".join(self._album.artists))
-        self.__label.set_markup("<b>%s</b>\n<span alpha='40000'>%s</span>" %
-                                (album_name, artist_name))
+        if self.__list_type & RowListType.SMALL:
+            self.__label.set_markup("<b><span alpha='40000'>%s</span></b>" %
+                                    album_name)
+        else:
+            artist_name = GLib.markup_escape_text(", ".join(
+                                                  self._album.artists))
+            self.__label.set_markup(
+                "<b>%s</b>\n<span alpha='40000'>%s</span>" % (album_name,
+                                                              artist_name))
         eventbox = Gtk.EventBox()
         eventbox.add(self.__label)
         eventbox.set_property("has-tooltip", True)
@@ -75,16 +89,21 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         eventbox.show()
         self.__widget.add(grid)
         self._overlay = Gtk.Overlay.new()
-        self._artwork = App().art_helper.get_image(ArtSize.BIG,
-                                                   ArtSize.BIG,
-                                                   "cover-frame")
+        if self.__art_size < ArtSize.BIG:
+            frame = "small-cover-frame"
+        else:
+            frame = "cover-frame"
+        self._artwork = App().art_helper.get_image(self.__art_size,
+                                                   self.__art_size,
+                                                   frame)
         self._overlay.add(self._artwork)
         grid.add(self._overlay)
         grid.add(eventbox)
-        self.set_artwork()
+        self.set_artwork(self.__art_size, self.__art_size)
         self.set_selection()
-        self.__widget.connect("enter-notify-event", self._on_enter_notify)
-        self.__widget.connect("leave-notify-event", self._on_leave_notify)
+        if not self.__list_type & RowListType.SMALL:
+            self.__widget.connect("enter-notify-event", self._on_enter_notify)
+            self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self._on_button_press)
         self.__widget.connect("realize", self._on_realize)
         self.connect("destroy", self.__on_destroy)

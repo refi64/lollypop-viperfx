@@ -10,11 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Gtk
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
-from lollypop.define import App, Type
+from lollypop.define import App, Type, RowListType
 from lollypop.controller_view import ViewController, ViewControllerType
 
 
@@ -23,17 +23,22 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         Show albums in a box
     """
 
-    def __init__(self, genre_ids, artist_ids):
+    def __init__(self, genre_ids, artist_ids, list_type=RowListType.DEFAULT):
         """
             Init album view
             @param genre ids as [int]
             @param artist ids as [int]
+            @param list_type as RowListType
         """
         FlowBoxView.__init__(self)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
+        self.__list_type = list_type
+        if list_type & RowListType.SMALL:
+            self._scrolled.set_policy(Gtk.PolicyType.NEVER,
+                                      Gtk.PolicyType.NEVER)
 
 #######################
 # PROTECTED           #
@@ -45,7 +50,9 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param album ids as [int]
         """
         widget = FlowBoxView._add_items(self, album_ids,
-                                        self.__genre_ids, self.__artist_ids)
+                                        self.__genre_ids,
+                                        self.__artist_ids,
+                                        self.__list_type)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
@@ -65,7 +72,8 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param flowbox as Gtk.Flowbox
             @param album_widget as AlbumSimpleWidget
         """
-        if FlowBoxView._on_item_activated(self, flowbox, album_widget):
+        if not self.__list_type & RowListType.SMALL and\
+                FlowBoxView._on_item_activated(self, flowbox, album_widget):
             return
         if album_widget.artwork is None:
             return
@@ -77,7 +85,8 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Set active ids
         """
-        if App().settings.get_value("show-sidebar"):
+        if App().settings.get_value("show-sidebar") and\
+                not self.__list_type & RowListType.SMALL:
             App().window.emit("can-go-back-changed", False)
 
         if self.__genre_ids:

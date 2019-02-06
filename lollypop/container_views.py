@@ -263,15 +263,11 @@ class ViewsContainer:
             Show album
             @param album as Album
         """
-        from lollypop.view_artist_albums import ArtistAlbumsView
-        view = ArtistAlbumsView(album.artist_ids, album.genre_ids,
-                                RowListType.TWO_COLUMNS |
-                                RowListType.NAVIGATION |
-                                RowListType.MULTIPLE)
-        view.set_margin_start(30)
-        view.set_margin_end(30)
+        from lollypop.view_album import AlbumView
+        view = AlbumView(album.artist_ids, album.genre_ids)
+        view.set_margin_start(10)
         view.set_margin_top(30)
-        view.set_margin_bottom(30)
+        view.set_margin_end(10)
         view.populate([album])
         return view
 

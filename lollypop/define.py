@@ -48,6 +48,7 @@ class RowListType:
     POPOVER = 1 << 6
     MULTIPLE = 1 << 7
     NAVIGATION = 1 << 8
+    SMALL = 1 << 9
 
 
 class ArtSize:
