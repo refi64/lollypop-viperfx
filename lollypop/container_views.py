@@ -265,9 +265,6 @@ class ViewsContainer:
         """
         from lollypop.view_album import AlbumView
         view = AlbumView(album.artist_ids, album.genre_ids)
-        view.set_margin_start(10)
-        view.set_margin_top(30)
-        view.set_margin_end(10)
         view.populate([album])
         return view
 

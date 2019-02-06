@@ -34,6 +34,9 @@ class AlbumView(ArtistAlbumsView):
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
         self.__album_ids = App().albums.get_ids(artist_ids, genre_ids)
         self.__label = None
+        self._album_box.set_margin_top(30)
+        self._album_box.set_margin_start(10)
+        self._album_box.set_margin_end(10)
         if len(self.__album_ids) == 1 or len(artist_ids) != 1:
             return
         artist = App().artists.get_name(artist_ids[0])
