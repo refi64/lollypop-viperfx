@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
-from lollypop.define import App
+from lollypop.define import App, ViewType
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
 from lollypop.controller_view import ViewController, ViewControllerType
 
@@ -30,11 +30,10 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             @param genre ids as [int]
             @param view_type as ViewType
         """
-        LazyLoadingView.__init__(self, True)
+        LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
-        self.__view_type = view_type
         self._album_box = Gtk.Grid()
         self._album_box.set_row_spacing(5)
         self._album_box.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -146,7 +145,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             widget = AlbumDetailedWidget(album,
                                          self._genre_ids,
                                          self._artist_ids,
-                                         self.__view_type)
+                                         self._view_type)
             widget.set_opacity(0)
             widget.show()
             self._lazy_queue.append(widget)

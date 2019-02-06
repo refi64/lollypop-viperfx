@@ -50,6 +50,7 @@ class ViewType:
     NAVIGATION = 1 << 8
     SMALL = 1 << 9
     SCROLLED = 1 << 10
+    FILTERED = 1 << 11
 
 
 class ArtSize:

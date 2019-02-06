@@ -26,9 +26,8 @@ class FlowBoxView(LazyLoadingView):
             Init flowbox view
             @param view_type as ViewType
         """
-        LazyLoadingView.__init__(self, True)
+        LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
         self._widget_class = None
-        self.__view_type = view_type
         self._items = []
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
@@ -82,7 +81,7 @@ class FlowBoxView(LazyLoadingView):
             return widget
         else:
             GLib.idle_add(self.lazy_loading)
-            if self.__view_type & ViewType.SCROLLED:
+            if self._view_type & ViewType.SCROLLED:
                 if self._viewport.get_child() is None:
                     self._viewport.add(self._box)
             elif self._box not in self.get_children():

@@ -29,7 +29,7 @@ class SmartPlaylistView(View):
             Init PlaylistView
             @param playlist_id as int
         """
-        View.__init__(self, False)
+        View.__init__(self)
         self.__playlist_id = playlist_id
         self.__size_group = Gtk.SizeGroup()
         self.__size_group.set_mode(Gtk.SizeGroupMode.BOTH)

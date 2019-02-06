@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib
 
 from time import time
 
+from lollypop.define import ViewType
 from lollypop.logger import Logger
 from lollypop.adaptive import AdaptiveView
 
@@ -41,19 +42,20 @@ class View(BaseView, Gtk.Grid):
         Generic view
     """
 
-    def __init__(self, filtered=False):
+    def __init__(self, view_type=ViewType.DEFAULT):
         """
             Init view
-            @param filtered as bool
+            @param view_type as ViewType
         """
         BaseView.__init__(self)
         Gtk.Grid.__init__(self)
+        self._view_type = view_type
         self.__overlayed = None
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
 
-        if filtered:
+        if view_type & ViewType.FILTERED:
             self._filter = ""
             grid = Gtk.Grid()
             grid.set_column_spacing(2)
@@ -221,12 +223,12 @@ class LazyLoadingView(View):
         Lazy loading for view
     """
 
-    def __init__(self, filtered=False):
+    def __init__(self, view_type=ViewType.DEFAULT):
         """
             Init lazy loading
-            @param filtered as bool
+            @param view_type as ViewType
         """
-        View.__init__(self, filtered)
+        View.__init__(self, view_type)
         self._lazy_queue = []  # Widgets not initialized
         self.__priority_queue = []
         self.__scroll_timeout_id = None

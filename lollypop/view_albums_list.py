@@ -415,9 +415,8 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param artist_ids as int
             @param genre_ids as int
         """
-        LazyLoadingView.__init__(self, True)
+        LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
         ViewController.__init__(self, ViewControllerType.ALBUM)
-        self.__view_type = view_type
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
         self.__autoscroll_timeout_id = None
@@ -608,7 +607,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album as Album
             @param reveal as bool
         """
-        row = AlbumRow(album, self.__height, self.__view_type, reveal, self)
+        row = AlbumRow(album, self.__height, self._view_type, reveal, self)
         row.connect("insert-track", self.__on_insert_track)
         row.connect("insert-album", self.__on_insert_album)
         row.connect("insert-album-after", self.__on_insert_album_after)
