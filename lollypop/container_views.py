@@ -61,7 +61,10 @@ class ViewsContainer:
         elif item_id == Type.INFO:
             view = self._get_view_info()
         elif item_id == Type.GENRES:
-            view = self._get_view_albums([data], [])
+            if data is None:
+                view = self._get_view_genres()
+            else:
+                view = self._get_view_albums([data], [])
         elif item_id == Type.ALBUM:
             view = self._get_view_album(data)
         elif item_id == Type.YEARS:
