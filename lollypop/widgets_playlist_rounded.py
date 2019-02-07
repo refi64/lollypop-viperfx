@@ -151,6 +151,9 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         if self._data != Type.RANDOMS:
             RoundedAlbumsWidget._save_surface(self, surface)
 
+    def _on_realize(self, widget):
+        OverlayHelper._on_realize(self, widget)
+
 #######################
 # PRIVATE             #
 #######################

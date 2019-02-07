@@ -94,6 +94,9 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__overlay_grid.destroy()
             self.__overlay_grid = None
 
+    def _on_realize(self, widget):
+        OverlayHelper._on_realize(self, widget)
+
 #######################
 # PRIVATE             #
 #######################
