@@ -59,6 +59,7 @@ class ArtSize:
     MEDIUM = 48  # If changed, adapt width request in AlbumRow
     ARTIST_SMALL = 60
     LARGE = 100
+    BANNER = 150
     BIG = 200
     FULLSCREEN = 500
     ARTIST = 800

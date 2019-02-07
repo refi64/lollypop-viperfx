@@ -67,7 +67,7 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Force preferred height
         """
-        return (ArtSize.BIG + 40, ArtSize.BIG + 40)
+        return (ArtSize.BANNER + 40, ArtSize.BANNER + 40)
 
 #######################
 # PROTECTED           #

@@ -39,8 +39,8 @@ class CoverWidget(Gtk.Bin):
         """
         App().art_helper.set_album_artwork(
                 album,
-                ArtSize.BIG,
-                ArtSize.BIG,
+                ArtSize.BANNER,
+                ArtSize.BANNER,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.NONE)

@@ -70,7 +70,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__label.set_justify(Gtk.Justification.CENTER)
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_property("halign", Gtk.Align.CENTER)
-        self.__label.set_property("has-tooltip", True)  
+        self.__label.set_property("has-tooltip", True)
         self.__label.connect("query-tooltip", on_query_tooltip)
         album_name = GLib.markup_escape_text(self._album.name)
         if self.__view_type & ViewType.SMALL:

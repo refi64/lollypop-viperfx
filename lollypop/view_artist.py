@@ -276,8 +276,8 @@ class ArtistView(ArtistAlbumsView):
             artist = App().artists.get_name(self._artist_ids[0])
             App().art_helper.set_artist_artwork(
                                         artist,
-                                        ArtSize.BIG,
-                                        ArtSize.BIG,
+                                        ArtSize.BANNER,
+                                        ArtSize.BANNER,
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork)
 
