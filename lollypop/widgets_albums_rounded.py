@@ -23,9 +23,9 @@ from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 
 class RoundedAlbumsWidget(RoundedFlowBoxWidget):
     """
-        Rounded widget showing cover for 9 albums
+        Rounded widget showing cover for 4 albums
     """
-    _ALBUMS_COUNT = 9
+    _ALBUMS_COUNT = 4
 
     def __init__(self, data, name, sortname, art_size=ArtSize.BIG):
         """
@@ -38,7 +38,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         RoundedFlowBoxWidget.__init__(self, data, name, sortname, art_size)
         self._genre = Type.NONE
         self._album_ids = []
-        self.__cover_size = art_size / 3
+        self.__cover_size = art_size / 2
         self._pixel_size = art_size / 8
         self.__cancellable = Gio.Cancellable()
         self._scale_factor = self.get_scale_factor()
@@ -73,8 +73,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
         shuffle(self._album_ids)
-        positions = [(1, 1), (0, 0), (0, 1), (0, 2),
-                     (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]
+        positions = [(0, 0), (1, 0), (0, 1), (1, 1)]
         self.__draw_surface(surface, ctx, positions)
 
     def _save_surface(self, surface):
