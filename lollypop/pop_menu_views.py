@@ -82,7 +82,7 @@ class ViewsMenuPopover(Popover):
             App().add_action(action)
             shown_menu.append(item[1], "app.%s" % encoded)
         # Translators: shown => items
-        menu.insert_section(1, _("Shown"), shown_menu)
+        menu.insert_section(1, _("Sections"), shown_menu)
 
 #######################
 # PRIVATE             #

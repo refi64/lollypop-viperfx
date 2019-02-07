@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
 from math import pi
 
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, SidebarContent
 from lollypop.information_store import InformationStore
 from lollypop.objects import Album
 
@@ -83,6 +83,9 @@ class CellRendererArtist(Gtk.CellRendererText):
         self.__is_artists = False
         self.__surfaces = {}
         self.__scale_factor = None
+        self.__draw_artwork = self.__is_artists and\
+            self.rowid >= 0 and\
+            App().settings.get_value("artist-artwork")
 
     def set_is_artists(self, is_artists):
         self.__is_artists = is_artists
@@ -92,9 +95,7 @@ class CellRendererArtist(Gtk.CellRendererText):
             self.__scale_factor = widget.get_scale_factor()
             self.__surfaces = {}
         size = ArtSize.ARTIST_SMALL * self.__scale_factor
-        draw_artwork = cell_area.height >\
-            Gtk.CellRendererText.get_preferred_height(self, widget)[1]
-        if draw_artwork:
+        if self.__draw_artwork:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = ArtSize.ARTIST_SMALL + self.xshift * 2
                 cell_area.width -= ArtSize.ARTIST_SMALL
@@ -103,7 +104,7 @@ class CellRendererArtist(Gtk.CellRendererText):
                 cell_area.width -= ArtSize.ARTIST_SMALL + self.xshift
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
-        if draw_artwork:
+        if self.__draw_artwork:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = self.xshift
             else:
@@ -149,10 +150,10 @@ class CellRendererArtist(Gtk.CellRendererText):
         ctx.paint()
 
     def do_get_preferred_height_for_width(self, widget, width):
-        draw_artwork = self.__is_artists and\
-            self.rowid >= 0 and\
-            App().settings.get_value("artist-artwork")
-        if draw_artwork:
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content == SidebarContent.DEFAULT:
+            return (ArtSize.MEDIUM, ArtSize.MEDIUM)
+        elif self.__draw_artwork:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(

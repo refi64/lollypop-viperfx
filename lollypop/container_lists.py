@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.loader import Loader
 from lollypop.logger import Logger
 from lollypop.selectionlist import SelectionList
-from lollypop.define import App, Type, SelectionListMask
+from lollypop.define import App, Type, SelectionListMask, SidebarContent
 
 
 class ListsContainer:
@@ -43,10 +43,13 @@ class ListsContainer:
             @param update as bool
         """
         if self._list_one.get_visible():
-            if App().settings.get_value("show-genres"):
+            sidebar_content = App().settings.get_enum("sidebar-content")
+            if sidebar_content == SidebarContent.GENRES:
                 self.__update_list_genres(self._list_one, update)
-            else:
+            elif sidebar_content == SidebarContent.ARTISTS:
                 self.__update_list_artists(self._list_one, [Type.ALL], update)
+            else:
+                self.__update_list_artists(self._list_one, None, update)
 
     def update_list_two(self, update=False):
         """
@@ -54,10 +57,11 @@ class ListsContainer:
             @param update as bool
         """
         if self._list_one.get_visible():
+            sidebar_content = App().settings.get_enum("sidebar-content")
             ids = self._list_one.selected_ids
             if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
                 self.__update_list_playlists(update, ids[0])
-            elif App().settings.get_value("show-genres") and ids:
+            elif sidebar_content == SidebarContent.GENRES and ids:
                 self.__update_list_artists(self._list_two, ids, update)
 
     def show_lists(self, list_one_ids, list_two_ids):
@@ -85,7 +89,8 @@ class ListsContainer:
         def select_list_two(selection_list, artist_ids):
             self._list_two.select_ids(artist_ids)
             self._list_two.disconnect_by_func(select_list_two)
-        if App().settings.get_value("show-genres"):
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content == SidebarContent.GENRES:
             # Get artist genres
             genre_ids = []
             for artist_id in artist_ids:
@@ -132,7 +137,8 @@ class ListsContainer:
         state_one_ids = App().settings.get_value("state-one-ids")
         state_two_ids = App().settings.get_value("state-two-ids")
         if state_two_ids and not state_one_ids:
-            if App().settings.get_value("show-genres"):
+            sidebar_content = App().settings.get_enum("sidebar-content")
+            if sidebar_content == SidebarContent.GENRES:
                 self.show_artists_albums(state_two_ids)
                 return
             else:
@@ -198,9 +204,12 @@ class ListsContainer:
             @param update as bool, if True, just update entries
         """
         def load():
-            artists = App().artists.get(genre_ids)
-            compilations = App().albums.get_compilation_ids(genre_ids)
-            return (artists, compilations)
+            if genre_ids is None:
+                return ([], [])
+            else:
+                artists = App().artists.get(genre_ids)
+                compilations = App().albums.get_compilation_ids(genre_ids)
+                return (artists, compilations)
 
         def setup(artists, compilations):
             mask = SelectionListMask.ARTISTS

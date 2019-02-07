@@ -15,7 +15,7 @@ from gi.repository import Gdk, Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.define import App, Type
+from lollypop.define import App, Type, SidebarContent
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
@@ -140,7 +140,8 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             @param button as Gtk.Button
         """
         show_sidebar = App().settings.get_value("show-sidebar")
-        show_genres = App().settings.get_value("show-genres")
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        show_genres = sidebar_content == SidebarContent.GENRES
         if not show_genres:
             App().window.emit("show-can-go-back", True)
             App().window.emit("can-go-back-changed", True)

@@ -14,6 +14,7 @@ from lollypop.shown import ShownLists
 from lollypop.loader import Loader
 from lollypop.objects import Track, Album
 from lollypop.define import App, Type, ViewType, SelectionListMask, ArtSize
+from lollypop.define import SidebarContent
 
 
 class ViewsContainer:
@@ -441,7 +442,8 @@ class ViewsContainer:
         state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
         # We do not support genres in navigation mode
-        if App().settings.get_value("show-genres") and\
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content == SidebarContent.GENRES and\
                 state_one_ids and state_one_ids[0] >= 0 and not state_two_ids:
             state_one_ids = []
         # Artist id with genre off or genre and artist id

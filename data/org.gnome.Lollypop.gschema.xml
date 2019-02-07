@@ -5,6 +5,11 @@
        <value nick="tracks" value="1"/>
        <value nick="albums" value="2"/>
     </enum>
+    <enum id="org.gnome.Lollypop.Sidebar">
+       <value nick="default" value="0"/>
+       <value nick="genres" value="1"/>
+       <value nick="artists" value="2"/>
+    </enum>
     <enum id="org.gnome.Lollypop.PowerManagement">
        <value nick="none" value="0"/>
        <value nick="idle" value="1"/>
@@ -308,6 +313,11 @@
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
             <default>'none'</default>
             <summary>Shuffle mode</summary>
+            <description></description>
+        </key>
+        <key enum="org.gnome.Lollypop.Sidebar" name="sidebar-content">
+            <default>'default'</default>
+            <summary>Sidebar content</summary>
             <description></description>
         </key>
         <key enum="org.gnome.Lollypop.PowerManagement" name="power-management">

@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App, Shuffle, Type
+from lollypop.define import App, Shuffle, Type, SidebarContent
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -230,7 +230,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             @param button as Gtk.Button
         """
         show_sidebar = App().settings.get_value("show-sidebar")
-        show_genres = App().settings.get_value("show-genres")
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        show_genres = sidebar_content == SidebarContent.GENRES
         if not show_genres:
             App().window.emit("show-can-go-back", True)
             App().window.emit("can-go-back-changed", True)

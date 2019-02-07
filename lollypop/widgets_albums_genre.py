@@ -15,7 +15,7 @@ from gi.repository import Gdk, Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.define import App, Type
+from lollypop.define import App, Type, SidebarContent
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
@@ -124,8 +124,8 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             Open Genre
             @param button as Gtk.Button
         """
-        show_genres = App().settings.get_value("show-genres")
-        if not show_genres:
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content != SidebarContent.GENRES:
             App().window.emit("show-can-go-back", True)
             App().window.emit("can-go-back-changed", True)
         App().window.container.show_view(Type.GENRES, self._data)

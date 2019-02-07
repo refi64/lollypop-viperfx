@@ -72,6 +72,12 @@ class ScanType:
     FULL = 2
 
 
+class SidebarContent:
+    DEFAULT = 0
+    GENRES = 1
+    ARTISTS = 2
+
+
 class SelectionListMask:
     LIST_ONE = 1 << 1
     LIST_TWO = 1 << 2

@@ -35,9 +35,6 @@ class AppearanceSettingsWidget(Gtk.Bin):
         else:
             switch_view.set_state(App().settings.get_value("dark-ui"))
 
-        switch_genres = builder.get_object("switch_genres")
-        switch_genres.set_state(App().settings.get_value("show-genres"))
-
         switch_compilations = builder.get_object("switch_compilations")
         switch_compilations_in_album_view = builder.get_object(
             "switch_compilations_in_album_view")
@@ -55,8 +52,11 @@ class AppearanceSettingsWidget(Gtk.Bin):
         switch_artwork = builder.get_object("switch_artwork")
         switch_artwork.set_state(App().settings.get_value("artist-artwork"))
 
-        combo_orderby = builder.get_object("combo_orderby")
-        combo_orderby.set_active(App().settings.get_enum(("orderby")))
+        sidebar_combo = builder.get_object("sidebar_combo")
+        sidebar_combo.set_active(App().settings.get_enum(("sidebar-content")))
+
+        orderby_combo = builder.get_object("orderby_combo")
+        orderby_combo.set_active(App().settings.get_enum(("orderby")))
 
         scale_coversize = builder.get_object("scale_coversize")
         scale_coversize.set_range(170, 300)
@@ -145,15 +145,13 @@ class AppearanceSettingsWidget(Gtk.Bin):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
 
-    def _on_switch_genres_state_set(self, widget, state):
+    def _on_sidebar_combo_changed(self, widget):
         """
-            Update show genre setting
-            @param widget as Gtk.Switch
-            @param state as bool
+            Update orderby setting
+            @param widget as Gtk.ComboBoxText
         """
-        App().settings.set_value("show-genres",
-                                 GLib.Variant("b", state))
-        App().window.container.show_genres(state)
+        App().settings.set_enum("sidebar-content", widget.get_active())
+        App().window.container.update_list_one()
 
 #######################
 # PRIVATE             #

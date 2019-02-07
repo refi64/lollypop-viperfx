@@ -17,7 +17,7 @@ from random import shuffle
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App, Type, ViewType
+from lollypop.define import App, Type, ViewType, SidebarContent
 from lollypop.controller_view import ViewController, ViewControllerType
 
 
@@ -194,7 +194,8 @@ class PlaylistsView(View, ViewController):
         """
             Set active ids
         """
-        if not App().settings.get_value("show-genres"):
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content != SidebarContent.GENRES:
             App().window.emit("show-can-go-back", True)
             App().window.emit("can-go-back-changed", True)
         App().settings.set_value("state-one-ids",

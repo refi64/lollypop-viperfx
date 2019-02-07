@@ -14,7 +14,7 @@ from gi.repository import GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App
+from lollypop.define import App, SidebarContent
 
 
 class ScannerContainer:
@@ -59,7 +59,8 @@ class ScannerContainer:
             @param genre id as int
             @param add as bool
         """
-        if App().settings.get_value("show-genres"):
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content == SidebarContent.GENRES:
             if add:
                 genre_name = App().genres.get_name(genre_id)
                 self._list_one.add_value((genre_id, genre_name, genre_name))
@@ -76,7 +77,8 @@ class ScannerContainer:
         artist_name = App().artists.get_name(artist_id)
         sortname = App().artists.get_sortname(artist_id)
         if App().settings.get_value("show-sidebar"):
-            if App().settings.get_value("show-genres"):
+            sidebar_content = App().settings.get_enum("sidebar-content")
+            if sidebar_content == SidebarContent.GENRES:
                 l = self._list_two
                 artist_ids = App().artists.get_ids(
                     self._list_one.selected_ids)
