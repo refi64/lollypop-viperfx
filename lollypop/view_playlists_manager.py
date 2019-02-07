@@ -16,7 +16,7 @@ from gettext import gettext as _
 from locale import strcoll
 
 from lollypop.view_flowbox import FlowBoxView
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ViewType, SidebarContent
 from lollypop.widgets_playlist_rounded import PlaylistRoundedWidget
 from lollypop.shown import ShownPlaylists
 
@@ -26,14 +26,14 @@ class PlaylistsManagerView(FlowBoxView):
         Show playlists in a FlowBox
     """
 
-    def __init__(self, obj, art_size):
+    def __init__(self, obj, view_type=ViewType.SCROLLED):
         """
             Init decade view
             @param obj as Track/Album
-            @param art_size as int
+            @param view_type as ViewType
         """
+        FlowBoxView.__init__(self, view_type)
         self.__obj = obj
-        self._art_size = art_size
         self.__signal_id = None
         new_playlist_button = Gtk.Button(_("New playlist"))
         new_playlist_button.connect("clicked", self.__on_new_button_clicked)
@@ -41,7 +41,6 @@ class PlaylistsManagerView(FlowBoxView):
         new_playlist_button.set_hexpand(True)
         new_playlist_button.set_margin_top(5)
         new_playlist_button.show()
-        FlowBoxView.__init__(self)
         self.insert_row(0)
         self.attach(new_playlist_button, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
@@ -72,7 +71,7 @@ class PlaylistsManagerView(FlowBoxView):
         """
         widget = FlowBoxView._add_items(self, playlist_ids,
                                         self.__obj,
-                                        self._art_size)
+                                        self._view_type)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
@@ -99,6 +98,26 @@ class PlaylistsManagerView(FlowBoxView):
         if self.__signal_id is not None:
             App().playlists.disconnect(self.__signal_id)
             self.__signal_id = None
+
+    def _on_item_activated(self, flowbox, widget):
+        """
+            Show Context view for activated album
+            @param flowbox as Gtk.Flowbox
+            @param widget as PlaylistRoundedWidget
+        """
+        if not self._view_type & ViewType.SMALL and\
+                FlowBoxView._on_item_activated(self, flowbox, widget):
+            return
+        show_sidebar = App().settings.get_value("show-sidebar")
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        show_genres = sidebar_content == SidebarContent.GENRES
+        if not show_genres:
+            App().window.emit("show-can-go-back", True)
+            App().window.emit("can-go-back-changed", True)
+        if show_sidebar and show_genres:
+            App().window.container.list_two.select_ids([widget.data])
+        else:
+            App().window.container.show_view(Type.PLAYLISTS, [widget.data])
 
 #######################
 # PRIVATE             #

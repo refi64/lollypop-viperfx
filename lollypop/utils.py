@@ -41,31 +41,31 @@ def get_human_duration(duration):
         return _("%s m") % mins
 
 
-def get_round_surface(image, scale_factor):
+def get_round_surface(image, scale_factor, radius):
     """
         Get rounded surface from pixbuf
         @param image as GdkPixbuf.Pixbuf/cairo.Surface
         @return surface as cairo.Surface
         @param scale_factor as int
+        @param radius as int
         @warning not thread safe!
     """
     width = image.get_width()
+    height = image.get_height()
     is_pixbuf = isinstance(image, GdkPixbuf.Pixbuf)
     if is_pixbuf:
         width = int(width / scale_factor)
-    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, width)
+        height = int(height / scale_factor)
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
     ctx = cairo.Context(surface)
-    # Remove line width
-    ctx.translate(2, 2)
-    width -= 4
-    ctx.new_sub_path()
-    radius = width / 2
-    ctx.set_line_width(2)
-    # Same in .artwork-icon (application.css)
-    ctx.set_source_rgba(0, 0, 0, 0.3)
-    ctx.arc(width / 2, width / 2, radius, 0, 2 * pi)
-    ctx.stroke_preserve()
-    ctx.translate(-2, -2)
+    degrees = pi / 180
+    ctx.arc(width - radius, radius, radius, -90 * degrees, 0 * degrees)
+    ctx.arc(width - radius, height - radius,
+            radius, 0 * degrees, 90 * degrees)
+    ctx.arc(radius, height - radius, radius, 90 * degrees, 180 * degrees)
+    ctx.arc(radius, radius, radius, 180 * degrees, 270 * degrees)
+    ctx.close_path()
+    ctx.set_line_width(10)
     if is_pixbuf:
         image = Gdk.cairo_surface_create_from_pixbuf(image, scale_factor, None)
     ctx.set_source_surface(image, 0, 0)

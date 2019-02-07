@@ -146,7 +146,8 @@ class ArtHelper(GObject.Object):
                                         scale_factor, callback, effect)
         else:
             if effect & ArtHelperEffect.ROUNDED:
-                surface = get_round_surface(pixbuf, scale_factor)
+                radius = pixbuf.get_width() / 2
+                surface = get_round_surface(pixbuf, scale_factor, radius)
             else:
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                         pixbuf, scale_factor, None)
@@ -165,7 +166,8 @@ class ArtHelper(GObject.Object):
         surface = None
         if pixbuf is not None:
             if effect & ArtHelperEffect.ROUNDED:
-                surface = get_round_surface(pixbuf, scale_factor)
+                radius = pixbuf.get_width() / 2
+                surface = get_round_surface(pixbuf, scale_factor, radius)
             else:
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                         pixbuf, scale_factor, None)

@@ -15,7 +15,7 @@ from gi.repository import GLib, Gdk, Gio
 import cairo
 from random import shuffle
 
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, ViewType
 from lollypop.objects import Album
 from lollypop.utils import get_round_surface
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
@@ -27,7 +27,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
     """
     _ALBUMS_COUNT = 4
 
-    def __init__(self, data, name, sortname, art_size=ArtSize.BIG):
+    def __init__(self, data, name, sortname, view_type):
         """
             Init widget
             @param data as object
@@ -35,6 +35,10 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
             @param sortname as str
             @param art_size as int
         """
+        if view_type & ViewType.SMALL:
+            art_size = ArtSize.LARGE
+        else:
+            art_size = ArtSize.BIG
         RoundedFlowBoxWidget.__init__(self, data, name, sortname, art_size)
         self._genre = Type.NONE
         self._album_ids = []
@@ -122,7 +126,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         if self.__cancellable.is_cancelled():
             return
         self._artwork.set_from_surface(
-            get_round_surface(surface, self._scale_factor))
+            get_round_surface(surface, self._scale_factor, 60))
         self.emit("populated")
 
     def __draw_surface(self, surface, ctx, positions):

@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import sample, choice
 from gettext import gettext as _
 
-from lollypop.define import App, Shuffle, Type, SidebarContent
+from lollypop.define import App, Shuffle, Type
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
@@ -23,19 +23,20 @@ from lollypop.helper_overlay import OverlayHelper
 
 class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
     """
-        Playlist widget showing cover for 9 albums
+        Playlist widget showing cover for 4 albums
     """
 
-    def __init__(self, playlist_id, obj, art_size):
+    def __init__(self, playlist_id, obj, view_type):
         """
             Init widget
             @param playlist_id as playlist_id
             @param obj as Track/Album
+            @param view_type as ViewType
         """
         OverlayHelper.__init__(self)
         name = sortname = App().playlists.get_name(playlist_id)
         RoundedAlbumsWidget.__init__(self, playlist_id, name,
-                                     sortname, art_size)
+                                     sortname, view_type)
         self.__track_ids = []
         self.__obj = obj
         self._genre = Type.PLAYLISTS
@@ -58,14 +59,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
-
-    @property
-    def playlist_id(self):
-        """
-            Get playlist id
-            @return int
-        """
-        return self._data
 
     @property
     def track_ids(self):
@@ -110,22 +103,14 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_button.set_property("has-tooltip", True)
             self.__play_button.set_hexpand(True)
             self.__play_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__play_button.set_property("valign", Gtk.Align.CENTER)
-            self.__play_button.set_property("halign", Gtk.Align.CENTER)
+            self.__play_button.set_property("valign", Gtk.Align.END)
+            self.__play_button.set_property("halign", Gtk.Align.START)
             self.__play_button.connect("realize", self._on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
+            self.__play_button.set_margin_bottom(10)
+            self.__play_button.set_margin_start(10)
             self.__play_button.get_image().set_pixel_size(self._pixel_size +
                                                           20)
-            # Open button
-            self.__open_button = Gtk.Button.new_from_icon_name(
-                "folder-open-symbolic",
-                Gtk.IconSize.INVALID)
-            self.__open_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__open_button.set_property("has-tooltip", True)
-            self.__open_button.set_tooltip_text(_("Open"))
-            self.__open_button.connect("realize", self._on_realize)
-            self.__open_button.connect("clicked", self.__on_open_clicked)
-            self.__open_button.get_image().set_pixel_size(self._pixel_size)
             # Edit button
             self.__edit_button = Gtk.Button.new_from_icon_name(
                 "document-properties-symbolic",
@@ -139,14 +124,13 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self._overlay.add_overlay(self.__play_button)
             self.__overlay_grid = Gtk.Grid()
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
+            self.__overlay_grid.set_property("halign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
-            self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
-            self.__overlay_grid.add(self.__open_button)
+            self.__overlay_grid.set_margin_end(10)
             self.__overlay_grid.add(self.__edit_button)
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.show_all()
             self.__play_button.get_style_context().add_class("rounded-icon")
-            self.__open_button.get_style_context().add_class("overlay-button")
             self.__edit_button.get_style_context().add_class("overlay-button")
             self.__overlay_grid.get_style_context().add_class(
                 "squared-icon-small")
@@ -154,8 +138,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__overlay_grid.destroy()
             self.__play_button.destroy()
             self.__play_button = None
-            self.__open_button.destroy()
-            self.__open_button = None
             self.__edit_button.destroy()
             self.__edit_button = None
             self.__overlay_grid.destroy()
@@ -222,23 +204,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             else:
                 App().playlists.remove_tracks(self.playlist_id, tracks)
             App().window.container.reload_view()
-        return True
-
-    def __on_open_clicked(self, button):
-        """
-            Open playlist
-            @param button as Gtk.Button
-        """
-        show_sidebar = App().settings.get_value("show-sidebar")
-        sidebar_content = App().settings.get_enum("sidebar-content")
-        show_genres = sidebar_content == SidebarContent.GENRES
-        if not show_genres:
-            App().window.emit("show-can-go-back", True)
-            App().window.emit("can-go-back-changed", True)
-        if show_sidebar and show_genres:
-            App().window.container.list_two.select_ids([self._data])
-        else:
-            App().window.container.show_view(Type.PLAYLISTS, [self._data])
         return True
 
     def __on_edit_clicked(self, button):

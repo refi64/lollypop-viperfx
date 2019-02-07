@@ -14,7 +14,7 @@ from gi.repository import GLib
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_albums_decade import AlbumsDecadeWidget
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ViewType, SidebarContent
 
 
 class AlbumsDecadeBoxView(FlowBoxView):
@@ -22,13 +22,12 @@ class AlbumsDecadeBoxView(FlowBoxView):
         Show decades in a FlowBox
     """
 
-    def __init__(self, art_size):
+    def __init__(self, view_type):
         """
             Init decade view
-            @param art_size as int
+            @param view_type as ViewType
         """
-        self._art_size = art_size
-        FlowBoxView.__init__(self)
+        FlowBoxView.__init__(self, view_type)
         self._widget_class = AlbumsDecadeWidget
 
 #######################
@@ -40,7 +39,7 @@ class AlbumsDecadeBoxView(FlowBoxView):
             Start lazy loading
             @param item ids as [int]
         """
-        widget = FlowBoxView._add_items(self, item_ids, self._art_size)
+        widget = FlowBoxView._add_items(self, item_ids, self._view_type)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
@@ -52,3 +51,23 @@ class AlbumsDecadeBoxView(FlowBoxView):
                                  GLib.Variant("ai", [Type.YEARS]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
+
+    def _on_item_activated(self, flowbox, widget):
+        """
+            Show Context view for activated album
+            @param flowbox as Gtk.Flowbox
+            @param widget as AlbumsDecadeWidget
+        """
+        if not self._view_type & ViewType.SMALL and\
+                FlowBoxView._on_item_activated(self, flowbox, widget):
+            return
+        show_sidebar = App().settings.get_value("show-sidebar")
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        show_genres = sidebar_content == SidebarContent.GENRES
+        if not show_genres:
+            App().window.emit("show-can-go-back", True)
+            App().window.emit("can-go-back-changed", True)
+        if show_sidebar and show_genres:
+            App().window.container.list_two.select_ids(widget.data)
+        else:
+            App().window.container.show_view(Type.YEARS, widget.data)

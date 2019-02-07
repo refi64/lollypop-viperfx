@@ -45,6 +45,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.set_size_request(art_size, art_size)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
+        self.connect("realize", self._on_realize)
 
     def populate(self):
         """

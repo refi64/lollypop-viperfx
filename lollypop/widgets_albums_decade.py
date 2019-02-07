@@ -15,26 +15,26 @@ from gi.repository import Gdk, Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.define import App, Type, SidebarContent
+from lollypop.define import App, Type
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
 
 class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
     """
-        Decade widget showing cover for 9 albums
+        Decade widget showing cover for 4 albums
     """
 
-    def __init__(self, item_ids, art_size):
+    def __init__(self, item_ids, view_type):
         """
             Init widget
             @param decade as [int]
-            @param art_size as int
+            @param view_type as ViewType
         """
         OverlayHelper.__init__(self)
         decade_str = "%s - %s" % (item_ids[0], item_ids[-1])
         RoundedAlbumsWidget.__init__(self, item_ids, decade_str,
-                                     decade_str, art_size)
+                                     decade_str, view_type)
         self._genre = Type.YEARS
 
     def populate(self):
@@ -71,37 +71,26 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
                                                           20)
             self.__play_button.set_property("has-tooltip", True)
             self.__play_button.set_hexpand(True)
-            self.__play_button.set_property("valign", Gtk.Align.CENTER)
-            self.__play_button.set_property("halign", Gtk.Align.CENTER)
+            self.__play_button.set_margin_bottom(10)
+            self.__play_button.set_margin_start(10)
+            self.__play_button.set_property("valign", Gtk.Align.END)
+            self.__play_button.set_property("halign", Gtk.Align.START)
             self.__play_button.connect("realize", self._on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
-            # Open button
-            self.__open_button = Gtk.Button.new_from_icon_name(
-                "folder-open-symbolic",
-                Gtk.IconSize.INVALID)
-            self.__open_button.get_image().set_pixel_size(self._pixel_size)
-            self.__open_button.set_property("has-tooltip", True)
-            self.__open_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__open_button.set_tooltip_text(_("Open"))
-            self.__open_button.connect("realize", self._on_realize)
-            self.__open_button.connect("clicked", self.__on_open_clicked)
             self.__overlay_grid = Gtk.Grid()
-            self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
+            self.__overlay_grid.set_property("halign", Gtk.Align.END)
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
-            self.__overlay_grid.add(self.__open_button)
+            self.__overlay_grid.set_margin_end(10)
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.add_overlay(self.__play_button)
             self._overlay.show_all()
             self.__play_button.get_style_context().add_class("rounded-icon")
-            self.__open_button.get_style_context().add_class("overlay-button")
             self.__overlay_grid.get_style_context().add_class(
                 "squared-icon-small")
         else:
             self.__play_button.destroy()
             self.__play_button = None
-            self.__open_button.destroy()
-            self.__open_button = None
             self.__overlay_grid.destroy()
             self.__overlay_grid = None
 
@@ -133,22 +122,6 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             App().lookup_action("party").change_state(GLib.Variant("b", False))
         App().player.play_albums(None, [Type.YEARS], self._data)
         return True
-
-    def __on_open_clicked(self, button):
-        """
-            Open decade
-            @param button as Gtk.Button
-        """
-        show_sidebar = App().settings.get_value("show-sidebar")
-        sidebar_content = App().settings.get_enum("sidebar-content")
-        show_genres = sidebar_content == SidebarContent.GENRES
-        if not show_genres:
-            App().window.emit("show-can-go-back", True)
-            App().window.emit("can-go-back-changed", True)
-        if show_sidebar and show_genres:
-            App().window.container.list_two.select_ids(self._data)
-        else:
-            App().window.container.show_view(Type.YEARS, self._data)
 
     def __on_eventbox_realize(self, eventbox):
         """

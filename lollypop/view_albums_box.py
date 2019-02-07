@@ -35,7 +35,6 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
-        self.__view_type = view_type
         if view_type & ViewType.SMALL:
             self._scrolled.set_policy(Gtk.PolicyType.NEVER,
                                       Gtk.PolicyType.NEVER)
@@ -52,7 +51,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         widget = FlowBoxView._add_items(self, album_ids,
                                         self.__genre_ids,
                                         self.__artist_ids,
-                                        self.__view_type)
+                                        self._view_type)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
@@ -72,7 +71,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param flowbox as Gtk.Flowbox
             @param album_widget as AlbumSimpleWidget
         """
-        if not self.__view_type & ViewType.SMALL and\
+        if not self._view_type & ViewType.SMALL and\
                 FlowBoxView._on_item_activated(self, flowbox, album_widget):
             return
         if album_widget.artwork is None:
@@ -85,10 +84,6 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Set active ids
         """
-        if App().settings.get_value("show-sidebar") and\
-                not self.__view_type & ViewType.SMALL:
-            App().window.emit("can-go-back-changed", False)
-
         if self.__genre_ids:
             App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self.__genre_ids))

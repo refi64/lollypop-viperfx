@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import App, Type, ArtSize
+from lollypop.define import App, Type, ViewType
 
 
 class PlaylistsContainer:
@@ -32,7 +32,7 @@ class PlaylistsContainer:
         """
         from lollypop.view_playlists_manager import PlaylistsManagerView
         current = self._stack.get_visible_child()
-        view = PlaylistsManagerView(obj, int(ArtSize.BIG * 1.2))
+        view = PlaylistsManagerView(obj, ViewType.SCROLLED)
         view.populate(App().playlists.get_ids())
         view.show()
         self._stack.add(view)

@@ -164,7 +164,7 @@ class ViewsContainer:
             loader.start()
         else:
             from lollypop.view_playlists_manager import PlaylistsManagerView
-            view = PlaylistsManagerView(None, int(ArtSize.BIG * 1.2))
+            view = PlaylistsManagerView(None, ViewType.SCROLLED)
             view.populate(App().playlists.get_ids())
             view.show()
         return view
@@ -253,7 +253,7 @@ class ViewsContainer:
                 decades.append(decade)
             return decades
         from lollypop.view_albums_decade_box import AlbumsDecadeBoxView
-        view = AlbumsDecadeBoxView(int(ArtSize.BIG * 1.2))
+        view = AlbumsDecadeBoxView(ViewType.SCROLLED)
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()

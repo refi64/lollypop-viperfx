@@ -90,7 +90,8 @@ popover.background separator {
 
 .light-background {
     background-color: shade(@theme_bg_color, 1.05);
-    border-radius: 50%;
+    border: 1px solid shade(@theme_bg_color, 0.7);
+    border-radius: 62px;
 }
 
 .no-top-border {

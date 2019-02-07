@@ -22,18 +22,18 @@ from lollypop.helper_overlay import OverlayHelper
 
 class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
     """
-        Genre widget showing cover for 9 albums
+        Genre widget showing cover for 4 albums
     """
 
-    def __init__(self, genre_id, art_size):
+    def __init__(self, genre_id, view_type):
         """
             Init widget
             @param Genre as [int]
-            @param art_size as int
+            @param view_type as ViewType
         """
         OverlayHelper.__init__(self)
         name = sortname = App().genres.get_name(genre_id)
-        RoundedAlbumsWidget.__init__(self, genre_id, name, sortname, art_size)
+        RoundedAlbumsWidget.__init__(self, genre_id, name, sortname, view_type)
         self._genre = Type.GENRES
 
     def populate(self):
@@ -70,37 +70,26 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
                                                           20)
             self.__play_button.set_property("has-tooltip", True)
             self.__play_button.set_hexpand(True)
-            self.__play_button.set_property("valign", Gtk.Align.CENTER)
-            self.__play_button.set_property("halign", Gtk.Align.CENTER)
+            self.__play_button.set_property("valign", Gtk.Align.END)
+            self.__play_button.set_property("halign", Gtk.Align.START)
             self.__play_button.connect("realize", self._on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
-            # Open button
-            self.__open_button = Gtk.Button.new_from_icon_name(
-                "folder-open-symbolic",
-                Gtk.IconSize.INVALID)
-            self.__open_button.get_image().set_pixel_size(self._pixel_size)
-            self.__open_button.set_property("has-tooltip", True)
-            self.__open_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__open_button.set_tooltip_text(_("Open"))
-            self.__open_button.connect("realize", self._on_realize)
-            self.__open_button.connect("clicked", self.__on_open_clicked)
+            self.__play_button.set_margin_bottom(10)
+            self.__play_button.set_margin_start(10)
             self.__overlay_grid = Gtk.Grid()
-            self.__overlay_grid.set_property("halign", Gtk.Align.CENTER)
+            self.__overlay_grid.set_property("halign", Gtk.Align.END)
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
-            self.__overlay_grid.add(self.__open_button)
+            self.__overlay_grid.set_margin_end(10)
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.add_overlay(self.__play_button)
             self._overlay.show_all()
             self.__play_button.get_style_context().add_class("rounded-icon")
-            self.__open_button.get_style_context().add_class("overlay-button")
             self.__overlay_grid.get_style_context().add_class(
                 "squared-icon-small")
         else:
             self.__play_button.destroy()
             self.__play_button = None
-            self.__open_button.destroy()
-            self.__open_button = None
             self.__overlay_grid.destroy()
             self.__overlay_grid = None
 

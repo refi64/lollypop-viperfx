@@ -14,7 +14,7 @@ from gi.repository import GLib
 
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_albums_genre import AlbumsGenreWidget
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ViewType
 
 
 class AlbumsGenreBoxView(FlowBoxView):
@@ -22,13 +22,12 @@ class AlbumsGenreBoxView(FlowBoxView):
         Show decades in a FlowBox
     """
 
-    def __init__(self, art_size):
+    def __init__(self, view_type):
         """
             Init decade view
-            @param art_size as int
+            @param view_type as ViewType
         """
-        self._art_size = art_size
-        FlowBoxView.__init__(self)
+        FlowBoxView.__init__(self, view_type)
         self._widget_class = AlbumsGenreWidget
 
 #######################
@@ -40,7 +39,7 @@ class AlbumsGenreBoxView(FlowBoxView):
             Start lazy loading
             @param item ids as [int]
         """
-        widget = FlowBoxView._add_items(self, item_ids, self._art_size)
+        widget = FlowBoxView._add_items(self, item_ids, self._view_type)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
 
@@ -52,3 +51,16 @@ class AlbumsGenreBoxView(FlowBoxView):
                                  GLib.Variant("ai", [Type.GENRES]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
+
+    def _on_item_activated(self, flowbox, widget):
+        """
+            Show Context view for activated album
+            @param flowbox as Gtk.Flowbox
+            @param widget as PlaylistRoundedWidget
+        """
+        if not self._view_type & ViewType.SMALL and\
+                FlowBoxView._on_item_activated(self, flowbox, widget):
+            return
+        App().window.emit("show-can-go-back", True)
+        App().window.emit("can-go-back-changed", True)
+        App().window.container.show_view(Type.GENRES, widget.data)
