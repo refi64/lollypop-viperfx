@@ -76,8 +76,6 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             return
         if album_widget.artwork is None:
             return
-        # If widget top not on screen, popover will fail to show
-        # FIXME: Report a bug and check always true
         App().window.container.show_view(Type.ALBUM, album_widget.album)
 
     def _on_map(self, widget):

@@ -96,7 +96,7 @@ class AlbumWidget:
     def _on_album_artwork(self, surface):
         pass
 
-    def _on_button_press(self, eventbox, event):
+    def _on_button_release(self, eventbox, event):
         """
             Handle album mouse click
             @param eventbox as Gtk.EventBox

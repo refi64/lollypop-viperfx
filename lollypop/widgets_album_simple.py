@@ -105,7 +105,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         if not self.__view_type & ViewType.SMALL:
             self.__widget.connect("enter-notify-event", self._on_enter_notify)
             self.__widget.connect("leave-notify-event", self._on_leave_notify)
-        self.__widget.connect("button-press-event", self._on_button_press)
+        self.__widget.connect("button-press-event", self._on_button_release)
         self.__widget.connect("realize", self._on_realize)
         self.connect("destroy", self.__on_destroy)
         self.add(self.__widget)

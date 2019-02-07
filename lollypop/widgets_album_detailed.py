@@ -10,15 +10,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject, GLib, Pango
+from gi.repository import Gtk, Gdk, GObject, GLib, Pango
 
+from gettext import gettext as _
+
+from lollypop.logger import Logger
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.utils import get_human_duration, on_query_tooltip
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, ArtSize, ViewType, Sizing
+from lollypop.define import App, ArtSize, ViewType, Sizing, Type
 
 
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
@@ -126,7 +129,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                 eventbox = Gtk.EventBox()
                 eventbox.connect("enter-notify-event", self._on_enter_notify)
                 eventbox.connect("leave-notify-event", self._on_leave_notify)
-                eventbox.connect("button-press-event", self._on_button_press)
+                eventbox.connect("button-release-event",
+                                 self._on_button_release)
+                eventbox.connect("realize", self.__on_realize)
                 eventbox.show()
                 self.set_property("valign", Gtk.Align.CENTER)
                 self._artwork = App().art_helper.get_image(self.__art_size,
@@ -244,6 +249,17 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
 #######################
 # PROTECTED           #
 #######################
+    def _on_button_release(self, eventbox, event):
+        """
+            Handle album mouse click
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.EventButton
+        """
+        if event.button == 1:
+            App().window.container.show_view(Type.ALBUM, self.album)
+        else:
+            AlbumWidget._on_button_release(self, eventbox, event)
+
     def _on_tracks_populated(self, disc_number):
         """
             Emit populated signal
@@ -312,6 +328,18 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         menu = AlbumMenu(self._album, True)
         popover = Gtk.Popover.new_from_model(button, menu)
         popover.popup()
+
+    def __on_realize(self, widget):
+        """
+            Set cursor on widget
+            @param widget as Gtk.Widget
+        """
+        try:
+            window = widget.get_window()
+            if window is not None:
+                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
+        except:
+            Logger.warning(_("You are using a broken cursor theme!"))
 
     def __on_size_allocate(self, widget, allocation):
         """
