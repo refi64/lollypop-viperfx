@@ -19,10 +19,11 @@ from lollypop.objects import Album
 from lollypop.utils import remove_static_genres
 from lollypop.view_tracks import TracksView
 from lollypop.widgets_album_banner import AlbumBannerWidget
+from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.view import View
 
 
-class AlbumView(View, TracksView):
+class AlbumView(View, TracksView, ViewController):
     """
         Show artist albums and tracks
     """
@@ -37,6 +38,7 @@ class AlbumView(View, TracksView):
         view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
         View.__init__(self, view_type)
         TracksView.__init__(self, view_type)
+        ViewController.__init__(self, ViewControllerType.ALBUM)
         self._album = album
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
@@ -66,6 +68,13 @@ class AlbumView(View, TracksView):
 #######################
 # PROTECTED           #
 #######################
+    def _on_current_changed(self, player):
+        """
+            Update children state
+            @param player as Player
+        """
+        self.set_playing_indicator()
+
     def _on_map(self, widget):
         """
             Connect signals and set active ids

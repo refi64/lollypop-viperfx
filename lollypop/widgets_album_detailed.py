@@ -211,12 +211,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         for widget in self._tracks_widget_right.values():
             widget.set_filter_func(func)
 
-    def set_playing_indicator(self):
-        """
-            Update playing indicator
-        """
-        TracksView.set_playing_indicator(self)
-
     @property
     def requested_height(self):
         """
