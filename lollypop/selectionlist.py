@@ -19,6 +19,7 @@ from lollypop.view import BaseView
 from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
+from lollypop.define import SidebarContent
 from lollypop.utils import get_icon_name
 from lollypop.shown import ShownLists, ShownPlaylists
 
@@ -243,7 +244,9 @@ class SelectionList(BaseView, Gtk.Overlay):
             lists += [(Type.SEARCH, _("Search"), _("Search"))]
             lists += [
                 (Type.CURRENT, _("Current playlist"), _("Current playlist"))]
-        if lists:
+        if lists and\
+                App().settings.get_enum("sidebar-content") !=\
+                SidebarContent.DEFAULT:
             lists.append((Type.SEPARATOR, "", ""))
         return lists
 
@@ -253,7 +256,9 @@ class SelectionList(BaseView, Gtk.Overlay):
             @return items as [(int, str)]
         """
         lists = ShownPlaylists.get()
-        if lists:
+        if lists and\
+                App().settings.get_enum("sidebar-content") !=\
+                SidebarContent.DEFAULT:
             lists.append((Type.SEPARATOR, "", ""))
         return lists
 
