@@ -80,22 +80,21 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def __init__(self):
         Gtk.CellRendererText.__init__(self)
-        self.__is_artists = False
+        self.set_is_artists(False)
         self.__surfaces = {}
         self.__scale_factor = None
-        self.__draw_artwork = self.__is_artists and\
-            self.rowid >= 0 and\
-            App().settings.get_value("artist-artwork")
 
     def set_is_artists(self, is_artists):
         self.__is_artists = is_artists
+        self.__draw_artwork = self.__is_artists and\
+            App().settings.get_value("artist-artwork")
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         if self.__scale_factor != widget.get_scale_factor():
             self.__scale_factor = widget.get_scale_factor()
             self.__surfaces = {}
         size = ArtSize.ARTIST_SMALL * self.__scale_factor
-        if self.__draw_artwork:
+        if self.__draw_artwork and self.rowid >= 0:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = ArtSize.ARTIST_SMALL + self.xshift * 2
                 cell_area.width -= ArtSize.ARTIST_SMALL
@@ -104,7 +103,7 @@ class CellRendererArtist(Gtk.CellRendererText):
                 cell_area.width -= ArtSize.ARTIST_SMALL + self.xshift
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
-        if self.__draw_artwork:
+        if self.__draw_artwork and self.rowid >= 0:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
                 cell_area.x = self.xshift
             else:
@@ -153,7 +152,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         sidebar_content = App().settings.get_enum("sidebar-content")
         if sidebar_content == SidebarContent.DEFAULT:
             return (ArtSize.MEDIUM, ArtSize.MEDIUM)
-        elif self.__draw_artwork:
+        elif self.__draw_artwork and self.rowid >= 0:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
