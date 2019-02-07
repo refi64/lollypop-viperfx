@@ -145,16 +145,12 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
 # PROTECTED           #
 #######################
     def _set_artwork(self):
-        """
-            Set artwork
-        """
+        pass
+
+    def _on_realize(self):
         pass
 
     def _get_album_ids(self):
-        """
-            Get ids for widget
-            @return [int]
-        """
         return []
 
 #######################

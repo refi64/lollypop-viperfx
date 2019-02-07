@@ -36,7 +36,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         RoundedFlowBoxWidget.__init__(self, item[0], item[1],
                                       item[1], art_size)
-        self.connect("realize", self.__on_realize)
         self.connect("destroy", self.__on_destroy)
 
     def populate(self):
@@ -106,10 +105,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             else:
                 set_icon_name()
 
-#######################
-# PRIVATE             #
-#######################
-    def __on_realize(self, widget):
+    def _on_realize(self, widget):
         """
             Change cursor over eventbox
             @param widget as Gtk.Widget
@@ -121,6 +117,9 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
+#######################
+# PRIVATE             #
+#######################
     def __on_artist_artwork(self, surface):
         """
             Finish widget initialisation
