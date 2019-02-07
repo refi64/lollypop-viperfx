@@ -147,7 +147,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
     def _set_artwork(self):
         pass
 
-    def _on_realize(self):
+    def _on_realize(self, widget):
         pass
 
     def _get_album_ids(self):
