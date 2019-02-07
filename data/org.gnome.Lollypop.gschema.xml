@@ -270,6 +270,11 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
+        <key type="ai" name="equalizer-custom">
+            <default>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="ai" name="state-one-ids">
             <default>[]</default>
             <summary>INTERNAL</summary>

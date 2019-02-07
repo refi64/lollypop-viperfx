@@ -19,7 +19,8 @@ from lollypop.define import App
 
 
 PRESETS = {
-           _("Disabled"): (0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+           _("Default"): (0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+           _("Custom"): (0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
            _("Classical"): (0, 0, 0, 0, 0, 0, -4, -4, -4, -6),
            _("Club"): (0, 0, 2, 3, 3, 3, 2, 0, 0, 0),
            _("Dance"): (6, 4, 1, 0, 0, -3, -4, -4, 0, 0),
@@ -90,6 +91,12 @@ class EqualizerWidget(Gtk.Bin):
             @param combobox as Gtk.ComboBoxText
         """
         key = combobox.get_active_id()
+        if key == _("Custom"):
+            preset = App().settings.get_value("equalizer-custom")
+            App().settings.set_value("equalizer", preset)
+            for plugin in App().player.plugins:
+                plugin.update_equalizer()
+            PRESETS[key] = preset
         keys = PRESETS.keys()
         if key in keys:
             values = PRESETS[key]
@@ -122,7 +129,9 @@ class EqualizerWidget(Gtk.Bin):
                 combo_set = True
                 break
         if not combo_set:
-            self.__combobox.set_active_id(None)
+            self.__combobox.set_active_id(_("Custom"))
+            App().settings.set_value("equalizer-custom",
+                                     GLib.Variant("ai", preset))
 
     def __save_equalizer(self):
         """

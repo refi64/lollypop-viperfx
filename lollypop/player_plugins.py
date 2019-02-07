@@ -69,10 +69,6 @@ class PluginsPlayer:
         bin.add(rglimiter)
         bin.add(self.__equalizer)
         bin.add(rg_audiosink)
-        i = 0
-        for value in App().settings.get_value("equalizer"):
-            self.set_equalizer(i, value)
-            i += 1
         rg_audioconvert1.link(self.rgvolume)
         self.rgvolume.link(rg_audioconvert2)
         self.rgvolume.link(rglimiter)
@@ -86,6 +82,15 @@ class PluginsPlayer:
             "sink",
             rg_audioconvert1.get_static_pad("sink")))
         playbin.set_property("audio-sink", bin)
+
+    def update_equalizer(self):
+        """
+            Update equalizer based on current settings
+        """
+        i = 0
+        for value in App().settings.get_value("equalizer"):
+            self.set_equalizer(i, value)
+            i += 1
 
     def set_equalizer(self, band, value):
         """
