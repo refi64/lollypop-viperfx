@@ -110,7 +110,6 @@ class Application(Gtk.Application):
         self.notify = None
         self.scrobblers = []
         self.debug = False
-        self.librem = False
         self.shown_sidebar_tooltip = False
         self.__fs = None
         self.__scanner_timeout_id = None
@@ -179,17 +178,6 @@ class Application(Gtk.Application):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
-        librem = GLib.environ_getenv(GLib.get_environ(), "LIBREM")
-        if librem is not None:
-            self.librem = True
-            cssProviderFile = Gio.File.new_for_uri(
-                "resource:///org/gnome/Lollypop/application_phone.css")
-            cssProvider = Gtk.CssProvider()
-            cssProvider.load_from_file(cssProviderFile)
-            screen = Gdk.Screen.get_default()
-            styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_screen(
-                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
         self.db = Database()
         self.playlists = Playlists()
         self.albums = AlbumsDatabase()

@@ -95,12 +95,7 @@ class ToolbarEnd(Gtk.Bin):
         App().set_accels_for_action("app.search", ["<Control>f"])
 
         builder_menu = Gtk.Builder()
-        if App().librem:
-            builder_menu.add_from_resource(
-                "/org/gnome/Lollypop/Appmenu_librem.ui")
-        else:
-            builder_menu.add_from_resource(
-                "/org/gnome/Lollypop/Appmenu.ui")
+        builder_menu.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
         builder.get_object("settings-button").set_menu_model(
             builder_menu.get_object("app-menu"))
 
