@@ -14,6 +14,8 @@ from gi.repository import Gtk, GLib
 
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.define import App, ArtSize
+from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
 from lollypop.utils import get_human_duration
 
@@ -54,6 +56,17 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__cover_widget.set_margin_top(18)
         self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
+        self.__rating_grid = builder.get_object("rating_grid")
+        rating = RatingWidget(album)
+        rating.set_property("halign", Gtk.Align.START)
+        rating.set_property("valign", Gtk.Align.CENTER)
+        rating.show()
+        self.__rating_grid.attach(rating, 0, 0, 1, 1)
+        loved = LovedWidget(album)
+        loved.set_property("halign", Gtk.Align.START)
+        loved.set_property("valign", Gtk.Align.CENTER)
+        loved.show()
+        self.__rating_grid.attach(loved, 1, 0, 1, 1)
         self.add(self.__widget)
         self.connect("size-allocate", self.__on_size_allocate)
 
@@ -66,11 +79,11 @@ class AlbumBannerWidget(Gtk.Bin):
         if height < self.default_height:
             self.__cover_widget.hide()
             self.__duration_label.hide()
-            self.__year_label.hide()
+            self.__rating_grid.hide()
         else:
             self.__cover_widget.show()
             self.__duration_label.show()
-            self.__year_label.show()
+            self.__rating_grid.show()
 
     def do_get_preferred_width(self):
         """
