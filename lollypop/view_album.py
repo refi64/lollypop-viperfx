@@ -110,6 +110,16 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         if TracksView.get_populated(self):
             from lollypop.view_albums_box import AlbumsBoxView
             for artist_id in self.__artist_ids:
+                if artist_id == Type.COMPILATIONS:
+                    album_ids = App().albums.get_compilation_ids(
+                        self.__genre_ids)
+                else:
+                    album_ids = App().albums.get_ids(
+                        [artist_id], [])
+                if self._album.id in album_ids:
+                    album_ids.remove(self._album.id)
+                if not album_ids:
+                    continue
                 artist = App().artists.get_name(artist_id)
                 label = Gtk.Label()
                 label.set_markup(
@@ -128,14 +138,6 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                 others_box.set_margin_start(30)
                 others_box.set_margin_end(30)
                 self.__grid.add(others_box)
-                if artist_id == Type.COMPILATIONS:
-                    album_ids = App().albums.get_compilation_ids(
-                        self.__genre_ids)
-                else:
-                    album_ids = App().albums.get_ids(
-                        [artist_id], [])
-                if self._album.id in album_ids:
-                    album_ids.remove(self._album.id)
                 others_box.populate([Album(id) for id in album_ids])
         else:
             TracksView.populate(self)
