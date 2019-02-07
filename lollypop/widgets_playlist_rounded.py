@@ -126,7 +126,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
             self.__overlay_grid.set_property("halign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
-            self.__overlay_grid.set_margin_end(10)
+            self.__overlay_grid.set_margin_end(25)
             self.__overlay_grid.add(self.__edit_button)
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.show_all()

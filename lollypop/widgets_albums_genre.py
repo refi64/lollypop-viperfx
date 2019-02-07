@@ -80,7 +80,7 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__overlay_grid.set_property("halign", Gtk.Align.END)
             self.__overlay_grid.set_property("valign", Gtk.Align.END)
             self.__overlay_grid.set_margin_bottom(10)
-            self.__overlay_grid.set_margin_end(10)
+            self.__overlay_grid.set_margin_end(25)
             self._overlay.add_overlay(self.__overlay_grid)
             self._overlay.add_overlay(self.__play_button)
             self._overlay.show_all()
