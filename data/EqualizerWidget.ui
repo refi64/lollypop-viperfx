@@ -159,7 +159,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">32Hz</property>
+        <property name="label">32Hz</property>
         <property name="justify">center</property>
       </object>
       <packing>
@@ -172,7 +172,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">64Hz</property>
+        <property name="label">64Hz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -184,7 +184,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">125Hz</property>
+        <property name="label">125Hz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -196,7 +196,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">250Hz</property>
+        <property name="label">250Hz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -208,7 +208,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">500Hz</property>
+        <property name="label">500Hz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -220,7 +220,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">1KHz</property>
+        <property name="label">1KHz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -232,7 +232,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">2KHz</property>
+        <property name="label">2KHz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -244,7 +244,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">4KHz</property>
+        <property name="label">4KHz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -256,7 +256,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">8KHz</property>
+        <property name="label">8KHz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -268,7 +268,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">16KHz</property>
+        <property name="label">16KHz</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
