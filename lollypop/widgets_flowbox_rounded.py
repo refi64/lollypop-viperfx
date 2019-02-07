@@ -13,6 +13,7 @@
 from gi.repository import GLib, Gtk, Pango, GObject
 
 from lollypop.define import ArtSize
+from lollypop.utils import on_query_tooltip
 
 
 class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
@@ -57,7 +58,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_property("halign", Gtk.Align.CENTER)
         self.__label.set_property("has-tooltip", True)
-        self.__label.connect("query-tooltip", self.__on_query_tooltip)
+        self.__label.connect("query-tooltip", on_query_tooltip)
         self.__label.set_markup(
             "<b>" + GLib.markup_escape_text(self.__name) + "</b>")
         self._artwork = Gtk.Image.new()
@@ -156,17 +157,3 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
 #######################
 # PRIVATE             #
 #######################
-    def __on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param eventbox as Gtk.EventBox
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        layout = self.__label.get_layout()
-        if layout.is_ellipsized():
-            markup = self.__label.get_label()
-            tooltip.set_markup(markup)
-            return True

@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
+from lollypop.utils import on_query_tooltip
 from lollypop.helper_overlay import OverlayHelper
 
 
@@ -59,8 +60,6 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         """
         name = self.__radios.get_name(self.__radio_id)
         self._widget = Gtk.EventBox()
-        self._widget.set_property("has-tooltip", True)
-        self._widget.connect("query-tooltip", self.__on_query_tooltip)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         self._artwork = App().art_helper.get_image(self.__art_size,
@@ -70,6 +69,8 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         self.__label.set_justify(Gtk.Justification.CENTER)
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_text(name)
+        self.__label.set_property("has-tooltip", True)
+        self.__label.connect("query-tooltip", on_query_tooltip)
         self._widget.add(grid)
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._artwork)
@@ -251,21 +252,6 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
         popover.connect("closed", self._on_popover_closed)
         self._lock_overlay = True
         popover.popup()
-
-    def __on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param eventbox as Gtk.EventBox
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        layout = self.__label.get_layout()
-        if layout.is_ellipsized():
-            markup = self.__label.get_label()
-            tooltip.set_markup(markup)
-            return True
 
     def __on_radio_artwork(self, surface):
         """

@@ -74,6 +74,22 @@ def get_round_surface(image, scale_factor, radius):
     return surface
 
 
+def on_query_tooltip(label, x, y, keyboard, tooltip):
+    """
+        Show label tooltip if needed
+        @param label as Gtk.Label
+        @param x as int
+        @param y as int
+        @param keyboard as bool
+        @param tooltip as Gtk.Tooltip
+    """
+    layout = label.get_layout()
+    if layout.is_ellipsized():
+        markup = label.get_label()
+        tooltip.set_markup(markup)
+        return True
+
+
 def set_proxy_from_gnome():
     """
         Set proxy settings from GNOME

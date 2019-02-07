@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.define import App, ArtSize, Shuffle, ViewType
+from lollypop.utils import on_query_tooltip
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
@@ -82,7 +83,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         eventbox = Gtk.EventBox()
         eventbox.add(self.__label)
         eventbox.set_property("has-tooltip", True)
-        eventbox.connect("query-tooltip", self.__on_query_tooltip)
+        eventbox.connect("query-tooltip", on_query_tooltip)
         eventbox.connect("realize", self._on_realize)
         eventbox.connect("button-press-event",
                          self.__on_artist_button_press)
@@ -231,21 +232,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                  self._genre_ids,
                                  self._artist_ids)
         return True
-
-    def __on_query_tooltip(self, eventbox, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param eventbox as Gtk.EventBox
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        layout = self.__label.get_layout()
-        if layout.is_ellipsized():
-            markup = self.__label.get_label()
-            tooltip.set_markup(markup)
-            return True
 
     def __on_artist_button_press(self, eventbox, event):
         """

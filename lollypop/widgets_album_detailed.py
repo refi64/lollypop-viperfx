@@ -16,7 +16,7 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
-from lollypop.utils import get_human_duration
+from lollypop.utils import get_human_duration, on_query_tooltip
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, ViewType, Sizing
 
@@ -69,16 +69,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
             self.__title_label.get_style_context().add_class("dim-label")
             self.__title_label.set_property("has-tooltip", True)
-            self.__title_label.connect("query-tooltip",
-                                       self.__on_query_tooltip)
+            self.__title_label.connect("query-tooltip", on_query_tooltip)
             self.__title_label.show()
             if self._view_type & (ViewType.POPOVER | ViewType.MULTIPLE):
                 self.__artist_label = Gtk.Label()
                 self.__artist_label.set_margin_end(10)
                 self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
                 self.__artist_label.set_property("has-tooltip", True)
-                self.__artist_label.connect("query-tooltip",
-                                            self.__on_query_tooltip)
+                self.__artist_label.connect("query-tooltip", on_query_tooltip)
                 self.__artist_label.show()
                 self.__header.add(self.__artist_label)
             self.__year_label = Gtk.Label()
@@ -314,22 +312,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         menu = AlbumMenu(self._album, True)
         popover = Gtk.Popover.new_from_model(button, menu)
         popover.popup()
-
-    def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param widget as Gtk.Widget
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        layout = widget.get_layout()
-        if layout.is_ellipsized():
-            tooltip.set_text(widget.get_label())
-        else:
-            return False
-        return True
 
     def __on_size_allocate(self, widget, allocation):
         """

@@ -14,7 +14,7 @@ from gi.repository import Gtk, Pango, GLib, Gst, Gdk
 
 from lollypop.define import App, ViewType
 from lollypop.widgets_indicator import IndicatorWidget
-from lollypop.utils import seconds_to_string
+from lollypop.utils import seconds_to_string, on_query_tooltip
 
 
 class Row(Gtk.ListBoxRow):
@@ -50,8 +50,7 @@ class Row(Gtk.ListBoxRow):
         self._row_widget.add(self._grid)
         self._title_label = Gtk.Label.new(self._track.name)
         self._title_label.set_property("has-tooltip", True)
-        self._title_label.connect("query-tooltip",
-                                  self.__on_query_tooltip)
+        self._title_label.connect("query-tooltip", on_query_tooltip)
         self._title_label.set_property("hexpand", True)
         self._title_label.set_property("halign", Gtk.Align.START)
         self._title_label.set_property("xalign", 0)
@@ -65,8 +64,7 @@ class Row(Gtk.ListBoxRow):
                 ", ".join(artists)))
             self._artists_label.set_use_markup(True)
             self._artists_label.set_property("has-tooltip", True)
-            self._artists_label.connect("query-tooltip",
-                                        self.__on_query_tooltip)
+            self._artists_label.connect("query-tooltip", on_query_tooltip)
             self._artists_label.set_property("hexpand", True)
             self._artists_label.set_property("halign", Gtk.Align.END)
             self._artists_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -346,19 +344,3 @@ class Row(Gtk.ListBoxRow):
         """
         self.__popup_menu(button)
         return True
-
-    def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param widget as Gtk.Widget
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        text = ""
-        layout = widget.get_layout()
-        label = widget.get_text()
-        if layout.is_ellipsized():
-            text = "%s" % (GLib.markup_escape_text(label))
-        widget.set_tooltip_markup(text)
