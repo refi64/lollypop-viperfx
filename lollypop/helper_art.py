@@ -242,9 +242,12 @@ class ArtHelper(GObject.Object):
             @return GdkPixbuf.Pixbuf
         """
         path = InformationStore.get_artwork_path(artist, width, scale_factor)
-        if path is not None:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-            if effect & ArtHelperEffect.BLUR:
-                pixbuf = self.__get_blur(pixbuf, width, height, 10)
-            return pixbuf
+        try:
+            if path is not None:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+                if effect & ArtHelperEffect.BLUR:
+                    pixbuf = self.__get_blur(pixbuf, width, height, 10)
+                return pixbuf
+        except Exception as e:
+            Logger.warning("ArtHelper::__get_artist_artwork(): %s", e)
         return None
