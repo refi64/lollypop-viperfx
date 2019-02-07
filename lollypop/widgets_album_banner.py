@@ -30,30 +30,47 @@ class AlbumBannerWidget(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self.__width = 0
+        self.__height = self.default_height
         self.__allocation_timeout_id = None
         self.__album = album
+        self.set_property("valign", Gtk.Align.START)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
         builder.connect_signals(self)
-        name_label = builder.get_object("name_label")
-        year_label = builder.get_object("year_label")
-        duration_label = builder.get_object("duration_label")
-        name_label.set_text(album.name)
-        year_label.set_text(str(album.year))
+        self.__label = builder.get_object("name_label")
+        self.__year_label = builder.get_object("year_label")
+        self.__duration_label = builder.get_object("duration_label")
+        self.__label.set_text(album.name)
+        self.__year_label.set_text(str(album.year))
         duration = App().albums.get_duration(self.__album.id,
                                              self.__album.genre_ids)
-        duration_label.set_text(get_human_duration(duration))
+        self.__duration_label.set_text(get_human_duration(duration))
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
-        cover_widget = CoverWidget()
-        cover_widget.update(album)
-        cover_widget.set_margin_start(20)
-        cover_widget.set_margin_top(18)
-        cover_widget.show()
-        self.__grid.attach(cover_widget, 0, 0, 1, 3)
+        self.__cover_widget = CoverWidget()
+        self.__cover_widget.update(album)
+        self.__cover_widget.set_margin_start(20)
+        self.__cover_widget.set_margin_top(18)
+        self.__cover_widget.show()
+        self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.add(self.__widget)
         self.connect("size-allocate", self.__on_size_allocate)
+
+    def set_height(self, height):
+        """
+            Set height
+            @param height as int
+        """
+        self.__height = height
+        if height < self.default_height:
+            self.__cover_widget.hide()
+            self.__duration_label.hide()
+            self.__year_label.hide()
+        else:
+            self.__cover_widget.show()
+            self.__duration_label.show()
+            self.__year_label.show()
 
     def do_get_preferred_width(self):
         """
@@ -67,7 +84,22 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Force preferred height
         """
-        return (ArtSize.BANNER + 40, ArtSize.BANNER + 40)
+        return (self.__height, self.__height)
+
+    @property
+    def height(self):
+        """
+            Get height
+            @return int
+        """
+        return self.__height
+
+    @property
+    def default_height(self):
+        """
+            Get default height
+        """
+        return ArtSize.BANNER + 40
 
 #######################
 # PROTECTED           #

@@ -203,11 +203,11 @@ class LyricsView(View, InformationController):
         context.add_class("lyrics")
         width = self.get_allocated_width()
         if width > Sizing.LARGE:
-            context.add_class("lyrics-x-large")
+            context.add_class("text-x-large")
         elif width > Sizing.MONSTER:
-            context.add_class("lyrics-large")
+            context.add_class("text-large")
         elif width > Sizing.BIG:
-            context.add_class("lyrics-medium")
+            context.add_class("text-medium")
 
     def __handle_size_allocation(self):
         """

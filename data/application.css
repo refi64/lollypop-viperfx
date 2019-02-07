@@ -137,15 +137,19 @@ popover.background separator {
     min-width: 200px;
 }
 
-.lyrics-x-large {
+.text-xx-large {
+    font-size: 40px;
+}
+
+.text-x-large {
     font-size: x-large;
 }
 
-.lyrics-large {
+.text-large {
     font-size: large;
 }
 
-.lyrics-medium {
+.text-medium {
     font-size: medium;
 }
 

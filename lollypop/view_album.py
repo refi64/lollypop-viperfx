@@ -20,10 +20,10 @@ from lollypop.utils import remove_static_genres
 from lollypop.view_tracks import TracksView
 from lollypop.widgets_album_banner import AlbumBannerWidget
 from lollypop.controller_view import ViewController, ViewControllerType
-from lollypop.view import View
+from lollypop.view import LazyLoadingView
 
 
-class AlbumView(View, TracksView, ViewController):
+class AlbumView(LazyLoadingView, TracksView, ViewController):
     """
         Show artist albums and tracks
     """
@@ -36,38 +36,51 @@ class AlbumView(View, TracksView, ViewController):
             @param genre_ids as [int]
         """
         view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
-        View.__init__(self, view_type)
+        LazyLoadingView.__init__(self, view_type)
         TracksView.__init__(self, view_type)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self._album = album
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
+        self.__genre_ids = remove_static_genres(genre_ids)
         self.__grid = Gtk.Grid()
         self.__grid.set_property("vexpand", True)
         self.__grid.set_row_spacing(10)
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__grid.show()
-        self.__genre_ids = remove_static_genres(genre_ids)
 
     def populate(self):
         """
             Populate the view with album
             @param albums as [Album]
         """
-        banner = AlbumBannerWidget(self._album)
-        banner.show()
-        self.__grid.add(banner)
         TracksView.populate(self)
         self.__grid.add(self._responsive_widget)
         self._viewport.add(self.__grid)
-        self.add(self._scrolled)
-        self._responsive_widget.set_margin_start(15)
+        self._overlay = Gtk.Overlay.new()
+        self._overlay.add(self._scrolled)
+        self._overlay.show()
+        self.__banner = AlbumBannerWidget(self._album)
+        self.__banner.show()
+        self._overlay.add_overlay(self.__banner)
+        self.add(self._overlay)
         self._responsive_widget.set_margin_end(15)
         self._responsive_widget.show()
 
 #######################
 # PROTECTED           #
 #######################
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        LazyLoadingView._on_value_changed(self, adj)
+        if adj.get_value() == adj.get_lower():
+            self.__banner.set_height(self.__banner.default_height)
+        else:
+            self.__banner.set_height(self.__banner.default_height / 3)
+
     def _on_current_changed(self, player):
         """
             Update children state
@@ -80,6 +93,8 @@ class AlbumView(View, TracksView, ViewController):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
+        self._responsive_widget.set_margin_top(
+            self.__banner.default_height + 15)
         App().window.emit("show-can-go-back", True)
         App().window.emit("can-go-back-changed", True)
         App().settings.set_value("state-one-ids",

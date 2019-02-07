@@ -31,13 +31,22 @@ class ArtistBannerWidget(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__width = 0
+        self.__height = self.default_height
         self.__artist_id = artist_id
         self.__allocation_timeout_id = None
+        self.set_property("valign", Gtk.Align.START)
         self.__artwork = Gtk.Image()
         self.__artwork.get_style_context().add_class("black")
         self.__artwork.show()
         self.add(self.__artwork)
         self.connect("size-allocate", self.__on_size_allocate)
+
+    def set_height(self, height):
+        """
+            Set height
+            @param height as int
+        """
+        self.__height = height
 
     def do_get_preferred_width(self):
         """
@@ -51,7 +60,22 @@ class ArtistBannerWidget(Gtk.Overlay):
         """
             Force preferred height
         """
-        return (ArtSize.BANNER + 40, ArtSize.BANNER + 40)
+        return (self.__height, self.__height)
+
+    @property
+    def height(self):
+        """
+            Get height
+            @return int
+        """
+        return self.__height
+
+    @property
+    def default_height(self):
+        """
+            Get default height
+        """
+        return ArtSize.BANNER + 40
 
 #######################
 # PROTECTED           #

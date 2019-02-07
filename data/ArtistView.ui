@@ -52,8 +52,10 @@
             <property name="xalign">0</property>
             <attributes>
               <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="4"/>
             </attributes>
+            <style>
+              <class name="text-xx-large"/>
+            </style>
           </object>
         </child>
       </object>

@@ -50,18 +50,17 @@ class ArtistView(ArtistAlbumsView):
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__add_button = builder.get_object("add-button")
         self.__play_button = builder.get_object("play-button")
-        banner = ArtistBannerWidget(artist_ids[0])
-        banner.add_overlay(builder.get_object("buttons"))
-        banner.show()
+        self.__banner = ArtistBannerWidget(artist_ids[0])
+        self.__banner.add_overlay(builder.get_object("buttons"))
+        self.__banner.show()
+        self._overlay.add_overlay(self.__banner)
         if App().lastfm is None:
             builder.get_object("lastfm-button").hide()
         elif not get_network_available():
             builder.get_object("lastfm-button").set_sensitive(False)
             builder.get_object("lastfm-button").set_tooltip_text(
                 _("Network access disabled"))
-        self._album_box.add(banner)
         self._album_box.set_row_spacing(20)
-
         self.__set_artwork()
         self.__on_album_changed(App().player)
         self.__on_lock_changed(App().player)
@@ -69,16 +68,7 @@ class ArtistView(ArtistAlbumsView):
         artists = []
         for artist_id in artist_ids:
             artists.append(App().artists.get_name(artist_id))
-        if App().settings.get_value("artist-artwork"):
-            self.__label.set_markup(
-                '<span size="x-large" weight="bold">' +
-                GLib.markup_escape_text(", ".join(artists)) +
-                "</span>")
-        else:
-            self.__label.set_markup(
-                '<span size="large" weight="bold">' +
-                GLib.markup_escape_text(", ".join(artists)) +
-                "</span>")
+        self.__label.set_label(", ".join(artists))
 
     def jump_to_current(self):
         """
@@ -96,6 +86,19 @@ class ArtistView(ArtistAlbumsView):
 #######################
 # PROTECTED           #
 #######################
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        ArtistAlbumsView._on_value_changed(self, adj)
+        if adj.get_value() == adj.get_lower():
+            self.__banner.set_height(self.__banner.default_height)
+            self.__artwork.show()
+        else:
+            self.__banner.set_height(self.__banner.default_height / 3)
+            self.__artwork.hide()
+
     def _on_label_realize(self, eventbox):
         """
             Change cursor on label
@@ -223,6 +226,7 @@ class ArtistView(ArtistAlbumsView):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
+        self._album_box.set_margin_top(self.__banner.default_height + 15)
         self.__art_signal_id = App().art.connect(
                                            "artist-artwork-changed",
                                            self.__on_artist_artwork_changed)
