@@ -13,7 +13,7 @@
 from lollypop.shown import ShownLists
 from lollypop.loader import Loader
 from lollypop.objects import Track, Album
-from lollypop.define import App, Type, ViewType, SelectionListMask, ArtSize
+from lollypop.define import App, Type, ViewType, SelectionListMask
 from lollypop.define import SidebarContent
 
 
@@ -277,7 +277,7 @@ class ViewsContainer:
             return App().genres.get_ids()
 
         from lollypop.view_albums_genre_box import AlbumsGenreBoxView
-        view = AlbumsGenreBoxView(int(ArtSize.BIG * 1.2))
+        view = AlbumsGenreBoxView(ViewType.SCROLLED)
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()
