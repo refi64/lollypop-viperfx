@@ -326,7 +326,7 @@ class Row(Gtk.ListBoxRow):
             App().player.clear_albums()
             App().player.reset_history()
             App().player.load(self._track)
-        else:
+        elif event.button == 1:
             self.activate()
         return True
 
