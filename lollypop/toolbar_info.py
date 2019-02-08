@@ -57,6 +57,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
         self.connect("button-press-event", self.__on_button_press_event)
+        self.connect("button-release-event", self.__on_button_release_event)
 
     def do_get_preferred_width(self):
         """
@@ -146,6 +147,15 @@ class ToolbarInfo(Gtk.Bin, InformationController):
 
     def __on_button_press_event(self, widget, event):
         """
+            Block event on button 3
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if event.button == 3:
+            return True
+
+    def __on_button_release_event(self, widget, event):
+        """
             Show current track menu
             @param widget as Gtk.Widget
             @param event as Gdk.Event
@@ -173,7 +183,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             elif App().player.current_track.id == Type.RADIOS:
                 popover = Popover.new_from_model(self._infobox, menu)
             popover.popup()
-        return True
 
     def __on_realize(self, toolbar):
         """
