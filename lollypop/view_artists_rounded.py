@@ -30,8 +30,6 @@ class RoundedArtistsView(FlowBoxView):
         FlowBoxView.__init__(self)
         self.__lazy_queue_backup = None
         self._widget_class = RoundedArtistWidget
-        self.connect("realize", self.__on_realize)
-        self.connect("unrealize", self.__on_unrealize)
         self.connect("destroy", self.__on_destroy)
 
     def add_value(self, item):
@@ -111,6 +109,17 @@ class RoundedArtistsView(FlowBoxView):
                                  GLib.Variant("ai", [Type.ARTISTS]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
+        self.__art_signal_id = App().art.connect(
+                                              "artist-artwork-changed",
+                                              self.__on_artist_artwork_changed)
+
+    def _on_unmap(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        if self.__art_signal_id is not None:
+            App().art.disconnect(self.__art_signal_id)
 
 #######################
 # PRIVATE             #
@@ -150,20 +159,3 @@ class RoundedArtistsView(FlowBoxView):
         for child in self._box.get_children():
             if child.name == prefix:
                 child.set_artwork()
-
-    def __on_realize(self, widget):
-        """
-            Connect signals
-            @param widget as Gtk.Widget
-        """
-        self.__art_signal_id = App().art.connect(
-                                              "artist-artwork-changed",
-                                              self.__on_artist_artwork_changed)
-
-    def __on_unrealize(self, widget):
-        """
-            Connect signals
-            @param widget as Gtk.Widget
-        """
-        if self.__art_signal_id is not None:
-            App().art.disconnect(self.__art_signal_id)

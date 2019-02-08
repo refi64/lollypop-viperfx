@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, Type
 from lollypop.objects import Track
-from lollypop.utils import on_query_tooltip
+from lollypop.utils import on_query_tooltip, on_realize
 from lollypop.helper_overlay import OverlayHelper
 
 
@@ -191,7 +191,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             self.__play_button.set_hexpand(True)
             self.__play_button.set_property("valign", Gtk.Align.END)
             self.__play_button.set_property("halign", Gtk.Align.START)
-            self.__play_button.connect("realize", self._on_realize)
+            self.__play_button.connect("realize", on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
             self.__play_button.get_image().set_pixel_size(self._pixel_size +
                                                           20)
@@ -203,7 +203,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayHelper):
             self.__artwork_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__artwork_button.set_property("has-tooltip", True)
             self.__artwork_button.set_tooltip_text(_("Modify radio"))
-            self.__artwork_button.connect("realize", self._on_realize)
+            self.__artwork_button.connect("realize", on_realize)
             self.__artwork_button.connect("clicked", self.__on_edit_clicked)
             self.__overlay_grid = Gtk.Grid()
             self.__overlay_grid.set_margin_bottom(6)

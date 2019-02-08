@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay import OverlayAlbumHelper
 from lollypop.define import App, ArtSize, Shuffle, ViewType
-from lollypop.utils import on_query_tooltip
+from lollypop.utils import on_query_tooltip, on_realize
 
 
 class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
@@ -84,7 +84,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                                               artist_name))
         eventbox = Gtk.EventBox()
         eventbox.add(self.__label)
-        eventbox.connect("realize", self._on_realize)
+        eventbox.connect("realize", on_realize)
         eventbox.connect("button-press-event",
                          self.__on_artist_button_press)
         eventbox.show()
@@ -106,7 +106,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self.__widget.connect("enter-notify-event", self._on_enter_notify)
             self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self._on_button_release)
-        self.__widget.connect("realize", self._on_realize)
+        self.__widget.connect("realize", on_realize)
         self.connect("destroy", self.__on_destroy)
         self.add(self.__widget)
 
@@ -156,7 +156,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self.__play_all_button.set_tooltip_text(_("Play albums"))
             self.__play_all_button.set_property("halign", Gtk.Align.END)
             self.__play_all_button.set_property("valign", Gtk.Align.END)
-            self.__play_all_button.connect("realize", self._on_realize)
+            self.__play_all_button.connect("realize", on_realize)
             self.__play_all_button.connect("clicked",
                                            self.__on_play_all_clicked)
             self.__play_all_button.set_image(Gtk.Image())

@@ -17,6 +17,7 @@ from gettext import gettext as _
 
 from lollypop.define import App, Shuffle, Type
 from lollypop.objects import Track, Album, Disc
+from lollypop.utils import on_realize
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
@@ -105,7 +106,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__play_button.set_property("valign", Gtk.Align.END)
             self.__play_button.set_property("halign", Gtk.Align.START)
-            self.__play_button.connect("realize", self._on_realize)
+            self.__play_button.connect("realize", on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
             self.__play_button.set_margin_bottom(10)
             self.__play_button.set_margin_start(10)
@@ -118,7 +119,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__edit_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__edit_button.set_property("has-tooltip", True)
             self.__edit_button.set_tooltip_text(_("Modify playlist"))
-            self.__edit_button.connect("realize", self._on_realize)
+            self.__edit_button.connect("realize", on_realize)
             self.__edit_button.connect("clicked", self.__on_edit_clicked)
             self.__edit_button.get_image().set_pixel_size(self._pixel_size)
             self._overlay.add_overlay(self.__play_button)
@@ -150,9 +151,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
         """
         if self._data != Type.RANDOMS:
             RoundedAlbumsWidget._save_surface(self, surface)
-
-    def _on_realize(self, widget):
-        OverlayHelper._on_realize(self, widget)
 
 #######################
 # PRIVATE             #

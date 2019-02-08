@@ -13,7 +13,7 @@
 from gi.repository import GLib, Gtk, Pango, GObject
 
 from lollypop.define import ArtSize
-from lollypop.utils import on_query_tooltip
+from lollypop.utils import on_query_tooltip, on_realize
 
 
 class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
@@ -46,7 +46,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         self.set_size_request(art_size, art_size)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
-        self.connect("realize", self._on_realize)
+        self.connect("realize", on_realize)
 
     def populate(self):
         """
@@ -146,9 +146,6 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
 # PROTECTED           #
 #######################
     def _set_artwork(self):
-        pass
-
-    def _on_realize(self, widget):
         pass
 
     def _get_album_ids(self):

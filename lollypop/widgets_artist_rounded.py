@@ -10,9 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk, Gtk
+from gi.repository import Gtk, Gdk
 
-from gettext import gettext as _
 from random import shuffle
 
 from lollypop.define import App, SelectionListMask
@@ -20,7 +19,6 @@ from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
 from lollypop.helper_art import ArtHelperEffect
-from lollypop.logger import Logger
 
 
 class RoundedArtistWidget(RoundedFlowBoxWidget):
@@ -104,18 +102,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             ArtHelperEffect.ROUNDED)
             else:
                 set_icon_name()
-
-    def _on_realize(self, widget):
-        """
-            Change cursor over eventbox
-            @param widget as Gtk.Widget
-        """
-        try:
-            window = widget.get_window()
-            if window is not None:
-                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-        except:
-            Logger.warning(_("You are using a broken cursor theme!"))
 
 #######################
 # PRIVATE             #

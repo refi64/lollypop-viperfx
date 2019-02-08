@@ -10,11 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.logger import Logger
+from lollypop.utils import on_realize
 from lollypop.define import App, ArtSize
 
 
@@ -101,18 +101,6 @@ class OverlayHelper:
             if self._show_overlay:
                 self._show_overlay_func(False)
 
-    def _on_realize(self, widget):
-        """
-            Set cursor on widget
-            @param widget as Gtk.Widget
-        """
-        try:
-            window = widget.get_window()
-            if window is not None:
-                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-        except:
-            Logger.warning(_("You are using a broken cursor theme!"))
-
     def _on_enter_notify_timeout(self):
         """
             Show overlay buttons
@@ -162,7 +150,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._play_button.get_image().set_pixel_size(self._pixel_size + 20)
             self._play_button.set_property("has-tooltip", True)
             self._play_button.set_tooltip_text(_("Play"))
-            self._play_button.connect("realize", self._on_realize)
+            self._play_button.connect("realize", on_realize)
             self._play_button.connect("clicked", self.__on_play_clicked)
             self._play_button.set_property("halign", Gtk.Align.START)
             self._play_button.set_property("valign", Gtk.Align.END)
@@ -175,7 +163,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self._action_button.set_property("has-tooltip", True)
             self._action_button.set_property("halign", Gtk.Align.END)
             self._action_button.set_property("valign", Gtk.Align.END)
-            self._action_button.connect("realize", self._on_realize)
+            self._action_button.connect("realize", on_realize)
             self._action_button.connect("clicked", self.__on_action_clicked)
             self._action_button.set_image(Gtk.Image())
             self._action_button.get_image().set_pixel_size(self._pixel_size)

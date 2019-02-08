@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.logger import Logger
 from lollypop.define import App, Type, SidebarContent
+from lollypop.utils import on_realize
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay import OverlayHelper
 
@@ -72,7 +73,7 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_button.set_hexpand(True)
             self.__play_button.set_property("valign", Gtk.Align.END)
             self.__play_button.set_property("halign", Gtk.Align.START)
-            self.__play_button.connect("realize", self._on_realize)
+            self.__play_button.connect("realize", on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
             self.__play_button.set_margin_bottom(10)
             self.__play_button.set_margin_start(10)
@@ -92,9 +93,6 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_button = None
             self.__overlay_grid.destroy()
             self.__overlay_grid = None
-
-    def _on_realize(self, widget):
-        OverlayHelper._on_realize(self, widget)
 
 #######################
 # PRIVATE             #
