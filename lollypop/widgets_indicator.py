@@ -40,6 +40,8 @@ class IndicatorWidget(Gtk.EventBox):
         self.connect("destroy", self.__on_destroy)
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
+        if not App().has_cursor:
+            self.__init()
 
     def button(self):
         """
@@ -135,7 +137,7 @@ class IndicatorWidget(Gtk.EventBox):
         self.__button.set_relief(Gtk.ReliefStyle.NONE)
         self.__button.get_style_context().add_class("menu-button")
         self.__button.get_style_context().add_class("track-menu-button")
-        if self.__view_type & ViewType.READ_ONLY:
+        if self.__view_type & ViewType.READ_ONLY or not App().has_cursor:
             self.__button.set_sensitive(False)
             self.__button.set_opacity(0)
         self.__button.connect("button-release-event",
