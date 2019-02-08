@@ -249,6 +249,8 @@ class ArtHelper(GObject.Object):
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
                 if effect & ArtHelperEffect.BLUR:
                     pixbuf = self.__get_blur(pixbuf, width, height, 10)
+                elif effect & ArtHelperEffect.BLUR_HARD:
+                    pixbuf = self.__get_blur(pixbuf, width, height, 30)
                 return pixbuf
         except Exception as e:
             Logger.warning("ArtHelper::__get_artist_artwork(): %s", e)
