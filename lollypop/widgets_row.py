@@ -85,17 +85,19 @@ class Row(Gtk.ListBoxRow):
         if self._artists_label is not None:
             self._grid.add(self._artists_label)
         self._grid.add(self._duration_label)
-        if not view_type & (ViewType.POPOVER | ViewType.SEARCH):
-            self.__menu_button = Gtk.Button.new_from_icon_name(
-                "view-more-symbolic",
-                Gtk.IconSize.MENU)
-            self.__menu_button.connect("button-release-event",
-                                       self.__on_menu_button_release_event)
-            self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
-            context = self.__menu_button.get_style_context()
-            context.add_class("menu-button")
-            context.add_class("track-menu-button")
-            self._grid.add(self.__menu_button)
+        self.__menu_button = Gtk.Button.new_from_icon_name(
+            "view-more-symbolic",
+            Gtk.IconSize.MENU)
+        self.__menu_button.connect("button-release-event",
+                                   self.__on_menu_button_release_event)
+        self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
+        context = self.__menu_button.get_style_context()
+        context.add_class("menu-button")
+        context.add_class("track-menu-button")
+        self._grid.add(self.__menu_button)
+        if view_type & (ViewType.POPOVER | ViewType.SEARCH):
+            self.__menu_button.set_sensitive(False)
+            self.__menu_button.set_opacity(0)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
         # We do not use set_indicator() here, we do not want widget to be
