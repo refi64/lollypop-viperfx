@@ -122,7 +122,10 @@ class ApplicationActions:
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        if App().window.is_adaptive:
+        from lollypop.adaptive import AdaptiveWindow
+        (width, height) = App().window.get_size()
+        if width < AdaptiveWindow._ADAPTIVE_STACK or\
+                height < AdaptiveWindow._ADAPTIVE_STACK:
             App().window.container.show_view(Type.SETTINGS)
         else:
             from lollypop.dialog_settings import SettingsDialog
