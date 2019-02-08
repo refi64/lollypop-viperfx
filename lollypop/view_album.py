@@ -64,6 +64,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
         self.add(self._overlay)
+        self._responsive_widget.set_margin_start(5)
         self._responsive_widget.set_margin_end(15)
         self._responsive_widget.show()
 
