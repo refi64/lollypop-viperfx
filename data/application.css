@@ -178,7 +178,6 @@ popover.background separator {
 }
 
 .black {
-    padding-top: 2px;
     background-color: alpha(black, 0.5);
     color: white;
 }
