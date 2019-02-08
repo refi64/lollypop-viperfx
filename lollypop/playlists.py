@@ -288,7 +288,7 @@ class Playlists(GObject.GObject):
                                   FROM playlists\
                                   WHERE smart_enabled=0\
                                   ORDER BY mtime DESC\
-                                  LIMIT 6")
+                                  LIMIT 4")
             return list(result)
 
     def get_track_uris(self, playlist_id):
