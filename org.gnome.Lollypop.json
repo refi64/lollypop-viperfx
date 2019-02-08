@@ -234,6 +234,21 @@
             }]
         },
         {
+		    "name": "openjpeg",
+		    "buildsystem" : "cmake",
+		    "config-opts": [
+		    	"-DCMAKE_BUILD_TYPE=Release"
+		    ],
+		    "cleanup": [
+		    	"/bin"
+		    ],
+		    "sources": [{
+		    	"type" : "git",
+		    	"branch" : "master",
+		    	"url" : "https://github.com/uclouvain/openjpeg.git"
+		    }]
+        },
+        {
             "name": "lollypop",
             "buildsystem": "meson",
             "builddir": true,
