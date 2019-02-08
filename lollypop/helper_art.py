@@ -221,8 +221,8 @@ class ArtHelper(GObject.Object):
             album, width, height, scale_factor, cache)
         try:
             if effect & ArtHelperEffect.RESIZE:
-                pixbuf = pixbuf.scale_simple(width,
-                                             height,
+                pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                             height * scale_factor,
                                              GdkPixbuf.InterpType.NEAREST)
             if effect & ArtHelperEffect.BLUR:
                 pixbuf = self.__get_blur(pixbuf, width, height, 10)
@@ -251,8 +251,8 @@ class ArtHelper(GObject.Object):
             if path is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
                 if effect & ArtHelperEffect.RESIZE:
-                    pixbuf = pixbuf.scale_simple(width,
-                                                 height,
+                    pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                                 height * scale_factor,
                                                  GdkPixbuf.InterpType.NEAREST)
                 if effect & ArtHelperEffect.BLUR:
                     pixbuf = self.__get_blur(pixbuf, width, height, 10)
