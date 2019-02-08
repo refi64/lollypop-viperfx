@@ -350,9 +350,12 @@ class BinPlayer(BasePlayer):
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
             App().scanner.stop()
+            self.stop()
         elif App().notify is not None:
             App().notify.send(message.parse_error()[0].message)
-        self.stop()
+            self.set_next()
+            self.set_prev()
+            self.next()
 
     def _on_bus_eos(self, bus, message):
         """
