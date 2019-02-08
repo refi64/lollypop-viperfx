@@ -50,7 +50,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
-        self.__cover_widget = CoverWidget()
+        self.__cover_widget = CoverWidget(True)
         self.__cover_widget.update(album)
         self.__cover_widget.set_margin_start(20)
         self.__cover_widget.set_margin_top(18)

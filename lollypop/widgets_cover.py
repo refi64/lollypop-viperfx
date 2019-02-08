@@ -14,18 +14,24 @@ from gi.repository import Gtk
 
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.define import App, ArtSize
+from lollypop.utils import on_realize
 
 
-class CoverWidget(Gtk.Bin):
+class CoverWidget(Gtk.EventBox):
     """
         Widget showing current album cover
     """
 
-    def __init__(self):
+    def __init__(self, editable=False):
         """
             Init cover widget
         """
-        Gtk.Bin.__init__(self)
+        Gtk.EventBox.__init__(self)
+        self.__album = None
+        if editable:
+            self.connect("realize", on_realize)
+            self.connect("button-release-event",
+                         self.__on_button_release_event)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/CoverWidget.ui")
         builder.connect_signals(self)
@@ -37,6 +43,7 @@ class CoverWidget(Gtk.Bin):
             Update cover
             @param album as Album
         """
+        self.__album = album
         App().art_helper.set_album_artwork(
                 album,
                 ArtSize.BANNER,
@@ -48,6 +55,19 @@ class CoverWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def __on_button_release_event(self, eventbox, event):
+        """
+            Show Covers popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if self.__album is None:
+            return
+        from lollypop.pop_artwork import CoversPopover
+        popover = CoversPopover(self.__album)
+        popover.set_relative_to(eventbox)
+        popover.popup()
+
     def __on_album_artwork(self, surface):
         """
             Set album artwork

@@ -169,19 +169,6 @@ class OverlayAlbumHelper(OverlayHelper):
             self._play_button.set_margin_start(6)
             self._play_button.set_margin_bottom(6)
             self._play_button.show()
-            # Artwork button
-            self._artwork_button = Gtk.Button.new_from_icon_name(
-                "image-x-generic-symbolic",
-                Gtk.IconSize.INVALID)
-            self._artwork_button.set_relief(Gtk.ReliefStyle.NONE)
-            self._artwork_button.set_property("has-tooltip", True)
-            self._artwork_button.set_tooltip_text(_("Change artwork"))
-            self._artwork_button.set_property("halign", Gtk.Align.END)
-            self._artwork_button.set_property("valign", Gtk.Align.END)
-            self._artwork_button.connect("realize", self._on_realize)
-            self._artwork_button.connect("clicked", self.__on_artwork_clicked)
-            self._artwork_button.get_image().set_pixel_size(self._pixel_size)
-            self._artwork_button.show()
             # Action button
             self._action_button = Gtk.Button.new()
             self._action_button.set_relief(Gtk.ReliefStyle.NONE)
@@ -202,13 +189,10 @@ class OverlayAlbumHelper(OverlayHelper):
             self._overlay_grid.set_property("valign", Gtk.Align.END)
             self._overlay.add_overlay(self._overlay_grid)
             self._overlay_grid.add(self._action_button)
-            self._overlay_grid.add(self._artwork_button)
             self._overlay_grid.show_all()
             self._play_button.get_style_context().add_class("rounded-icon")
             self._overlay_grid.get_style_context().add_class(
                     "squared-icon-small")
-            self._artwork_button.get_style_context().add_class(
-                    "overlay-button")
             self._action_button.get_style_context().add_class(
                     "overlay-button")
         else:
@@ -216,8 +200,6 @@ class OverlayAlbumHelper(OverlayHelper):
             self._play_button = None
             self._action_button.destroy()
             self._action_button = None
-            self._artwork_button.destroy()
-            self._artwork_button = None
             self._overlay_grid.destroy()
             self._overlay_grid = None
 
@@ -252,19 +234,6 @@ class OverlayAlbumHelper(OverlayHelper):
             action.change_state(GLib.Variant("b", False))
         App().player.play_album(self._album.clone(True))
         self._show_append(False)
-        return True
-
-    def __on_artwork_clicked(self, button):
-        """
-            Popover with album art downloaded from the web (in fact google :-/)
-            @param button as Gtk.Button
-        """
-        from lollypop.pop_artwork import CoversPopover
-        popover = CoversPopover(self._album)
-        popover.set_relative_to(button)
-        popover.connect("closed", self._on_popover_closed)
-        self._lock_overlay = True
-        popover.popup()
         return True
 
     def __on_action_clicked(self, button):
