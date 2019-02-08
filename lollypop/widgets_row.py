@@ -97,8 +97,12 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
-        self.set_indicator(App().player.current_track.id == self._track.id,
-                           self._track.loved)
+        # We do not use set_indicator() here, we do not want widget to be
+        # populated
+        if App().player.current_track.id == self._track.id:
+            self._indicator.play()
+        elif self._track.loved:
+            self._indicator.loved(self._track.loved)
 
     def set_indicator(self, playing, loved):
         """
