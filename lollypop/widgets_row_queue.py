@@ -36,7 +36,7 @@ class QueueRow(Row, DNDRow):
             Init row widgets
             @param track as Track
         """
-        Row.__init__(self, track, ViewType.READ_ONLY)
+        Row.__init__(self, track, ViewType.DEFAULT)
         DNDRow.__init__(self)
         self.__filtered = False
         self._grid.insert_row(0)

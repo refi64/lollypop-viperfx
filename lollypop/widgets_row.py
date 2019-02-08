@@ -80,21 +80,22 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class("dim-label")
         self.update_number_label()
-        self.__menu_button = Gtk.Button.new()
-        self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__menu_button.get_style_context().add_class("menu-button")
-        self.__menu_button.get_style_context().add_class("track-menu-button")
-        if view_type & (ViewType.READ_ONLY |
-                        ViewType.POPOVER |
-                        ViewType.SEARCH):
-            self.__menu_button.set_opacity(0)
-            self.__menu_button.set_sensitive(False)
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         if self._artists_label is not None:
             self._grid.add(self._artists_label)
         self._grid.add(self._duration_label)
-        self._grid.add(self.__menu_button)
+        if not view_type & (ViewType.POPOVER | ViewType.SEARCH):
+            self.__menu_button = Gtk.Button.new_from_icon_name(
+                "view-more-symbolic",
+                Gtk.IconSize.MENU)
+            self.__menu_button.connect("button-release-event",
+                                       self.__on_menu_button_release_event)
+            self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
+            context = self.__menu_button.get_style_context()
+            context.add_class("menu-button")
+            context.add_class("track-menu-button")
+            self._grid.add(self.__menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class("trackrow")
         # We do not use set_indicator() here, we do not want widget to be
@@ -113,6 +114,7 @@ class Row(Gtk.ListBoxRow):
         """
         self._indicator.clear()
         if playing:
+            self._indicator.set_opacity(1)
             self.get_style_context().remove_class("trackrow")
             self.get_style_context().add_class("trackrowplaying")
             if loved == 1:
@@ -123,9 +125,10 @@ class Row(Gtk.ListBoxRow):
             self.get_style_context().remove_class("trackrowplaying")
             self.get_style_context().add_class("trackrow")
             if loved != 0 and self.__context is None:
+                self._indicator.set_opacity(1)
                 self._indicator.loved(loved)
             else:
-                self._indicator.button()
+                self._indicator.set_opacity(0)
 
     def update_number_label(self):
         """
@@ -180,19 +183,6 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
-    def __finish_setup(self):
-        """
-            Delayed setup for maximum performances on slow devices
-        """
-        if self.__menu_button.get_image() is None:
-            image = Gtk.Image.new_from_icon_name("view-more-symbolic",
-                                                 Gtk.IconSize.MENU)
-            self.__menu_button.set_image(image)
-            self.__menu_button.connect(
-                "button-release-event",
-                self.__on_menu_button_release_event)
-            self._indicator.button()
-
     def __play_preview(self):
         """
             Play track
@@ -262,7 +252,6 @@ class Row(Gtk.ListBoxRow):
         if App().settings.get_value("preview-output").get_string() != "":
             self.__preview_timeout_id = GLib.timeout_add(500,
                                                          self.__play_preview)
-        self.__finish_setup()
 
     def __on_leave_notify_event(self, widget, event):
         """

@@ -12,9 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from gettext import gettext as _
-
-from lollypop.define import App, ViewType
+from lollypop.define import App
 
 
 class IndicatorWidget(Gtk.EventBox):
@@ -35,33 +33,10 @@ class IndicatorWidget(Gtk.EventBox):
         self.__view_type = view_type
         self.__pass = 1
         self.__timeout_id = None
-        self.__button = None
         self.__stack = None
         self.connect("destroy", self.__on_destroy)
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
-
-    def button(self):
-        """
-            Show no indicator
-        """
-        self.__init()
-        self.__stack.set_visible_child_name("button")
-        if not self.__button.get_sensitive():
-            pass
-        elif self.__view_type & ViewType.PLAYLISTS:
-            self.__button.set_tooltip_text(_("Remove from playlist"))
-            self.__image.set_from_icon_name("list-remove-symbolic",
-                                            Gtk.IconSize.MENU)
-        elif self.__is_in_current_playlist():
-            self.__button.set_tooltip_text(
-                _("Remove from playback"))
-            self.__image.set_from_icon_name("list-remove-symbolic",
-                                            Gtk.IconSize.MENU)
-        else:
-            self.__button.set_tooltip_text(_("Add to playback"))
-            self.__image.set_from_icon_name("list-add-symbolic",
-                                            Gtk.IconSize.MENU)
 
     def play(self):
         """
@@ -124,91 +99,18 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Init widget content if needed
         """
-        if self.__button is not None:
+        if self.__stack is not None:
             return
         self.__stack = Gtk.Stack()
         self.__stack.set_transition_duration(500)
         self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self.__button = Gtk.Button.new()
-        self.__image = Gtk.Image.new()
-        self.__button.set_image(self.__image)
-        self.__button.set_relief(Gtk.ReliefStyle.NONE)
-        self.__button.get_style_context().add_class("menu-button")
-        self.__button.get_style_context().add_class("track-menu-button")
-        if self.__view_type & ViewType.READ_ONLY:
-            self.__button.set_sensitive(False)
-            self.__button.set_opacity(0)
-        self.__button.connect("button-release-event",
-                              self.__on_button_release_event)
         play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
                                             Gtk.IconSize.MENU)
         self.__loved = Gtk.Image()
-        self.__stack.add_named(self.__button, "button")
         self.__stack.add_named(play, "play")
         self.__stack.add_named(self.__loved, "loved")
         self.add(self.__stack)
-        self.connect("enter-notify-event", self.__on_enter_notify)
-        self.connect("leave-notify-event", self.__on_leave_notify)
         self.show_all()
-
-    def __on_enter_notify(self, widget, event):
-        """
-            Show queue button
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        self.button()
-
-    def __on_leave_notify(self, widget, event):
-        """
-            Show love button or play button again
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        if self.__row.track.id == App().player.current_track.id:
-            self.play()
-        else:
-            self.loved(self.__row.track.loved)
-
-    def __on_button_release_event(self, widget, event):
-        """
-            Add or remove track to player
-            @param widget as Gtk.Widget
-            @param event as Gdk.EventButton
-        """
-        if self.__image.get_icon_name()[0] == "list-remove-symbolic":
-            if self.__view_type & ViewType.DND:
-                self.__row.emit("remove-track")
-                ancestor = self.get_ancestor(Gtk.ListBoxRow)
-                if ancestor is not None:
-                    ancestor.destroy()
-            else:
-                for album in App().player.albums:
-                    if album.id == self.__row.track.album.id:
-                        if self.__row.track.id in album.track_ids:
-                            index = album.track_ids.index(self.__row.track.id)
-                            track = album.tracks[index]
-                            album.remove_track(track)
-                            break
-                self.button()
-        else:
-            albums = App().player.albums
-            # If album last in list, merge
-            if albums and albums[-1].id == self.__row.track.album.id:
-                albums[-1].insert_track(self.__row.track)
-                App().player.set_next()
-            # Add album with only one track
-            else:
-                # We do not want to share same album with multiple user add
-                # If needed, previous merge will do the job
-                album = self.__row.track.album.clone(True)
-                album.set_tracks([self.__row.track])
-                if App().player.is_playing:
-                    App().player.add_album(album)
-                else:
-                    App().player.play_album(album)
-            self.button()
-        return True
 
     def __on_destroy(self, widget):
         """

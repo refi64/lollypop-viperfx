@@ -43,14 +43,13 @@ class ViewType:
     TWO_COLUMNS = 1 << 1
     DND = 1 << 2
     SEARCH = 1 << 3
-    READ_ONLY = 1 << 4
-    PLAYLISTS = 1 << 5
-    POPOVER = 1 << 6
-    MULTIPLE = 1 << 7
-    NAVIGATION = 1 << 8
-    SMALL = 1 << 9
-    SCROLLED = 1 << 10
-    FILTERED = 1 << 11
+    PLAYLISTS = 1 << 4
+    POPOVER = 1 << 5
+    MULTIPLE = 1 << 6
+    NAVIGATION = 1 << 7
+    SMALL = 1 << 8
+    SCROLLED = 1 << 9
+    FILTERED = 1 << 10
 
 
 class ArtSize:

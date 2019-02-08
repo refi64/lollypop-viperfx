@@ -159,8 +159,6 @@ class ViewsContainer:
             loader.start()
         elif playlist_ids:
             from lollypop.view_playlists import PlaylistsView
-            if len(playlist_ids) > 1:
-                view_type |= ViewType.READ_ONLY
             view = PlaylistsView(playlist_ids, view_type)
             view.show()
             loader = Loader(target=load, view=view)
