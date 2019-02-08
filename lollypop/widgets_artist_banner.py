@@ -36,7 +36,7 @@ class ArtistBannerWidget(Gtk.Overlay):
         self.__allocation_timeout_id = None
         self.set_property("valign", Gtk.Align.START)
         self.__artwork = Gtk.Image()
-        self.__artwork.get_style_context().add_class("black")
+        self.__artwork.get_style_context().add_class("blck")
         self.__artwork.show()
         self.add(self.__artwork)
         self.connect("size-allocate", self.__on_size_allocate)
@@ -84,9 +84,11 @@ class ArtistBannerWidget(Gtk.Overlay):
 #######################
 # PRIVATE             #
 #######################
-    def __use_album_artwork(self):
+    def __use_album_artwork(self, width, height):
         """
             Set artwork with album artwork
+            @param width as int
+            @param height as int
         """
         album_ids = App().albums.get_ids([self.__artist_id], [])
         if album_ids:
@@ -94,11 +96,11 @@ class ArtistBannerWidget(Gtk.Overlay):
             album = Album(album_id)
             App().art_helper.set_album_artwork(
                 album,
-                self.__width,
-                self.__width,
+                width,
+                height,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
-                ArtHelperEffect.BLUR_HARD)
+                ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
 
     def __handle_size_allocate(self, allocation):
         """
@@ -113,13 +115,14 @@ class ArtistBannerWidget(Gtk.Overlay):
             artist = App().artists.get_name(self.__artist_id)
             App().art_helper.set_artist_artwork(
                                         artist,
-                                        self.__width,
-                                        self.__width,
+                                        allocation.width,
+                                        allocation.height,
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork,
+                                        ArtHelperEffect.RESIZE |
                                         ArtHelperEffect.BLUR_HARD)
         else:
-            self.__use_album_artwork()
+            self.__use_album_artwork(allocation.width, allocation.height)
 
     def __on_album_artwork(self, surface):
         """
@@ -134,7 +137,8 @@ class ArtistBannerWidget(Gtk.Overlay):
             @param surface as str
         """
         if surface is None:
-            self.__use_album_artwork()
+            self.__use_album_artwork(self.get_allocated_width(),
+                                     self.get_allocated_height())
         else:
             self.__artwork.set_from_surface(surface)
 

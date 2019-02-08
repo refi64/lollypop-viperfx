@@ -58,32 +58,35 @@ class InformationStore:
                                   escape(artist))
         return GLib.file_test(filepath, GLib.FileTest.EXISTS)
 
-    def get_artwork_path(artist, size, scale_factor):
+    def get_artwork_path(artist, size, scale_factor, cache=True):
         """
             Return path for artwork
             @param artist as string
             @param size as int
             @param scale_factor as int
+            @param cache as bool
             @return path as string/None
         """
         try:
-            size *= scale_factor
-            extract = None
             filepath = "%s/%s.jpg" % (
                 InformationStore._INFO_PATH,
                 escape(artist))
+            f = Gio.File.new_for_path(filepath)
+            if f.query_exists():
+                info = f.query_info("standard::size",
+                                    Gio.FileQueryInfoFlags.NONE)
+                if info.get_size() == 0:
+                    return None
+                elif not cache:
+                    return filepath
+            else:
+                return None
+            size *= scale_factor
+            extract = None
             filepath_at_size = "%s/%s_%s.jpg" % (
                 InformationStore._CACHE_PATH,
                 escape(artist),
                 size)
-            f = Gio.File.new_for_path(filepath)
-            if not f.query_exists():
-                return None
-            info = f.query_info(
-                "standard::size",
-                Gio.FileQueryInfoFlags.NONE)
-            if info.get_size() == 0:
-                return None
             # Make cache for this size
             f = Gio.File.new_for_path(filepath_at_size)
             if not f.query_exists():

@@ -142,10 +142,10 @@ class AlbumBannerWidget(Gtk.Bin):
         App().art_helper.set_album_artwork(
                 self.__album,
                 allocation.width,
-                allocation.width,
+                allocation.height,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
-                ArtHelperEffect.BLUR_HARD)
+                ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
 
     def __on_album_artwork(self, surface):
         """

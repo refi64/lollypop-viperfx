@@ -34,13 +34,12 @@ class LyricsView(View, InformationController):
         """
         View.__init__(self)
         InformationController.__init__(self, False,
-                                       ArtHelperEffect.BLUR_HARD |
-                                       ArtHelperEffect.NO_RATIO)
+                                       ArtHelperEffect.BLUR_HARD)
         self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_text = ""
-        self.__current_width = self.__current_height = 0
+        self.__size = 0
         self.__cancellable = Gio.Cancellable()
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/LyricsView.ui")
@@ -59,7 +58,7 @@ class LyricsView(View, InformationController):
             @param track as Track
         """
         self.__current_track = track
-        self.update_artwork(self.__current_width, self.__current_height)
+        self.update_artwork(self.__size, self.__size)
         self.__lyrics_text = ""
         self.__update_lyrics_style()
         self.__lyrics_label.set_text(_("Loading…"))
@@ -215,7 +214,7 @@ class LyricsView(View, InformationController):
         """
         self.__size_allocate_timeout_id = None
         self.__update_lyrics_style()
-        self.update_artwork(self.__current_width, self.__current_height)
+        self.update_artwork(self.__size, self.__size)
 
     def __on_size_allocate(self, widget, allocation):
         """
@@ -223,13 +222,10 @@ class LyricsView(View, InformationController):
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
-        if (self.__current_width,
-                self.__current_height) == (allocation.width,
-                                           allocation.height):
+        size = max(allocation.width, allocation.height)
+        if size == self.__size:
             return
-        (self.__current_width,
-         self.__current_height) = (allocation.width,
-                                   allocation.height)
+        self.__size = size
         if self.__size_allocate_timeout_id is not None:
             GLib.source_remove(self.__size_allocate_timeout_id)
         self.__size_allocate_timeout_id = GLib.idle_add(
