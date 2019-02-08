@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 from gettext import gettext as _
 
@@ -178,6 +178,8 @@ class IndicatorWidget(Gtk.EventBox):
             @param widget as Gtk.Widget
             @param event as Gdk.EventButton
         """
+        if event.device.get_source() != Gdk.InputSource.MOUSE:
+            return True
         if self.__image.get_icon_name()[0] == "list-remove-symbolic":
             if self.__view_type & ViewType.DND:
                 self.__row.emit("remove-track")

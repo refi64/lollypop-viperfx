@@ -180,7 +180,7 @@ class Application(Gtk.Application):
         # Search for a mouse device
         self.has_cursor = False
         for device in device_manager.list_devices(Gdk.DeviceType.MASTER):
-            if device.get_has_cursor():
+            if device.get_source() == Gdk.InputSource.MOUSE:
                 self.has_cursor = True
                 break
         styleContext = Gtk.StyleContext()
