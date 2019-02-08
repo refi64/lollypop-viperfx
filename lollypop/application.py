@@ -175,14 +175,6 @@ class Application(Gtk.Application):
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
-        display = screen.get_display()
-        device_manager = display.get_device_manager()
-        # Search for a mouse device
-        self.has_cursor = False
-        for device in device_manager.list_devices(Gdk.DeviceType.MASTER):
-            if device.get_has_cursor():
-                self.has_cursor = True
-                break
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
