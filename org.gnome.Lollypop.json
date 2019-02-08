@@ -236,7 +236,7 @@
         {
 		    "name": "openjpeg",
 		    "buildsystem" : "cmake",
-		    "builddir": true,
+
 		    "config-opts": [
 		    	"-DCMAKE_BUILD_TYPE=Release"
 		    ],
