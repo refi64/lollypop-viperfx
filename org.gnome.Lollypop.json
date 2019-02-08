@@ -246,7 +246,7 @@
 		    "sources": [{
 		    	"type" : "git",
 		    	"branch" : "master",
-		    	"url" : "https://github.com/uclouvain/openjpeg"
+		    	"url" : "https://github.com/uclouvain/openjpeg.git"
 		    }]
         },
         {
