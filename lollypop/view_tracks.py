@@ -686,4 +686,5 @@ class TracksView:
         if self.__allocation_timeout_id is not None:
             GLib.source_remove(self.__allocation_timeout_id)
         self.__allocation_timeout_id = GLib.idle_add(
-            self.__handle_size_allocate, allocation)
+            self.__handle_size_allocate, allocation,
+            priority=GLib.PRIORITY_HIGH)
