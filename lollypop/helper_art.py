@@ -12,6 +12,8 @@
 
 from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
 
+from PIL import Image, ImageFilter
+
 from lollypop.define import App
 from lollypop.logger import Logger
 from lollypop.utils import get_round_surface
@@ -184,7 +186,6 @@ class ArtHelper(GObject.Object):
         """
         if pixbuf is None:
             return None
-        from PIL import Image, ImageFilter
         width = pixbuf.get_width()
         height = pixbuf.get_height()
         data = pixbuf.get_pixels()
