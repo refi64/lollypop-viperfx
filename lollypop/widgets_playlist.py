@@ -53,6 +53,7 @@ class PlaylistsWidget(Gtk.Grid):
 
         self.__grid = Gtk.Grid()
         self.__grid.set_vexpand(True)
+        self.__grid.set_column_spacing(20)
         self.__grid.set_column_homogeneous(True)
         self.__grid.show()
 
@@ -302,12 +303,10 @@ class PlaylistsWidget(Gtk.Grid):
         if allocation.width < Sizing.MONSTER or\
                 not App().settings.get_value("split-view"):
             self.__grid.set_property("valign", Gtk.Align.START)
-            self.__grid.set_column_spacing(0)
             orientation = Gtk.Orientation.VERTICAL
             self.__linking(True)
         else:
             self.__grid.set_property("valign", Gtk.Align.FILL)
-            self.__grid.set_column_spacing(5)
             orientation = Gtk.Orientation.HORIZONTAL
             self.__linking(False)
         if orientation != self.__orientation:

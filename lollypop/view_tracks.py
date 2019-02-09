@@ -78,6 +78,7 @@ class TracksView:
             if self._view_type & ViewType.DND:
                 self.connect("key-press-event", self.__on_key_press_event)
             self._responsive_widget = Gtk.Grid()
+            self._responsive_widget.set_column_spacing(20)
             self._responsive_widget.connect("size-allocate",
                                             self.__on_size_allocate)
             self._responsive_widget.set_column_homogeneous(True)
