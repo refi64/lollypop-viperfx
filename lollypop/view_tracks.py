@@ -420,7 +420,7 @@ class TracksView:
                     elif show_label:
                         disc_text = _("Disc %s") % disc.number
                     box = Gtk.Box()
-                    label = Gtk.Label()
+                    label = Gtk.Label.new()
                     label.set_ellipsize(Pango.EllipsizeMode.END)
                     label.set_text(disc_text)
                     label.set_property("halign", Gtk.Align.START)

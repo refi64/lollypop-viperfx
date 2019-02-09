@@ -75,7 +75,7 @@ class Row(Gtk.ListBoxRow):
         self._duration_label = Gtk.Label.new(
             seconds_to_string(self._track.duration))
         self._duration_label.get_style_context().add_class("dim-label")
-        self._num_label = Gtk.Label()
+        self._num_label = Gtk.Label.new()
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class("dim-label")

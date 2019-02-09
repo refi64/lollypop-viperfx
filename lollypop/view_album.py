@@ -122,7 +122,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                 if not album_ids:
                     continue
                 artist = App().artists.get_name(artist_id)
-                label = Gtk.Label()
+                label = Gtk.Label.new()
                 label.set_markup(
                                  '''<span size="large" alpha="40000"
                                      weight="bold">%s %s</span>''' %

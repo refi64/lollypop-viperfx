@@ -54,7 +54,7 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
         """
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self.__label = Gtk.Label()
+        self.__label = Gtk.Label.new()
         self.__label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__label.set_property("halign", Gtk.Align.CENTER)
         self.__label.set_property("has-tooltip", True)

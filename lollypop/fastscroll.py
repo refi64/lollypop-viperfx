@@ -84,18 +84,18 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Populate widget based on current chars
         """
-        label = Gtk.Label()
+        label = Gtk.Label.new()
         label.set_margin_left(10)
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▲")
         label.show()
         self.__grid.add(label)
         for c in sorted(self.__chars, key=strxfrm):
-            label = Gtk.Label()
+            label = Gtk.Label.new()
             label.set_margin_left(10)
             label.set_markup('<span font="Monospace"><b>%s</b></span>' % c)
             label.show()
             self.__grid.add(label)
-        label = Gtk.Label()
+        label = Gtk.Label.new()
         label.set_margin_left(10)
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▼")
         label.show()

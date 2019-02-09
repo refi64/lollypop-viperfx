@@ -498,7 +498,7 @@ class TrackMenuPopover(Popover):
             self.bind_model(menu, None)
 
         if track.year is not None:
-            year_label = Gtk.Label()
+            year_label = Gtk.Label.new()
             year_label.set_text(str(track.year))
             dt = GLib.DateTime.new_from_unix_local(track.timestamp)
             year_label.set_tooltip_text(dt.format(_("%Y-%m-%d")))

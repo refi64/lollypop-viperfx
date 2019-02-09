@@ -57,7 +57,7 @@ class QueueRow(Row, DNDRow):
         self.__header = Gtk.Grid()
         self.__header.set_column_spacing(5)
         if self._track.album.artist_ids[0] != Type.COMPILATIONS:
-            self.__album_artist_label = Gtk.Label()
+            self.__album_artist_label = Gtk.Label.new()
             self.__album_artist_label.set_markup(
                 "<b>" +
                 GLib.markup_escape_text(

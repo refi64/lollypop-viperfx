@@ -35,17 +35,17 @@ class SettingsViewRow(Gtk.ListBoxRow):
         self.set_margin_end(10)
         self.__row_type = row_type
         if row_type == Type.SETTINGS_APPEARANCE:
-            main_label = Gtk.Label(_("Appearance"))
-            sub_label = Gtk.Label(_("Configure Lollypop appearance"))
+            main_label = Gtk.Label.new(_("Appearance"))
+            sub_label = Gtk.Label.new(_("Configure Lollypop appearance"))
         elif row_type == Type.SETTINGS_BEHAVIOUR:
-            main_label = Gtk.Label(_("Behaviour"))
-            sub_label = Gtk.Label(_("Configure Lollypop behaviour"))
+            main_label = Gtk.Label.new(_("Behaviour"))
+            sub_label = Gtk.Label.new(_("Configure Lollypop behaviour"))
         elif row_type == Type.SETTINGS_COLLECTIONS:
-            main_label = Gtk.Label(_("Music"))
-            sub_label = Gtk.Label(_("Select music folders"))
+            main_label = Gtk.Label.new(_("Music"))
+            sub_label = Gtk.Label.new(_("Select music folders"))
         elif row_type == Type.SETTINGS_WEB:
-            main_label = Gtk.Label(_("Web"))
-            sub_label = Gtk.Label(_("Configure Web services"))
+            main_label = Gtk.Label.new(_("Web"))
+            sub_label = Gtk.Label.new(_("Configure Web services"))
         main_label.set_property("halign", Gtk.Align.START)
         main_label.get_style_context().add_class("bold")
         sub_label.set_property("halign", Gtk.Align.START)
