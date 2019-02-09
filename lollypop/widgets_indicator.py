@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import App
-
 
 class IndicatorWidget(Gtk.EventBox):
     """
@@ -80,21 +78,6 @@ class IndicatorWidget(Gtk.EventBox):
 #######################
 # PRIVATE             #
 #######################
-    def __is_in_current_playlist(self):
-        """
-            Check if track in Player current playlist
-            @return bool
-        """
-        if App().player.albums:
-            for album in App().player.albums:
-                if self.__row.track.album.id == album.id:
-                    if self.__row.track.id in album.track_ids:
-                        return True
-        elif App().player.playlist_ids:
-            if self.__row.track.id in App().player.playlist_track_ids:
-                return True
-        return False
-
     def __init(self):
         """
             Init widget content if needed

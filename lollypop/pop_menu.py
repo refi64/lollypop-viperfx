@@ -75,7 +75,7 @@ class ArtistMenu(BaseMenu):
             App().window.container.show_view(self._object.artist_ids[0])
 
 
-class QueueMenu(BaseMenu):
+class PlaybackMenu(BaseMenu):
     """
         Contextual menu for queue
     """
@@ -86,11 +86,45 @@ class QueueMenu(BaseMenu):
             @param track as Track
         """
         BaseMenu.__init__(self, track)
+        self.__set_playback_actions()
         self.__set_queue_actions()
 
 #######################
 # PRIVATE             #
 #######################
+    def __is_in_current_playlist(self):
+        """
+            Check if track in Player current playlist
+            @return bool
+        """
+        if App().player.albums:
+            for album in App().player.albums:
+                if self._object.album.id == album.id:
+                    if self._object.id in album.track_ids:
+                        return True
+        elif App().player.playlist_ids:
+            if self._object.id in App().player.playlist_track_ids:
+                return True
+        return False
+
+    def __set_playback_actions(self):
+        """
+            Set playback actions
+        """
+        if not self.__is_in_current_playlist():
+            append_playback_action = Gio.SimpleAction(
+                name="append_playback_action")
+            App().add_action(append_playback_action)
+            append_playback_action.connect("activate",
+                                           self.__append_to_playback)
+            self.append(_("Add to playback"), "app.append_playback_action")
+        else:
+            del_playback_action = Gio.SimpleAction(name="del_playback_action")
+            App().add_action(del_playback_action)
+            del_playback_action.connect("activate",
+                                        self.__remove_from_playback)
+            self.append(_("Remove from playback"), "app.del_playback_action")
+
     def __set_queue_actions(self):
         """
             Set queue actions
@@ -107,6 +141,42 @@ class QueueMenu(BaseMenu):
             del_queue_action.connect("activate",
                                      self.__remove_from_queue)
             self.append(_("Remove from queue"), "app.del_queue_action")
+
+    def __append_to_playback(self, action, variant):
+        """
+            Append track to playback
+            @param Gio.SimpleAction
+            @param GLib.Variant
+        """
+        albums = App().player.albums
+        # If album last in list, merge
+        if albums and albums[-1].id == self._object.album.id:
+            albums[-1].insert_track(self._object)
+            App().player.set_next()
+        # Add album with only one track
+        else:
+            # We do not want to share same album with multiple user add
+            # If needed, previous merge will do the job
+            album = self._object.album.clone(True)
+            album.set_tracks([self._object])
+            if App().player.is_playing:
+                App().player.add_album(album)
+            else:
+                App().player.play_album(album)
+
+    def __remove_from_playback(self, action, variant):
+        """
+            Delete track id from playback
+            @param Gio.SimpleAction
+            @param GLib.Variant
+        """
+        for album in App().player.albums:
+            if album.id == self._object.album.id:
+                if self._object.id in album.track_ids:
+                    index = album.track_ids.index(self._object.id)
+                    track = album.tracks[index]
+                    album.remove_track(track)
+                    break
 
     def __append_to_queue(self, action, variant):
         """
@@ -370,8 +440,8 @@ class TrackMenu(Gio.Menu):
         if show_artist:
             self.insert_section(0, _("Artist"),
                                 ArtistMenu(track))
-        self.insert_section(1, _("Queue"),
-                            QueueMenu(track))
+        self.insert_section(1, _("Playback"),
+                            PlaybackMenu(track))
         self.insert_section(2, _("Playlists"),
                             PlaylistsMenu(track))
         self.insert_section(3, _("Edit"),

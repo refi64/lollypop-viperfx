@@ -46,6 +46,7 @@ class Row(Gtk.ListBoxRow):
         self._row_widget.connect("leave-notify-event",
                                  self.__on_leave_notify_event)
         self._grid = Gtk.Grid()
+        self._grid.set_property("valign", Gtk.Align.CENTER)
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
         self._title_label = Gtk.Label.new(self._track.name)
@@ -76,7 +77,6 @@ class Row(Gtk.ListBoxRow):
         self._duration_label.get_style_context().add_class("dim-label")
         self._num_label = Gtk.Label()
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self._num_label.set_property("valign", Gtk.Align.CENTER)
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class("dim-label")
         self.update_number_label()
