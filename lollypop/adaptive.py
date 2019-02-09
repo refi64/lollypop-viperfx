@@ -121,6 +121,13 @@ class AdaptiveStack(Gtk.Stack):
                 self.__history.remove(widget)
             widget.destroy_later()
 
+    def destroy_children(self):
+        """
+            Destroy not visible children
+        """
+        for child in self.get_children():
+            child.destroy_later()
+
     @property
     def history(self):
         """
