@@ -23,11 +23,13 @@ class CurrentAlbumsView(AlbumsListView):
         Popover showing Albums View
     """
 
-    def __init__(self):
+    def __init__(self, view_type):
         """
             Init popover
+            @param view_type as ViewType
         """
-        AlbumsListView.__init__(self, ViewType.DND | ViewType.POPOVER)
+        view_type |= ViewType.DND
+        AlbumsListView.__init__(self,  view_type)
         self.__clear_button = Gtk.Button.new_from_icon_name(
             "edit-clear-all-symbolic",
             Gtk.IconSize.MENU)

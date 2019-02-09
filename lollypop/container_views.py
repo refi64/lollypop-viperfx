@@ -414,11 +414,10 @@ class ViewsContainer:
             view.populate(App().player.playlist_tracks)
         else:
             from lollypop.view_current_albums import CurrentAlbumsView
-            view = CurrentAlbumsView()
+            view = CurrentAlbumsView(ViewType.DEFAULT)
             view.populate(App().player.albums)
         view.set_margin_top(5)
         view.set_margin_start(5)
-        view.set_margin_end(5)
         view.show()
         return view
 

@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.view_current_albums import CurrentAlbumsView
-from lollypop.define import App
+from lollypop.define import App, ViewType
 from lollypop.widgets_utils import Popover
 
 
@@ -27,7 +27,7 @@ class AlbumsPopover(Popover):
             Init popover
         """
         Popover.__init__(self)
-        self.__view = CurrentAlbumsView()
+        self.__view = CurrentAlbumsView(ViewType.POPOVER)
         self.__view.populate(App().player.albums)
         self.__view.show()
         self.set_position(Gtk.PositionType.BOTTOM)
