@@ -98,7 +98,7 @@ def on_query_tooltip(label, x, y, keyboard, tooltip):
     """
     layout = label.get_layout()
     if layout.is_ellipsized():
-        markup = label.get_label()
+        markup = "%s" % (GLib.markup_escape_text(label.get_label()))
         tooltip.set_markup(markup)
         return True
 
