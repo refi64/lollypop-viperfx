@@ -194,15 +194,14 @@ class ArtHelper(GObject.Object):
                               data, "raw", "RGB", stride)
 
         tmp = tmp.filter(ImageFilter.GaussianBlur(gaussian))
-        imgd = tmp.tobytes()
-        data = GLib.Bytes.new(imgd)
-        pixbuf = GdkPixbuf.Pixbuf.new_from_data(imgd,
-                                                GdkPixbuf.Colorspace.RGB,
-                                                False,
-                                                8,
-                                                width,
-                                                height,
-                                                width * 3)
+        bytes = GLib.Bytes.new(tmp.tobytes())
+        pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(bytes,
+                                                 GdkPixbuf.Colorspace.RGB,
+                                                 False,
+                                                 8,
+                                                 width,
+                                                 height,
+                                                 width * 3)
         return pixbuf
 
     def __get_album_artwork(self, album, width, height, scale_factor, effect):
