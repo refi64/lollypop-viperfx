@@ -10,12 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
 from lollypop.define import App
-from lollypop.logger import Logger
 
 
 class BehaviourSettingsWidget(Gtk.Bin):
@@ -41,6 +40,9 @@ class BehaviourSettingsWidget(Gtk.Bin):
         switch_state = builder.get_object("switch_state")
         switch_state.set_state(App().settings.get_value("save-state"))
 
+        switch_import = builder.get_object("switch_import")
+        switch_import.set_state(App().settings.get_value("import-playlists"))
+
         switch_network_access = builder.get_object("switch_network_access")
         network_access = App().settings.get_value("network-access")
         switch_network_access.set_state(network_access)
@@ -59,16 +61,12 @@ class BehaviourSettingsWidget(Gtk.Bin):
         # Check for kid3-cli
         self.__check_for_kid3(switch_artwork_tags)
 
-        combo_preview = builder.get_object("combo_preview")
-
         self.__popover_transitions = builder.get_object("popover-transitions")
         self.__scale_transition_duration = builder.get_object(
             "scale_transition_duration")
         self.__scale_transition_duration.set_range(1, 20)
         self.__scale_transition_duration.set_value(
             App().settings.get_value("transition-duration").get_int32())
-
-        self.__set_outputs(combo_preview)
 
         self.add(builder.get_object("widget"))
         builder.connect_signals(self)
@@ -110,6 +108,15 @@ class BehaviourSettingsWidget(Gtk.Bin):
             @param state as bool
         """
         App().settings.set_value("save-state",
+                                 GLib.Variant("b", state))
+
+    def _on_switch_import_state_set(self, widget, state):
+        """
+            Update save state setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        App().settings.set_value("import-playlists",
                                  GLib.Variant("b", state))
 
     def _on_transitions_button_clicked(self, widget):
@@ -157,54 +164,9 @@ class BehaviourSettingsWidget(Gtk.Bin):
         """
         App().settings.set_value("save-to-tags", GLib.Variant("b", state))
 
-    def _on_combo_preview_changed(self, combo):
-        """
-            Update preview setting
-            @param combo as Gtk.ComboBoxText
-        """
-        App().settings.set_value("preview-output",
-                                 GLib.Variant("s", combo.get_active_id()))
-        App().player.set_preview_output()
-
-    def _on_preview_query_tooltip(self, combo, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param combo as Gtk.ComboBoxText
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        combo.set_tooltip_text(combo.get_active_text())
-
 #######################
 # PRIVATE             #
 #######################
-    def __set_outputs(self, combo):
-        """
-            Set outputs in combo
-            @parma combo as Gtk.ComboxBoxText
-        """
-        renderer = combo.get_cells()[0]
-        renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
-        renderer.set_property("max-width-chars", 60)
-        if GLib.find_program_in_path("flatpak-spawn") is not None:
-            argv = ["flatpak-spawn", "--host", "pacmd", "list-sinks"]
-        else:
-            argv = ["pacmd", "list-sinks"]
-        try:
-            (pid, stdin, stdout, stderr) = GLib.spawn_async(
-                argv, flags=GLib.SpawnFlags.SEARCH_PATH |
-                GLib.SpawnFlags.DO_NOT_REAP_CHILD,
-                standard_input=False,
-                standard_output=True,
-                standard_error=False
-            )
-            GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE, pid,
-                                 self.__on_pacmd_result, stdout, combo)
-        except Exception as e:
-            Logger.error("SettingsDialog::__set_outputs(): %s" % e)
-
     def __check_for_kid3(self, switch):
         """
             Update grid/switch based on result
@@ -220,28 +182,3 @@ class BehaviourSettingsWidget(Gtk.Bin):
             box.pack_end(label, False, False, 0)
         else:
             switch.set_state(App().settings.get_value("save-to-tags"))
-
-    def __on_pacmd_result(self, pid, status, stdout, combo):
-        """
-            Read output and set combobox
-            @param pid as int
-            @param status as bool
-            @param stdout as int
-            @param combo as Gtk.ComboBox
-        """
-        from re import findall, DOTALL
-        GLib.spawn_close_pid(pid)
-        io = GLib.IOChannel.unix_new(stdout)
-        [status, data] = io.read_to_end()
-        if data:
-            string = data.decode("utf-8")
-            current = App().settings.get_value("preview-output").get_string()
-            devices = findall('name: <([^>]*)>', string, DOTALL)
-            names = findall('device.description = "([^"]*)"', string, DOTALL)
-            if names:
-                for i in range(0, len(names)):
-                    combo.append(devices[i], names[i])
-                    if devices[i] == current:
-                        combo.set_active_id(devices[i])
-            else:
-                combo.set_sensitive(False)

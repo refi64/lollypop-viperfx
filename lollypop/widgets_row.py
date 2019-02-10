@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Pango, GLib, Gst, Gdk
+from gi.repository import Gtk, Pango, GLib, Gdk
 
 from lollypop.define import App, ViewType
 from lollypop.widgets_indicator import IndicatorWidget
@@ -33,18 +33,11 @@ class Row(Gtk.ListBoxRow):
         self._view_type = view_type
         self._artists_label = None
         self._track = track
-        self.__preview_timeout_id = None
-        self.__context_timeout_id = None
-        self.__context = None
         self._indicator = IndicatorWidget(self, view_type)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("destroy", self._on_destroy)
         self._row_widget.connect("button-release-event",
                                  self.__on_button_release_event)
-        self._row_widget.connect("enter-notify-event",
-                                 self.__on_enter_notify_event)
-        self._row_widget.connect("leave-notify-event",
-                                 self.__on_leave_notify_event)
         self._grid = Gtk.Grid()
         self._grid.set_property("valign", Gtk.Align.CENTER)
         self._grid.set_column_spacing(5)
@@ -129,7 +122,7 @@ class Row(Gtk.ListBoxRow):
         else:
             self.get_style_context().remove_class("trackrowplaying")
             self.get_style_context().add_class("trackrow")
-            if loved != 0 and self.__context is None:
+            if loved != 0:
                 self._indicator.set_opacity(1)
                 self._indicator.loved(loved)
             else:
@@ -176,28 +169,9 @@ class Row(Gtk.ListBoxRow):
         from lollypop.pop_menu import TrackMenu
         return TrackMenu(self._track)
 
-    def _on_destroy(self, widget):
-        """
-            We need to stop timeout idle to prevent
-            __on_indicator_button_release_event() segfaulting
-        """
-        if self.__context_timeout_id is not None:
-            GLib.source_remove(self.__context_timeout_id)
-            self.__context_timeout_id = None
-
 #######################
 # PRIVATE             #
 #######################
-    def __play_preview(self):
-        """
-            Play track
-            @param widget as Gtk.Widget
-        """
-        App().player.preview.set_property("uri", self._track.uri)
-        App().player.preview.set_state(Gst.State.PLAYING)
-        self.set_indicator(True, False)
-        self.__preview_timeout_id = None
-
     def __popup_menu(self, eventbox, xcoordinate=None, ycoordinate=None):
         """
             Popup menu for track
@@ -244,49 +218,6 @@ class Row(Gtk.ListBoxRow):
         """
         App().window.container.show_artists_albums(self._album.artist_ids)
         return True
-
-    def __on_enter_notify_event(self, widget, event):
-        """
-            Set image on buttons now, speed reason
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        if self.__context_timeout_id is not None:
-            GLib.source_remove(self.__context_timeout_id)
-            self.__context_timeout_id = None
-        if App().settings.get_value("preview-output").get_string() != "":
-            self.__preview_timeout_id = GLib.timeout_add(500,
-                                                         self.__play_preview)
-
-    def __on_leave_notify_event(self, widget, event):
-        """
-            Stop preview
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        def close_indicator():
-            """
-                Simulate a release event
-            """
-            self.__on_indicator_button_release_event(self.__menu_button,
-                                                     event)
-        allocation = widget.get_allocation()
-        if event.x <= 0 or\
-           event.x >= allocation.width or\
-           event.y <= 0 or\
-           event.y >= allocation.height:
-            if self.__context is not None and\
-                    self.__context_timeout_id is None:
-                self.__context_timeout_id = GLib.timeout_add(
-                    1000,
-                    close_indicator)
-            if App().settings.get_value("preview-output").get_string() != "":
-                if self.__preview_timeout_id is not None:
-                    GLib.source_remove(self.__preview_timeout_id)
-                    self.__preview_timeout_id = None
-                App().player.preview.set_state(Gst.State.NULL)
-            self.set_indicator(App().player.current_track.id == self._track.id,
-                               self._track.loved)
 
     def __on_button_release_event(self, widget, event):
         """

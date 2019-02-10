@@ -232,7 +232,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         try:
             f = Gio.File.new_for_uri(uri)
             # Scan file
-            if is_pls(f):
+            if App().settings.get_value("import-playlists") and is_pls(f):
                 # Handle playlist
                 App().playlists.import_tracks(f)
             elif is_audio(f):

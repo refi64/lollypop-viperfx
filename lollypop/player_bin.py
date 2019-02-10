@@ -38,7 +38,6 @@ class BinPlayer(BasePlayer):
         self._playbin = self.__playbin1 = Gst.ElementFactory.make(
             "playbin", "player")
         self.__playbin2 = Gst.ElementFactory.make("playbin", "player")
-        self.__preview = None
         self._plugins = self._plugins1 = PluginsPlayer(self.__playbin1)
         self._plugins2 = PluginsPlayer(self.__playbin2)
         self._playbin.connect("notify::volume", self.__on_volume_changed)
@@ -58,19 +57,6 @@ class BinPlayer(BasePlayer):
             bus.connect("message::stream-start", self._on_stream_start)
             bus.connect("message::tag", self._on_bus_message_tag)
         self._start_time = 0
-
-    def set_preview_output(self):
-        """
-            Set preview output
-        """
-        if self.__preview is not None:
-            output = App().settings.get_value("preview-output").get_string()
-            pulse = Gst.ElementFactory.make("pulsesink", "output")
-            if pulse is None:
-                pulse = Gst.ElementFactory.make("alsasink", "output")
-            if pulse is not None:
-                pulse.set_property("device", output)
-                self.__preview.set_property("audio-sink", pulse)
 
     def get_status(self):
         """
@@ -187,17 +173,6 @@ class BinPlayer(BasePlayer):
             return state == Gst.State.PLAYING
         else:
             return False
-
-    @property
-    def preview(self):
-        """
-            Get a preview bin
-            @return Gst.Element
-        """
-        if self.__preview is None:
-            self.__preview = Gst.ElementFactory.make("playbin", "player")
-            self.set_preview_output()
-        return self.__preview
 
     @property
     def position(self):
