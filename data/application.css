@@ -245,8 +245,7 @@ popover.background separator {
     background: none;
     border: none;
     background-image: none;
-    box-shadow: none;
-	border-image-source: none;
+    border-image-source: none;
     transition: 70ms linear;
     box-shadow: 0 0 3px white;
     background-color: alpha(black, 0.8);

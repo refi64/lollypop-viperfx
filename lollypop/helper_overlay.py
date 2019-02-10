@@ -12,10 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from gettext import gettext as _
-
-from lollypop.utils import on_realize
-from lollypop.define import App, ArtSize
+from lollypop.define import ArtSize
 
 
 class OverlayHelper:
@@ -65,6 +62,29 @@ class OverlayHelper:
             Set overlay
             @param show_overlay as bool
         """
+        if show_overlay:
+            self._big_grid = Gtk.Grid()
+            self._big_grid.set_property("halign", Gtk.Align.START)
+            self._big_grid.set_property("valign", Gtk.Align.END)
+            self._big_grid.set_margin_start(6)
+            self._big_grid.set_margin_bottom(6)
+            self._big_grid.show()
+            self._overlay.add_overlay(self._big_grid)
+            self._small_grid = Gtk.Grid()
+            self._small_grid.set_margin_bottom(6)
+            self._small_grid.set_margin_end(6)
+            self._small_grid.set_property("halign", Gtk.Align.END)
+            self._small_grid.set_property("valign", Gtk.Align.END)
+            self._overlay.add_overlay(self._small_grid)
+            self._small_grid.show()
+            self._big_grid.get_style_context().add_class("rounded-icon")
+            self._small_grid.get_style_context().add_class(
+                    "squared-icon-small")
+        else:
+            self._big_grid.destroy()
+            self._big_grid = None
+            self._small_grid.destroy()
+            self._small_grid = None
         self._show_overlay = show_overlay
         self.emit("overlayed", show_overlay)
 
@@ -116,139 +136,3 @@ class OverlayHelper:
         """
         self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
-
-
-class OverlayAlbumHelper(OverlayHelper):
-    """
-        Special album case
-    """
-
-    def __init__(self):
-        """
-            Init overlay
-        """
-        OverlayHelper.__init__(self)
-
-#######################
-# PROTECTED           #
-#######################
-    def _show_overlay_func(self, show_overlay):
-        """
-            Set overlay
-            @param show_overlay as bool
-        """
-        if self._lock_overlay or\
-                self._show_overlay == show_overlay or\
-                (App().player.is_locked and show_overlay):
-            return
-        OverlayHelper._show_overlay_func(self, show_overlay)
-        if show_overlay:
-            self._play_button = Gtk.Button.new_from_icon_name(
-                "media-playback-start-symbolic",
-                Gtk.IconSize.INVALID)
-            self._play_button.set_relief(Gtk.ReliefStyle.NONE)
-            self._play_button.get_image().set_pixel_size(self._pixel_size + 20)
-            self._play_button.set_property("has-tooltip", True)
-            self._play_button.set_tooltip_text(_("Play"))
-            self._play_button.connect("realize", on_realize)
-            self._play_button.connect("clicked", self.__on_play_clicked)
-            self._play_button.set_property("halign", Gtk.Align.START)
-            self._play_button.set_property("valign", Gtk.Align.END)
-            self._play_button.set_margin_start(6)
-            self._play_button.set_margin_bottom(6)
-            self._play_button.show()
-            # Action button
-            self._action_button = Gtk.Button.new()
-            self._action_button.set_relief(Gtk.ReliefStyle.NONE)
-            self._action_button.set_property("has-tooltip", True)
-            self._action_button.set_property("halign", Gtk.Align.END)
-            self._action_button.set_property("valign", Gtk.Align.END)
-            self._action_button.connect("realize", on_realize)
-            self._action_button.connect("clicked", self.__on_action_clicked)
-            self._action_button.set_image(Gtk.Image())
-            self._action_button.get_image().set_pixel_size(self._pixel_size)
-            self._action_button.show()
-            self._show_append(self._album.id not in App().player.album_ids)
-            self._overlay.add_overlay(self._play_button)
-            self._overlay_grid = Gtk.Grid()
-            self._overlay_grid.set_margin_bottom(6)
-            self._overlay_grid.set_margin_end(6)
-            self._overlay_grid.set_property("halign", Gtk.Align.END)
-            self._overlay_grid.set_property("valign", Gtk.Align.END)
-            self._overlay.add_overlay(self._overlay_grid)
-            self._overlay_grid.add(self._action_button)
-            self._overlay_grid.show_all()
-            self._play_button.get_style_context().add_class("rounded-icon")
-            self._overlay_grid.get_style_context().add_class(
-                    "squared-icon-small")
-            self._action_button.get_style_context().add_class(
-                    "overlay-button")
-        else:
-            self._play_button.destroy()
-            self._play_button = None
-            self._action_button.destroy()
-            self._action_button = None
-            self._overlay_grid.destroy()
-            self._overlay_grid = None
-
-    def _show_append(self, append):
-        """
-            Show append button if append, else remove button
-        """
-        if append:
-            self._action_button.get_image().set_from_icon_name(
-                                                  "list-add-symbolic",
-                                                  Gtk.IconSize.INVALID)
-            self._action_button.set_tooltip_text(_("Add to current playlist"))
-        else:
-            self._action_button.get_image().set_from_icon_name(
-                                                   "list-remove-symbolic",
-                                                   Gtk.IconSize.INVALID)
-            self._action_button.set_tooltip_text(
-                _("Remove from current playlist"))
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_play_clicked(self, button):
-        """
-            Play album
-            @param button as Gtk.Button
-        """
-        if App().player.is_locked:
-            return True
-        if App().player.is_party:
-            action = App().lookup_action("party")
-            action.change_state(GLib.Variant("b", False))
-        App().player.play_album(self._album.clone(True))
-        self._show_append(False)
-        return True
-
-    def __on_action_clicked(self, button):
-        """
-            Append album to current list if not present
-            Remove it if present
-            @param button as Gtk.Button
-        """
-        if App().player.is_locked:
-            return True
-        if self._album.id in App().player.album_ids:
-            if App().player.current_track.album.id == self._album.id:
-                # If not last album, skip it
-                if len(App().player.albums) > 1:
-                    App().player.skip_album()
-                    App().player.remove_album_by_id(self._album.id)
-                # remove it and stop playback by going to next track
-                else:
-                    App().player.remove_album_by_id(self._album.id)
-                    App().player.stop()
-            else:
-                App().player.remove_album_by_id(self._album.id)
-            self._show_append(True)
-        else:
-            if App().player.is_playing and not App().player.albums:
-                App().player.play_album(self._album.clone(True))
-            else:
-                App().player.add_album(self._album.clone(True))
-            self._show_append(False)
-        return True

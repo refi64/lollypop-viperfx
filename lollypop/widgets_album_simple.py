@@ -15,12 +15,12 @@ from gi.repository import GLib, Gtk, Pango, GObject
 from gettext import gettext as _
 
 from lollypop.widgets_album import AlbumWidget
-from lollypop.helper_overlay import OverlayAlbumHelper
+from lollypop.helper_overlay import OverlayHelper
 from lollypop.define import App, ArtSize, Shuffle, ViewType
 from lollypop.utils import on_query_tooltip, on_realize
 
 
-class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
+class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayHelper):
     """
         Album widget showing cover, artist and title
     """
@@ -60,7 +60,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
             Populate widget content
         """
-        OverlayAlbumHelper.__init__(self)
+        OverlayHelper.__init__(self)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
         self.__widget = Gtk.EventBox()
@@ -147,15 +147,25 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                 self._show_overlay == show_overlay or\
                 (App().player.is_locked and show_overlay):
             return
-        OverlayAlbumHelper._show_overlay_func(self, show_overlay)
+        OverlayHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
+            # Play button
+            self.__play_button = Gtk.Button.new_from_icon_name(
+                "media-playback-start-symbolic",
+                Gtk.IconSize.INVALID)
+            self.__play_button.get_image().set_pixel_size(self._pixel_size +
+                                                          20)
+            self.__play_button.set_property("has-tooltip", True)
+            self.__play_button.set_tooltip_text(_("Play"))
+            self.__play_button.connect("realize", on_realize)
+            self.__play_button.connect("clicked", self.__on_play_clicked)
+            self.__play_button.show()
+            self._big_grid.add(self.__play_button)
+            self.__play_button.get_style_context().add_class("overlay-button")
             # Play all button
             self.__play_all_button = Gtk.Button.new()
-            self.__play_all_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__play_all_button.set_property("has-tooltip", True)
             self.__play_all_button.set_tooltip_text(_("Play albums"))
-            self.__play_all_button.set_property("halign", Gtk.Align.END)
-            self.__play_all_button.set_property("valign", Gtk.Align.END)
             self.__play_all_button.connect("realize", on_realize)
             self.__play_all_button.connect("clicked",
                                            self.__on_play_all_clicked)
@@ -163,16 +173,26 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self.__play_all_button.get_image().set_pixel_size(self._pixel_size)
             self.__set_play_all_image()
             self.__play_all_button.show()
-            self._overlay_grid.insert_next_to(self._action_button,
-                                              Gtk.PositionType.LEFT)
-            self._overlay_grid.attach_next_to(self.__play_all_button,
-                                              self._action_button,
-                                              Gtk.PositionType.LEFT,
-                                              1,
-                                              1)
+            # Action button
+            self.__action_button = Gtk.Button.new()
+            self.__action_button.set_property("has-tooltip", True)
+            self.__action_button.connect("realize", on_realize)
+            self.__action_button.connect("clicked", self.__on_action_clicked)
+            self.__action_button.set_image(Gtk.Image())
+            self.__action_button.get_image().set_pixel_size(self._pixel_size)
+            self.__show_append(self._album.id not in App().player.album_ids)
+            self.__action_button.show()
+            self._small_grid.add(self.__play_all_button)
+            self._small_grid.add(self.__action_button)
             self.__play_all_button.get_style_context().add_class(
                 "overlay-button")
+            self.__action_button.get_style_context().add_class(
+                    "overlay-button")
         else:
+            self.__play_button.destroy()
+            self.__play_button = None
+            self.__action_button.destroy()
+            self.__action_button = None
             self.__play_all_button.destroy()
             self.__play_all_button = None
 
@@ -205,6 +225,22 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
 #######################
 # PRIVATE             #
 #######################
+    def __show_append(self, append):
+        """
+            Show append button if append, else remove button
+        """
+        if append:
+            self.__action_button.get_image().set_from_icon_name(
+                                                  "list-add-symbolic",
+                                                  Gtk.IconSize.INVALID)
+            self.__action_button.set_tooltip_text(_("Add to current playlist"))
+        else:
+            self.__action_button.get_image().set_from_icon_name(
+                                                   "list-remove-symbolic",
+                                                   Gtk.IconSize.INVALID)
+            self.__action_button.set_tooltip_text(
+                _("Remove from current playlist"))
+
     def __set_play_all_image(self):
         """
             Set play all image based on current shuffle status
@@ -218,6 +254,20 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.INVALID)
 
+    def __on_play_clicked(self, button):
+        """
+            Play album
+            @param button as Gtk.Button
+        """
+        if App().player.is_locked:
+            return True
+        if App().player.is_party:
+            action = App().lookup_action("party")
+            action.change_state(GLib.Variant("b", False))
+        App().player.play_album(self._album.clone(True))
+        self.__show_append(False)
+        return True
+
     def __on_play_all_clicked(self, button):
         """
             Play album with context
@@ -225,7 +275,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         if App().player.is_locked:
             return True
-        self._show_append(False)
+        self.__show_append(False)
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))
         App().player.play_albums(self._album.id,
@@ -240,6 +290,35 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             @param event as Gdk.EventButton
         """
         App().window.container.show_artists_albums(self._album.artist_ids)
+        return True
+
+    def __on_action_clicked(self, button):
+        """
+            Append album to current list if not present
+            Remove it if present
+            @param button as Gtk.Button
+        """
+        if App().player.is_locked:
+            return True
+        if self._album.id in App().player.album_ids:
+            if App().player.current_track.album.id == self._album.id:
+                # If not last album, skip it
+                if len(App().player.albums) > 1:
+                    App().player.skip_album()
+                    App().player.remove_album_by_id(self._album.id)
+                # remove it and stop playback by going to next track
+                else:
+                    App().player.remove_album_by_id(self._album.id)
+                    App().player.stop()
+            else:
+                App().player.remove_album_by_id(self._album.id)
+            self.__show_append(True)
+        else:
+            if App().player.is_playing and not App().player.albums:
+                App().player.play_album(self._album.clone(True))
+            else:
+                App().player.add_album(self._album.clone(True))
+            self.__show_append(False)
         return True
 
     def __on_destroy(self, widget):

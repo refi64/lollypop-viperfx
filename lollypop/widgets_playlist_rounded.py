@@ -89,60 +89,52 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
                     "media-playback-start-symbolic",
                     Gtk.IconSize.INVALID)
                 self.__play_button.set_tooltip_text(_("Play"))
-            elif self.__add:
-                # Special case, we are in add to playlist mode
-                self.__play_button = Gtk.Button.new_from_icon_name(
-                    "list-add-symbolic",
-                    Gtk.IconSize.INVALID)
-                self.__play_button.set_tooltip_text(_("Add"))
+                self._big_grid.set_margin_bottom(10)
+                self._big_grid.set_margin_start(10)
             else:
-                # Special case, we are in remove from playlist mode
-                self.__play_button = Gtk.Button.new_from_icon_name(
-                    "list-remove-symbolic",
-                    Gtk.IconSize.INVALID)
-                self.__play_button.set_tooltip_text(_("Remove"))
+                self._big_grid.set_property("valign", Gtk.Align.CENTER)
+                self._big_grid.set_property("halign", Gtk.Align.CENTER)
+                if self.__add:
+                    # Special case, we are in add to playlist mode
+                    self.__play_button = Gtk.Button.new_from_icon_name(
+                        "list-add-symbolic",
+                        Gtk.IconSize.INVALID)
+                    self.__play_button.set_tooltip_text(_("Add"))
+                else:
+                    # Special case, we are in remove from playlist mode
+                    self.__play_button = Gtk.Button.new_from_icon_name(
+                        "list-remove-symbolic",
+                        Gtk.IconSize.INVALID)
+                    self.__play_button.set_tooltip_text(_("Remove"))
             self.__play_button.set_property("has-tooltip", True)
-            self.__play_button.set_hexpand(True)
-            self.__play_button.set_relief(Gtk.ReliefStyle.NONE)
-            self.__play_button.set_property("valign", Gtk.Align.END)
-            self.__play_button.set_property("halign", Gtk.Align.START)
             self.__play_button.connect("realize", on_realize)
             self.__play_button.connect("clicked", self.__on_play_clicked)
-            self.__play_button.set_margin_bottom(10)
-            self.__play_button.set_margin_start(10)
             self.__play_button.get_image().set_pixel_size(self._pixel_size +
                                                           20)
+            self.__play_button.show()
             # Edit button
             self.__edit_button = Gtk.Button.new_from_icon_name(
                 "document-properties-symbolic",
                 Gtk.IconSize.INVALID)
-            self.__edit_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__edit_button.set_property("has-tooltip", True)
             self.__edit_button.set_tooltip_text(_("Modify playlist"))
             self.__edit_button.connect("realize", on_realize)
             self.__edit_button.connect("clicked", self.__on_edit_clicked)
             self.__edit_button.get_image().set_pixel_size(self._pixel_size)
-            self._overlay.add_overlay(self.__play_button)
-            self.__overlay_grid = Gtk.Grid()
-            self.__overlay_grid.set_property("valign", Gtk.Align.END)
-            self.__overlay_grid.set_property("halign", Gtk.Align.END)
-            self.__overlay_grid.set_margin_bottom(10)
-            self.__overlay_grid.set_margin_end(25)
-            self.__overlay_grid.add(self.__edit_button)
-            self._overlay.add_overlay(self.__overlay_grid)
-            self._overlay.show_all()
-            self.__play_button.get_style_context().add_class("rounded-icon")
+            self.__edit_button.show()
+            self._big_grid.add(self.__play_button)
+            self._small_grid.set_margin_bottom(10)
+            self._small_grid.set_margin_end(25)
+            self._small_grid.add(self.__edit_button)
+            self.__play_button.get_style_context().add_class("overlay-button")
             self.__edit_button.get_style_context().add_class("overlay-button")
-            self.__overlay_grid.get_style_context().add_class(
+            self._small_grid.get_style_context().add_class(
                 "squared-icon-small")
         else:
-            self.__overlay_grid.destroy()
             self.__play_button.destroy()
             self.__play_button = None
             self.__edit_button.destroy()
             self.__edit_button = None
-            self.__overlay_grid.destroy()
-            self.__overlay_grid = None
 
     def _save_surface(self, surface):
         """
