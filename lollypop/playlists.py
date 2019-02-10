@@ -153,7 +153,6 @@ class Playlists(GObject.GObject):
         """
         if self.exists_track(playlist_id, uri):
             return
-        self.__clean_cache(playlist_id)
         if signal:
             position = len(self.get_track_uris(playlist_id))
             self.emit("playlist-track-added", playlist_id, uri, position)
@@ -212,7 +211,6 @@ class Playlists(GObject.GObject):
         """
         if not self.exists_track(playlist_id, uri):
             return
-        self.__clean_cache(playlist_id)
         if signal:
             uris = self.get_track_uris(playlist_id)
             position = uris.index(uri)
@@ -692,14 +690,6 @@ class Playlists(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    def __clean_cache(self, playlist_id):
-        """
-            Clean playlist art cache
-            @param playlist_id as int
-        """
-        string = "%s_%s" % (Type.PLAYLISTS, playlist_id)
-        App().art.clean_pixbuf(string)
-
     def __on_parse_finished(self, parser, result, playlist_id, uris):
         """
             Add tracks to playlists

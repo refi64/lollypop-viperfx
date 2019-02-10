@@ -64,48 +64,6 @@ class BaseArt(GObject.GObject):
         except Exception as e:
             Logger.error("Art::clean_store(): %s" % e)
 
-    def save_pixbuf(self, pixbuf, string):
-        """
-            Save surface with string suffix
-            @param pixbuf as GdkPixbuf.Pixbuf
-            @param string as str
-        """
-        try:
-            path = "%s/%s.jpg" % (self._CACHE_PATH, string)
-            pixbuf.savev(path, "jpeg", ["quality"],
-                         [str(App().settings.get_value(
-                             "cover-quality").get_int32())])
-        except Exception as e:
-            Logger.error("BaseArt::save_pixbuf(): %s" % e)
-
-    def load_pixbuf(self, string):
-        """
-            Load surface with string
-            @param string as str
-            @return GdkPixbuf.Pixbuf
-        """
-        try:
-            path = "%s/%s.jpg" % (self._CACHE_PATH, string)
-            f = Gio.File.new_for_path(path)
-            if f.query_exists():
-                return GdkPixbuf.Pixbuf.new_from_file(path)
-        except Exception as e:
-            Logger.warning("BaseArt::load_pixbuf(): %s" % e)
-        return None
-
-    def clean_pixbuf(self, string):
-        """
-            Remove pixbuf from cache
-            @param string as str
-        """
-        try:
-            path = "%s/%s.jpg" % (self._CACHE_PATH, string)
-            f = Gio.File.new_for_path(path)
-            if f.query_exists():
-                f.delete()
-        except Exception as e:
-            Logger.warning("BaseArt::clean_pixbuf(): %s" % e)
-
     @property
     def kid3_available(self):
         """

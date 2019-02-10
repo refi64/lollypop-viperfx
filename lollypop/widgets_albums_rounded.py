@@ -62,7 +62,7 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         """
             Set artwork
         """
-        App().task_helper.run(self.__load_surface)
+        App().task_helper.run(self._create_surface)
 
     def _create_surface(self):
         """
@@ -80,34 +80,9 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
         positions = [(0, 0), (1, 0), (0, 1), (1, 1)]
         self.__draw_surface(surface, ctx, positions)
 
-    def _save_surface(self, surface):
-        """
-            Save surface to cache
-            @param surface as cairo.Surface
-        """
-        pixbuf = Gdk.pixbuf_get_from_surface(surface,
-                                             0, 0,
-                                             surface.get_width(),
-                                             surface.get_height())
-        string = "%s_%s" % (self._genre, self._data)
-        App().task_helper.run(App().art.save_pixbuf,
-                              pixbuf,
-                              string)
-
 #######################
 # PRIVATE             #
 #######################
-    def __load_surface(self):
-        """
-            Load surface from art cache
-        """
-        string = "%s_%s" % (self._genre, self._data)
-        pixbuf = App().art.load_pixbuf(string)
-        if pixbuf is None:
-            self._create_surface()
-        else:
-            GLib.idle_add(self.__set_pixbuf, pixbuf)
-
     def __set_pixbuf(self, pixbuf):
         """
             Set artwork from pixbuf
@@ -165,7 +140,6 @@ class RoundedAlbumsWidget(RoundedFlowBoxWidget):
                 GLib.idle_add(draw_pixbuf, surface, ctx, pixbuf, positions)
         else:
             GLib.idle_add(self.__set_surface, surface)
-            GLib.idle_add(self._save_surface, surface)
 
     def __on_unmap(self, widget):
         """
