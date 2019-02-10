@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, ViewType
-from lollypop.utils import get_network_available
+from lollypop.utils import get_network_available, on_query_tooltip
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.widgets_artist_banner import ArtistBannerWidget
@@ -46,6 +46,8 @@ class ArtistView(ArtistAlbumsView):
         builder.connect_signals(self)
         self.__artwork = builder.get_object("artwork")
         self.__label = builder.get_object("artist")
+        self.__label.connect("query-tooltip", on_query_tooltip)
+        self.__label.set_property("has-tooltip", True)
         self.__jump_button = builder.get_object("jump-button")
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__add_button = builder.get_object("add-button")

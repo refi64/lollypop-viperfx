@@ -17,7 +17,7 @@ from lollypop.define import App, ArtSize
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
-from lollypop.utils import get_human_duration
+from lollypop.utils import get_human_duration, on_query_tooltip
 
 
 class AlbumBannerWidget(Gtk.Bin):
@@ -43,6 +43,8 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__year_label = builder.get_object("year_label")
         self.__duration_label = builder.get_object("duration_label")
         self.__label.set_text(album.name)
+        self.__label.connect("query-tooltip", on_query_tooltip)
+        self.__label.set_property("has-tooltip", True)
         self.__year_label.set_text(str(album.year))
         duration = App().albums.get_duration(self.__album.id,
                                              self.__album.genre_ids)
