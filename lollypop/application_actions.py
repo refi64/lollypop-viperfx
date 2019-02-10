@@ -75,6 +75,7 @@ class ApplicationActions:
             @param param as GLib.Variant
         """
         if App().window:
+            App().task_helper.run(App().art.clean_all_cache)
             App().scanner.update(ScanType.FULL)
 
     def __on_about_activate_response(self, dialog, response_id):
