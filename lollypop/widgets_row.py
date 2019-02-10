@@ -169,6 +169,9 @@ class Row(Gtk.ListBoxRow):
         from lollypop.pop_menu import TrackMenu
         return TrackMenu(self._track)
 
+    def _on_destroy(self, widget):
+        pass
+
 #######################
 # PRIVATE             #
 #######################

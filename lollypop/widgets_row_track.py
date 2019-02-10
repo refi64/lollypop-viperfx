@@ -93,7 +93,6 @@ class TrackRow(Row, DNDRow):
             Destroyed widget
             @param widget as Gtk.Widget
         """
-        Row._on_destroy(self, widget)
         if self._view_type & ViewType.DND:
             DNDRow._on_destroy(self, widget)
 
