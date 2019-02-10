@@ -26,7 +26,7 @@ class Art(BaseArt, AlbumArt, RadioArt, Downloader):
 
     def __init__(self):
         """
-            Create cache path
+            Init artwork
         """
         BaseArt.__init__(self)
         AlbumArt.__init__(self)
