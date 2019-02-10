@@ -15,7 +15,7 @@ from gi.repository import Gtk, GObject, GLib, Pango
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
-from lollypop.helper_overlay import OverlayAlbumHelper
+from lollypop.helper_overlay_album import OverlayAlbumHelper
 from lollypop.utils import get_human_duration, on_query_tooltip, on_realize
 from lollypop.view_tracks import TracksView
 from lollypop.define import App, ArtSize, ViewType, Sizing, Type

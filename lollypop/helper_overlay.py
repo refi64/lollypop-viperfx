@@ -22,7 +22,7 @@ class OverlayHelper:
 
     def __init__(self):
         """
-            Init manager
+            Init helper
         """
         self._show_overlay = False
         self._lock_overlay = False
