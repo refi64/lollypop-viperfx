@@ -210,7 +210,7 @@ def is_audio(f):
              "audio/x-pn-windows-acm", "application/x-matroska",
              "audio/x-matroska", "audio/x-wavpack", "video/mp4",
              "audio/x-mod", "audio/x-mo3", "audio/x-xm", "audio/x-s3m",
-             "audio/x-it"]
+             "audio/x-it", "audio/aiff", "audio/x-aiff"]
     try:
         info = f.query_info("standard::content-type",
                             Gio.FileQueryInfoFlags.NONE)
