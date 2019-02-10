@@ -23,11 +23,13 @@ class RoundedArtistsView(FlowBoxView):
         Show artists in a FlowBox
     """
 
-    def __init__(self):
+    def __init__(self, destroy=True):
         """
             Init decade view
+            @param destroy as bool
         """
         FlowBoxView.__init__(self)
+        self.__destroy = destroy
         self.__lazy_queue_backup = None
         self._widget_class = RoundedArtistWidget
         self.connect("destroy", self.__on_destroy)
@@ -67,7 +69,7 @@ class RoundedArtistsView(FlowBoxView):
 
     @property
     def should_destroy(self):
-        return False
+        return self.__destroy
 
 #######################
 # PROTECTED           #

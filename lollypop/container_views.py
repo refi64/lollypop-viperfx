@@ -198,7 +198,7 @@ class ViewsContainer:
             view.populate(get_items(artist_ids, compilation_ids))
 
         from lollypop.view_artists_rounded import RoundedArtistsView
-        view = RoundedArtistsView()
+        view = RoundedArtistsView(not static)
         self._stack.add(view)
         loader = Loader(target=load, view=view,
                         on_finished=lambda r: setup(*r))
