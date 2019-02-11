@@ -268,21 +268,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         TracksView._on_album_updated(self, scanner, album_id, destroy)
         AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
 
-    def _on_eventbox_button_press_event(self, widget, event):
-        """
-            Show overlay if not shown
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        # Here some code for touch screens
-        # If mouse pointer activate Gtk.FlowBoxChild, overlay is on,
-        # as enter notify event enabled it
-        # Else, we are in touch screen, first time show overlay, next time
-        # show popover
-        if not self.is_overlay:
-            self.show_overlay(True)
-            return
-
     def _on_album_artwork(self, surface):
         """
             Set album artwork

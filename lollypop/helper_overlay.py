@@ -98,7 +98,7 @@ class OverlayHelper:
             return
         self._artwork.set_opacity(0.9)
         if self.__timeout_id is None:
-            self.__timeout_id = GLib.timeout_add(150,
+            self.__timeout_id = GLib.timeout_add(250,
                                                  self._on_enter_notify_timeout)
 
     def _on_leave_notify(self, widget, event):
