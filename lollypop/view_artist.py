@@ -41,6 +41,8 @@ class ArtistView(ArtistAlbumsView):
         self.__art_signal_id = None
         self.__allocation_timeout_id = None
         self.__width = 0
+        self.__show_artwork = len(artist_ids) == 1 and\
+            App().settings.get_value("artist-artwork")
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
         builder.connect_signals(self)
@@ -94,7 +96,7 @@ class ArtistView(ArtistAlbumsView):
             @param adj as Gtk.Adjustment
         """
         ArtistAlbumsView._on_value_changed(self, adj)
-        if adj.get_value() == adj.get_lower():
+        if adj.get_value() == adj.get_lower() and self.__show_artwork:
             self.__banner.set_height(self.__banner.default_height)
             self.__artwork.show()
         else:
@@ -228,7 +230,11 @@ class ArtistView(ArtistAlbumsView):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
-        self._album_box.set_margin_top(self.__banner.default_height + 15)
+        if self.__show_artwork:
+            self._album_box.set_margin_top(self.__banner.default_height + 15)
+        else:
+            self._album_box.set_margin_top(self.__banner.default_height / 3 +
+                                           15)
         self.__art_signal_id = App().art.connect(
                                            "artist-artwork-changed",
                                            self.__on_artist_artwork_changed)
@@ -277,8 +283,7 @@ class ArtistView(ArtistAlbumsView):
         """
             Set artist artwork
         """
-        if len(self._artist_ids) == 1 and\
-                App().settings.get_value("artist-artwork"):
+        if self.__show_artwork:
             artist = App().artists.get_name(self._artist_ids[0])
             App().art_helper.set_artist_artwork(
                                         artist,
@@ -286,6 +291,8 @@ class ArtistView(ArtistAlbumsView):
                                         ArtSize.BANNER,
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork)
+        else:
+            self.__banner.set_height(self.__banner.default_height / 3)
 
     def __update_jump_button(self):
         """
