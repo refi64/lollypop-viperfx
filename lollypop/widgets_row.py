@@ -80,7 +80,8 @@ class Row(Gtk.ListBoxRow):
         if self._artists_label is not None:
             self._grid.add(self._artists_label)
         self._grid.add(self._duration_label)
-        if self._view_type & (ViewType.DND | ViewType.POPOVER):
+        if self._view_type & ViewType.DND and\
+                self._view_type & ViewType.POPOVER:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "list-remove-symbolic",
                 Gtk.IconSize.MENU)

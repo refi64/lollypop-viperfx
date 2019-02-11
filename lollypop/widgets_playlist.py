@@ -249,10 +249,14 @@ class PlaylistsWidget(Gtk.Grid):
         tracks = widgets[widget]
 
         if not tracks:
-            last_left = self.__tracks_widget_left.get_children()[-1]
-            first_right = self.__tracks_widget_right.get_children()[0]
-            last_left.set_next_row(first_right)
-            first_right.set_previous_row(last_left)
+            # Link last left and first right
+            left_children = self.__tracks_widget_left.get_children()
+            right_children = self.__tracks_widget_right.get_children()
+            if left_children and right_children:
+                last_left = left_children[-1]
+                first_right = right_children[0]
+                last_left.set_next_row(first_right)
+                first_right.set_previous_row(last_left)
             self.emit("populated")
             return
         (track, position) = tracks.pop(0)
