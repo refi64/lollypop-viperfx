@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, Pango, GLib, Gdk
 
+from gettext import gettext as _
+
 from lollypop.define import App, ViewType
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.utils import seconds_to_string, on_query_tooltip
@@ -78,19 +80,26 @@ class Row(Gtk.ListBoxRow):
         if self._artists_label is not None:
             self._grid.add(self._artists_label)
         self._grid.add(self._duration_label)
-        self.__menu_button = Gtk.Button.new_from_icon_name(
-            "view-more-symbolic",
-            Gtk.IconSize.MENU)
-        self.__menu_button.connect("button-release-event",
-                                   self.__on_menu_button_release_event)
-        self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
-        context = self.__menu_button.get_style_context()
-        context.add_class("menu-button")
-        context.add_class("track-menu-button")
-        self._grid.add(self.__menu_button)
-        if view_type & (ViewType.POPOVER | ViewType.SEARCH):
-            self.__menu_button.set_sensitive(False)
-            self.__menu_button.set_opacity(0)
+        if self._view_type & ViewType.DND:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "list-remove-symbolic",
+                Gtk.IconSize.MENU)
+            self.__action_button.set_tooltip_text(
+                _("Remove from playback"))
+        elif not self._view_type & (ViewType.POPOVER | ViewType.SEARCH):
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "view-more-symbolic",
+                Gtk.IconSize.MENU)
+        else:
+            self.__action_button = None
+        if self.__action_button is not None:
+            self.__action_button.connect("button-release-event",
+                                         self.__on_action_button_release_event)
+            self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
+            context = self.__action_button.get_style_context()
+            context.add_class("menu-button")
+            context.add_class("track-menu-button")
+            self._grid.add(self.__action_button)
         self.add(self._row_widget)
         # We do not use set_indicator() here, we do not want widget to be
         # populated
@@ -242,13 +251,7 @@ class Row(Gtk.ListBoxRow):
                 self._view_type & ViewType.DND:
             self.emit("do-selection")
         elif event.button == 3:
-            window = widget.get_window()
-            if window == event.window:
-                self.__popup_menu(widget, event.x, event.y)
-            # Happens when pressing button over menu btn
-            else:
-                self.__on_indicator_button_release_event(self.__menu_button,
-                                                         event)
+            self.__popup_menu(widget, event.x, event.y)
         elif event.button == 2:
             if self._track.id in App().player.queue:
                 App().player.remove_from_queue(self._track.id)
@@ -262,11 +265,15 @@ class Row(Gtk.ListBoxRow):
             self.activate()
         return True
 
-    def __on_menu_button_release_event(self, button, event):
+    def __on_action_button_release_event(self, button, event):
         """
             Show row menu
             @param button as Gtk.Button
             @param event as Gdk.EventButton
         """
-        self.__popup_menu(button)
+        if self._view_type & ViewType.DND:
+            self._track.album.remove_track(self._track)
+            self.destroy()
+        else:
+            self.__popup_menu(button)
         return True
