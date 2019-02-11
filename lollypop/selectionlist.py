@@ -273,6 +273,8 @@ class SelectionList(BaseView, Gtk.Overlay):
             Redraw list
         """
         self.__view.set_model(None)
+        self.__renderer0.set_is_artists(
+            self.__mask & SelectionListMask.ARTISTS)
         self.__view.set_model(self.__model)
 
     @property
