@@ -130,8 +130,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
         App().set_accels_for_action("app.shortcut::current_artist",
                                     ["<Control><Alt>a"])
-        App().set_accels_for_action("app.shortcut::show_genres",
-                                    ["<Control>g"])
         App().set_accels_for_action("app.shortcut::show_sidebar", ["F9"])
         App().set_accels_for_action("app.update_db", ["<Control>u"])
         App().set_accels_for_action("app.settings(-14)", ["<Control>s"])
@@ -488,11 +486,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                     self.container.show_artists_albums(artist_ids)
                 else:
                     App().window.container.show_view(artist_ids[0])
-        elif string == "show_genres":
-            state = not App().settings.get_value("show-genres")
-            App().settings.set_value("show-genres",
-                                     GLib.Variant("b", state))
-            self.__container.show_genres(state)
         elif string == "loved":
             track = App().player.current_track
             if track.id is not None and track.id >= 0:
