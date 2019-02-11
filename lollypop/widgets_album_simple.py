@@ -216,7 +216,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
         if App().player.is_locked:
             return True
-        self.__show_append(False)
+        self._show_append(False)
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))
         App().player.play_albums(self._album.id,

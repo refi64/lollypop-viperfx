@@ -65,7 +65,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self.__action_button.connect("clicked", self.__on_action_clicked)
             self.__action_button.set_image(Gtk.Image())
             self.__action_button.get_image().set_pixel_size(self._pixel_size)
-            self.__show_append(self._album.id not in App().player.album_ids)
+            self._show_append(self._album.id not in App().player.album_ids)
             self.__action_button.show()
             self._small_grid.add(self.__action_button)
             self.__action_button.get_style_context().add_class(
@@ -76,10 +76,7 @@ class OverlayAlbumHelper(OverlayHelper):
             self.__action_button.destroy()
             self.__action_button = None
 
-#######################
-# PRIVATE             #
-#######################
-    def __show_append(self, append):
+    def _show_append(self, append):
         """
             Show append button if append, else remove button
         """
@@ -95,6 +92,9 @@ class OverlayAlbumHelper(OverlayHelper):
             self.__action_button.set_tooltip_text(
                 _("Remove from current playlist"))
 
+#######################
+# PRIVATE             #
+#######################
     def __on_play_clicked(self, button):
         """
             Play album
@@ -106,7 +106,7 @@ class OverlayAlbumHelper(OverlayHelper):
             action = App().lookup_action("party")
             action.change_state(GLib.Variant("b", False))
         App().player.play_album(self._album.clone(True))
-        self.__show_append(False)
+        self._show_append(False)
         return True
 
     def __on_action_clicked(self, button):
@@ -129,11 +129,11 @@ class OverlayAlbumHelper(OverlayHelper):
                     App().player.stop()
             else:
                 App().player.remove_album_by_id(self._album.id)
-            self.__show_append(True)
+            self._show_append(True)
         else:
             if App().player.is_playing and not App().player.albums:
                 App().player.play_album(self._album.clone(True))
             else:
                 App().player.add_album(self._album.clone(True))
-            self.__show_append(False)
+            self._show_append(False)
         return True
