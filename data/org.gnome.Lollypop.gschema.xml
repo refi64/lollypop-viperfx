@@ -90,7 +90,7 @@
         </key>
         <key type="b" name="import-playlists">
             <default>false</default>
-            <summary>Import playlists in collections</summary>
+            <summary>Import playlists from collections</summary>
             <description></description>
         </key>
         <key type="as" name="music-uris">
