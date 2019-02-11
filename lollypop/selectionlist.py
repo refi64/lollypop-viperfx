@@ -272,10 +272,12 @@ class SelectionList(BaseView, Gtk.Overlay):
         """
             Redraw list
         """
+        selected_ids = self.selected_ids
         self.__view.set_model(None)
         self.__renderer0.set_is_artists(
             self.__mask & SelectionListMask.ARTISTS)
         self.__view.set_model(self.__model)
+        GLib.idle_add(self.select_ids, selected_ids)
 
     @property
     def should_destroy(self):
