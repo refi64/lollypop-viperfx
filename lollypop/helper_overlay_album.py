@@ -56,7 +56,8 @@ class OverlayAlbumHelper(OverlayHelper):
             self.__play_button.connect("clicked", self.__on_play_clicked)
             self.__play_button.show()
             self._big_grid.add(self.__play_button)
-            self.__play_button.get_style_context().add_class("overlay-button")
+            self.__play_button.get_style_context().add_class(
+                "overlay-button-rounded")
             # Action button
             self.__action_button = Gtk.Button.new()
             self.__action_button.set_property("has-tooltip", True)

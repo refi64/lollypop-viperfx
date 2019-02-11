@@ -76,7 +76,8 @@ class AlbumsDecadeWidget(RoundedAlbumsWidget, OverlayHelper):
             self.__play_button.connect("clicked", self.__on_play_clicked)
             self.__play_button.show()
             self._big_grid.add(self.__play_button)
-            self.__play_button.get_style_context().add_class("overlay-button")
+            self.__play_button.get_style_context().add_class(
+                "overlay-button-rounded")
         else:
             self.__play_button.destroy()
             self.__play_button = None

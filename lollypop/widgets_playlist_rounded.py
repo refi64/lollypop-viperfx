@@ -126,7 +126,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             self._small_grid.set_margin_bottom(10)
             self._small_grid.set_margin_end(25)
             self._small_grid.add(self.__edit_button)
-            self.__play_button.get_style_context().add_class("overlay-button")
+            self.__play_button.get_style_context().add_class(
+                "overlay-button-rounded")
             self.__edit_button.get_style_context().add_class("overlay-button")
             self._small_grid.get_style_context().add_class(
                 "squared-icon-small")

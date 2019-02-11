@@ -75,7 +75,8 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             self._big_grid.set_margin_bottom(10)
             self._big_grid.set_margin_start(10)
             self._big_grid.add(self.__play_button)
-            self.__play_button.get_style_context().add_class("overlay-button")
+            self.__play_button.get_style_context().add_class(
+                "overlay-button-rounded")
         else:
             self.__play_button.destroy()
             self.__play_button = None
