@@ -223,9 +223,6 @@ class PlaylistsWidget(Gtk.Grid):
         """
             Move a track from right to left and vice versa
         """
-        # Force linking as we are going to move tracks
-        # Allow us to not garbage chained list
-        self.__linking(True)
         if len(self.__tracks_widget_right.get_children()) >\
                 len(self.__tracks_widget_left.get_children()):
             child = self.__tracks_widget_right.get_children()[0]
@@ -236,24 +233,6 @@ class PlaylistsWidget(Gtk.Grid):
             child = self.__tracks_widget_left.get_children()[-1]
             self.__tracks_widget_left.remove(child)
             self.__tracks_widget_right.insert(child, 0)
-        self.__linking(self.__orientation == Gtk.Orientation.VERTICAL)
-
-    def __linking(self, link):
-        """
-            Handle linking between left and right
-            @param link as bool
-        """
-        if len(self.__tracks_widget_left) == 0 or\
-                len(self.__tracks_widget_right) == 0:
-            return
-        last_left = self.__tracks_widget_left.get_children()[-1]
-        first_right = self.__tracks_widget_right.get_children()[0]
-        if link:
-            last_left.set_next_row(first_right)
-            first_right.set_previous_row(last_left)
-        else:
-            last_left.set_next_row(None)
-            first_right.set_previous_row(None)
 
     def __add_tracks(self, widgets):
         """
@@ -264,14 +243,17 @@ class PlaylistsWidget(Gtk.Grid):
         if self.__cancellable.is_cancelled():
             return
 
+        # We are loading left then right then left then right then ...
         widget = next(iter(widgets))
         widgets.move_to_end(widget)
         tracks = widgets[widget]
 
         if not tracks:
+            last_left = self.__tracks_widget_left.get_children()[-1]
+            first_right = self.__tracks_widget_right.get_children()[0]
+            last_left.set_next_row(first_right)
+            first_right.set_previous_row(last_left)
             self.emit("populated")
-            if not self.__view_type & ViewType.TWO_COLUMNS:
-                self.__linking(True)
             return
         (track, position) = tracks.pop(0)
         track.set_number(position + 1)
@@ -304,11 +286,9 @@ class PlaylistsWidget(Gtk.Grid):
                 not App().settings.get_value("split-view"):
             self.__grid.set_property("valign", Gtk.Align.START)
             orientation = Gtk.Orientation.VERTICAL
-            self.__linking(True)
         else:
             self.__grid.set_property("valign", Gtk.Align.FILL)
             orientation = Gtk.Orientation.HORIZONTAL
-            self.__linking(False)
         if orientation != self.__orientation:
             self.__orientation = orientation
             redraw = True
