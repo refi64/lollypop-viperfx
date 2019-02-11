@@ -272,7 +272,8 @@ class Row(Gtk.ListBoxRow):
             @param button as Gtk.Button
             @param event as Gdk.EventButton
         """
-        if self._view_type & ViewType.DND:
+        if self._view_type & ViewType.DND and\
+                self._view_type & ViewType.POPOVER:
             self._track.album.remove_track(self._track)
             self.destroy()
         else:
