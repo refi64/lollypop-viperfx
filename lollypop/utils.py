@@ -23,22 +23,40 @@ from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListMask
 
 
+def seconds_to_string(duration):
+    """
+        Convert seconds to a pretty string
+        @param seconds as int
+    """
+    hours = duration // 3600
+    if hours == 0:
+        minutes = duration // 60
+        seconds = duration % 60
+        return "%i:%02i" % (minutes, seconds)
+    else:
+        seconds = duration % 3600
+        minutes = seconds // 60
+        seconds %= 60
+        return "%i:%02i:%O2i" % (hours, minutes, seconds)
+
+
 def get_human_duration(duration):
     """
         Get human readable duration
         @param duration in seconds
         @return str
     """
-    hours = int(duration / 3600)
-    mins = int(duration / 60)
+    hours = duration // 3600
+    minutes = duration // 60
     if hours > 0:
-        mins -= hours * 60
-        if mins > 0:
-            return _("%s h  %s m") % (hours, mins)
+        seconds = duration % 3600
+        minutes = seconds // 60
+        if minutes > 0:
+            return _("%s h  %s m") % (hours, minutes)
         else:
             return _("%s h") % hours
     else:
-        return _("%s m") % mins
+        return _("%s m") % minutes
 
 
 def get_round_surface(image, scale_factor, radius):
@@ -295,18 +313,6 @@ def get_position_list(items, position):
         _items.append((item, position))
         position += 1
     return _items
-
-
-def seconds_to_string(duration):
-    """
-        Convert seconds to a pretty string
-        @param seconds as int
-    """
-    seconds = duration
-    minutes = seconds // 60
-    seconds %= 60
-
-    return "%i:%02i" % (minutes, seconds)
 
 
 def is_readonly(uri):
