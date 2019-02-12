@@ -37,7 +37,7 @@ def seconds_to_string(duration):
         seconds = duration % 3600
         minutes = seconds // 60
         seconds %= 60
-        return "%i:%02i:%O2i" % (hours, minutes, seconds)
+        return "%i:%02i:%02i" % (hours, minutes, seconds)
 
 
 def get_human_duration(duration):
