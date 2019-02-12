@@ -41,7 +41,7 @@ class PlaylistsWidget(Gtk.Grid):
         self.__cancellable = Gio.Cancellable()
         self.__playlist_ids = playlist_ids
         self.__view_type = view_type
-        self.__duration = 0 if playlist_ids[0] < 0 else None
+        self.__duration = 0
         self.__tracks = {}
         self.__row_tracks_left = []
         self.__row_tracks_right = []
@@ -261,8 +261,7 @@ class PlaylistsWidget(Gtk.Grid):
             return
         (track, position) = tracks.pop(0)
         track.set_number(position + 1)
-        if self.__duration is not None:
-            self.__duration += track.duration
+        self.__duration += track.duration
         row = PlaylistRow(track, self.__view_type)
         children = widget.get_children()
         previous_row = children[-1] if children else None

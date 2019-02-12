@@ -12,9 +12,9 @@
 
 from gi.repository import Gtk, GLib
 
-from gettext import gettext as _
 from random import shuffle
 
+from lollypop.utils import get_human_duration
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget
 from lollypop.define import App, Type, ViewType, SidebarContent
@@ -79,7 +79,8 @@ class PlaylistsView(View, ViewController):
             self.__menu_button.hide()
 
         # In DB duration calculation
-        if playlist_ids[0] > 0:
+        if playlist_ids[0] > 0 and\
+                not App().playlists.get_smart(playlist_ids[0]):
             duration = 0
             for playlist_id in self.__playlist_ids:
                 duration += App().playlists.get_duration(playlist_id)
@@ -211,19 +212,7 @@ class PlaylistsView(View, ViewController):
             Set playlist duration
             @param duration as int (seconds)
         """
-        hours = int(duration / 3600)
-        mins = int(duration / 60)
-        if hours > 0:
-            mins -= hours * 60
-            if mins > 0:
-                # Duration hour minute
-                self.__duration_label.set_text(_("%s h  %s m") % (hours, mins))
-            else:
-                # Duration hour minute
-                self.__duration_label.set_text(_("%s h") % hours)
-        else:
-            # Duration hour minute
-            self.__duration_label.set_text(_("%s m") % mins)
+        self.__duration_label.set_text(get_human_duration(duration))
 
     def __update_jump_button(self):
         """
