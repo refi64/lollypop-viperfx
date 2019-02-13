@@ -336,7 +336,16 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
 
-        if self.__view_type & ViewType.DND:
+        if self.__view_type & ViewType.SEARCH:
+            popover = self.get_ancestor(Gtk.Popover)
+            if popover is not None:
+                popover.popdown()
+            if App().settings.get_value("show-sidebar"):
+                App().window.container.show_artists_albums(
+                    self._album.artist_ids)
+            else:
+                App().window.container.show_view(self._album.artist_ids[0])
+        elif self.__view_type & ViewType.DND:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(App().player.albums) > 1:
@@ -356,21 +365,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             popover.connect("closed", on_closed)
             self.get_style_context().add_class("track-menu-selected")
             popover.popup()
-        return True
-
-    def __on_artists_button_release_event(self, button, event):
-        """
-            Jump to artists albums view
-            @param button as Gtk.Button
-            @param event as Gdk.Event
-        """
-        popover = self.get_ancestor(Gtk.Popover)
-        if popover is not None:
-            popover.popdown()
-        if App().settings.get_value("show-sidebar"):
-            App().window.container.show_artists_albums(self._album.artist_ids)
-        else:
-            App().window.container.show_view(self._album.artist_ids[0])
         return True
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
