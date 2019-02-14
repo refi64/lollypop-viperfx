@@ -376,9 +376,11 @@ class PlaylistsWidget(Gtk.Grid):
             App().playlists.remove_uri(self.__playlist_ids[0],
                                        row.track.uri)
         if row.previous_row is None:
-            row.next_row.set_previous_row(None)
+            if row.next_row is not None:
+                row.next_row.set_previous_row(None)
         elif row.next_row is None:
-            row.previous_row.set_next_row(None)
+            if row.previous_row is not None:
+                row.previous_row.set_next_row(None)
         else:
             row.next_row.set_previous_row(row.previous_row)
             row.previous_row.set_next_row(row.next_row)
