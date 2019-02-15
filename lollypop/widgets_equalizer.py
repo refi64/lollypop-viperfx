@@ -130,8 +130,6 @@ class EqualizerWidget(Gtk.Bin):
                 break
         if not combo_set:
             self.__combobox.set_active_id(_("Custom"))
-            App().settings.set_value("equalizer-custom",
-                                     GLib.Variant("ai", preset))
 
     def __save_equalizer(self):
         """
@@ -142,7 +140,9 @@ class EqualizerWidget(Gtk.Bin):
         for i in range(0, 10):
             attr = getattr(self, "__scale%s" % i)
             preset.append(attr.get_value())
-        App().settings.set_value("equalizer", GLib.Variant("ai", preset))
+        App().settings.set_value("equalizer", GLib.Variant("ad", preset))
+        App().settings.set_value("equalizer-custom",
+                                 GLib.Variant("ad", preset))
         self.__set_combobox_value()
 
     def __on_scale_value_changed(self, scale, band):
