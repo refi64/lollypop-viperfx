@@ -116,6 +116,7 @@
                 <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
                 <style>
                   <class name="light-button"/>
+                  <class name="light-button-no-right-border"/>
                 </style>
               </object>
               <packing>
@@ -134,6 +135,7 @@
                 <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
                 <style>
                   <class name="light-button"/>
+                  <class name="light-button-no-right-border"/>
                 </style>
               </object>
               <packing>
@@ -152,6 +154,7 @@
                 <signal name="toggled" handler="_on_lastfm_button_toggled" swapped="no"/>
                 <style>
                   <class name="light-button"/>
+                  <class name="light-button-no-right-border"/>
                 </style>
               </object>
               <packing>
