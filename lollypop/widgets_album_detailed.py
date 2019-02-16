@@ -57,8 +57,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             if self._view_type & ViewType.NAVIGATION:
                 self.__art_size *= 1.5
             grid = Gtk.Grid()
-            grid.set_margin_start(5)
-            grid.set_margin_end(5)
             grid.set_row_spacing(1)
             grid.set_vexpand(True)
             grid.show()

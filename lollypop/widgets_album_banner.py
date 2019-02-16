@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.helper_art import ArtHelperEffect
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, MARGIN_START, MARGIN_END
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
@@ -46,6 +46,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__label.connect("query-tooltip", on_query_tooltip)
         self.__label.set_property("has-tooltip", True)
         self.__year_label.set_text(str(album.year))
+        self.__year_label.set_margin_end(MARGIN_END)
         duration = App().albums.get_duration(self.__album.id,
                                              self.__album.genre_ids)
         self.__duration_label.set_text(get_human_duration(duration))
@@ -54,8 +55,8 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__widget = builder.get_object("widget")
         self.__cover_widget = CoverWidget(True)
         self.__cover_widget.update(album)
-        self.__cover_widget.set_margin_start(20)
         self.__cover_widget.set_margin_top(18)
+        self.__cover_widget.set_margin_start(MARGIN_START)
         self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.__rating_grid = builder.get_object("rating_grid")

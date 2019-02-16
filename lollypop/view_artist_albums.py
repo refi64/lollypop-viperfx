@@ -146,8 +146,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
                                          self._artist_ids,
                                          self._view_type)
             widget.set_opacity(0)
-            widget.set_margin_start(10)
-            widget.set_margin_end(10)
             widget.show()
             self._lazy_queue.append(widget)
             self._album_box.add(widget)

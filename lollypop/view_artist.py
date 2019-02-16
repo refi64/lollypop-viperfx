@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ViewType
+from lollypop.define import App, ArtSize, ViewType, MARGIN_START, MARGIN_END
 from lollypop.utils import get_network_available, on_query_tooltip
 from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
@@ -65,10 +65,12 @@ class ArtistView(ArtistAlbumsView):
             builder.get_object("lastfm-button").set_tooltip_text(
                 _("Network access disabled"))
         self._album_box.set_row_spacing(20)
+        self._album_box.set_margin_start(MARGIN_START)
+        self._album_box.set_margin_end(MARGIN_END)
+        builder.get_object("box-button").set_margin_end(MARGIN_END)
         self.__set_artwork()
         self.__on_album_changed(App().player)
         self.__on_lock_changed(App().player)
-
         artists = []
         for artist_id in artist_ids:
             artists.append(App().artists.get_name(artist_id))
@@ -284,6 +286,7 @@ class ArtistView(ArtistAlbumsView):
             Set artist artwork
         """
         if self.__show_artwork:
+            self.__artwork.set_margin_start(MARGIN_START)
             artist = App().artists.get_name(self._artist_ids[0])
             App().art_helper.set_artist_artwork(
                                         artist,
@@ -292,6 +295,7 @@ class ArtistView(ArtistAlbumsView):
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork)
         else:
+            self.__label.set_margin_start(MARGIN_START)
             self.__banner.set_height(self.__banner.default_height / 3)
 
     def __update_jump_button(self):

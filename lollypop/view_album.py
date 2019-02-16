@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ViewType, Type
+from lollypop.define import App, ViewType, Type, MARGIN_START, MARGIN_END
 from lollypop.objects import Album
 from lollypop.utils import remove_static_genres
 from lollypop.view_tracks import TracksView
@@ -46,6 +46,8 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self.__grid = Gtk.Grid()
         self.__grid.set_property("vexpand", True)
         self.__grid.set_row_spacing(10)
+        self.__grid.set_margin_start(MARGIN_START)
+        self.__grid.set_margin_end(MARGIN_END)
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__grid.show()
 
@@ -64,8 +66,6 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
         self.add(self._overlay)
-        self._responsive_widget.set_margin_start(5)
-        self._responsive_widget.set_margin_end(15)
         self._responsive_widget.show()
 
 #######################
@@ -128,16 +128,12 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                                      weight="bold">%s %s</span>''' %
                                  (_("Others albums from"), artist))
                 label.set_property("halign", Gtk.Align.START)
-                label.set_margin_top(30)
-                label.set_margin_start(20)
                 label.show()
                 self.__grid.add(label)
                 others_box = AlbumsBoxView([],
                                            [artist_id],
                                            ViewType.SMALL)
                 others_box.show()
-                others_box.set_margin_start(30)
-                others_box.set_margin_end(30)
                 self.__grid.add(others_box)
                 others_box.populate([Album(id) for id in album_ids])
         else:
