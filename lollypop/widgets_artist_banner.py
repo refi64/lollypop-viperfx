@@ -36,7 +36,7 @@ class ArtistBannerWidget(Gtk.Overlay):
         self.__allocation_timeout_id = None
         self.set_property("valign", Gtk.Align.START)
         self.__artwork = Gtk.Image()
-        self.__artwork.get_style_context().add_class("blck")
+        self.__artwork.get_style_context().add_class("black")
         self.__artwork.show()
         self.add(self.__artwork)
         self.connect("size-allocate", self.__on_size_allocate)
