@@ -102,6 +102,8 @@ class Row(Gtk.ListBoxRow):
             context.add_class("menu-button")
             context.add_class("track-menu-button")
             self._grid.add(self.__action_button)
+        else:
+            self._duration_label.set_margin_end(MARGIN_SMALL)
         self.add(self._row_widget)
         # We do not use set_indicator() here, we do not want widget to be
         # populated
