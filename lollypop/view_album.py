@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ViewType, Type, MARGIN_START, MARGIN_END
+from lollypop.define import App, ViewType, Type, MARGIN
 from lollypop.objects import Album
 from lollypop.utils import remove_static_genres
 from lollypop.view_tracks import TracksView
@@ -46,8 +46,8 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self.__grid = Gtk.Grid()
         self.__grid.set_property("vexpand", True)
         self.__grid.set_row_spacing(10)
-        self.__grid.set_margin_start(MARGIN_START)
-        self.__grid.set_margin_end(MARGIN_END)
+        self.__grid.set_margin_start(MARGIN)
+        self.__grid.set_margin_end(MARGIN)
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__grid.show()
 

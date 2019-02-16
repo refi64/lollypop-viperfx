@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
-from lollypop.define import ArtSize, App, ViewType
+from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -79,8 +79,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__play_indicator = None
         self.set_sensitive(False)
         self.set_property("height-request", height)
-        # 15 for scrollbar overlay
-        self.set_margin_end(15)
+        self.set_margin_start(MARGIN_SMALL)
+        self.set_margin_end(MARGIN)
         self.connect("destroy", self.__on_destroy)
 
     def populate(self):
@@ -138,6 +138,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 "view-more-symbolic",
                 Gtk.IconSize.MENU)
         if self.__action_button is not None:
+            self.__action_button.set_margin_end(MARGIN_SMALL)
             self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
             self.__action_button.get_style_context().add_class(
                 "album-menu-button")

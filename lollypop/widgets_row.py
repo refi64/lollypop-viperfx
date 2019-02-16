@@ -14,7 +14,7 @@ from gi.repository import Gtk, Pango, GLib, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import App, ViewType
+from lollypop.define import App, ViewType, MARGIN_SMALL
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.utils import seconds_to_string, on_query_tooltip
 
@@ -94,6 +94,7 @@ class Row(Gtk.ListBoxRow):
         else:
             self.__action_button = None
         if self.__action_button is not None:
+            self.__action_button.set_margin_end(MARGIN_SMALL)
             self.__action_button.connect("button-release-event",
                                          self.__on_action_button_release_event)
             self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
