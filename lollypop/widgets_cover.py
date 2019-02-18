@@ -37,6 +37,9 @@ class CoverWidget(Gtk.EventBox):
         builder.connect_signals(self)
         self.__artwork = builder.get_object("cover")
         self.add(builder.get_object("widget"))
+        self.connect("destroy", self.__on_destroy)
+        self.__signal = App().art.connect("album-artwork-changed",
+                                          self.__on_album_artwork_changed)
 
     def update(self, album):
         """
@@ -55,6 +58,25 @@ class CoverWidget(Gtk.EventBox):
 #######################
 # PRIVATE             #
 #######################
+    def __on_destroy(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self.__signal is not None:
+            App().art.disconnect(self.__signal)
+
+    def __on_album_artwork_changed(self, art, album_id):
+        """
+            Update cover for album_id
+            @param art as Art
+            @param album id as int
+        """
+        if self.__album is None:
+            return
+        if album_id == self.__album.id:
+            self.update(self.__album)
+
     def __on_button_release_event(self, eventbox, event):
         """
             Show Covers popover

@@ -80,7 +80,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         if adj.get_value() == adj.get_lower():
             self.__banner.set_height(self.__banner.default_height)
         else:
-            self.__banner.set_height(self.__banner.default_height / 3)
+            self.__banner.set_height(self.__banner.default_height // 3)
 
     def _on_current_changed(self, player):
         """
