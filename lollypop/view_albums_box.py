@@ -82,6 +82,8 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Set active ids
         """
+        if self._view_type & ViewType.SMALL:
+            return
         if self.__genre_ids:
             App().settings.set_value("state-one-ids",
                                      GLib.Variant("ai", self.__genre_ids))
