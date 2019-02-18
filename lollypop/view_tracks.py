@@ -20,7 +20,7 @@ from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_track import TrackRow
 from lollypop.objects import Album, Track
 from lollypop.logger import Logger
-from lollypop.utils import get_position_list
+from lollypop.utils import get_position_list, on_realize
 from lollypop.define import App, Type, ViewType
 
 
@@ -419,27 +419,21 @@ class TracksView:
                         disc_text = ", ".join(disc_names)
                     elif show_label:
                         disc_text = _("Disc %s") % disc.number
-                    box = Gtk.Box()
                     label = Gtk.Label.new()
                     label.set_ellipsize(Pango.EllipsizeMode.END)
                     label.set_text(disc_text)
                     label.set_property("halign", Gtk.Align.START)
                     label.get_style_context().add_class("dim-label")
                     label.show()
-                    indicator = Gtk.Button.new_from_icon_name(
-                        "go-next-symbolic",
-                        Gtk.IconSize.BUTTON)
-                    indicator.get_style_context().add_class("menu-button")
-                    indicator.connect("button-release-event",
-                                      self.__on_indicator_button_release_event,
-                                      box,
-                                      disc)
-                    indicator.show()
-                    box.set_spacing(5)
-                    box.add(label)
-                    box.add(indicator)
-                    box.show()
-                    self._responsive_widget.attach(box, 0, idx, width, 1)
+                    eventbox = Gtk.EventBox()
+                    eventbox.connect("realize", on_realize)
+                    eventbox.set_tooltip_text(_("Play"))
+                    eventbox.connect("button-press-event",
+                                     self.__on_disc_button_press_event,
+                                     disc)
+                    eventbox.add(label)
+                    eventbox.show()
+                    self._responsive_widget.attach(eventbox, 0, idx, width, 1)
                     idx += 1
                 self._responsive_widget.attach(
                               self._tracks_widget_left[disc.number],
@@ -464,36 +458,6 @@ class TracksView:
                 break
         if not contain_children:
             self.destroy()
-
-    def __on_indicator_button_release_event(self, button, event, box, disc):
-        """
-            Popup menu for track relative to button
-            @param button as Gtk.Button
-            @param event as Gdk.EventButton
-            @param box as Gtk.Box
-            @param disc as Disc
-        """
-        def on_hide(widget):
-            button.emit("clicked")
-        from lollypop.widgets_context import ContextWidget
-        context_widget = None
-        for child in box.get_children():
-            if isinstance(child, ContextWidget):
-                context_widget = child
-                break
-        image = button.get_image()
-        if context_widget is None:
-            image.set_from_icon_name("go-previous-symbolic",
-                                     Gtk.IconSize.MENU)
-            context_widget = ContextWidget(disc, button)
-            context_widget.connect("hide", on_hide)
-            context_widget.show()
-            box.add(context_widget)
-        else:
-            image.set_from_icon_name("go-next-symbolic",
-                                     Gtk.IconSize.MENU)
-            context_widget.destroy()
-        return True
 
     def __on_key_press_event(self, widget, event):
         """
@@ -689,3 +653,14 @@ class TracksView:
         self.__allocation_timeout_id = GLib.idle_add(
             self.__handle_size_allocate, allocation,
             priority=GLib.PRIORITY_HIGH)
+
+    def __on_disc_button_press_event(self, button, event, disc):
+        """
+            Add disc to playback
+            @param button as Gtk.Button
+            @param event as Gdk.ButtonEvent
+            @param disc as Disc
+        """
+        album = Album(disc.album.id)
+        album.set_tracks(disc.tracks)
+        App().player.play_album(album)
