@@ -438,6 +438,7 @@ class ViewsContainer:
         """
             Reload navigation view
         """
+        self._stack.destroy_children()
         App().window.emit("show-can-go-back", True)
         state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
