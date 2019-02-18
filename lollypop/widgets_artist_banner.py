@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 from random import choice
 
@@ -40,6 +40,10 @@ class ArtistBannerWidget(Gtk.Overlay):
         self.__artwork.show()
         self.add(self.__artwork)
         self.connect("size-allocate", self.__on_size_allocate)
+        self.connect("destroy", self.__on_destroy)
+        self.__art_signal_id = App().art.connect(
+                                           "artist-artwork-changed",
+                                           self.__on_artist_artwork_changed)
 
     def set_height(self, height):
         """
@@ -123,6 +127,28 @@ class ArtistBannerWidget(Gtk.Overlay):
                                         ArtHelperEffect.BLUR_HARD)
         else:
             self.__use_album_artwork(allocation.width, allocation.height)
+
+    def __on_destroy(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self.__art_signal_id is not None:
+            App().art.disconnect(self.__art_signal_id)
+
+    def __on_artist_artwork_changed(self, art, prefix):
+        """
+            Update artwork if needed
+            @param art as Art
+            @param prefix as str
+        """
+        artist = App().artists.get_name(self.__artist_id)
+        if prefix == artist:
+            rect = Gdk.Rectangle()
+            rect.width = self.get_allocated_width()
+            rect.height = self.get_allocated_height()
+            self.__width = 0
+            self.__handle_size_allocate(rect)
 
     def __on_album_artwork(self, surface):
         """

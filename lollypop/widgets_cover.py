@@ -38,8 +38,9 @@ class CoverWidget(Gtk.EventBox):
         self.__artwork = builder.get_object("cover")
         self.add(builder.get_object("widget"))
         self.connect("destroy", self.__on_destroy)
-        self.__signal = App().art.connect("album-artwork-changed",
-                                          self.__on_album_artwork_changed)
+        self.__art_signal_id = App().art.connect(
+                                              "album-artwork-changed",
+                                              self.__on_album_artwork_changed)
 
     def update(self, album):
         """
@@ -63,8 +64,8 @@ class CoverWidget(Gtk.EventBox):
             Disconnect signal
             @param widget as Gtk.Widget
         """
-        if self.__signal is not None:
-            App().art.disconnect(self.__signal)
+        if self.__art_signal_id is not None:
+            App().art.disconnect(self.__art_signal_id)
 
     def __on_album_artwork_changed(self, art, album_id):
         """

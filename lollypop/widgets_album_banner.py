@@ -73,8 +73,9 @@ class AlbumBannerWidget(Gtk.Bin):
         self.add(self.__widget)
         self.connect("size-allocate", self.__on_size_allocate)
         self.connect("destroy", self.__on_destroy)
-        self.__signal = App().art.connect("album-artwork-changed",
-                                          self.__on_album_artwork_changed)
+        self.__art_signal_id = App().art.connect(
+                                               "album-artwork-changed",
+                                               self.__on_album_artwork_changed)
 
     def set_height(self, height):
         """
@@ -158,8 +159,8 @@ class AlbumBannerWidget(Gtk.Bin):
             Disconnect signal
             @param widget as Gtk.Widget
         """
-        if self.__signal is not None:
-            App().art.disconnect(self.__signal)
+        if self.__art_signal_id is not None:
+            App().art.disconnect(self.__art_signal_id)
 
     def __on_album_artwork_changed(self, art, album_id):
         """
