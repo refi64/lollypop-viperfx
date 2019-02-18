@@ -72,6 +72,9 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__rating_grid.attach(loved, 1, 0, 1, 1)
         self.add(self.__widget)
         self.connect("size-allocate", self.__on_size_allocate)
+        self.connect("destroy", self.__on_destroy)
+        self.__signal = App().art.connect("album-artwork-changed",
+                                          self.__on_album_artwork_changed)
 
     def set_height(self, height):
         """
@@ -149,6 +152,29 @@ class AlbumBannerWidget(Gtk.Bin):
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
+
+    def __on_destroy(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self.__signal is not None:
+            App().art.disconnect(self.__signal)
+
+    def __on_album_artwork_changed(self, art, album_id):
+        """
+            Update cover for album_id
+            @param art as Art
+            @param album id as int
+        """
+        if album_id == self.__album.id:
+            App().art_helper.set_album_artwork(
+                            self.__album,
+                            self.get_allocated_width(),
+                            self.get_allocated_height(),
+                            self.__artwork.get_scale_factor(),
+                            self.__on_album_artwork,
+                            ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
 
     def __on_album_artwork(self, surface):
         """
