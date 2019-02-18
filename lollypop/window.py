@@ -160,6 +160,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         App().set_accels_for_action("app.shortcut::next", ["<Alt>n"])
         App().set_accels_for_action("app.shortcut::prev", ["<Alt>p"])
         App().set_accels_for_action("app.shortcut::loved", ["<Alt>l"])
+        App().set_accels_for_action("app.shortcut::reload", ["<Control>r"])
 
     def __show_miniplayer(self, show):
         """
@@ -468,6 +469,8 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             App().window.go_back()
         elif string == "lyrics":
             App().window.container.show_lyrics()
+        elif string == "reload":
+            App().window.container.reload_view()
         elif string == "show_sidebar":
             value = App().settings.get_value("show-sidebar")
             App().settings.set_value("show-sidebar",
