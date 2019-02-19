@@ -32,10 +32,6 @@
             <property name="halign">end</property>
             <property name="margin_right">20</property>
             <property name="hexpand">True</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1"/>
-            </attributes>
           </object>
           <packing>
             <property name="left_attach">2</property>
