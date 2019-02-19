@@ -100,7 +100,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         track_height = TrackRow.get_best_height(self)
         # See Banner and row spacing
         minimal_height = maximal_height = ArtSize.LARGE + 20 + 2
-        count = self._album.tracks_count
+        count = len(self._album.tracks)
         mid_tracks = int(0.5 + count / 2)
         left_height = track_height * mid_tracks
         right_height = track_height * (count - mid_tracks)
