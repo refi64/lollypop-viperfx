@@ -45,13 +45,15 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__title_label = builder.get_object("name_label")
         self.__year_label = builder.get_object("year_label")
         if view_type & ViewType.SMALL:
+            icon_size = Gtk.IconSize.BUTTON
             self.__art_effect = ArtHelperEffect.RESIZE |\
                 ArtHelperEffect.BLUR_HARD
             self.__title_label.get_style_context().add_class(
-                "text-x-large")
+                "text-large")
             self.__year_label.get_style_context().add_class(
                 "text-large")
         else:
+            icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__art_effect = ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
@@ -93,12 +95,12 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.__rating_grid = builder.get_object("rating_grid")
-        rating = RatingWidget(album)
+        rating = RatingWidget(album, icon_size)
         rating.set_property("halign", Gtk.Align.START)
         rating.set_property("valign", Gtk.Align.CENTER)
         rating.show()
         self.__rating_grid.attach(rating, 0, 0, 1, 1)
-        loved = LovedWidget(album)
+        loved = LovedWidget(album, icon_size)
         loved.set_property("halign", Gtk.Align.START)
         loved.set_property("valign", Gtk.Align.CENTER)
         loved.show()

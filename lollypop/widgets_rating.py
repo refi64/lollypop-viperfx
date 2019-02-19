@@ -24,11 +24,12 @@ class RatingWidget(Gtk.Bin):
         Rate widget
     """
 
-    def __init__(self, object):
+    def __init__(self, object, icon_size=Gtk.IconSize.BUTTON):
         """
             Init widget
             @param object as Track/Album
             @param is album as bool
+            @param icon_size as Gtk.IconSize
         """
         Gtk.Bin.__init__(self)
         self.__object = object
@@ -38,11 +39,12 @@ class RatingWidget(Gtk.Bin):
         builder.connect_signals(self)
 
         self._stars = []
-        self._stars.append(builder.get_object("star0"))
-        self._stars.append(builder.get_object("star1"))
-        self._stars.append(builder.get_object("star2"))
-        self._stars.append(builder.get_object("star3"))
-        self._stars.append(builder.get_object("star4"))
+        for i in range(0, 5):
+            star = builder.get_object("star%s" % i)
+            star.set_from_icon_name("starred-symbolic", icon_size)
+            self._stars.append(star)
+        builder.get_object("empty_star").set_from_icon_name("starred-symbolic",
+                                                            icon_size)
         self._on_leave_notify_event(None, None)
         self.add(builder.get_object("widget"))
         if isinstance(object, Track):

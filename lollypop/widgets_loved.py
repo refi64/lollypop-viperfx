@@ -23,13 +23,15 @@ class LovedWidget(Gtk.Bin):
         Loved widget
     """
 
-    def __init__(self, object):
+    def __init__(self, object, icon_size=Gtk.IconSize.BUTTON):
         """
             Init widget
             @param object as Album/Track
+            @param icon_size as Gtk.IconSize
         """
         Gtk.Bin.__init__(self)
         self.__object = object
+        self.__icon_size = icon_size
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/LovedWidget.ui")
@@ -112,14 +114,14 @@ class LovedWidget(Gtk.Bin):
             self.set_tooltip_text(_("Allow playback"))
             self.__artwork.set_opacity(0.2)
             self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
-                                              Gtk.IconSize.LARGE_TOOLBAR)
+                                              self.__icon_size)
         elif status == 1:
             self.set_tooltip_text(_("Like"))
             self.__artwork.set_opacity(0.8)
             self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
-                                              Gtk.IconSize.LARGE_TOOLBAR)
+                                              self.__icon_size)
         else:
             self.set_tooltip_text(_("Disallow playback"))
             self.__artwork.set_opacity(0.8)
             self.__artwork.set_from_icon_name("media-skip-forward-symbolic",
-                                              Gtk.IconSize.LARGE_TOOLBAR)
+                                              self.__icon_size)
