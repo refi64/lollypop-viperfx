@@ -10,19 +10,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject, GLib, Pango
+from gi.repository import Gtk, GObject
 
-from lollypop.widgets_rating import RatingWidget
-from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_album import AlbumWidget
-from lollypop.helper_overlay_album import OverlayAlbumHelper
-from lollypop.utils import get_human_duration, on_query_tooltip, on_realize
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, ArtSize, ViewType, Sizing, Type
+from lollypop.define import App, ViewType, Sizing
+from lollypop.widgets_album_banner import AlbumBannerWidget
 
 
-class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
-                          OverlayAlbumHelper, TracksView):
+class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
     """
         Widget with cover and tracks
     """
@@ -40,11 +36,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             @param artist ids as [int]
             @param view_type as ViewType
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Grid.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, view_type)
-        self._widget = None
-        self.__art_size = ArtSize.BIG
+        self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__width_allocation = 0
         self.connect("size-allocate", self.__on_size_allocate)
 
@@ -52,137 +47,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         """
             Populate widget content
         """
-        if self._widget is None:
-            OverlayAlbumHelper.__init__(self)
-            if self._view_type & ViewType.NAVIGATION:
-                self.__art_size *= 1.5
-            grid = Gtk.Grid()
-            grid.set_row_spacing(1)
-            grid.set_vexpand(True)
-            grid.show()
-            self.__header = Gtk.Grid()
-            self.__header.show()
-            self.__title_label = Gtk.Label.new()
-            self.__title_label.set_margin_end(10)
-            self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
-            self.__title_label.get_style_context().add_class("dim-label")
-            self.__title_label.set_property("has-tooltip", True)
-            self.__title_label.connect("query-tooltip", on_query_tooltip)
-            self.__title_label.show()
-            if self._view_type & (ViewType.POPOVER | ViewType.MULTIPLE):
-                self.__artist_label = Gtk.Label.new()
-                self.__artist_label.set_margin_end(10)
-                self.__artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-                self.__artist_label.set_property("has-tooltip", True)
-                self.__artist_label.connect("query-tooltip", on_query_tooltip)
-                self.__artist_label.show()
-                self.__header.add(self.__artist_label)
-            self.__year_label = Gtk.Label.new()
-            self.__year_label.set_margin_end(10)
-            self.__year_label.get_style_context().add_class("dim-label")
-            self.__year_label.show()
-            self.__duration_label = Gtk.Label.new()
-            self.__duration_label.get_style_context().add_class("dim-label")
-            self.__duration_label.show()
-            self.__header.add(self.__title_label)
-            self.__header.add(self.__year_label)
-            if not self._view_type & ViewType.POPOVER:
-                self.__menu_button = Gtk.Button.new_from_icon_name(
-                    "view-more-symbolic", Gtk.IconSize.MENU)
-                self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
-                self.__menu_button.connect("clicked",
-                                           self.__on_menu_button_clicked)
-                self.__menu_button.get_style_context().add_class("menu-button")
-                self.__menu_button.get_style_context().add_class(
-                                                          "album-menu-button")
-                self.__menu_button.show()
-                self.__header.add(self.__menu_button)
-            self._widget = Gtk.Grid()
-            self._widget.set_orientation(Gtk.Orientation.VERTICAL)
-            self._widget.set_row_spacing(2)
-            self._widget.show()
-            self._widget.add(self.__header)
-            separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
-            separator.show()
-            self._widget.add(separator)
-
-            loved = LovedWidget(self._album)
-            loved.set_property("valign", Gtk.Align.CENTER)
-            loved.set_margin_end(10)
-            loved.show()
-
-            rating = RatingWidget(self._album)
-            rating.set_property("valign", Gtk.Align.CENTER)
-            rating.set_property("halign", Gtk.Align.END)
-            rating.set_margin_end(10)
-            rating.show()
-
-            if not self._view_type & ViewType.POPOVER:
-                self.__header.add(self.__duration_label)
-                self.__duration_label.set_hexpand(True)
-                self.__duration_label.set_property("halign", Gtk.Align.END)
-                eventbox = Gtk.EventBox()
-                eventbox.connect("enter-notify-event", self._on_enter_notify)
-                eventbox.connect("leave-notify-event", self._on_leave_notify)
-                eventbox.connect("button-release-event",
-                                 self._on_button_release)
-                eventbox.connect("realize", on_realize)
-                eventbox.show()
-                self.set_property("valign", Gtk.Align.CENTER)
-                self._artwork = App().art_helper.get_image(self.__art_size,
-                                                           self.__art_size,
-                                                           "cover-frame")
-                self._artwork.show()
-                eventbox.add(self._artwork)
-                self.__duration_label.set_hexpand(True)
-                self._overlay = Gtk.Overlay.new()
-                self._overlay.add(eventbox)
-                self._overlay.show()
-                self.__coverbox = Gtk.Grid()
-                self.__coverbox.set_row_spacing(2)
-                self.__coverbox.set_margin_end(10)
-                self.__coverbox.set_orientation(Gtk.Orientation.VERTICAL)
-                self.__coverbox.show()
-                self.__coverbox.attach(self._overlay, 0, 0, 2, 1)
-                loved.set_property("halign", Gtk.Align.START)
-                self.__coverbox.attach(rating, 0, 1, 1, 1)
-                self.__coverbox.attach_next_to(loved,
-                                               rating,
-                                               Gtk.PositionType.RIGHT,
-                                               1,
-                                               1)
-                if App().window.container.stack.get_allocation().width <\
-                        Sizing.MEDIUM:
-                    self.__coverbox.hide()
-            else:
-                self._artwork = None
-                loved.set_property("halign", Gtk.Align.END)
-                self.__header.add(rating)
-                self.__header.add(loved)
-                rating.set_hexpand(True)
-                self.__header.add(self.__duration_label)
-            self.__set_duration()
-            album_name = GLib.markup_escape_text(self._album.name)
-            if self._view_type & (ViewType.POPOVER | ViewType.MULTIPLE):
-                artist_name = GLib.markup_escape_text(
-                    ", ".join(self._album.artists))
-                self.__artist_label.set_markup("<b>%s</b>" % artist_name)
-            self.__title_label.set_markup("<b>%s</b>" % album_name)
-            if self._album.year is not None:
-                self.__year_label.set_label(str(self._album.year))
-                self.__year_label.show()
-            self.set_selection()
-            if self._artwork is None:
-                TracksView.populate(self)
-                self._widget.add(self._responsive_widget)
-                self._responsive_widget.show()
-            else:
-                grid.add(self.__coverbox)
-                self.set_artwork(self.__art_size, self.__art_size)
-            grid.add(self._widget)
-            self.add(grid)
-        else:
+        if not self.get_children():
+            self.__banner = AlbumBannerWidget(self._album,
+                                              self._view_type | ViewType.SMALL)
+            self.__banner.show()
             TracksView.populate(self)
+            self.add(self.__banner)
+            self.add(self._responsive_widget)
+            self._responsive_widget.show()
+            self.set_selection()
 
     def get_current_ordinate(self, parent):
         """
@@ -196,6 +69,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
                     if child.track.id == App().player.current_track.id:
                         return child.translate_coordinates(parent, 0, 0)[1]
         return None
+
+    def set_selection(self):
+        """
+            Mark widget as selected if currently playing
+        """
+        selected = self._album.id == App().player.current_track.album.id
+        if selected:
+            self.__banner.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        else:
+            self.__banner.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_filter_func(self, func):
         """
@@ -228,27 +111,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         if len(self._album.discs) > 1:
             minimal_height += track_height
             maximal_height += track_height
-        # 26 is for loved and rating
-        cover_height = ArtSize.BIG + 26
-        if minimal_height < cover_height:
-            return (cover_height, cover_height)
-        else:
-            return (minimal_height, maximal_height)
+        return (minimal_height, maximal_height)
 
 #######################
 # PROTECTED           #
 #######################
-    def _on_button_release(self, eventbox, event):
-        """
-            Handle album mouse click
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.EventButton
-        """
-        if event.button == 1:
-            App().window.container.show_view(Type.ALBUM, self.album)
-        else:
-            AlbumWidget._on_button_release(self, eventbox, event)
-
     def _on_tracks_populated(self, disc_number):
         """
             Emit populated signal
@@ -266,43 +133,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
         TracksView._on_album_updated(self, scanner, album_id, destroy)
         AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
 
-    def _on_album_artwork(self, surface):
-        """
-            Set album artwork
-            @param surface as str
-        """
-        if surface is None:
-            self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             Gtk.IconSize.DIALOG)
-        else:
-            self._artwork.set_from_surface(surface)
-        if self._responsive_widget is None:
-            self._artwork.show()
-            TracksView.populate(self)
-            self._widget.add(self._responsive_widget)
-            self._responsive_widget.show()
-
 #######################
 # PRIVATE             #
 #######################
-    def __set_duration(self):
-        """
-            Set album duration
-        """
-        duration = App().albums.get_duration(self._album.id,
-                                             self._album.genre_ids)
-        self.__duration_label.set_text(get_human_duration(duration))
-
-    def __on_menu_button_clicked(self, button):
-        """
-            Show album menu
-            @param button as Gtk.Button
-        """
-        from lollypop.pop_menu import AlbumMenu
-        menu = AlbumMenu(self._album, True)
-        popover = Gtk.Popover.new_from_model(button, menu)
-        popover.popup()
-
     def __on_size_allocate(self, widget, allocation):
         """
             Update internals
@@ -317,9 +150,3 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget,
             self.set_size_request(-1, max_height)
         else:
             self.set_size_request(-1, min_height)
-        if self._artwork is not None:
-            # Use mainloop to let GTK get the event
-            if allocation.width - self.__art_size < Sizing.MEDIUM:
-                GLib.idle_add(self.__coverbox.hide)
-            else:
-                GLib.idle_add(self.__coverbox.show)

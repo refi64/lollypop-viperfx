@@ -13,35 +13,38 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.helper_art import ArtHelperEffect
-from lollypop.define import App, ArtSize, MARGIN, Type
+from lollypop.define import App, ArtSize, MARGIN, Type, ViewType
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
 from lollypop.utils import get_human_duration, on_query_tooltip, on_realize
 
 
-class AlbumBannerWidget(Gtk.Bin):
+class AlbumBannerWidget(Gtk.Grid):
     """
         Banner for album
     """
 
-    def __init__(self, album):
+    def __init__(self, album, view_type=ViewType.DEFAULT):
         """
             Init cover widget
             @param album
+            @param view_type as ViewType
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Grid.__init__(self)
         self.__width = 0
-        self.__height = self.default_height
+        self.__padding = 0
         self.__allocation_timeout_id = None
         self.__album = album
+        self.__view_type = view_type
+        self.__height = self.default_height
         self.set_property("valign", Gtk.Align.START)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
         builder.connect_signals(self)
         self.__title_label = builder.get_object("name_label")
         self.__year_label = builder.get_object("year_label")
-        if not App().window.is_adaptive:
+        if not view_type & ViewType.SMALL:
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
@@ -62,10 +65,20 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
-        self.__cover_widget = CoverWidget(True)
+        if view_type & ViewType.SMALL:
+            self.__grid.get_style_context().add_class("white")
+            self.__artwork.get_style_context().add_class("white")
+            self.get_style_context().add_class("cover-frame")
+            # See application.css: cover-frame
+            self.__padding = 8
+            self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
+        else:
+            self.__grid.get_style_context().add_class("black")
+            self.__artwork.get_style_context().add_class("black")
+            self.__cover_widget = CoverWidget(True)
         self.__cover_widget.update(album)
-        self.__cover_widget.set_margin_top(18)
         self.__cover_widget.set_margin_start(MARGIN)
+        self.__cover_widget.set_vexpand(True)
         self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.__rating_grid = builder.get_object("rating_grid")
@@ -122,8 +135,6 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Force preferred width
         """
-        (min, nat) = Gtk.Bin.do_get_preferred_width(self)
-        # Allow resizing
         return (0, 0)
 
     def do_get_preferred_height(self):
@@ -145,7 +156,10 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Get default height
         """
-        return ArtSize.BANNER + 40
+        if self.__view_type & ViewType.SMALL:
+            return ArtSize.LARGE + 20
+        else:
+            return ArtSize.BANNER + 40
 
 #######################
 # PROTECTED           #
@@ -174,8 +188,8 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__width = allocation.width
         App().art_helper.set_album_artwork(
                 self.__album,
-                allocation.width,
-                allocation.height,
+                allocation.width - self.__padding,
+                allocation.height - self.__padding,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
@@ -197,8 +211,8 @@ class AlbumBannerWidget(Gtk.Bin):
         if album_id == self.__album.id:
             App().art_helper.set_album_artwork(
                             self.__album,
-                            self.get_allocated_width(),
-                            self.get_allocated_height(),
+                            self.get_allocated_width() - self.__padding,
+                            self.get_allocated_height() - self.__padding,
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
                             ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)

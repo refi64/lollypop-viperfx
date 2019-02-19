@@ -158,11 +158,6 @@ popover.background separator {
     padding: 0px 12px;
 }
 
-.white {
-    background-color: white;
-    border-radius: 4px;
-}
-
 .mini-scale {
     padding: 1px;
 }
@@ -174,6 +169,11 @@ popover.background separator {
 .black {
     background-color: alpha(black, 0.5);
     color: white;
+}
+
+.white {
+    background-color: alpha(white, 0.7);
+    color: black;
 }
 
 .up-btn {

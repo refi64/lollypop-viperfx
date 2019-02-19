@@ -22,12 +22,13 @@ class CoverWidget(Gtk.EventBox):
         Widget showing current album cover
     """
 
-    def __init__(self, editable=False):
+    def __init__(self, editable=False, art_size=ArtSize.BANNER):
         """
             Init cover widget
         """
         Gtk.EventBox.__init__(self)
         self.__album = None
+        self.__art_size = art_size
         if editable:
             self.connect("realize", on_realize)
             self.connect("button-release-event",
@@ -50,8 +51,8 @@ class CoverWidget(Gtk.EventBox):
         self.__album = album
         App().art_helper.set_album_artwork(
                 album,
-                ArtSize.BANNER,
-                ArtSize.BANNER,
+                self.__art_size,
+                self.__art_size,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.NONE)
