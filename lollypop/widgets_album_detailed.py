@@ -148,7 +148,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
             return
         self.__width_allocation = allocation.width
         (min_height, max_height) = self.requested_height
-        if allocation.width < Sizing.MONSTER:
+        if allocation.width < Sizing.BIG:
             self.set_size_request(-1, max_height)
         else:
             self.set_size_request(-1, min_height)
