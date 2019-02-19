@@ -45,11 +45,14 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__title_label = builder.get_object("name_label")
         self.__year_label = builder.get_object("year_label")
         if view_type & ViewType.SMALL:
+            self.__art_effect = ArtHelperEffect.RESIZE |\
+                ArtHelperEffect.BLUR_HARD
             self.__title_label.get_style_context().add_class(
                 "text-x-large")
             self.__year_label.get_style_context().add_class(
                 "text-large")
         else:
+            self.__art_effect = ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
@@ -242,7 +245,7 @@ class AlbumBannerWidget(Gtk.Bin):
                             self.get_allocated_height() - self.__padding,
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
-                            ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
+                            self.__art_effect)
 
     def __on_album_artwork(self, surface):
         """
