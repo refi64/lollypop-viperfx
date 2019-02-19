@@ -39,6 +39,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         Gtk.Grid.__init__(self)
         AlbumWidget.__init__(self, album, genre_ids, artist_ids)
         TracksView.__init__(self, view_type)
+        self.set_row_spacing(2)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__width_allocation = 0
         self.__banner = None
@@ -97,7 +98,8 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
         from lollypop.widgets_row_track import TrackRow
         track_height = TrackRow.get_best_height(self)
-        minimal_height = maximal_height = ArtSize.LARGE + 20
+        # See Banner and row spacing
+        minimal_height = maximal_height = ArtSize.LARGE + 20 + 2
         count = self._album.tracks_count
         mid_tracks = int(0.5 + count / 2)
         left_height = track_height * mid_tracks
