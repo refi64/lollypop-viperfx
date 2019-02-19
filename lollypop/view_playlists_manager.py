@@ -114,7 +114,7 @@ class PlaylistsManagerView(FlowBoxView):
         if not show_genres:
             App().window.emit("show-can-go-back", True)
             App().window.emit("can-go-back-changed", True)
-        if show_sidebar and show_genres:
+        if show_sidebar and show_genres and not App().window.is_adaptive:
             App().window.container.list_two.select_ids([widget.data])
         else:
             App().window.container.show_view(Type.PLAYLISTS, [widget.data])
