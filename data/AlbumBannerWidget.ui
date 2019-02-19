@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">view-more-symbolic</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkOverlay" id="widget">
     <property name="visible">True</property>

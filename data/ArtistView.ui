@@ -6,25 +6,25 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">media-playback-start-symbolic</property>
-    <property name="icon_size">5</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">go-jump-symbolic</property>
-    <property name="icon_size">5</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">list-add-symbolic</property>
-    <property name="icon_size">5</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">system-users-symbolic</property>
-    <property name="icon_size">5</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkGrid" id="buttons">
     <property name="visible">True</property>
