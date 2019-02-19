@@ -5,7 +5,6 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">view-more-symbolic</property>
     <property name="icon_size">3</property>
   </object>
   <object class="GtkOverlay" id="widget">
@@ -44,7 +43,7 @@
             <property name="can_focus">False</property>
             <property name="column_spacing">10</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="menu_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

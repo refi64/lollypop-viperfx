@@ -44,6 +44,7 @@ class AlbumBannerWidget(Gtk.Bin):
         builder.connect_signals(self)
         self.__title_label = builder.get_object("name_label")
         self.__year_label = builder.get_object("year_label")
+        menu_button = builder.get_object("menu_button")
         if view_type & ViewType.SMALL:
             icon_size = Gtk.IconSize.BUTTON
             self.__art_effect = ArtHelperEffect.RESIZE |\
@@ -59,6 +60,8 @@ class AlbumBannerWidget(Gtk.Bin):
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
                 "text-x-large")
+        menu_button.get_image().set_from_icon_name("view-more-symbolic",
+                                                   icon_size)
         self.__duration_label = builder.get_object("duration_label")
         self.__title_label.set_text(album.name)
         self.__title_label.connect("query-tooltip", on_query_tooltip)
