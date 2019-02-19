@@ -75,7 +75,7 @@ class ArtistView(ArtistAlbumsView):
         artists = []
         for artist_id in artist_ids:
             artists.append(App().artists.get_name(artist_id))
-        self.__label.set_label(", ".join(artists))
+        self.__label.set_markup(GLib.markup_escape_text(", ".join(artists)))
 
     def jump_to_current(self):
         """
