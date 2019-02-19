@@ -14,7 +14,7 @@ from gi.repository import Gtk, GObject
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, ViewType, Sizing
+from lollypop.define import App, ViewType, Sizing, ArtSize
 from lollypop.widgets_album_banner import AlbumBannerWidget
 
 
@@ -97,7 +97,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
         from lollypop.widgets_row_track import TrackRow
         track_height = TrackRow.get_best_height(self)
-        minimal_height = maximal_height = track_height + 20
+        minimal_height = maximal_height = ArtSize.LARGE + 20
         count = self._album.tracks_count
         mid_tracks = int(0.5 + count / 2)
         left_height = track_height * mid_tracks

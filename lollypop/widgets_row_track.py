@@ -43,12 +43,12 @@ class TrackRow(Row, DNDRow):
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
         font_height = int(layout.get_pixel_size()[1])
-        # Button min height + borders (application.css)
-        menu_height = 24 + 2
-        if font_height > menu_height:
+        # application.css
+        min_height = 32
+        if font_height > min_height:
             height = font_height
         else:
-            height = menu_height
+            height = min_height
         return height
 
     def __init__(self, track, view_type):
