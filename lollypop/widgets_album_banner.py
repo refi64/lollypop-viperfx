@@ -88,10 +88,16 @@ class AlbumBannerWidget(Gtk.Bin):
         """
         self.__height = height
         if height < self.default_height:
+            # Make grid cover artwork
+            # No idea why...
+            self.__grid.set_size_request(-1, height + 1)
             self.__cover_widget.hide()
             self.__duration_label.hide()
             self.__rating_grid.hide()
         else:
+            # Make grid cover artwork
+            # No idea why...
+            self.__grid.set_size_request(-1, height + 1)
             self.__cover_widget.show()
             self.__duration_label.show()
             self.__rating_grid.show()

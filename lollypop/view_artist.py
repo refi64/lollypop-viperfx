@@ -54,8 +54,9 @@ class ArtistView(ArtistAlbumsView):
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__add_button = builder.get_object("add-button")
         self.__play_button = builder.get_object("play-button")
+        self.__buttons = builder.get_object("buttons")
         self.__banner = ArtistBannerWidget(artist_ids[0])
-        self.__banner.add_overlay(builder.get_object("buttons"))
+        self.__banner.add_overlay(self.__buttons)
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
         if App().lastfm is None:
@@ -99,11 +100,15 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower() and self.__show_artwork:
-            self.__banner.set_height(self.__banner.default_height)
+            height = self.__banner.default_height
             self.__artwork.show()
         else:
-            self.__banner.set_height(self.__banner.default_height / 3)
+            height = self.__banner.default_height // 3
             self.__artwork.hide()
+        # Make grid cover artwork
+        # No idea why...
+        self.__banner.set_height(height)
+        self.__buttons.set_size_request(-1, height + 1)
 
     def _on_label_realize(self, eventbox):
         """
