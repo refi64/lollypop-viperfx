@@ -20,7 +20,7 @@ from lollypop.widgets_cover import CoverWidget
 from lollypop.utils import get_human_duration, on_query_tooltip, on_realize
 
 
-class AlbumBannerWidget(Gtk.Grid):
+class AlbumBannerWidget(Gtk.Bin):
     """
         Banner for album
     """
@@ -31,7 +31,7 @@ class AlbumBannerWidget(Gtk.Grid):
             @param album
             @param view_type as ViewType
         """
-        Gtk.Grid.__init__(self)
+        Gtk.Bin.__init__(self)
         self.__width = 0
         self.__padding = 0
         self.__allocation_timeout_id = None
@@ -69,11 +69,13 @@ class AlbumBannerWidget(Gtk.Grid):
         self.__duration_label.set_text(get_human_duration(duration))
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
-        self.__widget = builder.get_object("widget")
         if view_type & ViewType.SMALL:
             self.__grid.get_style_context().add_class("white")
             self.__artwork.get_style_context().add_class("white")
-            self.get_style_context().add_class("cover-frame")
+            self.__widget = Gtk.Grid()
+            self.__widget.show()
+            self.__widget.get_style_context().add_class("cover-frame")
+            self.__widget.add(builder.get_object("widget"))
             # See application.css: cover-frame
             self.__padding = 8
             self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
@@ -81,6 +83,7 @@ class AlbumBannerWidget(Gtk.Grid):
             self.__grid.get_style_context().add_class("black")
             self.__artwork.get_style_context().add_class("black")
             self.__cover_widget = CoverWidget(True)
+            self.__widget = builder.get_object("widget")
         self.__cover_widget.update(album)
         self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
