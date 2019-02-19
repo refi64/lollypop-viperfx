@@ -2,165 +2,55 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkLabel" id="duration">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">start</property>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">media-playback-start-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">go-jump-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">media-playlist-shuffle-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">view-more-symbolic</property>
+    <property name="icon_size">5</property>
   </object>
-  <object class="GtkGrid" id="widget">
+  <object class="GtkGrid" id="box-buttons">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_start">2</property>
-    <property name="margin_end">2</property>
-    <property name="margin_top">2</property>
-    <property name="margin_bottom">2</property>
-    <property name="orientation">vertical</property>
-    <property name="column_spacing">5</property>
-    <property name="column_homogeneous">True</property>
+    <property name="halign">end</property>
+    <property name="valign">center</property>
+    <property name="column_spacing">20</property>
     <child>
-      <object class="GtkGrid" id="header">
+      <object class="GtkButton" id="play_button">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="column_spacing">5</property>
-        <child>
-          <object class="GtkLabel" id="title">
-            <property name="height_request">32</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="margin_start">6</property>
-            <property name="margin_end">5</property>
-            <property name="label">title</property>
-            <property name="ellipsize">end</property>
-            <property name="track_visited_links">False</property>
-            <property name="xalign">0</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="duration">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="margin_right">2</property>
-            <property name="hexpand">True</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">5</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="play_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Play</property>
-            <property name="halign">start</property>
-            <property name="valign">center</property>
-            <property name="image">image1</property>
-            <property name="relief">none</property>
-            <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
-            <style>
-              <class name="light-button"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="shuffle_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Play playlist randomized</property>
-            <property name="halign">start</property>
-            <property name="valign">center</property>
-            <property name="image">image5</property>
-            <property name="relief">none</property>
-            <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
-            <style>
-              <class name="light-button"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="jump_button">
-            <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Go to current track</property>
-            <property name="halign">start</property>
-            <property name="valign">center</property>
-            <property name="image">image2</property>
-            <property name="relief">none</property>
-            <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
-            <style>
-              <class name="light-button"/>
-              <class name="light-button-no-right-border"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="menu_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="image">image7</property>
-            <signal name="clicked" handler="_on_menu_button_clicked" swapped="no"/>
-            <style>
-              <class name="menu-button"/>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">4</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Play</property>
+        <property name="halign">start</property>
+        <property name="image">image1</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
+        <style>
+          <class name="light-button"/>
+          <class name="light-button-no-right-border"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -168,16 +58,94 @@
       </packing>
     </child>
     <child>
-      <object class="GtkSeparator" id="separator1">
+      <object class="GtkButton" id="shuffle_button">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_top">2</property>
-        <property name="hexpand">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Play playlist randomized</property>
+        <property name="halign">start</property>
+        <property name="image">image5</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
+        <style>
+          <class name="light-button"/>
+          <class name="light-button-no-right-border"/>
+        </style>
       </object>
       <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
+        <property name="left_attach">1</property>
+        <property name="top_attach">0</property>
       </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="jump_button">
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Go to current track</property>
+        <property name="halign">start</property>
+        <property name="image">image2</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+        <style>
+          <class name="light-button"/>
+          <class name="light-button-no-right-border"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">2</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="menu_button">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="halign">start</property>
+        <property name="image">image7</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="_on_menu_button_clicked" swapped="no"/>
+        <style>
+          <class name="menu-button"/>
+          <class name="light-button-no-right-border"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">3</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkLabel" id="title">
+    <property name="height_request">32</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">start</property>
+    <property name="margin_start">6</property>
+    <property name="margin_end">5</property>
+    <property name="hexpand">True</property>
+    <property name="label">title</property>
+    <property name="ellipsize">end</property>
+    <property name="track_visited_links">False</property>
+    <property name="xalign">0</property>
+    <attributes>
+      <attribute name="weight" value="bold"/>
+    </attributes>
+  </object>
+  <object class="GtkGrid" id="widget">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="column_spacing">5</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <placeholder/>
     </child>
   </object>
 </interface>

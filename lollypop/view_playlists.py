@@ -15,25 +15,25 @@ from gi.repository import Gtk, GLib
 from random import shuffle
 
 from lollypop.utils import get_human_duration
-from lollypop.view import View
+from lollypop.view import LazyLoadingView
 from lollypop.widgets_playlist import PlaylistsWidget
-from lollypop.define import App, Type, ViewType, SidebarContent
+from lollypop.define import App, Type, ViewType, SidebarContent, MARGIN
 from lollypop.controller_view import ViewController, ViewControllerType
+from lollypop.widgets_playlist_banner import PlaylistBannerWidget
 
 
-class PlaylistsView(View, ViewController):
+class PlaylistsView(LazyLoadingView, ViewController):
     """
         Show playlist tracks
     """
 
-    def __init__(self, playlist_ids, view_type, editable=True):
+    def __init__(self, playlist_ids, view_type):
         """
             Init PlaylistView
             @parma playlist ids as [int]
             @param view_type as ViewType
-            @param editable as bool
         """
-        View.__init__(self, True)
+        LazyLoadingView.__init__(self)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self.__view_type = view_type
         self.__playlist_ids = playlist_ids
@@ -49,30 +49,57 @@ class PlaylistsView(View, ViewController):
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/PlaylistView.ui")
-        self.__header = builder.get_object("header")
+        self.__title_label = builder.get_object("title")
+        self.__duration_label = builder.get_object("duration")
         self.__play_button = builder.get_object("play_button")
         self.__shuffle_button = builder.get_object("shuffle_button")
         self.__jump_button = builder.get_object("jump_button")
         self.__menu_button = builder.get_object("menu_button")
-        if self.__view_type & ViewType.POPOVER:
-            self.__play_button.hide()
-            self.__jump_button.hide()
-            self.__shuffle_button.hide()
-            self.__menu_button.hide()
-        elif App().player.is_locked:
-            self.__play_button.set_sensitive(False)
-            self.__shuffle_button.set_sensitive(False)
-        self.__duration_label = builder.get_object("duration")
-        builder.get_object("title").set_label(
-            ", ".join(App().playlists.get_names(playlist_ids)))
+        self.__buttons = builder.get_object("box-buttons")
+        self.__widget = builder.get_object("widget")
         self.__playlists_widget = PlaylistsWidget(playlist_ids, view_type)
         self.__playlists_widget.set_filter_func(self._filter_func)
         self.__playlists_widget.connect("populated", self.__on_populated)
         self.__playlists_widget.show()
-        self.add(builder.get_object("widget"))
         self._viewport.add(self.__playlists_widget)
+        self.__title_label.set_margin_start(MARGIN)
+        self.__duration_label.set_margin_start(MARGIN)
+        self.__buttons.set_margin_end(MARGIN)
+        if self.__view_type & ViewType.POPOVER:
+            self.__title_label.get_style_context().add_class("dim-label")
+            self.__duration_label.get_style_context().add_class("dim-label")
+            self.__widget.add(self.__title_label)
+            self.__widget.add(self.__duration_label)
+            self.add(self.__widget)
+            self.add(self._scrolled)
+        else:
+            self._overlay = Gtk.Overlay.new()
+            self._overlay.add(self._scrolled)
+            self._overlay.show()
+            self.__widget.attach(self.__title_label, 0, 0, 1, 1)
+            self.__widget.attach(self.__duration_label, 0, 1, 1, 1)
+            self.__widget.attach(self.__buttons, 1, 0, 1, 2)
+            self.__widget.set_vexpand(True)
+            self.__title_label.set_vexpand(True)
+            self.__duration_label.set_vexpand(True)
+            self.__title_label.get_style_context().add_class("text-xx-large")
+            self.__title_label.set_property("valign", Gtk.Align.END)
+            self.__duration_label.get_style_context().add_class("text-x-large")
+            self.__duration_label.set_property("valign", Gtk.Align.START)
+            self.__widget.get_style_context().add_class("black")
+            self.__banner = PlaylistBannerWidget(playlist_ids[0])
+            self.__banner.show()
+            self._overlay.add_overlay(self.__banner)
+            self.__banner.add_overlay(self.__widget)
+            self.__playlists_widget.set_margin_top(
+                self.__banner.default_height + 15)
+            self.add(self._overlay)
+        if App().player.is_locked:
+            self.__play_button.set_sensitive(False)
+            self.__shuffle_button.set_sensitive(False)
+        self.__title_label.set_label(
+            ", ".join(App().playlists.get_names(playlist_ids)))
         self._scrolled.set_property("expand", True)
-        self.add(self._scrolled)
         builder.connect_signals(self)
 
         if len(playlist_ids) > 1:
@@ -115,6 +142,26 @@ class PlaylistsView(View, ViewController):
 #######################
 # PROTECTED           #
 #######################
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        LazyLoadingView._on_value_changed(self, adj)
+        if not self.__view_type & ViewType.POPOVER:
+            if adj.get_value() == adj.get_lower():
+                height = self.__banner.default_height
+                self.__duration_label.show()
+                self.__title_label.set_property("valign", Gtk.Align.END)
+            else:
+                self.__duration_label.hide()
+                self.__title_label.set_property("valign", Gtk.Align.CENTER)
+                height = self.__banner.default_height // 3
+            # Make grid cover artwork
+            # No idea why...
+            self.__banner.set_height(height)
+            self.__widget.set_size_request(-1, height + 1)
+
     def _on_current_changed(self, player):
         """
             Update children state
@@ -137,7 +184,7 @@ class PlaylistsView(View, ViewController):
             Disconnect signals
             @param widget as Gtk.Widget
         """
-        View._on_destroy(self, widget)
+        LazyLoadingView._on_destroy(self, widget)
         if self.__signal_id1:
             App().playlists.disconnect(self.__signal_id1)
             self.__signal_id1 = None
