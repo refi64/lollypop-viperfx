@@ -93,7 +93,6 @@
                 <property name="opacity">0.90000000000000002</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
-                  <attribute name="scale" value="2"/>
                 </attributes>
               </object>
             </child>
@@ -115,9 +114,6 @@
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
-            <style>
-              <class name="text-xx-large"/>
-            </style>
           </object>
           <packing>
             <property name="left_attach">1</property>

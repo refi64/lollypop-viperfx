@@ -39,12 +39,17 @@ class AlbumBannerWidget(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
         builder.connect_signals(self)
-        self.__label = builder.get_object("name_label")
+        self.__title_label = builder.get_object("name_label")
         self.__year_label = builder.get_object("year_label")
+        if not App().window.is_adaptive:
+            self.__title_label.get_style_context().add_class(
+                "text-xx-large")
+            self.__year_label.get_style_context().add_class(
+                "text-x-large")
         self.__duration_label = builder.get_object("duration_label")
-        self.__label.set_text(album.name)
-        self.__label.connect("query-tooltip", on_query_tooltip)
-        self.__label.set_property("has-tooltip", True)
+        self.__title_label.set_text(album.name)
+        self.__title_label.connect("query-tooltip", on_query_tooltip)
+        self.__title_label.set_property("has-tooltip", True)
         self.__year_label.set_text(str(album.year))
         self.__year_label.set_margin_end(MARGIN)
         year_eventbox = builder.get_object("year_eventbox")
@@ -94,6 +99,11 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__cover_widget.hide()
             self.__duration_label.hide()
             self.__rating_grid.hide()
+            self.__year_label.set_vexpand(True)
+            self.__title_label.get_style_context().remove_class(
+                "text-xx-large")
+            self.__year_label.get_style_context().remove_class(
+                "text-x-large")
         else:
             # Make grid cover artwork
             # No idea why...
@@ -101,6 +111,12 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__cover_widget.show()
             self.__duration_label.show()
             self.__rating_grid.show()
+            if not App().window.is_adaptive:
+                self.__year_label.set_vexpand(False)
+                self.__title_label.get_style_context().add_class(
+                    "text-xx-large")
+                self.__year_label.get_style_context().add_class(
+                    "text-x-large")
 
     def do_get_preferred_width(self):
         """

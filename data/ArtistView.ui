@@ -53,9 +53,6 @@
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
-            <style>
-              <class name="text-xx-large"/>
-            </style>
           </object>
         </child>
       </object>

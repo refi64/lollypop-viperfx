@@ -47,9 +47,9 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
         builder.connect_signals(self)
         self.__artwork = builder.get_object("artwork")
-        self.__label = builder.get_object("artist")
-        self.__label.connect("query-tooltip", on_query_tooltip)
-        self.__label.set_property("has-tooltip", True)
+        self.__title_label = builder.get_object("artist")
+        self.__title_label.connect("query-tooltip", on_query_tooltip)
+        self.__title_label.set_property("has-tooltip", True)
         self.__jump_button = builder.get_object("jump-button")
         self.__jump_button.set_tooltip_text(_("Go to current track"))
         self.__add_button = builder.get_object("add-button")
@@ -59,6 +59,9 @@ class ArtistView(ArtistAlbumsView):
         self.__banner.add_overlay(self.__buttons)
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
+        if not App().window.is_adaptive:
+            self.__title_label.get_style_context().add_class(
+                "text-xx-large")
         if App().lastfm is None:
             builder.get_object("lastfm-button").hide()
         elif not get_network_available():
@@ -75,7 +78,8 @@ class ArtistView(ArtistAlbumsView):
         artists = []
         for artist_id in artist_ids:
             artists.append(App().artists.get_name(artist_id))
-        self.__label.set_markup(GLib.markup_escape_text(", ".join(artists)))
+        self.__title_label.set_markup(
+            GLib.markup_escape_text(", ".join(artists)))
 
     def jump_to_current(self):
         """
@@ -102,9 +106,14 @@ class ArtistView(ArtistAlbumsView):
         if adj.get_value() == adj.get_lower() and self.__show_artwork:
             height = self.__banner.default_height
             self.__artwork.show()
+            if not App().window.is_adaptive:
+                self.__title_label.get_style_context().add_class(
+                    "text-xx-large")
         else:
             height = self.__banner.default_height // 3
             self.__artwork.hide()
+            self.__title_label.get_style_context().remove_class(
+                    "text-xx-large")
         # Make grid cover artwork
         # No idea why...
         self.__banner.set_height(height)
@@ -300,7 +309,7 @@ class ArtistView(ArtistAlbumsView):
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork)
         else:
-            self.__label.set_margin_start(MARGIN)
+            self.__title_label.set_margin_start(MARGIN)
             self.__banner.set_height(self.__banner.default_height / 3)
 
     def __update_jump_button(self):
