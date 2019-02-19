@@ -82,9 +82,12 @@ class PlaylistsView(LazyLoadingView, ViewController):
             self.__widget.set_vexpand(True)
             self.__title_label.set_vexpand(True)
             self.__duration_label.set_vexpand(True)
-            self.__title_label.get_style_context().add_class("text-xx-large")
+            if not App().window.is_adaptive:
+                self.__title_label.get_style_context().add_class(
+                    "text-xx-large")
+                self.__duration_label.get_style_context().add_class(
+                    "text-x-large")
             self.__title_label.set_property("valign", Gtk.Align.END)
-            self.__duration_label.get_style_context().add_class("text-x-large")
             self.__duration_label.set_property("valign", Gtk.Align.START)
             self.__widget.get_style_context().add_class("black")
             self.__banner = PlaylistBannerWidget(playlist_ids[0])
@@ -144,7 +147,7 @@ class PlaylistsView(LazyLoadingView, ViewController):
 #######################
     def _on_value_changed(self, adj):
         """
-            Update scroll value and check for lazy queue
+            Adapt widget to current scroll value
             @param adj as Gtk.Adjustment
         """
         LazyLoadingView._on_value_changed(self, adj)
@@ -153,8 +156,13 @@ class PlaylistsView(LazyLoadingView, ViewController):
                 height = self.__banner.default_height
                 self.__duration_label.show()
                 self.__title_label.set_property("valign", Gtk.Align.END)
+                if not App().window.is_adaptive:
+                    self.__title_label.get_style_context().add_class(
+                        "text-xx-large")
             else:
                 self.__duration_label.hide()
+                self.__title_label.get_style_context().remove_class(
+                    "text-xx-large")
                 self.__title_label.set_property("valign", Gtk.Align.CENTER)
                 height = self.__banner.default_height // 3
             # Make grid cover artwork

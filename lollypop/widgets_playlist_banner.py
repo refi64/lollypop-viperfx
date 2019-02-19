@@ -83,7 +83,10 @@ class PlaylistBannerWidget(Gtk.Overlay):
         """
             Get default height
         """
-        return ArtSize.BANNER
+        if App().window.is_adaptive:
+            return ArtSize.LARGE
+        else:
+            return ArtSize.BANNER
 
 #######################
 # PROTECTED           #
