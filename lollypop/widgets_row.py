@@ -44,7 +44,9 @@ class Row(Gtk.ListBoxRow):
         self._grid.set_property("valign", Gtk.Align.CENTER)
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
-        self._title_label = Gtk.Label.new(self._track.name)
+        self._title_label = Gtk.Label.new(
+            GLib.markup_escape_text(self._track.name))
+        self._title_label.set_use_markup(True)
         self._title_label.set_property("has-tooltip", True)
         self._title_label.connect("query-tooltip", on_query_tooltip)
         self._title_label.set_property("hexpand", True)
