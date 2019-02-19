@@ -121,7 +121,8 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                     album_ids.remove(self._album.id)
                 if not album_ids:
                     continue
-                artist = App().artists.get_name(artist_id)
+                artist = GLib.markup_escape_text(
+                    App().artists.get_name(artist_id))
                 label = Gtk.Label.new()
                 label.set_markup(
                                  '''<span size="large" alpha="40000"
