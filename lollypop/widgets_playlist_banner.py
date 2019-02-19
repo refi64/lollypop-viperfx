@@ -83,7 +83,7 @@ class PlaylistBannerWidget(Gtk.Overlay):
         """
             Get default height
         """
-        return ArtSize.BANNER + 40
+        return ArtSize.BANNER
 
 #######################
 # PROTECTED           #

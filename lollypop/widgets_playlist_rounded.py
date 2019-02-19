@@ -194,9 +194,9 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             else:
                 tracks = [self.__obj]
             if self.__add:
-                App().playlists.add_tracks(self.playlist_id, tracks)
+                App().playlists.add_tracks(self._data, tracks)
             else:
-                App().playlists.remove_tracks(self.playlist_id, tracks)
+                App().playlists.remove_tracks(self._data, tracks)
             App().window.container.reload_view()
         return True
 
