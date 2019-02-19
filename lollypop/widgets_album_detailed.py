@@ -41,6 +41,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         TracksView.__init__(self, view_type)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__width_allocation = 0
+        self.__banner = None
         self.connect("size-allocate", self.__on_size_allocate)
 
     def populate(self):
@@ -74,6 +75,8 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
             Mark widget as selected if currently playing
         """
+        if self.__banner is None:
+            return
         selected = self._album.id == App().player.current_track.album.id
         if selected:
             self.__banner.set_state_flags(Gtk.StateFlags.SELECTED, True)
