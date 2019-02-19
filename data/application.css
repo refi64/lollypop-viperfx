@@ -25,12 +25,6 @@ treeview .image:selected{
     color: @theme_selected_fg_color;
 }
 
-/* Fix a strange selection bug */
-.treeview-no-selection:selected {
-    background-color: @theme_selected_bg_color;
-    color: @theme_selected_fg_color;
-}
-
 Gtk.ListBoxRow .loved-button {
 	border-color: transparent;
 	background-color: transparent;
