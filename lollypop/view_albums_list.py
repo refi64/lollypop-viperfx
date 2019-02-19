@@ -75,6 +75,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__reveal = reveal
         self._artwork = None
         self._album = album
+        self.__x_root = self.__y_root = 0
         self.__view_type = view_type
         self.__play_indicator = None
         self.set_sensitive(False)
@@ -158,6 +159,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         row_widget.add(grid)
         self.add(row_widget)
         self.set_playing_indicator()
+        row_widget.connect("button-press-event",
+                           self.__on_button_press_event)
         row_widget.connect("button-release-event",
                            self.__on_button_release_event)
         if self.__reveal:
@@ -309,12 +312,24 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.emit("populated")
         self.show_all()
 
+    def __on_button_press_event(self, widget, event):
+        """
+            Store event x/y
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self.__x_root = event.x_root
+        self.__y_root = event.y_root
+
     def __on_button_release_event(self, widget, event):
         """
             Show revealer with tracks
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        # Ignore touch scroll events
+        if event.x_root != self.__x_root or event.y_root != self.__y_root:
+            return True
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self.__view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:

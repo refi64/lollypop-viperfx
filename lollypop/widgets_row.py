@@ -34,10 +34,13 @@ class Row(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._view_type = view_type
         self._artists_label = None
+        self.__x_root = self.__y_root = 0
         self._track = track
         self._indicator = IndicatorWidget(self, view_type)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("destroy", self._on_destroy)
+        self._row_widget.connect("button-press-event",
+                                 self.__on_button_press_event)
         self._row_widget.connect("button-release-event",
                                  self.__on_button_release_event)
         self._grid = Gtk.Grid()
@@ -237,6 +240,15 @@ class Row(Gtk.ListBoxRow):
         App().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
+    def __on_button_press_event(self, widget, event):
+        """
+            Store event x/y
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self.__x_root = event.x_root
+        self.__y_root = event.y_root
+
     def __on_button_release_event(self, widget, event):
         """
             Handle button press event:
@@ -246,6 +258,9 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.EventButton
         """
+        # Ignore touch scroll events
+        if event.x_root != self.__x_root or event.y_root != self.__y_root:
+            return True
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self._view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
