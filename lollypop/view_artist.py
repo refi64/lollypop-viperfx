@@ -42,7 +42,8 @@ class ArtistView(ArtistAlbumsView):
         self.__allocation_timeout_id = None
         self.__width = 0
         self.__show_artwork = len(artist_ids) == 1 and\
-            App().settings.get_value("artist-artwork")
+            App().settings.get_value("artist-artwork") and\
+            not App().window.is_adaptive
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
         builder.connect_signals(self)

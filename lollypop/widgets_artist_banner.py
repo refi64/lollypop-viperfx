@@ -79,7 +79,10 @@ class ArtistBannerWidget(Gtk.Overlay):
         """
             Get default height
         """
-        return ArtSize.BANNER + 40
+        if App().window.is_adaptive:
+            return ArtSize.LARGE + 20
+        else:
+            return ArtSize.BANNER + 40
 
 #######################
 # PROTECTED           #
