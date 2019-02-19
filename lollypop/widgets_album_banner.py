@@ -44,7 +44,12 @@ class AlbumBannerWidget(Gtk.Grid):
         builder.connect_signals(self)
         self.__title_label = builder.get_object("name_label")
         self.__year_label = builder.get_object("year_label")
-        if not view_type & ViewType.SMALL:
+        if view_type & ViewType.SMALL:
+            self.__title_label.get_style_context().add_class(
+                "text-x-large")
+            self.__year_label.get_style_context().add_class(
+                "text-large")
+        else:
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
@@ -115,8 +120,12 @@ class AlbumBannerWidget(Gtk.Grid):
             self.__year_label.set_vexpand(True)
             self.__title_label.get_style_context().remove_class(
                 "text-xx-large")
+            self.__title_label.get_style_context().add_class(
+                "text-x-large")
             self.__year_label.get_style_context().remove_class(
                 "text-x-large")
+            self.__year_label.get_style_context().add_class(
+                "text-large")
         else:
             # Make grid cover artwork
             # No idea why...
@@ -124,8 +133,13 @@ class AlbumBannerWidget(Gtk.Grid):
             self.__cover_widget.show()
             self.__duration_label.show()
             self.__rating_grid.show()
-            if not App().window.is_adaptive:
-                self.__year_label.set_vexpand(False)
+            self.__year_label.set_vexpand(False)
+            if App().window.is_adaptive:
+                self.__title_label.get_style_context().add_class(
+                    "text-x-large")
+                self.__year_label.get_style_context().add_class(
+                    "text-large")
+            else:
                 self.__title_label.get_style_context().add_class(
                     "text-xx-large")
                 self.__year_label.get_style_context().add_class(

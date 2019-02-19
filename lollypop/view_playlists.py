@@ -82,7 +82,12 @@ class PlaylistsView(LazyLoadingView, ViewController):
             self.__widget.set_vexpand(True)
             self.__title_label.set_vexpand(True)
             self.__duration_label.set_vexpand(True)
-            if not App().window.is_adaptive:
+            if App().window.is_adaptive:
+                self.__title_label.get_style_context().add_class(
+                    "text-x-large")
+                self.__duration_label.get_style_context().add_class(
+                    "text-large")
+            else:
                 self.__title_label.get_style_context().add_class(
                     "text-xx-large")
                 self.__duration_label.get_style_context().add_class(
@@ -152,17 +157,18 @@ class PlaylistsView(LazyLoadingView, ViewController):
         """
         LazyLoadingView._on_value_changed(self, adj)
         if not self.__view_type & ViewType.POPOVER:
+            title_style_context = self.__title_label.get_style_context()
             if adj.get_value() == adj.get_lower():
                 height = self.__banner.default_height
                 self.__duration_label.show()
                 self.__title_label.set_property("valign", Gtk.Align.END)
                 if not App().window.is_adaptive:
-                    self.__title_label.get_style_context().add_class(
-                        "text-xx-large")
+                    title_style_context.remove_class("text-x-large")
+                    title_style_context.add_class("text-xx-large")
             else:
                 self.__duration_label.hide()
-                self.__title_label.get_style_context().remove_class(
-                    "text-xx-large")
+                title_style_context.remove_class("text-xx-large")
+                title_style_context.add_class("text-x-large")
                 self.__title_label.set_property("valign", Gtk.Align.CENTER)
                 height = self.__banner.default_height // 3
             # Make grid cover artwork
