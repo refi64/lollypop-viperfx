@@ -19,6 +19,7 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.20000000000000001</property>
             <property name="icon_name">starred-symbolic</property>
+            <property name="icon_size">3</property>
             <style>
               <class name="touch-widget"/>
             </style>
@@ -43,6 +44,7 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.20000000000000001</property>
             <property name="icon_name">starred-symbolic</property>
+            <property name="icon_size">3</property>
             <style>
               <class name="touch-widget"/>
             </style>
@@ -67,6 +69,7 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.20000000000000001</property>
             <property name="icon_name">starred-symbolic</property>
+            <property name="icon_size">3</property>
             <style>
               <class name="touch-widget"/>
             </style>
@@ -91,6 +94,7 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.20000000000000001</property>
             <property name="icon_name">starred-symbolic</property>
+            <property name="icon_size">3</property>
             <style>
               <class name="touch-widget"/>
             </style>
@@ -115,6 +119,7 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.20000000000000001</property>
             <property name="icon_name">starred-symbolic</property>
+            <property name="icon_size">3</property>
             <style>
               <class name="touch-widget"/>
             </style>
@@ -139,6 +144,7 @@
             <property name="can_focus">False</property>
             <property name="opacity">0</property>
             <property name="icon_name">starred-symbolic</property>
+            <property name="icon_size">3</property>
             <style>
               <class name="touch-widget"/>
             </style>

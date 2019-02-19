@@ -6,7 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">view-more-symbolic</property>
-    <property name="icon_size">1</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkOverlay" id="widget">
     <property name="visible">True</property>
@@ -53,7 +53,8 @@
                 <property name="image">image1</property>
                 <signal name="clicked" handler="_on_menu_button_clicked" swapped="no"/>
                 <style>
-                  <class name="album-menu-button"/>
+                  <class name="light-button"/>
+                  <class name="light-button-no-right-border"/>
                 </style>
               </object>
               <packing>
