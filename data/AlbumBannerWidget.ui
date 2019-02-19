@@ -81,16 +81,21 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="year_label">
+          <object class="GtkEventBox" id="year_eventbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="opacity">0.90000000000000002</property>
             <property name="halign">end</property>
-            <property name="hexpand">True</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="2"/>
-            </attributes>
+            <child>
+              <object class="GtkLabel" id="year_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="opacity">0.90000000000000002</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="2"/>
+                </attributes>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="left_attach">2</property>
@@ -98,25 +103,20 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox">
+          <object class="GtkLabel" id="name_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <child>
-              <object class="GtkLabel" id="name_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="margin_left">15</property>
-                <property name="margin_right">10</property>
-                <property name="ellipsize">end</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-                <style>
-                  <class name="text-xx-large"/>
-                </style>
-              </object>
-            </child>
+            <property name="halign">start</property>
+            <property name="margin_left">15</property>
+            <property name="margin_right">10</property>
+            <property name="hexpand">True</property>
+            <property name="ellipsize">end</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+            <style>
+              <class name="text-xx-large"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">1</property>

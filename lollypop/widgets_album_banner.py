@@ -13,11 +13,11 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.helper_art import ArtHelperEffect
-from lollypop.define import App, ArtSize, MARGIN
+from lollypop.define import App, ArtSize, MARGIN, Type
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
-from lollypop.utils import get_human_duration, on_query_tooltip
+from lollypop.utils import get_human_duration, on_query_tooltip, on_realize
 
 
 class AlbumBannerWidget(Gtk.Bin):
@@ -47,6 +47,10 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__label.set_property("has-tooltip", True)
         self.__year_label.set_text(str(album.year))
         self.__year_label.set_margin_end(MARGIN)
+        year_eventbox = builder.get_object("year_eventbox")
+        year_eventbox.connect("realize", on_realize)
+        year_eventbox.connect("button-release-event",
+                              self.__on_year_button_release_event)
         duration = App().albums.get_duration(self.__album.id,
                                              self.__album.genre_ids)
         self.__duration_label.set_text(get_human_duration(duration))
@@ -183,6 +187,14 @@ class AlbumBannerWidget(Gtk.Bin):
             @param surface as str
         """
         self.__artwork.set_from_surface(surface)
+
+    def __on_year_button_release_event(self, widget, event):
+        """
+            Show year view
+            @param widget as Gtk.Widget
+            @param event as Gdk.event
+        """
+        App().window.container.show_view(Type.YEARS, [self.__album.year])
 
     def __on_size_allocate(self, widget, allocation):
         """
