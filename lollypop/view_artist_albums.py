@@ -125,7 +125,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         LazyLoadingView._on_populated(self, widget)
         if widget.is_populated:
             widget.set_filter_func(self._filter_func)
-            widget.connect("overlayed", self.on_overlayed)
             widget.set_opacity(1)
 
 #######################

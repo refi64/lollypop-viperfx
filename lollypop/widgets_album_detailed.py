@@ -48,11 +48,11 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
             Populate widget content
         """
+        TracksView.populate(self)
         if not self.get_children():
             self.__banner = AlbumBannerWidget(self._album,
                                               self._view_type | ViewType.SMALL)
             self.__banner.show()
-            TracksView.populate(self)
             self.add(self.__banner)
             self.add(self._responsive_widget)
             self._responsive_widget.show()
@@ -95,7 +95,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
     @property
     def requested_height(self):
         """
-            Requested height: Internal tracks or at least cover
+            Requested height: Internal tracks
             @return (minimal: int, maximal: int)
         """
         from lollypop.widgets_row_track import TrackRow
