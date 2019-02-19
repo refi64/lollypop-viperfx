@@ -32,7 +32,6 @@
           <object class="GtkLabel" id="duration_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="opacity">0.90000000000000002</property>
             <property name="halign">end</property>
             <property name="margin_right">20</property>
             <property name="hexpand">True</property>
@@ -90,7 +89,6 @@
               <object class="GtkLabel" id="year_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.90000000000000002</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
