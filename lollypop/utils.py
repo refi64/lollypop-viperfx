@@ -72,8 +72,9 @@ def get_round_surface(image, scale_factor, radius):
     height = image.get_height()
     is_pixbuf = isinstance(image, GdkPixbuf.Pixbuf)
     if is_pixbuf:
-        width = int(width / scale_factor)
-        height = int(height / scale_factor)
+        width = width // scale_factor
+        height = height // scale_factor
+        radius = radius // scale_factor
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
     ctx = cairo.Context(surface)
     degrees = pi / 180
