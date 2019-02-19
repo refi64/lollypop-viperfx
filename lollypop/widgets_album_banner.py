@@ -160,6 +160,16 @@ class AlbumBannerWidget(Gtk.Bin):
         """
         return (self.__height, self.__height)
 
+    def set_selected(self, selected):
+        """
+            Mark widget as selected
+            @param selected as bool
+        """
+        if selected:
+            self.__widget.set_state_flags(Gtk.StateFlags.SELECTED, True)
+        else:
+            self.__widget.set_state_flags(Gtk.StateFlags.NORMAL, True)
+
     @property
     def height(self):
         """

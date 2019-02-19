@@ -78,10 +78,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         if self.__banner is None:
             return
         selected = self._album.id == App().player.current_track.album.id
-        if selected:
-            self.__banner.set_state_flags(Gtk.StateFlags.SELECTED, True)
-        else:
-            self.__banner.set_state_flags(Gtk.StateFlags.NORMAL, True)
+        self.__banner.set_selected(selected)
 
     def set_filter_func(self, func):
         """
