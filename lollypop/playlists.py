@@ -61,7 +61,6 @@ class Playlists(GObject.GObject):
         """
         self.thread_lock = Lock()
         GObject.GObject.__init__(self)
-        self.LOVED = _("Loved tracks")
         upgrade = DatabasePlaylistsUpgrade()
         # Create db schema
         f = Gio.File.new_for_path(self._DB_PATH)
@@ -83,7 +82,7 @@ class Playlists(GObject.GObject):
             @return playlist_id as int
             @thread safe
         """
-        if name == self.LOVED:
+        if name == _("Loved tracks"):
             return Type.LOVED
         with SqlCursor(self, True) as sql:
             result = sql.execute("INSERT INTO playlists (name, mtime)"
@@ -386,7 +385,7 @@ class Playlists(GObject.GObject):
             @param playlist name as str
             @return playlst id as int
         """
-        if playlist_name == self.LOVED:
+        if playlist_name == _("Loved tracks"):
             return Type.LOVED
 
         with SqlCursor(self) as sql:
@@ -405,7 +404,7 @@ class Playlists(GObject.GObject):
             @return playlist name as str
         """
         if playlist_id == Type.LOVED:
-            return self.LOVED
+            return _("Loved tracks")
         elif playlist_id < 0:
             for (id, name, sortname) in ShownPlaylists.get(True):
                 if id == playlist_id:

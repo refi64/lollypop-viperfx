@@ -21,19 +21,41 @@ class ShownLists:
     """
 
     IDS = {
-        Type.POPULARS: (_("Popular albums"), SelectionListMask.LIST_ONE),
-        Type.RANDOMS: (_("Random albums"), SelectionListMask.LIST_ONE),
-        Type.LOVED: (_("Loved albums"), SelectionListMask.LIST_ONE),
-        Type.RECENTS: (_("Recently added albums"), SelectionListMask.LIST_ONE),
-        Type.NEVER: (_("Unplayed albums"), SelectionListMask.LIST_ONE),
-        Type.PLAYLISTS: (_("Playlists"), SelectionListMask.LIST_ONE),
-        Type.RADIOS: (_("Radios"), SelectionListMask.LIST_ONE),
-        Type.YEARS: (_("Years"), SelectionListMask.LIST_ONE),
-        Type.GENRES: (_("Genres"), SelectionListMask.LIST_ONE),
-        Type.ALL: (_("All albums"), SelectionListMask.LIST_ONE),
-        Type.ARTISTS: (_("All artists"), SelectionListMask.ALL_ARTISTS),
+        Type.POPULARS: (_("Popular albums"),
+                        SelectionListMask.LIST_ONE |
+                        SelectionListMask.ARTISTS_VIEW),
+        Type.RANDOMS: (_("Random albums"),
+                       SelectionListMask.LIST_ONE |
+                       SelectionListMask.ARTISTS_VIEW),
+        Type.LOVED: (_("Loved albums"),
+                     SelectionListMask.LIST_ONE |
+                     SelectionListMask.ARTISTS_VIEW),
+        Type.RECENTS: (_("Recently added albums"),
+                       SelectionListMask.LIST_ONE |
+                       SelectionListMask.ARTISTS_VIEW),
+        Type.NEVER: (_("Unplayed albums"),
+                     SelectionListMask.LIST_ONE |
+                     SelectionListMask.ARTISTS_VIEW),
+        Type.PLAYLISTS: (_("Playlists"),
+                         SelectionListMask.LIST_ONE |
+                         SelectionListMask.ARTISTS_VIEW),
+        Type.RADIOS: (_("Radios"),
+                      SelectionListMask.LIST_ONE |
+                      SelectionListMask.ARTISTS_VIEW),
+        Type.YEARS: (_("Years"),
+                     SelectionListMask.LIST_ONE |
+                     SelectionListMask.ARTISTS_VIEW),
+        Type.GENRES: (_("Genres"),
+                      SelectionListMask.LIST_ONE |
+                      SelectionListMask.ARTISTS_VIEW),
+        Type.ALL: (_("All albums"),
+                   SelectionListMask.LIST_ONE |
+                   SelectionListMask.ARTISTS_VIEW),
+        Type.ARTISTS: (_("All artists"), SelectionListMask.LIST_ONE),
         Type.COMPILATIONS: (_("Compilations"), SelectionListMask.COMPILATIONS),
-        Type.USB_DISKS: (_("USB disks"),  SelectionListMask.LIST_ONE)
+        Type.USB_DISKS: (_("USB disks"),
+                         SelectionListMask.LIST_ONE |
+                         SelectionListMask.ARTISTS_VIEW),
     }
 
     def get(mask, get_all=False):
@@ -54,25 +76,27 @@ class ShownLists:
         return lists
 
 
-class ShownPlaylists:
+class ShownPlaylists(ShownLists):
     """
         Handle shown playlists
     """
+    IDS = {
+        Type.POPULARS: _("Popular tracks"),
+        Type.RANDOMS: _("Random tracks"),
+        Type.LOVED: _("Loved tracks"),
+        Type.RECENTS: _("Recently played"),
+        Type.NEVER: _("Unplayed")
+    }
+
     def get(get_all=False):
         """
-            get list
-            @param get_all as bool
+            Get list
+            @return [(,)]
         """
         wanted = App().settings.get_value("shown-playlists")
         lists = []
-        if get_all or Type.POPULARS in wanted:
-            lists.append((Type.POPULARS, _("Popular tracks"), ""))
-        if get_all or Type.LOVED in wanted:
-            lists.append((Type.LOVED, App().playlists.LOVED, ""))
-        if get_all or Type.RECENTS in wanted:
-            lists.append((Type.RECENTS, _("Recently played"), ""))
-        if get_all or Type.NEVER in wanted:
-            lists.append((Type.NEVER, _("Unplayed"), ""))
-        if get_all or Type.RANDOMS in wanted:
-            lists.append((Type.RANDOMS, _("Random tracks"), ""))
+        for key in ShownPlaylists.IDS.keys():
+            string = ShownPlaylists.IDS[key]
+            if get_all or key in wanted:
+                lists.append((key, string, ""))
         return lists

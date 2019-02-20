@@ -86,7 +86,7 @@ class DeviceManagerWidget(Gtk.Bin):
         """
         self.__model.clear()
         if selected_ids[0] == Type.PLAYLISTS:
-            playlists = [(Type.LOVED, App().playlists.LOVED)]
+            playlists = [(Type.LOVED, _("Loved tracks"))]
             playlists += App().playlists.get()
             synced_ids = App().playlists.get_synced_ids()
             self.__append_playlists(playlists, synced_ids)

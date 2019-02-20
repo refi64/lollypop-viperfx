@@ -133,7 +133,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             from lollypop.view_artists_rounded import RoundedArtistsView
             popover = ViewsMenuPopover(self.get_ancestor(RoundedArtistsView),
                                        self.data,
-                                       SelectionListMask.LIST_ONE)
+                                       SelectionListMask.ARTIST_VIEW)
             popover.set_relative_to(widget)
             rect = Gdk.Rectangle()
             rect.x = event.x

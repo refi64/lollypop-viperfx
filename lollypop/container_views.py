@@ -183,9 +183,8 @@ class ViewsContainer:
         def get_items(artist_ids, compilation_ids):
             items = []
             if static:
-                mask = SelectionListMask.LIST_ONE |\
-                       SelectionListMask.ARTISTS |\
-                       SelectionListMask.ALL_ARTISTS
+                mask = SelectionListMask.ARTISTS_VIEW |\
+                       SelectionListMask.ARTISTS
                 if compilation_ids:
                     mask |= SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
