@@ -10,18 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk, Gtk, GLib
-
-from gettext import gettext as _
-
-from lollypop.logger import Logger
-from lollypop.define import App, Type, SidebarContent
-from lollypop.utils import on_realize
+from lollypop.define import App, Type
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
-from lollypop.helper_overlay import OverlayHelper
+from lollypop.helper_overlay_genre import OverlayGenreHelper
 
 
-class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
+class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayGenreHelper):
     """
         Genre widget showing cover for 4 albums
     """
@@ -32,7 +26,7 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
             @param Genre as [int]
             @param view_type as ViewType
         """
-        OverlayHelper.__init__(self)
+        OverlayGenreHelper.__init__(self)
         name = sortname = App().genres.get_name(genre_id)
         RoundedAlbumsWidget.__init__(self, genre_id, name, sortname, view_type)
         self._genre = Type.GENRES
@@ -50,71 +44,7 @@ class AlbumsGenreWidget(RoundedAlbumsWidget, OverlayHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _show_overlay_func(self, show_overlay):
-        """
-            Set overlay
-            @param show_overlay as bool
-        """
-        if self._lock_overlay or\
-                self._show_overlay == show_overlay or\
-                App().player.is_locked:
-            return
-        OverlayHelper._show_overlay_func(self, show_overlay)
-        if show_overlay:
-            # Play button
-            self.__play_button = Gtk.Button.new_from_icon_name(
-                "media-playback-start-symbolic",
-                Gtk.IconSize.INVALID)
-            self.__play_button.set_tooltip_text(_("Play"))
-            self.__play_button.get_image().set_pixel_size(self._pixel_size +
-                                                          20)
-            self.__play_button.set_property("has-tooltip", True)
-            self.__play_button.connect("realize", on_realize)
-            self.__play_button.connect("clicked", self.__on_play_clicked)
-            self.__play_button.show()
-            self._big_grid.set_margin_bottom(10)
-            self._big_grid.set_margin_start(10)
-            self._big_grid.add(self.__play_button)
-            self.__play_button.get_style_context().add_class(
-                "overlay-button-rounded")
-        else:
-            self.__play_button.destroy()
-            self.__play_button = None
 
 #######################
 # PRIVATE             #
 #######################
-    def __on_play_clicked(self, button):
-        """
-            Play Genre
-            @param button as Gtk.Button
-        """
-        if App().player.is_locked:
-            return True
-        if App().player.is_party:
-            App().lookup_action("party").change_state(GLib.Variant("b", False))
-        App().player.play_albums(None, [self._data], [])
-        return True
-
-    def __on_open_clicked(self, button):
-        """
-            Open Genre
-            @param button as Gtk.Button
-        """
-        sidebar_content = App().settings.get_enum("sidebar-content")
-        if sidebar_content != SidebarContent.GENRES:
-            App().window.emit("show-can-go-back", True)
-            App().window.emit("can-go-back-changed", True)
-        App().window.container.show_view(Type.GENRES, self._data)
-
-    def __on_eventbox_realize(self, eventbox):
-        """
-            Change cursor over eventbox
-            @param eventbox as Gdk.Eventbox
-        """
-        try:
-            window = eventbox.get_window()
-            if window is not None:
-                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-        except:
-            Logger.warning(_("You are using a broken cursor theme!"))
