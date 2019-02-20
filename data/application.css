@@ -171,9 +171,9 @@ popover.background separator {
     color: white;
 }
 
-.white {
-    background-color: alpha(white, 0.9);
-    color: black;
+.banner-album {
+    background-color: alpha(shade(@theme_bg_color, 1.5), 0.9);
+    color: @theme_fg_color;
 }
 
 .up-btn {

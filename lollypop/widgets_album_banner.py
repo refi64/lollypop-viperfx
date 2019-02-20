@@ -78,8 +78,8 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         if view_type & ViewType.SMALL:
-            self.__grid.get_style_context().add_class("white")
-            self.__artwork.get_style_context().add_class("white")
+            self.__grid.get_style_context().add_class("banner-album")
+            self.__artwork.get_style_context().add_class("banner-album")
             self.__widget = Gtk.Grid()
             self.__widget.show()
             self.__widget.get_style_context().add_class("cover-frame")
