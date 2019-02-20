@@ -58,7 +58,10 @@ class PlaylistsManagerView(FlowBoxView):
             items = new_items
         else:
             items = [i[0] for i in ShownPlaylists.get()] + items
-        FlowBoxView.populate(self, items)
+        if items:
+            FlowBoxView.populate(self, items)
+        else:
+            self._viewport.add(self._box)
 
 #######################
 # PROTECTED           #
