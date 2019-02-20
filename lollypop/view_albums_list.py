@@ -377,12 +377,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         elif event.state & Gdk.ModifierType.SHIFT_MASK and\
                 self.__view_type & ViewType.DND:
             self.emit("do-selection")
-        elif event.button == 1:
+        elif event.button == 1 or event.button == 0:
             self.reveal()
         elif event.button == 3:
             self.__popup_menu(self, event.x, event.y)
-        else:
-            self.__popup_menu(self)
         return True
 
     def __on_action_button_release_event(self, button, event):
