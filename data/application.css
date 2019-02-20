@@ -172,7 +172,7 @@ popover.background separator {
 }
 
 .banner-album {
-    background-color: alpha(shade(@theme_bg_color, 1.5), 0.9);
+    background-color: alpha(shade(@theme_bg_color, 1.5), 0.87);
     color: @theme_fg_color;
 }
 

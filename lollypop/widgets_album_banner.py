@@ -47,15 +47,12 @@ class AlbumBannerWidget(Gtk.Bin):
         menu_button = builder.get_object("menu_button")
         if view_type & ViewType.SMALL:
             icon_size = Gtk.IconSize.BUTTON
-            self.__art_effect = ArtHelperEffect.RESIZE |\
-                ArtHelperEffect.BLUR_HARD
             self.__title_label.get_style_context().add_class(
                 "text-large")
             self.__year_label.get_style_context().add_class(
                 "text-large")
         else:
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
-            self.__art_effect = ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
@@ -250,7 +247,7 @@ class AlbumBannerWidget(Gtk.Bin):
                             self.get_allocated_height() - self.__padding,
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
-                            self.__art_effect)
+                            ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
 
     def __on_album_artwork(self, surface):
         """
