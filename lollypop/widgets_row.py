@@ -34,15 +34,14 @@ class Row(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._view_type = view_type
         self._artists_label = None
-        self.__x_root = self.__y_root = 0
         self._track = track
         self._indicator = IndicatorWidget(self, view_type)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect("destroy", self._on_destroy)
-        self._row_widget.connect("button-press-event",
-                                 self.__on_button_press_event)
-        self._row_widget.connect("button-release-event",
-                                 self.__on_button_release_event)
+        self.__gesture = Gtk.GestureLongPress.new(self)
+        self.__gesture.connect("begin", self.__on_gesture_begin)
+        self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        self.__gesture.set_button(0)
         self._grid = Gtk.Grid()
         self._grid.set_property("valign", Gtk.Align.CENTER)
         self._grid.set_column_spacing(5)
@@ -88,14 +87,14 @@ class Row(Gtk.ListBoxRow):
         if self._view_type & ViewType.DND and\
                 self._view_type & ViewType.POPOVER:
             self.__action_button = Gtk.Button.new_from_icon_name(
-                "list-remove-symbolic",
-                Gtk.IconSize.MENU)
+               "list-remove-symbolic",
+               Gtk.IconSize.MENU)
             self.__action_button.set_tooltip_text(
-                _("Remove from playback"))
+               _("Remove from playback"))
         elif not self._view_type & (ViewType.POPOVER | ViewType.SEARCH):
             self.__action_button = Gtk.Button.new_from_icon_name(
-                "view-more-symbolic",
-                Gtk.IconSize.MENU)
+               "view-more-symbolic",
+               Gtk.IconSize.MENU)
         else:
             self.__action_button = None
         if self.__action_button is not None:
@@ -240,27 +239,37 @@ class Row(Gtk.ListBoxRow):
         App().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
-    def __on_button_press_event(self, widget, event):
+    def __on_gesture_begin(self, gesture, sequence):
         """
-            Store event x/y
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
+            Connect end signal
+            @param gesture as Gtk.GestureLongPress
+            @param sequence as Gdk.EventSequence
         """
-        self.__x_root = event.x_root
-        self.__y_root = event.y_root
+        event = gesture.get_last_event(sequence)
+        gesture.connect("end", self.__on_gesture_end, event.button)
 
-    def __on_button_release_event(self, widget, event):
+    def __on_gesture_pressed(self, gesture, x, y):
         """
-            Handle button press event:
-                |_ 1 => activate
-                |_ 2 => queue
-                |_ 3 => menu
-            @param widget as Gtk.Widget
+            Show current track menu
+            @param gesture as Gtk.GestureLongPress
+            @param x as float
+            @param y as float
+        """
+        gesture.disconnect_by_func(self.__on_gesture_end)
+        if self._view_type & ViewType.DND and\
+                self._view_type & ViewType.POPOVER:
+            self._track.album.remove_track(self._track)
+            self.destroy()
+        else:
+            self.__popup_menu(self, x, y)
+
+    def __on_gesture_end(self, gesture, sequence, event):
+        """
+            Handle normal sequence
+            @param gesture as Gtk.GestureLongPress
+            @param sequence as Gdk.EventSequence
             @param event as Gdk.EventButton
         """
-        # Ignore touch scroll events
-        if event.x_root != self.__x_root or event.y_root != self.__y_root:
-            return True
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self._view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
@@ -272,7 +281,7 @@ class Row(Gtk.ListBoxRow):
                 self._view_type & ViewType.DND:
             self.emit("do-selection")
         elif event.button == 3:
-            self.__popup_menu(widget, event.x, event.y)
+            self.__popup_menu(self, event.x, event.y)
         elif event.button == 2:
             if self._track.id in App().player.queue:
                 App().player.remove_from_queue(self._track.id)
@@ -288,10 +297,12 @@ class Row(Gtk.ListBoxRow):
 
     def __on_action_button_release_event(self, button, event):
         """
-            Show row menu
+           Show row menu
             @param button as Gtk.Button
             @param event as Gdk.EventButton
         """
+        if not self.get_state_flags() & Gtk.StateFlags.PRELIGHT:
+            return
         if self._view_type & ViewType.DND and\
                 self._view_type & ViewType.POPOVER:
             self._track.album.remove_track(self._track)

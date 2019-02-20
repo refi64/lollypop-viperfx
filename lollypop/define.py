@@ -25,7 +25,7 @@ GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 TAG_EDITORS = ["kid3-qt", "exfalso", "easytag", "picard", "puddletag"]
 
 MARGIN = 15
-MARGIN_SMALL = 5
+MARGIN_SMALL = 10
 
 
 # Represent what to do on next track

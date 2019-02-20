@@ -442,7 +442,7 @@ popover.background separator {
 .trackrowplaying .menu-button {
 	background-color: transparent;
     border-color: transparent;
-  	color: alpha(@theme_fg_color, 0.4);
+  	color: transparent;
 }
 
 .trackrowplaying:hover .menu-button {
@@ -463,7 +463,7 @@ popover.background separator {
 .trackrow .menu-button {
 	border-color: transparent;
 	background-color: transparent;
-	color: alpha(@theme_fg_color, 0.4);
+	color: transparent;
 }
 
 .trackrow:hover .loved-button {
