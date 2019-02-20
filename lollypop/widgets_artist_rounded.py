@@ -145,7 +145,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             @param sequence as Gdk.EventSequence
         """
         event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end, event.button)
+        gesture.connect("end", self.__on_gesture_end, event.button.button)
 
     def __on_gesture_pressed(self, gesture, x, y):
         """
@@ -157,15 +157,15 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         gesture.disconnect_by_func(self.__on_gesture_end)
         self.__popup_menu(self)
 
-    def __on_gesture_end(self, gesture, sequence, event):
+    def __on_gesture_end(self, gesture, sequence, button):
         """
             Handle normal sequence
             @param gesture as Gtk.GestureLongPress
             @param sequence as Gdk.EventSequence
-            @param event as Gdk.EventButton
+            @param button as int
         """
         gesture.disconnect_by_func(self.__on_gesture_end)
-        if event.button != 1:
+        if button == 3:
             self.__popup_menu(self)
 
     def __on_destroy(self, widget):

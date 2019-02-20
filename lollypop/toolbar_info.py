@@ -155,7 +155,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param event as Gdk.Event
         """
         if event.button == 3:
-            self.__on_gesture_pressed(None, event.x, event.y, event)
+            self.__on_gesture_pressed(None, 0, 0, event.button)
             return True
 
     def __on_gesture_begin(self, gesture, sequence):
@@ -165,21 +165,21 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param sequence as Gdk.EventSequence
         """
         event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end, event.button)
+        gesture.connect("end", self.__on_gesture_end, event.button.button)
 
-    def __on_gesture_pressed(self, gesture, x, y, event=None):
+    def __on_gesture_pressed(self, gesture, x, y, button=None):
         """
             Show current track menu
             @param gesture as Gtk.GestureLongPress
-            @param x as float
-            @param y as float
-            @param event as Gdk.EventButton
+            @param x as int
+            @param y as int
+            @param button as int
         """
         if gesture is not None:
             gesture.disconnect_by_func(self.__on_gesture_end)
         if self.__mini:
             return
-        if event is None or event.button == 3:
+        if button is None or button == 3:
             from lollypop.pop_menu import ToolbarMenu
             menu = ToolbarMenu(App().player.current_track)
             if App().player.current_track.id >= 0:
@@ -201,14 +201,14 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             popover.set_relative_to(self._infobox)
             popover.popup()
 
-    def __on_gesture_end(self, gesture, sequence, event):
+    def __on_gesture_end(self, gesture, sequence, button):
         """
             Handle normal sequence
             @param gesture as Gtk.GestureLongPress
             @param sequence as Gdk.EventSequence
             @param event as Gdk.EventButton
         """
-        self.__on_gesture_pressed(gesture, event.x, event.y, event)
+        self.__on_gesture_pressed(gesture, 0, 0, button)
 
     def __on_realize(self, toolbar):
         """

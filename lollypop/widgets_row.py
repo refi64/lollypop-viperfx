@@ -245,8 +245,9 @@ class Row(Gtk.ListBoxRow):
             @param gesture as Gtk.GestureLongPress
             @param sequence as Gdk.EventSequence
         """
-        event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end, event.button)
+        event = gesture.get_last_event(sequence).copy()
+        gesture.connect("end", self.__on_gesture_end,
+                        event.button.button, event.state, event.x, event.y)
 
     def __on_gesture_pressed(self, gesture, x, y):
         """
@@ -263,36 +264,39 @@ class Row(Gtk.ListBoxRow):
         else:
             self.__popup_menu(self, x, y)
 
-    def __on_gesture_end(self, gesture, sequence, event):
+    def __on_gesture_end(self, gesture, sequence, button, state, x, y):
         """
             Handle normal sequence
             @param gesture as Gtk.GestureLongPress
             @param sequence as Gdk.EventSequence
-            @param event as Gdk.EventButton
+            @param button as int
+            @param state as Gdk.ModifierType
+            @param x as int
+            @param y as int
         """
         gesture.disconnect_by_func(self.__on_gesture_end)
-        if event.state & Gdk.ModifierType.CONTROL_MASK and\
+        if state & Gdk.ModifierType.CONTROL_MASK and\
                 self._view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
                 self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
                 self.set_state_flags(Gtk.StateFlags.SELECTED, True)
                 self.grab_focus()
-        elif event.state & Gdk.ModifierType.SHIFT_MASK and\
+        elif state & Gdk.ModifierType.SHIFT_MASK and\
                 self._view_type & ViewType.DND:
             self.emit("do-selection")
-        elif event.button == 3:
-            self.__popup_menu(self, event.x, event.y)
-        elif event.button == 2:
+        elif button == 3:
+            self.__popup_menu(self, x, y)
+        elif button == 2:
             if self._track.id in App().player.queue:
                 App().player.remove_from_queue(self._track.id)
             else:
                 App().player.append_to_queue(self._track.id)
-        elif event.state & Gdk.ModifierType.MOD1_MASK:
+        elif state & Gdk.ModifierType.MOD1_MASK:
             App().player.clear_albums()
             App().player.reset_history()
             App().player.load(self._track)
-        elif event.button == 1:
+        elif button == 1:
             self.activate()
         return True
 
