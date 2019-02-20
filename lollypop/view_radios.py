@@ -61,6 +61,7 @@ class RadiosView(FlowBoxView, ViewController):
             Start lazy loading
             @param radio ids as [int]
         """
+        self._remove_placeholder()
         widget = FlowBoxView._add_items(self, radio_ids, self.__radios)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
@@ -117,16 +118,6 @@ class RadiosView(FlowBoxView, ViewController):
 #######################
 # PRIVATE             #
 #######################
-    def __add_radio(self, radio_id):
-        """
-            Add radio
-            @param radio_id as int
-        """
-        widget = RadioWidget(radio_id, self.__radios)
-        self._box.insert(widget, 0)
-        widget.populate()
-        widget.show()
-
     def __on_radio_changed(self, radios, radio_id):
         """
             Update view based on radio_id status
@@ -141,7 +132,7 @@ class RadiosView(FlowBoxView, ViewController):
                     item = child
                     break
             if item is None:
-                self.__add_radio(radio_id)
+                self._add_items([radio_id])
             else:
                 name = self.__radios.get_name(radio_id)
                 item.rename(name)

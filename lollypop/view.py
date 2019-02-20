@@ -96,6 +96,7 @@ class View(BaseView, Gtk.Grid):
     def populate(self):
         """
             Populate view with default message
+            @param destroy_children as bool
         """
         grid = Gtk.Grid()
         grid.set_column_spacing(20)
@@ -114,9 +115,9 @@ class View(BaseView, Gtk.Grid):
         grid.set_hexpand(True)
         grid.set_property("halign", Gtk.Align.CENTER)
         grid.set_property("valign", Gtk.Align.CENTER)
+        self._scrolled.hide()
+        grid.set_name("lollypop_placeholder")
         grid.show_all()
-        for child in self.get_children():
-            child.destroy()
         self.add(grid)
 
     def enable_filter(self):
@@ -161,6 +162,18 @@ class View(BaseView, Gtk.Grid):
 #######################
 # PROTECTED           #
 #######################
+    def _remove_placeholder(self):
+        """
+            Remove any placeholder
+        """
+        if self._scrolled.get_visible():
+            return
+        for child in self.get_children():
+            if child.get_name() == "lollypop_placeholder":
+                child.destroy()
+                break
+        self._scrolled.show()
+
     def _filter_func(self, child):
         """
             Filter function for a Gtk.FlowBox/GtkListBox

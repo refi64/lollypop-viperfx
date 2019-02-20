@@ -33,6 +33,8 @@ class PlaylistsManagerView(FlowBoxView):
             @param view_type as ViewType
         """
         FlowBoxView.__init__(self, view_type)
+        self._empty_message = _("Playlists")
+        self._empty_icon_name = "emblem-documents-symbolic"
         self.__obj = obj
         self.__signal_id = None
         new_playlist_button = Gtk.Button(_("New playlist"))
@@ -58,10 +60,7 @@ class PlaylistsManagerView(FlowBoxView):
             items = new_items
         else:
             items = [i[0] for i in ShownPlaylists.get()] + items
-        if items:
-            FlowBoxView.populate(self, items)
-        else:
-            self._viewport.add(self._box)
+        FlowBoxView.populate(self, items)
 
 #######################
 # PROTECTED           #
@@ -72,6 +71,7 @@ class PlaylistsManagerView(FlowBoxView):
             Start lazy loading
             @param playlist ids as [int]
         """
+        self._remove_placeholder()
         widget = FlowBoxView._add_items(self, playlist_ids,
                                         self.__obj,
                                         self._view_type)
