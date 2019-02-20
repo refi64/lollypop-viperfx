@@ -21,7 +21,7 @@ from lollypop.helper_overlay import OverlayHelper
 
 class OverlayGenreHelper(OverlayHelper):
     """
-        An overlay helper for decade
+        An overlay helper for a genre
     """
 
     def __init__(self):
