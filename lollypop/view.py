@@ -183,10 +183,8 @@ class View(BaseView, Gtk.Grid):
             return True
         filter = self._filter.lower()
         if child.filter.lower().find(filter) != -1:
-            child.set_filtered(False)
-            return True
-        child.set_filtered(True)
-        return False
+            return child.set_filtered(False)
+        return child.set_filtered(True)
 
     def _on_search_changed(self, entry):
         """

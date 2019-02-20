@@ -49,8 +49,11 @@ class AlbumWidget:
     def set_filtered(self, b):
         """
             Set widget filtered
+            @param b as bool
+            @return bool (should be shown)
         """
         self.__filtered = b
+        return not b
 
     def set_artwork(self, width=ArtSize.BIG, height=ArtSize.BIG):
         """

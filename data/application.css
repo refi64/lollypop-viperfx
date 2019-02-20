@@ -405,6 +405,12 @@ popover.background separator {
     color: @theme_selected_fg_color;
 }
 
+.trackrow:visited {
+    border-radius: 0px;
+	background-color: alpha(red, 0.1);
+    color: @theme_fg_color;
+}
+
 .trackrowplaying {
     border-radius: 5px;
     padding: 0px;

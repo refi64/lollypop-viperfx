@@ -58,7 +58,6 @@ class TrackRow(Row, DNDRow):
             @param view_type as ViewType
         """
         Row.__init__(self, track, view_type)
-        self.__filtered = False
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
@@ -71,19 +70,6 @@ class TrackRow(Row, DNDRow):
             @return str
         """
         return self._track.name
-
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-        """
-        self.__filtered = b
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-        """
-        return self.__filtered
 
 #######################
 # PROTECTED           #

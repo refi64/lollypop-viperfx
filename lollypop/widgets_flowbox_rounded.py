@@ -93,8 +93,11 @@ class RoundedFlowBoxWidget(Gtk.FlowBoxChild):
     def set_filtered(self, b):
         """
             Set widget filtered
+            @param b as bool
+            @return bool (should be shown)
         """
         self.__filtered = b
+        return not b
 
     @property
     def name(self):

@@ -40,7 +40,6 @@ class PlaylistRow(Row, DNDRow):
         Row.__init__(self, track, view_type)
         if view_type & ViewType.DND:
             DNDRow.__init__(self)
-        self.__filtered = False
         self._grid.insert_row(0)
         self._grid.insert_column(0)
         self._grid.insert_column(1)
@@ -125,12 +124,6 @@ class PlaylistRow(Row, DNDRow):
         self.__artwork.hide()
         self.__header.hide()
 
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-        """
-        self.__filtered = b
-
     @property
     def filter(self):
         """
@@ -140,13 +133,6 @@ class PlaylistRow(Row, DNDRow):
                         self._track.artists +
                         [self._track.name] +
                         [self._track.album.name])
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-        """
-        return self.__filtered
 
 #######################
 # PROTECTED           #
