@@ -127,7 +127,7 @@ class DeviceContainer:
             if show:
                 if App().settings.get_value("show-sidebar"):
                     self._list_one.add_value((dev.id, dev.name, dev.name))
-                else:
+                elif self._rounded_artists_view is not None:
                     self._rounded_artists_view.add_value((dev.id,
                                                          dev.name,
                                                          dev.name))
@@ -142,7 +142,7 @@ class DeviceContainer:
             if dev.uri == uri:
                 if App().settings.get_value("show-sidebar"):
                     self._list_one.remove_value(dev.id)
-                else:
+                elif self._rounded_artists_view is not None:
                     self._rounded_artists_view.remove_value(dev.id)
                 child = self._stack.get_child_by_name(uri)
                 if child is not None:
