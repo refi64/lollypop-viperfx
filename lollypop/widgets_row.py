@@ -192,10 +192,10 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
-    def __popup_menu(self, eventbox, xcoordinate=None, ycoordinate=None):
+    def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """
             Popup menu for track
-            @param eventbox as Gtk.EventBox
+            @param widget as Gtk.Widget
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
@@ -220,12 +220,12 @@ class Row(Gtk.ListBoxRow):
         else:
             popover = TrackMenuPopover(self._track, self._get_menu())
         if xcoordinate is not None and ycoordinate is not None:
-            rect = eventbox.get_allocation()
+            rect = widget.get_allocation()
             rect.x = xcoordinate
             rect.y = ycoordinate
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
-        popover.set_relative_to(eventbox)
+        popover.set_relative_to(widget)
         popover.connect("closed", on_closed)
         self.get_style_context().add_class("track-menu-selected")
         popover.popup()
