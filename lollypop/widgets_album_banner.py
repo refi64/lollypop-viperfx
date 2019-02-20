@@ -74,13 +74,9 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__duration_label.set_text(get_human_duration(duration))
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
+        self.__widget = builder.get_object("widget")
         if view_type & ViewType.SMALL:
-            self.__grid.get_style_context().add_class("banner-album")
-            self.__artwork.get_style_context().add_class("banner-album")
-            self.__widget = Gtk.Grid()
-            self.__widget.show()
-            self.__widget.get_style_context().add_class("cover-frame")
-            self.__widget.add(builder.get_object("widget"))
+            self.__artwork.get_style_context().add_class("cover-frame")
             # See application.css: cover-frame
             self.__padding = 8
             self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
@@ -88,7 +84,11 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__grid.get_style_context().add_class("black")
             self.__artwork.get_style_context().add_class("black")
             self.__cover_widget = CoverWidget(True)
-            self.__widget = builder.get_object("widget")
+            self.connect("size-allocate", self.__on_size_allocate)
+            self.connect("destroy", self.__on_destroy)
+            self.__art_signal_id = App().art.connect(
+                                               "album-artwork-changed",
+                                               self.__on_album_artwork_changed)
         self.__cover_widget.update(album)
         self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
@@ -106,11 +106,6 @@ class AlbumBannerWidget(Gtk.Bin):
         loved.show()
         self.__rating_grid.attach(loved, 1, 0, 1, 1)
         self.add(self.__widget)
-        self.connect("size-allocate", self.__on_size_allocate)
-        self.connect("destroy", self.__on_destroy)
-        self.__art_signal_id = App().art.connect(
-                                               "album-artwork-changed",
-                                               self.__on_album_artwork_changed)
 
     def set_height(self, height):
         """

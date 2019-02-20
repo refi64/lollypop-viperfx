@@ -171,11 +171,6 @@ popover.background separator {
     color: white;
 }
 
-.banner-album {
-    background-color: alpha(shade(@theme_bg_color, 1.5), 0.87);
-    color: @theme_fg_color;
-}
-
 .up-btn {
     border: 1px solid shade(@theme_bg_color, 0.7);
     border-radius: 4px;
