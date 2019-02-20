@@ -10,9 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gtk
+
 from random import sample
 
-from lollypop.define import App, Type
+from lollypop.define import App, Type, SelectionListMask
 from lollypop.objects import Track, Album, Disc
 from lollypop.widgets_albums_rounded import RoundedAlbumsWidget
 from lollypop.helper_overlay_playlist import OverlayPlaylistHelper
@@ -56,6 +58,10 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
+        self.__gesture = Gtk.GestureLongPress.new(self)
+        self.__gesture.connect("begin", self.__on_gesture_begin)
+        self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        self.__gesture.set_button(0)
 
     @property
     def track_ids(self):
@@ -89,3 +95,46 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
                 self._album_ids.append(track.album.id)
             if len(self._album_ids) == self._ALBUMS_COUNT:
                 break
+
+    def __popup_menu(self, widget):
+        """
+            Popup menu for track
+            @param widget as Gtk.Widget
+        """
+        from lollypop.pop_menu_views import ViewsMenuPopover
+        from lollypop.view_artists_rounded import RoundedArtistsView
+        popover = ViewsMenuPopover(self.get_ancestor(RoundedArtistsView),
+                                   self.data,
+                                   SelectionListMask.PLAYLISTS)
+        popover.set_relative_to(widget)
+        popover.popup()
+
+    def __on_gesture_begin(self, gesture, sequence):
+        """
+            Connect end signal
+            @param gesture as Gtk.GestureLongPress
+            @param sequence as Gdk.EventSequence
+        """
+        event = gesture.get_last_event(sequence)
+        gesture.connect("end", self.__on_gesture_end, event.button)
+
+    def __on_gesture_pressed(self, gesture, x, y):
+        """
+            Show current track menu
+            @param gesture as Gtk.GestureLongPress
+            @param x as float
+            @param y as float
+        """
+        gesture.disconnect_by_func(self.__on_gesture_end)
+        self.__popup_menu(self)
+
+    def __on_gesture_end(self, gesture, sequence, event):
+        """
+            Handle normal sequence
+            @param gesture as Gtk.GestureLongPress
+            @param sequence as Gdk.EventSequence
+            @param event as Gdk.EventButton
+        """
+        gesture.disconnect_by_func(self.__on_gesture_end)
+        if event.button != 1:
+            self.__popup_menu(self)
