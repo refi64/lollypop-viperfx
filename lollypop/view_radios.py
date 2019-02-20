@@ -12,15 +12,14 @@
 
 from gi.repository import Gtk, GLib
 
-from gettext import gettext as _
-
 from lollypop.define import App, Type
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.controller_view import ViewController, ViewControllerType
-from lollypop.view import MessageView
+from lollypop.shown import ShownLists
+from lollypop.utils import get_icon_name
 
 
 class RadiosView(FlowBoxView, ViewController):
@@ -35,6 +34,8 @@ class RadiosView(FlowBoxView, ViewController):
         FlowBoxView.__init__(self)
         ViewController.__init__(self, ViewControllerType.RADIO)
         self._widget_class = RadioWidget
+        self._empty_message = ShownLists.IDS[Type.RADIOS][0]
+        self._empty_icon_name = get_icon_name(Type.RADIOS)
         self.__radios = Radios()
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/RadiosView.ui")
@@ -49,13 +50,7 @@ class RadiosView(FlowBoxView, ViewController):
             Add radio widgets
             @param radio_ids as [int]
         """
-        if radio_ids:
-            FlowBoxView.populate(self, radio_ids)
-        else:
-            self._scrolled.hide()
-            view = MessageView(_("No favorite radios"))
-            view.show()
-            self.add(view)
+        FlowBoxView.populate(self, radio_ids)
 
 #######################
 # PROTECTED           #

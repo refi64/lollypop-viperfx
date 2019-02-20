@@ -74,6 +74,8 @@ class DeviceView(View):
             @param device as Device
         """
         View.__init__(self)
+        self._empty_message = _("Please unlock your device")
+        self._empty_icon_name = "multimedia-player-symbolic"
         self.__timeout_id = None
         self.__device = device
         self.__selected_ids = []
@@ -108,7 +110,7 @@ class DeviceView(View):
         self.__update_list_device()
         self.__sanitize_non_mtp()
 
-    def populate(self, selected_ids=[]):
+    def populate_combo(self, selected_ids=[]):
         """
             Populate combo box
             @param selected_ids as [int]
@@ -305,4 +307,4 @@ class DeviceView(View):
             Update view
             @param selection_list as SelectionList
         """
-        self.populate(selectionlist.selected_ids)
+        self.populate_combo(selectionlist.selected_ids)

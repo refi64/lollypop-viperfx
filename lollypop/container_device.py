@@ -12,12 +12,9 @@
 
 from gi.repository import Gio
 
-from gettext import gettext as _
-
 from urllib.parse import urlparse
 
 from lollypop.define import App, Type
-from lollypop.view import MessageView
 
 
 # This is a multimedia device
@@ -96,13 +93,12 @@ class DeviceContainer:
         # If no view available, get a new one
         if device_view is None:
             files = DeviceView.get_files(device.uri)
+            device_view = DeviceView(device)
+            self._stack.add_named(device_view, device.uri)
             if files:
-                device_view = DeviceView(device)
-                self._stack.add_named(device_view, device.uri)
+                device_view.populate_combo()
             else:
-                device_view = MessageView(_("Please unlock your device"))
-                self._stack.add(device_view)
-            device_view.populate()
+                device_view.populate()
             device_view.show()
         return device_view
 

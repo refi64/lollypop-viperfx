@@ -16,6 +16,8 @@ from lollypop.view_flowbox import FlowBoxView
 from lollypop.define import App, Type, ArtSize
 from locale import strcoll
 from lollypop.widgets_artist_rounded import RoundedArtistWidget
+from lollypop.shown import ShownLists
+from lollypop.utils import get_icon_name
 
 
 class RoundedArtistsView(FlowBoxView):
@@ -33,6 +35,8 @@ class RoundedArtistsView(FlowBoxView):
         self.__lazy_queue_backup = None
         self._widget_class = RoundedArtistWidget
         self.connect("destroy", self.__on_destroy)
+        self._empty_message = ShownLists.IDS[Type.ARTISTS][0]
+        self._empty_icon_name = get_icon_name(Type.ARTISTS)
 
     def add_value(self, item):
         """

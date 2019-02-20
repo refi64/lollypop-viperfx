@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from time import time
+from gettext import gettext as _
 
 from lollypop.define import ViewType
 from lollypop.logger import Logger
@@ -54,6 +55,8 @@ class View(BaseView, Gtk.Grid):
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
+        self._empty_message = _("Empty")
+        self._empty_icon_name = "emblem-music-symbolic"
 
         if view_type & ViewType.FILTERED:
             self._filter = ""
@@ -89,6 +92,32 @@ class View(BaseView, Gtk.Grid):
         self._viewport.show()
         self.connect("map", self._on_map)
         self.connect("unmap", self._on_unmap)
+
+    def populate(self):
+        """
+            Populate view with default message
+        """
+        grid = Gtk.Grid()
+        grid.set_column_spacing(20)
+        label = Gtk.Label.new()
+        label.set_markup("<b>%s</b>" % GLib.markup_escape_text(
+            self._empty_message))
+        label_style = label.get_style_context()
+        label_style.add_class("text-xx-large")
+        label_style.add_class("dim-label")
+        image = Gtk.Image.new_from_icon_name(self._empty_icon_name,
+                                             Gtk.IconSize.DIALOG)
+        image.get_style_context().add_class("dim-label")
+        grid.add(image)
+        grid.add(label)
+        grid.set_vexpand(True)
+        grid.set_hexpand(True)
+        grid.set_property("halign", Gtk.Align.CENTER)
+        grid.set_property("valign", Gtk.Align.CENTER)
+        grid.show_all()
+        for child in self.get_children():
+            child.destroy()
+        self.add(grid)
 
     def enable_filter(self):
         """
@@ -317,20 +346,3 @@ class LazyLoadingView(View):
             if self.__is_visible(child):
                 self.__priority_queue.append(child)
         GLib.idle_add(self.lazy_loading)
-
-
-class MessageView(View):
-    """
-        Show a message to user
-    """
-
-    def __init__(self, text):
-        """
-            Init view
-            @param text as str
-        """
-        View.__init__(self)
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
-        self.add(builder.get_object("message"))
-        builder.get_object("label").set_text(text)

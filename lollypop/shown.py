@@ -19,44 +19,38 @@ class ShownLists:
     """
         Handle shown lists
     """
+
+    IDS = {
+        Type.POPULARS: (_("Popular albums"), SelectionListMask.LIST_ONE),
+        Type.RANDOMS: (_("Random albums"), SelectionListMask.LIST_ONE),
+        Type.LOVED: (_("Loved albums"), SelectionListMask.LIST_ONE),
+        Type.RECENTS: (_("Recently added albums"), SelectionListMask.LIST_ONE),
+        Type.NEVER: (_("Unplayed albums"), SelectionListMask.LIST_ONE),
+        Type.PLAYLISTS: (_("Playlists"), SelectionListMask.LIST_ONE),
+        Type.RADIOS: (_("Radios"), SelectionListMask.LIST_ONE),
+        Type.YEARS: (_("Years"), SelectionListMask.LIST_ONE),
+        Type.GENRES: (_("Genres"), SelectionListMask.LIST_ONE),
+        Type.ALL: (_("All albums"), SelectionListMask.LIST_ONE),
+        Type.ARTISTS: (_("All artists"), SelectionListMask.ALL_ARTISTS),
+        Type.COMPILATIONS: (_("Compilations"), SelectionListMask.COMPILATIONS),
+        Type.USB_DISKS: (_("USB disks"),  SelectionListMask.LIST_ONE)
+    }
+
     def get(mask, get_all=False):
         """
             Get list
             @param mask as bit mask
             @param get_all as bool
+            @return [(,)]
         """
-        wanted = App().settings.get_value("shown-album-lists")
+        wanted = list(App().settings.get_value("shown-album-lists"))
+        if get_all:
+            wanted.append(Type.USB_DISKS)
         lists = []
-        if mask & SelectionListMask.LIST_ONE:
-            if get_all or Type.POPULARS in wanted:
-                lists.append((Type.POPULARS, _("Popular albums"), ""))
-            if get_all or Type.RANDOMS in wanted:
-                lists.append((Type.RANDOMS, _("Random albums"), ""))
-            if get_all or Type.LOVED in wanted:
-                lists.append((Type.LOVED, _("Loved albums"), ""))
-            if get_all or Type.RECENTS in wanted:
-                lists.append((Type.RECENTS, _("Recently added albums"), ""))
-            if get_all or Type.NEVER in wanted:
-                lists.append((Type.NEVER, _("Unplayed albums"), ""))
-            if get_all or Type.PLAYLISTS in wanted:
-                lists.append((Type.PLAYLISTS, _("Playlists"), ""))
-            if get_all or Type.RADIOS in wanted:
-                lists.append((Type.RADIOS, _("Radios"), ""))
-            if get_all or Type.YEARS in wanted:
-                lists.append((Type.YEARS, _("Years"), ""))
-            if get_all or Type.GENRES in wanted:
-                lists.append((Type.GENRES, _("Genres"), ""))
-            if get_all or Type.ALL in wanted:
-                lists.append((Type.ALL, _("All albums"), ""))
-            if get_all or (Type.ARTISTS in wanted and
-                           not mask & SelectionListMask.ALL_ARTISTS):
-                lists.append((Type.ARTISTS, _("All artists"), ""))
-        if get_all or (mask & SelectionListMask.COMPILATIONS and
-                       Type.COMPILATIONS in wanted):
-            lists.append((Type.COMPILATIONS, _("Compilations"), ""))
-        if mask & SelectionListMask.LIST_ONE:
-            if get_all:
-                lists.append((Type.USB_DISKS, _("USB disks"), ""))
+        for key in ShownLists.IDS.keys():
+            (string, id_mask) = ShownLists.IDS[key]
+            if mask & id_mask and (get_all or key in wanted):
+                lists.append((key, string, ""))
         return lists
 
 

@@ -15,6 +15,8 @@ from gi.repository import GLib, Gtk
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.define import App, Type, ViewType
+from lollypop.utils import get_icon_name
+from lollypop.shown import ShownLists
 from lollypop.controller_view import ViewController, ViewControllerType
 
 
@@ -35,6 +37,9 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         self._widget_class = AlbumSimpleWidget
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
+        if genre_ids and genre_ids[0] < 0:
+            self._empty_message = ShownLists.IDS[genre_ids[0]][0]
+            self._empty_icon_name = get_icon_name(genre_ids[0])
         if view_type & ViewType.SMALL:
             self._scrolled.set_policy(Gtk.PolicyType.NEVER,
                                       Gtk.PolicyType.NEVER)

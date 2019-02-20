@@ -348,6 +348,9 @@ class SelectionList(BaseView, Gtk.Overlay):
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
+                if App().settings.get_value("show-sidebar") and\
+                        self.__base_type == SelectionListMask.LIST_ONE:
+                    self.__mask |= SelectionListMask.ALL_ARTISTS
                 popover = ViewsMenuPopover(self, rowid, self.mask)
                 popover.set_relative_to(view)
                 rect = Gdk.Rectangle()

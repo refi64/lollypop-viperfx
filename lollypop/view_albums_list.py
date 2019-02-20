@@ -14,6 +14,8 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from gettext import gettext as _
 
+from lollypop.utils import get_icon_name
+from lollypop.shown import ShownLists
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
@@ -449,17 +451,20 @@ class AlbumsListView(LazyLoadingView, ViewController):
         View showing albums
     """
 
-    def __init__(self, view_type, artist_ids=[], genre_ids=[]):
+    def __init__(self, view_type, genre_ids=[], artist_ids=[]):
         """
             Init widget
             @param view_type as ViewType
-            @param artist_ids as int
             @param genre_ids as int
+            @param artist_ids as int
         """
         LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
         ViewController.__init__(self, ViewControllerType.ALBUM)
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
+        if genre_ids and genre_ids[0] < 0:
+            self._empty_message = ShownLists.IDS[genre_ids[0]][0]
+            self._empty_icon_name = get_icon_name(genre_ids[0])
         self.__autoscroll_timeout_id = None
         self.__reveals = []
         self.__prev_animated_rows = []
@@ -488,10 +493,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Populate widget with album rows
             @param albums as [Album]
         """
-        self._lazy_queue = []
-        for child in self._box.get_children():
-            GLib.idle_add(child.destroy)
-        self.__add_albums(list(albums))
+        if albums:
+            self._lazy_queue = []
+            for child in self._box.get_children():
+                GLib.idle_add(child.destroy)
+            self.__add_albums(list(albums))
+        else:
+            LazyLoadingView.populate(self)
 
     def rows_animation(self, x, y):
         """
