@@ -61,7 +61,7 @@ class PlaylistsManagerView(FlowBoxView):
         if items:
             FlowBoxView.populate(self, items)
         else:
-            self._finish_setup()
+            self._viewport.add(self._box)
 
 #######################
 # PROTECTED           #
