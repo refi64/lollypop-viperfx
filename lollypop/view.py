@@ -180,7 +180,8 @@ class View(BaseView, Gtk.Grid):
             @param child as Gtk.FlowBoxChild/Gtk.ListBoxChild
         """
         if not self.filtered:
-            child.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            if child.get_state_flags() & Gtk.StateFlags.VISITED:
+                child.set_state_flags(Gtk.StateFlags.NORMAL, True)
             return True
         filter = self._filter.lower()
         if child.filter.lower().find(filter) != -1:
