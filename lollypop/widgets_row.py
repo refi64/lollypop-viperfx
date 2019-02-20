@@ -32,6 +32,7 @@ class Row(Gtk.ListBoxRow):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
+        self.set_activatable(False)
         self._view_type = view_type
         self._artists_label = None
         self._track = track
@@ -297,8 +298,9 @@ class Row(Gtk.ListBoxRow):
             App().player.reset_history()
             App().player.load(self._track)
         elif button == 1:
+            self.set_activatable(True)
             self.activate()
-        return True
+            self.set_activatable(False)
 
     def __on_action_button_release_event(self, button, event):
         """
