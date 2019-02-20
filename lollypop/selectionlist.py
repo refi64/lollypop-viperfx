@@ -342,24 +342,26 @@ class SelectionList(BaseView, Gtk.Overlay):
                 self.__modifier = True
         elif self.__base_type in [SelectionListMask.LIST_ONE,
                                   SelectionListMask.LIST_TWO]:
+            from lollypop.pop_menu_views import ViewsMenuPopover
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None:
-                from lollypop.pop_menu_views import ViewsMenuPopover
                 (path, position) = info
                 iterator = self.__model.get_iter(path)
                 rowid = self.__model.get_value(iterator, 0)
-                if App().settings.get_value("show-sidebar") and\
-                        self.__base_type == SelectionListMask.LIST_ONE:
-                    self.__mask |= SelectionListMask.ALL_ARTISTS
-                popover = ViewsMenuPopover(self, rowid, self.mask)
-                popover.set_relative_to(view)
-                rect = Gdk.Rectangle()
-                rect.x = event.x
-                rect.y = event.y
-                rect.width = rect.height = 1
-                popover.set_pointing_to(rect)
-                popover.popup()
-                return True
+            else:
+                rowid = Type.ALL
+            if App().settings.get_value("show-sidebar") and\
+                    self.__base_type == SelectionListMask.LIST_ONE:
+                self.__mask |= SelectionListMask.ALL_ARTISTS
+            popover = ViewsMenuPopover(self, rowid, self.mask)
+            popover.set_relative_to(view)
+            rect = Gdk.Rectangle()
+            rect.x = event.x
+            rect.y = event.y
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+            popover.popup()
+            return True
 
     def _on_button_release_event(self, view, event):
         """
