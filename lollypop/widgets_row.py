@@ -270,6 +270,7 @@ class Row(Gtk.ListBoxRow):
             @param sequence as Gdk.EventSequence
             @param event as Gdk.EventButton
         """
+        gesture.disconnect_by_func(self.__on_gesture_end)
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self._view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:

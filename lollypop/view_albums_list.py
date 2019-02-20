@@ -159,10 +159,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         row_widget.add(grid)
         self.add(row_widget)
         self.set_playing_indicator()
-        row_widget.connect("button-press-event",
-                           self.__on_button_press_event)
-        row_widget.connect("button-release-event",
-                           self.__on_button_release_event)
+        self.__gesture = Gtk.GestureLongPress.new(self)
+        self.__gesture.connect("begin", self.__on_gesture_begin)
+        self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        self.__gesture.set_button(0)
         if self.__reveal:
             self.reveal()
 
@@ -192,6 +192,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
+            if self.__action_button is not None:
+                self.__action_button.set_opacity(1)
+                self.__action_button.set_sensitive(True)
             self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
                 self.set_state_flags(Gtk.StateFlags.VISITED, True)
@@ -202,6 +205,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self.__revealer.add(self._responsive_widget)
             self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
+            if self.__action_button is not None:
+                self.__action_button.set_opacity(0)
+                self.__action_button.set_sensitive(False)
             self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_playing_indicator(self):
@@ -297,6 +303,29 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
 #######################
 # PRIVATE             #
 #######################
+    def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
+        """
+            Popup menu for album
+            @param eventbox as Gtk.EventBox
+            @param xcoordinate as int (or None)
+            @param ycoordinate as int (or None)
+        """
+        def on_closed(widget):
+            self.get_style_context().remove_class("track-menu-selected")
+
+        from lollypop.pop_menu import AlbumMenu
+        menu = AlbumMenu(self._album, True)
+        popover = Gtk.Popover.new_from_model(widget, menu)
+        popover.connect("closed", on_closed)
+        self.get_style_context().add_class("track-menu-selected")
+        if xcoordinate is not None and ycoordinate is not None:
+            rect = Gdk.Rectangle()
+            rect.x = xcoordinate
+            rect.y = ycoordinate
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+        popover.popup()
+
     def __on_album_artwork(self, surface):
         """
             Set album artwork
@@ -312,24 +341,33 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.emit("populated")
         self.show_all()
 
-    def __on_button_press_event(self, widget, event):
+    def __on_gesture_begin(self, gesture, sequence):
         """
-            Store event x/y
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
+            Connect end signal
+            @param gesture as Gtk.GestureLongPress
+            @param sequence as Gdk.EventSequence
         """
-        self.__x_root = event.x_root
-        self.__y_root = event.y_root
+        event = gesture.get_last_event(sequence)
+        gesture.connect("end", self.__on_gesture_end, event.button)
 
-    def __on_button_release_event(self, widget, event):
+    def __on_gesture_pressed(self, gesture, x, y):
         """
-            Show revealer with tracks
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
+            Disconnect signal
+            @param gesture as Gtk.GestureLongPress
+            @param x as float
+            @param y as float
         """
-        # Ignore touch scroll events
-        if event.x_root != self.__x_root or event.y_root != self.__y_root:
-            return True
+        gesture.disconnect_by_func(self.__on_gesture_end)
+        self.__popup_menu(self, x, y)
+
+    def __on_gesture_end(self, gesture, sequence, event):
+        """
+            Handle normal sequence
+            @param gesture as Gtk.GestureLongPress
+            @param sequence as Gdk.EventSequence
+            @param event as Gdk.EventButton
+        """
+        gesture.disconnect_by_func(self.__on_gesture_end)
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self.__view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
@@ -339,8 +377,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         elif event.state & Gdk.ModifierType.SHIFT_MASK and\
                 self.__view_type & ViewType.DND:
             self.emit("do-selection")
-        else:
+        elif event.button == 1:
             self.reveal()
+        elif event.button == 3:
+            self.__popup_menu(self, event.x, event.y)
+        else:
+            self.__popup_menu(self)
+        return True
 
     def __on_action_button_release_event(self, button, event):
         """
@@ -349,9 +392,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        def on_closed(widget):
-            self.get_style_context().remove_class("track-menu-selected")
-
+        if not self.get_state_flags() & Gtk.StateFlags.PRELIGHT:
+            return
         if self.__view_type & ViewType.SEARCH:
             popover = self.get_ancestor(Gtk.Popover)
             if popover is not None:
@@ -375,12 +417,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 App().player.remove_album(self._album)
             self.destroy()
         else:
-            from lollypop.pop_menu import AlbumMenu
-            menu = AlbumMenu(self._album, True)
-            popover = Gtk.Popover.new_from_model(button, menu)
-            popover.connect("closed", on_closed)
-            self.get_style_context().add_class("track-menu-selected")
-            popover.popup()
+            self.__popup_menu(button)
         return True
 
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
