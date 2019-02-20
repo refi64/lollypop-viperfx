@@ -85,12 +85,18 @@ class FlowBoxView(LazyLoadingView):
             return widget
         else:
             GLib.idle_add(self.lazy_loading)
-            if self._view_type & ViewType.SCROLLED:
-                if self._viewport.get_child() is None:
-                    self._viewport.add(self._box)
-            elif self._box not in self.get_children():
-                self.add(self._box)
+            self._finish_setup()
         return None
+
+    def _finish_setup(self):
+        """
+            Finish widget setup
+        """
+        if self._view_type & ViewType.SCROLLED:
+            if self._viewport.get_child() is None:
+                self._viewport.add(self._box)
+        elif self._box not in self.get_children():
+            self.add(self._box)
 
     def _on_current_changed(self, player):
         """
