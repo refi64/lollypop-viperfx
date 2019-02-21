@@ -221,10 +221,14 @@ class ViewsContainer:
                 items += App().albums.get_ids(artist_ids, genre_ids)
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
-        from lollypop.view_artist import ArtistView
-        view = ArtistView(artist_ids, genre_ids)
-        loader = Loader(target=load, view=view)
-        loader.start()
+        if App().window.is_adaptive:
+            from lollypop.view_artist_small import ArtistViewSmall
+            view = ArtistViewSmall(artist_ids, genre_ids)
+        else:
+            from lollypop.view_artist import ArtistView
+            view = ArtistView(artist_ids, genre_ids)
+            loader = Loader(target=load, view=view)
+            loader.start()
         view.show()
         return view
 
@@ -261,7 +265,10 @@ class ViewsContainer:
             @param album as Album
         """
         from lollypop.view_album import AlbumView
-        view = AlbumView(album, album.artist_ids, album.genre_ids)
+        view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
+        if App().window.is_adaptive:
+            view_type |= ViewType.SMALL
+        view = AlbumView(album, album.artist_ids, album.genre_ids, view_type)
         view.populate()
         return view
 

@@ -50,6 +50,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self.__view_type = view_type
         if self.__view_type & ViewType.SMALL:
             self.__art_size = ArtSize.LARGE
+        elif self.__view_type & ViewType.MEDIUM:
+            self.__art_size = ArtSize.BANNER
         else:
             self.__art_size = ArtSize.BIG
         self.set_size_request(self.__art_size,
@@ -102,7 +104,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         grid.add(eventbox)
         self.set_artwork(self.__art_size, self.__art_size)
         self.set_selection()
-        if not self.__view_type & ViewType.SMALL:
+        if not self.__view_type & (ViewType.SMALL | ViewType.MEDIUM):
             self.__widget.connect("enter-notify-event", self._on_enter_notify)
             self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self._on_button_release)

@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view import LazyLoadingView
-from lollypop.define import App, ViewType
+from lollypop.define import ViewType
 from lollypop.widgets_album_detailed import AlbumDetailedWidget
 from lollypop.controller_view import ViewController, ViewControllerType
 
@@ -35,7 +35,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._album_box = Gtk.Grid()
-        self._album_box.set_row_spacing(5)
+        self._album_box.set_row_spacing(20)
         self._album_box.set_orientation(Gtk.Orientation.VERTICAL)
         self._album_box.set_property("valign", Gtk.Align.START)
         self._album_box.show()
@@ -59,19 +59,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         LazyLoadingView.stop(self)
         for child in self.children:
             child.stop()
-
-    def jump_to_current(self):
-        """
-            Jump to current album
-        """
-        widget = None
-        for child in self._album_box.get_children():
-            if child.id == App().player.current_track.album.id:
-                widget = child
-                break
-        if widget is not None:
-            y = widget.get_current_ordinate(self._album_box)
-            self._scrolled.get_vadjustment().set_value(y)
 
     @property
     def children(self):

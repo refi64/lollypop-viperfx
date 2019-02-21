@@ -28,14 +28,14 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         Show artist albums and tracks
     """
 
-    def __init__(self, album, artist_ids, genre_ids):
+    def __init__(self, album, artist_ids, genre_ids, view_type):
         """
             Init ArtistView
             @param album as Album
             @param artist_ids as [int]
             @param genre_ids as [int]
+            @param view_type as ViewType
         """
-        view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
         LazyLoadingView.__init__(self, view_type)
         TracksView.__init__(self, view_type)
         ViewController.__init__(self, ViewControllerType.ALBUM)
@@ -62,7 +62,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._scrolled)
         self._overlay.show()
-        self.__banner = AlbumBannerWidget(self._album)
+        self.__banner = AlbumBannerWidget(self._album, self._view_type)
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
         self.add(self._overlay)
@@ -108,7 +108,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
             Emit populated signal
             @param disc_number as int
         """
-        if TracksView.get_populated(self):
+        if TracksView.get_populated(self) and not App().window.is_adaptive:
             from lollypop.view_albums_box import AlbumsBoxView
             for artist_id in self.__artist_ids:
                 if artist_id == Type.COMPILATIONS:

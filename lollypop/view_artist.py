@@ -15,15 +15,13 @@ from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, ViewType, MARGIN
-from lollypop.utils import get_network_available, on_query_tooltip
-from lollypop.objects import Album
 from lollypop.pop_artwork import ArtworkPopover
-from lollypop.widgets_artist_banner import ArtistBannerWidget
 from lollypop.view_artist_albums import ArtistAlbumsView
+from lollypop.view_artist_common import ArtistViewCommon
 from lollypop.logger import Logger
 
 
-class ArtistView(ArtistAlbumsView):
+class ArtistView(ArtistAlbumsView, ArtistViewCommon):
     """
         Show artist albums and tracks
     """
@@ -42,45 +40,15 @@ class ArtistView(ArtistAlbumsView):
         self.__allocation_timeout_id = None
         self.__width = 0
         self.__show_artwork = len(artist_ids) == 1 and\
-            App().settings.get_value("artist-artwork") and\
-            not App().window.is_adaptive
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/ArtistView.ui")
-        builder.connect_signals(self)
-        self.__artwork = builder.get_object("artwork")
-        self.__title_label = builder.get_object("artist")
-        self.__title_label.connect("query-tooltip", on_query_tooltip)
-        self.__title_label.set_property("has-tooltip", True)
-        self.__jump_button = builder.get_object("jump-button")
-        self.__jump_button.set_tooltip_text(_("Go to current track"))
-        self.__add_button = builder.get_object("add-button")
-        self.__play_button = builder.get_object("play-button")
-        self.__buttons = builder.get_object("buttons")
-        self.__banner = ArtistBannerWidget(artist_ids[0])
-        self.__banner.add_overlay(self.__buttons)
-        self.__banner.show()
-        self._overlay.add_overlay(self.__banner)
-        if not App().window.is_adaptive:
-            self.__title_label.get_style_context().add_class(
-                "text-xx-large")
-        if App().lastfm is None:
-            builder.get_object("lastfm-button").hide()
-        elif not get_network_available():
-            builder.get_object("lastfm-button").set_sensitive(False)
-            builder.get_object("lastfm-button").set_tooltip_text(
-                _("Network access disabled"))
-        self._album_box.set_row_spacing(20)
+            App().settings.get_value("artist-artwork")
+        ArtistViewCommon.__init__(self)
+        self._overlay.add_overlay(self._banner)
+        self._title_label.get_style_context().add_class("text-xx-large")
         self._album_box.set_margin_start(MARGIN)
         self._album_box.set_margin_end(MARGIN)
-        builder.get_object("box-button").set_margin_end(MARGIN)
         self.__set_artwork()
         self.__on_album_changed(App().player)
-        self.__on_lock_changed(App().player)
-        artists = []
-        for artist_id in artist_ids:
-            artists.append(App().artists.get_name(artist_id))
-        self.__title_label.set_markup(
-            GLib.markup_escape_text(", ".join(artists)))
+        self._on_lock_changed(App().player)
 
     def jump_to_current(self):
         """
@@ -104,23 +72,21 @@ class ArtistView(ArtistAlbumsView):
             @param adj as Gtk.Adjustment
         """
         ArtistAlbumsView._on_value_changed(self, adj)
-        if App().window.is_adaptive:
-            return
-        title_style_context = self.__title_label.get_style_context()
+        title_style_context = self._title_label.get_style_context()
         if adj.get_value() == adj.get_lower() and self.__show_artwork:
-            height = self.__banner.default_height
-            self.__artwork.show()
+            height = self._banner.default_height
+            self._artwork.show()
             title_style_context.remove_class("text-x-large")
             title_style_context.add_class("text-xx-large")
         else:
-            height = self.__banner.default_height // 3
-            self.__artwork.hide()
+            height = self._banner.default_height // 3
+            self._artwork.hide()
             title_style_context.remove_class("text-xx-large")
             title_style_context.add_class("text-x-large")
         # Make grid cover artwork
         # No idea why...
-        self.__banner.set_height(height)
-        self.__buttons.set_size_request(-1, height + 1)
+        self._banner.set_height(height)
+        self._buttons.set_size_request(-1, height + 1)
 
     def _on_label_realize(self, eventbox):
         """
@@ -144,19 +110,6 @@ class ArtistView(ArtistAlbumsView):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
-    def _on_label_button_release(self, eventbox, event):
-        """
-            Show artists information
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if len(self._artist_ids) == 1:
-            from lollypop.pop_information import InformationPopover
-            self.__pop_info = InformationPopover(True)
-            self.__pop_info.set_relative_to(eventbox)
-            self.__pop_info.populate(self._artist_ids[0])
-            self.__pop_info.show()
-
     def _on_image_button_release(self, eventbox, event):
         """
             Show artist artwork manager
@@ -168,65 +121,12 @@ class ArtistView(ArtistAlbumsView):
             pop.set_relative_to(eventbox)
             pop.show()
 
-    def _on_play_clicked(self, widget):
-        """
-            Play artist albums
-        """
-        try:
-            if App().player.is_party:
-                App().lookup_action("party").change_state(
-                    GLib.Variant("b", False))
-            App().player.play_albums(None,
-                                     self._genre_ids,
-                                     self._artist_ids)
-            self.__update_icon(False)
-        except Exception as e:
-            Logger.error("ArtistView::_on_play_clicked: %s" % e)
-
-    def _on_add_clicked(self, widget):
-        """
-            Add artist albums
-        """
-        try:
-            album_ids = App().albums.get_ids(self._artist_ids, self._genre_ids)
-            len_album_ids = len(album_ids)
-            player_album_ids = App().player.album_ids
-            len_player_album_ids = len(player_album_ids)
-            icon_name = self.__add_button.get_image().get_icon_name()[0]
-            add = icon_name == "list-add-symbolic"
-            for album_id in album_ids:
-                if add and album_id not in player_album_ids:
-                    App().player.add_album(Album(album_id))
-                elif not add and album_id in player_album_ids:
-                    if len_player_album_ids > len_album_ids and\
-                            App().player.current_track.album.id == album_id:
-                        App().player.skip_album()
-                    App().player.remove_album_by_id(album_id)
-            if len_player_album_ids == len_album_ids:
-                App().player.stop()
-            self.__update_icon(not add)
-        except Exception as e:
-            Logger.error("ArtistView::_on_add_clicked: %s" % e)
-
     def _on_jump_button_clicked(self, button):
         """
             Scroll to album
             @parma button as Gtk.Button
         """
         self.jump_to_current()
-
-    def _on_lastfm_button_toggled(self, button):
-        """
-            Show lastfm similar artists
-            @param button as Gtk.Button
-        """
-        if button.get_active():
-            from lollypop.pop_lastfm import LastfmPopover
-            popover = LastfmPopover()
-            popover.set_relative_to(button)
-            popover.populate(self._artist_ids)
-            popover.connect("closed", lambda x: button.set_active(False))
-            popover.popup()
 
     def _on_current_changed(self, player):
         """
@@ -250,9 +150,9 @@ class ArtistView(ArtistAlbumsView):
             @param widget as Gtk.Widget
         """
         if self.__show_artwork:
-            self._album_box.set_margin_top(self.__banner.default_height + 15)
+            self._album_box.set_margin_top(self._banner.default_height + 15)
         else:
-            self._album_box.set_margin_top(self.__banner.default_height / 3 +
+            self._album_box.set_margin_top(self._banner.default_height // 3 +
                                            15)
         self.__art_signal_id = App().art.connect(
                                            "artist-artwork-changed",
@@ -268,7 +168,7 @@ class ArtistView(ArtistAlbumsView):
                                                   self.__on_album_changed)
         self.__lock_signal_id = App().player.connect(
                                                "lock-changed",
-                                               self.__on_lock_changed)
+                                               self._on_lock_changed)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", self._genre_ids))
         App().settings.set_value("state-two-ids",
@@ -303,7 +203,7 @@ class ArtistView(ArtistAlbumsView):
             Set artist artwork
         """
         if self.__show_artwork:
-            self.__artwork.set_margin_start(MARGIN)
+            self._artwork.set_margin_start(MARGIN)
             artist = App().artists.get_name(self._artist_ids[0])
             App().art_helper.set_artist_artwork(
                                         artist,
@@ -312,8 +212,8 @@ class ArtistView(ArtistAlbumsView):
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork)
         else:
-            self.__title_label.set_margin_start(MARGIN)
-            self.__banner.set_height(self.__banner.default_height / 3)
+            self._title_label.set_margin_start(MARGIN)
+            self._banner.set_height(self._banner.default_height / 3)
 
     def __update_jump_button(self):
         """
@@ -325,28 +225,9 @@ class ArtistView(ArtistAlbumsView):
                 found = True
                 break
         if found:
-            self.__jump_button.set_sensitive(True)
+            self._jump_button.set_sensitive(True)
         else:
-            self.__jump_button.set_sensitive(False)
-
-    def __update_icon(self, add):
-        """
-            Set icon for Artist +/-
-            @param add as bool
-        """
-        if add:
-            # Translators: artist context
-            self.__add_button.set_tooltip_text(_("Add to current playlist"))
-            self.__add_button.get_image().set_from_icon_name(
-                "list-add-symbolic",
-                Gtk.IconSize.DND)
-        else:
-            # Translators: artist context
-            self.__add_button.set_tooltip_text(
-                _("Remove from current playlist"))
-            self.__add_button.get_image().set_from_icon_name(
-                "list-remove-symbolic",
-                Gtk.IconSize.DND)
+            self._jump_button.set_sensitive(False)
 
     def __on_album_changed(self, player, album_id=None):
         """
@@ -356,15 +237,7 @@ class ArtistView(ArtistAlbumsView):
         """
         albums = App().albums.get_ids(self._artist_ids, self._genre_ids)
         album_ids = App().player.album_ids
-        self.__update_icon(len(set(albums) & set(album_ids)) != len(albums))
-
-    def __on_lock_changed(self, player):
-        """
-            Lock buttons
-            @param player as Player
-        """
-        self.__add_button.set_sensitive(not player.is_locked)
-        self.__play_button.set_sensitive(not player.is_locked)
+        self._update_icon(len(set(albums) & set(album_ids)) != len(albums))
 
     def __on_artist_artwork_changed(self, art, prefix):
         """
@@ -374,7 +247,7 @@ class ArtistView(ArtistAlbumsView):
         """
         artist = App().artists.get_name(self._artist_ids[0])
         if prefix == artist:
-            self.__artwork.clear()
+            self._artwork.clear()
             self.__set_artwork()
 
     def __on_artist_artwork(self, surface):
@@ -383,11 +256,11 @@ class ArtistView(ArtistAlbumsView):
             @param surface as cairo.Surface
         """
         if surface is None:
-            self.__artwork.set_from_icon_name(
+            self._artwork.set_from_icon_name(
                                               "avatar-default-symbolic",
                                               Gtk.IconSize.DND)
         else:
-            self.__artwork.set_from_surface(surface)
-            self.__artwork.get_style_context().remove_class(
+            self._artwork.set_from_surface(surface)
+            self._artwork.get_style_context().remove_class(
                 "artwork-icon")
-        self.__artwork.show()
+        self._artwork.show()
