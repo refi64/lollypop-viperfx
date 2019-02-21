@@ -401,7 +401,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             popover = self.get_ancestor(Gtk.Popover)
             if popover is not None:
                 popover.popdown()
-            if App().settings.get_value("show-sidebar"):
+            if App().settings.get_value("show-sidebar") and\
+                    not App().window.is_adaptive:
                 App().window.container.show_artists_albums(
                     self._album.artist_ids)
             else:
