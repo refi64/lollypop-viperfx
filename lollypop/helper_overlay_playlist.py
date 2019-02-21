@@ -71,7 +71,8 @@ class OverlayPlaylistHelper(OverlayHelper):
                     self.__play_button.set_tooltip_text(_("Remove"))
             self.__play_button.set_property("has-tooltip", True)
             self.__play_button.connect("realize", on_realize)
-            self.__play_button.connect("clicked", self.__on_play_clicked)
+            self.__play_button.connect("button-release-event",
+                                       self.__on_play_button_release_event)
             self.__play_button.get_image().set_pixel_size(self._pixel_size +
                                                           20)
             self.__play_button.show()
@@ -82,7 +83,8 @@ class OverlayPlaylistHelper(OverlayHelper):
             self.__edit_button.set_property("has-tooltip", True)
             self.__edit_button.set_tooltip_text(_("Modify playlist"))
             self.__edit_button.connect("realize", on_realize)
-            self.__edit_button.connect("clicked", self.__on_edit_clicked)
+            self.__edit_button.connect("button-release-event",
+                                       self.__on_edit_button_release_event)
             self.__edit_button.get_image().set_pixel_size(self._pixel_size)
             self.__edit_button.show()
             self._big_grid.add(self.__play_button)
@@ -104,10 +106,11 @@ class OverlayPlaylistHelper(OverlayHelper):
 # PRIVATE             #
 #######################
 
-    def __on_play_clicked(self, button):
+    def __on_play_button_release_event(self, button, event):
         """
             Play playlist
             @param button as Gtk.Button
+            @param event as Gdk.EventButton
         """
         if self._obj is None:
             if App().player.is_locked:
@@ -138,10 +141,11 @@ class OverlayPlaylistHelper(OverlayHelper):
             App().window.container.reload_view()
         return True
 
-    def __on_edit_clicked(self, button):
+    def __on_edit_button_release_event(self, button, event):
         """
             Edit playlist
             @param button as Gtk.Button
+            @param event as Gdk.EventButton
         """
         from lollypop.pop_playlist_edit import PlaylistEditPopover
         popover = PlaylistEditPopover(self._data)
