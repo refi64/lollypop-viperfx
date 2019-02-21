@@ -12,9 +12,63 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
 from lollypop.widgets_utils import Popover
+
+
+class ArtistRow(Gtk.ListBoxRow):
+    """
+        An artist row
+    """
+
+    def __init__(self, artist_name):
+        """
+            Init row
+            @param artist_name as str
+        """
+        Gtk.ListBoxRow.__init__(self)
+        self.__artist_name = artist_name
+        grid = Gtk.Grid()
+        grid.set_column_spacing(5)
+        label = Gtk.Label.new(artist_name)
+        label.set_property("halign", Gtk.Align.START)
+        label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__artwork = Gtk.Image.new()
+        self.__artwork.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
+        App().art_helper.set_artist_artwork(artist_name,
+                                            ArtSize.MEDIUM,
+                                            ArtSize.MEDIUM,
+                                            self.get_scale_factor(),
+                                            self.__on_artist_artwork)
+        grid.add(self.__artwork)
+        grid.add(label)
+        grid.show_all()
+        self.add(grid)
+
+    @property
+    def artist_name(self):
+        """
+            Get artist name
+            @return str
+        """
+        return self.__artist_name
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_artist_artwork(self, surface):
+        """
+            Set artist artwork
+            @param surface as cairo.Surface
+        """
+        if surface is None:
+            self.__artwork.get_style_context().add_class("artwork-icon")
+            self.__artwork.set_from_icon_name("avatar-default-symbolic",
+                                              Gtk.IconSize.INVALID)
+            self.__artwork.set_pixel_size(ArtSize.MEDIUM)
+        else:
+            self.__artwork.set_from_surface(surface)
 
 
 class LastfmPopover(Popover):
@@ -33,14 +87,14 @@ class LastfmPopover(Popover):
         self.__stack = builder.get_object("stack")
         self.__spinner = builder.get_object("spinner")
         self.__spinner.start()
-        self.__view = Gtk.ListBox()
-        self.__view.get_style_context().add_class("trackswidget")
-        self.__view.set_vexpand(True)
-        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.__view.set_activate_on_single_click(True)
-        self.__view.connect("row-activated", self.__on_row_activated)
-        self.__view.show()
-        self.__stack.add(self.__view)
+        self.__listbox = Gtk.ListBox()
+        self.__listbox.get_style_context().add_class("trackswidget")
+        self.__listbox.set_vexpand(True)
+        self.__listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.__listbox.set_activate_on_single_click(True)
+        self.__listbox.connect("row-activated", self.__on_row_activated)
+        self.__listbox.show()
+        self.__stack.add(self.__listbox)
         self.add(builder.get_object("widget"))
 
     def populate(self, artist_ids):
@@ -80,15 +134,14 @@ class LastfmPopover(Popover):
             if artist_id is not None:
                 albums = App().artists.get_albums([artist_id])
                 if albums:
-                    label = Gtk.Label.new(artist)
-                    label.set_ellipsize(Pango.EllipsizeMode.END)
-                    label.show()
-                    self.__view.add(label)
+                    row = ArtistRow(artist)
+                    row.show()
+                    self.__listbox.add(row)
             GLib.idle_add(self.__populate, artists)
         else:
             self.__spinner.stop()
-            if self.__view.get_children():
-                self.__stack.set_visible_child(self.__view)
+            if self.__listbox.get_children():
+                self.__stack.set_visible_child(self.__listbox)
             else:
                 self.__stack.set_visible_child_name("no-result")
 
@@ -106,7 +159,7 @@ class LastfmPopover(Popover):
             @param row as Gtk.ListBoxRow
         """
         self.popdown()
-        artist_name = row.get_child().get_text()
+        artist_name = row.artist_name
         artist_id = App().artists.get_id(artist_name)
         if App().settings.get_value("show-sidebar"):
             GLib.idle_add(App().window.container.show_artists_albums,
