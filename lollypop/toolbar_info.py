@@ -117,7 +117,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show hand cursor over
         """
-        if App().window.is_adaptive or not self._artwork.get_visible():
+        if App().window.is_adaptive:
             return
         try:
             self._artwork.show()
