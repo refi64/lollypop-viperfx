@@ -34,16 +34,18 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         RoundedFlowBoxWidget.__init__(self, item[0], item[1],
                                       item[1], art_size)
-        self.connect("destroy", self.__on_destroy)
 
     def populate(self):
         """
             Populate widget content
         """
         RoundedFlowBoxWidget.populate(self)
+        self.connect("destroy", self.__on_destroy)
+        self.connect("button-release-event", self.__on_button_release_event)
         self.__gesture = Gtk.GestureLongPress.new(self)
-        self.__gesture.connect("begin", self.__on_gesture_begin)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        # We want to get release event after gesture
+        self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
 
     def show_overlay(self, show):
@@ -138,15 +140,6 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             self._artwork.get_style_context().add_class("artwork-icon")
         self.emit("populated")
 
-    def __on_gesture_begin(self, gesture, sequence):
-        """
-            Connect end signal
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-        """
-        event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end, event.button.button)
-
     def __on_gesture_pressed(self, gesture, x, y):
         """
             Show current track menu
@@ -154,19 +147,17 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             @param x as float
             @param y as float
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
         self.__popup_menu(self)
 
-    def __on_gesture_end(self, gesture, sequence, button):
+    def __on_button_release_event(self, widget, event):
         """
-            Handle normal sequence
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-            @param button as int
+            Handle button release event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
-        if button == 3:
+        if event.button == 3:
             self.__popup_menu(self)
+        return True
 
     def __on_destroy(self, widget):
         """
