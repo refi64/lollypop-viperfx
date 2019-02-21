@@ -57,9 +57,11 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
         self.connect("button-press-event", self.__on_button_press_event)
+        self.connect("button-release-event", self.__on_button_release_event)
         self.__gesture = Gtk.GestureLongPress.new(self)
-        self.__gesture.connect("begin", self.__on_gesture_begin)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        # We want to get release event after gesture
+        self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
 
     def do_get_preferred_width(self):
@@ -148,67 +150,60 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             pixbuf = App().art.get_radio_artwork(name, self.art_size)
             self._artwork.set_from_surface(pixbuf)
 
+    def __popup_menu(self):
+        """
+            Show contextual menu
+        """
+        if self.__mini:
+            return
+        from lollypop.pop_menu import ToolbarMenu
+        menu = ToolbarMenu(App().player.current_track)
+        if App().player.current_track.id >= 0:
+            from lollypop.pop_menu import TrackMenuPopover
+            popover = TrackMenuPopover(App().player.current_track, menu)
+            popover.set_relative_to(self._infobox)
+        elif App().player.current_track.id == Type.RADIOS:
+            popover = Popover.new_from_model(self._infobox, menu)
+        popover.popup()
+
     def __on_button_press_event(self, widget, event):
         """
             Handle right click
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if event.button == 3:
-            self.__on_gesture_pressed(None, 0, 0, event.button)
+        if not self.__mini and event.button == 3:
+            self.__popup_menu()
             return True
 
-    def __on_gesture_begin(self, gesture, sequence):
+    def __on_button_release_event(self, widget, event):
         """
-            Connect end signal
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
+            Handle buttons
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end, event.button.button)
+        if self.__mini:
+            return
+        if App().player.current_track.id == Type.RADIOS:
+            from lollypop.pop_tunein import TuneinPopover
+            popover = TuneinPopover()
+            popover.populate()
+        elif App().player.current_track.id is not None:
+            from lollypop.pop_information import InformationPopover
+            popover = InformationPopover()
+            popover.populate()
+        popover.set_relative_to(self._infobox)
+        popover.popup()
+        return True
 
-    def __on_gesture_pressed(self, gesture, x, y, button=None):
+    def __on_gesture_pressed(self, gesture, x, y):
         """
             Show current track menu
             @param gesture as Gtk.GestureLongPress
             @param x as int
             @param y as int
-            @param button as int
         """
-        if gesture is not None:
-            gesture.disconnect_by_func(self.__on_gesture_end)
-        if self.__mini:
-            return
-        if button is None or button == 3:
-            from lollypop.pop_menu import ToolbarMenu
-            menu = ToolbarMenu(App().player.current_track)
-            if App().player.current_track.id >= 0:
-                from lollypop.pop_menu import TrackMenuPopover
-                popover = TrackMenuPopover(App().player.current_track, menu)
-                popover.set_relative_to(self._infobox)
-            elif App().player.current_track.id == Type.RADIOS:
-                popover = Popover.new_from_model(self._infobox, menu)
-            popover.popup()
-        else:
-            if App().player.current_track.id == Type.RADIOS:
-                from lollypop.pop_tunein import TuneinPopover
-                popover = TuneinPopover()
-                popover.populate()
-            elif App().player.current_track.id is not None:
-                from lollypop.pop_information import InformationPopover
-                popover = InformationPopover()
-                popover.populate()
-            popover.set_relative_to(self._infobox)
-            popover.popup()
-
-    def __on_gesture_end(self, gesture, sequence, button):
-        """
-            Handle normal sequence
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-            @param event as Gdk.EventButton
-        """
-        self.__on_gesture_pressed(gesture, 0, 0, button)
+        self.__popup_menu()
 
     def __on_realize(self, toolbar):
         """
