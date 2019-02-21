@@ -85,7 +85,7 @@ class RoundedArtistsView(FlowBoxView):
             @param items as [(int, str, str)]
         """
         if App().window.is_adaptive:
-            FlowBoxView._add_items(self, items, ArtSize.LARGE)
+            FlowBoxView._add_items(self, items, ArtSize.BANNER)
         else:
             FlowBoxView._add_items(self, items, ArtSize.BIG)
 
