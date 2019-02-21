@@ -43,7 +43,10 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             App().settings.get_value("artist-artwork")
         ArtistViewCommon.__init__(self)
         self._overlay.add_overlay(self._banner)
-        self._title_label.get_style_context().add_class("text-xx-large")
+        if self.__show_artwork:
+            self._title_label.get_style_context().add_class("text-xx-large")
+        else:
+            self._title_label.get_style_context().add_class("text-x-large")
         self._album_box.set_margin_start(MARGIN)
         self._album_box.set_margin_end(MARGIN)
         self.__set_artwork()
