@@ -60,10 +60,7 @@ class ArtistView(ArtistAlbumsView):
         self.__banner.add_overlay(self.__buttons)
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
-        if App().window.is_adaptive:
-            self.__title_label.get_style_context().add_class(
-                "text-x-large")
-        else:
+        if not App().window.is_adaptive:
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
         if App().lastfm is None:
@@ -107,13 +104,14 @@ class ArtistView(ArtistAlbumsView):
             @param adj as Gtk.Adjustment
         """
         ArtistAlbumsView._on_value_changed(self, adj)
+        if App().window.is_adaptive:
+            return
         title_style_context = self.__title_label.get_style_context()
         if adj.get_value() == adj.get_lower() and self.__show_artwork:
             height = self.__banner.default_height
             self.__artwork.show()
-            if not App().window.is_adaptive:
-                title_style_context.remove_class("text-x-large")
-                title_style_context.add_class("text-xx-large")
+            title_style_context.remove_class("text-x-large")
+            title_style_context.add_class("text-xx-large")
         else:
             height = self.__banner.default_height // 3
             self.__artwork.hide()

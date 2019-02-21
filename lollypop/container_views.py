@@ -404,8 +404,7 @@ class ViewsContainer:
         if App().player.playlist_ids:
             from lollypop.view_playlists import PlaylistsView
             view = PlaylistsView(App().player.playlist_ids,
-                                 ViewType.DND | ViewType.POPOVER,
-                                 False)
+                                 ViewType.DND | ViewType.POPOVER)
             view.populate(App().player.playlist_tracks)
         else:
             from lollypop.view_current_albums import CurrentAlbumsView

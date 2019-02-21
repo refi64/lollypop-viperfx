@@ -47,10 +47,11 @@ class AlbumBannerWidget(Gtk.Bin):
         menu_button = builder.get_object("menu_button")
         if view_type & ViewType.SMALL:
             icon_size = Gtk.IconSize.BUTTON
-            self.__title_label.get_style_context().add_class(
-                "text-large")
-            self.__year_label.get_style_context().add_class(
-                "text-large")
+            if not App().window.is_adaptive:
+                self.__title_label.get_style_context().add_class(
+                    "text-large")
+                self.__year_label.get_style_context().add_class(
+                    "text-large")
         else:
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
@@ -121,14 +122,15 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__duration_label.hide()
             self.__rating_grid.hide()
             self.__year_label.set_vexpand(True)
-            self.__title_label.get_style_context().remove_class(
-                "text-xx-large")
-            self.__title_label.get_style_context().add_class(
-                "text-x-large")
-            self.__year_label.get_style_context().remove_class(
-                "text-x-large")
-            self.__year_label.get_style_context().add_class(
-                "text-large")
+            if not App().window.is_adaptive:
+                self.__title_label.get_style_context().remove_class(
+                    "text-xx-large")
+                self.__title_label.get_style_context().add_class(
+                    "text-x-large")
+                self.__year_label.get_style_context().remove_class(
+                    "text-x-large")
+                self.__year_label.get_style_context().add_class(
+                    "text-large")
         else:
             # Make grid cover artwork
             # No idea why...
@@ -137,12 +139,7 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__duration_label.show()
             self.__rating_grid.show()
             self.__year_label.set_vexpand(False)
-            if App().window.is_adaptive:
-                self.__title_label.get_style_context().add_class(
-                    "text-x-large")
-                self.__year_label.get_style_context().add_class(
-                    "text-large")
-            else:
+            if not App().window.is_adaptive:
                 self.__title_label.get_style_context().add_class(
                     "text-xx-large")
                 self.__year_label.get_style_context().add_class(
