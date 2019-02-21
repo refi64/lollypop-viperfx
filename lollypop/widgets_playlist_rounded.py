@@ -58,9 +58,11 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
         RoundedAlbumsWidget.populate(self)
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
+        self.connect("button-release-event", self.__on_button_release_event)
         self.__gesture = Gtk.GestureLongPress.new(self)
-        self.__gesture.connect("begin", self.__on_gesture_begin)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        # We want to get release event after gesture
+        self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
 
     @property
@@ -109,15 +111,6 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
         popover.set_relative_to(widget)
         popover.popup()
 
-    def __on_gesture_begin(self, gesture, sequence):
-        """
-            Connect end signal
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-        """
-        event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end, event.button.button)
-
     def __on_gesture_pressed(self, gesture, x, y):
         """
             Show current track menu
@@ -125,16 +118,14 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
             @param x as float
             @param y as float
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
         self.__popup_menu(self)
 
-    def __on_gesture_end(self, gesture, sequence, button):
+    def __on_button_release_event(self, widget, event):
         """
-            Handle normal sequence
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-            @param button as int
+            Handle button release event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
-        if button == 3:
+        if event.button == 3:
             self.__popup_menu(self)
+        return True
