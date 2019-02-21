@@ -161,10 +161,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__row_widget.add(grid)
         self.add(self.__row_widget)
         self.set_playing_indicator()
-        self.__row_widget.connect("button-release-event",
-                                  self.__on_button_release_event)
         self.__gesture = Gtk.GestureLongPress.new(self.__row_widget)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        self.__gesture.connect("end", self.__on_gesture_end)
         # We want to get release event after gesture
         self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
@@ -358,12 +357,22 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         self.__popup_menu(self, x, y)
 
+    def __on_gesture_end(self, gesture, sequence):
+        """
+            Connect button release event
+            Here because we only want this if a gesture was recognized
+            This allow touch scrolling
+        """
+        self.__row_widget.connect("button-release-event",
+                                  self.__on_button_release_event)
+
     def __on_button_release_event(self, widget, event):
         """
             Handle button release event
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        widget.disconnect_by_func(self.__on_button_release_event)
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self.__view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:

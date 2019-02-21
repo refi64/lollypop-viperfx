@@ -38,11 +38,10 @@ class Row(Gtk.ListBoxRow):
         self.__filtered = False
         self._indicator = IndicatorWidget(self, view_type)
         self._row_widget = Gtk.EventBox()
-        self._row_widget.connect("button-release-event",
-                                 self.__on_button_release_event)
         self._row_widget.connect("destroy", self._on_destroy)
         self.__gesture = Gtk.GestureLongPress.new(self._row_widget)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        self.__gesture.connect("end", self.__on_gesture_end)
         # We want to get release event after gesture
         self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
@@ -269,6 +268,7 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        widget.disconnect_by_func(self.__on_button_release_event)
         if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self._view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
@@ -307,6 +307,15 @@ class Row(Gtk.ListBoxRow):
             self.destroy()
         else:
             self.__popup_menu(self, x, y)
+
+    def __on_gesture_end(self, gesture, sequence):
+        """
+            Connect button release event
+            Here because we only want this if a gesture was recognized
+            This allow touch scrolling
+        """
+        self._row_widget.connect("button-release-event",
+                                 self.__on_button_release_event)
 
     def __on_action_button_release_event(self, button, event):
         """
