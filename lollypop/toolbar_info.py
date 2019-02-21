@@ -117,7 +117,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show hand cursor over
         """
-        if App().window.is_adaptive or not self.__artwork.get_visible():
+        if App().window.is_adaptive or not self._artwork.get_visible():
             return
         try:
             self._artwork.show()
@@ -151,7 +151,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show contextual menu
         """
-        if App().window.is_adaptive or not self.__artwork.get_visible():
+        if App().window.is_adaptive or not self._artwork.get_visible():
             return
         from lollypop.pop_menu import ToolbarMenu
         menu = ToolbarMenu(App().player.current_track)
@@ -179,7 +179,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if App().window.is_adaptive or not self.__artwork.get_visible():
+        if App().window.is_adaptive or not self._artwork.get_visible():
             return
         if App().player.current_track.id == Type.RADIOS:
             from lollypop.pop_tunein import TuneinPopover
