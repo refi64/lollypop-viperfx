@@ -180,6 +180,10 @@ popover.background separator {
 	min-width: 48px;
 }
 
+.banner-frame-back {
+    background-color: shade(@theme_bg_color, 1.5);
+}
+
 .banner-frame {
     border: 1px solid shade(@theme_bg_color, 0.7);
     background-color: shade(@theme_bg_color, 1.5);
@@ -188,7 +192,7 @@ popover.background separator {
 }
 
 .banner-frame:selected {
-    background-color: shade(@theme_selected_bg_color, 1.75);
+    background-color: alpha(@theme_selected_bg_color, 0.1);
 }
 
 .cover-frame {

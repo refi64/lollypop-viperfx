@@ -76,7 +76,8 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
         if view_type & ViewType.SMALL:
-            self.__artwork.get_style_context().add_class("banner-frame")
+            self.__grid.get_style_context().add_class("banner-frame")
+            self.__artwork.get_style_context().add_class("banner-frame-back")
             # See application.css: cover-frame
             self.__padding = 8
             self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
@@ -163,9 +164,9 @@ class AlbumBannerWidget(Gtk.Bin):
             @param selected as bool
         """
         if selected:
-            self.__artwork.set_state_flags(Gtk.StateFlags.SELECTED, True)
+            self.__grid.set_state_flags(Gtk.StateFlags.SELECTED, True)
         else:
-            self.__artwork.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            self.__grid.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     @property
     def height(self):
