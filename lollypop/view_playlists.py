@@ -66,6 +66,7 @@ class PlaylistsView(LazyLoadingView, ViewController):
         self.__duration_label.set_margin_start(MARGIN)
         self.__buttons.set_margin_end(MARGIN)
         if self.__view_type & ViewType.POPOVER:
+            self.__duration_label.set_margin_end(MARGIN)
             self.__title_label.get_style_context().add_class("dim-label")
             self.__duration_label.get_style_context().add_class("dim-label")
             self.__widget.add(self.__title_label)
