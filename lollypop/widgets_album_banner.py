@@ -43,7 +43,9 @@ class AlbumBannerWidget(Gtk.Bin):
         builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
         builder.connect_signals(self)
         self.__title_label = builder.get_object("name_label")
+        self.__title_label.connect("query-tooltip", on_query_tooltip)
         self.__year_label = builder.get_object("year_label")
+        self.__duration_label = builder.get_object("duration_label")
         menu_button = builder.get_object("menu_button")
         if view_type & ViewType.SMALL:
             icon_size = Gtk.IconSize.BUTTON
@@ -60,10 +62,7 @@ class AlbumBannerWidget(Gtk.Bin):
                 "text-x-large")
         menu_button.get_image().set_from_icon_name("view-more-symbolic",
                                                    icon_size)
-        self.__duration_label = builder.get_object("duration_label")
-        self.__title_label.set_text(album.name)
-        self.__title_label.connect("query-tooltip", on_query_tooltip)
-        self.__title_label.set_property("has-tooltip", True)
+        self.__title_label.set_markup(GLib.markup_escape_text(album.name))
         self.__year_label.set_text(str(album.year))
         self.__year_label.set_margin_end(MARGIN)
         year_eventbox = builder.get_object("year_eventbox")
@@ -94,7 +93,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
         self.__cover_widget.show()
-        self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
+        self.__grid.attach(self.__cover_widget, 0, 0, 1, 5)
         self.__rating_grid = builder.get_object("rating_grid")
         rating = RatingWidget(album, icon_size)
         rating.set_property("halign", Gtk.Align.START)

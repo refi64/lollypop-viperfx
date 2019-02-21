@@ -33,14 +33,16 @@
             <property name="ellipsize">end</property>
           </object>
           <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">2</property>
+            <property name="left_attach">1</property>
+            <property name="top_attach">3</property>
+            <property name="width">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkGrid" id="rating_grid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">end</property>
             <property name="column_spacing">10</property>
             <child>
               <object class="GtkButton" id="menu_button">
@@ -78,6 +80,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">end</property>
+            <property name="valign">end</property>
             <child>
               <object class="GtkLabel" id="year_label">
                 <property name="visible">True</property>
@@ -90,26 +93,34 @@
             </child>
           </object>
           <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">1</property>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+            <property name="width">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="name_label">
+          <object class="GtkEventBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
-            <property name="margin_left">15</property>
-            <property name="margin_right">10</property>
-            <property name="hexpand">True</property>
-            <property name="ellipsize">end</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <property name="valign">start</property>
+            <child>
+              <object class="GtkLabel" id="name_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="has_tooltip">True</property>
+                <property name="margin_left">15</property>
+                <property name="ellipsize">end</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="top_attach">1</property>
+            <property name="width">2</property>
           </packing>
         </child>
         <child>
