@@ -126,6 +126,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if event.button == 3:
+        if event.button == 1:
+            self.activate()
+        elif event.button == 3:
             self.__popup_menu(self)
         return True
