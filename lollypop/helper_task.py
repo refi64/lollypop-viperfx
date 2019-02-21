@@ -53,7 +53,7 @@ class TaskHelper:
 
     def load_uri_content(self, uri, cancellable, callback, *args):
         """
-            Load uri with libsoup (better performance than Gio)
+            Load uri with libsoup
             @param uri as str
             @param cancellable as Gio.Cancellable
             @param callback as a function
@@ -62,13 +62,25 @@ class TaskHelper:
         try:
             session = Soup.Session.new()
             session.set_property('accept-language-auto', True)
-            request = session.request(uri)
-            request.send_async(cancellable,
-                               self.__on_request_send_async,
-                               callback,
-                               cancellable,
-                               uri,
-                               *args)
+            # Post message
+            if self.__headers:
+                msg = Soup.Message.new("GET", uri)
+                headers = msg.get_property("request-headers")
+                for header in self.__headers:
+                    headers.append(header[0],
+                                   header[1])
+                session.send_async(msg, cancellable,
+                                   self.__on_load_uri_content,
+                                   callback, cancellable, uri, *args)
+            # Get message
+            else:
+                request = session.request(uri)
+                request.send_async(cancellable,
+                                   self.__on_request_send_async,
+                                   callback,
+                                   cancellable,
+                                   uri,
+                                   *args)
         except Exception as e:
             Logger.error("HelperTask::load_uri_content(): %s" % e)
             callback(uri, False, b"", *args)
@@ -173,3 +185,23 @@ class TaskHelper:
         except Exception as e:
             Logger.error("TaskHelper::__on_soup_msg_finished(): %s" % e)
             callback(uri, False, b"", *args)
+
+    def __on_load_uri_content(self, source, result, callback,
+                              cancellable, uri, *args):
+        """
+            Get stream and start reading from it
+            @param source as Soup.Session
+            @param result as Gio.AsyncResult
+            @param cancellable as Gio.Cancellable
+            @param callback as a function
+            @param uri as str
+        """
+        try:
+            stream = source.send_finish(result)
+            # We use a bytearray here as seems that bytes += is really slow
+            stream.read_bytes_async(4096, GLib.PRIORITY_LOW,
+                                    cancellable, self.__on_read_bytes_async,
+                                    bytearray(0), cancellable, callback, uri,
+                                    *args)
+        except Exception as e:
+            Logger.error("TaskHelper::__on_soup_msg_finished(): %s" % e)

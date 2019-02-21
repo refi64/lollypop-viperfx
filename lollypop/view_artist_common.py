@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App, MARGIN
-from lollypop.utils import get_network_available, on_query_tooltip
+from lollypop.utils import on_query_tooltip
 from lollypop.objects import Album
 from lollypop.widgets_artist_banner import ArtistBannerWidget
 from lollypop.logger import Logger
@@ -46,12 +46,6 @@ class ArtistViewCommon:
         self._banner.add_overlay(self._buttons)
         self._banner.show()
         self._on_lock_changed(App().player)
-        if App().lastfm is None:
-            builder.get_object("lastfm-button").hide()
-        elif not get_network_available():
-            builder.get_object("lastfm-button").set_sensitive(False)
-            builder.get_object("lastfm-button").set_tooltip_text(
-                _("Network access disabled"))
         builder.get_object("box-button").set_margin_end(MARGIN)
         self._on_lock_changed(App().player)
         artists = []
@@ -147,14 +141,14 @@ class ArtistViewCommon:
         except Exception as e:
             Logger.error("ArtistView::_on_add_clicked: %s" % e)
 
-    def _on_lastfm_button_toggled(self, button):
+    def _on_similars_button_toggled(self, button):
         """
-            Show lastfm similar artists
+            Show similar artists
             @param button as Gtk.Button
         """
         if button.get_active():
-            from lollypop.pop_lastfm import LastfmPopover
-            popover = LastfmPopover()
+            from lollypop.pop_similars import SimilarsPopover
+            popover = SimilarsPopover()
             popover.set_relative_to(button)
             popover.populate(self._artist_ids)
             popover.connect("closed", lambda x: button.set_active(False))

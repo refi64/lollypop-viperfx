@@ -12,7 +12,6 @@
      <file compressed="true" preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">EqualizerWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">FullScreen.ui</file>
-     <file compressed="true" preprocess="xml-stripblanks">LastfmPopover.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LovedWidget.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">LyricsView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">MiniPlayer.ui</file>
@@ -30,6 +29,7 @@
      <file compressed="true" preprocess="xml-stripblanks">SettingsCollections.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SettingsDialog.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SettingsWeb.ui</file>
+     <file compressed="true" preprocess="xml-stripblanks">SimilarsPopover.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">Shortcuts.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SmartPlaylistView.ui</file>
      <file compressed="true" preprocess="xml-stripblanks">SmartPlaylistWidget.ui</file>

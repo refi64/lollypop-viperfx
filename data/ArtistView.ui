@@ -142,7 +142,7 @@
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Similar artists</property>
                 <property name="image">image4</property>
-                <signal name="toggled" handler="_on_lastfm_button_toggled" swapped="no"/>
+                <signal name="toggled" handler="_on_similars_button_toggled" swapped="no"/>
                 <style>
                   <class name="light-button"/>
                   <class name="light-button-no-right-border"/>

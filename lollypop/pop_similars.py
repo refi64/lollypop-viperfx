@@ -14,7 +14,9 @@ from gi.repository import Gtk, GLib, Pango
 
 from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
+from lollypop.helper_spotify import SpotifyHelper
 from lollypop.widgets_utils import Popover
+from lollypop.logger import Logger
 
 
 class ArtistRow(Gtk.ListBoxRow):
@@ -71,9 +73,9 @@ class ArtistRow(Gtk.ListBoxRow):
             self.__artwork.set_from_surface(surface)
 
 
-class LastfmPopover(Popover):
+class SimilarsPopover(Popover):
     """
-        A lastfm popover with similar artists
+        A popover with similar artists
     """
 
     def __init__(self):
@@ -82,7 +84,8 @@ class LastfmPopover(Popover):
         """
         Popover.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/LastfmPopover.ui")
+        builder.add_from_resource("/org/gnome/Lollypop/SimilarsPopover.ui")
+        self.__added = []
         self.connect("map", self.__on_map)
         self.__stack = builder.get_object("stack")
         self.__spinner = builder.get_object("spinner")
@@ -105,14 +108,18 @@ class LastfmPopover(Popover):
         if get_network_available():
             artists = []
             for artist_id in artist_ids:
-                artists.append(App().artists.get_name(artist_id))
-            App().task_helper.run(self.__get_similars, artists,
+                artist_name = App().artists.get_name(artist_id)
+                artists.append(artist_name)
+                SpotifyHelper.get_artist_id(artist_name,
+                                            self.__on_get_artist_id)
+        if App().lastfm is not None:
+            App().task_helper.run(self.__get_lastfm_similars, artists,
                                   callback=(self.__populate,))
 
 #######################
 # PRIVATE             #
 #######################
-    def __get_similars(self, artists):
+    def __get_lastfm_similars(self, artists):
         """
             Get similars artists from lastfm
             @param artists as [str]
@@ -121,6 +128,7 @@ class LastfmPopover(Popover):
         similars = []
         for artist in artists:
             similars += App().lastfm.get_similars(artist)
+        Logger.info("SimilarsPopover::Last.fm: %s" % similars)
         return similars
 
     def __populate(self, artists):
@@ -130,6 +138,10 @@ class LastfmPopover(Popover):
         """
         if artists:
             artist = artists.pop(0)
+            if artist in self.__added:
+                GLib.idle_add(self.__populate, artists)
+                return
+            self.__added.append(artist)
             artist_id = App().artists.get_id(artist)
             # We want real artist name (with case)
             artist_name = App().artists.get_name(artist_id)
@@ -146,6 +158,22 @@ class LastfmPopover(Popover):
                 self.__stack.set_visible_child(self.__listbox)
             else:
                 self.__stack.set_visible_child_name("no-result")
+
+    def __on_get_artist_id(self, artist_id):
+        """
+            Get similars
+            @param artist_id as str
+        """
+        SpotifyHelper.get_similar_artists(artist_id,
+                                          self.__on_get_similars)
+
+    def __on_get_similars(self, artists):
+        """
+            Add artists
+            @param artists as str
+        """
+        Logger.info("SimilarsPopover::Spotify: %s" % artists)
+        self.__populate(artists)
 
     def __on_map(self, widget):
         """
