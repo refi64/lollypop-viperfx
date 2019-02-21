@@ -107,7 +107,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.set_selectable(False)
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.__on_query_tooltip)
-        row_widget = Gtk.EventBox()
+        self.__row_widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         if self._album.artists:
@@ -158,12 +158,15 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer = Gtk.Revealer.new()
         self.__revealer.show()
         grid.attach(self.__revealer, 0, 2, 3, 1)
-        row_widget.add(grid)
-        self.add(row_widget)
+        self.__row_widget.add(grid)
+        self.add(self.__row_widget)
         self.set_playing_indicator()
-        self.__gesture = Gtk.GestureLongPress.new(self)
-        self.__gesture.connect("begin", self.__on_gesture_begin)
+        self.__row_widget.connect("button-release-event",
+                                  self.__on_button_release_event)
+        self.__gesture = Gtk.GestureLongPress.new(self.__row_widget)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        # We want to get release event after gesture
+        self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
         if self.__reveal:
             self.reveal()
@@ -346,50 +349,34 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.emit("populated")
         self.show_all()
 
-    def __on_gesture_begin(self, gesture, sequence):
-        """
-            Connect end signal
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-        """
-        event = gesture.get_last_event(sequence)
-        gesture.connect("end", self.__on_gesture_end,
-                        event.button.button, event.state, event.x, event.y)
-
     def __on_gesture_pressed(self, gesture, x, y):
         """
-            Disconnect signal
+            Show menu
             @param gesture as Gtk.GestureLongPress
             @param x as float
             @param y as float
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
         self.__popup_menu(self, x, y)
 
-    def __on_gesture_end(self, gesture, sequence, button, state, x, y):
+    def __on_button_release_event(self, widget, event):
         """
-            Handle normal sequence
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-            @param button as int
-            @param state as Gdk.ModifierType
-            @param x as int
-            @param y as int
+            Handle button release event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
-        if state & Gdk.ModifierType.CONTROL_MASK and\
+        if event.state & Gdk.ModifierType.CONTROL_MASK and\
                 self.__view_type & ViewType.DND:
             if self.get_state_flags() & Gtk.StateFlags.SELECTED:
                 self.set_state_flags(Gtk.StateFlags.NORMAL, True)
             else:
                 self.set_state_flags(Gtk.StateFlags.SELECTED, True)
-        elif state & Gdk.ModifierType.SHIFT_MASK and\
+        elif event.state & Gdk.ModifierType.SHIFT_MASK and\
                 self.__view_type & ViewType.DND:
             self.emit("do-selection")
-        elif button == 1:
+        elif event.button == 1:
             self.reveal()
-        elif button == 3:
-            self.__popup_menu(self, x, y)
+        elif event.button == 3:
+            self.__popup_menu(self, event.x, event.y)
         return True
 
     def __on_action_button_release_event(self, button, event):

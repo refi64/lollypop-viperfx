@@ -32,17 +32,19 @@ class Row(Gtk.ListBoxRow):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
-        self.set_activatable(False)
         self._view_type = view_type
         self._artists_label = None
         self._track = track
         self.__filtered = False
         self._indicator = IndicatorWidget(self, view_type)
         self._row_widget = Gtk.EventBox()
+        self._row_widget.connect("button-release-event",
+                                 self.__on_button_release_event)
         self._row_widget.connect("destroy", self._on_destroy)
-        self.__gesture = Gtk.GestureLongPress.new(self)
-        self.__gesture.connect("begin", self.__on_gesture_begin)
+        self.__gesture = Gtk.GestureLongPress.new(self._row_widget)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
+        # We want to get release event after gesture
+        self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
         self._grid = Gtk.Grid()
         self._grid.set_property("valign", Gtk.Align.CENTER)
@@ -261,15 +263,36 @@ class Row(Gtk.ListBoxRow):
         App().window.container.show_artists_albums(self._album.artist_ids)
         return True
 
-    def __on_gesture_begin(self, gesture, sequence):
+    def __on_button_release_event(self, widget, event):
         """
-            Connect end signal
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
+            Handle button release event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        event = gesture.get_last_event(sequence).copy()
-        gesture.connect("end", self.__on_gesture_end,
-                        event.button.button, event.state, event.x, event.y)
+        if event.state & Gdk.ModifierType.CONTROL_MASK and\
+                self._view_type & ViewType.DND:
+            if self.get_state_flags() & Gtk.StateFlags.SELECTED:
+                self.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            else:
+                self.set_state_flags(Gtk.StateFlags.SELECTED, True)
+                self.grab_focus()
+        elif event.state & Gdk.ModifierType.SHIFT_MASK and\
+                self._view_type & ViewType.DND:
+            self.emit("do-selection")
+        elif event.button == 3:
+            self.__popup_menu(self, event.x, event.y)
+        elif event.button == 2:
+            if self._track.id in App().player.queue:
+                App().player.remove_from_queue(self._track.id)
+            else:
+                App().player.append_to_queue(self._track.id)
+        elif event.state & Gdk.ModifierType.MOD1_MASK:
+            App().player.clear_albums()
+            App().player.reset_history()
+            App().player.load(self._track)
+        elif event.button == 1:
+            self.activate()
+        return True
 
     def __on_gesture_pressed(self, gesture, x, y):
         """
@@ -278,50 +301,12 @@ class Row(Gtk.ListBoxRow):
             @param x as float
             @param y as float
         """
-        gesture.disconnect_by_func(self.__on_gesture_end)
         if self._view_type & ViewType.DND and\
                 self._view_type & ViewType.POPOVER:
             self._track.album.remove_track(self._track)
             self.destroy()
         else:
             self.__popup_menu(self, x, y)
-
-    def __on_gesture_end(self, gesture, sequence, button, state, x, y):
-        """
-            Handle normal sequence
-            @param gesture as Gtk.GestureLongPress
-            @param sequence as Gdk.EventSequence
-            @param button as int
-            @param state as Gdk.ModifierType
-            @param x as int
-            @param y as int
-        """
-        gesture.disconnect_by_func(self.__on_gesture_end)
-        if state & Gdk.ModifierType.CONTROL_MASK and\
-                self._view_type & ViewType.DND:
-            if self.get_state_flags() & Gtk.StateFlags.SELECTED:
-                self.set_state_flags(Gtk.StateFlags.NORMAL, True)
-            else:
-                self.set_state_flags(Gtk.StateFlags.SELECTED, True)
-                self.grab_focus()
-        elif state & Gdk.ModifierType.SHIFT_MASK and\
-                self._view_type & ViewType.DND:
-            self.emit("do-selection")
-        elif button == 3:
-            self.__popup_menu(self, x, y)
-        elif button == 2:
-            if self._track.id in App().player.queue:
-                App().player.remove_from_queue(self._track.id)
-            else:
-                App().player.append_to_queue(self._track.id)
-        elif state & Gdk.ModifierType.MOD1_MASK:
-            App().player.clear_albums()
-            App().player.reset_history()
-            App().player.load(self._track)
-        elif button == 1:
-            self.set_activatable(True)
-            self.activate()
-            self.set_activatable(False)
 
     def __on_action_button_release_event(self, button, event):
         """
