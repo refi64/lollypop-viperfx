@@ -61,13 +61,13 @@ class SpotifyHelper:
         """
         def on_token(token):
             SpotifyHelper.__LOADING_TOKEN = False
-        if not SpotifyHelper.__LOADING_TOKEN:
-            SpotifyHelper.__LOADING_TOKEN = True
-            App().task_helper.run(SpotifyHelper.get_token,
-                                  callback=(on_token,))
         # Remove 60 seconds to be sure
         wait = int(time()) + 60 > SpotifyHelper.__EXPIRES or\
             SpotifyHelper.__TOKEN is None
+        if wait and not SpotifyHelper.__LOADING_TOKEN:
+            SpotifyHelper.__LOADING_TOKEN = True
+            App().task_helper.run(SpotifyHelper.get_token,
+                                  callback=(on_token,))
         return wait
 
     def get_artist_id(artist_name, callback):
