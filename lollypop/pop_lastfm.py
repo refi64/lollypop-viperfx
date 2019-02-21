@@ -131,10 +131,12 @@ class LastfmPopover(Popover):
         if artists:
             artist = artists.pop(0)
             artist_id = App().artists.get_id(artist)
+            # We want real artist name (with case)
+            artist_name = App().artists.get_name(artist_id)
             if artist_id is not None:
                 albums = App().artists.get_albums([artist_id])
                 if albums:
-                    row = ArtistRow(artist)
+                    row = ArtistRow(artist_name)
                     row.show()
                     self.__listbox.add(row)
             GLib.idle_add(self.__populate, artists)
