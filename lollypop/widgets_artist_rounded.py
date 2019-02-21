@@ -116,6 +116,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
             Popup menu for track
             @param widget as Gtk.Widget
         """
+        if App().settings.get_value("show-sidebar"):
+            return
         from lollypop.pop_menu_views import ViewsMenuPopover
         from lollypop.view_artists_rounded import RoundedArtistsView
         popover = ViewsMenuPopover(self.get_ancestor(RoundedArtistsView),
