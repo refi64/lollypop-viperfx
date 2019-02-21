@@ -36,7 +36,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)
         self.__timeout_id = None
-        self.__mini = False
         self.__width = 0
 
         self._infobox = builder.get_object("info")
@@ -56,8 +55,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self.connect("realize", self.__on_realize)
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
-        self.connect("button-press-event", self.__on_button_press_event)
-        self.connect("button-release-event", self.__on_button_release_event)
         self.__gesture = Gtk.GestureLongPress.new(self)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
         # We want to get release event after gesture
@@ -91,7 +88,6 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             Set mini mode
             @param mini as bool
         """
-        self.__mini = mini
         try:
             window = self._infobox.get_window()
             if window is None:
@@ -100,7 +96,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
                 self._artwork.hide()
                 window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
             else:
-                self._artwork.show()
+                # To prevent popup on maximize
+                GLib.idle_add(self._artwork.show)
                 window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
@@ -120,7 +117,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show hand cursor over
         """
-        if self.__mini:
+        if App().window.is_adaptive or not self.__artwork.get_visible():
             return
         try:
             self._artwork.show()
@@ -154,7 +151,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show contextual menu
         """
-        if self.__mini:
+        if App().window.is_adaptive or not self.__artwork.get_visible():
             return
         from lollypop.pop_menu import ToolbarMenu
         menu = ToolbarMenu(App().player.current_track)
@@ -172,7 +169,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if not self.__mini and event.button == 3:
+        if event.button == 3:
             self.__popup_menu()
             return True
 
@@ -182,7 +179,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self.__mini:
+        if App().window.is_adaptive or not self.__artwork.get_visible():
             return
         if App().player.current_track.id == Type.RADIOS:
             from lollypop.pop_tunein import TuneinPopover
