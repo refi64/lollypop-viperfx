@@ -17,7 +17,7 @@ from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
 from lollypop.widgets_cover import CoverWidget
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 
 
 class MiniPlayer(Gtk.Bin, InformationController,
@@ -156,7 +156,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
             button.get_image().set_from_icon_name("pan-down-symbolic",
                                                   Gtk.IconSize.BUTTON)
             if self.__cover_widget is None:
-                self.__cover_widget = CoverWidget()
+                self.__cover_widget = CoverWidget(False, ArtSize.BIG)
                 self.__cover_widget.update(App().player.current_track.album)
                 self.__cover_widget.show()
                 self.__revealer_box.pack_start(self.__cover_widget,
