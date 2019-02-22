@@ -320,7 +320,6 @@ class TracksView:
         (track, position) = tracks.pop(0)
         if not App().settings.get_value("show-tag-tracknumber"):
             track.set_number(position + 1)
-        track.set_featuring_ids(self._album.artist_ids)
         row = TrackRow(track, self._view_type)
         if self._view_type & ViewType.DND:
             row.set_previous_row(previous_row)

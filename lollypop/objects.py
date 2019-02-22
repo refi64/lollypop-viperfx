@@ -430,21 +430,6 @@ class Track(Base):
             self.__album = Album(self.album_id)
         else:
             self.__album = album
-        self.__featuring_ids = []
-
-    def set_featuring_ids(self, album_artist_ids):
-        """
-            Set featuring artist ids
-            @param artist ids as [int]
-            @return featuring artist ids as [int]
-        """
-        artist_ids = self.db.get_artist_ids(self.id)
-        album_id = self.db.get_album_id(self.id)
-        if not album_artist_ids:
-            db_album_artist_ids = App().albums.get_artist_ids(album_id)
-            if len(db_album_artist_ids) == 1:
-                artist_ids = list(set(artist_ids) - set(db_album_artist_ids))
-        self.__featuring_ids = list(set(artist_ids) - set(album_artist_ids))
 
     def set_album(self, album):
         """
@@ -504,7 +489,12 @@ class Track(Base):
             Get featuring artist ids
             @return [int]
         """
-        return self.__featuring_ids
+        artist_ids = self.db.get_artist_ids(self.id)
+        album_id = self.db.get_album_id(self.id)
+        album_artist_ids = App().albums.get_artist_ids(album_id)
+        if len(album_artist_ids) == 1:
+            artist_ids = list(set(artist_ids) - set(album_artist_ids))
+        return list(set(artist_ids) - set(album_artist_ids))
 
     @property
     def position(self):
