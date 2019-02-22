@@ -774,11 +774,16 @@ class TracksDatabase:
             @return [int]
         """
         with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT tracks.rowid\
-                                  FROM tracks\
-                                  WHERE noaccents(name) LIKE ? LIMIT 25",
-                                 ("%" + noaccents(searched) + "%",))
-            return list(itertools.chain(*result))
+            items = []
+            for filter in [(noaccents(searched) + "%",),
+                           ("%" + noaccents(searched),),
+                           ("%" + noaccents(searched) + "%",)]:
+                result = sql.execute("SELECT tracks.rowid\
+                                      FROM tracks\
+                                      WHERE noaccents(name) LIKE ? LIMIT 25",
+                                     filter)
+                items += list(itertools.chain(*result))
+            return items
 
     def search_track(self, artist, title):
         """

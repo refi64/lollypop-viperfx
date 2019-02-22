@@ -133,7 +133,7 @@ class SearchView(BaseView, Gtk.Bin):
         self.__history = []
         if self.__current_search:
             search = Search()
-            search.get(self.__current_search,
+            search.get(self.__current_search.lower(),
                        self.__cancellable,
                        callback=(self.__on_search_get,))
         else:

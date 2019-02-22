@@ -27,16 +27,12 @@ class Search:
 
     def get(self, current_search, cancellable, callback):
         """
-            Get track for name
+            Get track for name (lowercase)
             @param current_search as str
             @param cancellable as Gio.Cancellable
             @param callback as callback
         """
-        search_items = []
-        for item in current_search.lower().split():
-            if item not in search_items:
-                search_items.append(item)
-        App().task_helper.run(self.__get, search_items,
+        App().task_helper.run(self.__get, current_search,
                               cancellable, callback=callback)
 
 #######################
@@ -48,42 +44,34 @@ class Search:
             @param string as str
             @param search_item as [str]
         """
-        split_string = string.lower().split()
-        explode_split = self.__explode_search_items(split_string)
-        explode_search = self.__explode_search_items(search_items)
-        join = list(set(explode_split) & set(explode_search))
-        return len(join)
+        string = string.lower()
+        initial_score = 0 if string != search_items else 10
+        split_search = self.__split_string(string)
+        split_string = self.__split_string(string)
+        join = list(set(split_string) & set(split_search))
+        return initial_score + len(join)
 
-    def __explode_search_items(self, search_items):
+    def __split_string(self, search_items):
         """
             Explose search items for all search possiblities
             @param search_items as [str]
             @return [str]
         """
-        possibilities = []
-        index = len(search_items)
-        while index > 1:
-            item = " ".join(search_items[:index])
-            if item:
-                possibilities.append(item)
-            index -= 1
-        index = len(search_items)
-        while index >= 1:
-            item = " ".join(search_items[index:])
-            if item:
-                possibilities.append(item)
-            index -= 1
-        return possibilities + search_items
+        items = []
+        for item in search_items.split():
+            if len(item) > 3 and item != search_items:
+                items.append(item)
+        return [search_items] + sorted(items, key=len)
 
     def __search_artists(self, search_items, cancellable):
         """
             Get artists for search
             @param search_items as [str]
             @param cancellable as Gio.Cancellable
-            @return [int]
+            @return (result [int], score as int)
         """
         artist_ids = []
-        for search_str in self.__explode_search_items(search_items):
+        for search_str in search_items:
             artist_ids += App().artists.search(search_str)
             if cancellable.is_cancelled():
                 break
@@ -94,10 +82,10 @@ class Search:
             Get tracks for search items
             @param search_items as [str]
             @param cancellable as Gio.Cancellable
-            @return track_ids as [int]
+            @return (result [int], score as int)
         """
         track_ids = []
-        for search_str in self.__explode_search_items(search_items):
+        for search_str in search_items:
             track_ids += App().tracks.search(search_str)
             if cancellable.is_cancelled():
                 break
@@ -108,74 +96,73 @@ class Search:
             Get albums for search items
             @param search_items as [str]
             @param cancellable as Gio.Cancellable
-            @return track_ids as [int]
+            @return (result [int], score as int)
         """
         album_ids = []
-        for search_str in self.__explode_search_items(search_items):
+        for search_str in search_items:
             album_ids = App().albums.search(search_str)
             if cancellable.is_cancelled():
                 break
-        # Same for year #TODO make this ok for all date + for tracks
-        if not album_ids and not cancellable.is_cancelled():
-            for search_str in self.__explode_search_items(search_items):
-                try:
-                    album_ids = App().albums.get_by_year(int(search_str))
-                except:
-                    pass
-                if album_ids:
-                    break
         return list(set(album_ids))
 
     def __get(self, search_items, cancellable):
         """
             Get track for name
-            @param search_items as [str]
+            @param search_items as str
             @param cancellable as Gio.Cancellable
             @return items as [(int, Album, bool)]
         """
-        album_ids = self.__search_albums(search_items, cancellable)
-        track_ids = self.__search_tracks(search_items, cancellable)
-        artist_ids = self.__search_artists(search_items, cancellable)
-        # Get tracks/albums for artists
-        for artist_id in set(artist_ids):
-            if cancellable.is_cancelled():
-                return []
-            for album_id in App().albums.get_ids([artist_id], []):
-                if album_id not in album_ids:
-                    album_ids.append(album_id)
-            for track_id in App().tracks.get_ids_by_artist(artist_id):
-                if track_id not in track_ids:
-                    track_ids.append(track_id)
+        split_items = self.__split_string(search_items)
+        album_ids = self.__search_albums(split_items, cancellable)
+        track_ids = self.__search_tracks(split_items, cancellable)
+        artist_ids = self.__search_artists(split_items, cancellable)
         albums = []
+        all_album_ids = []
 
         # Create albums for tracks
         album_tracks = {}
         for track_id in track_ids:
+            if cancellable.is_cancelled():
+                return []
             track = Track(track_id)
-            if track.album.id in album_ids:
-                continue
-            score = self.__calculate_score(track.name, search_items)
-            for artist in track.artists:
-                score += self.__calculate_score(artist, search_items)
             # Get a new album
             album = track.album
             if album.id in album_tracks.keys():
-                (album, tracks, score) = album_tracks[album.id]
+                (album, tracks) = album_tracks[album.id]
                 tracks.append(track)
-                album_tracks[track.album.id] = (album, tracks, score)
+                album_tracks[track.album.id] = (album, tracks)
             else:
-                album_tracks[track.album.id] = (album, [track], score)
+                album_tracks[track.album.id] = (album, [track])
+        # Create albums from track results
+        for key in album_tracks.keys():
+            if cancellable.is_cancelled():
+                return []
+            (album, tracks) = album_tracks[key]
+            album.set_tracks(tracks)
+            score = self.__calculate_score(album.name, search_items)
+            for track in album.tracks:
+                score += self.__calculate_score(track.name, search_items)
+            all_album_ids.append(album.id)
+            albums.append((score, album, True))
         # Create albums for album results
         for album_id in album_ids:
-            album = Album(album_id)
-            score = self.__calculate_score(album.name, search_items)
-            for artist in album.artists:
-                score += self.__calculate_score(artist, search_items)
-            albums.append((score, album, False))
-        # Merge albums from track results
-        for key in album_tracks.keys():
-            (album, tracks, score) = album_tracks[key]
-            album.set_tracks(tracks)
-            albums.append((score, album, True))
+            if cancellable.is_cancelled():
+                return []
+            if album_id not in all_album_ids:
+                all_album_ids.append(album_id)
+                album = Album(album_id)
+                score = self.__calculate_score(album.name, search_items)
+                albums.append((score, album, False))
+        # Get tracks/albums for artists
+        for artist_id in artist_ids:
+            if cancellable.is_cancelled():
+                return []
+            for album_id in App().albums.get_ids([artist_id], []):
+                if album_id not in all_album_ids:
+                    album = Album(album_id)
+                    score = self.__calculate_score(album.name, search_items)
+                    for artist in album.artists:
+                        score += self.__calculate_score(artist, search_items)
+                    albums.append((score, album, False))
         albums.sort(key=lambda tup: tup[0], reverse=True)
         return albums
