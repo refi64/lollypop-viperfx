@@ -67,6 +67,7 @@ class FullScreen(Gtk.Window, InformationController,
             self.__artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
         widget = builder.get_object("widget")
+        grid = builder.get_object("grid")
         self._play_button = builder.get_object("play_btn")
         self._next_button = builder.get_object("next_btn")
         self._prev_button = builder.get_object("prev_btn")
@@ -76,10 +77,10 @@ class FullScreen(Gtk.Window, InformationController,
         preferences = Gio.Settings.new("org.gnome.desktop.wm.preferences")
         layout = preferences.get_value("button-layout").get_string()
         if layout.split(":")[0] == "close":
-            widget.attach(close_btn, 0, 0, 1, 1)
+            grid.attach(close_btn, 0, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.START)
         else:
-            widget.attach(close_btn, 2, 0, 1, 1)
+            grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._artwork = builder.get_object("cover")
         if rotate_album:
