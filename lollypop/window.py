@@ -145,14 +145,14 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             App().set_accels_for_action("app.seek(-10)",
                                         ["<Shift><Alt>Right"])
             App().set_accels_for_action("app.shortcut::go_back",
-                                        ["<Alt>Right"])
+                                        ["<Alt>Right", "Back"])
         else:
             App().set_accels_for_action("app.seek(10)",
                                         ["<Shift><Alt>Right"])
             App().set_accels_for_action("app.seek(-10)",
                                         ["<Shift><Alt>Left"])
             App().set_accels_for_action("app.shortcut::go_back",
-                                        ["<Alt>Left"])
+                                        ["<Alt>Left", "Back"])
         App().set_accels_for_action("app.shortcut::play_pause",
                                     ["space", "<Alt>c"])
         App().set_accels_for_action("app.shortcut::play", ["<Alt>x"])
