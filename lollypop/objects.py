@@ -483,17 +483,12 @@ class Track(Base):
             App().tracks.set_loved(self.id, loved)
             self.loved = loved
 
-    @property
-    def featuring_artist_ids(self):
+    def get_featuring_artist_ids(self, album_artist_ids):
         """
             Get featuring artist ids
             @return [int]
         """
         artist_ids = self.db.get_artist_ids(self.id)
-        album_id = self.db.get_album_id(self.id)
-        album_artist_ids = App().albums.get_artist_ids(album_id)
-        if len(album_artist_ids) == 1:
-            artist_ids = list(set(artist_ids) - set(album_artist_ids))
         return list(set(artist_ids) - set(album_artist_ids))
 
     @property

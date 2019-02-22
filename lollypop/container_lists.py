@@ -46,7 +46,8 @@ class ListsContainer:
             sidebar_content = App().settings.get_enum("sidebar-content")
             if sidebar_content == SidebarContent.GENRES:
                 self.__update_list_genres(self._list_one, update)
-            elif sidebar_content == SidebarContent.ARTISTS:
+            elif sidebar_content in [SidebarContent.ARTISTS,
+                                     SidebarContent.PERFORMERS]:
                 self.__update_list_artists(self._list_one, [Type.ALL], update)
             else:
                 self.__update_list_artists(self._list_one, None, update)
@@ -204,12 +205,12 @@ class ListsContainer:
             @param update as bool, if True, just update entries
         """
         def load():
-            if genre_ids is None:
-                return ([], [])
+            if App().settings.get_value("show-performers"):
+                artists = App().artists.get_all(genre_ids)
             else:
                 artists = App().artists.get(genre_ids)
-                compilations = App().albums.get_compilation_ids(genre_ids)
-                return (artists, compilations)
+            compilations = App().albums.get_compilation_ids(genre_ids)
+            return (artists, compilations)
 
         def setup(artists, compilations):
             mask = SelectionListMask.ARTISTS

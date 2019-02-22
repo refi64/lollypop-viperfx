@@ -51,13 +51,14 @@ class TrackRow(Row, DNDRow):
             height = min_height
         return height
 
-    def __init__(self, track, view_type):
+    def __init__(self, track, album_artist_ids, view_type):
         """
             Init row widget and show it
             @param track as Track
+            @pram album_artist_ids as [int]
             @param view_type as ViewType
         """
-        Row.__init__(self, track, view_type)
+        Row.__init__(self, track, album_artist_ids, view_type)
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()

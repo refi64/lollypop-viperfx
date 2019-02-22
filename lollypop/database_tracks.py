@@ -15,8 +15,8 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import App
-from lollypop.utils import noaccents
+from lollypop.define import App, OrderBy
+from lollypop.utils import noaccents, remove_static_genres
 
 
 class TracksDatabase:
@@ -422,6 +422,101 @@ class TracksDatabase:
                                   WHERE track_genres.track_id=?\
                                   AND track_genres.genre_id=genres.rowid",
                                  (track_id,))
+            return list(itertools.chain(*result))
+
+    def get_album_ids(self, artist_ids, genre_ids, ignore=False):
+        """
+            Get albums ids
+            @param artist ids as [int]
+            @param genre ids as [int]
+            @return albums ids as [int]
+            @param ignore as bool
+        """
+        genre_ids = remove_static_genres(genre_ids)
+        orderby = App().settings.get_enum("orderby")
+        if artist_ids or orderby == OrderBy.ARTIST:
+            order = " ORDER BY artists.sortname\
+                     COLLATE NOCASE COLLATE LOCALIZED,\
+                     albums.timestamp,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        elif orderby == OrderBy.NAME:
+            order = " ORDER BY albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        elif orderby == OrderBy.YEAR:
+            order = " ORDER BY albums.timestamp DESC,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        else:
+            order = " ORDER BY albums.popularity DESC,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+
+        with SqlCursor(App().db) as sql:
+            result = []
+            # Get albums for all artists
+            if not artist_ids and not genre_ids:
+                request = "SELECT DISTINCT tracks.album_id\
+                           FROM tracks, track_artists, artists, albums\
+                           WHERE tracks.rowid = track_artists.track_id AND\
+                           artists.rowid = track_artists.artist_id AND\
+                           album_id=tracks.album_id"
+                if ignore:
+                    request += " AND tracks.loved != -1"
+                request += order
+                result = sql.execute(request)
+            # Get albums for genres
+            elif not artist_ids:
+                filters = tuple(genre_ids)
+                request = "SELECT DISTINCT tracks.album_id FROM tracks,\
+                           album, track_genres, track_artists, artists\
+                           WHERE tracks.rowid = track_artists.track_id AND\
+                           artists.rowid = track_artists.artist_id  AND\
+                           album_id=tracks.album_id AND\
+                           track_genres.track_id=tracks.rowid AND ( "
+                for genre_id in genre_ids:
+                    request += "track_genres.genre_id=? OR "
+                request += "1=0)"
+                if ignore:
+                    request += " AND tracks.loved != -1"
+                request += order
+                result = sql.execute(request, filters)
+            # Get albums for artist
+            elif not genre_ids:
+                filters = tuple(artist_ids)
+                request = "SELECT DISTINCT tracks.album_id\
+                           FROM tracks, track_artists, artists, albums\
+                           WHERE track_artists.track_id=tracks.rowid AND\
+                           album_id=tracks.album_id AND\
+                           artists.rowid = track_artists.artist_id AND ("
+                for artist_id in artist_ids:
+                    request += "artists.rowid=? OR "
+                request += "1=0)"
+                if ignore:
+                    request += " AND tracks.loved != -1"
+                request += order
+                result = sql.execute(request, filters)
+            # Get albums for artist id and genre id
+            else:
+                filters = tuple(artist_ids)
+                filters += tuple(genre_ids)
+                request = "SELECT DISTINCT tracks.album_id\
+                           FROM tracks, track_genres, albums,\
+                           track_artists, artists\
+                           WHERE track_genres.track_id=tracks.rowid AND\
+                           artists.rowid = track_artists.artist_id AND\
+                           album_id=tracks.album_id AND\
+                           track_artists.track_id=tracks.rowid AND ("
+                for artist_id in artist_ids:
+                    request += "artists.rowid=? OR "
+                request += "1=0) AND ("
+                for genre_id in genre_ids:
+                    request += "track_genres.genre_id=? OR "
+                request += "1=0)"
+                if ignore:
+                    request += " AND tracks.loved != -1"
+                request += order
+                result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get_mtimes(self):

@@ -158,9 +158,9 @@
             <summary>Split playlists view</summary>
             <description></description>
         </key>
-         <key type="b" name="show-genres">
+         <key type="b" name="show-performers">
             <default>false</default>
-            <summary>Show list of genres</summary>
+            <summary>Show performers</summary>
             <description></description>
         </key>
          <key type="b" name="show-sidebar">

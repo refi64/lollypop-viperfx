@@ -176,7 +176,10 @@ class ViewsContainer:
             @return view
         """
         def load():
-            ids = App().artists.get()
+            if App().settings.get_value("show-performers"):
+                ids = App().artists.get_all()
+            else:
+                ids = App().artists.get()
             compilations = App().albums.get_compilation_ids([])
             return (ids, compilations)
 
@@ -213,12 +216,15 @@ class ViewsContainer:
         """
         def load():
             if genre_ids and genre_ids[0] == Type.ALL:
-                items = App().albums.get_ids(artist_ids, [])
+                if App().settings.get_value("show-performers"):
+                    items = App().tracks.get_album_ids(artist_ids, [])
+                else:
+                    items = App().albums.get_ids(artist_ids, [])
             else:
-                items = []
-                if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                    items += App().albums.get_compilation_ids(genre_ids)
-                items += App().albums.get_ids(artist_ids, genre_ids)
+                if App().settings.get_value("show-performers"):
+                    items = App().tracks.get_album_ids(artist_ids, genre_ids)
+                else:
+                    items = App().albums.get_ids(artist_ids, genre_ids)
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in items]
         if App().window.is_adaptive:

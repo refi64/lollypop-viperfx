@@ -611,11 +611,6 @@ class AlbumsDatabase:
             @return [int]
         """
         genre_ids = remove_static_genres(genre_ids)
-        # Reset filters if not needed
-        if not self.__has_genres(album_id):
-            genre_ids = []
-        if not self.__has_artists(album_id):
-            artist_ids = []
         with SqlCursor(App().db) as sql:
             filters = (album_id, disc)
             request = "SELECT DISTINCT tracks.rowid\
@@ -1054,34 +1049,3 @@ class AlbumsDatabase:
 #######################
 # PRIVATE             #
 #######################
-    def __has_genres(self, album_id):
-        """
-            Return True if album has more than one genre
-            @param album id as int
-            @return bool
-        """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT COUNT(*)\
-                                 FROM album_genres\
-                                 WHERE album_id=?\
-                                 LIMIT 2", (album_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0] > 1
-        return False
-
-    def __has_artists(self, album_id):
-        """
-            Return True if album has more than one artist
-            @param album id as int
-            @return bool
-        """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT COUNT(*)\
-                                 FROM album_artists\
-                                 WHERE album_id=?\
-                                 LIMIT 2", (album_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0] > 1
-        return False

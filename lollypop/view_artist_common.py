@@ -47,7 +47,6 @@ class ArtistViewCommon:
         self._banner.show()
         self._on_lock_changed(App().player)
         builder.get_object("box-button").set_margin_end(MARGIN)
-        self._on_lock_changed(App().player)
         artists = []
         for artist_id in self._artist_ids:
             artists.append(App().artists.get_name(artist_id))
@@ -121,7 +120,12 @@ class ArtistViewCommon:
             Add artist albums
         """
         try:
-            album_ids = App().albums.get_ids(self._artist_ids, self._genre_ids)
+            if App().settings.get_value("show-performers"):
+                album_ids = App().tracks.get_album_ids(self._artist_ids,
+                                                       self._genre_ids)
+            else:
+                album_ids = App().albums.get_ids(self._artist_ids,
+                                                 self._genre_ids)
             len_album_ids = len(album_ids)
             player_album_ids = App().player.album_ids
             len_player_album_ids = len(player_album_ids)
@@ -129,7 +133,9 @@ class ArtistViewCommon:
             add = icon_name == "list-add-symbolic"
             for album_id in album_ids:
                 if add and album_id not in player_album_ids:
-                    App().player.add_album(Album(album_id))
+                    App().player.add_album(Album(album_id,
+                                                 self._genre_ids,
+                                                 self._artist_ids))
                 elif not add and album_id in player_album_ids:
                     if len_player_album_ids > len_album_ids and\
                             App().player.current_track.album.id == album_id:

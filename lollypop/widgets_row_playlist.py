@@ -37,7 +37,7 @@ class PlaylistRow(Row, DNDRow):
             @param track as Track
             @param view_type as ViewType
         """
-        Row.__init__(self, track, view_type)
+        Row.__init__(self, track, track.album.artist_ids, view_type)
         if view_type & ViewType.DND:
             DNDRow.__init__(self)
         self._grid.insert_row(0)

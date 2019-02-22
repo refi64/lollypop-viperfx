@@ -97,7 +97,10 @@ class ArtistBannerWidget(Gtk.Overlay):
             @param width as int
             @param height as int
         """
-        album_ids = App().albums.get_ids([self.__artist_id], [])
+        if App().settings.get_value("show-performers"):
+            album_ids = App().tracks.get_album_ids([self.__artist_id], [])
+        else:
+            album_ids = App().albums.get_ids([self.__artist_id], [])
         if album_ids:
             album_id = choice(album_ids)
             album = Album(album_id)

@@ -50,7 +50,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         self._album_box.set_margin_start(MARGIN)
         self._album_box.set_margin_end(MARGIN)
         self.__set_artwork()
-        self.__on_album_changed(App().player)
         self._on_lock_changed(App().player)
 
     def jump_to_current(self):

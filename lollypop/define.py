@@ -80,6 +80,7 @@ class SidebarContent:
     DEFAULT = 0
     GENRES = 1
     ARTISTS = 2
+    PERFOMERS = 3
 
 
 class SelectionListMask:

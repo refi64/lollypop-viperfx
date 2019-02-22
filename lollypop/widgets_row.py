@@ -24,10 +24,11 @@ class Row(Gtk.ListBoxRow):
         A row
     """
 
-    def __init__(self, track, view_type):
+    def __init__(self, track, album_artist_ids, view_type):
         """
             Init row widgets
             @param track as Track
+            @param album_artist_ids as [int]
             @param view_type as ViewType
         """
         # We do not use Gtk.Builder for speed reasons
@@ -58,7 +59,7 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property("halign", Gtk.Align.START)
         self._title_label.set_property("xalign", 0)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        featuring_artist_ids = track.featuring_artist_ids
+        featuring_artist_ids = track.get_featuring_artist_ids(album_artist_ids)
         if featuring_artist_ids:
             artists = []
             for artist_id in featuring_artist_ids:
@@ -252,15 +253,6 @@ class Row(Gtk.ListBoxRow):
         popover.connect("closed", on_closed)
         self.get_style_context().add_class("track-menu-selected")
         popover.popup()
-
-    def __on_artist_button_press(self, eventbox, event):
-        """
-            Go to artist page
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.EventButton
-        """
-        App().window.container.show_artists_albums(self._album.artist_ids)
-        return True
 
     def __on_button_release_event(self, widget, event):
         """
