@@ -476,32 +476,32 @@ class CollectionScanner(GObject.GObject, TagReader):
         except Exception as e:
             Logger.error("CollectionScanner::__del_from_db: %s" % e)
 
-    def __update_album(self, album_id, artist_ids, genre_ids, year, timestamp):
+    def __update_album(self, album_id, album_artist_ids,
+                       genre_ids, year, timestamp):
         """
             Update album artists based on album-artist and artist tags
             This code auto handle compilations: empty "album artist" with
             different artists
-            @param album id as int
-            @param artist ids as [int]
-            @param genre ids as [int]
+            @param album_id as int
+            @param album_artist_ids as [int]
+            @param genre_ids as [int]
             @param year as int
             @param timestmap as int
             @commit needed
         """
-        album_artist_ids = []
         add = True
         # Set artist ids based on content
-        if not artist_ids:
+        if not album_artist_ids:
             new_artist_ids = App().albums.calculate_artist_ids(album_id)
             current_artist_ids = App().albums.get_artist_ids(album_id)
             if new_artist_ids != current_artist_ids:
-                album_artist_ids = new_artist_ids
                 if Type.COMPILATIONS in new_artist_ids:
                     add = False
                     album_artist_ids = current_artist_ids
                 else:
                     album_artist_ids = new_artist_ids
-                App().albums.set_artist_ids(album_id, new_artist_ids)
+        if album_artist_ids:
+            App().albums.set_artist_ids(album_id, album_artist_ids)
         # Update UI based on previous artist calculation
         if App().albums.get_tracks_count(album_id) > 1:
             for artist_id in album_artist_ids:

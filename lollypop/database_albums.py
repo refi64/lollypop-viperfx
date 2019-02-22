@@ -97,14 +97,12 @@ class AlbumsDatabase:
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
-            currents = self.get_artist_ids(album_id)
-            if not currents or set(currents) - set(artist_ids):
-                sql.execute("DELETE FROM album_artists\
-                            WHERE album_id=?", (album_id,))
-                for artist_id in artist_ids:
-                    sql.execute("INSERT INTO album_artists\
-                                (album_id, artist_id)\
-                                VALUES (?, ?)", (album_id, artist_id))
+            sql.execute("DELETE FROM album_artists\
+                        WHERE album_id=?", (album_id,))
+            for artist_id in artist_ids:
+                sql.execute("INSERT INTO album_artists\
+                            (album_id, artist_id)\
+                            VALUES (?, ?)", (album_id, artist_id))
 
     def set_synced(self, album_id, synced):
         """
