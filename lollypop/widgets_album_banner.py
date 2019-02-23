@@ -63,7 +63,10 @@ class AlbumBannerWidget(Gtk.Bin):
         menu_button.get_image().set_from_icon_name("view-more-symbolic",
                                                    icon_size)
         self.__title_label.set_markup(GLib.markup_escape_text(album.name))
-        self.__year_label.set_text(str(album.year))
+        if album.year is not None:
+            self.__year_label.set_text(str(album.year))
+        else:
+            self.__year_label.hide()
         self.__year_label.set_margin_end(MARGIN)
         year_eventbox = builder.get_object("year_eventbox")
         year_eventbox.connect("realize", on_realize)
