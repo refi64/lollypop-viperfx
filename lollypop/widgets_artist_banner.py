@@ -161,7 +161,12 @@ class ArtistBannerWidget(Gtk.Overlay):
             Set album artwork
             @param surface as str
         """
-        self.__artwork.set_from_surface(surface)
+        if surface is None:
+            self.__artwork.get_style_context().remove_class("black")
+            self.__artwork.get_style_context().add_class(
+                "black-non-transparent")
+        else:
+            self.__artwork.set_from_surface(surface)
 
     def __on_artist_artwork(self, surface):
         """

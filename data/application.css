@@ -171,6 +171,11 @@ popover.background separator {
     color: white;
 }
 
+.black-non-transparent {
+    background-color: black;
+    color: white;
+}
+
 .up-btn {
     border: 1px solid shade(@theme_bg_color, 0.7);
     border-radius: 4px;

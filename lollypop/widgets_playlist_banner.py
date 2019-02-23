@@ -95,11 +95,15 @@ class PlaylistBannerWidget(Gtk.Overlay):
 #######################
 # PRIVATE             #
 #######################
-    def __set_artwork(self, allocation):
+    def __handle_size_allocate(self, allocation):
         """
-            Set artwork
+            Change box max/min children
             @param allocation as Gtk.Allocation
         """
+        self.__allocation_timeout_id = None
+        if allocation.width == 1 or self.__width == allocation.width:
+            return
+        self.__width = allocation.width
         if self.__track_ids and self.__track is None:
             track_id = choice(self.__track_ids)
             self.__track_ids.remove(track_id)
@@ -113,21 +117,9 @@ class PlaylistBannerWidget(Gtk.Overlay):
                 self.__on_album_artwork,
                 ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
         else:
-            self.__artwork.set_from_icon_name("org.gnome.Lollypop",
-                                              Gtk.IconSize.INVALID)
-            self.__artwork.set_pixel_size(
-                max(allocation.width + 100, allocation.height + 100))
-
-    def __handle_size_allocate(self, allocation):
-        """
-            Change box max/min children
-            @param allocation as Gtk.Allocation
-        """
-        self.__allocation_timeout_id = None
-        if allocation.width == 1 or self.__width == allocation.width:
-            return
-        self.__width = allocation.width
-        self.__set_artwork(allocation)
+            self.__artwork.get_style_context().remove_class("black")
+            self.__artwork.get_style_context().add_class(
+                "black-non-transparent")
 
     def __on_album_artwork(self, surface):
         """
@@ -136,8 +128,9 @@ class PlaylistBannerWidget(Gtk.Overlay):
         """
         # Try with a new album
         if surface is None:
-            self.__track = None
-            self.__set_artwork(self.get_allocation())
+            self.__artwork.get_style_context().remove_class("black")
+            self.__artwork.get_style_context().add_class(
+                "black-non-transparent")
         else:
             self.__artwork.set_from_surface(surface)
 

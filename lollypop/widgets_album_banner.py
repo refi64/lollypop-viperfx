@@ -247,7 +247,11 @@ class AlbumBannerWidget(Gtk.Bin):
             Set album artwork
             @param surface as str
         """
-        self.__artwork.set_from_surface(surface)
+        if surface is None:
+            self.__grid.get_style_context().remove_class("black")
+            self.__grid.get_style_context().add_class("black-non-transparent")
+        else:
+            self.__artwork.set_from_surface(surface)
 
     def __on_year_button_release_event(self, widget, event):
         """
