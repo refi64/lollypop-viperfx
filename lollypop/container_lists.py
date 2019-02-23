@@ -46,8 +46,7 @@ class ListsContainer:
             sidebar_content = App().settings.get_enum("sidebar-content")
             if sidebar_content == SidebarContent.GENRES:
                 self.__update_list_genres(self._list_one, update)
-            elif sidebar_content in [SidebarContent.ARTISTS,
-                                     SidebarContent.PERFORMERS]:
+            elif sidebar_content == SidebarContent.ARTISTS:
                 self.__update_list_artists(self._list_one, [Type.ALL], update)
             else:
                 self.__update_list_artists(self._list_one, None, update)
