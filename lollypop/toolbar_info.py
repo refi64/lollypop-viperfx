@@ -87,22 +87,13 @@ class ToolbarInfo(Gtk.Bin, InformationController):
 
     def set_mini(self, mini):
         """
-            Set mini mode
+            Show/hide
             @param mini as bool
         """
-        try:
-            window = self._infobox.get_window()
-            if window is None:
-                return
-            if mini:
-                self._artwork.hide()
-                window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
-            else:
-                # To prevent popup on maximize
-                GLib.idle_add(self._artwork.show)
-                window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-        except:
-            Logger.warning(_("You are using a broken cursor theme!"))
+        if mini:
+            self.hide()
+        else:
+            self.show()
 
     def on_current_changed(self, player):
         """
