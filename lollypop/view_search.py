@@ -131,7 +131,7 @@ class SearchView(BaseView, Gtk.Bin):
         self.__header_stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         self.__history = []
-        if self.__current_search:
+        if len(self.__current_search) > 2:
             search = Search()
             search.get(self.__current_search.lower(),
                        self.__cancellable,
