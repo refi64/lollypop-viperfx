@@ -38,7 +38,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__height = 0
         self.__cover_widget = None
         Gtk.Bin.__init__(self)
-        InformationController.__init__(self, False, ArtHelperEffect.BLUR_HARD)
+        InformationController.__init__(self, True, ArtHelperEffect.BLUR_HARD)
         ProgressController.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()
@@ -55,6 +55,9 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self._timelabel = builder.get_object("playback")
         self._total_time_label = builder.get_object("duration")
 
+        self._artist_label = builder.get_object("artist_label")
+        self._title_label = builder.get_object("title_label")
+
         self._prev_button = builder.get_object("previous_button")
         self._play_button = builder.get_object("play_button")
         self._next_button = builder.get_object("next_button")
@@ -64,8 +67,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__reveal_button = builder.get_object("reveal_button")
 
         self.__grid = builder.get_object("grid")
-        self._title_label = builder.get_object("title")
-        self._artist_label = builder.get_object("artist")
         self._artwork = builder.get_object("cover")
         self.__signal_id1 = App().player.connect("current-changed",
                                                  self.__on_current_changed)
@@ -97,12 +98,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
             self.__reveal_button.show()
         else:
             self.__reveal_button.hide()
-
-    def update_labels(self, *ignore):
-        """
-            No labels here
-        """
-        pass
 
     def update_cover(self, width):
         """
