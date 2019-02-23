@@ -868,11 +868,12 @@ class TracksDatabase:
             @param searched as string
             @return [int]
         """
+        no_accents = noaccents(searched)
         with SqlCursor(App().db) as sql:
             items = []
-            for filter in [(noaccents(searched) + "%",),
-                           ("%" + noaccents(searched),),
-                           ("%" + noaccents(searched) + "%",)]:
+            for filter in [(no_accents + "%",),
+                           ("%" + no_accents,),
+                           ("%" + no_accents + "%",)]:
                 result = sql.execute("SELECT tracks.rowid\
                                       FROM tracks\
                                       WHERE noaccents(name) LIKE ? LIMIT 25",

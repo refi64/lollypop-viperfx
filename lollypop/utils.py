@@ -181,7 +181,8 @@ def noaccents(string):
         @return str
     """
     nfkd_form = unicodedata.normalize("NFKD", string)
-    return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
+    v = u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
+    return v.lower()
 
 
 def escape(str, ignore=["_", "-", " ", "."]):
