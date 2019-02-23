@@ -55,6 +55,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         self.connect("realize", self.__on_realize)
         App().art.connect("album-artwork-changed", self.__update_cover)
         App().art.connect("radio-artwork-changed", self.__update_logo)
+        self.connect("button-press-event", self.__on_button_press_event)
+        self.connect("button-release-event", self.__on_button_release_event)
         self.__gesture = Gtk.GestureLongPress.new(self)
         self.__gesture.connect("pressed", self.__on_gesture_pressed)
         # We want to get release event after gesture
