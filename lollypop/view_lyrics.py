@@ -153,7 +153,7 @@ class LyricsView(View, InformationController):
                 False)
         else:
             artist = GLib.uri_escape_string(
-                self.__current_track.name,
+                self.__current_track.artists[0],
                 None,
                 False)
             title = GLib.uri_escape_string(
