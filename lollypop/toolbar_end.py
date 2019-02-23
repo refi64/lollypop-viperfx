@@ -103,7 +103,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_button.set_property("has-tooltip", True)
         self.__list_button.connect("query-tooltip",
                                    self.__on_list_button_query_tooltip)
-        self.__list_popover = None
+        self.__home_button = builder.get_object("home-button")
         App().player.connect("playlist-changed", self.__on_playlist_changed)
         self.__set_shuffle_icon()
 
@@ -128,9 +128,11 @@ class ToolbarEnd(Gtk.Bin):
         if mini:
             self.__search_button.hide()
             self.__list_button.hide()
+            self.__home_button.show()
         else:
             self.__search_button.show()
             self.__list_button.show()
+            self.__home_button.hide()
 
     def search(self, search):
         """
@@ -173,6 +175,13 @@ class ToolbarEnd(Gtk.Bin):
         popover.popup()
         popover.connect("closed", self.__on_popover_closed, button)
         return True
+
+    def _on_home_button_clicked(self, button):
+        """
+            Go home in adaptive mode
+            @param button as Gtk.Button
+        """
+        App().window.go_home()
 
     def _on_search_button_toggled(self, button):
         """

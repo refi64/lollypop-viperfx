@@ -212,6 +212,17 @@ class AdaptiveWindow:
             if len(self.__stack.history) <= 1:
                 self.emit("can-go-back-changed", False)
 
+    def go_home(self):
+        """
+            Go back to first page
+        """
+        if self.__stack.history:
+            visible = self.__stack.get_visible_child()
+            widget = self.__stack.history[0]
+            if widget != visible and widget.get_visible():
+                self.__stack.set_visible_child(widget)
+                self.emit("can-go-back-changed", False)
+
     def set_initial_view(self):
         """
             Set initial view
