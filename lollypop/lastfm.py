@@ -74,7 +74,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             LastFMNetwork.__init__(self,
                                    api_key=self.__API_KEY,
                                    api_secret=self.__API_SECRET)
-        self.connect(True)
+        self.connect(False)
 
     def connect(self, full_sync=False, callback=None, *args):
         """
