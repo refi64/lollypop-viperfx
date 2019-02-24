@@ -54,8 +54,7 @@ class ShownLists:
         Type.ARTISTS: (_("All artists"), SelectionListMask.LIST_ONE),
         Type.COMPILATIONS: (_("Compilations"), SelectionListMask.COMPILATIONS),
         Type.USB_DISKS: (_("USB disks"),
-                         SelectionListMask.LIST_ONE |
-                         SelectionListMask.ARTISTS_VIEW),
+                         SelectionListMask.LIST_DEVICE),
     }
 
     def get(mask, get_all=False):

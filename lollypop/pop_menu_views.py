@@ -68,6 +68,7 @@ class ViewsMenuPopover(Popover):
             wanted = App().settings.get_value("shown-playlists")
         else:
             mask |= SelectionListMask.COMPILATIONS
+            mask |= SelectionListMask.LIST_DEVICE
             lists = ShownLists.get(mask, True)
             wanted = App().settings.get_value("shown-album-lists")
         for item in lists:
