@@ -110,10 +110,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Show hand cursor over
         """
-        if App().window.is_adaptive:
-            return
         try:
-            self._artwork.show()
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
