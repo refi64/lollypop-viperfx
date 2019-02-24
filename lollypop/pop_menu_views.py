@@ -120,7 +120,7 @@ class ViewsMenuPopover(Popover):
         else:
             self.__widget.remove_value(rowid)
             if self.__mask & SelectionListMask.LIST_ONE:
-                ids = App().settings.get_value("startup-one-ids")
+                ids = list(App().settings.get_value("startup-one-ids"))
                 if rowid in ids:
                     ids.remove(rowid)
                 App().settings.set_value("startup-one-ids",
