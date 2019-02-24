@@ -42,11 +42,11 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
         if obj is not None:
             if isinstance(obj, Album) or\
                     isinstance(obj, Disc):
-                self.__add = not App().playlists.exists_album(
+                self._add = not App().playlists.exists_album(
                     playlist_id,
                     obj)
             else:
-                self.__add = not App().playlists.exists_track(
+                self._add = not App().playlists.exists_track(
                     playlist_id,
                     obj.uri)
 

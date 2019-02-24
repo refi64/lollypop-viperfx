@@ -57,7 +57,7 @@ class OverlayPlaylistHelper(OverlayHelper):
             else:
                 self._big_grid.set_property("valign", Gtk.Align.CENTER)
                 self._big_grid.set_property("halign", Gtk.Align.CENTER)
-                if self.__add:
+                if self._add:
                     # Special case, we are in add to playlist mode
                     self.__play_button = Gtk.Button.new_from_icon_name(
                         "list-add-symbolic",
@@ -105,7 +105,6 @@ class OverlayPlaylistHelper(OverlayHelper):
 #######################
 # PRIVATE             #
 #######################
-
     def __on_play_button_release_event(self, button, event):
         """
             Play playlist
@@ -134,11 +133,11 @@ class OverlayPlaylistHelper(OverlayHelper):
                 tracks = self._obj.tracks
             else:
                 tracks = [self._obj]
-            if self.__add:
+            if self._add:
                 App().playlists.add_tracks(self._data, tracks)
             else:
                 App().playlists.remove_tracks(self._data, tracks)
-            App().window.container.reload_view()
+            App().window.go_back()
         return True
 
     def __on_edit_button_release_event(self, button, event):
