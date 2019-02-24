@@ -271,7 +271,7 @@ class ViewsContainer:
             @param album as Album
         """
         from lollypop.view_album import AlbumView
-        view_type = ViewType.TWO_COLUMNS | ViewType.MULTIPLE
+        view_type = ViewType.TWO_COLUMNS
         if App().window.is_adaptive:
             view_type |= ViewType.SMALL
         view = AlbumView(album, album.artist_ids, album.genre_ids, view_type)

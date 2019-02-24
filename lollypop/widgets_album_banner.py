@@ -47,19 +47,19 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__year_label = builder.get_object("year_label")
         self.__duration_label = builder.get_object("duration_label")
         menu_button = builder.get_object("menu_button")
-        if view_type & ViewType.SMALL:
-            icon_size = Gtk.IconSize.BUTTON
-            if not App().window.is_adaptive:
-                self.__title_label.get_style_context().add_class(
-                    "text-large")
-                self.__year_label.get_style_context().add_class(
-                    "text-large")
-        else:
+        if view_type & ViewType.MULTIPLE:
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
                 "text-x-large")
+        else:
+            icon_size = Gtk.IconSize.BUTTON
+            if not view_type & ViewType.SMALL:
+                self.__title_label.get_style_context().add_class(
+                    "text-large")
+                self.__year_label.get_style_context().add_class(
+                    "text-large")
         menu_button.get_image().set_from_icon_name("view-more-symbolic",
                                                    icon_size)
         self.__title_label.set_markup(GLib.markup_escape_text(album.name))
@@ -78,13 +78,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
-        if view_type & ViewType.SMALL:
-            self.__grid.get_style_context().add_class("banner-frame")
-            self.__artwork.get_style_context().add_class("banner-frame-back")
-            # See application.css: cover-frame
-            self.__padding = 8
-            self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
-        else:
+        if view_type & ViewType.MULTIPLE:
             self.__grid.get_style_context().add_class("black")
             self.__artwork.get_style_context().add_class("black")
             self.__cover_widget = CoverWidget(True)
@@ -93,6 +87,15 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__art_signal_id = App().art.connect(
                                                "album-artwork-changed",
                                                self.__on_album_artwork_changed)
+        else:
+            if view_type & ViewType.SMALL:
+                self.__grid.get_style_context().add_class("banner-frame-small")
+            else:
+                self.__grid.get_style_context().add_class("banner-frame")
+            self.__artwork.get_style_context().add_class("banner-frame-back")
+            # See application.css: cover-frame
+            self.__padding = 8
+            self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
         self.__cover_widget.update(album)
         self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
@@ -126,7 +129,7 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__duration_label.hide()
             self.__rating_grid.hide()
             self.__year_label.set_vexpand(True)
-            if not App().window.is_adaptive:
+            if not self.__view_type & ViewType.SMALL:
                 self.__title_label.get_style_context().remove_class(
                     "text-xx-large")
                 self.__title_label.get_style_context().add_class(
@@ -143,7 +146,7 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__duration_label.show()
             self.__rating_grid.show()
             self.__year_label.set_vexpand(False)
-            if not App().window.is_adaptive:
+            if not self.__view_type & ViewType.SMALL:
                 self.__title_label.get_style_context().add_class(
                     "text-xx-large")
                 self.__year_label.get_style_context().add_class(
@@ -184,10 +187,10 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Get default height
         """
-        if self.__view_type & ViewType.SMALL:
-            return ArtSize.LARGE + 20
-        else:
+        if self.__view_type & ViewType.MULTIPLE:
             return ArtSize.BANNER + 40
+        else:
+            return ArtSize.LARGE + 20
 
 #######################
 # PROTECTED           #

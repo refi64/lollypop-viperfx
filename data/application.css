@@ -200,6 +200,16 @@ popover.background separator {
     background-color: alpha(@theme_selected_bg_color, 0.1);
 }
 
+.banner-frame-small {
+    border-bottom: 1px solid shade(@theme_bg_color, 0.7);
+    background-color: shade(@theme_bg_color, 1.5);
+    padding: 3px;
+}
+
+.banner-frame-small:selected {
+    background-color: alpha(@theme_selected_bg_color, 0.1);
+}
+
 .cover-frame {
     border: 1px solid shade(@theme_bg_color, 0.7);
     background-color: shade(@theme_bg_color, 1.5);
