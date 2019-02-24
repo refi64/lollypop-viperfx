@@ -93,6 +93,7 @@ class FastScroll(Gtk.ScrolledWindow):
             label = Gtk.Label.new()
             label.set_margin_left(10)
             label.set_markup('<span font="Monospace"><b>%s</b></span>' % c)
+            label.set_opacity(0.2)
             label.show()
             self.__grid.add(label)
         label = Gtk.Label.new()
