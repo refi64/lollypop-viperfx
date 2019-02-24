@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GObject
 
 from collections import OrderedDict
 
-from lollypop.define import App, Type, Sizing, ViewType
+from lollypop.define import App, Type, Sizing, ViewType, MARGIN
 from lollypop.widgets_tracks import TracksWidget
 from lollypop.widgets_row_playlist import PlaylistRow
 from lollypop.objects import Track
@@ -47,9 +47,8 @@ class PlaylistsWidget(Gtk.Grid):
         self.__row_tracks_right = []
         self.__width = None
         self.__orientation = None
-        self.set_margin_start(5)
-        # 15 for scrollbar overlay
-        self.set_margin_end(15)
+        self.set_margin_start(MARGIN)
+        self.set_margin_end(MARGIN)
 
         self.__grid = Gtk.Grid()
         self.__grid.set_vexpand(True)
