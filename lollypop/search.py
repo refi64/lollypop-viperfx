@@ -42,11 +42,11 @@ class Search:
         """
             Calculate string score for search items
             @param string as str
-            @param search_item as [str]
+            @param search_item as str
         """
         string = string.lower()
-        initial_score = 0 if string != search_items else 10
-        split_search = self.__split_string(string)
+        initial_score = 10 if string.startswith(search_items) else 0
+        split_search = self.__split_string(search_items)
         split_string = self.__split_string(string)
         join = list(set(split_string) & set(split_search))
         return initial_score + len(join)
