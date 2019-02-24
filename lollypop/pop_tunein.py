@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.radios import Radios
 from lollypop.logger import Logger
-from lollypop.define import App, ArtSize, Sizing
+from lollypop.define import App, ArtSize
 from lollypop.art import Art
 from lollypop.list import LinkedList
 from lollypop.objects import Track
@@ -354,13 +354,12 @@ class TuneinPopover(Gtk.Popover):
                 # Cache for toolbar
                 App().task_helper.run(App().art.copy_uri_to_cache,
                                       item.LOGO, item.TEXT,
+                                      App().window.toolbar.info.art_size,
                                       App().window.toolbar.info.art_size)
                 # Cache for MPRIS
                 App().task_helper.run(App().art.copy_uri_to_cache,
-                                      item.LOGO, item.TEXT, ArtSize.BIG)
-                # Cache for miniplayer
-                App().task_helper.run(App().art.copy_uri_to_cache,
-                                      item.LOGO, item.TEXT, Sizing.SMALL)
+                                      item.LOGO, item.TEXT,
+                                      ArtSize.BIG, ArtSize.BIG)
             track = Track()
             track.set_radio(item.TEXT, item.URL)
             App().player.load(track)

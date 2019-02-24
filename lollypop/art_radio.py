@@ -36,23 +36,25 @@ class RadioArt:
             except Exception as e:
                 Logger.error("RadioArt.__init__(): %s" % e)
 
-    def get_radio_cache_path(self, name, size):
+    def get_radio_cache_path(self, name, width, height):
         """
             get cover cache path for radio
-            @param name as string
+            @param width as int
+            @param height as int
             @return cover path as string or None if no cover
         """
         filename = ""
         try:
             filename = self.__get_radio_cache_name(name)
-            cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
-                                               filename,
-                                               size)
+            cache_path_png = "%s/%s_%s_%s.png" % (self._CACHE_PATH,
+                                                  filename,
+                                                  width,
+                                                  height)
             f = Gio.File.new_for_path(cache_path_png)
             if f.query_exists():
                 return cache_path_png
             else:
-                self.get_radio_artwork(name, size, 1)
+                self.get_radio_artwork(name, width, height, 1)
                 if f.query_exists():
                     return cache_path_png
         except Exception as e:
@@ -60,38 +62,42 @@ class RadioArt:
                          (e, ascii(filename)))
             return None
 
-    def get_radio_artwork(self, name, size, scale):
+    def get_radio_artwork(self, name, width, height, scale, cache=True):
         """
             Return a cairo surface for radio name
             @param radio name as string
-            @param pixbuf size as int
+            @param width as int
+            @param height as int
             @param scale factor as int
+            @param cache as bool
             @return GdkPixbuf.Pixbuf
         """
-        size *= scale
+        width *= scale
+        height *= scale
         filename = self.__get_radio_cache_name(name)
-        cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
+        cache_path_png = "%s/%s_%s_%s.png" % (self._CACHE_PATH, filename,
+                                              width, height)
         pixbuf = None
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_png)
             if f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
-                                                                size,
-                                                                size)
+                                                                width,
+                                                                height)
             else:
                 path = self.__get_radio_art_path(name)
                 if path is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
-                                                                    size,
-                                                                    size)
-            if pixbuf is not None:
-                pixbuf.savev(cache_path_png, "png", [None], [None])
+                                                                    width,
+                                                                    height)
+                if cache and pixbuf is not None:
+                    pixbuf.savev(cache_path_png, "png", [None], [None])
         except Exception as e:
             Logger.error("RadioArt::get_radio_artwork(): %s" % e)
         return pixbuf
 
-    def copy_uri_to_cache(self, uri, name, size):
+    def copy_uri_to_cache(self, uri, name, width, height):
         """
             Copy uri to cache at size
             @param uri as str
@@ -104,7 +110,8 @@ class RadioArt:
                                 None,
                                 self.__on_uri_content,
                                 name,
-                                size)
+                                width,
+                                height)
 
     def rename_radio(self, old_name, new_name):
         """
@@ -188,20 +195,22 @@ class RadioArt:
         """
         return "@@" + name.replace("/", "-") + "@@radio@@"
 
-    def __on_uri_content(self, uri, status, content, name, size):
+    def __on_uri_content(self, uri, status, content, name, width, height):
         """
             Save image
             @param uri as str
             @param status as bool
             @param content as bytes  # The image
             @param name as str
-            @param size as int
+            @param width as int
+            @param height as int
         """
         if status:
             filename = self.__get_radio_cache_name(name)
-            cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
-                                               filename,
-                                               size)
+            cache_path_png = "%s/%s_%s_%s.png" % (self._CACHE_PATH,
+                                                  filename,
+                                                  width,
+                                                  height)
             bytes = GLib.Bytes(content)
             stream = Gio.MemoryInputStream.new_from_bytes(bytes)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)

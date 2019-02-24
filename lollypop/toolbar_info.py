@@ -137,7 +137,8 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param name as str
         """
         if App().player.current_track.album_artist == name:
-            pixbuf = App().art.get_radio_artwork(name, self.art_size)
+            pixbuf = App().art.get_radio_artwork(
+                name, self.art_size, self.art_size)
             self._artwork.set_from_surface(pixbuf)
 
     def __popup_menu(self):

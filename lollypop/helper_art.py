@@ -94,10 +94,12 @@ class ArtHelper(GObject.Object):
             @param callback as function
             @param effect as ArtHelperEffect
         """
-        App().task_helper.run(App().art.get_radio_artwork,
+        App().task_helper.run(self.__get_radio_artwork,
                               radio,
                               width,
+                              height,
                               scale_factor,
+                              effect,
                               callback=(self._on_get_artwork_pixbuf,
                                         width,
                                         height,
@@ -122,7 +124,7 @@ class ArtHelper(GObject.Object):
                               height,
                               scale_factor,
                               effect,
-                              callback=(self._on_get_artist_artwork_pixbuf,
+                              callback=(self._on_get_artwork_pixbuf,
                                         width,
                                         height,
                                         scale_factor,
@@ -132,26 +134,6 @@ class ArtHelper(GObject.Object):
 #######################
 # PROTECTED           #
 #######################
-    def _on_get_artist_artwork_pixbuf(self, pixbuf, width, height,
-                                      scale_factor, callback, effect):
-        """
-            Set pixbuf as surface
-            @param pixbuf as Gdk.Pixbuf
-            @param size as int
-            @param scale_factor as int
-            @param callback as function
-            @param effect as ArtHelperEffect
-        """
-        surface = None
-        if pixbuf is not None:
-            if effect & ArtHelperEffect.ROUNDED:
-                radius = pixbuf.get_width() / 2
-                surface = get_round_surface(pixbuf, scale_factor, radius)
-            else:
-                surface = Gdk.cairo_surface_create_from_pixbuf(
-                        pixbuf, scale_factor, None)
-        callback(surface)
-
     def _on_get_artwork_pixbuf(self, pixbuf, width, height, scale_factor,
                                callback, effect):
         """
@@ -164,6 +146,14 @@ class ArtHelper(GObject.Object):
         """
         surface = None
         if pixbuf is not None:
+            if effect & ArtHelperEffect.RESIZE:
+                pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                             height * scale_factor,
+                                             GdkPixbuf.InterpType.NEAREST)
+            if effect & ArtHelperEffect.BLUR:
+                pixbuf = self.__get_blur(pixbuf, width, height, 10)
+            elif effect & ArtHelperEffect.BLUR_HARD:
+                pixbuf = self.__get_blur(pixbuf, width, height, 50)
             if effect & ArtHelperEffect.ROUNDED:
                 radius = pixbuf.get_width() / 2
                 surface = get_round_surface(pixbuf, scale_factor, radius)
@@ -190,18 +180,24 @@ class ArtHelper(GObject.Object):
         height = pixbuf.get_height()
         data = pixbuf.get_pixels()
         stride = pixbuf.get_rowstride()
-        tmp = Image.frombytes("RGB", (width, height),
-                              data, "raw", "RGB", stride)
-
+        has_alpha = pixbuf.get_has_alpha()
+        if has_alpha:
+            mode = "RGBA"
+            dst_row_stride = width * 4
+        else:
+            mode = "RGB"
+            dst_row_stride = width * 3
+        tmp = Image.frombytes(mode, (width, height),
+                              data, "raw", mode, stride)
         tmp = tmp.filter(ImageFilter.GaussianBlur(gaussian))
         bytes = GLib.Bytes.new(tmp.tobytes())
         pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(bytes,
                                                  GdkPixbuf.Colorspace.RGB,
-                                                 False,
+                                                 has_alpha,
                                                  8,
                                                  width,
                                                  height,
-                                                 width * 3)
+                                                 dst_row_stride)
         return pixbuf
 
     def __get_album_artwork(self, album, width, height, scale_factor, effect):
@@ -216,21 +212,23 @@ class ArtHelper(GObject.Object):
         """
         cache = False if effect & (ArtHelperEffect.BLUR |
                                    ArtHelperEffect.BLUR_HARD) else True
-        pixbuf = App().art.get_album_artwork(
-            album, width, height, scale_factor, cache)
-        try:
-            if effect & ArtHelperEffect.RESIZE:
-                pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                             height * scale_factor,
-                                             GdkPixbuf.InterpType.NEAREST)
-            if effect & ArtHelperEffect.BLUR:
-                pixbuf = self.__get_blur(pixbuf, width, height, 10)
-            elif effect & ArtHelperEffect.BLUR_HARD:
-                pixbuf = self.__get_blur(pixbuf, width, height, 50)
-            return pixbuf
-        except Exception as e:
-            Logger.warning("ArtHelper::__get_album_artwork(): %s", e)
-        return None
+        return App().art.get_album_artwork(album, width, height,
+                                           scale_factor, cache)
+
+    def __get_radio_artwork(self, radio, width, height, scale_factor, effect):
+        """
+            Set artwork for album id
+            @param radio as str
+            @param width as int
+            @param height as int
+            @param scale_factor as int
+            @param effect as ArtHelperEffect
+            @return GdkPixbuf.Pixbuf
+        """
+        cache = False if effect & (ArtHelperEffect.BLUR |
+                                   ArtHelperEffect.BLUR_HARD) else True
+        return App().art.get_radio_artwork(radio, width, height,
+                                           scale_factor, cache)
 
     def __get_artist_artwork(self, artist, width, height,
                              scale_factor, effect):
@@ -249,14 +247,6 @@ class ArtHelper(GObject.Object):
         try:
             if path is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-                if effect & ArtHelperEffect.RESIZE:
-                    pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                                 height * scale_factor,
-                                                 GdkPixbuf.InterpType.NEAREST)
-                if effect & ArtHelperEffect.BLUR:
-                    pixbuf = self.__get_blur(pixbuf, width, height, 10)
-                elif effect & ArtHelperEffect.BLUR_HARD:
-                    pixbuf = self.__get_blur(pixbuf, width, height, 50)
                 return pixbuf
         except Exception as e:
             Logger.warning("ArtHelper::__get_artist_artwork(): %s", e)

@@ -109,7 +109,8 @@ class NotificationManager:
             cover_path = None
         elif player.current_track.id == Type.RADIOS:
             cover_path = App().art.get_radio_cache_path(
-                player.current_track.album_artists[0], ArtSize.BIG)
+                player.current_track.album_artists[0],
+                ArtSize.BIG, ArtSize.BIG)
         else:
             cover_path = App().art.get_album_cache_path(
                 player.current_track.album, ArtSize.BIG, ArtSize.BIG)
