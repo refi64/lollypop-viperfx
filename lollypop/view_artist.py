@@ -33,8 +33,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             @param genre id as int
         """
         view_type = ViewType.TWO_COLUMNS
-        if len(artist_ids) > 1:
-            view_type |= ViewType.MULTIPLE
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)
         self.__art_signal_id = None
         self.__allocation_timeout_id = None

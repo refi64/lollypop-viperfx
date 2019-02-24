@@ -48,7 +48,7 @@ class ViewType:
     SEARCH = 1 << 3
     PLAYLISTS = 1 << 4
     POPOVER = 1 << 5
-    MULTIPLE = 1 << 6
+    ALBUM = 1 << 6
     NAVIGATION = 1 << 7
     SMALL = 1 << 8
     MEDIUM = 1 << 9

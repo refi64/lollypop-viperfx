@@ -47,7 +47,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__year_label = builder.get_object("year_label")
         self.__duration_label = builder.get_object("duration_label")
         menu_button = builder.get_object("menu_button")
-        if view_type & ViewType.MULTIPLE:
+        if view_type & ViewType.ALBUM and not view_type & ViewType.SMALL:
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
@@ -78,7 +78,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
-        if view_type & ViewType.MULTIPLE:
+        if view_type & ViewType.ALBUM and not view_type & ViewType.SMALL:
             self.__grid.get_style_context().add_class("black")
             self.__artwork.get_style_context().add_class("black")
             self.__cover_widget = CoverWidget(True)
@@ -187,7 +187,8 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Get default height
         """
-        if self.__view_type & ViewType.MULTIPLE:
+        if self.__view_type & ViewType.ALBUM and\
+                not self.__view_type & ViewType.SMALL:
             return ArtSize.BANNER + 40
         else:
             return ArtSize.LARGE + 20

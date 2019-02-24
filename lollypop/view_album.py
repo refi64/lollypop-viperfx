@@ -62,7 +62,8 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._scrolled)
         self._overlay.show()
-        self.__banner = AlbumBannerWidget(self._album, self._view_type)
+        self.__banner = AlbumBannerWidget(self._album,
+                                          self._view_type | ViewType.ALBUM)
         self.__banner.show()
         self._overlay.add_overlay(self.__banner)
         self.add(self._overlay)
