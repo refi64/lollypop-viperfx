@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio
 from gettext import gettext as _
 from random import shuffle
 
-from lollypop.define import App, ViewType, Type, Shuffle
+from lollypop.define import App, ViewType, Type, Shuffle, MARGIN_SMALL
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
 from lollypop.view import BaseView
@@ -52,6 +52,7 @@ class SearchView(BaseView, Gtk.Bin):
         self.__stack = builder.get_object("stack")
         self.__placeholder = builder.get_object("placeholder")
         self.__view = AlbumsListView(ViewType.SEARCH)
+        self.__view.set_margin_start(MARGIN_SMALL)
         self.__view.show()
         self.__stack.add_named(self.__view, "view")
         self.__set_default_placeholder()

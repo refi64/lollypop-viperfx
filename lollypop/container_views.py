@@ -14,6 +14,7 @@ from lollypop.shown import ShownLists
 from lollypop.loader import Loader
 from lollypop.objects import Track, Album
 from lollypop.define import App, Type, ViewType, SelectionListMask
+from lollypop.define import MARGIN_SMALL
 from lollypop.define import SidebarContent
 
 
@@ -307,6 +308,7 @@ class ViewsContainer:
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ViewType.DEFAULT, years, [Type.YEARS])
+            view.set_margin_start(MARGIN_SMALL)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView([Type.YEARS], years)
@@ -358,6 +360,7 @@ class ViewsContainer:
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView
             view = AlbumsListView(ViewType.DEFAULT, genre_ids, artist_ids)
+            view.set_margin_start(MARGIN_SMALL)
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView(genre_ids, artist_ids)
@@ -390,9 +393,9 @@ class ViewsContainer:
         from lollypop.view_information import InformationView
         view = InformationView(True)
         view.populate()
-        view.set_margin_top(5)
-        view.set_margin_start(5)
-        view.set_margin_end(5)
+        view.set_margin_top(MARGIN_SMALL)
+        view.set_margin_start(MARGIN_SMALL)
+        view.set_margin_end(MARGIN_SMALL)
         view.show()
         return view
 
@@ -403,9 +406,9 @@ class ViewsContainer:
         """
         from lollypop.view_search import SearchView
         view = SearchView()
-        view.set_margin_top(5)
-        view.set_margin_start(5)
-        view.set_margin_end(5)
+        view.set_margin_top(MARGIN_SMALL)
+        view.set_margin_start(MARGIN_SMALL)
+        view.set_margin_end(MARGIN_SMALL)
         view.show()
         return view
 
@@ -423,8 +426,8 @@ class ViewsContainer:
             from lollypop.view_current_albums import CurrentAlbumsView
             view = CurrentAlbumsView(ViewType.DEFAULT)
             view.populate(App().player.albums)
-        view.set_margin_top(5)
-        view.set_margin_start(5)
+        view.set_margin_top(MARGIN_SMALL)
+        view.set_margin_start(MARGIN_SMALL)
         view.show()
         return view
 

@@ -82,8 +82,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__play_indicator = None
         self.set_sensitive(False)
         self.set_property("height-request", height)
-        self.set_margin_start(MARGIN_SMALL)
-        self.set_margin_end(MARGIN)
         self.connect("destroy", self.__on_destroy)
 
     def populate(self):
@@ -476,6 +474,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
         # We may need to listen to screen changes
         self.__height = AlbumRow.get_best_height(self)
         self._box = Gtk.ListBox()
+        self._box.set_margin_end(MARGIN)
         self._box.get_style_context().add_class("trackswidget")
         self._box.set_vexpand(True)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)

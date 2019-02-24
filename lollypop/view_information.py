@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gio, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ViewType, MARGIN
+from lollypop.define import App, ArtSize, ViewType, MARGIN, MARGIN_SMALL
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
@@ -143,6 +143,7 @@ class InformationView(BaseView, Gtk.Bin):
             self.__bio_label.set_margin_bottom(MARGIN)
             self.__artist_artwork.hide()
         else:
+            self.__artist_artwork.set_margin_start(MARGIN_SMALL)
             builder.get_object("header").show()
             self.__artist_label.set_text(self.__artist_name)
             self.__artist_label.show()
