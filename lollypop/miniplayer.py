@@ -17,6 +17,7 @@ from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
 from lollypop.widgets_cover import CoverWidget
+from lollypop.utils import on_realize
 from lollypop.define import App, ArtSize
 
 
@@ -48,6 +49,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__grid = builder.get_object("grid")
         self.__revealer = builder.get_object("revealer")
         self.__revealer_box = builder.get_object("revealer_box")
+        self.__eventbox = builder.get_object("eventbox")
+        self.__eventbox.connect("realize", on_realize)
 
         self._progress = builder.get_object("progress_scale")
         self._progress.set_sensitive(False)
@@ -64,7 +67,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__back_button = builder.get_object("back_button")
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
-        self.__reveal_button = builder.get_object("reveal_button")
 
         self.__grid = builder.get_object("grid")
         self._artwork = builder.get_object("cover")
@@ -81,23 +83,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
             ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
         self.connect("destroy", self.__on_destroy)
-
-    def reveal(self):
-        """
-            Reveal cover
-        """
-        if not self.__revealer.get_reveal_child():
-            self._on_reveal_button_clicked(self.__reveal_button)
-
-    def show_reveal_button(self, show):
-        """
-            Show/hide reveal button
-            @param show as bool
-        """
-        if show:
-            self.__reveal_button.show()
-        else:
-            self.__reveal_button.hide()
 
     def update_cover(self, width):
         """
@@ -131,25 +116,21 @@ class MiniPlayer(Gtk.Bin, InformationController,
             Show lyrics view
             @param button as Gtk.Button
         """
-        self._on_reveal_button_clicked(self.__reveal_button)
+        self._on_reveal_button_release_event(None, None)
         App().window.container.show_lyrics()
 
-    def _on_reveal_button_clicked(self, button):
+    def _on_button_release_event(self, *ignore):
         """
             Set revealer on/off
             @param button as Gtk.Button
         """
         if self.__revealer.get_reveal_child():
-            button.get_image().set_from_icon_name("pan-up-symbolic",
-                                                  Gtk.IconSize.BUTTON)
             self.__revealer.set_reveal_child(False)
             self.emit("revealed", False)
             if self.__cover_widget is not None:
                 self.__cover_widget.destroy()
                 self.__cover_widget = None
         else:
-            button.get_image().set_from_icon_name("pan-down-symbolic",
-                                                  Gtk.IconSize.BUTTON)
             if self.__cover_widget is None:
                 self.__cover_widget = CoverWidget(False, ArtSize.BIG)
                 self.__cover_widget.update(App().player.current_track.album)
