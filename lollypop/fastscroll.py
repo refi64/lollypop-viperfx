@@ -76,7 +76,7 @@ class FastScroll(Gtk.ScrolledWindow):
             Add a char to widget, will not be shown
             @param c as char
         """
-        to_add = noaccents(index_of(c).upper())
+        to_add = noaccents(index_of(c)).upper()
         if to_add not in self.__chars:
             self.__chars.append(to_add)
 
