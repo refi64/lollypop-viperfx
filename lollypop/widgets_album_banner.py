@@ -78,24 +78,23 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__artwork = builder.get_object("artwork")
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
-        if view_type & ViewType.ALBUM and not view_type & ViewType.SMALL:
+        if view_type & ViewType.ALBUM:
             self.__grid.get_style_context().add_class("black")
             self.__artwork.get_style_context().add_class("black")
-            self.__cover_widget = CoverWidget(True)
             self.connect("size-allocate", self.__on_size_allocate)
             self.connect("destroy", self.__on_destroy)
             self.__art_signal_id = App().art.connect(
                                                "album-artwork-changed",
                                                self.__on_album_artwork_changed)
         else:
-            if view_type & ViewType.SMALL:
-                self.__grid.get_style_context().add_class("banner-frame-small")
-            else:
-                self.__grid.get_style_context().add_class("banner-frame")
+            self.__grid.get_style_context().add_class("banner-frame")
             self.__artwork.get_style_context().add_class("banner-frame-back")
             # See application.css: cover-frame
             self.__padding = 8
+        if view_type & ViewType.SMALL:
             self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
+        else:
+            self.__cover_widget = CoverWidget(True)
         self.__cover_widget.update(album)
         self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
