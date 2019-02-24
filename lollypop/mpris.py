@@ -430,7 +430,7 @@ class MPRIS(Server):
                 self.__rating / 5)
             if App().player.current_track.id == Type.RADIOS:
                 cover_path = App().art.get_radio_cache_path(
-                    ", ".join(App().player.current_track.artists),
+                    App().player.current_track.radio_name,
                     ArtSize.MONSTER, ArtSize.MONSTER)
             else:
                 cover_path = App().art.get_album_cache_path(
