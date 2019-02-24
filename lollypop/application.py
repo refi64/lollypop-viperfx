@@ -20,7 +20,6 @@ Gst.init(None)
 
 from threading import current_thread
 from pickle import dump
-from gettext import gettext as _
 from signal import signal, SIGINT, SIGTERM
 
 
@@ -28,9 +27,6 @@ try:
     from lollypop.lastfm import LastFM
 except Exception as e:
     print(e)
-    print(_("    - Scrobbler disabled\n"
-            "    - Auto cover download disabled\n"
-            "    - Artist information disabled"))
     print("$ sudo pip3 install pylast")
     LastFM = None
 
@@ -193,11 +189,6 @@ class Application(Gtk.Application):
         self.art_helper = ArtHelper()
         if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
-        # Load lastfm if support available
-        if LastFM is not None:
-            self.scrobblers = [LastFM("lastfm"),
-                               LastFM("librefm")]
-        self.load_listenbrainz()
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)
@@ -388,6 +379,12 @@ class Application(Gtk.Application):
         options = app_cmd_line.get_options_dict()
         if options.contains("debug"):
             self.debug = True
+        # We are forced to enable scrobblers here if we want full debug
+        if not self.scrobblers:
+            if LastFM is not None:
+                self.scrobblers = [LastFM("lastfm"),
+                                   LastFM("librefm")]
+            self.load_listenbrainz()
         if options.contains("set-rating"):
             value = options.lookup_value("set-rating").get_string()
             try:

@@ -60,15 +60,18 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         self.__queue = []
         if name == "librefm":
             LibreFMNetwork.__init__(self)
+            Logger.debug("LibreFMNetwork.__init__()")
         else:
             self.__goa = GoaSyncedAccount("Last.fm")
             self.__goa.connect("account-switched",
                                self.on_goa_account_switched)
             if self.is_goa:
+                Logger.debug("LastFMNetwork.__init__(goa.)")
                 auth = self.__goa.oauth2_based
                 self.__API_KEY = auth.props.client_id
                 self.__API_SECRET = auth.props.client_secret
             else:
+                Logger.debug("LastFMNetwork.__init__(secret)")
                 self.__API_KEY = "7a9619a850ccf7377c46cf233c51e3c6"
                 self.__API_SECRET = "9254319364d73bec6c59ace485a95c98"
             LastFMNetwork.__init__(self,
