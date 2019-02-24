@@ -78,14 +78,11 @@ class DeviceView(View):
         self._empty_icon_name = "multimedia-player-symbolic"
         self.__timeout_id = None
         self.__device = device
-        self.__selected_ids = []
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
         self.__memory_combo = builder.get_object("memory_combo")
         self.__syncing_btn = builder.get_object("sync_btn")
-        # FIXME Wait for translation
-        _("Synchronize")
-        self.__syncing_btn.set_label(_("Synchronize %s") % "")
+        self.__syncing_btn.set_label(_("Synchronize"))
         builder.connect_signals(self)
         self.__device_widget = DeviceManagerWidget(self)
         self.__device_widget.mtp_sync.connect("sync-finished",
@@ -97,9 +94,9 @@ class DeviceView(View):
         self.__error_label = builder.get_object("error_label")
         self.__paned = builder.get_object("paned")
         self.__selection_list = SelectionList(SelectionListMask.LIST_ONE)
+        self.__selection_list.set_vexpand(True)
         self.__selection_list.connect("item-selected", self.__on_item_selected)
         self.__selection_list.mark_as(SelectionListMask.ARTISTS)
-        self.__selection_list.show()
         self.__paned.add1(self.__selection_list)
         self.__paned.add2(builder.get_object("device_view"))
         builder.get_object("device_view").attach(self._scrolled, 0, 3, 4, 1)
@@ -110,19 +107,14 @@ class DeviceView(View):
         self.__update_list_device()
         self.__sanitize_non_mtp()
 
-    def populate_combo(self, selected_ids=[]):
+    def populate(self):
         """
             Populate combo box
-            @param selected_ids as [int]
             @thread safe
         """
+        self._remove_placeholder()
         child = self._viewport.get_child()
-        self.__selected_ids = selected_ids
-        if selected_ids:
-            if child is not None and isinstance(child, Gtk.Label):
-                child.destroy()
-                self._viewport.add(self.__device_widget)
-        elif child is None:
+        if child is None:
             label = Gtk.Label.new(
                 _("This will remove some files on your device!"))
             label.get_style_context().add_class("lyrics-x-large")
@@ -133,9 +125,11 @@ class DeviceView(View):
             self._viewport.add(label)
         files = DeviceView.get_files(self.__device.uri)
         if files:
+            self.__selection_list.show()
             GLib.idle_add(self.__set_combo_text, files)
         else:
-            GLib.idle_add(self.destroy)
+            self.__selection_list.hide()
+            View.populate(self)
 
     def is_syncing(self):
         """
@@ -201,8 +195,6 @@ class DeviceView(View):
         text = combo.get_active_text()
         uri = "%s%s/Music" % (self.__device.uri, text)
         self.__device_widget.set_uri(uri)
-        if self.__selected_ids:
-            self.__device_widget.populate(self.__selected_ids)
 
     def _on_map(self, widget):
         """
@@ -285,19 +277,13 @@ class DeviceView(View):
             @param device widget as DeviceManager
         """
         self.__memory_combo.show()
-        self.__syncing_btn.set_label(_("Synchronize %s") %
-                                     self.__device.name)
+        self.__syncing_btn.set_label(_("Synchronize"))
 
     def __set_combo_text(self, text_list):
         """
             Set combobox text
             @param text list as [str]
         """
-        # Just update device widget if already populated
-        if self.__memory_combo.get_active_text() is not None:
-            if self.__device_widget.mtp_sync.cancellable.is_cancelled():
-                self.__device_widget.populate(self.__selected_ids)
-            return
         for text in text_list:
             self.__memory_combo.append_text(text)
         self.__memory_combo.set_active(0)
@@ -307,4 +293,8 @@ class DeviceView(View):
             Update view
             @param selection_list as SelectionList
         """
-        self.populate_combo(selectionlist.selected_ids)
+        child = self._viewport.get_child()
+        if child is not None and isinstance(child, Gtk.Label):
+            child.destroy()
+            self._viewport.add(self.__device_widget)
+        self.__device_widget.populate(selectionlist.selected_ids)

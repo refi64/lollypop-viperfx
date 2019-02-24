@@ -88,17 +88,13 @@ class DeviceContainer:
             if isinstance(child, DeviceView):
                 if child.device.uri == device.uri:
                     device_view = child
+                    device_view.populate()
                     break
-
         # If no view available, get a new one
         if device_view is None:
-            files = DeviceView.get_files(device.uri)
             device_view = DeviceView(device)
             self._stack.add_named(device_view, device.uri)
-            if files:
-                device_view.populate_combo()
-            else:
-                device_view.populate()
+            device_view.populate()
             device_view.show()
         return device_view
 

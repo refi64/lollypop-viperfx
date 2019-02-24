@@ -85,6 +85,8 @@ class DeviceManagerWidget(Gtk.Bin):
             @param selected_ids as [int]
         """
         self.__model.clear()
+        if not selected_ids:
+            return
         if selected_ids[0] == Type.PLAYLISTS:
             playlists = [(Type.LOVED, _("Loved tracks"))]
             playlists += App().playlists.get()
