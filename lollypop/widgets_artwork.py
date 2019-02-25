@@ -111,7 +111,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param album as Album/None
         """
         Gtk.Bin.__init__(self)
-        self.connect("unmap", self.__on_self_unmap)
+        self.connect("unmap", self.__on_unmap)
         self.__timeout_id = None
         self.__web_search = None
         self.__album = album
@@ -157,7 +157,6 @@ class ArtworkSearchWidget(Gtk.Bin):
         key = App().settings.get_value("cs-api-key").get_string() or\
             App().settings.get_default_value("cs-api-key").get_string()
         self.__api_entry.set_text(key)
-        self.set_size_request(700, 400)
 
     def populate(self):
         """
@@ -394,7 +393,7 @@ class ArtworkSearchWidget(Gtk.Bin):
                 break
             widget = widget.get_parent()
 
-    def __on_self_unmap(self, widget):
+    def __on_unmap(self, widget):
         """
             Cancel loading
             @param widget as Gtk.Widget

@@ -38,7 +38,7 @@ class CommonPopover(Popover):
         """
         size = App().window.get_size()
         self.set_size_request(size[0] * 0.6,
-                              size[1] * 0.5)
+                              size[1] * 0.6)
 
     def __on_unmap(self, widget):
         """
