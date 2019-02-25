@@ -29,7 +29,6 @@ class FlowBoxView(LazyLoadingView):
         LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
         self._widget_class = None
         self._items = []
-        self._view_type = view_type
         self._box = Gtk.FlowBox()
         self._box.set_filter_func(self._filter_func)
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)

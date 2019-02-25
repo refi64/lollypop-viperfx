@@ -104,8 +104,8 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
             @param widget as Gtk.Widget
         """
         from lollypop.pop_menu_views import ViewsMenuPopover
-        from lollypop.view_artists_rounded import RoundedArtistsView
-        popover = ViewsMenuPopover(self.get_ancestor(RoundedArtistsView),
+        from lollypop.view_playlists_manager import PlaylistsManagerView
+        popover = ViewsMenuPopover(self.get_ancestor(PlaylistsManagerView),
                                    self.data,
                                    SelectionListMask.PLAYLISTS)
         popover.set_relative_to(widget)

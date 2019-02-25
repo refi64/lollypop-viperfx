@@ -62,6 +62,31 @@ class PlaylistsManagerView(FlowBoxView):
             items = [i[0] for i in ShownPlaylists.get()] + items
         FlowBoxView.populate(self, items)
 
+    def add_value(self, item):
+        """
+            Insert item
+            @param item as (int, str, str)
+        """
+        for child in self._box.get_children():
+            if child.data == item[0]:
+                return
+        # Setup sort on insert
+        self._box.set_sort_func(self.__sort_func)
+        widget = PlaylistRoundedWidget(item[0], None, self._view_type)
+        widget.populate()
+        widget.show()
+        self._box.insert(widget, -1)
+
+    def remove_value(self, item_id):
+        """
+            Remove item from devices
+            @param item_id as int
+        """
+        for child in self._box.get_children():
+            if child.data == item_id:
+                child.destroy()
+                break
+
 #######################
 # PROTECTED           #
 #######################
