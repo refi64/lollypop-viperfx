@@ -91,7 +91,7 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__artwork.get_style_context().add_class("banner-frame-back")
             # See application.css: cover-frame
             self.__padding = 8
-        if view_type & ViewType.SMALL:
+        if view_type & ViewType.SMALL or not view_type & ViewType.ALBUM:
             self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
         else:
             self.__cover_widget = CoverWidget(True)
