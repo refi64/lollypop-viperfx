@@ -225,6 +225,8 @@ class Row(Gtk.ListBoxRow):
         """
         def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
+            self.set_indicator(App().player.current_track.id == self._track.id,
+                               self._track.loved)
 
         from lollypop.pop_menu import TrackMenuPopover, RemoveMenuPopover
         if self.get_state_flags() & Gtk.StateFlags.SELECTED:
