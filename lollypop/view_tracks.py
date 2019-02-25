@@ -505,7 +505,7 @@ class TracksView:
         # If same album, add track to album
         if track.album.id == row.track.album.id:
             position = self.children.index(row)
-            new_row = TrackRow(track, self._view_type)
+            new_row = TrackRow(track, track.album.artist_ids, self._view_type)
             new_row.connect("destroy", self.__on_row_destroy)
             new_row.connect("insert-track", self.__on_insert_track)
             new_row.connect("insert-album", self.__on_insert_album)

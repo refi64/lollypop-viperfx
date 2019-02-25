@@ -162,15 +162,8 @@ class ToolbarEnd(Gtk.Bin):
             return
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
-        if App().player.queue:
-            from lollypop.pop_queue import QueuePopover
-            popover = QueuePopover()
-        elif App().player.playlist_ids:
-            from lollypop.pop_playlists import PlaylistsPopover
-            popover = PlaylistsPopover()
-        else:
-            from lollypop.pop_albums import AlbumsPopover
-            popover = AlbumsPopover()
+        from lollypop.pop_current import CurrentPopover
+        popover = CurrentPopover()
         popover.set_relative_to(button)
         popover.popup()
         popover.connect("closed", self.__on_popover_closed, button)

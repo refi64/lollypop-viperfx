@@ -14,39 +14,42 @@ from gi.repository import Gtk
 
 from lollypop.define import App, ViewType
 from lollypop.widgets_utils import Popover
-from lollypop.view_queue import QueueView
 
 
-class QueuePopover(Popover):
+class CurrentPopover(Popover):
     """
-        Popover showing queue
+        Popover showing current tracks
     """
 
     def __init__(self):
         """
-            Init Popover
+            Init popover
         """
         Popover.__init__(self)
+        self.__view = App().window.container.get_view_current(
+            ViewType.POPOVER | ViewType.DND)
+        self.__view.show()
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
-        self.__view = QueueView(ViewType.POPOVER)
-        self.__view.populate()
-        self.__view.show()
+        self.connect("unmap", self.__on_unmap)
         self.add(self.__view)
-
-#######################
-# PROTECTED           #
-#######################
 
 #######################
 # PRIVATE             #
 #######################
     def __on_map(self, widget):
         """
-            Connect signals, populate, and resize
+            Resize
             @param widget as Gtk.Widget
         """
         window_size = App().window.get_size()
         height = window_size[1]
         width = min(500, window_size[0])
         self.set_size_request(width, height * 0.7)
+
+    def __on_unmap(self, widget):
+        """
+            Stop view
+            @param widget as Gtk.Widget
+        """
+        self.__view.stop()

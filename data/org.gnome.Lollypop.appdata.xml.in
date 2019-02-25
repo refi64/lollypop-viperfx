@@ -29,9 +29,6 @@
   <releases>
     <release version="0.9.920" date="2019-02-19">
       <description>
-	<ul>Add an equalizer</ul>
-	<ul>New album view</ul>
-	<ul>New default sidebar</ul>
       </description>
     </release>
   </releases>

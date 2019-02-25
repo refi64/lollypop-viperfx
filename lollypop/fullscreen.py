@@ -16,7 +16,6 @@ from datetime import datetime
 from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, ViewType
-from lollypop.view_albums_list import AlbumsListView
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
@@ -98,7 +97,8 @@ class FullScreen(Gtk.Window, InformationController,
         self.connect("key-release-event", self.__on_key_release_event)
 
         # Add an AlbumListView on the right
-        self.__view = AlbumsListView(ViewType.DND)
+        self.__view = App().window.container.get_view_current(
+            ViewType.DND | ViewType.FULLSCREEN)
         self.__view.get_style_context().add_class("background-opacity")
         self.__view.show()
         self.__revealer.add(self.__view)
@@ -117,7 +117,6 @@ class FullScreen(Gtk.Window, InformationController,
                                                  self.__on_party_changed)
         self.on_status_changed(App().player)
         self.on_current_changed(App().player)
-        self.__view.populate(App().player.albums)
         Gtk.Window.do_show(self)
         if self.__timeout_id is None:
             try:

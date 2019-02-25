@@ -261,7 +261,7 @@ class ListsContainer:
         if selected_ids[0] == Type.PLAYLISTS:
             view = self._get_view_playlists()
         elif selected_ids[0] == Type.CURRENT:
-            view = self._get_view_current()
+            view = self.get_view_current()
         elif selected_ids[0] == Type.SEARCH:
             view = self._get_view_search()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:

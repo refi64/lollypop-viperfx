@@ -54,6 +54,7 @@ class ViewType:
     MEDIUM = 1 << 9
     SCROLLED = 1 << 10
     FILTERED = 1 << 11
+    FULLSCREEN = 1 << 12
 
 
 class ArtSize:

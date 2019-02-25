@@ -105,6 +105,28 @@ class ViewsContainer:
         if switch:
             self._stack.set_visible_child(view)
 
+    def get_view_current(self, view_type=ViewType.DND):
+        """
+            Get view for current playlist
+            @return View
+        """
+        if App().player.queue and not view_type & ViewType.FULLSCREEN:
+            from lollypop.view_queue import QueueView
+            view = QueueView()
+            view.populate()
+        elif App().player.playlist_ids:
+            from lollypop.view_playlists import PlaylistsView
+            view = PlaylistsView(App().player.playlist_ids, view_type)
+            view.populate(App().player.playlist_tracks)
+        else:
+            from lollypop.view_current_albums import CurrentAlbumsView
+            view = CurrentAlbumsView(view_type)
+            view.populate(App().player.albums)
+        view.set_margin_top(MARGIN_SMALL)
+        view.set_margin_start(MARGIN_SMALL)
+        view.show()
+        return view
+
 ##############
 # PROTECTED  #
 ##############
@@ -409,29 +431,6 @@ class ViewsContainer:
         view.set_margin_top(MARGIN_SMALL)
         view.set_margin_start(MARGIN_SMALL)
         view.set_margin_end(MARGIN_SMALL)
-        view.show()
-        return view
-
-    def _get_view_current(self):
-        """
-            Get view for current playlist
-            @return View
-        """
-        if App().player.queue:
-            from lollypop.view_queue import QueueView
-            view = QueueView()
-            view.populate()
-        elif App().player.playlist_ids:
-            from lollypop.view_playlists import PlaylistsView
-            view = PlaylistsView(App().player.playlist_ids,
-                                 ViewType.DND | ViewType.POPOVER)
-            view.populate(App().player.playlist_tracks)
-        else:
-            from lollypop.view_current_albums import CurrentAlbumsView
-            view = CurrentAlbumsView(ViewType.DEFAULT)
-            view.populate(App().player.albums)
-        view.set_margin_top(MARGIN_SMALL)
-        view.set_margin_start(MARGIN_SMALL)
         view.show()
         return view
 

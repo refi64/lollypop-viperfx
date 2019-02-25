@@ -25,10 +25,9 @@ class CurrentAlbumsView(AlbumsListView):
 
     def __init__(self, view_type):
         """
-            Init popover
+            Init view
             @param view_type as ViewType
         """
-        view_type |= ViewType.DND
         AlbumsListView.__init__(self,  view_type)
         self.__clear_button = Gtk.Button.new_from_icon_name(
             "edit-clear-all-symbolic",
@@ -66,9 +65,10 @@ class CurrentAlbumsView(AlbumsListView):
         grid.set_column_spacing(5)
         grid.add(label)
         grid.set_property("valign", Gtk.Align.CENTER)
-        grid.add(self.__jump_button)
-        grid.add(self.__save_button)
-        grid.add(self.__clear_button)
+        if view_type & ViewType.POPOVER:
+            grid.add(self.__jump_button)
+            grid.add(self.__save_button)
+            grid.add(self.__clear_button)
         grid.show_all()
         self.set_row_spacing(2)
         self.insert_row(0)
