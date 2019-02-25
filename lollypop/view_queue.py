@@ -42,19 +42,18 @@ class QueueView(View):
         self.__clear_button = builder.get_object("clear-button")
 
         self.__view = Gtk.ListBox()
+        self.__view.set_margin_start(MARGIN_SMALL)
+        self.__view.set_margin_end(MARGIN)
         self.__view.get_style_context().add_class("trackswidget")
         self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__view.set_activate_on_single_click(True)
         self.__view.connect("row-activated", self.__on_row_activated)
         self.__view.show()
-
         self.insert_row(0)
         self.attach(builder.get_object("widget"), 0, 0, 1, 1)
         self._viewport.add(self.__view)
         self._viewport.set_vexpand(True)
         self.add(self._scrolled)
-        self.set_margin_end(MARGIN)
-        self.set_margin_start(MARGIN_SMALL)
 
     def populate(self):
         """
