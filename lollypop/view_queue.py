@@ -162,7 +162,7 @@ class QueueView(View):
             @param row as QueueRow
         """
         if not App().player.is_locked:
-            App().player.load(Track(row.id))
+            App().player.load(row.track)
             GLib.idle_add(row.destroy)
 
     def __on_insert_track(self, row, new_track_id, down):
