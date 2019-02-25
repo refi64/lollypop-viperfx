@@ -76,8 +76,7 @@ class Wikipedia:
         try:
             uri = "https://api.duckduckgo.com/?q=%s&format=json&pretty=1"\
                 % string
-            f = Gio.File.new_for_uri(uri)
-            (status, data, tag) = f.load_contents(self.__cancellable)
+            (status, data) = App().task_helper.load_uri_content_sync(uri)
             if status:
                 import json
                 decode = json.loads(data.decode("utf-8"))
