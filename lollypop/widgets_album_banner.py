@@ -62,7 +62,16 @@ class AlbumBannerWidget(Gtk.Bin):
                     "text-large")
         menu_button.get_image().set_from_icon_name("view-more-symbolic",
                                                    icon_size)
-        self.__title_label.set_markup(GLib.markup_escape_text(album.name))
+        album_name = GLib.markup_escape_text(album.name)
+        markup = "<b>%s</b>" % album_name
+        if view_type & ViewType.ALBUM:
+            artist_name = GLib.markup_escape_text(", ".join(album.artists))
+            if view_type & ViewType.SMALL:
+                markup += "\n<span alpha='40000'>%s</span>" % artist_name
+            else:
+                markup += "\n<span size='x-small' alpha='40000'>%s</span>" %\
+                                                                  artist_name
+        self.__title_label.set_markup(markup)
         if album.year is not None:
             self.__year_label.set_text(str(album.year))
         else:
