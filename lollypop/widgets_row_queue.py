@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Pango, GLib
 
-from lollypop.define import App, ArtSize, Type, ViewType
+from lollypop.define import App, ArtSize, Type, MARGIN_SMALL
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -31,14 +31,17 @@ class QueueRow(Row, DNDRow):
             GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, track):
+    def __init__(self, track, view_type):
         """
             Init row widgets
             @param track as Track
         """
-        Row.__init__(self, track, ViewType.DEFAULT)
+        Row.__init__(self, track, [], view_type)
         DNDRow.__init__(self)
         self.__filtered = False
+        self._grid.set_margin_start(MARGIN_SMALL)
+        self._grid.set_margin_top(MARGIN_SMALL)
+        self._grid.set_margin_bottom(MARGIN_SMALL)
         self._grid.insert_row(0)
         self._grid.insert_column(0)
         self._grid.insert_column(1)
@@ -56,6 +59,7 @@ class QueueRow(Row, DNDRow):
         self.show_all()
         self.__header = Gtk.Grid()
         self.__header.set_column_spacing(5)
+        self.__header.set_margin_end(MARGIN_SMALL)
         if self._track.album.artist_ids[0] != Type.COMPILATIONS:
             self.__album_artist_label = Gtk.Label.new()
             self.__album_artist_label.set_markup(
