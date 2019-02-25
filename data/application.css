@@ -366,6 +366,7 @@ popover.background separator {
 .albumrow {
     padding: 0px;
     border-radius: 5px;
+    box-shadow: none;
 	background-color: transparent;
   	color: inherit;
 }
@@ -409,6 +410,7 @@ popover.background separator {
 .trackrow {
     padding: 0px;
     min-height: 32px;
+    box-shadow: none;
 	background-color: transparent;
   	color: inherit;
 }
@@ -441,6 +443,7 @@ popover.background separator {
 
 .trackrowplaying:selected {
     border-radius: 0px;
+    box-shadow: none;
     background-color: @theme_selected_bg_color;
     color: @theme_selected_fg_color;
 }
