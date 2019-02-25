@@ -116,7 +116,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
             Show lyrics view
             @param button as Gtk.Button
         """
-        self._on_reveal_button_release_event(None, None)
+        self._on_button_release_event()
         App().window.container.show_lyrics()
 
     def _on_button_release_event(self, *ignore):
