@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import App, MARGIN
-from lollypop.utils import on_query_tooltip
+from lollypop.utils import on_query_tooltip, on_realize
 from lollypop.objects import Album
 from lollypop.widgets_artist_banner import ArtistBannerWidget
 from lollypop.logger import Logger
@@ -36,6 +36,7 @@ class ArtistViewCommon:
         builder.get_object("box-button").set_margin_end(MARGIN)
         self._artwork = builder.get_object("artwork")
         self._title_label = builder.get_object("artist")
+        self._title_label.connect("realize", on_realize)
         self._title_label.connect("query-tooltip", on_query_tooltip)
         self._title_label.set_property("has-tooltip", True)
         self._jump_button = builder.get_object("jump-button")
