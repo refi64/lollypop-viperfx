@@ -81,8 +81,8 @@ class DeviceView(View):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/DeviceManagerView.ui")
         self.__memory_combo = builder.get_object("memory_combo")
-        self.__syncing_btn = builder.get_object("sync_btn")
-        self.__syncing_btn.set_label(_("Synchronize"))
+        self.__sync_button = builder.get_object("sync_btn")
+        self.__sync_button.set_label(_("Synchronize"))
         builder.connect_signals(self)
         self.__device_widget = DeviceManagerWidget(self)
         self.__device_widget.mtp_sync.connect("sync-finished",
@@ -127,9 +127,11 @@ class DeviceView(View):
         if files:
             self.__selection_list.show()
             GLib.idle_add(self.__set_combo_text, files)
+            self.__sync_button.set_sensitive(True)
         else:
             self.__selection_list.hide()
             View.populate(self)
+            self.__sync_button.set_sensitive(False)
 
     def is_syncing(self):
         """
@@ -183,7 +185,7 @@ class DeviceView(View):
             self.__device_widget.mtp_sync.cancellable.cancel()
         elif not App().window.container.progress.is_visible():
             self.__memory_combo.hide()
-            self.__syncing_btn.set_label(_("Cancel synchronization"))
+            self.__sync_button.set_label(_("Cancel synchronization"))
             self.__device_widget.sync()
 
     def _on_memory_combo_changed(self, combo):
@@ -277,7 +279,7 @@ class DeviceView(View):
             @param device widget as DeviceManager
         """
         self.__memory_combo.show()
-        self.__syncing_btn.set_label(_("Synchronize"))
+        self.__sync_button.set_label(_("Synchronize"))
 
     def __set_combo_text(self, text_list):
         """
