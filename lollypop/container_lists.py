@@ -204,7 +204,9 @@ class ListsContainer:
             @param update as bool, if True, just update entries
         """
         def load():
-            if App().settings.get_value("show-performers"):
+            if genre_ids is None:
+                return ([], [])
+            elif App().settings.get_value("show-performers"):
                 artists = App().artists.get_all(genre_ids)
             else:
                 artists = App().artists.get(genre_ids)
