@@ -165,7 +165,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         length = len(self.children)
         position = length + 1
-        widgets = {self.__tracks_widget_left: ([Track(track_id)], position)}
+        widgets = {self.__tracks_widget_right: [(Track(track_id), position)]}
         self.__add_tracks(OrderedDict(widgets))
         self.__make_homogeneous()
 
