@@ -236,11 +236,11 @@ class PlaylistsWidget(Gtk.Grid):
             self.__tracks_widget_left.remove(child)
             self.__tracks_widget_right.insert(child, 0)
 
-    def __add_tracks(self, widgets):
+    def __add_tracks(self, widgets, previous_tracks=[]):
         """
             Add tracks to list
             @param widgets as OrderedDict
-            @param previous_row as Row
+            @internal previous_tracks
         """
         if self.__cancellable.is_cancelled():
             return
@@ -251,15 +251,18 @@ class PlaylistsWidget(Gtk.Grid):
         tracks = widgets[widget]
 
         if not tracks:
-            # Link last left and first right
-            left_children = self.__tracks_widget_left.get_children()
-            right_children = self.__tracks_widget_right.get_children()
-            if left_children and right_children:
-                last_left = left_children[-1]
-                first_right = right_children[0]
-                last_left.set_next_row(first_right)
-                first_right.set_previous_row(last_left)
-            self.emit("populated")
+            if not previous_tracks:
+                # Link last left and first right
+                left_children = self.__tracks_widget_left.get_children()
+                right_children = self.__tracks_widget_right.get_children()
+                if left_children and right_children:
+                    last_left = left_children[-1]
+                    first_right = right_children[0]
+                    last_left.set_next_row(first_right)
+                    first_right.set_previous_row(last_left)
+                self.emit("populated")
+            else:
+                GLib.idle_add(self.__add_tracks, widgets, tracks)
             return
         (track, position) = tracks.pop(0)
         track.set_number(position + 1)
@@ -275,7 +278,7 @@ class PlaylistsWidget(Gtk.Grid):
         row.connect("do-selection", self.__on_do_selection)
         row.show()
         widget.insert(row, position)
-        GLib.idle_add(self.__add_tracks, widgets)
+        GLib.idle_add(self.__add_tracks, widgets, tracks)
 
     def __on_size_allocate(self, widget, allocation):
         """
