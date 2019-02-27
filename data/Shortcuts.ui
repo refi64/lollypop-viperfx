@@ -15,7 +15,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Settings</property>
-                <property name="accelerator">&lt;Primary&gt;S</property>
+                <property name="accelerator">&lt;Primary&gt;,</property>
               </object>
             </child>
             <child>
