@@ -29,6 +29,7 @@ class InformationController:
         """
         self._infobox = None
         self.__effect = effect
+        self.__previous_artwork_id = None
         self.__show_tooltip = show_tooltip
         self.__per_track_cover = App().settings.get_value(
             "allow-per-track-cover")
@@ -82,8 +83,11 @@ class InformationController:
             @param width as int
             @param height as int
         """
-        if width < 1 or height < 1:
+        same_artwork = self.__previous_artwork_id ==\
+            App().player.current_track.album.id
+        if width < 1 or height < 1 or same_artwork:
             return
+        self.__previous_artwork_id = App().player.current_track.album.id
         if App().player.current_track.id == Type.RADIOS:
             App().art_helper.set_radio_artwork(
                 App().player.current_track.radio_name,
