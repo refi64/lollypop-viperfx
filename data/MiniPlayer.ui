@@ -175,9 +175,9 @@
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="margin_end">10</property>
+                <property name="spacing">20</property>
                 <child>
                   <object class="GtkButton" id="previous_button">
-                    <property name="width_request">80</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -199,7 +199,6 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="play_button">
-                    <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -221,7 +220,6 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="next_button">
-                    <property name="width_request">80</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
