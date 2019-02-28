@@ -40,6 +40,7 @@ from lollypop.player import Player
 from lollypop.inhibitor import Inhibitor
 from lollypop.art import Art
 from lollypop.logger import Logger
+from lollypop.helper_spotify import SpotifyHelper
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings
 from lollypop.database_albums import AlbumsDatabase
@@ -187,6 +188,7 @@ class Application(Gtk.Application):
         self.art.update_art_size()
         self.task_helper = TaskHelper()
         self.art_helper = ArtHelper()
+        self.spotify = SpotifyHelper()
         if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
         if not self.settings.get_value("disable-mpris"):
@@ -341,6 +343,7 @@ class Application(Gtk.Application):
             GLib.idle_add(self.__vacuum)
             return
         self.tracks.del_non_persistent()
+        self.tracks.clean()
         self.albums.clean()
         self.artists.clean()
         self.genres.clean()

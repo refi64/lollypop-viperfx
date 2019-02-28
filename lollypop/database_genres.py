@@ -10,7 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
@@ -67,7 +66,7 @@ class GenresDatabase:
             v = result.fetchone()
             if v is not None:
                 return v[0]
-            return _("Unknown")
+            return None
 
     def get_names(self):
         """

@@ -107,7 +107,7 @@ class ArtistsDatabase:
             v = result.fetchone()
             if v is not None:
                 return v[0]
-            return _("Unknown")
+            return None
 
     def get_albums(self, artist_ids):
         """

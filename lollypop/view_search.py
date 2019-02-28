@@ -17,7 +17,6 @@ from random import shuffle
 
 from lollypop.define import App, ViewType, Type, Shuffle, MARGIN_SMALL
 from lollypop.view_albums_list import AlbumsListView
-from lollypop.helper_spotify import SpotifyHelper
 from lollypop.search import Search
 from lollypop.view import BaseView
 from lollypop.logger import Logger
@@ -140,10 +139,9 @@ class SearchView(BaseView, Gtk.Bin):
             # search.get(current_search,
             #           self.__cancellable,
             #           callback=(self.__on_search_get,))
-            App().task_helper.run(SpotifyHelper.search,
+            App().task_helper.run(App().spotify.search,
                                   current_search,
-                                  self.__cancellable,
-                                  callback=(self.__on_search_get,))
+                                  self.__cancellable)
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_default_placeholder()
@@ -185,7 +183,6 @@ class SearchView(BaseView, Gtk.Bin):
             Add rows for internal results
             @param result as [(int, Album, bool)]
         """
-        print(result)
         if result:
             albums = []
             reveal_albums = []
@@ -207,6 +204,7 @@ class SearchView(BaseView, Gtk.Bin):
             Grab focus
             @param widget as Gtk.Widget
         """
+        App().spotify.connect("new-album", self.__on_new_spotify_album)
         GLib.idle_add(self.__entry.grab_focus)
 
     def __on_unmap(self, widget):
@@ -214,10 +212,20 @@ class SearchView(BaseView, Gtk.Bin):
             Stop loading
             @param widget as Gtk.Widget
         """
+        App().spotify.disconnect_by_func(self.__on_new_spotify_album)
         self.__cancellable.cancel()
         self.__view.stop()
         self.__header_stack.set_visible_child(self.__new_button)
         self.__spinner.stop()
+
+    def __on_new_spotify_album(self, spotify, album):
+        """
+            Add album
+            @param spotify as SpotifyHelper
+            @param albumas Album
+        """
+        self.__view.add_album(album, False)
+        self.__stack.set_visible_child_name("view")
 
     def __on_search_changed_timeout(self):
         """

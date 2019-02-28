@@ -491,6 +491,24 @@ class AlbumsListView(LazyLoadingView, ViewController):
         """
         self.__reveals = album_ids
 
+    def add_album(self, album, reveal):
+        """
+            Add an album
+            @param album as Album
+            @param reveal as bool
+        """
+        row = self.__row_for_album(album, reveal)
+        children = self._box.get_children()
+        if children:
+            previous_row = children[-1]
+            row.set_previous_row(previous_row)
+            previous_row.set_next_row(row)
+        row.populate()
+        row.show()
+        self._box.add(row)
+        if self._viewport.get_child() is None:
+            self._viewport.add(self._box)
+
     def populate(self, albums):
         """
             Populate widget with album rows

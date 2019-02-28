@@ -847,7 +847,7 @@ class TracksDatabase:
                 return v[0]
             return 0
 
-    def clean(self, track_id):
+    def clean(self):
         """
             Clean database for track id
             @param track_id as int
@@ -855,9 +855,11 @@ class TracksDatabase:
         """
         with SqlCursor(App().db, True) as sql:
             sql.execute("DELETE FROM track_artists\
-                         WHERE track_id = ?", (track_id,))
+                         WHERE track_artists.track_id NOT IN (\
+                            SELECT tracks.rowid FROM tracks)")
             sql.execute("DELETE FROM track_genres\
-                         WHERE track_id = ?", (track_id,))
+                         WHERE track_genres.track_id NOT IN (\
+                            SELECT tracks.rowid FROM tracks)")
 
     def search(self, searched):
         """

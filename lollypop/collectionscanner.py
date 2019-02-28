@@ -510,21 +510,18 @@ class CollectionScanner(GObject.GObject, TagReader):
             album_loved = App().albums.get_loved(album_id)
             uri = App().tracks.get_uri(track_id)
             App().tracks.remove(track_id)
-            App().tracks.clean(track_id)
-            cleaned = App().albums.clean(album_id)
-            if cleaned:
-                SqlCursor.commit(App().db)
+            App().albums.clean()
+            App().genres.clean()
+            App().artists.clean()
+            if App().albums.get_name(album_id) is None:
                 GLib.idle_add(self.emit, "album-updated",
                               album_id, True)
             for artist_id in album_artist_ids + artist_ids:
-                cleaned = App().artists.clean(artist_id)
-                if cleaned:
+                if App().artists.get_name(artist_id) is None:
                     GLib.idle_add(self.emit, "artist-updated",
                                   artist_id, False)
             for genre_id in genre_ids:
-                cleaned = App().genres.clean(genre_id)
-                if cleaned:
-                    SqlCursor.commit(App().db)
+                if App().genres.get_name(genre_id) is None:
                     GLib.idle_add(self.emit, "genre-updated",
                                   genre_id, False)
             return (track_pop, track_rate, track_ltime, album_mtime,

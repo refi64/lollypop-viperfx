@@ -14,7 +14,6 @@ from gi.repository import Gtk, GLib, Pango
 
 from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
-from lollypop.helper_spotify import SpotifyHelper
 from lollypop.widgets_utils import Popover
 from lollypop.logger import Logger
 
@@ -110,7 +109,7 @@ class SimilarsPopover(Popover):
             for artist_id in artist_ids:
                 artist_name = App().artists.get_name(artist_id)
                 artists.append(artist_name)
-                SpotifyHelper.get_artist_id(artist_name,
+                App().spotify.get_artist_id(artist_name,
                                             self.__on_get_artist_id)
         if App().lastfm is not None:
             App().task_helper.run(self.__get_lastfm_similars, artists,
@@ -164,7 +163,7 @@ class SimilarsPopover(Popover):
             Get similars
             @param artist_id as str
         """
-        SpotifyHelper.get_similar_artists(artist_id,
+        App().spotify.get_similar_artists(artist_id,
                                           self.__on_get_similars)
 
     def __on_get_similars(self, artists):

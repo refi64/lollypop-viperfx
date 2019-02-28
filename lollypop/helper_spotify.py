@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Soup
+from gi.repository import GLib, Soup, GObject
 
 import json
 from base64 import b64encode
@@ -20,20 +20,31 @@ from gettext import gettext as _
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
-from lollypop.objects import Album, Track
+from lollypop.objects import Album
 from lollypop.helper_task import TaskHelper
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
 
 
-class SpotifyHelper:
+class SpotifyHelper(GObject.Object):
     """
         Helper for Spotify
     """
-    __EXPIRES = 0
-    __TOKEN = None
-    __LOADING_TOKEN = False
 
-    def get_token():
+    __gsignals__ = {
+        "new-album": (GObject.SignalFlags.RUN_FIRST, None,
+                      (GObject.TYPE_PYOBJECT,)),
+    }
+
+    def __init__(self):
+        """
+            Init object
+        """
+        GObject.Object.__init__(self)
+        self.__token_expires = 0
+        self.__token = None
+        self.__loading_token = False
+
+    def get_token(self):
         """
             Get a new auth token
         """
@@ -52,37 +63,35 @@ class SpotifyHelper:
                 body = msg.get_property("response-body")
                 data = body.flatten().get_data()
                 decode = json.loads(data.decode("utf-8"))
-                SpotifyHelper.__EXPIRES = int(time()) + int(
-                                                          decode["expires_in"])
-                SpotifyHelper.__TOKEN = decode["access_token"]
+                self.__token_expires = int(time()) + int(decode["expires_in"])
+                self.__token = decode["access_token"]
         except Exception as e:
             Logger.error("SpotifyHelper::get_token(): %s", e)
 
-    def wait_for_token():
+    def wait_for_token(self):
         """
             True if should wait for token
             @return bool
         """
         def on_token(token):
-            SpotifyHelper.__LOADING_TOKEN = False
+            self.__loading_token = False
         # Remove 60 seconds to be sure
-        wait = int(time()) + 60 > SpotifyHelper.__EXPIRES or\
-            SpotifyHelper.__TOKEN is None
-        if wait and not SpotifyHelper.__LOADING_TOKEN:
-            SpotifyHelper.__LOADING_TOKEN = True
-            App().task_helper.run(SpotifyHelper.get_token,
-                                  callback=(on_token,))
+        wait = int(time()) + 60 > self.__token_expires or\
+            self.__token is None
+        if wait and not self.__loading_token:
+            self.__loading_token = True
+            App().task_helper.run(self.get_token, callback=(on_token,))
         return wait
 
-    def get_artist_id(artist_name, callback):
+    def get_artist_id(self, artist_name, callback):
         """
             Get artist id
             @param artist_name as str
             @param callback as function
         """
-        if SpotifyHelper.wait_for_token():
+        if self.wait_for_token():
             GLib.timeout_add(
-                500, SpotifyHelper.get_artist_id, artist_name, callback)
+                500, self.get_artist_id, artist_name, callback)
             return
         try:
             def on_content(uri, status, data):
@@ -94,7 +103,7 @@ class SpotifyHelper:
                         return
             artist_name = GLib.uri_escape_string(
                 artist_name, None, True).replace(" ", "+")
-            token = "Bearer %s" % SpotifyHelper.__TOKEN
+            token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
             uri = "https://api.spotify.com/v1/search?q=%s&type=artist" %\
@@ -103,15 +112,15 @@ class SpotifyHelper:
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
 
-    def get_similar_artists(artist_id, callback):
+    def get_similar_artists(self, artist_id, callback):
         """
             Get artist id
             @param artist_name as str
             @param callback as function
         """
-        if SpotifyHelper.wait_for_token():
+        if self.wait_for_token():
             GLib.timeout_add(
-                500, SpotifyHelper.get_similar_artists, artist_id, callback)
+                500, self.get_similar_artists, artist_id, callback)
             return
         try:
             def on_content(uri, status, data):
@@ -121,7 +130,7 @@ class SpotifyHelper:
                     for item in decode["artists"]:
                         artists.append(item["name"])
                     callback(artists)
-            token = "Bearer %s" % SpotifyHelper.__TOKEN
+            token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
             uri = "https://api.spotify.com/v1/artists/%s/related-artists" %\
@@ -130,14 +139,68 @@ class SpotifyHelper:
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
 
-    def albums_from_track_payload(payload, album_ids, cover_uris, cancellable):
+    def search(self, search, cancellable):
+        """
+            Get albums related to search
+            We need a thread because we are going to populate DB
+            @param search as str
+            @param cancellable as Gio.Cancellable
+            @return [Album]
+        """
+        albums = []
+        try:
+            while self.wait_for_token():
+                if cancellable.is_cancelled():
+                    raise Exception("cancelled")
+                sleep(1)
+            token = "Bearer %s" % self.__token
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            uri = "https://api.spotify.com/v1/search?"
+            uri += "q=%s&type=album,track" % search
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            print("go")
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                album_ids = []
+                self.__create_albums_from_track_payload(
+                                                 decode["tracks"]["items"],
+                                                 album_ids,
+                                                 cancellable)
+                self.__create_albums_from_album_payload(
+                                                 decode["albums"]["items"],
+                                                 album_ids,
+                                                 cancellable)
+        except Exception as e:
+            Logger.error("SpotifyHelper::search(): %s", e)
+        return albums
+
+#######################
+# PRIVATE             #
+#######################
+    def __create_album(self, album_id, cover_uri, cancellable):
+        """
+            Create album and download cover
+            @param cancellable as Gio.Cancellable
+        """
+        # Create albums
+        album = Album(album_id)
+        App().art.copy_uri_to_cache
+        (status, data) = App().task_helper.load_uri_content_sync(
+            cover_uri, cancellable)
+        if status:
+            App().art.save_album_artwork(data, album_id)
+        if cancellable.is_cancelled():
+            raise Exception("cancelled")
+        GLib.idle_add(self.emit, "new-album", album)
+
+    def __create_albums_from_track_payload(self, payload, album_ids,
+                                           cancellable):
         """
             Get albums from a track payload
             @param payload as {}
-            @param album_ids as {}
-            @param cover_uris as {}
+            @param album_ids as [int]
             @param cancellable as Gio.Cancellable
-            @return [Album]
         """
         # Populate tracks
         for item in payload:
@@ -148,22 +211,18 @@ class SpotifyHelper:
                 continue
             (album_id,
              track_id,
-             cover_uri) = SpotifyHelper.save_track(item)
-            if album_id in album_ids.keys():
-                album_ids[album_id].append(track_id)
-            else:
-                cover_uris[album_id] = cover_uri
-                album_ids[album_id] = [track_id]
-        return (album_ids, cover_uris)
+             cover_uri) = self.__save_track(item)
+            if album_id not in album_ids:
+                album_ids.append(album_id)
+                self.__create_album(album_id, cover_uri, cancellable)
 
-    def albums_from_album_payload(payload, album_ids, cover_uris, cancellable):
+    def __create_albums_from_album_payload(self, payload, album_ids,
+                                           cancellable):
         """
             Get albums from an album payload
             @param payload as {}
-            @param album_ids as {}
-            @param cover_uris as {}
+            @param album_ids as [int]
             @param cancellable as Gio.Cancellable
-            @return [Album]
         """
         # Populate tracks
         for album_item in payload:
@@ -173,7 +232,7 @@ class SpotifyHelper:
                                      None):
                 continue
             uri = "https://api.spotify.com/v1/albums/%s" % album_item["id"]
-            token = "Bearer %s" % SpotifyHelper.__TOKEN
+            token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
             (status, data) = helper.load_uri_content_sync(uri, cancellable)
@@ -182,58 +241,11 @@ class SpotifyHelper:
                 track_payload = decode["tracks"]["items"]
                 for item in track_payload:
                     item["album"] = album_item
-                SpotifyHelper.albums_from_track_payload(
-                                                    track_payload,
-                                                    album_ids,
-                                                    cover_uris,
-                                                    cancellable)
-        return (album_ids, cover_uris)
+                self.__create_albums_from_track_payload(track_payload,
+                                                        album_ids,
+                                                        cancellable)
 
-    def search(search, cancellable):
-        """
-            Get albums related to search
-            We need a thread because we are going to populate DB
-            @param search as str
-            @param cancellable as Gio.Cancellable
-            @return [Album]
-        """
-        albums = []
-        try:
-            while SpotifyHelper.wait_for_token():
-                if cancellable.is_cancelled():
-                    raise("cancelled")
-                sleep(1)
-            token = "Bearer %s" % SpotifyHelper.__TOKEN
-            helper = TaskHelper()
-            helper.add_header("Authorization", token)
-            uri = "https://api.spotify.com/v1/search?"
-            uri += "q=%s&type=album,track" % search
-            (status, data) = helper.load_uri_content_sync(uri, cancellable)
-            if status:
-                decode = json.loads(data.decode("utf-8"))
-                album_ids = {}
-                cover_uris = {}
-                SpotifyHelper.albums_from_track_payload(
-                                                    decode["tracks"]["items"],
-                                                    album_ids,
-                                                    cover_uris,
-                                                    cancellable)
-                SpotifyHelper.albums_from_album_payload(
-                                                    decode["albums"]["items"],
-                                                    album_ids,
-                                                    cover_uris,
-                                                    cancellable)
-                # Create albums
-                for album_id in album_ids.keys():
-                    album = Album(album_id)
-                    album.set_tracks([Track(track_id)
-                                     for track_id in album_ids[album_id]])
-                    albums.append((album, False))
-        except Exception as e:
-            Logger.error("SpotifyHelper::search(): %s", e)
-        return albums
-
-    def save_track(payload):
+    def __save_track(self, payload):
         """
             Save track to DB as non persistent
             @param payload as {}
@@ -251,7 +263,7 @@ class SpotifyHelper:
         artists = ";".join(_artists)
         album_artists = ";".join(_album_artists)
         album_name = payload["album"]["name"]
-
+        print(artists, "=>", album_artists)
         genres = _("Web")
         discnumber = int(payload["disc_number"])
         discname = None
@@ -266,12 +278,12 @@ class SpotifyHelper:
         duration = payload["duration_ms"] // 1000
         mb_album_id = mb_track_id = None
         a_sortnames = aa_sortnames = ""
-        cover_uri = payload["album"]["images"][1]["url"]
+        cover_uri = payload["album"]["images"][2]["url"]
         uri = "web://%s" % payload["id"]
-        Logger.debug("SpotifyHelper::save_track(): Add artists %s" % artists)
+        Logger.debug("SpotifyHelper::__save_track(): Add artists %s" % artists)
         artist_ids = t.add_artists(artists, a_sortnames)
 
-        Logger.debug("SpotifyHelper::save_track(): "
+        Logger.debug("SpotifyHelper::__save_track(): "
                      "Add album artists %s" % album_artists)
         album_artist_ids = t.add_album_artists(album_artists, aa_sortnames)
 
@@ -287,7 +299,7 @@ class SpotifyHelper:
         if len(missing_artist_ids) == len(album_artist_ids):
             artist_ids += missing_artist_ids
 
-        Logger.debug("SpotifyHelper::save_track(): Add album: "
+        Logger.debug("SpotifyHelper::__save_track(): Add album: "
                      "%s, %s" % (album_name, album_artist_ids))
         album_id = t.add_album(album_name, mb_album_id, album_artist_ids,
                                "", False, 0, 0, 0)
@@ -295,15 +307,15 @@ class SpotifyHelper:
         genre_ids = t.add_genres(genres)
 
         # Add track to db
-        Logger.debug("SpotifyHelper::save_track(): Add track")
+        Logger.debug("SpotifyHelper::__save_track(): Add track")
         track_id = App().tracks.add(title, uri, duration,
                                     tracknumber, discnumber, discname,
                                     album_id, year, timestamp, 0,
                                     0, False, 0,
                                     0, mb_track_id)
-        Logger.debug("SpotifyHelper::save_track(): Update track")
+        Logger.debug("SpotifyHelper::__save_track(): Update track")
         App().scanner.update_track(track_id, artist_ids, genre_ids)
-        Logger.debug("SpotifyHelper::save_track(): Update album")
+        Logger.debug("SpotifyHelper::__save_track(): Update album")
         SqlCursor.commit(App().db)
         App().scanner.update_album(album_id, album_artist_ids,
                                    genre_ids, year, timestamp)
