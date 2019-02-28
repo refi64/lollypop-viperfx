@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gio
 
 from gettext import ngettext as ngettext
 
-from lollypop.define import App, ScanType, SidebarContent
+from lollypop.define import App, ScanType
 from lollypop.database_history import History
 from lollypop.database import Database
 from lollypop.logger import Logger
@@ -254,9 +254,9 @@ class CollectionsSettingsWidget(Gtk.Bin):
             App().player.stop()
             App().db.drop_db()
             App().db = Database()
-            sidebar_content = App().settings.get_enum("sidebar-content")
-            show_genres = sidebar_content == SidebarContent.GENRES
-            App().window.container.show_genres(show_genres)
+            App().window.container.list_two.hide()
+            App().window.container.stack.destroy_children()
+            App().window.container.update_list_one()
             App().scanner.update(ScanType.FULL)
             self.__progress.get_toplevel().set_deletable(True)
 

@@ -56,19 +56,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         if view is not None:
             view.stop()
 
-    def show_genres(self, show):
-        """
-            Show/Hide genres
-            @param bool
-        """
-        def select_list_one(selection_list):
-            self._list_one.select_first()
-            self._list_one.disconnect_by_func(select_list_one)
-        if App().settings.get_value("show-sidebar"):
-            self._list_two.hide()
-            self.update_list_one()
-            self._list_one.connect("populated", select_list_one)
-
     def reload_view(self):
         """
             Reload current view
