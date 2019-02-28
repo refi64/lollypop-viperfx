@@ -148,7 +148,7 @@ class ListsContainer:
             self._list_two.connect("populated", select_list_two, state_two_ids)
         if state_one_ids:
             self._list_one.select_ids(state_one_ids)
-        else:
+        elif not App().window.is_adaptive:
             self._list_one.select_first()
 
 ############
