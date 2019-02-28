@@ -165,4 +165,4 @@ class Search:
                         score += self.__calculate_score(artist, search_items)
                     albums.append((score, album, False))
         albums.sort(key=lambda tup: tup[0], reverse=True)
-        return albums
+        return [(album, in_tracks) for (score, album, in_tracks) in albums]

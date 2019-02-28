@@ -533,15 +533,12 @@ class TracksDatabase:
                 mtimes.update((row,))
             return mtimes
 
-    def get_non_persistent(self):
+    def del_non_persistent(self):
         """
-            Return non persistent tracks
-            @return track ids as [int]
+            Delete non persistent tracks
         """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE mtime=0")
-            return list(itertools.chain(*result))
+        with SqlCursor(App().db, True) as sql:
+            sql.execute("DELETE FROM tracks WHERE mtime=0")
 
     def get_uris(self, uris_concerned=None):
         """

@@ -284,15 +284,7 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
         """
             Fix broken 0.9.208 release
         """
-        if App().notify:
-            App().notify.send("Please wait while upgrading db...")
-        with SqlCursor(db, True) as sql:
-            result = sql.execute("SELECT tracks.rowid FROM tracks\
-                                  WHERE NOT EXISTS (\
-                                                 SELECT track_id\
-                                                 FROM track_genres\
-                                                 WHERE track_id=tracks.rowid)")
-            db.del_tracks(list(itertools.chain(*result)))
+        pass
 
     def __upgrade_16(self, db):
         """
@@ -480,12 +472,6 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             Remove Charts/Web entries
         """
         with SqlCursor(db, True) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE persistent=0 OR\
-                                  persistent=2 OR\
-                                  persistent=3")
-            track_ids = list(itertools.chain(*result))
-            db.del_tracks(track_ids)
             # Remove persistent from tracks table
             sql.execute("CREATE TEMPORARY TABLE backup(\
                                           id INTEGER PRIMARY KEY,\

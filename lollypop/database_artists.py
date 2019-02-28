@@ -287,28 +287,14 @@ class ArtistsDatabase:
                 return v[0]
             return 0
 
-    def clean(self, artist_id):
+    def clean(self):
         """
-            Clean database for artist id
-            @param artist id as int
-            @return cleaned as bool
-            @warning commit needed
+            Clean artists
         """
         with SqlCursor(App().db, True) as sql:
-            cleaned = False
-            result = sql.execute("SELECT album_id from album_artists\
-                                  WHERE artist_id=?\
-                                  LIMIT 1", (artist_id,))
-            v = result.fetchone()
-            # Check tracks
-            if not v:
-                result = sql.execute("SELECT track_id from track_artists\
-                                     WHERE artist_id=?\
-                                     LIMIT 1", (artist_id,))
-                v = result.fetchone()
-                # Artist with no relation, remove
-                if not v:
-                    cleaned = True
-                    sql.execute("DELETE FROM artists WHERE rowid=?",
-                                (artist_id,))
-            return cleaned
+            sql.execute("DELETE FROM artists WHERE artists.rowid NOT IN (\
+                            SELECT album_artists.artist_id\
+                            FROM album_artists)")
+            sql.execute("DELETE FROM artists WHERE artists.rowid NOT IN (\
+                            SELECT track_artists.artist_id\
+                            FROM track_artists)")

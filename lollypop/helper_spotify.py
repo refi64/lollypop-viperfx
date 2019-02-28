@@ -14,9 +14,13 @@ from gi.repository import GLib, Soup
 
 import json
 from base64 import b64encode
-from time import time
+from time import time, sleep
+from gettext import gettext as _
 
+from lollypop.sqlcursor import SqlCursor
+from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
+from lollypop.objects import Album, Track
 from lollypop.helper_task import TaskHelper
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
 
@@ -126,6 +130,182 @@ class SpotifyHelper:
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
 
-#######################
-# PRIVATE             #
-#######################
+    def albums_from_track_payload(payload, album_ids, cover_uris, cancellable):
+        """
+            Get albums from a track payload
+            @param payload as {}
+            @param album_ids as {}
+            @param cover_uris as {}
+            @param cancellable as Gio.Cancellable
+            @return [Album]
+        """
+        # Populate tracks
+        for item in payload:
+            if App().db.exists_in_db(item["album"]["name"],
+                                     [artist["name"]
+                                     for artist in item["artists"]],
+                                     item["name"]):
+                continue
+            (album_id,
+             track_id,
+             cover_uri) = SpotifyHelper.save_track(item)
+            if album_id in album_ids.keys():
+                album_ids[album_id].append(track_id)
+            else:
+                cover_uris[album_id] = cover_uri
+                album_ids[album_id] = [track_id]
+        return (album_ids, cover_uris)
+
+    def albums_from_album_payload(payload, album_ids, cover_uris, cancellable):
+        """
+            Get albums from an album payload
+            @param payload as {}
+            @param album_ids as {}
+            @param cover_uris as {}
+            @param cancellable as Gio.Cancellable
+            @return [Album]
+        """
+        # Populate tracks
+        for album_item in payload:
+            if App().db.exists_in_db(album_item["name"],
+                                     [artist["name"]
+                                     for artist in album_item["artists"]],
+                                     None):
+                continue
+            uri = "https://api.spotify.com/v1/albums/%s" % album_item["id"]
+            token = "Bearer %s" % SpotifyHelper.__TOKEN
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                track_payload = decode["tracks"]["items"]
+                for item in track_payload:
+                    item["album"] = album_item
+                SpotifyHelper.albums_from_track_payload(
+                                                    track_payload,
+                                                    album_ids,
+                                                    cover_uris,
+                                                    cancellable)
+        return (album_ids, cover_uris)
+
+    def search(search, cancellable):
+        """
+            Get albums related to search
+            We need a thread because we are going to populate DB
+            @param search as str
+            @param cancellable as Gio.Cancellable
+            @return [Album]
+        """
+        albums = []
+        try:
+            while SpotifyHelper.wait_for_token():
+                if cancellable.is_cancelled():
+                    raise("cancelled")
+                sleep(1)
+            token = "Bearer %s" % SpotifyHelper.__TOKEN
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            uri = "https://api.spotify.com/v1/search?"
+            uri += "q=%s&type=album,track" % search
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                album_ids = {}
+                cover_uris = {}
+                SpotifyHelper.albums_from_track_payload(
+                                                    decode["tracks"]["items"],
+                                                    album_ids,
+                                                    cover_uris,
+                                                    cancellable)
+                SpotifyHelper.albums_from_album_payload(
+                                                    decode["albums"]["items"],
+                                                    album_ids,
+                                                    cover_uris,
+                                                    cancellable)
+                # Create albums
+                for album_id in album_ids.keys():
+                    album = Album(album_id)
+                    album.set_tracks([Track(track_id)
+                                     for track_id in album_ids[album_id]])
+                    albums.append((album, False))
+        except Exception as e:
+            Logger.error("SpotifyHelper::search(): %s", e)
+        return albums
+
+    def save_track(payload):
+        """
+            Save track to DB as non persistent
+            @param payload as {}
+            @return track_id
+        """
+        t = TagReader()
+        title = payload["name"]
+        _artists = []
+        for artist in payload["artists"]:
+            _artists.append(artist["name"])
+        _album_artists = []
+        for artist in payload["album"]["artists"]:
+            _album_artists.append(artist["name"])
+        # Translate to tag value
+        artists = ";".join(_artists)
+        album_artists = ";".join(_album_artists)
+        album_name = payload["album"]["name"]
+
+        genres = _("Web")
+        discnumber = int(payload["disc_number"])
+        discname = None
+        tracknumber = int(payload["track_number"])
+        try:
+            timestamp = payload["release_date"]
+            year = timestamp[:4]
+        except:
+            timestamp = ""
+            year = None
+            pass
+        duration = payload["duration_ms"] // 1000
+        mb_album_id = mb_track_id = None
+        a_sortnames = aa_sortnames = ""
+        cover_uri = payload["album"]["images"][1]["url"]
+        uri = "web://%s" % payload["id"]
+        Logger.debug("SpotifyHelper::save_track(): Add artists %s" % artists)
+        artist_ids = t.add_artists(artists, a_sortnames)
+
+        Logger.debug("SpotifyHelper::save_track(): "
+                     "Add album artists %s" % album_artists)
+        album_artist_ids = t.add_album_artists(album_artists, aa_sortnames)
+
+        # User does not want compilations
+        if not App().settings.get_value("show-compilations") and\
+                not album_artist_ids:
+            album_artist_ids = artist_ids
+
+        missing_artist_ids = list(set(album_artist_ids) - set(artist_ids))
+        # https://github.com/gnumdk/lollypop/issues/507#issuecomment-200526942
+        # Special case for broken tags
+        # Can't do more because don't want to break split album behaviour
+        if len(missing_artist_ids) == len(album_artist_ids):
+            artist_ids += missing_artist_ids
+
+        Logger.debug("SpotifyHelper::save_track(): Add album: "
+                     "%s, %s" % (album_name, album_artist_ids))
+        album_id = t.add_album(album_name, mb_album_id, album_artist_ids,
+                               "", False, 0, 0, 0)
+
+        genre_ids = t.add_genres(genres)
+
+        # Add track to db
+        Logger.debug("SpotifyHelper::save_track(): Add track")
+        track_id = App().tracks.add(title, uri, duration,
+                                    tracknumber, discnumber, discname,
+                                    album_id, year, timestamp, 0,
+                                    0, False, 0,
+                                    0, mb_track_id)
+        Logger.debug("SpotifyHelper::save_track(): Update track")
+        App().scanner.update_track(track_id, artist_ids, genre_ids)
+        Logger.debug("SpotifyHelper::save_track(): Update album")
+        SqlCursor.commit(App().db)
+        App().scanner.update_album(album_id, album_artist_ids,
+                                   genre_ids, year, timestamp)
+        SqlCursor.commit(App().db)
+        return (album_id, track_id, cover_uri)

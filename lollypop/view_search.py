@@ -17,6 +17,7 @@ from random import shuffle
 
 from lollypop.define import App, ViewType, Type, Shuffle, MARGIN_SMALL
 from lollypop.view_albums_list import AlbumsListView
+from lollypop.helper_spotify import SpotifyHelper
 from lollypop.search import Search
 from lollypop.view import BaseView
 from lollypop.logger import Logger
@@ -134,9 +135,15 @@ class SearchView(BaseView, Gtk.Bin):
         self.__history = []
         if len(self.__current_search) > 2:
             search = Search()
-            search.get(self.__current_search.lower(),
-                       self.__cancellable,
-                       callback=(self.__on_search_get,))
+            search
+            current_search = self.__current_search.lower()
+            # search.get(current_search,
+            #           self.__cancellable,
+            #           callback=(self.__on_search_get,))
+            App().task_helper.run(SpotifyHelper.search,
+                                  current_search,
+                                  self.__cancellable,
+                                  callback=(self.__on_search_get,))
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_default_placeholder()
@@ -178,10 +185,11 @@ class SearchView(BaseView, Gtk.Bin):
             Add rows for internal results
             @param result as [(int, Album, bool)]
         """
+        print(result)
         if result:
             albums = []
             reveal_albums = []
-            for (score, album, in_tracks) in result:
+            for (album, in_tracks) in result:
                 albums.append(album)
                 if in_tracks:
                     reveal_albums.append(album.id)

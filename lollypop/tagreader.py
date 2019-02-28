@@ -546,9 +546,9 @@ class TagReader(Discoverer):
                   uri, loved, popularity, rate, mtime):
         """
             Add album to db
-            @param album name as string
-            @param album artist ids as [int]
-            @param uri to an album track as string
+            @param album name as str
+            @param album artist_ids as [int]
+            @param uri as str
             @param year as int
             @param loved as bool
             @param popularity as int
@@ -559,7 +559,7 @@ class TagReader(Discoverer):
         """
         f = Gio.File.new_for_uri(uri)
         d = f.get_parent()
-        parent_uri = "/" if d is None else d.get_uri()
+        parent_uri = "" if d is None else d.get_uri()
         album_id = App().albums.get_id(album_name, mb_album_id, artist_ids)
         if album_id is None:
             album_id = App().albums.add(album_name, mb_album_id, artist_ids,

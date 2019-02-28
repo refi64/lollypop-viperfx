@@ -355,6 +355,28 @@ class AlbumsDatabase:
                 return v[0]
             return None
 
+    def get_id_by_name_artists(self, album_name, artist_ids):
+        """
+            Get non compilation album id
+            @param album_name as str
+            @param artist_ids as [int]
+            @return int
+        """
+        with SqlCursor(App().db) as sql:
+            filters = (album_name,)
+            request = "SELECT albums.rowid FROM albums, album_artists\
+                       WHERE name=? COLLATE NOCASE AND\
+                       album_artists.album_id=albums.rowid AND (1=0 "
+            filters += tuple(artist_ids)
+            for artist_id in artist_ids:
+                request += "OR artist_id=? "
+            request += ")"
+            result = sql.execute(request, filters)
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
     def get_genre_ids(self, album_id):
         """
             Get genre ids
@@ -984,44 +1006,19 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def clean(self, album_id):
+    def clean(self):
         """
-            Clean database for album id
-            @param album id as int
-            @param return True if album deleted or genre modified
-            @warning commit needed
+            Clean albums
         """
         with SqlCursor(App().db, True) as sql:
-            ret = False
-            # Check album really have tracks from its genres
-            for genre_id in self.get_genre_ids(album_id):
-                result = sql.execute("SELECT track_id\
-                                      FROM tracks, track_genres\
-                                      WHERE track_genres.track_id ==\
-                                      tracks.rowid\
-                                      AND tracks.album_id=?\
-                                      AND track_genres.genre_id=?",
-                                     (album_id, genre_id))
-                v = result.fetchone()
-                if not v:
-                    ret = True
-                    sql.execute("DELETE from album_genres\
-                                 WHERE album_id=?\
-                                 AND genre_id=?", (album_id, genre_id))
-
-            # Remove album if orphaned
-            result = sql.execute("SELECT rowid from tracks\
-                                  WHERE album_id=?\
-                                  LIMIT 1", (album_id,))
-            v = result.fetchone()
-            # Album empty, remove it
-            if not v:
-                ret = True
-                sql.execute("DELETE FROM album_artists\
-                            WHERE album_id=?",
-                            (album_id,))
-                sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
-            return ret
+            sql.execute("DELETE FROM albums WHERE albums.rowid NOT IN (\
+                            SELECT tracks.album_id FROM tracks)")
+            sql.execute("DELETE FROM album_genres\
+                         WHERE album_genres.album_id NOT IN (\
+                            SELECT albums.rowid FROM albums)")
+            sql.execute("DELETE FROM album_artists\
+                         WHERE album_artists.album_id NOT IN (\
+                            SELECT albums.rowid FROM albums)")
 
     @property
     def max_count(self):

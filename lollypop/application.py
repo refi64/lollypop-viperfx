@@ -340,7 +340,10 @@ class Application(Gtk.Application):
             self.scanner.stop()
             GLib.idle_add(self.__vacuum)
             return
-        self.db.del_tracks(self.tracks.get_non_persistent())
+        self.tracks.del_non_persistent()
+        self.albums.clean()
+        self.artists.clean()
+        self.genres.clean()
         try:
             from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:

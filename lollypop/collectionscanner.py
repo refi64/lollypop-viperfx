@@ -95,6 +95,62 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__thread.daemon = True
             self.__thread.start()
 
+    def update_album(self, album_id, album_artist_ids,
+                     genre_ids, year, timestamp):
+        """
+            Update album artists based on album-artist and artist tags
+            This code auto handle compilations: empty "album artist" with
+            different artists
+            @param album_id as int
+            @param album_artist_ids as [int]
+            @param genre_ids as [int]
+            @param year as int
+            @param timestmap as int
+            @commit needed
+        """
+        add = True
+        # Set artist ids based on content
+        if not album_artist_ids:
+            new_artist_ids = App().albums.calculate_artist_ids(album_id)
+            current_artist_ids = App().albums.get_artist_ids(album_id)
+            if new_artist_ids != current_artist_ids:
+                if Type.COMPILATIONS in new_artist_ids:
+                    add = False
+                    album_artist_ids = current_artist_ids
+                else:
+                    album_artist_ids = new_artist_ids
+        if album_artist_ids:
+            App().albums.set_artist_ids(album_id, album_artist_ids)
+        # Update UI based on previous artist calculation
+        if App().albums.get_tracks_count(album_id) > 1:
+            for artist_id in album_artist_ids:
+                GLib.idle_add(self.emit, "artist-updated", artist_id, add)
+        # Update album genres
+        for genre_id in genre_ids:
+            App().albums.add_genre(album_id, genre_id)
+
+        # Update year based on tracks
+        year = App().tracks.get_year_for_album(album_id)
+        App().albums.set_year(album_id, year)
+        timestamp = App().tracks.get_timestamp_for_album(album_id)
+        App().albums.set_timestamp(album_id, timestamp)
+
+    def update_track(self, track_id, artist_ids, genre_ids):
+        """
+            Set track artists/genres
+            @param track id as int
+            @param artist ids as [int]
+            @param genre ids as [int]
+            @param mtime as int
+            @param popularity as int
+            @commit needed
+        """
+        # Set artists/genres for track
+        for artist_id in artist_ids:
+            App().tracks.add_artist(track_id, artist_id)
+        for genre_id in genre_ids:
+            App().tracks.add_genre(track_id, genre_id)
+
     def is_locked(self):
         """
             Return True if db locked
@@ -421,11 +477,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                                     track_rate, track_loved, track_ltime,
                                     mtime, mb_track_id)
         Logger.debug("CollectionScanner::add2db(): Update track")
-        self.__update_track(track_id, artist_ids, genre_ids)
+        self.update_track(track_id, artist_ids, genre_ids)
         Logger.debug("CollectionScanner::add2db(): Update album")
         SqlCursor.commit(App().db)
-        self.__update_album(album_id, album_artist_ids,
-                            genre_ids, year, timestamp)
+        self.update_album(album_id, album_artist_ids,
+                          genre_ids, year, timestamp)
         SqlCursor.commit(App().db)
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
@@ -475,62 +531,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                     track_loved, album_loved, album_pop, album_rate)
         except Exception as e:
             Logger.error("CollectionScanner::__del_from_db: %s" % e)
-
-    def __update_album(self, album_id, album_artist_ids,
-                       genre_ids, year, timestamp):
-        """
-            Update album artists based on album-artist and artist tags
-            This code auto handle compilations: empty "album artist" with
-            different artists
-            @param album_id as int
-            @param album_artist_ids as [int]
-            @param genre_ids as [int]
-            @param year as int
-            @param timestmap as int
-            @commit needed
-        """
-        add = True
-        # Set artist ids based on content
-        if not album_artist_ids:
-            new_artist_ids = App().albums.calculate_artist_ids(album_id)
-            current_artist_ids = App().albums.get_artist_ids(album_id)
-            if new_artist_ids != current_artist_ids:
-                if Type.COMPILATIONS in new_artist_ids:
-                    add = False
-                    album_artist_ids = current_artist_ids
-                else:
-                    album_artist_ids = new_artist_ids
-        if album_artist_ids:
-            App().albums.set_artist_ids(album_id, album_artist_ids)
-        # Update UI based on previous artist calculation
-        if App().albums.get_tracks_count(album_id) > 1:
-            for artist_id in album_artist_ids:
-                GLib.idle_add(self.emit, "artist-updated", artist_id, add)
-        # Update album genres
-        for genre_id in genre_ids:
-            App().albums.add_genre(album_id, genre_id)
-
-        # Update year based on tracks
-        year = App().tracks.get_year_for_album(album_id)
-        App().albums.set_year(album_id, year)
-        timestamp = App().tracks.get_timestamp_for_album(album_id)
-        App().albums.set_timestamp(album_id, timestamp)
-
-    def __update_track(self, track_id, artist_ids, genre_ids):
-        """
-            Set track artists/genres
-            @param track id as int
-            @param artist ids as [int]
-            @param genre ids as [int]
-            @param mtime as int
-            @param popularity as int
-            @commit needed
-        """
-        # Set artists/genres for track
-        for artist_id in artist_ids:
-            App().tracks.add_artist(track_id, artist_id)
-        for genre_id in genre_ids:
-            App().tracks.add_genre(track_id, genre_id)
 
     def __play_new_tracks(self, uris):
         """

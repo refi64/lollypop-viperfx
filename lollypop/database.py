@@ -17,7 +17,6 @@ from threading import Lock
 import itertools
 
 from lollypop.define import App
-from lollypop.objects import Album
 from lollypop.database_upgrade import DatabaseAlbumsUpgrade
 from lollypop.sqlcursor import SqlCursor
 from lollypop.logger import Logger
@@ -185,34 +184,26 @@ class Database:
         except Exception as e:
             Logger.error("Database::drop_db():", e)
 
-    def del_tracks(self, track_ids):
+    def exists_in_db(self, album, artists, track):
         """
-            Delete tracks from db
-            @param track_ids as [int]
+            Search if item exists in db
+            @param track as str
+            @param album as str
+            @param artists as [str]
+            @return bool
         """
-        all_album_ids = []
-        all_artist_ids = []
-        all_genre_ids = []
-        for track_id in track_ids:
-            album_id = App().tracks.get_album_id(track_id)
-            art_file = App().art.get_album_cache_name(Album(album_id))
-            genre_ids = App().tracks.get_genre_ids(track_id)
-            album_artist_ids = App().albums.get_artist_ids(album_id)
-            artist_ids = App().tracks.get_artist_ids(track_id)
-            uri = App().tracks.get_uri(track_id)
-            App().playlists.remove_uri_from_all(uri)
-            App().tracks.remove(track_id)
-            App().tracks.clean(track_id)
-            all_album_ids.append(album_id)
-            all_artist_ids += album_artist_ids + artist_ids
-            all_genre_ids += genre_ids
-        for album_id in list(set(all_album_ids)):
-            if App().albums.clean(album_id):
-                App().art.clean_store(art_file)
-        for artist_id in list(set(all_artist_ids)):
-            App().artists.clean(artist_id)
-        for genre_id in list(set(all_genre_ids)):
-            App().genres.clean(genre_id)
+        artist_ids = []
+        for artist in artists:
+            artist_id = App().artists.get_id(artist)
+            artist_ids.append(artist_id)
+        album_id = App().albums.get_id_by_name_artists(album, artist_ids)
+        if track is not None:
+            track_id = App().tracks.get_id_by(track,
+                                              album_id,
+                                              artist_ids)
+            return track_id is not None
+        else:
+            return album_id is not None
 
 #######################
 # PRIVATE             #

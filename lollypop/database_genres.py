@@ -144,21 +144,12 @@ class GenresDatabase:
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
 
-    def clean(self, genre_id):
+    def clean(self):
         """
-            Clean database for genre id
-            @param genre id as int
-            @return cleaned as bool
-            @warning commit needed
+            Clean genres
         """
         with SqlCursor(App().db, True) as sql:
-            cleaned = False
-            result = sql.execute("SELECT track_id from track_genres\
-                                 WHERE genre_id=?\
-                                 LIMIT 1", (genre_id,))
-            v = result.fetchone()
-            if not v:
-                cleaned = True
-                sql.execute("DELETE FROM genres\
-                            WHERE rowid=?", (genre_id,))
-            return cleaned
+            sql.execute("DELETE FROM genres WHERE genres.rowid NOT IN (\
+                            SELECT album_genres.genre_id FROM album_genres)")
+            sql.execute("DELETE FROM genres WHERE genres.rowid NOT IN (\
+                            SELECT track_genres.genre_id FROM track_genres)")
