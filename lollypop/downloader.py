@@ -116,8 +116,7 @@ class Downloader:
                 artist, None, True).replace(" ", "+")
             uri = "https://api.deezer.com/search/artist/?" +\
                   "q=%s&output=json&index=0&limit=1&" % artist_formated
-            helper = TaskHelper()
-            (status, data) = helper.load_uri_content_sync(uri, None)
+            (status, data) = App().task_helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 return decode["data"][0]["picture_xl"]
@@ -164,8 +163,7 @@ class Downloader:
             album_formated = GLib.uri_escape_string(album, None, True)
             uri = "https://api.deezer.com/search/album/?" +\
                   "q=%s&output=json" % album_formated
-            helper = TaskHelper()
-            (status, data) = helper.load_uri_content_sync(uri, None)
+            (status, data) = App().task_helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 uri = None
@@ -174,7 +172,9 @@ class Downloader:
                         uri = item["cover_xl"]
                         break
                 if uri is not None:
-                    (status, image) = helper.load_uri_content_sync(uri, None)
+                    (status,
+                     image) = App().task_helper.load_uri_content_sync(uri,
+                                                                      None)
         except Exception as e:
             Logger.error("Downloader::__get_deezer_album_artwork: %s" % e)
         return image
@@ -238,16 +238,16 @@ class Downloader:
                 album, None, True).replace(" ", "+")
             uri = "https://itunes.apple.com/search" +\
                   "?entity=album&term=%s" % album_formated
-            helper = TaskHelper()
-            (status, data) = helper.load_uri_content_sync(uri, None)
+            (status, data) = App().task_helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["results"]:
                     if item["artistName"].lower() == artist.lower():
                         uri = item["artworkUrl60"].replace("60x60",
                                                            "512x512")
-                        (status, image) = helper.load_uri_content_sync(uri,
-                                                                       None)
+                        (status,
+                         image) = App().task_helper.load_uri_content_sync(uri,
+                                                                          None)
                         break
         except Exception as e:
             Logger.error("Downloader::_get_album_art_itunes: %s [%s/%s]" %
@@ -265,11 +265,11 @@ class Downloader:
         image = None
         if App().lastfm is not None:
             try:
-                helper = TaskHelper()
                 last_album = App().lastfm.get_album(artist, album)
                 uri = last_album.get_cover_image(4)
                 if uri is not None:
-                    (status, image) = helper.load_uri_content_sync(uri, None)
+                    (status, image) = App().task_helper.load_uri_content_sync(
+                        uri, None)
             except Exception as e:
                 Logger.error("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
                              (e, artist, album))
@@ -322,9 +322,9 @@ class Downloader:
                     method = getattr(self, helper)
                     uri = method(artist)
                     if uri is not None:
-                        (status, data) = TaskHelper().load_uri_content_sync(
-                            uri,
-                            None)
+                        (status,
+                         data) = App().task_helper.load_uri_content_sync(uri,
+                                                                         None)
                         if status:
                             InformationStore.add_artist_artwork(
                                 artist,
