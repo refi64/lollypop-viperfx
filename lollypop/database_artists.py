@@ -294,7 +294,6 @@ class ArtistsDatabase:
         with SqlCursor(App().db, True) as sql:
             sql.execute("DELETE FROM artists WHERE artists.rowid NOT IN (\
                             SELECT album_artists.artist_id\
-                            FROM album_artists)")
-            sql.execute("DELETE FROM artists WHERE artists.rowid NOT IN (\
-                            SELECT track_artists.artist_id\
-                            FROM track_artists)")
+                            FROM album_artists) AND artists.rowid NOT IN (\
+                                SELECT track_artists.artist_id\
+                                FROM track_artists)")

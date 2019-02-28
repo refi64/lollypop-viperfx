@@ -240,6 +240,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
             Set album artwork
         """
+        if self._artwork is None:
+            return
         App().art_helper.set_album_artwork(self._album,
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
