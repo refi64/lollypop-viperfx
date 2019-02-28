@@ -136,9 +136,9 @@ class SearchView(BaseView, Gtk.Bin):
             search = Search()
             search
             current_search = self.__current_search.lower()
-            # search.get(current_search,
-            #           self.__cancellable,
-            #           callback=(self.__on_search_get,))
+            search.get(current_search,
+                       self.__cancellable,
+                       callback=(self.__on_search_get,))
             App().task_helper.run(App().spotify.search,
                                   current_search,
                                   self.__cancellable)
@@ -196,8 +196,6 @@ class SearchView(BaseView, Gtk.Bin):
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_no_result_placeholder()
-        self.__header_stack.set_visible_child(self.__new_button)
-        GLib.idle_add(self.__spinner.stop)
 
     def __on_map(self, widget):
         """
@@ -205,6 +203,8 @@ class SearchView(BaseView, Gtk.Bin):
             @param widget as Gtk.Widget
         """
         App().spotify.connect("new-album", self.__on_new_spotify_album)
+        App().spotify.connect("search-finished",
+                              self.__on_spotify_search_finished)
         GLib.idle_add(self.__entry.grab_focus)
 
     def __on_unmap(self, widget):
@@ -213,6 +213,7 @@ class SearchView(BaseView, Gtk.Bin):
             @param widget as Gtk.Widget
         """
         App().spotify.disconnect_by_func(self.__on_new_spotify_album)
+        App().spotify.disconnect_by_func(self.__on_spotify_search_finished)
         self.__cancellable.cancel()
         self.__view.stop()
         self.__header_stack.set_visible_child(self.__new_button)
@@ -226,6 +227,14 @@ class SearchView(BaseView, Gtk.Bin):
         """
         self.__view.add_album(album, False)
         self.__stack.set_visible_child_name("view")
+
+    def __on_spotify_search_finished(self, spotify):
+        """
+            Stop spinner
+            @param Spotify as SpotifyHelper
+        """
+        self.__spinner.stop()
+        self.__header_stack.set_visible_child(self.__new_button)
 
     def __on_search_changed_timeout(self):
         """

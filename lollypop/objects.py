@@ -495,6 +495,7 @@ class Track(Base):
             @return [int]
         """
         artist_ids = self.db.get_artist_ids(self.id)
+        print("****", artist_ids)
         return list(set(artist_ids) - set(album_artist_ids))
 
     @property

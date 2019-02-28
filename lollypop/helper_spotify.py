@@ -33,6 +33,7 @@ class SpotifyHelper(GObject.Object):
     __gsignals__ = {
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
                       (GObject.TYPE_PYOBJECT,)),
+        "search-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self):
@@ -145,9 +146,7 @@ class SpotifyHelper(GObject.Object):
             We need a thread because we are going to populate DB
             @param search as str
             @param cancellable as Gio.Cancellable
-            @return [Album]
         """
-        albums = []
         try:
             while self.wait_for_token():
                 if cancellable.is_cancelled():
@@ -171,9 +170,9 @@ class SpotifyHelper(GObject.Object):
                                                  decode["albums"]["items"],
                                                  album_ids,
                                                  cancellable)
+            GLib.idle_add(self.emit, "search-finished")
         except Exception as e:
             Logger.error("SpotifyHelper::search(): %s", e)
-        return albums
 
 #######################
 # PRIVATE             #
@@ -263,7 +262,6 @@ class SpotifyHelper(GObject.Object):
         artists = ";".join(_artists)
         album_artists = ";".join(_album_artists)
         album_name = payload["album"]["name"]
-        print(artists, "=>", album_artists)
         genres = _("Web")
         discnumber = int(payload["disc_number"])
         discname = None
@@ -286,7 +284,7 @@ class SpotifyHelper(GObject.Object):
         Logger.debug("SpotifyHelper::__save_track(): "
                      "Add album artists %s" % album_artists)
         album_artist_ids = t.add_album_artists(album_artists, aa_sortnames)
-
+        print(album_artist_ids, artist_ids)
         # User does not want compilations
         if not App().settings.get_value("show-compilations") and\
                 not album_artist_ids:
