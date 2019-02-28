@@ -28,6 +28,7 @@ class Wikipedia:
     """
         Helper for wikipedia search
     """
+
     def __init__(self, cancellable):
         """
             Init wikipedia
@@ -132,7 +133,15 @@ class InformationView(BaseView, Gtk.Bin):
                 "clicked",
                 self.__on_lyrics_button_clicked,
                 App().player.current_track)
+
             artist_id = App().player.current_track.album.artist_ids[0]
+
+            builder.get_object("artistview_button").show()
+            builder.get_object("artistview_button").connect(
+                "clicked",
+                self.__on_artistview_button_clicked,
+                artist_id)
+
             title_label.set_text(App().player.current_track.title)
         self.__artist_name = App().artists.get_name(artist_id)
         if self.__minimal:
@@ -252,6 +261,21 @@ class InformationView(BaseView, Gtk.Bin):
         if popover is not None:
             popover.popdown()
         App().window.container.show_lyrics(track)
+
+    def __on_artistview_button_clicked(self, button, artist_id):
+        """
+            Go to artist view
+            @param button as Gtk.Button
+            @param artist_id as int
+        """
+        popover = self.get_ancestor(Gtk.Popover)
+        if popover is not None:
+            popover.popdown()
+        if App().settings.get_value("show-sidebar") and\
+                not App().window.is_adaptive:
+            App().window.container.show_artists_albums([artist_id])
+        else:
+            App().window.container.show_view(artist_id)
 
     def __on_label_button_release_event(self, button, event):
         """
