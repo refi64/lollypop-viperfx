@@ -417,7 +417,6 @@ class ViewsContainer:
         view.populate()
         view.set_margin_top(MARGIN_SMALL)
         view.set_margin_start(MARGIN_SMALL)
-        view.set_margin_end(MARGIN_SMALL)
         view.show()
         return view
 
@@ -430,7 +429,6 @@ class ViewsContainer:
         view = SearchView()
         view.set_margin_top(MARGIN_SMALL)
         view.set_margin_start(MARGIN_SMALL)
-        view.set_margin_end(MARGIN_SMALL)
         view.show()
         return view
 
