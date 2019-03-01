@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstAudio, GstPbutils, GLib
+from gi.repository import Gst, GstAudio, GstPbutils, GLib, Gio
 
 from time import time
 
@@ -34,6 +34,7 @@ class BinPlayer(BasePlayer):
             Init playbin
         """
         BasePlayer.__init__(self)
+        self.__cancellable = Gio.Cancellable()
         self.__codecs = Codecs()
         self._playbin = self.__playbin1 = Gst.ElementFactory.make(
             "playbin", "player")
@@ -234,8 +235,14 @@ class BinPlayer(BasePlayer):
             self._plugins.volume.props.volume = 1.0
         Logger.debug("BinPlayer::_load_track(): %s" % track.uri)
         try:
+            self.__cancellable.cancel()
+            self.__cancellable.reset()
             self._current_track = track
-            self._playbin.set_property("uri", track.uri)
+            if track.is_web:
+                App().task_helper.run(self.__load_from_web, track)
+                return False
+            else:
+                self._playbin.set_property("uri", track.uri)
         except Exception as e:  # Gstreamer error
             Logger.error("BinPlayer::_load_track(): %s" % e)
             return False
@@ -386,6 +393,21 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
+    def __load_from_web(self, track):
+        """
+            Load track from web
+            @param track as Track
+        """
+        def play(uri):
+            self._playbin.set_property("uri", uri)
+            self.play()
+
+        from lollypop.helper_web import WebHelper
+        helper = WebHelper()
+        helper.set_uri(track, self.__cancellable)
+        uri = helper.get_track_content(track)
+        GLib.idle_add(play, uri)
+
     def __load(self, track, init_volume=True):
         """
             Stop current track, load track id and play it

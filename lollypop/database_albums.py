@@ -797,8 +797,8 @@ class AlbumsDatabase:
                 filters = (Type.COMPILATIONS,)
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_artists\
-                           albums.mtime != 0 AND\
                            WHERE album_artists.artist_id=?\
+                           AND albums.mtime != 0\
                            AND album_artists.album_id=albums.rowid"
                 if ignore:
                     request += " AND albums.loved != -1"
@@ -811,7 +811,7 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_genres, album_artists\
                            WHERE album_genres.album_id=albums.rowid\
-                           albums.mtime != 0 AND\
+                           AND albums.mtime != 0\
                            AND albums.loved != -1\
                            AND album_artists.album_id=albums.rowid\
                            AND album_artists.artist_id=? AND ( "

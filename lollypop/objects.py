@@ -13,6 +13,7 @@
 
 from gi.repository import GLib
 
+from urllib.parse import urlparse
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, Type
@@ -496,6 +497,24 @@ class Track(Base):
         """
         artist_ids = self.db.get_artist_ids(self.id)
         return list(set(artist_ids) - set(album_artist_ids))
+
+    @property
+    def is_web(self):
+        """
+            True if track is a web track
+            @return bool
+        """
+        parsed = urlparse(self.uri)
+        return parsed.scheme in ["http", "https", "web"]
+
+    @property
+    def is_http(self):
+        """
+            True if track is a http track
+            @return bool
+        """
+        parsed = urlparse(self.uri)
+        return parsed.scheme in ["http", "https"]
 
     @property
     def position(self):
