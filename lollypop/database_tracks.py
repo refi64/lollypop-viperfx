@@ -538,7 +538,7 @@ class TracksDatabase:
             Delete non persistent tracks
         """
         with SqlCursor(App().db, True) as sql:
-            sql.execute("DELETE FROM tracks WHERE mtime=0")
+            sql.execute("DELETE FROM tracks WHERE mtime>0")
 
     def get_uris(self, uris_concerned=None):
         """
@@ -552,10 +552,11 @@ class TracksDatabase:
                 for uri in uris_concerned:
                     result = sql.execute("SELECT uri\
                                           FROM tracks\
-                                          WHERE uri LIKE ?", (uri + "%",))
+                                          WHERE uri LIKE ? AND\
+                                          mtime!=0", (uri + "%",))
                     uris += list(itertools.chain(*result))
             else:
-                result = sql.execute("SELECT uri FROM tracks")
+                result = sql.execute("SELECT uri FROM tracks WHERE mtime>0")
                 uris = list(itertools.chain(*result))
             return uris
 
