@@ -261,10 +261,8 @@ class SearchView(BaseView, Gtk.Bin):
         self.__timeout_id = None
         self.__populate()
         if self.__current_search != "":
-            self.__play_button.set_sensitive(True)
             self.__new_button.set_sensitive(True)
         else:
-            self.__play_button.set_sensitive(False)
             self.__new_button.set_sensitive(False)
 
     def __on_search_action_change_state(self, action, value):
@@ -273,13 +271,26 @@ class SearchView(BaseView, Gtk.Bin):
             @param action as Gio.SimpleAction
             @param value as GLib.Variant
         """
+        self.__view.stop()
+        self.__view.clear()
         action.set_state(value)
-        if value.get_string() == "local":
+        state = value.get_string()
+        if state == "local":
             self.__new_button.show()
             self.__header_stack.set_visible_child(self.__new_button)
         else:
             self.__new_button.hide()
-        self.__view.stop()
-        self.__view.clear()
-        self.__populate()
-        GLib.idle_add(self.__entry.grab_focus)
+        if state == "charts":
+            self.__entry.set_sensitive(False)
+            self.__play_button.set_sensitive(True)
+            self.__cancellable.reset()
+            self.__header_stack.set_visible_child(self.__spinner)
+            self.__history = []
+            self.__spinner.start()
+            self.__stack.set_visible_child_name("view")
+            App().task_helper.run(App().spotify.charts,
+                                  self.__cancellable)
+        else:
+            self.__entry.set_sensitive(True)
+            self.__populate()
+            GLib.idle_add(self.__entry.grab_focus)

@@ -14,6 +14,7 @@ from gi.repository import GLib, Soup, GObject
 
 import json
 from base64 import b64encode
+from locale import getdefaultlocale
 from time import time, sleep
 from gettext import gettext as _
 
@@ -29,7 +30,7 @@ class SpotifyHelper(GObject.Object):
     """
         Helper for Spotify
     """
-
+    __CHARTS = "https://spotifycharts.com/regional/%s/weekly/latest/download"
     __gsignals__ = {
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
                       (GObject.TYPE_PYOBJECT,)),
@@ -165,17 +166,81 @@ class SpotifyHelper(GObject.Object):
                                                  decode["albums"]["items"],
                                                  album_ids,
                                                  cancellable)
-                self.__create_albums_from_track_payload(
+                self.__create_albums_from_tracks_payload(
                                                  decode["tracks"]["items"],
                                                  album_ids,
                                                  cancellable)
-            GLib.idle_add(self.emit, "search-finished", search)
         except Exception as e:
             Logger.error("SpotifyHelper::search(): %s", e)
+        GLib.idle_add(self.emit, "search-finished", search)
+
+    def charts(self, cancellable):
+        """
+            Get albums related to search
+            We need a thread because we are going to populate DB
+            @param cancellable as Gio.Cancellable
+        """
+        from csv import reader
+        try:
+            while self.wait_for_token():
+                if cancellable.is_cancelled():
+                    raise Exception("cancelled")
+                sleep(1)
+            token = "Bearer %s" % self.__token
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            language = getdefaultlocale()[0][0:2]
+            uri = self.__CHARTS % language
+            spotify_ids = []
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            if status:
+                decode = data.decode("utf-8")
+                for line in decode.split("\n"):
+                    try:
+                        for row in reader([line]):
+                            if not row:
+                                continue
+                            url = row[4]
+                            if url == "URL":
+                                continue
+                            spotify_id = url.split("/")[-1]
+                            if spotify_id:
+                                spotify_ids.append(spotify_id)
+                    except Exception as e:
+                        Logger.warning("SpotifyHelper::charts(): %s", e)
+            album_ids = []
+            for spotify_id in spotify_ids:
+                payload = self.__get_track_payload(helper,
+                                                   spotify_id,
+                                                   cancellable)
+                self.__create_albums_from_tracks_payload(
+                                                 [payload],
+                                                 album_ids,
+                                                 cancellable)
+        except Exception as e:
+            Logger.error("SpotifyHelper::charts(): %s", e)
+        GLib.idle_add(self.emit, "search-finished", "")
 
 #######################
 # PRIVATE             #
 #######################
+    def __get_track_payload(self, helper, spotify_id, cancellable):
+        """
+            Get track payload
+            @param helper as TaskHelper
+            @param spotify_id as str
+            @param cancellable as Gio.Cancellable
+            @return {}
+        """
+        try:
+            uri = "https://api.spotify.com/v1/tracks/%s" % spotify_id
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            if status:
+                return json.loads(data.decode("utf-8"))
+        except Exception as e:
+            Logger.error("SpotifyHelper::__get_track_payload(): %s", e)
+        return None
+
     def __create_album(self, album_id, cover_uri, cancellable):
         """
             Create album and download cover
@@ -192,8 +257,8 @@ class SpotifyHelper(GObject.Object):
             raise Exception("cancelled")
         GLib.idle_add(self.emit, "new-album", album)
 
-    def __create_albums_from_track_payload(self, payload, album_ids,
-                                           cancellable):
+    def __create_albums_from_tracks_payload(self, payload, album_ids,
+                                            cancellable):
         """
             Get albums from a track payload
             @param payload as {}
@@ -239,9 +304,9 @@ class SpotifyHelper(GObject.Object):
                 track_payload = decode["tracks"]["items"]
                 for item in track_payload:
                     item["album"] = album_item
-                self.__create_albums_from_track_payload(track_payload,
-                                                        album_ids,
-                                                        cancellable)
+                self.__create_albums_from_tracks_payload(track_payload,
+                                                         album_ids,
+                                                         cancellable)
 
     def __save_track(self, payload):
         """
