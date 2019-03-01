@@ -599,6 +599,16 @@ class TracksDatabase:
                          SET duration=?\
                          WHERE rowid=?", (duration, track_id,))
 
+    def set_mtime(self, track_id, mtime):
+        """
+            Set track_mtime
+            @param track_id as int
+            @param mtime as int
+        """
+        with SqlCursor(App().db, True) as sql:
+            sql.execute("UPDATE tracks SET mtime=? WHERE rowid=?",
+                        (mtime, track_id))
+
     def is_empty(self):
         """
             Return True if no tracks in db

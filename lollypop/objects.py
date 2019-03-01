@@ -334,6 +334,27 @@ class Album(Base):
                 return track
         return Track()
 
+    def save(self, save):
+        """
+            Save album to collection
+            @param save as bool
+        """
+        # We want DB genre ids
+        genre_ids = App().albums.get_genre_ids(self.id)
+        remove_artist = App().artists.get_name(self.artist_ids[0]) is None
+        remove_genre = App().artists.get_name(genre_ids[0]) is None
+        if remove_artist or save:
+            App().scanner.emit("artist-updated", self.artist_ids[0], save)
+        if remove_genre or save:
+            App().scanner.emit("genre-updated", genre_ids[0], save)
+        App().scanner.emit("album-updated", self.id, save)
+        if save:
+            App().albums.set_mtime(self.id, -1)
+        else:
+            App().albums.set_mtime(self.id, 0)
+        for track in self.tracks:
+            track.save(save)
+
     @property
     def title(self):
         """
@@ -489,6 +510,16 @@ class Track(Base):
         if self.id >= 0:
             App().tracks.set_loved(self.id, loved)
             self.loved = loved
+
+    def save(self, save):
+        """
+            Save track to collection
+            @param save as bool
+        """
+        if save:
+            App().tracks.set_mtime(self.id, -1)
+        else:
+            App().tracks.set_mtime(self.id, 0)
 
     def get_featuring_artist_ids(self, album_artist_ids):
         """

@@ -114,6 +114,16 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET synced=? WHERE rowid=?",
                         (synced, album_id))
 
+    def set_mtime(self, album_id, mtime):
+        """
+            Set album mtime
+            @param album_id as int
+            @param mtime as int
+        """
+        with SqlCursor(App().db, True) as sql:
+            sql.execute("UPDATE albums SET mtime=? WHERE rowid=?",
+                        (mtime, album_id))
+
     def set_loved(self, album_id, loved):
         """
             Set album loved

@@ -366,20 +366,46 @@ class EditMenu(BaseMenu):
         else:
             obj = Track(object.id)
         BaseMenu.__init__(self, obj)
+        if isinstance(object, Album):
+            self.__set_save_action()
         if App().art.tag_editor:
-            self.__set_edit_actions()
+            self.__set_edit_action()
 
 #######################
 # PRIVATE             #
 #######################
-    def __set_edit_actions(self):
+    def __set_save_action(self):
         """
-            Set edit actions
+            Set save action
+        """
+        if self._object.mtime == 0:
+            save_action = Gio.SimpleAction(name="save_album_action")
+            App().add_action(save_action)
+            save_action.connect("activate", self.__save_to_collection, True)
+            self.append(_("Save to collection"), "app.save_album_action")
+        elif self._object.mtime == -1:
+            save_action = Gio.SimpleAction(name="remove_album_action")
+            App().add_action(save_action)
+            save_action.connect("activate", self.__save_to_collection, False)
+            self.append(_("Remove from collection"), "app.remove_album_action")
+
+    def __set_edit_action(self):
+        """
+            Set edit action
         """
         edit_tag_action = Gio.SimpleAction(name="edit_tag_action")
         App().add_action(edit_tag_action)
         edit_tag_action.connect("activate", self.__edit_tag)
         self.append(_("Modify information"), "app.edit_tag_action")
+
+    def __save_to_collection(self, action, variant, save):
+        """
+            Save album to collection
+            @param Gio.SimpleAction
+            @param GLib.Variant
+            @param save as bool
+        """
+        self._object.save(save)
 
     def __edit_tag(self, action, variant):
         """
