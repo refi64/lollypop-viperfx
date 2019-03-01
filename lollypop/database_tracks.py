@@ -538,7 +538,7 @@ class TracksDatabase:
             Delete non persistent tracks
         """
         with SqlCursor(App().db, True) as sql:
-            sql.execute("DELETE FROM tracks WHERE mtime>0")
+            sql.execute("DELETE FROM tracks WHERE mtime=0")
 
     def get_uris(self, uris_concerned=None):
         """
