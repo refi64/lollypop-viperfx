@@ -161,12 +161,12 @@ class SpotifyHelper(GObject.Object):
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 album_ids = []
-                self.__create_albums_from_track_payload(
-                                                 decode["tracks"]["items"],
-                                                 album_ids,
-                                                 cancellable)
                 self.__create_albums_from_album_payload(
                                                  decode["albums"]["items"],
+                                                 album_ids,
+                                                 cancellable)
+                self.__create_albums_from_track_payload(
+                                                 decode["tracks"]["items"],
                                                  album_ids,
                                                  cancellable)
             GLib.idle_add(self.emit, "search-finished")
@@ -283,7 +283,6 @@ class SpotifyHelper(GObject.Object):
         Logger.debug("SpotifyHelper::__save_track(): "
                      "Add album artists %s" % album_artists)
         album_artist_ids = t.add_album_artists(album_artists, aa_sortnames)
-        print(album_artist_ids, artist_ids)
         # User does not want compilations
         if not App().settings.get_value("show-compilations") and\
                 not album_artist_ids:
