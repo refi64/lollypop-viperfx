@@ -88,7 +88,7 @@ class ProgressController:
         if not self.__seeking:
             if value is None and App().player.get_status() != Gst.State.PAUSED:
                 value = App().player.position / Gst.SECOND
-            if value is not None:
+            if value is not None and value >= 0:
                 self._progress.set_value(value)
                 self._timelabel.set_text(seconds_to_string(value))
         return True
