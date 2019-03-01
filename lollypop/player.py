@@ -431,6 +431,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             if next_track.id is None:
                 next_track = LinearPlayer.next(self)
             self._next_track = next_track
+            if next_track.is_web:
+                self._load_from_web(next_track, False)
             self.emit("next-changed")
         except Exception as e:
             Logger.error("Player::set_next(): %s" % e)

@@ -238,7 +238,10 @@ class BinPlayer(BasePlayer):
             self.__cancellable.cancel()
             self.__cancellable.reset()
             self._current_track = track
-            if track.is_web:
+            # We check track is URI track, if yes, do a load from Web
+            # Will not work if we add another music provider one day
+            track_uri = App().tracks.get_uri(track.id)
+            if track.is_web and track.uri == track_uri:
                 self.emit("loading-changed", True)
                 App().task_helper.run(self.__load_from_web, track)
                 return False
@@ -394,16 +397,19 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def __load_from_web(self, track):
+    def __load_from_web(self, track, play=True):
         """
             Load track from web
             @param track as Track
+            @param play as bool
         """
         def play(uri):
-            self._playbin.set_property("uri", uri)
-            self.play()
-            self.emit("loading-changed", False)
-            App().task_helper.run(self.__update_current_duration, track, uri)
+            track.set_uri(uri)
+            if play:
+                self.load(track)
+                self.emit("loading-changed", False)
+                App().task_helper.run(self.__update_current_duration,
+                                      track, uri)
 
         from lollypop.helper_web import WebHelper
         helper = WebHelper()
