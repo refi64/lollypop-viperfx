@@ -161,7 +161,7 @@ class ArtistsDatabase:
                     "SELECT DISTINCT %s FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  AND albums.mtime>0\
+                                  AND albums.mtime!=0\
                                   ORDER BY artists.sortname\
                                   COLLATE NOCASE COLLATE LOCALIZED" % select)
             else:
@@ -170,7 +170,7 @@ class ArtistsDatabase:
                            FROM artists, albums, album_genres, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
                            AND albums.rowid=album_artists.album_id\
-                           AND albums.mtime>0\
+                           AND albums.mtime!=0\
                            AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
@@ -197,7 +197,7 @@ class ArtistsDatabase:
                     "SELECT DISTINCT %s FROM artists, album_artists, albums\
                                   WHERE artists.rowid=album_artists.artist_id\
                                   AND albums.rowid=album_artists.album_id\
-                                  AND albums.mtime>0\
+                                  AND albums.mtime!=0\
                                   ORDER BY artists.sortname\
                                   COLLATE NOCASE COLLATE LOCALIZED" % select)
             else:
@@ -206,7 +206,7 @@ class ArtistsDatabase:
                            FROM artists, tracks, track_genres, track_artists\
                            WHERE artists.rowid=track_artists.artist_id\
                            AND tracks.rowid=track_artists.track_id\
-                           AND tracks.mtime>0\
+                           AND tracks.mtime!=0\
                            AND track_genres.track_id=tracks.rowid AND ("
                 for genre_id in genre_ids:
                     request += "track_genres.genre_id=? OR "
@@ -230,7 +230,7 @@ class ArtistsDatabase:
                                   FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  AND albums.mtime>0\
+                                  AND albums.mtime!=0\
                                   ORDER BY artists.sortname\
                                   COLLATE NOCASE COLLATE LOCALIZED")
             else:
@@ -238,7 +238,7 @@ class ArtistsDatabase:
                 request = "SELECT DISTINCT artists.rowid\
                            FROM artists, albums, album_genres, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
-                           AND albums.mtime>0\
+                           AND albums.mtime!=0\
                            AND albums.rowid=album_artists.album_id\
                            AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:

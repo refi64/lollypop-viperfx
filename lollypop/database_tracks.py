@@ -553,7 +553,7 @@ class TracksDatabase:
                     result = sql.execute("SELECT uri\
                                           FROM tracks\
                                           WHERE uri LIKE ? AND\
-                                          mtime>0", (uri + "%",))
+                                          mtime!=0", (uri + "%",))
                     uris += list(itertools.chain(*result))
             else:
                 result = sql.execute("SELECT uri FROM tracks WHERE mtime>0")

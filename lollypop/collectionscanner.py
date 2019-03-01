@@ -123,7 +123,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         if album_artist_ids:
             App().albums.set_artist_ids(album_id, album_artist_ids)
         # Update UI based on previous artist calculation
-        if mtime > 0 and App().albums.get_tracks_count(album_id) > 1:
+        if mtime != 0 and App().albums.get_tracks_count(album_id) > 1:
             for artist_id in album_artist_ids:
                 GLib.idle_add(self.emit, "artist-updated", artist_id, add)
         # Update album genres
