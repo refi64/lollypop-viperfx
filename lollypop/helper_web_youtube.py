@@ -98,7 +98,6 @@ class YouTubeHelper:
                 decode = json.loads(data.decode("utf-8"))
                 dic = {}
                 best = self.__BAD_SCORE
-                print(decode)
                 for i in decode["items"]:
                     score = self.__get_youtube_score(i["snippet"]["title"],
                                                      track.name,
