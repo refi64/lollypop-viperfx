@@ -119,7 +119,7 @@ class GenresDatabase:
                                     SELECT album_genres.genre_id\
                                     FROM album_genres, albums\
                                     WHERE album_genres.album_id=albums.rowid\
-                                    AND albums.mtime!=0)\
+                                    AND albums.mtime>0)\
                                   ORDER BY genres.name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(result)
@@ -136,7 +136,7 @@ class GenresDatabase:
                                     SELECT album_genres.genre_id\
                                     FROM album_genres, albums\
                                     WHERE album_genres.album_id=albums.rowid\
-                                    AND albums.mtime!=0)\
+                                    AND albums.mtime>0)\
                                   ORDER BY genres.name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))

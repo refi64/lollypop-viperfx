@@ -735,7 +735,7 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
                            album_genres, album_artists, artists\
                            WHERE albums.rowid = album_artists.album_id AND\
-                           albums.mtime != 0 AND\
+                           albums.mtime > 0 AND\
                            artists.rowid = album_artists.artist_id AND\
                            album_genres.album_id=albums.rowid AND ( "
                 for genre_id in genre_ids:
@@ -751,7 +751,7 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_artists, artists\
                            WHERE album_artists.album_id=albums.rowid AND\
-                           albums.mtime != 0 AND\
+                           albums.mtime > 0 AND\
                            artists.rowid = album_artists.artist_id AND ("
                 for artist_id in artist_ids:
                     request += "artists.rowid=? OR "
@@ -767,7 +767,7 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_genres, album_artists, artists\
                            WHERE album_genres.album_id=albums.rowid AND\
-                           albums.mtime != 0 AND\
+                           albums.mtime > 0 AND\
                            artists.rowid = album_artists.artist_id AND\
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
@@ -798,7 +798,7 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_artists\
                            WHERE album_artists.artist_id=?\
-                           AND albums.mtime != 0\
+                           AND albums.mtime > 0\
                            AND album_artists.album_id=albums.rowid"
                 if ignore:
                     request += " AND albums.loved != -1"
@@ -811,7 +811,7 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_genres, album_artists\
                            WHERE album_genres.album_id=albums.rowid\
-                           AND albums.mtime != 0\
+                           AND albums.mtime > 0\
                            AND albums.loved != -1\
                            AND album_artists.album_id=albums.rowid\
                            AND album_artists.artist_id=? AND ( "
