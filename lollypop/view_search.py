@@ -208,7 +208,7 @@ class SearchView(BaseView, Gtk.Bin):
 
     def __on_map(self, widget):
         """
-            Grab focus
+            Init signals and grab focus
             @param widget as Gtk.Widget
         """
         App().spotify.connect("new-album", self.__on_new_spotify_album)
@@ -217,7 +217,7 @@ class SearchView(BaseView, Gtk.Bin):
 
     def __on_unmap(self, widget):
         """
-            Stop loading
+            Clean up
             @param widget as Gtk.Widget
         """
         App().spotify.disconnect_by_func(self.__on_new_spotify_album)
@@ -275,12 +275,11 @@ class SearchView(BaseView, Gtk.Bin):
         """
         action.set_state(value)
         if value.get_string() == "local":
-            self.__play_button.show()
             self.__new_button.show()
             self.__header_stack.set_visible_child(self.__new_button)
         else:
-            self.__play_button.hide()
             self.__new_button.hide()
         self.__view.stop()
         self.__view.clear()
         self.__populate()
+        GLib.idle_add(self.__entry.grab_focus)
