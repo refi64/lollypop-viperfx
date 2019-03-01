@@ -36,15 +36,23 @@ class SearchView(BaseView, Gtk.Bin):
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
         self.__timeout_id = None
-        self.__search_count = 0
         self.__current_search = ""
         self.__cancellable = Gio.Cancellable()
         self.__history = []
 
+        self.__search_type_action = Gio.SimpleAction.new_stateful(
+                                               "search_type",
+                                               GLib.VariantType.new("s"),
+                                               GLib.Variant("s", "local"))
+        self.__search_type_action.connect("change-state",
+                                          self.__on_search_action_change_state)
+        App().add_action(self.__search_type_action)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchView.ui")
         builder.connect_signals(self)
         self.__widget = builder.get_object("widget")
+        self.__bottom_buttons = [builder.get_object("my_music_button"),
+                                 builder.get_object("web_button")]
         self.__new_button = builder.get_object("new_button")
         self.__play_button = builder.get_object("play_button")
         self.__entry = builder.get_object("entry")
@@ -134,16 +142,17 @@ class SearchView(BaseView, Gtk.Bin):
         self.__history = []
         if len(self.__current_search) > 2:
             self.__spinner.start()
-            self.__search_count = 1
-            search = Search()
+            state = self.__search_type_action.get_state().get_string()
             current_search = self.__current_search.lower()
-            search.get(current_search,
-                       self.__cancellable,
-                       callback=(self.__on_search_get, current_search))
-            self.__search_count += 1
-            App().task_helper.run(App().spotify.search,
-                                  current_search,
-                                  self.__cancellable)
+            if state == "local":
+                search = Search()
+                search.get(current_search,
+                           self.__cancellable,
+                           callback=(self.__on_search_get, current_search))
+            elif state == "web":
+                App().task_helper.run(App().spotify.search,
+                                      current_search,
+                                      self.__cancellable)
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_default_placeholder()
@@ -235,13 +244,11 @@ class SearchView(BaseView, Gtk.Bin):
         """
         if self.__current_search != search:
             return
-        self.__search_count -= 1
-        if self.__search_count == 0:
-            self.__spinner.stop()
-            self.__header_stack.set_visible_child(self.__new_button)
-            if not self.__view.children:
-                self.__stack.set_visible_child_name("placeholder")
-                self.__set_no_result_placeholder()
+        self.__spinner.stop()
+        self.__header_stack.set_visible_child(self.__new_button)
+        if not self.__view.children:
+            self.__stack.set_visible_child_name("placeholder")
+            self.__set_no_result_placeholder()
 
     def __on_search_changed_timeout(self):
         """
@@ -259,3 +266,21 @@ class SearchView(BaseView, Gtk.Bin):
         else:
             self.__play_button.set_sensitive(False)
             self.__new_button.set_sensitive(False)
+
+    def __on_search_action_change_state(self, action, value):
+        """
+            Update action value
+            @param action as Gio.SimpleAction
+            @param value as GLib.Variant
+        """
+        action.set_state(value)
+        if value.get_string() == "local":
+            self.__play_button.show()
+            self.__new_button.show()
+            self.__header_stack.set_visible_child(self.__new_button)
+        else:
+            self.__play_button.hide()
+            self.__new_button.hide()
+        self.__view.stop()
+        self.__view.clear()
+        self.__populate()

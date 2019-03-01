@@ -364,7 +364,7 @@ class ToolbarEnd(Gtk.Bin):
         """
             Update playback setting
             @param action as Gio.SimpleAction
-            @param value as bool
+            @param value as GLib.Variant
         """
         App().settings.set_value("playback", value)
         action.set_state(value)
