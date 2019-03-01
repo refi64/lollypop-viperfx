@@ -75,7 +75,6 @@ class ProgressController:
                 self.__timeout_id = GLib.timeout_add(1000,
                                                      self.update_position)
         else:
-            self.update_position()
             if self.__timeout_id is not None:
                 GLib.source_remove(self.__timeout_id)
                 self.__timeout_id = None
