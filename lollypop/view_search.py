@@ -131,16 +131,15 @@ class SearchView(BaseView, Gtk.Bin):
         """
         self.__cancellable.reset()
         self.__header_stack.set_visible_child(self.__spinner)
-        self.__spinner.start()
         self.__history = []
         if len(self.__current_search) > 2:
-            self.__search_count += 1
+            self.__spinner.start()
+            self.__search_count = 1
             search = Search()
-            search
             current_search = self.__current_search.lower()
             search.get(current_search,
                        self.__cancellable,
-                       callback=(self.__on_search_get,))
+                       callback=(self.__on_search_get, current_search))
             self.__search_count += 1
             App().task_helper.run(App().spotify.search,
                                   current_search,
@@ -181,12 +180,12 @@ class SearchView(BaseView, Gtk.Bin):
         else:
             self.destroy()
 
-    def __on_search_get(self, result):
+    def __on_search_get(self, result, search):
         """
             Add rows for internal results
             @param result as [(int, Album, bool)]
         """
-        self.__on_search_finished()
+        self.__on_search_finished(None, search)
         if result:
             albums = []
             reveal_albums = []
@@ -228,10 +227,14 @@ class SearchView(BaseView, Gtk.Bin):
         self.__view.add_album(album, False)
         self.__stack.set_visible_child_name("view")
 
-    def __on_search_finished(self, *ignore):
+    def __on_search_finished(self, api, search):
         """
             Stop spinner
+            @param api ignored
+            @param search as str
         """
+        if self.__current_search != search:
+            return
         self.__search_count -= 1
         if self.__search_count == 0:
             self.__spinner.stop()

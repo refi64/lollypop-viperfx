@@ -33,7 +33,7 @@ class SpotifyHelper(GObject.Object):
     __gsignals__ = {
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
                       (GObject.TYPE_PYOBJECT,)),
-        "search-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "search-finished": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
     def __init__(self):
@@ -169,7 +169,7 @@ class SpotifyHelper(GObject.Object):
                                                  decode["tracks"]["items"],
                                                  album_ids,
                                                  cancellable)
-            GLib.idle_add(self.emit, "search-finished")
+            GLib.idle_add(self.emit, "search-finished", search)
         except Exception as e:
             Logger.error("SpotifyHelper::search(): %s", e)
 
