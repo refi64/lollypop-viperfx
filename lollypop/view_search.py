@@ -51,8 +51,8 @@ class SearchView(BaseView, Gtk.Bin):
         builder.add_from_resource("/org/gnome/Lollypop/SearchView.ui")
         builder.connect_signals(self)
         self.__widget = builder.get_object("widget")
-        self.__bottom_buttons = [builder.get_object("my_music_button"),
-                                 builder.get_object("web_button")]
+        if GLib.find_program_in_path("youtube-dl") is None:
+            builder.get_object("bottom_buttons").hide()
         self.__new_button = builder.get_object("new_button")
         self.__play_button = builder.get_object("play_button")
         self.__entry = builder.get_object("entry")
