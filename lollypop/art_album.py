@@ -327,7 +327,7 @@ class AlbumArt:
             @param height as int
         """
         pixbuf = None
-        if uri.startswith("http:") or uri.startswith("https:"):
+        if uri.startswith("web:"):
             return
         try:
             tag_reader = TagReader()
