@@ -15,7 +15,7 @@
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">emblem-music-symbolic</property>
+    <property name="icon_name">computer-symbolic</property>
   </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
