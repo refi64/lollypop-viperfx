@@ -442,11 +442,12 @@ class AlbumMenu(Gio.Menu):
             @param show artist menu as bool
         """
         Gio.Menu.__init__(self)
-        if show_artist:
+        if show_artist and album.mtime != 0:
             self.insert_section(0, _("Artist"),
                                 ArtistMenu(album))
-        self.insert_section(2, _("Playlists"),
-                            PlaylistsMenu(album))
+        if album.mtime != 0:
+            self.insert_section(2, _("Playlists"),
+                                PlaylistsMenu(album))
         self.insert_section(3, _("Edit"),
                             EditMenu(album))
 
@@ -463,13 +464,14 @@ class TrackMenu(Gio.Menu):
             @param show artist menu as bool
         """
         Gio.Menu.__init__(self)
-        if show_artist:
+        if show_artist and track.mtime != 0:
             self.insert_section(0, _("Artist"),
                                 ArtistMenu(track))
         self.insert_section(1, _("Playback"),
                             PlaybackMenu(track))
-        self.insert_section(2, _("Playlists"),
-                            PlaylistsMenu(track))
+        if track.mtime != 0:
+            self.insert_section(2, _("Playlists"),
+                                PlaylistsMenu(track))
         self.insert_section(3, _("Edit"),
                             EditMenu(track))
 
@@ -522,6 +524,9 @@ class TrackMenuPopover(Popover):
         Popover.__init__(self)
         if menu is not None:
             self.bind_model(menu, None)
+
+        if track.mtime == 0:
+            return
 
         if track.year is not None:
             year_label = Gtk.Label.new()
