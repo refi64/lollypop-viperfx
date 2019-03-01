@@ -81,8 +81,7 @@ class QueueRow(Row, DNDRow):
             self._grid.attach(self.__header, 1, 0, 5, 1)
         else:
             self._grid.attach(self.__header, 1, 0, 4, 1)
-        self.set_indicator(App().player.current_track.id == self._track.id,
-                           self._track.loved)
+        self.set_indicator()
 
     def set_previous_row(self, row):
         """

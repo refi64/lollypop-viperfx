@@ -14,7 +14,7 @@ from gi.repository import Gtk, Pango, GLib, Gdk
 
 from gettext import gettext as _
 
-from lollypop.define import App, ViewType, MARGIN_SMALL
+from lollypop.define import App, ViewType, MARGIN_SMALL, IndicatorType
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.utils import seconds_to_string, on_query_tooltip
 
@@ -113,39 +113,36 @@ class Row(Gtk.ListBoxRow):
         else:
             self._duration_label.set_margin_end(MARGIN_SMALL)
         self.add(self._row_widget)
-        # We do not use set_indicator() here, we do not want widget to be
-        # populated
-        if App().player.current_track.id == self._track.id:
-            self._indicator.play()
-            self.get_style_context().add_class("trackrowplaying")
-        elif self._track.loved:
-            self.get_style_context().add_class("trackrow")
-            self._indicator.loved(self._track.loved)
-        else:
-            self.get_style_context().add_class("trackrow")
+        self.set_indicator(self._get_indicator_type())
 
-    def set_indicator(self, playing, loved):
+    def set_indicator(self, indicator_type=None):
         """
             Show indicator
-            @param widget name as str
-            @param playing as bool
-            @param loved as bool
+            @param indicator_type as IndicatorType
         """
+        if indicator_type is None:
+            indicator_type = self._get_indicator_type()
         self._indicator.clear()
-        if playing:
+        if indicator_type & IndicatorType.LOADING:
+            self._indicator.set_opacity(1)
+            self._indicator.load()
+        elif indicator_type & IndicatorType.PLAY:
             self._indicator.set_opacity(1)
             self.get_style_context().remove_class("trackrow")
             self.get_style_context().add_class("trackrowplaying")
-            if loved == 1:
+            if indicator_type & IndicatorType.LOVED:
                 self._indicator.play_loved()
             else:
                 self._indicator.play()
         else:
             self.get_style_context().remove_class("trackrowplaying")
             self.get_style_context().add_class("trackrow")
-            if loved != 0:
+            if indicator_type & IndicatorType.LOVED:
                 self._indicator.set_opacity(1)
-                self._indicator.loved(loved)
+                self._indicator.loved()
+            elif indicator_type & IndicatorType.SKIP:
+                self._indicator.set_opacity(1)
+                self._indicator.skip()
             else:
                 self._indicator.set_opacity(0)
 
@@ -203,6 +200,20 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PROTECTED           #
 #######################
+    def _get_indicator_type(self):
+        """
+            Get indicator type for current row
+            @return IndicatorType
+        """
+        indicator_type = IndicatorType.NONE
+        if App().player.current_track.id == self._track.id:
+            indicator_type |= IndicatorType.PLAY
+        if self._track.loved == 1:
+            indicator_type |= IndicatorType.LOVED
+        elif self._track.loved == -1:
+            indicator_type |= IndicatorType.SKIP
+        return indicator_type
+
     def _get_menu(self):
         """
             Return TrackMenu
@@ -225,8 +236,7 @@ class Row(Gtk.ListBoxRow):
         """
         def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
-            self.set_indicator(App().player.current_track.id == self._track.id,
-                               self._track.loved)
+            self.set_indicator()
 
         from lollypop.pop_menu import TrackMenuPopover, RemoveMenuPopover
         if self.get_state_flags() & Gtk.StateFlags.SELECTED:
@@ -286,6 +296,8 @@ class Row(Gtk.ListBoxRow):
             App().player.load(self._track)
         elif event.button == 1:
             self.activate()
+            if self._track.is_web:
+                self.set_indicator(IndicatorType.LOADING)
         return True
 
     def __on_gesture_pressed(self, gesture, x, y):

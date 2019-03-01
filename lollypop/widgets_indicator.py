@@ -35,42 +35,62 @@ class IndicatorWidget(Gtk.EventBox):
         self.connect("destroy", self.__on_destroy)
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, -1)
+        self.__stack = Gtk.Stack()
+        self.__stack.set_transition_duration(500)
+        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.__stack.show()
+        self.add(self.__stack)
 
     def play(self):
         """
             Show play indicator
         """
-        self.__init()
+        self.__init_play()
         self.__stack.set_visible_child_name("play")
 
-    def loved(self, status):
+    def loved(self):
         """
             Show loved indicator
-            @param loved status
         """
-        self.__init()
-        if status == 1:
-            self.__loved.set_from_icon_name("emblem-favorite-symbolic",
-                                            Gtk.IconSize.MENU)
-        elif status == -1:
-            self.__loved.set_from_icon_name("media-skip-forward-symbolic",
-                                            Gtk.IconSize.MENU)
-        if status != 0:
-            self.__stack.set_visible_child_name("loved")
+        self.__init_loved()
+        self.__loved.set_from_icon_name("emblem-favorite-symbolic",
+                                        Gtk.IconSize.MENU)
+        self.__stack.set_visible_child_name("loved")
+
+    def skip(self):
+        """
+            Show skip indicator
+        """
+        self.__init_loved()
+        self.__loved.set_from_icon_name("media-skip-forward-symbolic",
+                                        Gtk.IconSize.MENU)
+        self.__stack.set_visible_child_name("loved")
 
     def play_loved(self):
         """
             Show play/loved indicator
         """
-        self.__init()
+        self.__init_play()
+        self.__init_loved()
         self.__pass = 1
         self.play()
         self.__timeout_id = GLib.timeout_add(1000, self.__play_loved)
 
+    def load(self):
+        """
+            Show load indicator
+        """
+        self.__init_load()
+        self.__stack.set_visible_child_name("load")
+        self.__stack.get_visible_child().start()
+
     def clear(self):
         """
-            Clear timeout
+            Clear widget
         """
+        load = self.__stack.get_child_by_name("load")
+        if load is not None:
+            load.stop()
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
@@ -78,22 +98,36 @@ class IndicatorWidget(Gtk.EventBox):
 #######################
 # PRIVATE             #
 #######################
-    def __init(self):
+    def __init_play(self):
         """
-            Init widget content if needed
+            Init play button
         """
-        if self.__stack is not None:
+        if self.__stack.get_child_by_name("play") is not None:
             return
-        self.__stack = Gtk.Stack()
-        self.__stack.set_transition_duration(500)
-        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         play = Gtk.Image.new_from_icon_name("media-playback-start-symbolic",
                                             Gtk.IconSize.MENU)
-        self.__loved = Gtk.Image()
+        play.show()
         self.__stack.add_named(play, "play")
+
+    def __init_loved(self):
+        """
+            Init loved button
+        """
+        if self.__stack.get_child_by_name("loved") is not None:
+            return
+        self.__loved = Gtk.Image()
+        self.__loved.show()
         self.__stack.add_named(self.__loved, "loved")
-        self.add(self.__stack)
-        self.show_all()
+
+    def __init_load(self):
+        """
+            Init load spinner
+        """
+        if self.__stack.get_child_by_name("load") is not None:
+            return
+        spinner = Gtk.Spinner()
+        spinner.show()
+        self.__stack.add_named(spinner, "load")
 
     def __on_destroy(self, widget):
         """
@@ -111,7 +145,7 @@ class IndicatorWidget(Gtk.EventBox):
         if self.__stack.get_visible_child_name() == "play":
             if self.__pass == 5:
                 self.__pass = 0
-                self.loved(1)
+                self.loved()
         else:
             self.play()
         self.__pass += 1

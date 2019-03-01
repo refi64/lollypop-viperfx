@@ -239,6 +239,7 @@ class BinPlayer(BasePlayer):
             self.__cancellable.reset()
             self._current_track = track
             if track.is_web:
+                self.emit("loading-changed", True)
                 App().task_helper.run(self.__load_from_web, track)
                 return False
             else:
@@ -401,6 +402,7 @@ class BinPlayer(BasePlayer):
         def play(uri):
             self._playbin.set_property("uri", uri)
             self.play()
+            self.emit("loading-changed", False)
 
         from lollypop.helper_web import WebHelper
         helper = WebHelper()

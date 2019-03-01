@@ -57,6 +57,14 @@ class ViewType:
     FULLSCREEN = 1 << 12
 
 
+class IndicatorType:
+    NONE = 1 << 0
+    PLAY = 1 << 1
+    LOVED = 1 << 2
+    SKIP = 1 << 3
+    LOADING = 1 << 4
+
+
 class ArtSize:
     NONE = 0
     SMALL = 33

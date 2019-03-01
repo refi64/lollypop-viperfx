@@ -12,7 +12,6 @@
 
 from gi.repository import GObject, Gtk
 from lollypop.define import App, Type
-from lollypop.objects import Track
 
 
 class TracksWidget(Gtk.ListBox):
@@ -50,8 +49,7 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            row.set_indicator(row.track.id == track_id,
-                              Track(row.track.id).loved)
+            row.set_indicator()
 
 #######################
 # PRIVATE             #
@@ -75,8 +73,7 @@ class TracksWidget(Gtk.ListBox):
         track_id = App().tracks.get_id_by_uri(uri)
         for row in self.get_children():
             if track_id == row.track.id:
-                row.set_indicator(track_id == App().player.current_track.id,
-                                  Track(track_id).loved)
+                row.set_indicator()
 
     def __on_destroy(self, widget):
         """
