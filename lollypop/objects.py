@@ -65,6 +65,14 @@ class Base:
         attr_value = getattr(self.db, "get_" + attr)(self.id)
         setattr(self, attr_name, attr_value)
 
+    @property
+    def is_web(self):
+        """
+            True if track is a web track
+            @return bool
+        """
+        return self.mtime in [0, -1]
+
     def get_popularity(self):
         """
             Get popularity
@@ -537,15 +545,6 @@ class Track(Base):
         """
         artist_ids = self.db.get_artist_ids(self.id)
         return list(set(artist_ids) - set(album_artist_ids))
-
-    @property
-    def is_web(self):
-        """
-            True if track is a web track
-            @return bool
-        """
-        parsed = urlparse(self.uri)
-        return parsed.scheme in ["http", "https", "web"]
 
     @property
     def is_http(self):
