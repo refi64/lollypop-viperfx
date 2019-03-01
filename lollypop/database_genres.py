@@ -115,6 +115,11 @@ class GenresDatabase:
             result = sql.execute("SELECT DISTINCT\
                                   genres.rowid, genres.name,genres.name\
                                   FROM genres\
+                                  WHERE genres.rowid IN (\
+                                    SELECT album_genres.genre_id\
+                                    FROM album_genres, albums\
+                                    WHERE album_genres.album_id=albums.rowid\
+                                    AND albums.mtime!=0)\
                                   ORDER BY genres.name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(result)
@@ -127,6 +132,11 @@ class GenresDatabase:
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT DISTINCT genres.rowid\
                                   FROM genres\
+                                  WHERE genres.rowid IN (\
+                                    SELECT album_genres.genre_id\
+                                    FROM album_genres, albums\
+                                    WHERE album_genres.album_id=albums.rowid\
+                                    AND albums.mtime!=0)\
                                   ORDER BY genres.name\
                                   COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
