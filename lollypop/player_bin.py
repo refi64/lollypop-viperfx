@@ -557,7 +557,7 @@ class BinPlayer(BasePlayer):
             reader = TagReader()
             duration = reader.get_info(uri).get_duration() / 1000000000
             if duration != track.duration and duration > 0:
-                App().tracks.set_duration(track.id, duration)
+                App().tracks.set_duration(track.id, int(duration))
                 track.reset("duration")
                 GLib.idle_add(self.emit, "duration-changed", track.id)
         except Exception as e:
