@@ -68,18 +68,6 @@ class GenresDatabase:
                 return v[0]
             return None
 
-    def get_names(self):
-        """
-            Get genre name for genre id
-            @return genres as [str]
-        """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT name\
-                                 FROM genres\
-                                 ORDER BY name\
-                                 COLLATE NOCASE COLLATE LOCALIZED")
-            return list(itertools.chain(*result))
-
     def get_album_ids(self, genre_id, ignore=False):
         """
             Get all availables albums for genres
