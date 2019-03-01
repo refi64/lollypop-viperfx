@@ -311,7 +311,7 @@ class TracksDatabase:
 
     def set_uri(self, track_id, uri):
         """
-            Set track uri, reset duration if web uri
+            Set track uri
             @param Track id as int
             @param uri as string
         """
@@ -319,8 +319,6 @@ class TracksDatabase:
             sql.execute("UPDATE tracks SET uri=?\
                          WHERE rowid=?",
                         (uri, track_id))
-            if uri.startswith("http") or uri.startswith("https"):
-                self.set_duration(track_id, 0)
 
     def set_rate(self, track_id, rate):
         """

@@ -90,6 +90,14 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         """
         self.set_playing_indicator()
 
+    def _on_duration_changed(self, player, track_id):
+        """
+            Update track duration
+            @param player as Player
+            @param track_id as int
+        """
+        self.update_duration(track_id)
+
     def _on_map(self, widget):
         """
             Connect signals and set active ids

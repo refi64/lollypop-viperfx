@@ -39,6 +39,7 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
 
         self._timelabel = builder.get_object("playback")
         self._total_time_label = builder.get_object("duration")
+        App().player.connect("duration-changed", self.on_duration_changed)
 
     def set_width(self, width):
         """

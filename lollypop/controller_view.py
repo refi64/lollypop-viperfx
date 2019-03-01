@@ -43,6 +43,9 @@ class ViewController:
     def _on_artwork_changed(self, artwork, *args):
         pass
 
+    def _on_duration_changed(self, player, track_id):
+        pass
+
 #######################
 # PRIVATE             #
 #######################
@@ -54,6 +57,9 @@ class ViewController:
         self.__signals_ids[
             App().player.connect("current-changed",
                                  self._on_current_changed)] = App().player
+        self.__signals_ids[
+            App().player.connect("duration-changed",
+                                 self._on_duration_changed)] = App().player
         self.__signals_ids[
             App().art.connect("%s-artwork-changed" % self.__type,
                               self._on_artwork_changed)] = App().art

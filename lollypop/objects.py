@@ -56,6 +56,15 @@ class Base:
             else:
                 return attr_value
 
+    def reset(self, attr):
+        """
+            Reset attr
+            @param attr as str
+        """
+        attr_name = "_" + attr
+        attr_value = getattr(self.db, "get_" + attr)(self.id)
+        setattr(self, attr_name, attr_value)
+
     def get_popularity(self):
         """
             Get popularity

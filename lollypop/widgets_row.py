@@ -75,8 +75,8 @@ class Row(Gtk.ListBoxRow):
             self._artists_label.set_opacity(0.3)
             self._artists_label.set_margin_end(5)
             self._artists_label.show()
-        self._duration_label = Gtk.Label.new(
-            seconds_to_string(self._track.duration))
+        duration = seconds_to_string(self._track.duration)
+        self._duration_label = Gtk.Label.new(duration)
         self._duration_label.get_style_context().add_class("dim-label")
         self._num_label = Gtk.Label.new()
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -114,6 +114,15 @@ class Row(Gtk.ListBoxRow):
             self._duration_label.set_margin_end(MARGIN_SMALL)
         self.add(self._row_widget)
         self.set_indicator(self._get_indicator_type())
+        self.update_duration()
+
+    def update_duration(self):
+        """
+            Update track duration
+        """
+        self._track.reset("duration")
+        duration = seconds_to_string(self._track.duration)
+        self._duration_label.set_label(duration)
 
     def set_indicator(self, indicator_type=None):
         """

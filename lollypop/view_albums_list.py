@@ -613,6 +613,15 @@ class AlbumsListView(LazyLoadingView, ViewController):
             if child.album.id == album_id:
                 child.set_artwork()
 
+    def _on_duration_changed(self, player, track_id):
+        """
+            Update track duration
+            @param player as Player
+            @param track_id as int
+        """
+        for child in self.children:
+            child.update_duration(track_id)
+
     def _on_map(self, widget):
         """
             Connect signals and set active ids

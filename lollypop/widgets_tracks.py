@@ -51,6 +51,15 @@ class TracksWidget(Gtk.ListBox):
         for row in self.get_children():
             row.set_indicator()
 
+    def update_duration(self, track_id):
+        """
+            Update duration for track id
+            @param track_id as int
+        """
+        for row in self.get_children():
+            if row.track.id == track_id:
+                row.update_duration()
+
 #######################
 # PRIVATE             #
 #######################

@@ -403,6 +403,7 @@ class BinPlayer(BasePlayer):
             self._playbin.set_property("uri", uri)
             self.play()
             self.emit("loading-changed", False)
+            App().task_helper.run(self.__update_current_duration, track, uri)
 
         from lollypop.helper_web import WebHelper
         helper = WebHelper()
@@ -546,6 +547,22 @@ class BinPlayer(BasePlayer):
                 stop = True
         return stop
 
+    def __update_current_duration(self, track, uri):
+        """
+            Update current track duration
+            @param track as Track
+            @param uri as str
+        """
+        try:
+            reader = TagReader()
+            duration = reader.get_info(uri).get_duration() / 1000000000
+            if duration != track.duration and duration > 0:
+                App().tracks.set_duration(track.id, duration)
+                track.reset("duration")
+                GLib.idle_add(self.emit, "duration-changed", track.id)
+        except Exception as e:
+            Logger.error("BinPlayer::__update_current_duration(): %s" % e)
+
     def __on_volume_changed(self, playbin, sink):
         """
             Update volume
@@ -559,14 +576,3 @@ class BinPlayer(BasePlayer):
             vol = self.__playbin2.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
             self.__playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
         self.emit("volume-changed")
-
-    def __set_gv_uri(self, uri, track, play):
-        """
-            Play uri for io
-            @param uri as str
-            @param track as Track
-            @param play as bool
-        """
-        track.set_uri(uri)
-        if play:
-            self.load(track)

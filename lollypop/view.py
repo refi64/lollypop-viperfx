@@ -205,17 +205,6 @@ class View(BaseView, Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def __update_widgets(self, widgets):
-        """
-            Update all widgets
-            @param widgets as BaseWidget
-        """
-        if widgets:
-            widget = widgets.pop(0)
-            widget.update_state()
-            widget.update_playing_indicator()
-            GLib.idle_add(self.__update_widgets, widgets)
-
     def __on_button_clicked(self, widget):
         """
             Hide widget, why GTK doesn"t do that?

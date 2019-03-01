@@ -54,6 +54,17 @@ class ProgressController:
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
 
+    def on_duration_changed(self, player, track_id):
+        """
+            Update duration
+            @param player as Player
+            @param track_id as int
+        """
+        if track_id == player.current_track.id:
+            duration = player.current_track.duration
+            self._progress.set_range(0.0, duration)
+            self._total_time_label.set_text(seconds_to_string(duration))
+
     def on_status_changed(self, player):
         """
             Update buttons and progress bar
