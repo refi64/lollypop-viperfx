@@ -23,6 +23,8 @@ class BaseArt(GObject.GObject):
     _CACHE_PATH = GLib.get_user_cache_dir() + "/lollypop"
     # Fallback when album dir is readonly
     _STORE_PATH = GLib.get_user_data_dir() + "/lollypop/store"
+    # Store for Web
+    _WEB_PATH = GLib.get_user_data_dir() + "/lollypop/web"
     __gsignals__ = {
         "album-artwork-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         "artist-artwork-changed": (GObject.SignalFlags.RUN_FIRST,
@@ -108,27 +110,17 @@ class BaseArt(GObject.GObject):
         else:
             return pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
 
-    def _create_store(self):
+    def _create_dir(self, path):
         """
             Create store dir
+            @param path as str
         """
-        d = Gio.File.new_for_path(self._STORE_PATH)
+        d = Gio.File.new_for_path(path)
         if not d.query_exists():
             try:
                 d.make_directory_with_parents()
             except:
-                Logger.info("Can't create %s" % self._STORE_PATH)
-
-    def _create_cache(self):
-        """
-            Create cache dir
-        """
-        d = Gio.File.new_for_path(self._CACHE_PATH)
-        if not d.query_exists():
-            try:
-                d.make_directory_with_parents()
-            except:
-                Logger.info("Can't create %s" % self._CACHE_PATH)
+                Logger.info("Can't create %s" % path)
 
 #######################
 # PRIVATE             #

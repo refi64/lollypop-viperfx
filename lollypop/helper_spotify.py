@@ -158,7 +158,6 @@ class SpotifyHelper(GObject.Object):
             uri = "https://api.spotify.com/v1/search?"
             uri += "q=%s&type=album,track" % search
             (status, data) = helper.load_uri_content_sync(uri, cancellable)
-            print("go")
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 album_ids = []

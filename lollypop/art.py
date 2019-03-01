@@ -32,8 +32,18 @@ class Art(BaseArt, AlbumArt, RadioArt, Downloader):
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
         Downloader.__init__(self)
-        self._create_cache()
-        self._create_store()
+        self._create_dir(self._CACHE_PATH)
+        self._create_dir(self._STORE_PATH)
+        self._create_dir(self._WEB_PATH)
+
+    def clean_web(self):
+        """
+            Remove all covers from cache
+        """
+        try:
+            rmtree(self._WEB_PATH)
+        except Exception as e:
+            Logger.error("Art::clean_web(): %s", e)
 
     def clean_all_cache(self):
         """
@@ -41,6 +51,6 @@ class Art(BaseArt, AlbumArt, RadioArt, Downloader):
         """
         try:
             rmtree(self._CACHE_PATH)
-            self._create_cache()
+            self._create_dir(self._CACHE_PATH)
         except Exception as e:
             Logger.error("Art::clean_all_cache(): %s", e)

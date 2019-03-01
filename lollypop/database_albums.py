@@ -428,6 +428,20 @@ class AlbumsDatabase:
                                  (album_id,))
             return list(itertools.chain(*result))
 
+    def get_mtime(self, album_id):
+        """
+            Get modification time
+            @param album_id as int
+            @return modification time as int
+        """
+        with SqlCursor(App().db) as sql:
+            request = "SELECT mtime FROM albums WHERE albums.rowid=?"
+            result = sql.execute(request, (album_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_year(self, album_id):
         """
             Get album year

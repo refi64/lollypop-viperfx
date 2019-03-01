@@ -63,7 +63,6 @@ class Row(Gtk.ListBoxRow):
         if featuring_artist_ids:
             artists = []
             for artist_id in featuring_artist_ids:
-                print(artist_id, self._track.name)
                 artists.append(App().artists.get_name(artist_id))
             self._artists_label = Gtk.Label.new(GLib.markup_escape_text(
                 ", ".join(artists)))

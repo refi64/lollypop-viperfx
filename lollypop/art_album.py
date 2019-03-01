@@ -77,12 +77,16 @@ class AlbumArt:
         """
         if album.id is None:
             return None
-        self.__update_album_uri(album)
         try:
             filename = self.get_album_cache_name(album) + ".jpg"
+            self.__update_album_uri(album)
+            if album.mtime == 0:
+                store_path = self._WEB_PATH + "/" + filename
+            else:
+                store_path = self._STORE_PATH + "/" + filename
             uris = [
-                # Used when album.uri is readonly
-                GLib.filename_to_uri(self._STORE_PATH + "/" + filename),
+                # Used when album.uri is readonly or for Web
+                GLib.filename_to_uri(store_path),
                 # Default favorite artwork
                 album.uri + "/" + self.__favorite,
                 # Used when having muliple albums in same folder
@@ -238,7 +242,10 @@ class AlbumArt:
                 helper = TaskHelper()
                 helper.run(self.__save_artwork_to_tags, data, album)
 
-            store_path = self._STORE_PATH + "/" + filename
+            if album.mtime == 0:
+                store_path = self._WEB_PATH + "/" + filename
+            else:
+                store_path = self._STORE_PATH + "/" + filename
             if album.uri == "" or is_readonly(album.uri):
                 arturi = GLib.filename_to_uri(store_path)
             # Many albums with same path, suffix with artist_album name

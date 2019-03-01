@@ -811,7 +811,7 @@ class TracksDatabase:
 
     def get_mtime(self, track_id):
         """
-            Get modification time, if genre_ids empty, only local tracks
+            Get modification time
             @param track_id as int
             @return modification time as int
         """

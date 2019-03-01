@@ -234,6 +234,7 @@ class Application(Gtk.Application):
         # Then vacuum db
         if vacuum:
             self.__vacuum()
+            self.art.clean_web()
         self.window.hide()
         Gio.Application.quit(self)
 
