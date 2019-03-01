@@ -52,6 +52,7 @@ class SearchView(BaseView, Gtk.Bin):
         builder.connect_signals(self)
         self.__widget = builder.get_object("widget")
         if GLib.find_program_in_path("youtube-dl") is None:
+            Logger.warning("youtube-dl is missing")
             builder.get_object("bottom_buttons").hide()
         self.__new_button = builder.get_object("new_button")
         self.__play_button = builder.get_object("play_button")
