@@ -64,7 +64,7 @@ class ScannerContainer:
             if add:
                 genre_name = App().genres.get_name(genre_id)
                 self._list_one.add_value((genre_id, genre_name, genre_name))
-            else:
+            elif App().artists.get_ids([genre_id]):
                 self._list_one.remove_value(genre_id)
 
     def __on_artist_updated(self, scanner, artist_id, add):

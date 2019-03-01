@@ -514,17 +514,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().albums.clean()
             App().genres.clean()
             App().artists.clean()
-            if App().albums.get_name(album_id) is None:
-                GLib.idle_add(self.emit, "album-updated",
-                              album_id, True)
+            GLib.idle_add(self.emit, "album-updated", album_id, True)
             for artist_id in album_artist_ids + artist_ids:
-                if App().artists.get_name(artist_id) is None:
-                    GLib.idle_add(self.emit, "artist-updated",
-                                  artist_id, False)
+                GLib.idle_add(self.emit, "artist-updated", artist_id, False)
             for genre_id in genre_ids:
-                if App().genres.get_name(genre_id) is None:
-                    GLib.idle_add(self.emit, "genre-updated",
-                                  genre_id, False)
+                GLib.idle_add(self.emit, "genre-updated", genre_id, False)
             return (track_pop, track_rate, track_ltime, album_mtime,
                     track_loved, album_loved, album_pop, album_rate)
         except Exception as e:

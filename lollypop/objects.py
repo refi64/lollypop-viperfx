@@ -358,12 +358,8 @@ class Album(Base):
         """
         # We want DB genre ids
         genre_ids = App().albums.get_genre_ids(self.id)
-        remove_artist = App().artists.get_name(self.artist_ids[0]) is None
-        remove_genre = App().artists.get_name(genre_ids[0]) is None
-        if remove_artist or save:
-            App().scanner.emit("artist-updated", self.artist_ids[0], save)
-        if remove_genre or save:
-            App().scanner.emit("genre-updated", genre_ids[0], save)
+        App().scanner.emit("artist-updated", self.artist_ids[0], save)
+        App().scanner.emit("genre-updated", genre_ids[0], save)
         App().scanner.emit("album-updated", self.id, save)
         if save:
             App().albums.set_mtime(self.id, -1)
