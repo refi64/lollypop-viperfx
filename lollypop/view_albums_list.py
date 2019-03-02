@@ -124,22 +124,25 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.set_artwork()
         self.__action_button = None
         # No action for ephemeral albums
-        if self._album.mtime != 0:
-            if self.__view_type & ViewType.DND:
-                self.__action_button = Gtk.Button.new_from_icon_name(
-                    "list-remove-symbolic",
+        if self._album.mtime == 0:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "document-save-symbolic",
+                Gtk.IconSize.MENU)
+        elif self.__view_type & ViewType.DND:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "list-remove-symbolic",
+                Gtk.IconSize.MENU)
+            self.__action_button.set_tooltip_text(
+                _("Remove from current playlist"))
+        elif self.__view_type & ViewType.SEARCH:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                    'avatar-default-symbolic',
                     Gtk.IconSize.MENU)
-                self.__action_button.set_tooltip_text(
-                    _("Remove from current playlist"))
-            elif self.__view_type & ViewType.SEARCH:
-                self.__action_button = Gtk.Button.new_from_icon_name(
-                        'avatar-default-symbolic',
-                        Gtk.IconSize.MENU)
-                self.__action_button.set_tooltip_text(_("Go to artist view"))
-            elif not self.__view_type & ViewType.POPOVER:
-                self.__action_button = Gtk.Button.new_from_icon_name(
-                    "view-more-symbolic",
-                    Gtk.IconSize.MENU)
+            self.__action_button.set_tooltip_text(_("Go to artist view"))
+        elif not self.__view_type & ViewType.POPOVER:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "view-more-symbolic",
+                Gtk.IconSize.MENU)
         if self.__action_button is not None:
             self.__action_button.set_margin_end(MARGIN_SMALL)
             self.__action_button.set_relief(Gtk.ReliefStyle.NONE)
@@ -399,7 +402,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         if not self.get_state_flags() & Gtk.StateFlags.PRELIGHT:
             return
-        if self.__view_type & ViewType.SEARCH:
+        if self._album.mtime == 0:
+            self._album.save(True)
+            button.hide()
+        elif self.__view_type & ViewType.SEARCH:
             popover = self.get_ancestor(Gtk.Popover)
             if popover is not None:
                 popover.popdown()
