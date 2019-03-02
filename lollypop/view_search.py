@@ -272,26 +272,32 @@ class SearchView(BaseView, Gtk.Bin):
             @param action as Gio.SimpleAction
             @param value as GLib.Variant
         """
+        def delayed_action(state):
+            self.__cancellable.reset()
+            if state == "local":
+                self.__new_button.show()
+                self.__header_stack.set_visible_child(self.__new_button)
+            else:
+                self.__new_button.hide()
+            if state == "charts":
+                self.__entry.set_sensitive(False)
+                self.__entry.set_opacity(0)
+                self.__play_button.set_sensitive(True)
+                self.__header_stack.set_visible_child(self.__spinner)
+                self.__history = []
+                self.__spinner.start()
+                self.__stack.set_visible_child_name("view")
+                App().task_helper.run(App().spotify.charts,
+                                      self.__cancellable)
+            else:
+                self.__entry.set_opacity(1)
+                self.__entry.set_sensitive(True)
+                self.__populate()
+                GLib.idle_add(self.__entry.grab_focus)
+        self.__cancellable.cancel()
         self.__view.stop()
         self.__view.clear()
         action.set_state(value)
         state = value.get_string()
-        if state == "local":
-            self.__new_button.show()
-            self.__header_stack.set_visible_child(self.__new_button)
-        else:
-            self.__new_button.hide()
-        if state == "charts":
-            self.__entry.set_sensitive(False)
-            self.__play_button.set_sensitive(True)
-            self.__cancellable.reset()
-            self.__header_stack.set_visible_child(self.__spinner)
-            self.__history = []
-            self.__spinner.start()
-            self.__stack.set_visible_child_name("view")
-            App().task_helper.run(App().spotify.charts,
-                                  self.__cancellable)
-        else:
-            self.__entry.set_sensitive(True)
-            self.__populate()
-            GLib.idle_add(self.__entry.grab_focus)
+        # Let cancellable cancel
+        GLib.timeout_add(500, delayed_action, state)

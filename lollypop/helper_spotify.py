@@ -267,6 +267,8 @@ class SpotifyHelper(GObject.Object):
         """
         # Populate tracks
         for item in payload:
+            if cancellable.is_cancelled():
+                return
             if App().db.exists_in_db(item["album"]["name"],
                                      [artist["name"]
                                      for artist in item["artists"]],
@@ -289,6 +291,8 @@ class SpotifyHelper(GObject.Object):
         """
         # Populate tracks
         for album_item in payload:
+            if cancellable.is_cancelled():
+                return
             if App().db.exists_in_db(album_item["name"],
                                      [artist["name"]
                                      for artist in album_item["artists"]],
