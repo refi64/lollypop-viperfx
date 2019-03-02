@@ -235,7 +235,7 @@ class Album(Base):
                 "uri": "",
                 "tracks_count": 1,
                 "duration": 0,
-                "mtime": 0,
+                "mtime": 1,
                 "synced": False,
                 "loved": False}
 
@@ -444,7 +444,7 @@ class Track(Base):
                 "number": 0,
                 "year": None,
                 "timestamp": None,
-                "mtime": 0,
+                "mtime": 1,
                 "loved": False,
                 "mb_track_id": None}
 
@@ -548,12 +548,8 @@ class Track(Base):
             True if track is a http track
             @return bool
         """
-        # Ignore radios
-        if self.id == Type.RADIOS:
-            return False
-        else:
-            parsed = urlparse(self.uri)
-            return parsed.scheme in ["http", "https"]
+        parsed = urlparse(self.uri)
+        return parsed.scheme in ["http", "https"]
 
     @property
     def position(self):
