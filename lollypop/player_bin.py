@@ -238,11 +238,12 @@ class BinPlayer(BasePlayer):
             self.__cancellable.cancel()
             self.__cancellable.reset()
             self._current_track = track
+            if track.is_web or track.id == Type.RADIOS:
+                self.emit("loading-changed", True)
             # We check track is URI track, if yes, do a load from Web
             # Will not work if we add another music provider one day
             track_uri = App().tracks.get_uri(track.id)
             if track.is_web and track.uri == track_uri:
-                self.emit("loading-changed", True)
                 App().task_helper.run(self._load_from_web, track)
                 return False
             else:
@@ -262,7 +263,6 @@ class BinPlayer(BasePlayer):
             track.set_uri(uri)
             if play:
                 self.load(track)
-                self.emit("loading-changed", False)
                 App().task_helper.run(self.__update_current_duration,
                                       track, uri)
 
@@ -296,6 +296,7 @@ class BinPlayer(BasePlayer):
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
+        self.emit("loading-changed", False)
         self._start_time = time()
         Logger.debug("Player::_on_stream_start(): %s" %
                      self._current_track.uri)
