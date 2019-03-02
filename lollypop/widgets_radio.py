@@ -43,6 +43,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayRadioHelper):
         OverlayRadioHelper.__init__(self)
         self._widget = None
         self._artwork = None
+        self._watch_loading = True
         self.__art_size = 120\
             if App().window.is_adaptive\
             else ArtSize.BIG

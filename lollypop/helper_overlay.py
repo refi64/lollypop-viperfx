@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import ArtSize
+from lollypop.define import ArtSize, App
 
 
 class OverlayHelper:
@@ -26,7 +26,10 @@ class OverlayHelper:
         """
         self._show_overlay = False
         self._lock_overlay = False
+        self._spinner = None
+        self._watch_loading = False
         self.__timeout_id = None
+        self.__loading_changed_id = None
         self._pixel_size = ArtSize.BIG / 9
 
     def lock_overlay(self, lock):
@@ -96,6 +99,10 @@ class OverlayHelper:
         """
         if self._artwork is None:
             return
+        if self.__loading_changed_id is None and self._watch_loading:
+            self.__loading_changed_id = App().player.connect(
+                "loading-changed", self._on_loading_changed)
+            self.connect("unmap", self.__on_unmap)
         self._artwork.set_opacity(0.9)
         if self.__timeout_id is None:
             self.__timeout_id = GLib.timeout_add(250,
@@ -136,3 +143,36 @@ class OverlayHelper:
         """
         self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
+
+    def _on_loading_changed(self, player, status):
+        """
+            Show a spinner while loading
+            @param player as Player
+            @param status as bool
+        """
+        if status and not self._show_overlay:
+            return
+        if status:
+            if self._spinner is None:
+                self._spinner = Gtk.Spinner()
+                self._spinner.show()
+                self._spinner.start()
+                style_context = self._spinner.get_style_context()
+                style_context.add_class("black")
+                self._overlay.add_overlay(self._spinner)
+        else:
+            if self._spinner is not None:
+                self._spinner.destroy()
+                self._spinner = None
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_unmap(self, widget):
+        """
+            Disconnect player signals
+            @param widget as Gtk.Widget
+        """
+        if self.__loading_changed_id is not None:
+            App().player.disconnect(self.__loading_changed_id)
+            self.__loading_changed_id = None

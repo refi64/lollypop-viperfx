@@ -238,12 +238,11 @@ class BinPlayer(BasePlayer):
             self.__cancellable.cancel()
             self.__cancellable.reset()
             self._current_track = track
-            if track.is_web or track.id == Type.RADIOS:
-                self.emit("loading-changed", True)
             # We check track is URI track, if yes, do a load from Web
             # Will not work if we add another music provider one day
             track_uri = App().tracks.get_uri(track.id)
             if track.is_web and track.uri == track_uri:
+                self.emit("loading-changed", True)
                 App().task_helper.run(self._load_from_web, track)
                 return False
             else:
@@ -352,8 +351,8 @@ class BinPlayer(BasePlayer):
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
+        self.emit("loading-changed", False)
         Logger.info("Player::_on_bus_error(): %s" % message.parse_error()[1])
-        App().window.container.progress.pulse(False)
         if self.__codecs.is_missing_codec(message):
             self.__codecs.install()
             App().scanner.stop()
@@ -369,6 +368,7 @@ class BinPlayer(BasePlayer):
             On end of stream, stop playback
             go next otherwise
         """
+        self.emit("loading-changed", False)
         Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
             self._next_context = NextContext.NONE

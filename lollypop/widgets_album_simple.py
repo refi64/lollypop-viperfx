@@ -63,6 +63,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             Populate widget content
         """
         OverlayAlbumHelper.__init__(self)
+        self._watch_loading = self._album.mtime <= 0
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
         self.__widget = Gtk.EventBox()

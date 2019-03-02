@@ -15,7 +15,6 @@ from gi.repository import TotemPlParser, Gst, Gio
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
 from lollypop.logger import Logger
-from lollypop.define import App
 
 
 class RadioPlayer(BasePlayer):
@@ -42,8 +41,7 @@ class RadioPlayer(BasePlayer):
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
             try:
-                if not App().scanner.is_locked():
-                    App().window.container.progress.pulse(True)
+                self.emit("loading-changed", True)
                 self.__current = track
                 parser = TotemPlParser.Parser.new()
                 parser.connect("entry-parsed", self.__on_entry_parsed,
@@ -80,7 +78,6 @@ class RadioPlayer(BasePlayer):
             self.emit("status-changed")
         else:
             self.emit("current-changed")
-            App().window.container.progress.pulse(False)
 
     def __on_parse_finished(self, parser, result, track, play):
         """
@@ -93,7 +90,6 @@ class RadioPlayer(BasePlayer):
         # Only start playing if context always True
         if self.__current == track:
             self.__start_playback(track, play)
-            App().window.container.progress.pulse(False)
 
     def __on_entry_parsed(self, parser, uri, metadata, track, play):
         """

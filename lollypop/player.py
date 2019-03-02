@@ -520,8 +520,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             On stream start, set next and previous track
         """
-        if not App().scanner.is_locked():
-            App().window.container.progress.pulse(False)
         if self._current_track.id is not None and self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
         if self.track_in_queue(self._current_track):

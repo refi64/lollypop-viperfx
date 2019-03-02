@@ -548,8 +548,12 @@ class Track(Base):
             True if track is a http track
             @return bool
         """
-        parsed = urlparse(self.uri)
-        return parsed.scheme in ["http", "https"]
+        # Ignore radios
+        if self.id == Type.RADIOS:
+            return False
+        else:
+            parsed = urlparse(self.uri)
+            return parsed.scheme in ["http", "https"]
 
     @property
     def position(self):
