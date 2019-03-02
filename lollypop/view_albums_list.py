@@ -128,6 +128,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "document-save-symbolic",
                 Gtk.IconSize.MENU)
+            self.__action_button.set_tooltip_text(_("Save in collection"))
         elif self.__view_type & ViewType.DND:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "list-remove-symbolic",

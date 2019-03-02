@@ -382,7 +382,7 @@ class EditMenu(BaseMenu):
             save_action = Gio.SimpleAction(name="save_album_action")
             App().add_action(save_action)
             save_action.connect("activate", self.__save_to_collection, True)
-            self.append(_("Save to collection"), "app.save_album_action")
+            self.append(_("Save in collection"), "app.save_album_action")
         elif self._object.mtime == -1:
             save_action = Gio.SimpleAction(name="remove_album_action")
             App().add_action(save_action)
