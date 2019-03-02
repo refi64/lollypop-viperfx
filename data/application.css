@@ -162,6 +162,11 @@ popover.background separator {
     padding: 1px;
 }
 
+.youtube-scale contents trough highlight {
+    background-color: red;  
+    border-color: red;
+}
+
 .borders {
     border: 1px solid shade(@theme_bg_color, 0.7);
 }
