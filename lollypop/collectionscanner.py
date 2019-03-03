@@ -514,7 +514,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().albums.clean()
             App().genres.clean()
             App().artists.clean()
-            GLib.idle_add(self.emit, "album-updated", album_id, True)
+            if App().albums.get_name(album_id) is None:
+                GLib.idle_add(self.emit, "album-updated", album_id, True)
             for artist_id in album_artist_ids + artist_ids:
                 GLib.idle_add(self.emit, "artist-updated", artist_id, False)
             for genre_id in genre_ids:

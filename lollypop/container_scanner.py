@@ -76,19 +76,20 @@ class ScannerContainer:
         """
         artist_name = App().artists.get_name(artist_id)
         sortname = App().artists.get_sortname(artist_id)
+        genre_ids = []
         if App().settings.get_value("show-sidebar"):
             sidebar_content = App().settings.get_enum("sidebar-content")
             if sidebar_content == SidebarContent.GENRES:
+                genre_ids = self._list_one.selected_ids
                 l = self._list_two
-                artist_ids = App().artists.get_ids(
-                    self._list_one.selected_ids)
+                artist_ids = App().artists.get_ids(genre_ids)
                 if artist_id not in artist_ids:
                     return
             else:
                 l = self._list_one
             if add:
                 l.add_value((artist_id, artist_name, sortname))
-            else:
+            elif not App().albums.get_ids([artist_id], genre_ids):
                 l.remove_value(artist_id)
         elif self._rounded_artists_view is not None:
             if add:
