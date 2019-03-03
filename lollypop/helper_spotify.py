@@ -279,8 +279,11 @@ class SpotifyHelper(GObject.Object):
             if album_id not in new_album_ids.keys():
                 new_album_ids[album_id] = cover_uri
         for album_id in new_album_ids.keys():
-            album_ids.append(album_id)
-            self.__create_album(album_id, new_album_ids[album_id], cancellable)
+            if album_id not in album_ids:
+                album_ids.append(album_id)
+                self.__create_album(album_id,
+                                    new_album_ids[album_id],
+                                    cancellable)
 
     def __create_albums_from_album_payload(self, payload, album_ids,
                                            cancellable):
