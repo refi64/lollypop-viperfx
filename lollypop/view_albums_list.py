@@ -199,6 +199,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
+            self.set_state_flags(Gtk.StateFlags.PRELIGHT, True)
             if self.__action_button is not None:
                 self.__action_button.set_opacity(1)
                 self.__action_button.set_sensitive(True)
@@ -395,13 +396,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
 
     def __on_action_button_release_event(self, button, event):
         """
-            ViewType.SEARCH: Play album
-            Else: Delete album
+            Handle button actions
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
         if not self.get_state_flags() & Gtk.StateFlags.PRELIGHT:
-            return
+            return True
         if self._album.mtime == 0:
             self._album.save(True)
             button.hide()
