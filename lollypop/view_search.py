@@ -110,6 +110,11 @@ class SearchView(BaseView, Gtk.Bin):
             Timeout filtering
             @param widget as Gtk.TextEntry
         """
+        state = self.__search_type_action.get_state().get_string()
+        if state == "local":
+            timeout = 500
+        else:
+            timeout = 1000
         if self.__timeout_id:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
@@ -117,7 +122,7 @@ class SearchView(BaseView, Gtk.Bin):
         self.__view.stop()
         self.__current_search = widget.get_text().strip()
         self.__timeout_id = GLib.timeout_add(
-                500,
+                timeout,
                 self.__on_search_changed_timeout)
 
     def _on_combo_locale_changed(self, combobox):
