@@ -24,7 +24,7 @@ from threading import Thread
 from time import time
 
 from lollypop.inotify import Inotify
-from lollypop.define import App, Type, ScanType
+from lollypop.define import App, ScanType
 from lollypop.objects import Track, Album
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
@@ -59,7 +59,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         TagReader.__init__(self)
 
         self.__thread = None
-        self.__history = None
+        self.__history = History()
         self.__disable_compilations = True
         if App().settings.get_value("auto-update"):
             self.__inotify = Inotify()
@@ -108,28 +108,20 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param timestmap as int
             @commit needed
         """
-        add = True
-        mtime = App().albums.get_mtime(album_id)
-        # Set artist ids based on content
-        if not album_artist_ids:
-            new_artist_ids = App().albums.calculate_artist_ids(album_id)
-            current_artist_ids = App().albums.get_artist_ids(album_id)
-            if new_artist_ids != current_artist_ids:
-                if Type.COMPILATIONS in new_artist_ids:
-                    add = False
-                    album_artist_ids = current_artist_ids
-                else:
-                    album_artist_ids = new_artist_ids
         if album_artist_ids:
+            # Update UI based on previous artist calculation
+            mtime = App().albums.get_mtime(album_id)
+            if mtime != 0:
+                for artist_id in album_artist_ids:
+                    GLib.idle_add(self.emit, "artist-updated", artist_id, True)
             App().albums.set_artist_ids(album_id, album_artist_ids)
-        # Update UI based on previous artist calculation
-        if mtime != 0 and App().albums.get_tracks_count(album_id) > 1:
-            for artist_id in album_artist_ids:
-                GLib.idle_add(self.emit, "artist-updated", artist_id, add)
+        # Set artist ids based on content
+        else:
+            new_album_artist_ids = App().albums.calculate_artist_ids(album_id)
+            App().albums.set_artist_ids(album_id, new_album_artist_ids)
         # Update album genres
         for genre_id in genre_ids:
             App().albums.add_genre(album_id, genre_id)
-
         # Update year based on tracks
         year = App().tracks.get_year_for_album(album_id)
         App().albums.set_year(album_id, year)
@@ -151,6 +143,55 @@ class CollectionScanner(GObject.GObject, TagReader):
             App().tracks.add_artist(track_id, artist_id)
         for genre_id in genre_ids:
             App().tracks.add_genre(track_id, genre_id)
+
+    def del_from_db(self, uri, backup, notify=True):
+        """
+            Delete track from db
+            @param uri as str
+            @param backup as bool
+            @param notify as bool => send signal about cleanup
+            @return (popularity, ltime, mtime,
+                     loved album, album_popularity)
+        """
+        try:
+            track_id = App().tracks.get_id_by_uri(uri)
+            duration = App().tracks.get_duration(track_id)
+            album_id = App().tracks.get_album_id(track_id)
+            genre_ids = App().tracks.get_genre_ids(track_id)
+            album_artist_ids = App().albums.get_artist_ids(album_id)
+            artist_ids = App().tracks.get_artist_ids(track_id)
+            track_pop = App().tracks.get_popularity(track_id)
+            track_rate = App().tracks.get_rate(track_id)
+            track_ltime = App().tracks.get_ltime(track_id)
+            album_mtime = App().tracks.get_mtime(track_id)
+            track_loved = App().tracks.get_loved(track_id)
+            album_pop = App().albums.get_popularity(album_id)
+            album_rate = App().albums.get_rate(album_id)
+            album_loved = App().albums.get_loved(album_id)
+            if backup:
+                f = Gio.File.new_for_uri(uri)
+                name = f.get_basename()
+                self.__history.add(name, duration, track_pop, track_rate,
+                                   track_ltime, album_mtime, track_loved,
+                                   album_loved, album_pop, album_rate)
+            App().tracks.remove(track_id)
+            if notify:
+                App().albums.clean()
+                App().genres.clean()
+                App().artists.clean()
+                if App().albums.get_name(album_id) is None:
+                    GLib.idle_add(self.emit, "album-updated",
+                                  album_id, True)
+                for artist_id in album_artist_ids + artist_ids:
+                    GLib.idle_add(self.emit, "artist-updated",
+                                  artist_id, False)
+                for genre_id in genre_ids:
+                    GLib.idle_add(self.emit, "genre-updated",
+                                  genre_id, False)
+            return (track_pop, track_rate, track_ltime, album_mtime,
+                    track_loved, album_loved, album_pop, album_rate)
+        except Exception as e:
+            Logger.error("CollectionScanner::del_from_db: %s" % e)
 
     def is_locked(self):
         """
@@ -258,9 +299,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as [str]
             @thread safe
         """
-        if scan_type != ScanType.EPHEMERAL and self.__history is None:
-            self.__history = History()
-
         (files, dirs) = self.__get_objects_for_uris(scan_type, uris)
 
         if scan_type == ScanType.NEW_FILES:
@@ -275,10 +313,6 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         if scan_type == ScanType.EPHEMERAL:
             self.__play_new_tracks(new_tracks)
-
-        if scan_type != ScanType.EPHEMERAL:
-            del self.__history
-            self.__history = None
 
     def __scan_to_handle(self, uri):
         """
@@ -361,7 +395,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                                 break
                     f = Gio.File.new_for_uri(uri)
                     if not in_collection or not f.query_exists():
-                        self.__del_from_db(uri)
+                        self.del_from_db(uri, True)
                         SqlCursor.allow_thread_execution(App().db)
         except Exception as e:
             Logger.warning("CollectionScanner:: __scan_files: % s" % e)
@@ -425,12 +459,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             basename = f.get_basename()
             track_id = App().tracks.get_id_by_basename_duration(basename,
                                                                 duration)
-        # Restore from history
-        if self.__history is None:
-            (track_pop, track_rate, track_ltime,
-             album_mtime, track_loved, album_loved,
-             album_pop, album_rate) = (0, 0, 0, 0, False, False, 0, 0)
-        elif track_id is None:
+        if track_id is None:
             (track_pop, track_rate, track_ltime,
              album_mtime, track_loved, album_loved,
              album_pop, album_rate) = self.__history.get(name, duration)
@@ -438,7 +467,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         else:
             (track_pop, track_rate, track_ltime,
              album_mtime, track_loved, album_loved,
-             album_pop, album_rate) = self.__del_from_db(uri)
+             album_pop, album_rate) = self.del_from_db(uri, False)
         # If nothing in stats, use track mtime
         if album_mtime == 0:
             album_mtime = mtime
@@ -487,43 +516,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         return track_id
-
-    def __del_from_db(self, uri):
-        """
-            Delete track from db
-            @param uri as str
-            @return (popularity, ltime, mtime,
-                     loved album, album_popularity)
-        """
-        try:
-            track_id = App().tracks.get_id_by_uri(uri)
-            album_id = App().tracks.get_album_id(track_id)
-            genre_ids = App().tracks.get_genre_ids(track_id)
-            album_artist_ids = App().albums.get_artist_ids(album_id)
-            artist_ids = App().tracks.get_artist_ids(track_id)
-            track_pop = App().tracks.get_popularity(track_id)
-            track_rate = App().tracks.get_rate(track_id)
-            track_ltime = App().tracks.get_ltime(track_id)
-            album_mtime = App().tracks.get_mtime(track_id)
-            track_loved = App().tracks.get_loved(track_id)
-            album_pop = App().albums.get_popularity(album_id)
-            album_rate = App().albums.get_rate(album_id)
-            album_loved = App().albums.get_loved(album_id)
-            uri = App().tracks.get_uri(track_id)
-            App().tracks.remove(track_id)
-            App().albums.clean()
-            App().genres.clean()
-            App().artists.clean()
-            if App().albums.get_name(album_id) is None:
-                GLib.idle_add(self.emit, "album-updated", album_id, True)
-            for artist_id in album_artist_ids + artist_ids:
-                GLib.idle_add(self.emit, "artist-updated", artist_id, False)
-            for genre_id in genre_ids:
-                GLib.idle_add(self.emit, "genre-updated", genre_id, False)
-            return (track_pop, track_rate, track_ltime, album_mtime,
-                    track_loved, album_loved, album_pop, album_rate)
-        except Exception as e:
-            Logger.error("CollectionScanner::__del_from_db: %s" % e)
 
     def __play_new_tracks(self, uris):
         """

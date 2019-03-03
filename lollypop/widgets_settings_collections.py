@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib
 
 from gettext import ngettext as ngettext
 
@@ -185,13 +185,13 @@ class CollectionsSettingsWidget(Gtk.Bin):
             App().player.emit("prev-changed")
             App().player.emit("next-changed")
             App().cursors = {}
-            track_ids = App().tracks.get_ids()
+            uris = App().tracks.get_uris()
             self.__progress.show()
             history = History()
             self.__reset_button.get_toplevel().set_deletable(False)
             self.__reset_button.set_sensitive(False)
             self.__infobar.hide()
-            self.__reset_database(track_ids, len(track_ids), history)
+            self.__reset_database(uris, len(uris), history)
         except Exception as e:
             Logger.error("SettingsDialog::_on_confirm_button_clicked(): %s" %
                          e)
@@ -221,34 +221,18 @@ class CollectionsSettingsWidget(Gtk.Bin):
             chooser.set_dir(directory)
         self.__flowbox.add(chooser)
 
-    def __reset_database(self, track_ids, count, history):
+    def __reset_database(self, uris, count, history):
         """
             Backup database and reset
-            @param track ids as [int]
+            @param uris as [str]
             @param count as int
             @param history as History
         """
-        if track_ids:
-            track_id = track_ids.pop(0)
-            uri = App().tracks.get_uri(track_id)
-            f = Gio.File.new_for_uri(uri)
-            name = f.get_basename()
-            album_id = App().tracks.get_album_id(track_id)
-            popularity = App().tracks.get_popularity(track_id)
-            rate = App().tracks.get_rate(track_id)
-            ltime = App().tracks.get_ltime(track_id)
-            mtime = App().tracks.get_mtime(track_id)
-            duration = App().tracks.get_duration(track_id)
-            loved_track = App().tracks.get_loved(track_id)
-            loved_album = App().albums.get_loved(album_id)
-            album_popularity = App().albums.get_popularity(album_id)
-            album_rate = App().albums.get_rate(album_id)
-            history.add(name, duration, popularity, rate,
-                        ltime, mtime, loved_track, loved_album,
-                        album_popularity, album_rate)
-            self.__progress.set_fraction((count - len(track_ids)) / count)
-            GLib.idle_add(self.__reset_database, track_ids,
-                          count, history)
+        if uris:
+            uri = uris.pop(0)
+            App().scanner.del_from_db(uri, True, False)
+            self.__progress.set_fraction((count - len(uris)) / count)
+            GLib.idle_add(self.__reset_database, uris, count, history)
         else:
             self.__progress.hide()
             App().player.stop()
