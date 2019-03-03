@@ -49,7 +49,6 @@ class SearchView(BaseView, Gtk.Bin):
         App().add_action(self.__search_type_action)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchView.ui")
-        builder.connect_signals(self)
         self.__widget = builder.get_object("widget")
         if GLib.find_program_in_path("youtube-dl") is None:
             Logger.warning("youtube-dl is missing")
@@ -59,6 +58,10 @@ class SearchView(BaseView, Gtk.Bin):
         self.__entry = builder.get_object("entry")
         self.__spinner = builder.get_object("spinner")
         self.__header_stack = builder.get_object("header_stack")
+        self.__combo_locale = builder.get_object("combo_locale")
+        self.__combo_locale.set_active_id(
+            App().settings.get_value("spotify-charts-locale").get_string())
+        self.__button_stack = builder.get_object("button_stack")
         self.__stack = builder.get_object("stack")
         self.__placeholder = builder.get_object("placeholder")
         self.__view = AlbumsListView(ViewType.SEARCH)
@@ -67,6 +70,7 @@ class SearchView(BaseView, Gtk.Bin):
         self.__stack.add_named(self.__view, "view")
         self.__set_default_placeholder()
         self.add(self.__widget)
+        builder.connect_signals(self)
 
     def set_text(self, text):
         """
@@ -116,6 +120,17 @@ class SearchView(BaseView, Gtk.Bin):
                 500,
                 self.__on_search_changed_timeout)
 
+    def _on_combo_locale_changed(self, combobox):
+        """
+            Save setting
+            @param combobox as Gtk.ComboBoxText
+        """
+        App().settings.set_value("spotify-charts-locale",
+                                 GLib.Variant("s",
+                                              combobox.get_active_id()))
+        self.__on_search_action_change_state(self.__search_type_action,
+                                             GLib.Variant("s", "charts"))
+
 #######################
 # PRIVATE             #
 #######################
@@ -139,7 +154,7 @@ class SearchView(BaseView, Gtk.Bin):
             in db based on text entry current text
         """
         self.__cancellable.reset()
-        self.__header_stack.set_visible_child(self.__spinner)
+        self.__button_stack.set_visible_child(self.__spinner)
         self.__history = []
         if len(self.__current_search) > 2:
             self.__spinner.start()
@@ -157,7 +172,7 @@ class SearchView(BaseView, Gtk.Bin):
         else:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_default_placeholder()
-            self.__header_stack.set_visible_child(self.__new_button)
+            self.__button_stack.set_visible_child(self.__new_button)
             GLib.idle_add(self.__spinner.stop)
 
     def __search_to_playlist(self):
@@ -225,7 +240,7 @@ class SearchView(BaseView, Gtk.Bin):
         App().spotify.disconnect_by_func(self.__on_search_finished)
         self.__cancellable.cancel()
         self.__view.stop()
-        self.__header_stack.set_visible_child(self.__new_button)
+        self.__button_stack.set_visible_child(self.__new_button)
         self.__spinner.stop()
 
     def __on_new_spotify_album(self, spotify, album):
@@ -246,7 +261,7 @@ class SearchView(BaseView, Gtk.Bin):
         if self.__current_search != search:
             return
         self.__spinner.stop()
-        self.__header_stack.set_visible_child(self.__new_button)
+        self.__button_stack.set_visible_child(self.__new_button)
         if not self.__view.children:
             self.__stack.set_visible_child_name("placeholder")
             self.__set_no_result_placeholder()
@@ -276,22 +291,21 @@ class SearchView(BaseView, Gtk.Bin):
             self.__cancellable.reset()
             if state == "local":
                 self.__new_button.show()
-                self.__header_stack.set_visible_child(self.__new_button)
+                self.__button_stack.set_visible_child(self.__new_button)
             else:
                 self.__new_button.hide()
             if state == "charts":
-                self.__entry.set_sensitive(False)
-                self.__entry.set_opacity(0)
+                self.__header_stack.set_visible_child_name("locale")
                 self.__play_button.set_sensitive(True)
-                self.__header_stack.set_visible_child(self.__spinner)
+                self.__button_stack.set_visible_child(self.__spinner)
                 self.__history = []
                 self.__spinner.start()
                 self.__stack.set_visible_child_name("view")
                 App().task_helper.run(App().spotify.charts,
-                                      self.__cancellable)
+                                      self.__cancellable,
+                                      self.__combo_locale.get_active_id())
             else:
-                self.__entry.set_opacity(1)
-                self.__entry.set_sensitive(True)
+                self.__header_stack.set_visible_child_name("entry")
                 self.__populate()
                 GLib.idle_add(self.__entry.grab_focus)
         self.__cancellable.cancel()

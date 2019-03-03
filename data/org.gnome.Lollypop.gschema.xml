@@ -305,6 +305,11 @@
             <summary>Smoothing duration</summary>
             <description></description>
         </key>
+        <key type="s" name="spotify-charts-locale">
+            <default>"global"</default>
+            <summary>Spotify charts locale</summary>
+            <description></description>
+        </key>
         <key type="b" name="lastfm-loved-status">
             <default>false</default>
             <summary>Last.fm loved track status</summary>

@@ -14,7 +14,6 @@ from gi.repository import GLib, Soup, GObject
 
 import json
 from base64 import b64encode
-from locale import getdefaultlocale
 from time import time, sleep
 from gettext import gettext as _
 
@@ -174,7 +173,7 @@ class SpotifyHelper(GObject.Object):
             Logger.error("SpotifyHelper::search(): %s", e)
         GLib.idle_add(self.emit, "search-finished", search)
 
-    def charts(self, cancellable):
+    def charts(self, cancellable, language="global"):
         """
             Get albums related to search
             We need a thread because we are going to populate DB
@@ -189,7 +188,6 @@ class SpotifyHelper(GObject.Object):
             token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
-            language = getdefaultlocale()[0][3:].lower()
             uri = self.__CHARTS % language
             spotify_ids = []
             (status, data) = helper.load_uri_content_sync(uri, cancellable)
