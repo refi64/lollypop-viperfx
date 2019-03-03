@@ -189,7 +189,7 @@ class SpotifyHelper(GObject.Object):
             token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
-            language = getdefaultlocale()[0][0:2]
+            language = getdefaultlocale()[0][3:].lower()
             uri = self.__CHARTS % language
             spotify_ids = []
             (status, data) = helper.load_uri_content_sync(uri, cancellable)
