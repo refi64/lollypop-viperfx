@@ -54,7 +54,11 @@ class YouTubeHelper:
         """
         # Remove playlist args
         uri = sub("list=.*", "", track.uri)
-        argv = ["youtube-dl", "-g", "-f", "bestaudio", uri, None]
+        if GLib.find_program_in_path("flatpak-spawn") is not None:
+            argv = ["flatpak-spawn", "--host",
+                    "youtube-dl", "-g", "-f", "bestaudio", uri]
+        else:
+            argv = ["youtube-dl", "-g", "-f", "bestaudio", uri]
         (s, o, e, s) = GLib.spawn_sync(None,
                                        argv,
                                        None,
