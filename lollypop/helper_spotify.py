@@ -277,9 +277,9 @@ class SpotifyHelper(GObject.Object):
             (album_id,
              track_id,
              cover_uri) = self.__save_track(item)
-            if album_id not in album_ids:
-                album_ids.append(album_id)
-                self.__create_album(album_id, cover_uri, cancellable)
+        if album_id not in album_ids:
+            album_ids.append(album_id)
+            self.__create_album(album_id, cover_uri, cancellable)
 
     def __create_albums_from_album_payload(self, payload, album_ids,
                                            cancellable):
