@@ -884,7 +884,8 @@ class TracksDatabase:
                            ("%" + no_accents + "%",)]:
                 result = sql.execute("SELECT tracks.rowid\
                                       FROM tracks\
-                                      WHERE noaccents(name) LIKE ? LIMIT 25",
+                                      WHERE noaccents(name) LIKE ?\
+                                      AND tracks.mtime!=0 LIMIT 25",
                                      filter)
                 items += list(itertools.chain(*result))
             return items
