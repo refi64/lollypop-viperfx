@@ -265,6 +265,7 @@ class SpotifyHelper(GObject.Object):
             @param album_ids as [int]
             @param cancellable as Gio.Cancellable
         """
+        album_id = None
         # Populate tracks
         for item in payload:
             if cancellable.is_cancelled():
@@ -277,7 +278,7 @@ class SpotifyHelper(GObject.Object):
             (album_id,
              track_id,
              cover_uri) = self.__save_track(item)
-        if album_id not in album_ids:
+        if album_id is not None and album_id not in album_ids:
             album_ids.append(album_id)
             self.__create_album(album_id, cover_uri, cancellable)
 
