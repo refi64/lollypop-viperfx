@@ -203,6 +203,7 @@ popover.background separator {
 
 .banner-frame:selected {
     background-color: alpha(@theme_selected_bg_color, 0.1);
+    color: @theme_fg_color;
 }
 
 .cover-frame {
