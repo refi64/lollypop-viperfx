@@ -123,18 +123,17 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.get_style_context().add_class("dim-label")
         self.set_artwork()
         self.__action_button = None
-        # No action for ephemeral albums
-        if self._album.mtime == 0:
-            self.__action_button = Gtk.Button.new_from_icon_name(
-                "document-save-symbolic",
-                Gtk.IconSize.MENU)
-            self.__action_button.set_tooltip_text(_("Save in collection"))
-        elif self.__view_type & ViewType.DND:
+        if self.__view_type & ViewType.DND:
             self.__action_button = Gtk.Button.new_from_icon_name(
                 "list-remove-symbolic",
                 Gtk.IconSize.MENU)
             self.__action_button.set_tooltip_text(
                 _("Remove from current playlist"))
+        elif self._album.mtime == 0:
+            self.__action_button = Gtk.Button.new_from_icon_name(
+                "document-save-symbolic",
+                Gtk.IconSize.MENU)
+            self.__action_button.set_tooltip_text(_("Save in collection"))
         elif self.__view_type & ViewType.SEARCH:
             self.__action_button = Gtk.Button.new_from_icon_name(
                     'avatar-default-symbolic',
