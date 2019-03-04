@@ -199,7 +199,7 @@ class AlbumsDatabase:
                        WHERE album_artists.album_id = albums.rowid\
                        AND (album_artists.artist_id = artists.rowid\
                             OR album_artists.artist_id=?)\
-                       AND synced=1"
+                       AND synced=1 AND albums.mtime != 0"
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
                      albums.timestamp,\
@@ -527,7 +527,8 @@ class AlbumsDatabase:
         """
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums WHERE rate>=4\
+                       FROM albums\
+                       WHERE rate>=4 AND loved != -1 AND mtime != 0\
                        ORDER BY popularity DESC LIMIT ?"
             result = sql.execute(request, (limit,))
             return list(itertools.chain(*result))
@@ -540,7 +541,7 @@ class AlbumsDatabase:
         """
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid FROM albums\
-                       WHERE popularity!=0 AND albums.loved != -1\
+                       WHERE popularity!=0 AND loved != -1 AND mtime != 0\
                        ORDER BY popularity DESC LIMIT ?"
             result = sql.execute(request, (limit,))
             return list(itertools.chain(*result))
@@ -553,7 +554,8 @@ class AlbumsDatabase:
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
                        FROM albums\
-                       WHERE loved=1 ORDER BY popularity DESC"
+                       WHERE loved=1 AND\
+                       mtime != 0 ORDER BY popularity DESC"
             result = sql.execute(request)
             return list(itertools.chain(*result))
 
@@ -564,7 +566,8 @@ class AlbumsDatabase:
         """
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid FROM albums\
-                       WHERE albums.loved != -1\
+                       WHERE albums.loved != -1 AND\
+                       albums.mtime != 0\
                        ORDER BY mtime DESC LIMIT 100"
             result = sql.execute(request)
             return list(itertools.chain(*result))
@@ -577,7 +580,8 @@ class AlbumsDatabase:
         with SqlCursor(App().db) as sql:
             albums = []
             request = "SELECT DISTINCT albums.rowid FROM albums\
-                       WHERE albums.loved != -1 ORDER BY random() LIMIT 100"
+                       WHERE albums.loved != -1 AND\
+                       albums.mtime != 0 ORDER BY random() LIMIT 100"
             result = sql.execute(request)
             albums = list(itertools.chain(*result))
             self._cached_randoms = list(albums)
@@ -734,7 +738,8 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_artists, artists\
                            WHERE albums.rowid = album_artists.album_id AND\
-                           artists.rowid = album_artists.artist_id"
+                           artists.rowid = album_artists.artist_id AND\
+                           albums.mtime != 0"
                 if ignore:
                     request += " AND albums.loved != -1"
                 request += order
@@ -915,7 +920,7 @@ class AlbumsDatabase:
             if limit != -1:
                 result = sql.execute("SELECT albums.rowid\
                                       FROM albums\
-                                      WHERE albums.year=?\
+                                      WHERE year=? AND mtime != 0\
                                       ORDER BY random() LIMIT ?",
                                      (year, limit))
             else:
@@ -929,14 +934,14 @@ class AlbumsDatabase:
                                FROM albums, album_artists, artists\
                                WHERE albums.rowid=album_artists.album_id AND\
                                artists.rowid=album_artists.artist_id AND\
-                               albums.year is null"
+                               albums.year is null AND albums.mtime != 0"
                     filter = ()
                 else:
                     request = "SELECT DISTINCT albums.rowid\
                                FROM albums, album_artists, artists\
                                WHERE albums.rowid=album_artists.album_id AND\
                                artists.rowid=album_artists.artist_id AND\
-                               albums.year=?"
+                               albums.year=? AND albums.mtime != 0"
                     filter = (year,)
                 request += order
                 result = sql.execute(request, filter)
@@ -954,6 +959,7 @@ class AlbumsDatabase:
                                       FROM albums, album_artists\
                                       WHERE album_artists.artist_id=?\
                                       AND album_artists.album_id=albums.rowid\
+                                      AND albums.mtime != 0\
                                       AND albums.year=? LIMIT ?",
                                      (Type.COMPILATIONS, year, limit))
             else:
@@ -964,6 +970,7 @@ class AlbumsDatabase:
                                FROM albums, album_artists\
                                WHERE album_artists.artist_id=?\
                                AND album_artists.album_id=albums.rowid\
+                               AND albums.mtime != 0\
                                AND albums.year is null"
                     filter = (Type.COMPILATIONS,)
                 else:
@@ -971,6 +978,7 @@ class AlbumsDatabase:
                                FROM albums, album_artists\
                                WHERE album_artists.artist_id=?\
                                AND album_artists.album_id=albums.rowid\
+                               AND albums.mtime != 0\
                                AND albums.year=?"
                     filter = (Type.COMPILATIONS, year)
                 request += order
