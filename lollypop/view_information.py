@@ -135,6 +135,7 @@ class InformationView(BaseView, Gtk.Bin):
                 "clicked",
                 self.__on_lyrics_button_clicked,
                 App().player.current_track)
+            artist_id = App().player.current_track.album.artist_ids[0]
             title_label.set_text(App().player.current_track.title)
         self.__artist_name = App().artists.get_name(artist_id)
         if self.__minimal:
