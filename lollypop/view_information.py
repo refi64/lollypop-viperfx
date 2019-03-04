@@ -264,16 +264,10 @@ class InformationView(BaseView, Gtk.Bin):
         popover = self.get_ancestor(Gtk.Popover)
         if popover is not None:
             popover.popdown()
-        # Get current artist
         if App().player.current_track.id is None:
             return
-        artist_id = App().player.current_track.album.artist_ids[0]
-
-        if App().settings.get_value("show-sidebar") and\
-                not App().window.is_adaptive:
-            App().window.container.show_artists_albums([artist_id])
-        else:
-            App().window.container.show_view(artist_id)
+        App().window.container.show_artist_view(
+            App().player.current_track.album.artist_ids)
 
     def __on_label_button_release_event(self, button, event):
         """
