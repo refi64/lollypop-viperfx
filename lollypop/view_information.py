@@ -22,6 +22,7 @@ from lollypop.helper_art import ArtHelperEffect
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.view import BaseView
+from lollypop.utils import on_realize
 
 
 class Wikipedia:
@@ -120,6 +121,7 @@ class InformationView(BaseView, Gtk.Bin):
         self.add(widget)
         self.__stack = builder.get_object("stack")
         self.__artist_label = builder.get_object("artist_label")
+        self.__artist_label.connect("realize", on_realize)
         title_label = builder.get_object("title_label")
         self.__artist_artwork = builder.get_object("artist_artwork")
         eventbox = builder.get_object("eventbox")
@@ -133,15 +135,6 @@ class InformationView(BaseView, Gtk.Bin):
                 "clicked",
                 self.__on_lyrics_button_clicked,
                 App().player.current_track)
-
-            artist_id = App().player.current_track.album.artist_ids[0]
-
-            builder.get_object("artistview_button").show()
-            builder.get_object("artistview_button").connect(
-                "clicked",
-                self.__on_artistview_button_clicked,
-                artist_id)
-
             title_label.set_text(App().player.current_track.title)
         self.__artist_name = App().artists.get_name(artist_id)
         if self.__minimal:
@@ -262,15 +255,20 @@ class InformationView(BaseView, Gtk.Bin):
             popover.popdown()
         App().window.container.show_lyrics(track)
 
-    def __on_artistview_button_clicked(self, button, artist_id):
+    def _on_artist_button_release_event(self, eventbox, event):
         """
             Go to artist view
-            @param button as Gtk.Button
-            @param artist_id as int
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
         """
         popover = self.get_ancestor(Gtk.Popover)
         if popover is not None:
             popover.popdown()
+        # Get current artist
+        if App().player.current_track.id is None:
+            return
+        artist_id = App().player.current_track.album.artist_ids[0]
+
         if App().settings.get_value("show-sidebar") and\
                 not App().window.is_adaptive:
             App().window.container.show_artists_albums([artist_id])
