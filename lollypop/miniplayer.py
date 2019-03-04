@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 
 from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
@@ -36,10 +36,11 @@ class MiniPlayer(Gtk.Bin, InformationController,
             @param width as int
         """
         self.__width = width
-        self.__height = 0
+        self.__allocation_timeout_id = None
         self.__cover_widget = None
         Gtk.Bin.__init__(self)
-        InformationController.__init__(self, False, ArtHelperEffect.BLUR_HARD)
+        InformationController.__init__(self, False, ArtHelperEffect.BLUR_HARD |
+                                       ArtHelperEffect.RESIZE)
         ProgressController.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()
@@ -84,6 +85,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
             self.update_position()
             ProgressController.on_status_changed(self, App().player)
         self.add(builder.get_object("widget"))
+        self.connect("size-allocate", self.__on_size_allocate)
         self.connect("destroy", self.__on_destroy)
 
     def update_cover(self, width):
@@ -145,6 +147,16 @@ class MiniPlayer(Gtk.Bin, InformationController,
 #######################
 # PRIVATE             #
 #######################
+    def __handle_size_allocate(self, allocation):
+        """
+            Change box max/min children
+            @param allocation as Gtk.Allocation
+        """
+        self.__allocation_timeout_id = None
+        if allocation.width == 1:
+            return
+        self.update_cover(max(allocation.width, allocation.height))
+
     def __on_destroy(self, widget):
         """
             Handle widget cleanup
@@ -184,3 +196,14 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         self._prev_button.set_sensitive(not player.is_locked)
         self._next_button.set_sensitive(not player.is_locked)
+
+    def __on_size_allocate(self, widget, allocation):
+        """
+            Delayed handling
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if self.__allocation_timeout_id is not None:
+            GLib.source_remove(self.__allocation_timeout_id)
+        self.__allocation_timeout_id = GLib.idle_add(
+            self.__handle_size_allocate, allocation)

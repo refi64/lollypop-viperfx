@@ -280,7 +280,7 @@ class AlbumBannerWidget(Gtk.Bin):
 
     def __on_size_allocate(self, widget, allocation):
         """
-            Change box max/min children
+            Delayed handling
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
