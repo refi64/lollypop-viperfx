@@ -58,7 +58,7 @@ class ViewsContainer:
                        Type.RANDOMS]:
             view = self._get_view_albums([item_id], [])
         elif item_id == Type.SEARCH:
-            view = self._get_view_search()
+            view = self.get_view_search()
         elif item_id == Type.INFO:
             view = self._get_view_info()
         elif item_id == Type.GENRES:
@@ -89,15 +89,7 @@ class ViewsContainer:
                          Type.SETTINGS_WEB]:
             view = self._get_view_settings(item_id)
         elif Type.DEVICES - 999 < item_id < Type.DEVICES:
-            from lollypop.view_device import DeviceView
-            # Search for an existing view
-            view = None
-            for child in self._stack.get_children():
-                if isinstance(child, DeviceView):
-                    view = child
-                    break
-            if view is None:
-                view = self._get_view_device(item_id)
+            view = self._get_view_device(item_id)
         else:
             view = self._get_view_artists([], [item_id])
         view.show()
@@ -122,6 +114,22 @@ class ViewsContainer:
             from lollypop.view_current_albums import CurrentAlbumsView
             view = CurrentAlbumsView(view_type)
             view.populate(App().player.albums)
+        view.set_margin_top(MARGIN_SMALL)
+        view.set_margin_start(MARGIN_SMALL)
+        view.show()
+        return view
+
+    def get_view_search(self):
+        """
+            Get view for search
+            @return SearchView
+        """
+        from lollypop.view_search import SearchView
+        # Search view in childrent
+        for child in self._stack.get_children():
+            if isinstance(child, SearchView):
+                return child
+        view = SearchView()
         view.set_margin_top(MARGIN_SMALL)
         view.set_margin_start(MARGIN_SMALL)
         view.show()
@@ -415,18 +423,6 @@ class ViewsContainer:
         from lollypop.view_information import InformationView
         view = InformationView(True)
         view.populate()
-        view.set_margin_top(MARGIN_SMALL)
-        view.set_margin_start(MARGIN_SMALL)
-        view.show()
-        return view
-
-    def _get_view_search(self):
-        """
-            Get view for search
-            @return SearchView
-        """
-        from lollypop.view_search import SearchView
-        view = SearchView()
         view.set_margin_top(MARGIN_SMALL)
         view.set_margin_start(MARGIN_SMALL)
         view.show()

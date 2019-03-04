@@ -13,7 +13,6 @@
 from gi.repository import Gtk
 
 from lollypop.define import App
-from lollypop.view_search import SearchView
 
 
 class SearchPopover(Gtk.Popover):
@@ -29,8 +28,10 @@ class SearchPopover(Gtk.Popover):
         self.__width = 0
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
-        search_view = SearchView()
-        search_view.show()
+        self.connect("unmap", self.__on_unmap)
+        search_view = App().window.container.get_view_search()
+        if search_view in App().window.container.stack.get_children():
+            App().window.container.stack.remove(search_view)
         self.add(search_view)
 
     def set_text(self, text):
@@ -61,3 +62,11 @@ class SearchPopover(Gtk.Popover):
         height = window_size[1]
         self.__width = min(500, window_size[0])
         self.set_size_request(self.__width, height * 0.7)
+
+    def __on_unmap(self, widget):
+        """
+            Move widget inside container
+        """
+        search_view = self.get_child()
+        self.remove(search_view)
+        App().window.container.stack.add(search_view)

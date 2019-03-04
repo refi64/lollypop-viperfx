@@ -81,21 +81,15 @@ class DeviceContainer:
         """
         from lollypop.view_device import DeviceView
         device = self.__devices[device_id]
-        device_view = None
-
         # Search a device child with uri
         for child in self._stack.get_children():
             if isinstance(child, DeviceView):
                 if child.device.uri == device.uri:
-                    device_view = child
-                    device_view.populate()
-                    break
-        # If no view available, get a new one
-        if device_view is None:
-            device_view = DeviceView(device)
-            self._stack.add_named(device_view, device.uri)
-            device_view.populate()
-            device_view.show()
+                    return child
+        device_view = DeviceView(device)
+        self._stack.add_named(device_view, device.uri)
+        device_view.populate()
+        device_view.show()
         return device_view
 
     def __add_device(self, mount, show=False):

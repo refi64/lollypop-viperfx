@@ -100,6 +100,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 self._list_one.connect("populated", select_list_one)
                 self.update_list_one()
             else:
+                # Show settings dialog
                 from lollypop.view_settings import SettingsChildView
                 from lollypop.view_settings import SettingsView
                 if isinstance(self.view, SettingsChildView) or\
@@ -112,8 +113,11 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             if self._list_one.get_visible():
                 self._list_two.hide()
                 self._list_one.hide()
+            from lollypop.view_device import DeviceView
+            from lollypop.view_search import SearchView
             for child in self._stack.get_children():
-                child.destroy()
+                if type(child) not in [DeviceView, SearchView]:
+                    child.destroy()
             self._reload_navigation_view()
 
     @property

@@ -265,7 +265,7 @@ class ListsContainer:
         elif selected_ids[0] == Type.CURRENT:
             view = self.get_view_current()
         elif selected_ids[0] == Type.SEARCH:
-            view = self._get_view_search()
+            view = self.get_view_search()
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             view = self._get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,

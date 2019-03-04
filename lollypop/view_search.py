@@ -78,6 +78,13 @@ class SearchView(BaseView, Gtk.Bin):
         """
         self.__entry.set_text(text)
 
+    @property
+    def should_destroy(self):
+        """
+            User want to get search between mode
+        """
+        return False
+
 #######################
 # PROTECTED           #
 #######################
