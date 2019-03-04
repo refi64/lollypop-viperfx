@@ -7,11 +7,6 @@
     <property name="can_focus">False</property>
     <property name="icon_name">audio-input-microphone-symbolic</property>
   </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">avatar-default-symbolic</property>
-  </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -125,20 +120,6 @@
         <property name="margin_bottom">5</property>
         <property name="column_spacing">15</property>
         <child>
-          <object class="GtkLabel" id="artist_label">
-            <property name="can_focus">False</property>
-            <property name="ellipsize">end</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.5"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="title_label">
             <property name="can_focus">False</property>
             <property name="ellipsize">end</property>
@@ -150,7 +131,7 @@
             </style>
           </object>
           <packing>
-            <property name="left_attach">2</property>
+            <property name="left_attach">1</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
@@ -166,23 +147,29 @@
             </style>
           </object>
           <packing>
-            <property name="left_attach">3</property>
+            <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="artistview_button">
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Go to artist view</property>
-            <property name="image">image2</property>
-            <property name="relief">none</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
+          <object class="GtkEventBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="button-release-event" handler="_on_artist_button_release_event" swapped="no"/>
+            <child>
+              <object class="GtkLabel" id="artist_label">
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Go to artist view</property>
+                <property name="ellipsize">end</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+            </child>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">0</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
