@@ -415,10 +415,12 @@ class TagReader(Discoverer):
         def decode_lyrics(bytes):
             from lollypop.utils import decodeUnicode, splitUnicode
             try:
-                frame = bytes[10:]
-                encoding = frame[0:1]
-                (d, t) = splitUnicode(frame[4:], encoding)
-                return decodeUnicode(t, encoding)
+                prefix = bytes[0:4]
+                if prefix in [b"USLT"]:
+                    frame = bytes[10:]
+                    encoding = frame[0:1]
+                    (d, t) = splitUnicode(frame[4:], encoding)
+                    return decodeUnicode(t, encoding)
             except Exception as e:
                 Logger.warning("TagReader::get_lyrics(): %s", e)
             return None
