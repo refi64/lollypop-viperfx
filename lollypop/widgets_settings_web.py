@@ -104,8 +104,6 @@ class WebSettingsWidget(Gtk.Bin):
             Test lastfm connection
             @param button as Gtk.Button
         """
-        App().settings.set_value("lastfm-loved-status",
-                                 GLib.Variant("b", False))
         self.__update_fm_settings("lastfm")
         if not Gio.NetworkMonitor.get_default().get_network_available():
             self.__lastfm_test_image.set_from_icon_name(
