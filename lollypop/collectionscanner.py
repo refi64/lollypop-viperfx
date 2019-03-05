@@ -431,6 +431,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
         tracknumber = self.get_tracknumber(tags, name)
+        track_popm = self.get_popm(tags)
         (year, timestamp) = self.get_original_year(tags)
         if year is None:
             (year, timestamp) = self.get_year(tags)
@@ -468,6 +469,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             (track_pop, track_rate, track_ltime,
              album_mtime, track_loved, album_loved,
              album_pop, album_rate) = self.del_from_db(uri, False)
+        # Prefer popm to internal rate
+        if track_popm != 0:
+            track_rate = track_popm
         # If nothing in stats, use track mtime
         if album_mtime == 0:
             album_mtime = mtime

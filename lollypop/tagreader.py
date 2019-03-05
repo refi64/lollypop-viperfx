@@ -372,6 +372,39 @@ class TagReader(Discoverer):
             values = get_ogg()
         return values
 
+    def get_popm(self, tags):
+        """
+            Get popularity tag
+            @return value as Lollypop rating
+        """
+        if tags is None:
+            return 0
+        size = tags.get_tag_size("private-id3v2-frame")
+        for i in range(0, size):
+            (exists, sample) = tags.get_sample_index("private-id3v2-frame", i)
+            if not exists:
+                continue
+            (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
+            if not exists:
+                continue
+            if m.data[0:4] == b"POPM":
+                # Get tag
+                popm = m.data[11]
+                if popm == 0:
+                    value = 0
+                elif popm == 1:
+                    value = 1
+                elif popm == 64:
+                    value = 2
+                elif popm == 128:
+                    value = 3
+                elif popm == 196:
+                    value = 4
+                else:
+                    value = 5
+                return value
+        return 0
+
     def get_lyrics(self, tags):
         """
             Return lyrics for tags
