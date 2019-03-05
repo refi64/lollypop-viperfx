@@ -34,6 +34,8 @@ class ViewsContainer:
             Show lyrics for track
             @pram track as Track
         """
+        if track is None and App().player.current_track.id is None:
+            return
         from lollypop.view_lyrics import LyricsView
         current = self._stack.get_visible_child()
         view = LyricsView()
