@@ -110,17 +110,23 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.__rating_grid = builder.get_object("rating_grid")
+        if album.mtime <= 0:
+            cloud = Gtk.Image.new_from_icon_name("goa-panel-symbolic",
+                                                 icon_size)
+            cloud.show()
+            cloud.set_margin_start(MARGIN)
+            self.__rating_grid.attach(cloud, 0, 0, 1, 1)
         rating = RatingWidget(album, icon_size)
         rating.set_property("halign", Gtk.Align.START)
         rating.set_property("valign", Gtk.Align.CENTER)
         rating.show()
-        self.__rating_grid.attach(rating, 0, 0, 1, 1)
+        self.__rating_grid.attach(rating, 1, 0, 1, 1)
         loved = LovedWidget(album, icon_size)
         loved.set_margin_start(10)
         loved.set_property("halign", Gtk.Align.START)
         loved.set_property("valign", Gtk.Align.CENTER)
         loved.show()
-        self.__rating_grid.attach(loved, 1, 0, 1, 1)
+        self.__rating_grid.attach(loved, 2, 0, 1, 1)
         self.add(self.__widget)
 
     def set_height(self, height):
