@@ -29,9 +29,6 @@
   <releases>
     <release version="0.9.922" date="2019-02-25">
       <description>
-	<ul>Enhanced adaptive mode</ul>
-	<ul>Reworked similar artists popover</ul>
-	<ul>Bug fixes</ul>
       </description>
     </release>
   </releases>

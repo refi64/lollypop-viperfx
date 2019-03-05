@@ -173,7 +173,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">From the charts</property>
+            <property name="tooltip_text" translatable="yes">Spotify charts</property>
             <property name="action_name">app.search_type</property>
             <property name="action_target">"charts"</property>
             <property name="image">image5</property>
