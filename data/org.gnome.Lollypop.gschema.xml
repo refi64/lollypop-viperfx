@@ -103,11 +103,6 @@
             <summary>Use Libre.fm instead of Last.fm</summary>
             <description></description>
         </key>
-        <key type="s" name="lastfm-login">
-            <default>""</default>
-            <summary>Last.fm login</summary>
-            <description></description>
-        </key>
         <key type="s" name="listenbrainz-user-token">
             <default>""</default>
             <summary>ListenBrainz user token</summary>
@@ -308,11 +303,6 @@
         <key type="s" name="spotify-charts-locale">
             <default>"global"</default>
             <summary>Spotify charts locale</summary>
-            <description></description>
-        </key>
-        <key type="b" name="lastfm-loved-status">
-            <default>false</default>
-            <summary>Last.fm loved track status</summary>
             <description></description>
         </key>
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">

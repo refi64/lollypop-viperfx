@@ -377,8 +377,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Populate loved tracks playlist
         """
-        if not self.available or\
-                App().settings.get_value("lastfm-loved-status"):
+        if not self.available:
             return
         try:
             user = self.get_user(self.__login)
@@ -392,8 +391,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                     Logger.warning("Not found")
                 else:
                     Track(track_id).set_loved(1)
-            App().settings.set_value("lastfm-loved-status",
-                                     GLib.Variant("b", True))
         except Exception as e:
             Logger.error("LastFM::__populate_loved_tracks: %s" % e)
 
