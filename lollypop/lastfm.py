@@ -384,11 +384,11 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             for loved in user.get_loved_tracks():
                 artist = str(loved.track.artist)
                 title = str(loved.track.title)
-                Logger.warning("LastFM::__populate_loved_tracks(): %s, %s" % (
-                             artist, title))
                 track_id = App().tracks.search_track(artist, title)
                 if track_id is None:
-                    Logger.warning("Not found")
+                    Logger.warning(
+                        "LastFM::__populate_loved_tracks(): %s, %s" % (
+                            artist, title))
                 else:
                     Track(track_id).set_loved(1)
         except Exception as e:
