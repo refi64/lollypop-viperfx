@@ -383,10 +383,14 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         try:
             user = self.get_user(self.__login)
             for loved in user.get_loved_tracks():
-                track_id = App().tracks.search_track(
-                    str(loved.track.artist),
-                    str(loved.track.title))
-                if track_id is not None:
+                artist = str(loved.track.artist)
+                title = str(loved.track.title)
+                Logger.warning("LastFM::__populate_loved_tracks(): %s, %s" % (
+                             artist, title))
+                track_id = App().tracks.search_track(artist, title)
+                if track_id is None:
+                    Logger.warning("Not found")
+                else:
                     Track(track_id).set_loved(1)
             App().settings.set_value("lastfm-loved-status",
                                      GLib.Variant("b", True))

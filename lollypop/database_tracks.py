@@ -125,9 +125,9 @@ class TracksDatabase:
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid\
-                                  FROM tracks WHERE name=?\
-                                  COLLATE NOCASE COLLATE LOCALIZED",
-                                 (name,))
+                                  FROM tracks WHERE noaccents(name)=?\
+                                  COLLATE NOCASE",
+                                 (noaccents(name),))
             return list(itertools.chain(*result))
 
     def get_id_by_uri(self, uri):
@@ -897,17 +897,21 @@ class TracksDatabase:
             @param title as string
             @param sql as sqlite cursor
             @return track id as int
-            @thread safe
         """
+        artist = noaccents(artist.lower())
         track_ids = self.get_ids_for_name(title)
         for track_id in track_ids:
             album_id = App().tracks.get_album_id(track_id)
             artist_ids = set(App().albums.get_artist_ids(album_id)) &\
                 set(App().tracks.get_artist_ids(track_id))
             for artist_id in artist_ids:
-                if artist == App().artists.get_name(artist_id):
+                db_artist = noaccents(
+                    App().artists.get_name(artist_id).lower())
+                if artist.find(db_artist) != -1 or\
+                        db_artist.find(artist) != -1:
                     return track_id
-            if ", ".join(App().tracks.get_artists(track_id)) == artist:
+            artists = ", ".join(App().tracks.get_artists(track_id)).lower()
+            if noaccents(artists) == artist:
                 return track_id
         return None
 
