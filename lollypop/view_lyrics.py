@@ -75,7 +75,7 @@ class LyricsView(View, InformationController):
             tags = info.get_tags()
             self.__lyrics_text = reader.get_lyrics(tags)
         if self.__lyrics_text:
-            self.__lyrics_label.set_label(self.__lyrics_text)
+            self.__lyrics_label.set_text(self.__lyrics_text)
         else:
             self.__download_wikia_lyrics()
             self.__download_genius_lyrics()

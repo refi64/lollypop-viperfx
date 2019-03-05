@@ -163,13 +163,19 @@ class Type:
     COMPILATIONS = -2001
 
 
+LATIN1_ENCODING = b"\x00"
+"""Byte code for latin1"""
+UTF_16_ENCODING = b"\x01"
+"""Byte code for UTF-16"""
+UTF_16BE_ENCODING = b"\x02"
+"""Byte code for UTF-16 (big endian)"""
+UTF_8_ENCODING = b"\x03"
+"""Byte code for UTF-8 (Not supported in ID3 versions < 2.4)"""
+
+
 SPOTIFY_CLIENT_ID = "0b144843878a46b2b12e0958c342c3ac"
 SPOTIFY_SECRET = "265ab8e057684f1b9e69e0c58f4881c1"
 
-ENCODING = ["utf_8",
-            "iso8859_1",
-            "utf_16",
-            "utf_16_be"]
 
 STATIC_ALBUM_NAME = {
     Type.POPULARS: "Popular albums",

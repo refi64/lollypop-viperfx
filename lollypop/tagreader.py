@@ -15,7 +15,7 @@ from gi.repository import Gst, GstPbutils, GLib, Gio
 from re import match
 from gettext import gettext as _
 
-from lollypop.define import App, ENCODING
+from lollypop.define import App
 from lollypop.logger import Logger
 from lollypop.utils import format_artist_name
 
@@ -413,31 +413,12 @@ class TagReader(Discoverer):
             @return lyrics as str
         """
         def decode_lyrics(bytes):
+            from lollypop.utils import decodeUnicode, splitUnicode
             try:
-                lyrics = b""
-                if bytes[0:4] == b"TXXX":
-                    if bytes[13:24] == b"L\x00y\x00r\x00i\x00c\x00s":
-                        lyrics = bytes[29:].replace(b"\x00", b"")
-                    else:
-                        return None
-                elif bytes[0:4] == b"USLT":
-                    # Search for lyrics (more than 10 chars)
-                    for value in bytes.split(b"\x00"):
-                        if len(value) > 10:
-                            lyrics = value
-                            break
-                    # UTF-16
-                    if not lyrics:
-                        lyrics = bytes.split(
-                            b"\xff\xfe")[2].replace(b"\x00", b"")
-                else:
-                    return None
-                for encoding in ENCODING:
-                    try:
-                        return lyrics.decode(encoding)
-                    except Exception as e:
-                        Logger.warning("TagReader::get_lyrics(ENCODING): %s",
-                                       e)
+                frame = bytes[10:]
+                encoding = frame[0:1]
+                (d, t) = splitUnicode(frame[4:], encoding)
+                return decodeUnicode(t, encoding)
             except Exception as e:
                 Logger.warning("TagReader::get_lyrics(): %s", e)
             return None
