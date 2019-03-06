@@ -186,7 +186,7 @@ class AlbumArt:
                             height,
                             True,
                             None)
-                        pixbuf = self._preserve_ratio(pixbuf, width, height)
+                        pixbuf = self._crop_pixbuf(pixbuf)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
@@ -212,7 +212,7 @@ class AlbumArt:
                             True,
                             None)
                         stream.close()
-                        pixbuf = self._preserve_ratio(pixbuf, width, height)
+                        pixbuf = self._crop_pixbuf(pixbuf)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)

@@ -85,30 +85,39 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
-    def _preserve_ratio(self, pixbuf, w, h):
+    def _crop_pixbuf(self, pixbuf):
         """
-            Return scaled pixbuf if needed
-            @param uri as str
-            @param w as int
-            @param h as int
+            Return croped pixbuf if needed
+            @param pixbuf as GdkPixbuf.Pixbuf
             @return GdkPixbuf.Pixbuf
         """
-        if App().settings.get_value("preserve-aspect-ratio"):
-            return pixbuf
         width = pixbuf.get_width()
         height = pixbuf.get_height()
         if width == height:
-            preserve = True
-        elif width < height:
-            cut = height / 5
-            preserve = width < height - cut
-        else:
-            cut = width / 5
-            preserve = height < width - cut
-        if preserve:
             return pixbuf
+        max_value = max(width, height)
+        min_value = min(width, height)
+        diff = max_value - min_value
+        if diff > max_value / 4:
+            return pixbuf
+        pixbuf = pixbuf.scale_simple(width + diff,
+                                     height + diff,
+                                     GdkPixbuf.InterpType.BILINEAR)
+        new_pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                                          False, 8, max_value, max_value)
+        if width > height:
+            new_x = diff
+            new_y = 0
         else:
-            return pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
+            new_x = 0
+            new_y = diff
+        pixbuf.copy_area(new_x,
+                         new_y,
+                         max_value,
+                         max_value,
+                         new_pixbuf,
+                         0, 0)
+        return new_pixbuf
 
     def _create_dir(self, path):
         """
