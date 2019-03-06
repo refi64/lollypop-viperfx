@@ -542,6 +542,7 @@ popover.background separator {
 	padding-top: 0px;
 	padding-bottom: 0px;
 	background-image: none;
+	background-color: transparent;
 	border-style: solid;
 	border-image-source: none;
     border-bottom-width: 0px;
