@@ -15,8 +15,7 @@ from gi.repository import Gtk, GLib, Gdk
 from random import choice
 
 from lollypop.objects import Album
-from lollypop.helper_art import ArtHelperEffect
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, ArtHelperEffect
 
 
 class ArtistBannerWidget(Gtk.Overlay):

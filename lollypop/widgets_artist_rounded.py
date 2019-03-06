@@ -14,11 +14,10 @@ from gi.repository import Gtk
 
 from random import shuffle
 
-from lollypop.define import App, SelectionListMask
+from lollypop.define import App, SelectionListMask, ArtHelperEffect
 from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
-from lollypop.helper_art import ArtHelperEffect
 
 
 class RoundedArtistWidget(RoundedFlowBoxWidget):

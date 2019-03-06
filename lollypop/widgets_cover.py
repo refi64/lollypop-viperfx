@@ -12,8 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.helper_art import ArtHelperEffect
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, ArtHelperEffect
 from lollypop.utils import on_realize
 
 

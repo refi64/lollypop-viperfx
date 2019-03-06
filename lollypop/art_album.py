@@ -15,7 +15,7 @@ from gi.repository import GLib, GdkPixbuf, Gio, Gst
 import re
 
 from lollypop.tagreader import TagReader
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, ArtHelperEffect
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape, is_readonly
@@ -145,14 +145,15 @@ class AlbumArt:
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, width, height, scale, cache=True):
+    def get_album_artwork(self, album, width, height, scale,
+                          effect=ArtHelperEffect.SAVE):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param width as int
             @param height as int
             @param scale factor as int
-            @param cache as bool
+            @param effect as ArtHelperEffect
             @return cairo surface
             @thread safe
         """
@@ -186,7 +187,9 @@ class AlbumArt:
                             height,
                             True,
                             None)
-                        pixbuf = self._crop_pixbuf(pixbuf)
+                        # Pixbuf will be resized, cropping not needed
+                        if not effect & ArtHelperEffect.RESIZE:
+                            pixbuf = self._crop_pixbuf(pixbuf)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
@@ -212,11 +215,13 @@ class AlbumArt:
                             True,
                             None)
                         stream.close()
-                        pixbuf = self._crop_pixbuf(pixbuf)
+                        # Pixbuf will be resized, cropping not needed
+                        if not effect & ArtHelperEffect.RESIZE:
+                            pixbuf = self._crop_pixbuf(pixbuf)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
-                elif cache:
+                elif effect & ArtHelperEffect.SAVE:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
                                      "cover-quality").get_int32())])

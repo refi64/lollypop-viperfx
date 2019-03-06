@@ -12,8 +12,7 @@
 
 from gi.repository import GLib
 
-from lollypop.helper_art import ArtHelperEffect
-from lollypop.define import Type, App
+from lollypop.define import Type, App, ArtHelperEffect
 
 
 class InformationController:

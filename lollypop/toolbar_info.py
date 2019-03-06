@@ -16,9 +16,8 @@ from gettext import gettext as _
 
 from lollypop.logger import Logger
 from lollypop.widgets_utils import Popover
-from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
-from lollypop.define import App, Type
+from lollypop.define import App, Type, ArtHelperEffect
 
 
 class ToolbarInfo(Gtk.Bin, InformationController):

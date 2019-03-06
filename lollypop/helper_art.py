@@ -14,19 +14,10 @@ from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
 
 from PIL import Image, ImageFilter
 
-from lollypop.define import App
+from lollypop.define import App, ArtHelperEffect
 from lollypop.logger import Logger
 from lollypop.utils import get_round_surface
 from lollypop.information_store import InformationStore
-
-
-class ArtHelperEffect:
-    NONE = 1 << 1
-    ROUNDED = 1 << 2
-    BLUR = 1 << 3
-    BLUR_HARD = 1 << 4
-    RESIZE = 1 << 5
-    FALLBACK = 1 << 6
 
 
 class ArtHelper(GObject.Object):
@@ -210,10 +201,11 @@ class ArtHelper(GObject.Object):
             @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
-        cache = False if effect & (ArtHelperEffect.BLUR |
-                                   ArtHelperEffect.BLUR_HARD) else True
+        # Do not save blur to cache
+        if not effect & (ArtHelperEffect.BLUR | ArtHelperEffect.BLUR_HARD):
+            effect |= ArtHelperEffect.SAVE
         return App().art.get_album_artwork(album, width, height,
-                                           scale_factor, cache)
+                                           scale_factor, effect)
 
     def __get_radio_artwork(self, radio, width, height, scale_factor, effect):
         """
@@ -225,6 +217,7 @@ class ArtHelper(GObject.Object):
             @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
+        # Do not save blur to cache
         cache = False if effect & (ArtHelperEffect.BLUR |
                                    ArtHelperEffect.BLUR_HARD) else True
         return App().art.get_radio_artwork(radio, width, height,
@@ -240,6 +233,7 @@ class ArtHelper(GObject.Object):
             @param scale_factor as int
             @return GdkPixbuf.Pixbuf
         """
+        # Do not save blur to cache
         cache = False if effect & (ArtHelperEffect.BLUR |
                                    ArtHelperEffect.BLUR_HARD) else True
         path = InformationStore.get_artwork_path(artist, width,

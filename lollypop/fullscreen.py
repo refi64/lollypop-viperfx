@@ -15,8 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 from datetime import datetime
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ViewType
-from lollypop.helper_art import ArtHelperEffect
+from lollypop.define import App, ArtSize, ViewType, ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
 from lollypop.controller_progress import ProgressController

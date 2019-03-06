@@ -12,8 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.helper_art import ArtHelperEffect
 from lollypop.define import App, ArtSize, MARGIN, Type, ViewType
+from lollypop.define import ArtHelperEffect
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
