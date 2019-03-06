@@ -368,7 +368,7 @@ class EditMenu(BaseMenu):
         BaseMenu.__init__(self, obj)
         if isinstance(object, Album):
             self.__set_save_action()
-        if not object.is_web and App().art.tag_editor:
+        if object.is_in_user_collection and App().art.tag_editor:
             self.__set_edit_action()
 
 #######################
