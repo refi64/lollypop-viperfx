@@ -382,88 +382,96 @@ class Application(Gtk.Application):
             @param app as Gio.Application
             @param options as Gio.ApplicationCommandLine
         """
-        args = app_cmd_line.get_arguments()
-        options = app_cmd_line.get_options_dict()
-        if options.contains("debug"):
-            self.debug = True
-        # We are forced to enable scrobblers here if we want full debug
-        if not self.scrobblers:
-            if LastFM is not None:
-                self.scrobblers = [LastFM("lastfm"),
-                                   LastFM("librefm")]
-            self.load_listenbrainz()
-        if options.contains("set-rating"):
-            value = options.lookup_value("set-rating").get_string()
-            try:
-                value = min(max(0, int(value)), 5)
-                if self.player.current_track.id is not None:
-                    self.player.current_track.set_rate(value)
-            except Exception as e:
-                Logger.error("Application::__on_command_line(): %s", e)
-                pass
-        elif options.contains("play-pause"):
-            self.player.play_pause()
-        elif options.contains("stop"):
-            self.player.stop()
-        elif options.contains("play-ids"):
-            try:
-                value = options.lookup_value("play-ids").get_string()
-                ids = value.split(";")
-                tracks = []
-                for id in ids:
-                    if id[0:2] == "a:":
-                        album = Album(int(id[2:]))
-                        tracks += album.tracks
-                    else:
-                        tracks.append(Track(int(id[2:])))
-                self.player.load(tracks[0])
-                self.player.populate_playlist_by_tracks(tracks,
-                                                        [Type.SEARCH])
-            except Exception as e:
-                Logger.error("Application::__on_command_line(): %s", e)
-                pass
-        elif options.contains("next"):
-            self.player.next()
-        elif options.contains("prev"):
-            self.player.prev()
-        elif options.contains("emulate-phone"):
-            self.window.container.add_fake_phone()
-        elif len(args) > 1:
-            uris = []
-            pls = []
-            for uri in args[1:]:
+        try:
+            args = app_cmd_line.get_arguments()
+            options = app_cmd_line.get_options_dict()
+            if options.contains("debug"):
+                self.debug = True
+            # We are forced to enable scrobblers here if we want full debug
+            if not self.scrobblers:
+                if LastFM is not None:
+                    self.scrobblers = [LastFM("lastfm"),
+                                       LastFM("librefm")]
+                self.load_listenbrainz()
+            if options.contains("set-rating"):
+                value = options.lookup_value("set-rating").get_string()
                 try:
-                    uri = GLib.filename_to_uri(uri)
-                except:
+                    value = min(max(0, int(value)), 5)
+                    if self.player.current_track.id is not None:
+                        self.player.current_track.set_rate(value)
+                except Exception as e:
+                    Logger.error("Application::__on_command_line(): %s", e)
                     pass
-                f = Gio.File.new_for_uri(uri)
-                if is_audio(f):
-                    uris.append(uri)
-                elif is_pls(f):
-                    pls.append(uri)
-                else:
-                    info = f.query_info(Gio.FILE_ATTRIBUTE_STANDARD_TYPE,
-                                        Gio.FileQueryInfoFlags.NONE,
-                                        None)
-                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+            elif options.contains("play-pause"):
+                self.player.play_pause()
+            elif options.contains("stop"):
+                self.player.stop()
+            elif options.contains("play-ids"):
+                try:
+                    value = options.lookup_value("play-ids").get_string()
+                    ids = value.split(";")
+                    tracks = []
+                    for id in ids:
+                        if id[0:2] == "a:":
+                            album = Album(int(id[2:]))
+                            tracks += album.tracks
+                        else:
+                            tracks.append(Track(int(id[2:])))
+                    self.player.load(tracks[0])
+                    self.player.populate_playlist_by_tracks(tracks,
+                                                            [Type.SEARCH])
+                except Exception as e:
+                    Logger.error("Application::__on_command_line(): %s", e)
+                    pass
+            elif options.contains("next"):
+                self.player.next()
+            elif options.contains("prev"):
+                self.player.prev()
+            elif options.contains("emulate-phone"):
+                self.window.container.add_fake_phone()
+            elif len(args) > 1:
+                uris = []
+                pls = []
+                for uri in args[1:]:
+                    try:
+                        uri = GLib.filename_to_uri(uri)
+                    except:
+                        pass
+                    f = Gio.File.new_for_uri(uri)
+                    if not f.query_exists():
+                        uri = GLib.filename_to_uri(
+                            "%s/%s" % (GLib.get_current_dir(), uri))
+                        f = Gio.File.new_for_uri(uri)
+                    if is_audio(f):
                         uris.append(uri)
-            if pls:
-                from gi.repository import TotemPlParser
-                parser = TotemPlParser.Parser.new()
-                parser.connect("entry-parsed", self.__on_entry_parsed, uris)
-                parser.parse_async(uri, True, None,
-                                   self.__on_parse_finished, uris)
-            else:
-                self.__on_parse_finished(None, None, uris)
-        elif self.window is not None:
-            self.window.setup()
-            if not self.window.is_visible():
-                # https://bugzilla.gnome.org/show_bug.cgi?id=766284
-                monotonic_time = int(GLib.get_monotonic_time() / 1000)
-                self.window.present_with_time(monotonic_time)
-                self.player.emit("status-changed")
-                self.player.emit("current-changed")
-        Gdk.notify_startup_complete()
+                    elif is_pls(f):
+                        pls.append(uri)
+                    else:
+                        info = f.query_info(Gio.FILE_ATTRIBUTE_STANDARD_TYPE,
+                                            Gio.FileQueryInfoFlags.NONE,
+                                            None)
+                        if info.get_file_type() == Gio.FileType.DIRECTORY:
+                            uris.append(uri)
+                if pls:
+                    from gi.repository import TotemPlParser
+                    parser = TotemPlParser.Parser.new()
+                    parser.connect("entry-parsed",
+                                   self.__on_entry_parsed, uris)
+                    parser.parse_async(uri, True, None,
+                                       self.__on_parse_finished, uris)
+                else:
+                    self.__on_parse_finished(None, None, uris)
+            elif self.window is not None:
+                self.window.setup()
+                if not self.window.is_visible():
+                    # https://bugzilla.gnome.org/show_bug.cgi?id=766284
+                    monotonic_time = int(GLib.get_monotonic_time() / 1000)
+                    self.window.present_with_time(monotonic_time)
+                    self.player.emit("status-changed")
+                    self.player.emit("current-changed")
+            Gdk.notify_startup_complete()
+        except Exception as e:
+            Logger.error("Application::__on_command_line(): %s", e)
         return 0
 
     def __on_parse_finished(self, parser, result, uris):
