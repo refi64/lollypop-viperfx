@@ -489,7 +489,9 @@ class TracksView:
             @param widget as TracksWidget
             @param track as Track
         """
+        tracks = []
         for child in self.children:
+            tracks.append(child.track)
             child.set_state_flags(Gtk.StateFlags.NORMAL, True)
         # Add to queue by default
         if App().player.is_locked:
@@ -502,6 +504,7 @@ class TracksView:
             if not App().player.is_party and\
                     not App().player.track_in_playback(track):
                 album = self._album.clone(True)
+                album.set_tracks(tracks)
                 App().player.add_album(album)
                 App().player.load(album.get_track(track.id))
             else:
