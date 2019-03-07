@@ -48,7 +48,7 @@ class ViewsContainer:
     def show_view(self, item_id, data=None, switch=True):
         """
             Show view for item id
-            @param item_ids as int
+            @param item_id as int
             @param data as object
             @param switch as bool
         """
@@ -77,8 +77,6 @@ class ViewsContainer:
                 view = self._get_view_albums_years(data)
         elif item_id == Type.PLAYLISTS:
             view = self._get_view_playlists([] if data is None else data)
-        elif item_id == Type.COMPILATIONS:
-            view = self._get_view_albums([], [item_id])
         elif item_id == Type.RADIOS:
             view = self._get_view_radios()
         elif item_id == Type.EQUALIZER:
@@ -92,6 +90,10 @@ class ViewsContainer:
             view = self._get_view_settings(item_id)
         elif Type.DEVICES - 999 < item_id < Type.DEVICES:
             view = self._get_view_device(item_id)
+        elif item_id == Type.ALL:
+            view = self._get_view_albums([item_id], [])
+        elif item_id == Type.COMPILATIONS:
+            view = self._get_view_albums([], [item_id])
         else:
             view = self._get_view_artists([], [item_id])
         view.show()
