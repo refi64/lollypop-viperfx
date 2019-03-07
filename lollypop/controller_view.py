@@ -24,15 +24,19 @@ class ViewController:
         Should be herited by a Gtk.Widget
     """
 
-    def __init__(self, controller_type):
+    def __init__(self, controller_type, on_map=True):
         """
             Init controller
             @param controller_type as ViewControllerType
+            @param on_map as bool (only works on map)
         """
         self.__signals_ids = {}
         self.__type = controller_type
-        self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
+        if on_map:
+            self.connect("map", self.__on_map)
+            self.connect("unmap", self.__on_unmap)
+        else:
+            self.__connect_signals()
 
 #######################
 # PROTECTED           #
@@ -49,10 +53,9 @@ class ViewController:
 #######################
 # PRIVATE             #
 #######################
-    def __on_map(self, widget):
+    def __connect_signals(self):
         """
-            Connect signals
-            @param widget as Gtk.Widget
+            Connect player signals
         """
         self.__signals_ids[
             App().player.connect("current-changed",
@@ -63,6 +66,13 @@ class ViewController:
         self.__signals_ids[
             App().art.connect("%s-artwork-changed" % self.__type,
                               self._on_artwork_changed)] = App().art
+
+    def __on_map(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        self.__connect_signals()
 
     def __on_unmap(self, widget):
         """

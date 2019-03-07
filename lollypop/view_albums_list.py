@@ -471,7 +471,8 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param artist_ids as int
         """
         LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
-        ViewController.__init__(self, ViewControllerType.ALBUM)
+        ViewController.__init__(self, ViewControllerType.ALBUM,
+                                not view_type & ViewType.SEARCH)
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
         if genre_ids and genre_ids[0] < 0:
