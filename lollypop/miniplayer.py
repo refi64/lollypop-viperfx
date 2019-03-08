@@ -75,7 +75,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                                                  self.__on_current_changed)
         self.__signal_id2 = App().player.connect("status-changed",
                                                  self.__on_status_changed)
-        self.__signal_id4 = App().player.connect("duration-changed",
+        self.__signal_id3 = App().player.connect("duration-changed",
                                                  self.on_duration_changed)
         self.__on_current_changed(App().player)
         if App().player.current_track.id is not None:
@@ -164,7 +164,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         App().player.disconnect(self.__signal_id1)
         App().player.disconnect(self.__signal_id2)
         App().player.disconnect(self.__signal_id3)
-        App().player.disconnect(self.__signal_id4)
 
     def __on_current_changed(self, player):
         """
