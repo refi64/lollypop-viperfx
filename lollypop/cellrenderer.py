@@ -33,6 +33,8 @@ class CellRendererAlbum(Gtk.CellRenderer):
                                              ArtSize.MEDIUM,
                                              ArtSize.MEDIUM,
                                              scale_factor)
+        if pixbuf is None:
+            pixbuf = self.__get_default_pixbuf()
         surface = Gdk.cairo_surface_create_from_pixbuf(
                     pixbuf, scale_factor, None)
         width = surface.get_width()
@@ -71,6 +73,32 @@ class CellRendererAlbum(Gtk.CellRenderer):
 
     def do_get_preferred_height(self, widget):
         return self.do_get_preferred_width(widget)
+
+###########
+# PRIVATE #
+###########
+    def __get_default_pixbuf(self):
+        # get a small pixbuf with the given path
+        icon_size = ArtSize.MEDIUM / 4
+        icon = Gtk.IconTheme.get_default().load_icon("folder-music-symbolic",
+                                                     icon_size, 0)
+        # create an empty pixbuf with the requested size
+        pixbuf = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
+                                      True,
+                                      icon.get_bits_per_sample(),
+                                      ArtSize.MEDIUM,
+                                      ArtSize.MEDIUM)
+        pixbuf.fill(0xffffffff)
+        icon.composite(pixbuf,
+                       icon_size * 3 / 2,
+                       icon_size * 3 / 2,
+                       icon_size,
+                       icon_size,
+                       icon_size * 3 / 2,
+                       icon_size * 3 / 2,
+                       1, 1,
+                       GdkPixbuf.InterpType.NEAREST, 255)
+        return pixbuf
 
 
 class CellRendererArtist(Gtk.CellRendererText):
