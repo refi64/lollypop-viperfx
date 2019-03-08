@@ -104,7 +104,7 @@ class BaseArt(GObject.GObject):
                                      height + diff,
                                      GdkPixbuf.InterpType.BILINEAR)
         new_pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                          False, 8, max_value, max_value)
+                                          True, 8, max_value, max_value)
         if width > height:
             new_x = diff
             new_y = 0
