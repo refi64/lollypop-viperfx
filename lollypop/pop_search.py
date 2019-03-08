@@ -55,6 +55,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         search_view = App().window.container.get_view_search()
+        search_view.show()
         if search_view in App().window.container.stack.get_children():
             App().window.container.stack.remove(search_view)
         self.add(search_view)
