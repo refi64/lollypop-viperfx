@@ -379,11 +379,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         (width, height) = window.get_size()
         self.__handle_miniplayer(width, height)
         self.__toolbar.set_content_width(width)
-        if self.__miniplayer is not None:
-            if height > width:
-                self.__miniplayer.update_cover(height)
-            else:
-                self.__miniplayer.update_cover(width)
         if self.__timeout_configure:
             GLib.source_remove(self.__timeout_configure)
             self.__timeout_configure = None

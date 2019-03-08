@@ -86,16 +86,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.connect("size-allocate", self.__on_size_allocate)
         self.connect("destroy", self.__on_destroy)
 
-    def update_cover(self, width):
-        """
-            Update cover for width
-            @param width as int
-        """
-        if self.__width == width:
-            return
-        self.__width = width
-        InformationController.on_current_changed(self, width, None)
-
     def do_get_preferred_width(self):
         """
             Force preferred width
@@ -151,9 +141,10 @@ class MiniPlayer(Gtk.Bin, InformationController,
             @param allocation as Gtk.Allocation
         """
         self.__allocation_timeout_id = None
-        if allocation.width == 1:
+        if allocation.width == 1 or self.__width == allocation.width:
             return
-        self.update_cover(max(allocation.width, allocation.height))
+        self.__width = allocation.width
+        InformationController.on_current_changed(self, self.__width, None)
 
     def __on_destroy(self, widget):
         """
