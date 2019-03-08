@@ -103,7 +103,11 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         self._overlay.add(self._artwork)
         grid.add(self._overlay)
         grid.add(eventbox)
-        self.set_artwork(self.__art_size, self.__art_size)
+        App().art_helper.set_album_artwork(self._album,
+                                           self.__art_size,
+                                           self.__art_size,
+                                           self._artwork.get_scale_factor(),
+                                           self.__on_album_artwork)
         self.set_selection()
         if not self.__view_type & (ViewType.SMALL | ViewType.MEDIUM):
             self.__widget.connect("enter-notify-event", self._on_enter_notify)
@@ -179,21 +183,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         if self._album.id == album_id and destroy:
             self.destroy()
 
-    def _on_album_artwork(self, surface):
-        """
-            Set album artwork
-            @param surface as str
-        """
-        if self.__widget is None:
-            return
-        if surface is None:
-            self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             Gtk.IconSize.DIALOG)
-        else:
-            self._artwork.set_from_surface(surface)
-        self.show_all()
-        self.emit("populated")
-
 #######################
 # PRIVATE             #
 #######################
@@ -209,6 +198,21 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self.__play_all_button.get_image().set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.INVALID)
+
+    def __on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if self.__widget is None:
+            return
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
+        self.show_all()
+        self.emit("populated")
 
     def __on_play_all_clicked(self, button):
         """

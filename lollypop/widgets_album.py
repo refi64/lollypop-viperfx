@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.define import App, ArtSize
+from lollypop.define import App
 from lollypop.widgets_utils import Popover
 
 
@@ -55,20 +55,6 @@ class AlbumWidget:
         self.__filtered = b
         return not b
 
-    def set_artwork(self, width=ArtSize.BIG, height=ArtSize.BIG):
-        """
-            Set album artwork
-            @param width as int
-            @param height as int
-        """
-        if self._artwork is None:
-            return
-        App().art_helper.set_album_artwork(self._album,
-                                           width,
-                                           height,
-                                           self._artwork.get_scale_factor(),
-                                           self._on_album_artwork)
-
     @property
     def album(self):
         """
@@ -94,9 +80,6 @@ class AlbumWidget:
 # PROTECTED           #
 #######################
     def _on_album_updated(self, scanner, album_id, destroy):
-        pass
-
-    def _on_album_artwork(self, surface):
         pass
 
     def _on_button_release(self, eventbox, event):
