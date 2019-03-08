@@ -81,29 +81,6 @@ class ListsContainer:
         else:
             self._list_one.select_ids(list_one_ids)
 
-    def show_artists_albums(self, artist_ids):
-        """
-            Show albums from artists
-            @param artist id as int
-        """
-        def select_list_two(selection_list, artist_ids):
-            self._list_two.select_ids(artist_ids)
-            self._list_two.disconnect_by_func(select_list_two)
-        sidebar_content = App().settings.get_enum("sidebar-content")
-        if sidebar_content == SidebarContent.GENRES:
-            # Get artist genres
-            genre_ids = []
-            for artist_id in artist_ids:
-                album_ids = App().artists.get_albums(artist_ids)
-                for album_id in album_ids:
-                    for genre_id in App().albums.get_genre_ids(album_id):
-                        if genre_id not in genre_ids:
-                            genre_ids.append(genre_id)
-            self.show_lists(genre_ids, artist_ids)
-        else:
-            # Select artists on list one
-            self.show_lists(artist_ids, [])
-
     @property
     def list_one(self):
         """

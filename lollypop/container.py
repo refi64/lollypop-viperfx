@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import App
+from lollypop.define import App, SidebarContent
 from lollypop.view import View
 from lollypop.adaptive import AdaptiveStack
 from lollypop.container_device import DeviceContainer
@@ -119,6 +119,31 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 if type(child) not in [DeviceView, SearchView]:
                     child.destroy()
             self._reload_navigation_view()
+
+    def show_artists_albums(self, artist_ids):
+        """
+            Show albums from artists
+            @param artist id as int
+        """
+        def select_list_two(selection_list, artist_ids):
+            self._list_two.select_ids(artist_ids)
+            self._list_two.disconnect_by_func(select_list_two)
+        sidebar_content = App().settings.get_enum("sidebar-content")
+        if sidebar_content == SidebarContent.GENRES:
+            # Get artist genres
+            genre_ids = []
+            for artist_id in artist_ids:
+                album_ids = App().artists.get_albums(artist_ids)
+                for album_id in album_ids:
+                    for genre_id in App().albums.get_genre_ids(album_id):
+                        if genre_id not in genre_ids:
+                            genre_ids.append(genre_id)
+            self.show_lists(genre_ids, artist_ids)
+        elif sidebar_content == SidebarContent.ARTISTS:
+            # Select artists on list one
+            self.show_lists(artist_ids, [])
+        else:
+            self.show_view(artist_ids[0])
 
     @property
     def view(self):
