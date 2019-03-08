@@ -267,8 +267,8 @@ class InformationView(BaseView, Gtk.Bin):
             popover.popdown()
         if App().player.current_track.id is None:
             return
-        App().window.container.show_artist_view(
-            App().player.current_track.album.artist_ids)
+        GLib.idle_add(App().window.container.show_artist_view,
+                      App().player.current_track.album.artist_ids)
 
     def __on_label_button_release_event(self, button, event):
         """
