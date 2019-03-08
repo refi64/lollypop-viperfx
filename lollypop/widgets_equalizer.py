@@ -61,9 +61,6 @@ class EqualizerWidget(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/EqualizerWidget.ui")
         builder.connect_signals(self)
-        self.__volume = builder.get_object("volume")
-        value = App().player.volume
-        self.__volume.set_value(value)
         self.__combobox = builder.get_object("combobox")
         equalizer = App().settings.get_value("equalizer")
         for i in range(0, 10):
@@ -105,12 +102,6 @@ class EqualizerWidget(Gtk.Bin):
                 attr = getattr(self, "__scale%s" % i)
                 attr.set_value(value)
                 i += 1
-
-    def _on_volume_value_changed(self, scale):
-        """
-            Set volume
-        """
-        App().player.set_volume(scale.get_value())
 
 #######################
 # PRIVATE             #

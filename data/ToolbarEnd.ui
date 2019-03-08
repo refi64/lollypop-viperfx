@@ -63,7 +63,7 @@
     <property name="vexpand">False</property>
     <property name="spacing">6</property>
     <child>
-      <object class="GtkMenuButton" id="settings-button">
+      <object class="GtkToggleButton" id="settings-button">
         <property name="can_focus">True</property>
 	<property name="visible">True</property>
         <property name="receives_default">True</property>

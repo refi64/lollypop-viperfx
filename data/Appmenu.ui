@@ -1,40 +1,175 @@
-<?xml version="1.0"?>
-<interface domain="lollypop">
-  <menu id="app-menu">
-    <section>
-      <item>
-        <attribute name="action">app.update_db</attribute>
-        <attribute name="label" translatable="yes">_Update music</attribute>
-      </item>
-      <item>
-        <attribute name="action">app.fullscreen</attribute>
-        <attribute name="label" translatable="yes">_Fullscreen</attribute>
-      </item>
-      <item>
-        <attribute name="action">app.equalizer</attribute>
-        <attribute name="label" translatable="yes">_Equalizer</attribute>
-      </item>
-      <item>
-        <attribute name="action">app.sidebar</attribute>
-        <attribute name="label" translatable="yes">_Sidebar</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="action">app.settings</attribute>
-        <attribute name="target" type="i">1</attribute>
-        <attribute name="label" translatable="yes">_Preferences</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="action">app.shortcuts</attribute>
-        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
-      </item>
-      <item>
-        <attribute name="action">app.about</attribute>
-        <attribute name="label" translatable="yes">_About Lollypop</attribute>
-      </item>
-    </section>
-  </menu>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">1</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-refresh-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">audio-card-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">gedit-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image40">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-fullscreen-symbolic</property>
+  </object>
+  <object class="GtkGrid" id="widget">
+    <property name="width_request">200</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="margin_start">5</property>
+    <property name="margin_end">5</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
+    <property name="orientation">vertical</property>
+    <property name="row_spacing">5</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkButton" id="refresh_button">
+            <signal name="clicked" handler="_on_button_clicked" swapped="no"/>
+            <property name="width_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Update music</property>
+            <property name="hexpand">True</property>
+            <property name="action_name">app.update_db</property>
+            <property name="image">image1</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="equalizer_button">
+            <signal name="clicked" handler="_on_button_clicked" swapped="no"/>
+            <property name="width_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Equalizer</property>
+            <property name="hexpand">True</property>
+            <property name="action_name">app.equalizer</property>
+            <property name="image">image2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="fullscreen_button">
+            <signal name="clicked" handler="_on_button_clicked" swapped="no"/>
+            <property name="width_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="hexpand">True</property>
+            <property name="tooltip_text" translatable="yes">Fullscreen</property>
+            <property name="action_name">app.fullscreen</property>
+            <property name="image">image40</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <style>
+          <class name="linked"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="action_name">app.settings</property>
+	<property name="action_target">1</property>
+        <property name="text" translatable="yes">_Preferences</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="action_name">app.sidebar</property>
+        <property name="text" translatable="yes">_Sidebar</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="action_name">app.shortcuts</property>
+        <property name="text" translatable="yes">_Keyboard Shortcuts</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="action_name">app.about</property>
+        <property name="text" translatable="yes">_About</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkScale" id="volume">
+        <property name="adjustment">adjustment1</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="round_digits">1</property>
+        <property name="draw_value">False</property>
+	<signal name="value-changed" handler="_on_volume_value_changed" swapped="no"/>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+  </object>
 </interface>

@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
+from lollypop.pop_appmenu import AppMenuPopover
 from lollypop.define import App, Shuffle, NextContext, Type
 
 
@@ -93,11 +94,6 @@ class ToolbarEnd(Gtk.Bin):
         search_action.connect("activate", self.__on_search_activate)
         App().add_action(search_action)
         App().set_accels_for_action("app.search", ["<Control>f"])
-
-        builder_menu = Gtk.Builder()
-        builder_menu.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
-        builder.get_object("settings-button").set_menu_model(
-            builder_menu.get_object("app-menu"))
 
         self.__list_button = builder.get_object("list-button")
         self.__list_button.set_property("has-tooltip", True)
@@ -218,6 +214,10 @@ class ToolbarEnd(Gtk.Bin):
            @param button as Gtk.MenuButton
         """
         if button.get_active():
+            popover = AppMenuPopover()
+            popover.set_relative_to(button)
+            popover.connect("closed", self.__on_popover_closed, button)
+            popover.popup()
             self.__next_popover.hide()
             self.__next_popover.inhibit(True)
         else:
