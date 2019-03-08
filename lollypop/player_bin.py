@@ -211,9 +211,10 @@ class BinPlayer(BasePlayer):
             Set player volume rate
             @param rate as double
         """
-        self.__playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
-        self.__playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
-        self.emit("volume-changed")
+        if rate <= 1.0:
+            self.__playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
+            self.__playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
+            self.emit("volume-changed")
 
     def next(self):
         """

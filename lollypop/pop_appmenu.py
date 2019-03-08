@@ -30,9 +30,10 @@ class AppMenuPopover(Popover):
         builder.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
         self.add(builder.get_object("widget"))
         self.__volume = builder.get_object("volume")
-        value = App().player.volume
-        self.__volume.set_value(value)
+        self.__volume.set_value(App().player.volume)
         builder.connect_signals(self)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
 #######################
 # PROTECTED           #
@@ -46,3 +47,27 @@ class AppMenuPopover(Popover):
             @param scale as Gtk.Scale
         """
         App().player.set_volume(scale.get_value())
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_volume_changed(self, player):
+        """
+            Set scale value
+            @param player as Player
+        """
+        self.__volume.set_value(player.volume)
+
+    def __on_map(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        App().player.connect("volume-changed", self.__on_volume_changed)
+
+    def __on_unmap(self, widget):
+        """
+            Disconnect signals
+            @param widget as Gtk.Widget
+        """
+        App().player.disconnect_by_func(self.__on_volume_changed)

@@ -15,7 +15,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Settings</property>
-                <property name="accelerator">&lt;Primary&gt;,</property>
+                <property name="accelerator">&lt;Primary&gt;comma</property>
               </object>
             </child>
             <child>
@@ -57,14 +57,28 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Show equalizer</property>
-                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;v</property>
+                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;e</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Show lyrics</property>
-                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;l</property>
+                <property name="title" translatable="yes" context="shortcut window">Show equalizer</property>
+                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;e</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Volume up</property>
+                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;Up</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Volume down</property>
+                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;Down</property>
               </object>
             </child>
             <child>
