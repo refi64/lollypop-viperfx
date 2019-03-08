@@ -22,12 +22,14 @@ from lollypop.helper_art import ArtHelperEffect
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.view import BaseView
+from lollypop.utils import on_realize
 
 
 class Wikipedia:
     """
         Helper for wikipedia search
     """
+
     def __init__(self, cancellable):
         """
             Init wikipedia
@@ -119,6 +121,7 @@ class InformationView(BaseView, Gtk.Bin):
         self.add(widget)
         self.__stack = builder.get_object("stack")
         self.__artist_label = builder.get_object("artist_label")
+        self.__artist_label.connect("realize", on_realize)
         title_label = builder.get_object("title_label")
         self.__artist_artwork = builder.get_object("artist_artwork")
         eventbox = builder.get_object("eventbox")
@@ -252,6 +255,20 @@ class InformationView(BaseView, Gtk.Bin):
         if popover is not None:
             popover.popdown()
         App().window.container.show_lyrics(track)
+
+    def _on_artist_button_release_event(self, eventbox, event):
+        """
+            Go to artist view
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        popover = self.get_ancestor(Gtk.Popover)
+        if popover is not None:
+            popover.popdown()
+        if App().player.current_track.id is None:
+            return
+        App().window.container.show_artist_view(
+            App().player.current_track.album.artist_ids)
 
     def __on_label_button_release_event(self, button, event):
         """
