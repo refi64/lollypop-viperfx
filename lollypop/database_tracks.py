@@ -659,7 +659,7 @@ class TracksDatabase:
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE popularity!=0\
+                                  WHERE popularity!=0 AND mtime != 0\
                                   ORDER BY popularity DESC LIMIT ?",
                                  (limit,))
             return list(itertools.chain(*result))
@@ -671,7 +671,7 @@ class TracksDatabase:
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT popularity\
-                                  FROM tracks\
+                                  FROM tracks WHERE mtime != 0\
                                   ORDER BY POPULARITY DESC LIMIT 1")
             v = result.fetchone()
             if v is not None:
@@ -687,6 +687,7 @@ class TracksDatabase:
             result = sql.execute("SELECT AVG(popularity)\
                                   FROM (SELECT popularity\
                                         FROM tracks\
+                                        WHERE mtime != 0\
                                         ORDER BY POPULARITY DESC LIMIT 100)")
             v = result.fetchone()
             if v and v[0] > 5:
@@ -729,7 +730,7 @@ class TracksDatabase:
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
-                                  WHERE ltime=0\
+                                  WHERE ltime=0 AND mtime!=0\
                                   ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
@@ -741,7 +742,7 @@ class TracksDatabase:
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
-                                  WHERE ltime!=0\
+                                  WHERE ltime!=0 AND mtime!=0\
                                   ORDER BY ltime DESC LIMIT 100")
             return list(itertools.chain(*result))
 
@@ -752,7 +753,7 @@ class TracksDatabase:
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT tracks.rowid\
-                                  FROM tracks\
+                                  FROM tracks WHERE mtime != 0\
                                   ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
