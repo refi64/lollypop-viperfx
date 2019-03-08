@@ -160,8 +160,12 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__rating_grid.show()
             self.__year_label.set_vexpand(False)
             if not self.__view_type & ViewType.SMALL:
+                self.__title_label.get_style_context().remove_class(
+                    "text-x-large")
                 self.__title_label.get_style_context().add_class(
                     "text-xx-large")
+                self.__year_label.get_style_context().remove_class(
+                    "text-large")
                 self.__year_label.get_style_context().add_class(
                     "text-x-large")
 
