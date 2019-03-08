@@ -264,13 +264,14 @@ def get_mtime(info):
         Return Last modified time of a given file
         @param info as Gio.FileInfo
     """
-    try:
-        # We do not use time::modified because many tag editors
-        # just preserve this setting
-        return int(info.get_attribute_as_string("time::changed"))
-    except:
-        pass
-    # Fallback for remote fs
+    # Using time::changed is not reliable making lollypop doing a full
+    # scan every two weeks (on my computer)
+    # try:
+    #    # We do not use time::modified because many tag editors
+    #    # just preserve this setting
+    #    return int(info.get_attribute_as_string("time::changed"))
+    # except:
+    #    pass
     return int(info.get_attribute_as_string("time::modified"))
 
 

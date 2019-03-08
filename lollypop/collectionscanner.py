@@ -16,7 +16,6 @@ from gi.repository import GLib, GObject, Gio
 from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
                               FILE_ATTRIBUTE_STANDARD_TYPE, \
                               FILE_ATTRIBUTE_STANDARD_IS_HIDDEN,\
-                              FILE_ATTRIBUTE_TIME_CHANGED,\
                               FILE_ATTRIBUTE_TIME_MODIFIED
 
 from gettext import gettext as _
@@ -33,11 +32,10 @@ from lollypop.database_history import History
 from lollypop.utils import is_audio, is_pls, get_mtime, profile
 
 
-SCAN_QUERY_INFO = "{},{},{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
-                                          FILE_ATTRIBUTE_STANDARD_TYPE,
-                                          FILE_ATTRIBUTE_STANDARD_IS_HIDDEN,
-                                          FILE_ATTRIBUTE_TIME_CHANGED,
-                                          FILE_ATTRIBUTE_TIME_MODIFIED)
+SCAN_QUERY_INFO = "{},{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
+                                       FILE_ATTRIBUTE_STANDARD_TYPE,
+                                       FILE_ATTRIBUTE_STANDARD_IS_HIDDEN,
+                                       FILE_ATTRIBUTE_TIME_MODIFIED)
 
 
 class CollectionScanner(GObject.GObject, TagReader):
