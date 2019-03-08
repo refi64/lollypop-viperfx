@@ -10,35 +10,49 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
+
+from gettext import gettext as _
 
 from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.helper_overlay_album import OverlayAlbumHelper
 from lollypop.utils import on_realize
 
 
-class CoverWidget(Gtk.EventBox):
+class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
     """
         Widget showing current album cover
     """
+    __gsignals__ = {
+        "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
+    }
 
-    def __init__(self, editable=False, art_size=ArtSize.BANNER):
+    def __init__(self, overlay=False, art_size=ArtSize.BANNER):
         """
             Init cover widget
+            @param overlay as bool
+            @param art_size as int
         """
         Gtk.EventBox.__init__(self)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
-        self.__album = None
+        self._album = None
+        self.__image_button = None
         self.__art_size = art_size
-        if editable:
-            self.connect("realize", on_realize)
-            self.connect("button-release-event",
-                         self.__on_button_release_event)
-        self.__artwork = App().art_helper.get_image(self.__art_size,
-                                                    self.__art_size,
-                                                    "small-cover-frame")
-        self.__artwork.show()
-        self.add(self.__artwork)
+        self._artwork = App().art_helper.get_image(self.__art_size,
+                                                   self.__art_size,
+                                                   "small-cover-frame")
+        self._artwork.show()
+        if overlay:
+            self._overlay = Gtk.Overlay.new()
+            self._overlay.show()
+            OverlayAlbumHelper.__init__(self)
+            self._overlay.add(self._artwork)
+            self.add(self._overlay)
+            self.connect("enter-notify-event", self._on_enter_notify)
+            self.connect("leave-notify-event", self._on_leave_notify)
+        else:
+            self.add(self._artwork)
         self.connect("destroy", self.__on_destroy)
         self.__art_signal_id = App().art.connect(
                                               "album-artwork-changed",
@@ -49,14 +63,43 @@ class CoverWidget(Gtk.EventBox):
             Update cover
             @param album as Album
         """
-        self.__album = album
+        self._album = album
         App().art_helper.set_album_artwork(
                 album,
                 self.__art_size,
                 self.__art_size,
-                self.__artwork.get_scale_factor(),
+                self._artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.NONE)
+
+#######################
+# PROTECTED           #
+#######################
+    def _show_overlay_func(self, show_overlay):
+        """
+            Set overlay
+            @param show_overlay as bool
+        """
+        if self._lock_overlay or self._show_overlay == show_overlay:
+            return
+        OverlayAlbumHelper._show_overlay_func(self, show_overlay)
+        if show_overlay:
+            # Image button
+            self.__image_button = Gtk.Button.new_from_icon_name(
+                "image-x-generic-symbolic",
+                Gtk.IconSize.INVALID)
+            self.__image_button.set_property("has-tooltip", True)
+            self.__image_button.set_tooltip_text(_("Change artwork"))
+            self.__image_button.connect("realize", on_realize)
+            self.__image_button.connect("clicked", self.__on_artwork_clicked)
+            self.__image_button.get_image().set_pixel_size(self._pixel_size)
+            self.__image_button.show()
+            self._small_grid.add(self.__image_button)
+            self.__image_button.get_style_context().add_class(
+                "overlay-button")
+        else:
+            self.__image_button.destroy()
+            self.__image_button = None
 
 #######################
 # PRIVATE             #
@@ -75,10 +118,10 @@ class CoverWidget(Gtk.EventBox):
             @param art as Art
             @param album id as int
         """
-        if self.__album is None:
+        if self._album is None:
             return
-        if album_id == self.__album.id:
-            self.update(self.__album)
+        if album_id == self._album.id:
+            self.update(self._album)
 
     def __on_button_release_event(self, eventbox, event):
         """
@@ -86,10 +129,10 @@ class CoverWidget(Gtk.EventBox):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if self.__album is None:
+        if self._album is None:
             return
         from lollypop.pop_artwork import CoversPopover
-        popover = CoversPopover(self.__album)
+        popover = CoversPopover(self._album)
         popover.set_relative_to(eventbox)
         popover.popup()
 
@@ -98,4 +141,17 @@ class CoverWidget(Gtk.EventBox):
             Set album artwork
             @param surface as str
         """
-        self.__artwork.set_from_surface(surface)
+        self._artwork.set_from_surface(surface)
+
+    def __on_artwork_clicked(self, button):
+        """
+            Popover with album art downloaded from the web (in fact google :-/)
+            @param button as Gtk.Button
+        """
+        from lollypop.pop_artwork import CoversPopover
+        popover = CoversPopover(self._album)
+        popover.set_relative_to(button)
+        popover.connect("closed", self._on_popover_closed)
+        self._lock_overlay = True
+        popover.popup()
+        return True
