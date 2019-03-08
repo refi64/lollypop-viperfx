@@ -889,6 +889,7 @@ class AlbumsDatabase:
                                   FROM albums, tracks\
                                   WHERE tracks.ltime=0 AND\
                                   albums.loved != -1 AND\
+                                  album.mtime != 0 AND\
                                   albums.rowid=tracks.album_id\
                                   AND albums.popularity < 10\
                                   ORDER BY random() LIMIT 100")
