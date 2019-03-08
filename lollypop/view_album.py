@@ -138,6 +138,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                                      weight="bold">%s %s</span>''' %
                                  (_("Others albums from"), artist))
                 label.set_property("halign", Gtk.Align.START)
+                label.set_margin_top(40)
                 label.show()
                 self.__grid.add(label)
                 others_box = AlbumsBoxView([],
