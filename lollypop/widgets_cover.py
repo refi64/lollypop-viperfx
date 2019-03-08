@@ -26,17 +26,19 @@ class CoverWidget(Gtk.EventBox):
             Init cover widget
         """
         Gtk.EventBox.__init__(self)
+        self.set_property("halign", Gtk.Align.CENTER)
+        self.set_property("valign", Gtk.Align.CENTER)
         self.__album = None
         self.__art_size = art_size
         if editable:
             self.connect("realize", on_realize)
             self.connect("button-release-event",
                          self.__on_button_release_event)
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/CoverWidget.ui")
-        builder.connect_signals(self)
-        self.__artwork = builder.get_object("cover")
-        self.add(builder.get_object("widget"))
+        self.__artwork = App().art_helper.get_image(self.__art_size,
+                                                    self.__art_size,
+                                                    "small-cover-frame")
+        self.__artwork.show()
+        self.add(self.__artwork)
         self.connect("destroy", self.__on_destroy)
         self.__art_signal_id = App().art.connect(
                                               "album-artwork-changed",
