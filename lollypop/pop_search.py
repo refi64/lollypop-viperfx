@@ -68,5 +68,6 @@ class SearchPopover(Gtk.Popover):
             Move widget inside container
         """
         search_view = self.get_child()
+        search_view.hide()
         self.remove(search_view)
         App().window.container.stack.add(search_view)
