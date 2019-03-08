@@ -190,9 +190,4 @@ class SimilarsPopover(Popover):
         self.popdown()
         artist_name = row.artist_name
         artist_id = App().artists.get_id(artist_name)
-        if App().settings.get_value("show-sidebar") and\
-                not App().window.is_adaptive:
-            GLib.idle_add(App().window.container.show_artists_albums,
-                          [artist_id])
-        else:
-            GLib.idle_add(App().window.container.show_view, artist_id)
+        GLib.idle_add(App().window.container.show_artist_view, [artist_id])

@@ -68,11 +68,7 @@ class ArtistMenu(BaseMenu):
             @param Gio.SimpleAction
             @param GLib.Variant
         """
-        if App().settings.get_value("show-sidebar"):
-            App().window.container.show_artists_albums(
-                 self._object.artist_ids)
-        else:
-            App().window.container.show_view(self._object.artist_ids[0])
+        App().window.container.show_artist_view(self._object.artist_ids[0])
 
 
 class PlaybackMenu(BaseMenu):

@@ -476,10 +476,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             if App().player.current_track.id is not None and\
                     App().player.current_track.id > 0:
                 artist_ids = App().player.current_track.album.artist_ids
-                if App().settings.get_value("show-sidebar"):
-                    self.container.show_artists_albums(artist_ids)
-                else:
-                    App().window.container.show_view(artist_ids[0])
+                App().window.container.show_artist_view(artist_ids)
         elif string == "loved":
             track = App().player.current_track
             if track.id is not None and track.id >= 0:

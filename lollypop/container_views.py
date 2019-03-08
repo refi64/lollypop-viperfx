@@ -16,7 +16,6 @@ from lollypop.objects import Track, Album
 from lollypop.define import App, Type, ViewType, SelectionListMask
 from lollypop.define import MARGIN_SMALL
 from lollypop.define import SidebarContent
-from lollypop.logger import Logger
 
 
 class ViewsContainer:
@@ -145,10 +144,6 @@ class ViewsContainer:
             Go to artist view
             @param artist_ids as [int]
         """
-        if not artist_ids:
-            Logger.warning("ContainerView::show_artist_view(): empty list given %s"
-                           % str(artist_ids))
-            return
         if App().settings.get_value("show-sidebar") and\
                 not App().window.is_adaptive:
             App().window.container.show_artists_albums(artist_ids)
