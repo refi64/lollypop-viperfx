@@ -38,9 +38,7 @@ class OverlayAlbumHelper(OverlayHelper):
             Set overlay
             @param show_overlay as bool
         """
-        if self._lock_overlay or\
-                self._show_overlay == show_overlay or\
-                (App().player.is_locked and show_overlay):
+        if self._lock_overlay or self._show_overlay == show_overlay:
             return
         OverlayHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
@@ -100,8 +98,6 @@ class OverlayAlbumHelper(OverlayHelper):
             Play album
             @param button as Gtk.Button
         """
-        if App().player.is_locked:
-            return True
         if App().player.is_party:
             action = App().lookup_action("party")
             action.change_state(GLib.Variant("b", False))
@@ -115,8 +111,6 @@ class OverlayAlbumHelper(OverlayHelper):
             Remove it if present
             @param button as Gtk.Button
         """
-        if App().player.is_locked:
-            return True
         if self._album.id in App().player.album_ids:
             if App().player.current_track.album.id == self._album.id:
                 # If not last album, skip it

@@ -493,22 +493,15 @@ class TracksView:
         for child in self.children:
             tracks.append(child.track)
             child.set_state_flags(Gtk.StateFlags.NORMAL, True)
-        # Add to queue by default
-        if App().player.is_locked:
-            if track.id in App().player.queue:
-                App().player.remove_from_queue(track.id)
-            else:
-                App().player.append_to_queue(track.id)
+        # Do not update album list if in party or album already available
+        if not App().player.is_party and\
+                not App().player.track_in_playback(track):
+            album = self._album.clone(True)
+            album.set_tracks(tracks)
+            App().player.add_album(album)
+            App().player.load(album.get_track(track.id))
         else:
-            # Do not update album list if in party or album already available
-            if not App().player.is_party and\
-                    not App().player.track_in_playback(track):
-                album = self._album.clone(True)
-                album.set_tracks(tracks)
-                App().player.add_album(album)
-                App().player.load(album.get_track(track.id))
-            else:
-                App().player.load(track)
+            App().player.load(track)
 
     def __on_insert_track(self, row, new_track_id, down):
         """

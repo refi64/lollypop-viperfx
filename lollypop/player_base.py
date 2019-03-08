@@ -30,7 +30,6 @@ class BasePlayer(GObject.GObject):
         "next-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "prev-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "seeked": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        "lock-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "status-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "volume-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "queue-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -48,9 +47,6 @@ class BasePlayer(GObject.GObject):
         if not hasattr(self, "_albums"):
             GObject.GObject.__init__(self)
             self._base_init = True
-            # Lock adding tracks to playback, do nothing here, just get it
-            # with locked property
-            self._is_locked = False
             # Should player do crossfading
             self._crossfading = False
             # Keep track of artist/album finished
@@ -69,20 +65,6 @@ class BasePlayer(GObject.GObject):
             self._shuffle = App().settings.get_enum("shuffle")
             # For tracks from the cmd line
             self._external_tracks = []
-
-    def lock(self):
-        """
-            Mark player as locked
-        """
-        self._is_locked = not self._is_locked
-        self.emit("lock-changed")
-
-    @property
-    def is_locked(self):
-        """
-            Is player.is_locked as bool
-        """
-        return self._is_locked
 
     def reset_pcn(self):
         """

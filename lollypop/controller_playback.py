@@ -40,10 +40,8 @@ class PlaybackController:
         else:
             is_radio = App().player.current_track.id == Type.RADIOS
             self._play_button.set_sensitive(True)
-            self._prev_button.set_sensitive(not App().player.is_locked and
-                                            not is_radio)
-            self._next_button.set_sensitive(not App().player.is_locked and
-                                            not is_radio)
+            self._prev_button.set_sensitive(not is_radio)
+            self._next_button.set_sensitive(not is_radio)
 
     def on_prev_changed(self, player):
         """

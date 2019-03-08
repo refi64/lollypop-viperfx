@@ -125,8 +125,6 @@ class ProgressController:
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
-        if App().player.is_locked:
-            return True
         self.__seeking = True
 
     def _on_progress_release_button(self, scale, event):

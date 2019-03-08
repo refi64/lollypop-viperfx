@@ -75,8 +75,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
                                                  self.__on_current_changed)
         self.__signal_id2 = App().player.connect("status-changed",
                                                  self.__on_status_changed)
-        self.__signal_id3 = App().player.connect("lock-changed",
-                                                 self.__on_lock_changed)
         self.__signal_id4 = App().player.connect("duration-changed",
                                                  self.on_duration_changed)
         self.__on_current_changed(App().player)
@@ -188,14 +186,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         ProgressController.on_status_changed(self, player)
         PlaybackController.on_status_changed(self, player)
-
-    def __on_lock_changed(self, player):
-        """
-            Lock toolbar
-            @param player as Player
-        """
-        self._prev_button.set_sensitive(not player.is_locked)
-        self._next_button.set_sensitive(not player.is_locked)
 
     def __on_size_allocate(self, widget, allocation):
         """

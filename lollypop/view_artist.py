@@ -48,7 +48,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         self._album_box.set_margin_start(MARGIN)
         self._album_box.set_margin_end(MARGIN)
         self.__set_artwork()
-        self._on_lock_changed(App().player)
 
     def jump_to_current(self):
         """
@@ -166,9 +165,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         self.__removed_signal_id = App().player.connect(
                                                   "album-removed",
                                                   self.__on_album_changed)
-        self.__lock_signal_id = App().player.connect(
-                                               "lock-changed",
-                                               self._on_lock_changed)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", self._genre_ids))
         App().settings.set_value("state-two-ids",
@@ -191,9 +187,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         if self.__removed_signal_id is not None:
             App().player.disconnect(self.__removed_signal_id)
             self.__removed_signal_id = None
-        if self.__lock_signal_id is not None:
-            App().player.disconnect(self.__lock_signal_id)
-            self.__lock_signal_id = None
 
 #######################
 # PRIVATE             #

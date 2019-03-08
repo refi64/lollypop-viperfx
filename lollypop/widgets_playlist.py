@@ -313,22 +313,14 @@ class PlaylistsWidget(Gtk.Grid):
             @param widget as TracksWidget
             @param track as Track
         """
-        # Add to queue by default
-        if App().player.is_locked:
-            if track.id in App().player.queue:
-                App().player.remove_from_queue(track.id)
-            else:
-                App().player.append_to_queue(track.id)
-        else:
-            App().player.load(track)
-            if not App().player.is_party:
-                rows = self.__tracks_widget_left.get_children() +\
-                       self.__tracks_widget_right.get_children()
-                row_tracks = [row.track for row in rows]
-                App().player.populate_playlist_by_tracks(
-                    row_tracks,
-                    self.__playlist_ids,
-                    track)
+        App().player.load(track)
+        if not App().player.is_party:
+            rows = self.__tracks_widget_left.get_children() +\
+                   self.__tracks_widget_right.get_children()
+            row_tracks = [row.track for row in rows]
+            App().player.populate_playlist_by_tracks(row_tracks,
+                                                     self.__playlist_ids,
+                                                     track)
 
     def __on_insert_track(self, row, new_track_id, down):
         """

@@ -50,8 +50,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Play previous track
         """
-        if self._is_locked:
-            return
         if self._prev_track.id is not None:
             if self.position / Gst.SECOND > 2:
                 self.seek(0)
@@ -64,8 +62,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Play next track
         """
-        if self._is_locked:
-            return
         if self._next_track.id is not None:
             self._scrobble(self._current_track, self._start_time)
             self.load(self._next_track)

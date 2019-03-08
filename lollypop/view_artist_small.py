@@ -59,22 +59,10 @@ class ArtistViewSmall(View, ArtistViewCommon):
         height = self._banner.default_height // 3
         self._banner.set_height(height)
         self.__album_box.set_margin_top(height + 15)
-        self.__lock_signal_id = App().player.connect(
-                                               "lock-changed",
-                                               self._on_lock_changed)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", self._genre_ids))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", self._artist_ids))
-
-    def _on_unmap(self, widget):
-        """
-            Disconnect signals
-            @param widget as Gtk.Widget
-        """
-        if self.__lock_signal_id is not None:
-            App().player.disconnect(self.__lock_signal_id)
-            self.__lock_signal_id = None
 
 #######################
 # PRIVATE             #

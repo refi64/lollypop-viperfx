@@ -126,7 +126,6 @@ class QueueView(View):
         self.set_size_request(width, height * 0.7)
         self._signal_id1 = App().player.connect("current-changed",
                                                 self.__on_current_changed)
-        self.set_sensitive(not App().player.is_locked)
 
     def __on_unmap(self, widget):
         """
@@ -161,9 +160,8 @@ class QueueView(View):
             @param widget as Gtk.ListBox
             @param row as QueueRow
         """
-        if not App().player.is_locked:
-            App().player.load(row.track)
-            GLib.idle_add(row.destroy)
+        App().player.load(row.track)
+        GLib.idle_add(row.destroy)
 
     def __on_insert_track(self, row, new_track_id, down):
         """

@@ -39,9 +39,7 @@ class OverlayRadioHelper(OverlayHelper):
             Set overlay
             @param set as bool
         """
-        if self._lock_overlay or\
-                self._show_overlay == show_overlay or\
-                (App().player.is_locked and show_overlay):
+        if self._lock_overlay or self._show_overlay == show_overlay:
             return
         OverlayHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
@@ -86,8 +84,6 @@ class OverlayRadioHelper(OverlayHelper):
             Play radio
             @param button as Gtk.Button
         """
-        if App().player.is_locked:
-            return True
         track = Track()
         track.set_radio_id(self._radio_id)
         App().player.load(track)

@@ -121,7 +121,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         """
             Setup global shortcuts
         """
-        App().set_accels_for_action("app.shortcut::locked", ["<Control>l"])
         App().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
         App().set_accels_for_action("app.shortcut::volume",
                                     ["<Shift><Alt>v"])
@@ -457,8 +456,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             App().player.skip_album()
         elif string == "prev":
             App().player.prev()
-        elif string == "locked":
-            App().player.lock()
         elif string == "go_back":
             App().window.go_back()
         elif string == "lyrics":

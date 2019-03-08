@@ -40,9 +40,7 @@ class OverlayPlaylistHelper(OverlayHelper):
             Set overlay
             @param show_overlay as bool
         """
-        if self._lock_overlay or\
-                self._show_overlay == show_overlay or\
-                App().player.is_locked:
+        if self._lock_overlay or self._show_overlay == show_overlay:
             return
         OverlayHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
@@ -112,8 +110,6 @@ class OverlayPlaylistHelper(OverlayHelper):
             @param event as Gdk.EventButton
         """
         if self._obj is None:
-            if App().player.is_locked:
-                return True
             if self._track_ids:
                 if App().player.is_party:
                     App().lookup_action("party").change_state(

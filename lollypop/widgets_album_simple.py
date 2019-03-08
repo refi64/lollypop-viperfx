@@ -146,9 +146,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             Set overlay
             @param show_overlay as bool
         """
-        if self._lock_overlay or\
-                self._show_overlay == show_overlay or\
-                (App().player.is_locked and show_overlay):
+        if self._lock_overlay or self._show_overlay == show_overlay:
             return
         OverlayAlbumHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
@@ -217,8 +215,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             Play album with context
             @param button as Gtk.Button
         """
-        if App().player.is_locked:
-            return True
         self._show_append(False)
         if App().player.is_party:
             App().lookup_action("party").change_state(GLib.Variant("b", False))

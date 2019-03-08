@@ -46,7 +46,6 @@ class ArtistViewCommon:
         self._banner = ArtistBannerWidget(self._artist_ids[0])
         self._banner.add_overlay(self._buttons)
         self._banner.show()
-        self._on_lock_changed(App().player)
         builder.get_object("box-button").set_margin_end(MARGIN)
         artists = []
         for artist_id in self._artist_ids:
@@ -160,14 +159,6 @@ class ArtistViewCommon:
             popover.populate(self._artist_ids)
             popover.connect("closed", lambda x: button.set_active(False))
             popover.popup()
-
-    def _on_lock_changed(self, player):
-        """
-            Lock buttons
-            @param player as Player
-        """
-        self._add_button.set_sensitive(not player.is_locked)
-        self._play_button.set_sensitive(not player.is_locked)
 
 #######################
 # PRIVATE             #

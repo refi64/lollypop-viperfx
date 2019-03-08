@@ -103,9 +103,6 @@ class PlaylistsView(LazyLoadingView, ViewController):
             self.__playlists_widget.set_margin_top(
                 self.__banner.default_height + 15)
             self.add(self._overlay)
-        if App().player.is_locked:
-            self.__play_button.set_sensitive(False)
-            self.__shuffle_button.set_sensitive(False)
         self.__title_label.set_label(
             ", ".join(App().playlists.get_names(playlist_ids)))
         self._scrolled.set_property("expand", True)
