@@ -359,7 +359,7 @@ class TuneinPopover(Gtk.Popover):
                 # Cache for MPRIS
                 App().task_helper.run(App().art.copy_uri_to_cache,
                                       item.LOGO, item.TEXT,
-                                      ArtSize.BIG, ArtSize.BIG)
+                                      ArtSize.MONSTER, ArtSize.MONSTER)
             track = Track()
             track.set_radio(item.TEXT, item.URL)
             App().player.load(track)
