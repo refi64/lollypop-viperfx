@@ -123,19 +123,6 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
         if album_id == self._album.id:
             self.update(self._album)
 
-    def __on_button_release_event(self, eventbox, event):
-        """
-            Show Covers popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if self._album is None:
-            return
-        from lollypop.pop_artwork import CoversPopover
-        popover = CoversPopover(self._album)
-        popover.set_relative_to(eventbox)
-        popover.popup()
-
     def __on_album_artwork(self, surface):
         """
             Set album artwork
