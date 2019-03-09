@@ -356,15 +356,14 @@ class BinPlayer(BasePlayer):
         """
         self.emit("loading-changed", False)
         Logger.info("Player::_on_bus_error(): %s" % message.parse_error()[1])
-        if self.__codecs.is_missing_codec(message):
-            self.__codecs.install()
-            App().scanner.stop()
-            self.stop()
-        elif App().notify is not None:
-            App().notify.send(message.parse_error()[0].message)
-            self.set_next()
-            self.set_prev()
-            self.next()
+        if self.current_track.id >= 0:
+            if self.__codecs.is_missing_codec(message):
+                self.__codecs.install()
+                App().scanner.stop()
+                self.stop()
+            elif App().notify is not None:
+                App().notify.send(message.parse_error()[0].message)
+                self.stop()
 
     def _on_bus_eos(self, bus, message):
         """
@@ -374,10 +373,9 @@ class BinPlayer(BasePlayer):
         self.emit("loading-changed", False)
         Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
-            self._next_context = NextContext.NONE
-            if self._next_track.id is not None:
-                self._load_track(self._next_track)
-            self.emit("current-changed")
+            if App().notify is not None:
+                App().notify.send(message.parse_error()[0].message)
+            self.stop()
 
     def _on_stream_about_to_finish(self, playbin):
         """

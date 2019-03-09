@@ -444,10 +444,11 @@ class MPRIS(Server):
                 cover_path = App().art.get_album_cache_path(
                     App().player.current_track.album,
                     ArtSize.MONSTER, ArtSize.MONSTER)
-            if cover_path is not None:
-                self.__metadata["mpris:artUrl"] = GLib.Variant(
-                    "s",
-                    "file://" + cover_path)
+            if cover_path is None:
+                cover_path = ""
+            self.__metadata["mpris:artUrl"] = GLib.Variant(
+                "s",
+                "file://" + cover_path)
 
     def __on_seeked(self, player, position):
         self.Seeked(position * (1000 * 1000))
