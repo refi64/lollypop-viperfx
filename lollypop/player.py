@@ -378,6 +378,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Set previous track
         """
+        if self.current_track.id == Type.RADIOS:
+            return
         try:
             # Same track
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
@@ -404,6 +406,8 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @param sql as sqlite cursor
             @param force as bool
         """
+        if self.current_track.id == Type.RADIOS:
+            return
         try:
             # Reset finished context
             self._next_context = NextContext.NONE
