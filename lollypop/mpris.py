@@ -481,21 +481,21 @@ class MPRIS(Server):
         properties = {"LoopStatus": GLib.Variant("s", mpris_value)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
-    def __on_rate_changed(self, player, id_rating):
-        rated_track_id, rating = id_rating
+    def __on_rate_changed(self, player, rated_track_id, rating):
         # We only care about the current Track's rating.
-        if rated_track_id == self.__lollypop_id and self.__rating != rating:
+        if rated_track_id == self.__lollypop_id:
             self.__rating = rating
             self.__update_metadata()
             properties = {"Metadata": GLib.Variant("a{sv}", self.__metadata)}
             self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_current_changed(self, player):
-        current_track_id = App().player.current_track.id
-        if current_track_id and current_track_id >= 0:
-            self.__lollypop_id = current_track_id
-        else:
+        if App().player.current_track.id is None:
             self.__lollypop_id = 0
+        elif App().player.current_track.id == Type.RADIOS:
+            self.__lollypop_id = App().player.current_track.radio_id
+        else:
+            self.__lollypop_id = App().player.current_track.id
         # We only need to recalculate a new trackId at song changes.
         self.__track_id = self.__get_media_id(self.__lollypop_id)
         self.__rating = None

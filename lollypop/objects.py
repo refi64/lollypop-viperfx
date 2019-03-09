@@ -143,9 +143,10 @@ class Base:
         if self.id == Type.RADIOS:
             radios = Radios()
             radios.set_rate(self._radio_id, rate)
+            App().player.emit("rate-changed", self._radio_id, rate)
         else:
             self.db.set_rate(self.id, rate)
-            App().player.emit("rate-changed", (self.id, rate))
+            App().player.emit("rate-changed", self.id, rate)
 
 
 class Disc:
