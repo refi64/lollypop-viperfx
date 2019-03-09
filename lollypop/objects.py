@@ -480,6 +480,24 @@ class Track(Base):
         """
         self._uri = uri
 
+    def set_radio(self, name, uri):
+        """
+            Set radio for non DB radios (Tunein)
+            @param name as string
+            @param uri as string
+        """
+        from lollypop.radios import Radios
+        radios = Radios()
+        self.id = Type.RADIOS
+        self._radio_id = radios.get_id(name)
+        self._radio_name = name
+        self._uri = uri
+        # Generate a tmp album id, needed by InfoController
+        album_id = 0
+        for i in list(map(ord, name)):
+            album_id += i
+        self.album.id = album_id
+
     def set_radio_id(self, radio_id):
         """
             Set radio id
@@ -487,26 +505,9 @@ class Track(Base):
         """
         from lollypop.radios import Radios
         radios = Radios()
-        self.id = Type.RADIOS
-        self._radio_id = radio_id
-        self.album.id = radio_id
-        self._radio_name = radios.get_name(radio_id)
-        self._uri = radios.get_uri(radio_id)
-
-    def set_radio(self, name, uri):
-        """
-            Set radio for non DB radios (Tunein)
-            @param name as string
-            @param uri as string
-        """
-        self.id = Type.RADIOS
-        # Generate a tmp album id, needed by InfoController
-        album_id = 0
-        for i in list(map(ord, name)):
-            album_id += i
-        self.album.id = album_id
-        self._radio_name = name
-        self._uri = uri
+        name = radios.get_name(radio_id)
+        uri = radios.get_uri(radio_id)
+        self.set_radio(name, uri)
 
     def set_number(self, number):
         """

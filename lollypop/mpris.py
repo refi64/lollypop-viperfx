@@ -397,34 +397,42 @@ class MPRIS(Server):
                 "/org/mpris/MediaPlayer2/TrackList/NoTrack")}
         else:
             self.__metadata["mpris:trackid"] = self.__track_id
-            track_number = App().player.current_track.number
-            if track_number is None:
-                track_number = 1
-            self.__metadata["xesam:trackNumber"] = GLib.Variant("i",
-                                                                track_number)
-            self.__metadata["xesam:title"] = GLib.Variant(
-                "s",
-                App().player.current_track.name)
-            self.__metadata["xesam:album"] = GLib.Variant(
-                "s",
-                App().player.current_track.album.name)
-            self.__metadata["xesam:artist"] = GLib.Variant(
-                "as",
-                App().player.current_track.artists)
-            self.__metadata["xesam:albumArtist"] = GLib.Variant(
-                "as",
-                App().player.current_track.album_artists)
-            self.__metadata["mpris:length"] = GLib.Variant(
-                "x",
-                App().player.current_track.duration * 1000 * 1000)
-            self.__metadata["xesam:genre"] = GLib.Variant(
-                "as",
-                App().player.current_track.genres)
+            if App().player.current_track.id == Type.RADIOS:
+                self.__metadata["xesam:title"] = GLib.Variant(
+                    "s",
+                    App().player.current_track.name)
+                self.__metadata["xesam:artist"] = GLib.Variant(
+                    "as",
+                    [App().player.current_track.radio_name])
+            else:
+                track_number = App().player.current_track.number
+                if track_number is None:
+                    track_number = 1
+                self.__metadata["xesam:trackNumber"] = GLib.Variant(
+                    "i",
+                    track_number)
+                self.__metadata["xesam:title"] = GLib.Variant(
+                    "s",
+                    App().player.current_track.name)
+                self.__metadata["xesam:album"] = GLib.Variant(
+                    "s",
+                    App().player.current_track.album.name)
+                self.__metadata["xesam:artist"] = GLib.Variant(
+                    "as",
+                    App().player.current_track.artists)
+                self.__metadata["xesam:albumArtist"] = GLib.Variant(
+                    "as",
+                    App().player.current_track.album_artists)
+                self.__metadata["mpris:length"] = GLib.Variant(
+                    "x",
+                    App().player.current_track.duration * 1000 * 1000)
+                self.__metadata["xesam:genre"] = GLib.Variant(
+                    "as",
+                    App().player.current_track.genres)
             self.__metadata["xesam:url"] = GLib.Variant(
                 "s",
                 App().player.current_track.uri)
-            if self.__rating is None:
-                self.__rating = App().player.current_track.get_rate()
+            self.__rating = App().player.current_track.get_rate()
             self.__metadata["xesam:userRating"] = GLib.Variant(
                 "d",
                 self.__rating / 5)
