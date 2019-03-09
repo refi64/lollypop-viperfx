@@ -39,7 +39,6 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__view_type = view_type
         self.__height = self.default_height
         self.set_property("valign", Gtk.Align.START)
-        self.get_style_context().add_class("black")
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
         builder.connect_signals(self)
@@ -49,6 +48,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__duration_label = builder.get_object("duration_label")
         menu_button = builder.get_object("menu_button")
         if view_type & ViewType.ALBUM and not view_type & ViewType.SMALL:
+            self.get_style_context().add_class("black")
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
