@@ -84,16 +84,6 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
             child.set_selection()
             child.set_playing_indicator()
 
-    def _on_artwork_changed(self, artwork, album_id):
-        """
-            Update children artwork if matching album id
-            @param artwork as Artwork
-            @param album_id as int
-        """
-        for child in self.children:
-            if child.album.id == album_id:
-                child.set_artwork()
-
     def _on_duration_changed(self, player, track_id):
         """
             Update track duration
