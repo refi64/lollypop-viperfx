@@ -46,7 +46,9 @@ class AppMenuPopover(Popover):
             Set volume
             @param scale as Gtk.Scale
         """
-        App().player.set_volume(scale.get_value())
+        new_volume = scale.get_value()
+        if new_volume != App().player.volume:
+            App().player.set_volume(scale.get_value())
 
 #######################
 # PRIVATE             #
@@ -56,7 +58,9 @@ class AppMenuPopover(Popover):
             Set scale value
             @param player as Player
         """
-        self.__volume.set_value(player.volume)
+        volume = self.__volume.get_value()
+        if player.volume != volume:
+            self.__volume.set_value(player.volume)
 
     def __on_map(self, widget):
         """
