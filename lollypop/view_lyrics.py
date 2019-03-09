@@ -214,6 +214,7 @@ class LyricsView(View, InformationController):
         """
         self.__size_allocate_timeout_id = None
         self.__update_lyrics_style()
+        self._previous_artwork_id = None
         self.update_artwork(self.__size, self.__size)
 
     def __on_size_allocate(self, widget, allocation):
