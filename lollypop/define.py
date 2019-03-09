@@ -49,6 +49,7 @@ class ArtHelperEffect:
     RESIZE = 1 << 5
     FALLBACK = 1 << 6
     SAVE = 1 << 7
+    DARKER = 1 << 8
 
 
 class ViewType:

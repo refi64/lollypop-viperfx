@@ -39,6 +39,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__view_type = view_type
         self.__height = self.default_height
         self.set_property("valign", Gtk.Align.START)
+        self.get_style_context().add_class("black")
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/AlbumBannerWidget.ui")
         builder.connect_signals(self)
@@ -88,8 +89,6 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
         if view_type & ViewType.ALBUM:
-            self.__grid.get_style_context().add_class("black")
-            self.__artwork.get_style_context().add_class("black")
             self.connect("size-allocate", self.__on_size_allocate)
             self.connect("destroy", self.__on_destroy)
             self.__art_signal_id = App().art.connect(
@@ -240,7 +239,9 @@ class AlbumBannerWidget(Gtk.Bin):
                 allocation.height - self.__padding,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
-                ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
+                ArtHelperEffect.RESIZE |
+                ArtHelperEffect.BLUR_HARD |
+                ArtHelperEffect.DARKER)
 
     def __on_destroy(self, widget):
         """
@@ -263,17 +264,16 @@ class AlbumBannerWidget(Gtk.Bin):
                             self.get_allocated_height() - self.__padding,
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
-                            ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
+                            ArtHelperEffect.RESIZE |
+                            ArtHelperEffect.BLUR_HARD |
+                            ArtHelperEffect.DARKER)
 
     def __on_album_artwork(self, surface):
         """
             Set album artwork
             @param surface as str
         """
-        if surface is None:
-            self.__grid.get_style_context().remove_class("black")
-            self.__grid.get_style_context().add_class("black-non-transparent")
-        else:
+        if surface is not None:
             self.__artwork.set_from_surface(surface)
 
     def __on_year_button_release_event(self, widget, event):

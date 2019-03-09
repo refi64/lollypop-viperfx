@@ -95,7 +95,6 @@ class PlaylistsView(LazyLoadingView, ViewController):
                     "text-x-large")
             self.__title_label.set_property("valign", Gtk.Align.END)
             self.__duration_label.set_property("valign", Gtk.Align.START)
-            self.__widget.get_style_context().add_class("black")
             self.__banner = PlaylistBannerWidget(playlist_ids[0])
             self.__banner.show()
             self._overlay.add_overlay(self.__banner)

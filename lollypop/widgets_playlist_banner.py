@@ -42,8 +42,8 @@ class PlaylistBannerWidget(Gtk.Overlay):
         self.__playlist_id = playlist_id
         self.__allocation_timeout_id = None
         self.set_property("valign", Gtk.Align.START)
+        self.get_style_context().add_class("black")
         self.__artwork = Gtk.Image()
-        self.__artwork.get_style_context().add_class("black")
         self.__artwork.show()
         self.add(self.__artwork)
         self.connect("size-allocate", self.__on_size_allocate)
@@ -114,23 +114,16 @@ class PlaylistBannerWidget(Gtk.Overlay):
                 allocation.height,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
-                ArtHelperEffect.RESIZE | ArtHelperEffect.BLUR_HARD)
-        else:
-            self.__artwork.get_style_context().remove_class("black")
-            self.__artwork.get_style_context().add_class(
-                "black-non-transparent")
+                ArtHelperEffect.RESIZE |
+                ArtHelperEffect.BLUR_HARD |
+                ArtHelperEffect.DARKER)
 
     def __on_album_artwork(self, surface):
         """
             Set album artwork
             @param surface as str
         """
-        # Try with a new album
-        if surface is None:
-            self.__artwork.get_style_context().remove_class("black")
-            self.__artwork.get_style_context().add_class(
-                "black-non-transparent")
-        else:
+        if surface is not None:
             self.__artwork.set_from_surface(surface)
 
     def __on_size_allocate(self, widget, allocation):

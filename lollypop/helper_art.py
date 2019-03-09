@@ -13,6 +13,7 @@
 from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
 
 from PIL import Image, ImageFilter
+import cairo
 
 from lollypop.define import App, ArtHelperEffect
 from lollypop.logger import Logger
@@ -151,11 +152,27 @@ class ArtHelper(GObject.Object):
             else:
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                         pixbuf, scale_factor, None)
+            if effect & ArtHelperEffect.DARKER:
+                self.__set_color(surface, 0, 0, 0)
         callback(surface)
 
 #######################
 # PRIVATE             #
 #######################
+    def __set_color(self, surface, r, g, b):
+        """
+            Get a darker pixbuf
+            @param surface as cairo.Surface
+            @param r as int
+            @param g as int
+            @param b as int
+            @return cairo.Surface
+        """
+        ctx = cairo.Context(surface)
+        ctx.rectangle(0, 0, surface.get_width(), surface.get_height())
+        ctx.set_source_rgba(r, g, b, 0.5)
+        ctx.fill()
+
     def __get_blur(self, pixbuf, w, h, gaussian):
         """
             Blur surface using PIL
@@ -163,7 +180,7 @@ class ArtHelper(GObject.Object):
             @param w as int
             @param h as int
             @param gaussian as int
-            @return cairo.Surface
+            @return GdkPixbuf.Pixbuf
         """
         if pixbuf is None:
             return None

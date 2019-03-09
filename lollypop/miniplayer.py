@@ -37,7 +37,9 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__allocation_timeout_id = None
         self.__artwork = None
         Gtk.Bin.__init__(self)
-        InformationController.__init__(self, False, ArtHelperEffect.BLUR_HARD)
+        InformationController.__init__(self, False,
+                                       ArtHelperEffect.BLUR_HARD |
+                                       ArtHelperEffect.DARKER)
         ProgressController.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()
@@ -89,13 +91,14 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         (min, nat) = Gtk.Bin.do_get_preferred_width(self)
         # Allow resizing
-        return (0, 0)
+        return (0, nat)
 
     def do_get_preferred_height(self):
         """
             Force preferred height
         """
-        return self.__grid.get_preferred_height()
+        (min, nat) = self.__grid.get_preferred_height()
+        return (min, min)
 
 #######################
 # PROTECTED           #

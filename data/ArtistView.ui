@@ -183,8 +183,5 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
-    <style>
-      <class name="black"/>
-    </style>
   </object>
 </interface>
