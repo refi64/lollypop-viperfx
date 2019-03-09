@@ -19,7 +19,7 @@ from lollypop.define import App, Sizing, Type, ScanType
 from lollypop.toolbar import Toolbar
 from lollypop.logger import Logger
 from lollypop.adaptive import AdaptiveWindow
-from lollypop.utils import is_unity
+from lollypop.utils import is_unity, get_headerbar_buttons_width
 
 
 class Window(Gtk.ApplicationWindow, AdaptiveWindow):
@@ -42,6 +42,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.__miniplayer = None
         self.__mediakeys = None
         self.__media_keys_busnames = []
+        self.__headerbar_buttons_width = get_headerbar_buttons_width()
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
         App().player.connect("current-changed", self.__on_current_changed)
@@ -318,7 +319,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             @param width as int
             @param height as int
         """
-        if width < Sizing.MONSTER:
+        if width - self.__headerbar_buttons_width < Sizing.MONSTER:
             self.__show_miniplayer(True)
         else:
             self.__show_miniplayer(False)
