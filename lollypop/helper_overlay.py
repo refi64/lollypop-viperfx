@@ -158,7 +158,7 @@ class OverlayHelper:
                 self._spinner.show()
                 self._spinner.start()
                 style_context = self._spinner.get_style_context()
-                style_context.add_class("black")
+                style_context.add_class("black-transparent")
                 self._overlay.add_overlay(self._spinner)
         else:
             if self._spinner is not None:
