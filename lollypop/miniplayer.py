@@ -29,12 +29,11 @@ class MiniPlayer(Gtk.Bin, InformationController,
         "revealed": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
     }
 
-    def __init__(self, width):
+    def __init__(self):
         """
             Init mini player
-            @param width as int
         """
-        self.__width = width
+        self.__size = 0
         self.__allocation_timeout_id = None
         self.__artwork = None
         Gtk.Bin.__init__(self)
@@ -166,10 +165,14 @@ class MiniPlayer(Gtk.Bin, InformationController,
             @param allocation as Gtk.Allocation
         """
         self.__allocation_timeout_id = None
-        if allocation.width == 1 or self.__width == allocation.width:
+        # We use parent height because we may be collapsed
+        new_size = max(allocation.width,
+                       self.get_parent().get_allocated_height())
+        if new_size == 1 or self.__size == new_size:
             return
-        self.__width = allocation.width
-        InformationController.on_current_changed(self, self.__width, None)
+        self.__size = new_size
+        self._previous_artwork_id = None
+        InformationController.on_current_changed(self, new_size, None)
 
     def __on_destroy(self, widget):
         """
@@ -188,7 +191,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         if App().player.current_track.id is not None:
             self.show()
-        InformationController.on_current_changed(self, self.__width, None)
+        InformationController.on_current_changed(self, self.__size, None)
         ProgressController.on_current_changed(self, player)
         PlaybackController.on_current_changed(self, player)
         if self.__artwork is not None:

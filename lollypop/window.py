@@ -180,7 +180,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
                 App().window.emit("show-can-go-back", True)
         if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
-            self.__miniplayer = MiniPlayer(self.get_size()[0])
+            self.__miniplayer = MiniPlayer()
             self.__miniplayer.connect("revealed", on_revealed)
             self.__miniplayer.set_vexpand(False)
             self.__vgrid.add(self.__miniplayer)
