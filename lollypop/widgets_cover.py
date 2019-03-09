@@ -35,7 +35,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
         Gtk.EventBox.__init__(self)
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
-        self._album = None
+        self._album = album
         self.__image_button = None
         self.__art_size = art_size
         self._artwork = App().art_helper.get_image(self.__art_size,
