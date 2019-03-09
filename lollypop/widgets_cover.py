@@ -110,7 +110,13 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
         if self._album is None:
             return
         if album_id == self._album.id:
-            self.update(self._album)
+            App().art_helper.set_album_artwork(
+                self._album,
+                self.__art_size,
+                self.__art_size,
+                self._artwork.get_scale_factor(),
+                self.__on_album_artwork,
+                ArtHelperEffect.NONE)
 
     def __on_album_artwork(self, surface):
         """
