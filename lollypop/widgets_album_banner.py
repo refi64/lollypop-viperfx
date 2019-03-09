@@ -77,7 +77,6 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__year_label.set_text(str(album.year))
         else:
             self.__year_label.hide()
-        self.__year_label.set_margin_end(MARGIN)
         year_eventbox = builder.get_object("year_eventbox")
         year_eventbox.connect("realize", on_realize)
         year_eventbox.connect("button-release-event",
@@ -102,7 +101,6 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__cover_widget = CoverWidget(album, ArtSize.LARGE)
         else:
             self.__cover_widget = CoverWidget(album)
-        self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
         self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
@@ -125,6 +123,9 @@ class AlbumBannerWidget(Gtk.Bin):
         loved.show()
         self.__rating_grid.attach(loved, 2, 0, 1, 1)
         self.add(self.__widget)
+        self.__cover_widget.set_margin_start(MARGIN)
+        self.__year_label.set_margin_end(MARGIN)
+        self.__duration_label.set_margin_end(MARGIN)
 
     def set_height(self, height):
         """
