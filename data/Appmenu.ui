@@ -17,11 +17,6 @@
     <property name="can_focus">False</property>
     <property name="icon_name">audio-card-symbolic</property>
   </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">gedit-symbolic</property>
-  </object>
   <object class="GtkImage" id="image40">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -181,7 +176,7 @@
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">audio-volume-high-symbolic</property>
+            <property name="icon_name">audio-speakers-symbolic</property>
           </object>
           <packing>
             <property name="expand">False</property>
