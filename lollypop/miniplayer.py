@@ -169,8 +169,12 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         self.__allocation_timeout_id = None
         # We use parent height because we may be collapsed
-        new_size = max(allocation.width,
-                       self.get_parent().get_allocated_height())
+        parent = self.get_parent()
+        if parent is None:
+            height = allocation.height
+        else:
+            height = parent.get_allocated_height()
+        new_size = max(allocation.width, height)
         if new_size == 1 or self.__size == new_size:
             return
         self.__size = new_size
