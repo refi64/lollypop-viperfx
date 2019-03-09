@@ -100,10 +100,9 @@ class AlbumBannerWidget(Gtk.Bin):
             # See application.css: cover-frame
             self.__padding = 8
         if view_type & ViewType.SMALL or not view_type & ViewType.ALBUM:
-            self.__cover_widget = CoverWidget(True, ArtSize.LARGE)
+            self.__cover_widget = CoverWidget(album, ArtSize.LARGE)
         else:
-            self.__cover_widget = CoverWidget(True)
-        self.__cover_widget.update(album)
+            self.__cover_widget = CoverWidget(album)
         self.__cover_widget.set_margin_start(MARGIN)
         self.__cover_widget.set_vexpand(True)
         self.__cover_widget.show()

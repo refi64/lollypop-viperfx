@@ -27,10 +27,9 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, overlay=False, art_size=ArtSize.BANNER):
+    def __init__(self, album, art_size=ArtSize.BANNER):
         """
             Init cover widget
-            @param overlay as bool
             @param art_size as int
         """
         Gtk.EventBox.__init__(self)
@@ -43,27 +42,6 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                                                    self.__art_size,
                                                    "small-cover-frame")
         self._artwork.show()
-        if overlay:
-            self._overlay = Gtk.Overlay.new()
-            self._overlay.show()
-            OverlayAlbumHelper.__init__(self)
-            self._overlay.add(self._artwork)
-            self.add(self._overlay)
-            self.connect("enter-notify-event", self._on_enter_notify)
-            self.connect("leave-notify-event", self._on_leave_notify)
-        else:
-            self.add(self._artwork)
-        self.connect("destroy", self.__on_destroy)
-        self.__art_signal_id = App().art.connect(
-                                              "album-artwork-changed",
-                                              self.__on_album_artwork_changed)
-
-    def update(self, album):
-        """
-            Update cover
-            @param album as Album
-        """
-        self._album = album
         App().art_helper.set_album_artwork(
                 album,
                 self.__art_size,
@@ -71,6 +49,17 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                 self._artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.NONE)
+        self._overlay = Gtk.Overlay.new()
+        self._overlay.show()
+        OverlayAlbumHelper.__init__(self)
+        self._overlay.add(self._artwork)
+        self.add(self._overlay)
+        self.connect("enter-notify-event", self._on_enter_notify)
+        self.connect("leave-notify-event", self._on_leave_notify)
+        self.connect("destroy", self.__on_destroy)
+        self.__art_signal_id = App().art.connect(
+                                              "album-artwork-changed",
+                                              self.__on_album_artwork_changed)
 
 #######################
 # PROTECTED           #

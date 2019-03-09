@@ -16,9 +16,8 @@ from lollypop.helper_art import ArtHelperEffect
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
-from lollypop.widgets_cover import CoverWidget
 from lollypop.utils import on_realize
-from lollypop.define import App, ArtSize
+from lollypop.define import App, ArtSize, Type
 
 
 class MiniPlayer(Gtk.Bin, InformationController,
@@ -37,7 +36,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         self.__width = width
         self.__allocation_timeout_id = None
-        self.__cover_widget = None
+        self.__artwork = None
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, False, ArtHelperEffect.BLUR_HARD |
                                        ArtHelperEffect.RESIZE)
@@ -119,15 +118,20 @@ class MiniPlayer(Gtk.Bin, InformationController,
         if self.__revealer.get_reveal_child():
             self.__revealer.set_reveal_child(False)
             self.emit("revealed", False)
-            if self.__cover_widget is not None:
-                self.__cover_widget.destroy()
-                self.__cover_widget = None
+            if self.__artwork is not None:
+                self.__artwork.destroy()
+                self.__artwork = None
         else:
-            if self.__cover_widget is None:
-                self.__cover_widget = CoverWidget(False, ArtSize.BIG)
-                self.__cover_widget.update(App().player.current_track.album)
-                self.__cover_widget.show()
-                self.__revealer_box.pack_start(self.__cover_widget,
+            if self.__artwork is None:
+                self.__artwork = App().art_helper.get_image(
+                                                        ArtSize.BIG,
+                                                        ArtSize.BIG,
+                                                        "small-cover-frame")
+                self.__artwork.set_property("halign", Gtk.Align.CENTER)
+                self.__artwork.set_property("valign", Gtk.Align.CENTER)
+                self.__update_artwork()
+                self.__artwork.show()
+                self.__revealer_box.pack_start(self.__artwork,
                                                True, True, 0)
             self.__revealer.set_reveal_child(True)
             self.emit("revealed", True)
@@ -135,6 +139,27 @@ class MiniPlayer(Gtk.Bin, InformationController,
 #######################
 # PRIVATE             #
 #######################
+    def __update_artwork(self):
+        """
+            Update artwork based on current track
+        """
+        if App().player.current_track.id == Type.RADIOS:
+            App().art_helper.set_radio_artwork(
+                App().player.current_track.radio_name,
+                ArtSize.BIG,
+                ArtSize.BIG,
+                self._artwork.get_scale_factor(),
+                self.__on_artwork,
+                ArtHelperEffect.NONE)
+        else:
+            App().art_helper.set_album_artwork(
+                App().player.current_track.album,
+                ArtSize.BIG,
+                ArtSize.BIG,
+                self._artwork.get_scale_factor(),
+                self.__on_artwork,
+                ArtHelperEffect.NONE)
+
     def __handle_size_allocate(self, allocation):
         """
             Change box max/min children
@@ -166,8 +191,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
         InformationController.on_current_changed(self, self.__width, None)
         ProgressController.on_current_changed(self, player)
         PlaybackController.on_current_changed(self, player)
-        if self.__cover_widget is not None:
-            self.__cover_widget.update(App().player.current_track.album)
+        if self.__artwork is not None:
+            self.__update_artwork()
 
     def __on_status_changed(self, player):
         """
@@ -187,3 +212,10 @@ class MiniPlayer(Gtk.Bin, InformationController,
             GLib.source_remove(self.__allocation_timeout_id)
         self.__allocation_timeout_id = GLib.idle_add(
             self.__handle_size_allocate, allocation)
+
+    def __on_artwork(self, surface):
+        """
+            Set artwork
+            @param surface as str
+        """
+        self.__artwork.set_from_surface(surface)
