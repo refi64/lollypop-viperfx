@@ -339,11 +339,14 @@ class SpotifyHelper(GObject.Object):
         discname = None
         tracknumber = int(payload["track_number"])
         try:
-            timestamp = payload["album"]["release_date"]
-            year = timestamp[:4]
+            release_date = "%sT00:00:00" % payload["album"]["release_date"]
+            dt = GLib.DateTime.new_from_iso8601(release_date,
+                                                GLib.TimeZone.new_local())
+            timestamp = dt.to_unix()
+            year = dt.get_year()
         except Exception as e:
             Logger.warning("SpotifyHelper::__save_track(): %s", e)
-            timestamp = ""
+            timestamp = None
             year = None
         duration = payload["duration_ms"] // 1000
         mb_album_id = mb_track_id = None
