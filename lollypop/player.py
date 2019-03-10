@@ -282,6 +282,34 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             self.__play_albums(album, albums)
         self.emit("playlist-changed")
 
+    def play_uris(self, uris):
+        """
+            Play uris
+            @param uri as [str]
+        """
+        # First get tracks
+        tracks = []
+        for uri in uris:
+            track_id = App().tracks.get_id_by_uri(uri)
+            if track_id is not None:
+                tracks.append(Track(track_id))
+        # Then get album ids
+        album_ids = {}
+        for track in tracks:
+            if track.album.id in album_ids.keys():
+                album_ids[track.album.id].append(track)
+            else:
+                album_ids[track.album.id] = [track]
+        # Create albums with tracks
+        play = True
+        for album_id in album_ids.keys():
+            album = Album(album_id)
+            album.set_tracks(album_ids[album_id])
+            if play:
+                self.play_album(album)
+            else:
+                self.add_album(album)
+
     def clear_albums(self):
         """
             Clear all albums
@@ -350,7 +378,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
                             for track in tracks:
                                 if track.id == current_track_id:
                                     break
-                        App().player.populate_playlist_by_tracks(
+                        self.populate_playlist_by_tracks(
                             tracks, playlist_ids, track)
                     if is_playing:
                         self.play()

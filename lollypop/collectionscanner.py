@@ -24,7 +24,6 @@ from time import time
 
 from lollypop.inotify import Inotify
 from lollypop.define import App, ScanType
-from lollypop.objects import Track, Album
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
@@ -310,7 +309,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             GLib.idle_add(self.__finish, new_tracks)
 
         if scan_type == ScanType.EPHEMERAL:
-            self.__play_new_tracks(new_tracks)
+            App().player.play_uris(new_tracks)
 
     def __scan_to_handle(self, uri):
         """
@@ -518,30 +517,3 @@ class CollectionScanner(GObject.GObject, TagReader):
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
         return track_id
-
-    def __play_new_tracks(self, uris):
-        """
-            Play new tracks
-            @param uri as [str]
-        """
-        # First get tracks
-        tracks = []
-        for uri in uris:
-            track_id = App().tracks.get_id_by_uri(uri)
-            tracks.append(Track(track_id))
-        # Then get album ids
-        album_ids = {}
-        for track in tracks:
-            if track.album.id in album_ids.keys():
-                album_ids[track.album.id].append(track)
-            else:
-                album_ids[track.album.id] = [track]
-        # Create albums with tracks
-        play = True
-        for album_id in album_ids.keys():
-            album = Album(album_id)
-            album.set_tracks(album_ids[album_id])
-            if play:
-                App().player.play_album(album)
-            else:
-                App().player.add_album(album)
