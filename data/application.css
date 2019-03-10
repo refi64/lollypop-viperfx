@@ -191,15 +191,12 @@ popover.background separator {
 }
 
 .banner-frame {
-    border-top: 1px solid shade(@theme_bg_color, 0.9);
-    border-bottom: 1px solid shade(@theme_bg_color, 0.9);
+    border-bottom: 1px solid shade(@theme_bg_color, 0.85);
     padding: 3px;
 }
 
 .banner-frame:selected {
-    border-top: 1px solid alpha(@theme_selected_bg_color, 0.1);
-    border-bottom: 1px solid alpha(@theme_selected_bg_color, 0.1);
-    background-color: alpha(@theme_selected_bg_color, 0.1);
+    border-bottom: 1px solid @theme_selected_bg_color;
     color: @theme_fg_color;
 }
 
