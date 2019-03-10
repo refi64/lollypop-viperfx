@@ -249,6 +249,14 @@ class AdaptiveWindow:
                                                  self.__on_configure_event)
 
     @property
+    def can_go_back(self):
+        """
+            True if can go back
+            @return bool
+        """
+        return len(self.__stack.history) > 1
+
+    @property
     def is_adaptive(self):
         """
             True if adaptive is on

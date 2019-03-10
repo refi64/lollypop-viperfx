@@ -175,10 +175,12 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             miniplayer.set_vexpand(revealed)
             if revealed:
                 self.__container.hide()
-                App().window.emit("show-can-go-back", False)
+                self.emit("can-go-back-changed", False)
+                self.toolbar.end.home_button.set_sensitive(False)
             else:
                 self.__container.show()
-                App().window.emit("show-can-go-back", True)
+                self.emit("can-go-back-changed", self.can_go_back)
+                self.toolbar.end.home_button.set_sensitive(True)
         if show and self.__miniplayer is None:
             from lollypop.miniplayer import MiniPlayer
             self.__miniplayer = MiniPlayer()
@@ -457,11 +459,11 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         elif string == "prev":
             App().player.prev()
         elif string == "go_back":
-            App().window.go_back()
+            self.go_back()
         elif string == "lyrics":
-            App().window.container.show_lyrics()
+            self.container.show_lyrics()
         elif string == "reload":
-            App().window.container.reload_view()
+            self.container.reload_view()
         elif string == "volume_up":
             App().player.set_volume(App().player.volume + 0.1)
         elif string == "volume_down":
@@ -475,12 +477,12 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             if self.container.view is not None:
                 self.container.view.enable_filter()
         elif string == "volume":
-            App().window.container.show_view(Type.EQUALIZER)
+            self.container.show_view(Type.EQUALIZER)
         elif string == "current_artist":
             if App().player.current_track.id is not None and\
                     App().player.current_track.id > 0:
                 artist_ids = App().player.current_track.album.artist_ids
-                App().window.container.show_artist_view(artist_ids)
+                self.container.show_artist_view(artist_ids)
         elif string == "loved":
             track = App().player.current_track
             if track.id is not None and track.id >= 0:

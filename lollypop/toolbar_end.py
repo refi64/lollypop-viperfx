@@ -139,6 +139,14 @@ class ToolbarEnd(Gtk.Bin):
         self.__search_popover.set_text(search)
 
     @property
+    def home_button(self):
+        """
+            Get home button
+            @return Gtk.Button
+        """
+        return self.__home_button
+
+    @property
     def next_popover(self):
         """
             Get next popover
