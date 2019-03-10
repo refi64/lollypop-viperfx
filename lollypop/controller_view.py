@@ -24,19 +24,23 @@ class ViewController:
         Should be herited by a Gtk.Widget
     """
 
-    def __init__(self, controller_type, on_map=True):
+    def __init__(self, controller_type):
         """
             Init controller
             @param controller_type as ViewControllerType
-            @param on_map as bool (only works on map)
         """
         self.__signals_ids = {}
         self.__type = controller_type
-        if on_map:
-            self.connect("map", self.__on_map)
-            self.connect("unmap", self.__on_unmap)
-        else:
-            self.__connect_signals()
+        self.connect("destroy", self.__on_destroy)
+        self.__signals_ids[
+            App().player.connect("current-changed",
+                                 self._on_current_changed)] = App().player
+        self.__signals_ids[
+            App().player.connect("duration-changed",
+                                 self._on_duration_changed)] = App().player
+        self.__signals_ids[
+            App().art.connect("%s-artwork-changed" % self.__type,
+                              self._on_artwork_changed)] = App().art
 
 #######################
 # PROTECTED           #
@@ -53,28 +57,7 @@ class ViewController:
 #######################
 # PRIVATE             #
 #######################
-    def __connect_signals(self):
-        """
-            Connect player signals
-        """
-        self.__signals_ids[
-            App().player.connect("current-changed",
-                                 self._on_current_changed)] = App().player
-        self.__signals_ids[
-            App().player.connect("duration-changed",
-                                 self._on_duration_changed)] = App().player
-        self.__signals_ids[
-            App().art.connect("%s-artwork-changed" % self.__type,
-                              self._on_artwork_changed)] = App().art
-
-    def __on_map(self, widget):
-        """
-            Connect signals
-            @param widget as Gtk.Widget
-        """
-        self.__connect_signals()
-
-    def __on_unmap(self, widget):
+    def __on_destroy(self, widget):
         """
             Disconnect signals
             @param widget as Gtk.Widget
