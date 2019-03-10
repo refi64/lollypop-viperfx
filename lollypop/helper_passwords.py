@@ -135,8 +135,9 @@ class PasswordsHelper:
         # Wait for secret
         if self.__secret is None:
             GLib.timeout_add(250, call, *args)
-        if self.__secret in [None, -1]:
             raise Exception("Waiting Secret service")
+        elif self.__secret == -1:
+            raise Exception("Error waiting for Secret service")
 
     def __on_clear_search(self, source, result, callback=None, *args):
         """
