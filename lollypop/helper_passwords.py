@@ -172,6 +172,7 @@ class PasswordsHelper:
                      service,
                      *args)
         else:
+            Logger.debug("PasswordsHelper: no secret!")
             callback(None, None, service, *args)
 
     def __on_secret_search(self, source, result, service, callback, *args):
@@ -193,8 +194,10 @@ class PasswordsHelper:
                                      callback,
                                      *args)
                 if not items:
+                    Logger.debug("PasswordsHelper: no items!")
                     callback(None, None, service, *args)
             else:
+                Logger.debug("PasswordsHelper: no result!")
                 callback(None, None, service, *args)
         except Exception as e:
             Logger.debug("PasswordsHelper::__on_secret_search(): %s" % e)
