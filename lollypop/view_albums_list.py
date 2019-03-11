@@ -404,6 +404,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             return True
         if self._album.mtime == 0:
             self._album.save(True)
+            App().art.cache_artists_info()
             button.hide()
         elif self.__view_type & ViewType.SEARCH:
             popover = self.get_ancestor(Gtk.Popover)
