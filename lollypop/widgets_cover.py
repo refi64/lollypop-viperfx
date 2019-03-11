@@ -125,8 +125,12 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
             @param surface as str
         """
         if surface is None:
+            if self.__art_size == ArtSize.BANNER:
+                icon_size = Gtk.IconSize.DIALOG
+            else:
+                icon_size = Gtk.IconSize.DND
             self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             Gtk.IconSize.DIALOG)
+                                             icon_size)
         else:
             self._artwork.set_from_surface(surface)
 

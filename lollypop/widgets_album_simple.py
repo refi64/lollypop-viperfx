@@ -229,8 +229,12 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         if self.__widget is None:
             return
         if surface is None:
+            if self.__art_size == ArtSize.BIG:
+                icon_size = Gtk.IconSize.DIALOG
+            else:
+                icon_size = Gtk.IconSize.DIALOG.DND
             self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             Gtk.IconSize.DIALOG)
+                                             icon_size)
         else:
             self._artwork.set_from_surface(surface)
         self.show_all()
