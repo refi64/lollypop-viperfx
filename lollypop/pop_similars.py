@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib, Pango
+from gi.repository import Gtk, Gio, GLib, Pango, GObject
 
 from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
@@ -147,16 +147,12 @@ class SimilarsPopover(Popover):
                               self.get_scale_factor(),
                               self.__cancellable)
 
-    def __on_new_artist(self, provider, *args):
+    def __on_new_artist(self, provider, artist):
         """
             Add artist to view
             @param provider as Spotify/LastFM
             @param artist as str
         """
-        # HACK: bypass an issue with pylast emitting a signal with None
-        if provider is None:
-            return
-        artist = args[0]
         if artist is None:
             self.__stack.set_visible_child_name("no-result")
             self.__spinner.stop()
@@ -185,8 +181,8 @@ class SimilarsPopover(Popover):
             @param widget as Gtk.Widget
         """
         if App().lastfm is not None:
-            self.__lastfm_signal_id = App().lastfm.connect(
-                "new-artist", self.__on_new_artist)
+            self.__lastfm_signal_id = GObject.Object.connect(
+                App().lastfm, "new-artist", self.__on_new_artist)
         self.__spotify_signal_id = App().spotify.connect(
                 "new-artist", self.__on_new_artist)
         self.set_size_request(300, 400)
