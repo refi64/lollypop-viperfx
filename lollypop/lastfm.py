@@ -324,8 +324,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         except Exception as e:
             Logger.debug("LastFM::__connect(): %s" % e)
 
-    def __scrobble(self, artist, album, title, timestamp, mb_track_id,
-                   first=True):
+    def __scrobble(self, artist, album, title, timestamp, mb_track_id):
         """
             Scrobble track
             @param artist as str
@@ -334,7 +333,6 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param timestamp as int
             @param duration as int
             @param mb_track_id as str
-            @param first is internal
             @thread safe
         """
         if App().settings.get_value("disable-scrobbling"):
@@ -355,21 +353,14 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             pass
         except Exception as e:
             Logger.error("LastFM::__scrobble(): %s" % e)
-            # Scrobble sometimes fails
-            if first:
-                self.__connect()
-                self.__scrobble(artist, album, title, timestamp,
-                                mb_track_id, False)
 
-    def __now_playing(self, artist, album, title, duration, mb_track_id,
-                      first=True):
+    def __now_playing(self, artist, album, title, duration, mb_track_id):
         """
             Now playing track
             @param artist as str
             @param title as str
             @param album as str
             @param duration as int
-            @param first is internal
             @thread safe
         """
         if App().settings.get_value("disable-scrobbling"):
@@ -386,11 +377,6 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             pass
         except Exception as e:
             Logger.error("LastFM::__now_playing(): %s" % e)
-            # now playing sometimes fails
-            if first:
-                self.__connect()
-                self.__now_playing(artist, album, title, duration,
-                                   mb_track_id, False)
 
     def __populate_loved_tracks(self):
         """
