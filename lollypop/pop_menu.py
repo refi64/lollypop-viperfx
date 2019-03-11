@@ -567,7 +567,7 @@ class TrackMenuPopover(Popover):
             hgrid.add(year_label)
         hgrid.show()
 
-        if track.is_web:
+        if track.mtime in [-1, 0]:
             edit = Gtk.Entry()
             edit.set_margin_top(5)
             edit.set_margin_start(5)
@@ -575,7 +575,7 @@ class TrackMenuPopover(Popover):
             edit.set_margin_bottom(5)
             edit.set_property("hexpand", True)
             edit.set_text(track.uri)
-            edit.connect("changed", self.__on_edit_changed, track.id)
+            edit.connect("changed", self.__on_edit_changed, track)
             edit.show()
             grid.add(edit)
 
@@ -585,10 +585,14 @@ class TrackMenuPopover(Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __on_edit_changed(self, edit, track_id):
+    def __on_edit_changed(self, edit, track):
         """
             Update track uri
             @param edit as Gtk.Edit
-            @param track id as int
+            @param track as Track
         """
-        App().tracks.set_uri(track_id, edit.get_text())
+        text = edit.get_text()
+        if not text:
+            text = "web://null"
+        App().tracks.set_uri(track.id, text)
+        track.reset("uri")
