@@ -430,7 +430,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             if self.__cover_data is not None:
                 App().art.save_album_artwork(self.__cover_data, self._album.id)
             App().art.cache_artists_info()
-            button.hide()
+            self.destroy()
         elif self.__view_type & ViewType.SEARCH:
             popover = self.get_ancestor(Gtk.Popover)
             if popover is not None:
