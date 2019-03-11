@@ -591,8 +591,10 @@ class TrackMenuPopover(Popover):
             @param edit as Gtk.Edit
             @param track as Track
         """
+        from urllib.parse import urlparse
         text = edit.get_text()
-        if not text:
+        parsed = urlparse(text)
+        if parsed.scheme not in ["http", "https", "web"]:
             text = "web://null"
         App().tracks.set_uri(track.id, text)
         track.reset("uri")
