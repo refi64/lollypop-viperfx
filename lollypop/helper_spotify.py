@@ -34,6 +34,7 @@ class SpotifyHelper(GObject.Object):
     __gsignals__ = {
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
                       (GObject.TYPE_PYOBJECT,)),
+        "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
         "search-finished": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
@@ -97,12 +98,16 @@ class SpotifyHelper(GObject.Object):
             return
         try:
             def on_content(uri, status, data):
+                found = False
                 if status:
                     decode = json.loads(data.decode("utf-8"))
                     for item in decode["artists"]["items"]:
+                        found = True
                         artist_id = item["uri"].split(":")[-1]
                         callback(artist_id)
                         return
+                if not found:
+                    callback(None)
             artist_name = GLib.uri_escape_string(
                 artist_name, None, True).replace(" ", "+")
             token = "Bearer %s" % self.__token
@@ -113,21 +118,22 @@ class SpotifyHelper(GObject.Object):
             helper.load_uri_content(uri, None, on_content)
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
+            callback(None)
 
-    def get_similar_artists(self, artist_id, scale_factor, cancellable):
+    def search_similar_artists(self, artist_id, scale_factor, cancellable):
         """
-            Get artist id
+            Search similar artists
             @param artist_name as str
             @param scale_factor as int
             @param cancellable as Gio.Cancellable
             @param callback as function
         """
-        artists = []
         try:
             while self.wait_for_token():
                 if cancellable.is_cancelled():
                     raise Exception("cancelled")
                 sleep(1)
+            found = False
             token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
@@ -138,10 +144,10 @@ class SpotifyHelper(GObject.Object):
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["artists"]:
                     if cancellable.is_cancelled():
-                        return []
+                        raise Exception("cancelled")
+                    found = True
                     artist_name = item["name"]
                     cover_uri = item["images"][1]["url"]
-                    artists.append(artist_name)
                     # Cache artist cover
                     (status, data) = App().task_helper.load_uri_content_sync(
                             cover_uri, cancellable)
@@ -150,9 +156,11 @@ class SpotifyHelper(GObject.Object):
                                                               artist_name,
                                                               data,
                                                               scale_factor)
+                    GLib.idle_add(self.emit, "new-artist", artist_name)
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
-        return artists
+        if not found:
+            GLib.idle_add(self.emit, "new-artist", None)
 
     def search(self, search, cancellable):
         """

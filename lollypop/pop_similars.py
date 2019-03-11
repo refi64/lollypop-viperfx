@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gio, GLib, Pango
 from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
 from lollypop.widgets_utils import Popover
-from lollypop.logger import Logger
 
 
 class ArtistRow(Gtk.ListBoxRow):
@@ -83,6 +82,8 @@ class SimilarsPopover(Popover):
             Init popover
         """
         Popover.__init__(self)
+        self.__lastfm_signal_id = None
+        self.__spotify_signal_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SimilarsPopover.ui")
         self.__show_all = GLib.find_program_in_path("youtube-dl") is not None
@@ -115,76 +116,79 @@ class SimilarsPopover(Popover):
                 artists.append(artist_name)
                 App().spotify.get_artist_id(artist_name,
                                             self.__on_get_artist_id)
-        if App().lastfm is not None:
-            App().task_helper.run(self.__get_lastfm_similars, artists,
-                                  self.get_scale_factor(),
-                                  callback=(self.__populate,))
+            if App().lastfm is not None:
+                App().task_helper.run(self.__search_lastfm_similars, artists,
+                                      self.get_scale_factor())
 
 #######################
 # PRIVATE             #
 #######################
-    def __get_lastfm_similars(self, artists, scale_factor):
+    def __search_lastfm_similars(self, artists, scale_factor):
         """
-            Get similars artists from lastfm
+            Search similars artists from lastfm
             @param artists as [str]
             @param scale_factor as int
-            @return [str]
         """
-        similars = []
         for artist in artists:
             if not self.__cancellable.is_cancelled():
-                similars += App().lastfm.get_similars(artist,
-                                                      scale_factor,
-                                                      self.__cancellable)
-        Logger.info("SimilarsPopover::Last.fm: %s" % similars)
-        return similars
-
-    def __populate(self, artists):
-        """
-            Populate view with artists
-            @param artists as [str]
-        """
-        if artists:
-            artist = artists.pop(0)
-            if artist in self.__added:
-                GLib.idle_add(self.__populate, artists)
-                return
-            self.__added.append(artist)
-            artist_id = App().artists.get_id(artist)
-            row = None
-            if artist_id is not None:
-                # We want real artist name (with case)
-                artist_name = App().artists.get_name(artist_id)
-                albums = App().artists.get_albums([artist_id])
-                if albums:
-                    row = ArtistRow(artist_name)
-            elif self.__show_all:
-                row = ArtistRow(artist)
-            if row is not None:
-                row.show()
-                self.__listbox.add(row)
-            GLib.idle_add(self.__populate, artists)
-        else:
-            if self.__listbox.get_children():
-                self.__stack.set_visible_child(self.__listbox)
-            else:
-                self.__stack.set_visible_child_name("no-result")
+                App().lastfm.search_similar_artists(artist,
+                                                    scale_factor,
+                                                    self.__cancellable)
 
     def __on_get_artist_id(self, artist_id):
         """
             Get similars
             @param artist_id as str
         """
-        App().task_helper.run(App().spotify.get_similar_artists, artist_id,
+        if artist_id is None:
+            self.__stack.set_visible_child_name("no-result")
+            self.__spinner.stop()
+        App().task_helper.run(App().spotify.search_similar_artists, artist_id,
                               self.get_scale_factor(),
-                              self.__cancellable,
-                              callback=(self.__populate,))
+                              self.__cancellable)
+
+    def __on_new_artist(self, provider, *args):
+        """
+            Add artist to view
+            @param provider as Spotify/LastFM
+            @param artist as str
+        """
+        # HACK: bypass an issue with pylast emitting a signal with None
+        if provider is None:
+            return
+        artist = args[0]
+        if artist is None:
+            self.__stack.set_visible_child_name("no-result")
+            self.__spinner.stop()
+            return
+        if artist in self.__added:
+            return
+        self.__added.append(artist)
+        artist_id = App().artists.get_id(artist)
+        row = None
+        if artist_id is not None:
+            # We want real artist name (with case)
+            artist_name = App().artists.get_name(artist_id)
+            albums = App().artists.get_albums([artist_id])
+            if albums:
+                row = ArtistRow(artist_name)
+        elif self.__show_all:
+            row = ArtistRow(artist)
+        if row is not None:
+            row.show()
+            self.__listbox.add(row)
+        self.__stack.set_visible_child(self.__listbox)
 
     def __on_map(self, widget):
         """
             Resize widget on map
             @param widget as Gtk.Widget
         """
+        if App().lastfm is not None:
+            self.__lastfm_signal_id = App().lastfm.connect(
+                "new-artist", self.__on_new_artist)
+        self.__spotify_signal_id = App().spotify.connect(
+                "new-artist", self.__on_new_artist)
         self.set_size_request(300, 400)
 
     def __on_unmap(self, widget):
@@ -192,6 +196,13 @@ class SimilarsPopover(Popover):
             Cancel loading
             @param widget as Gtk.Widget
         """
+        if App().lastfm is not None:
+            if self.__lastfm_signal_id is not None:
+                App().lastfm.disconnect(self.__lastfm_signal_id)
+                self.__lastfm_signal_id = None
+        if self.__spotify_signal_id is not None:
+            App().spotify.disconnect(self.__spotify_signal_id)
+            self.__spotify_signal_id = None
         self.__cancellable.cancel()
 
     def __on_row_activated(self, widget, row):

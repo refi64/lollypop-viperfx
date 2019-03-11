@@ -12,7 +12,7 @@
 
 import gi
 gi.require_version("Secret", "1")
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, GObject
 
 from gettext import gettext as _
 
@@ -36,7 +36,7 @@ from lollypop.logger import Logger
 from lollypop.goa import GoaSyncedAccount
 
 
-class LastFM(LastFMNetwork, LibreFMNetwork):
+class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
     """
        Lastfm:
        We recommend you don"t distribute the API key and secret with your app,
@@ -47,12 +47,16 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
        want, and if your app isn"t written in a compiled language, you don"t
        really have much option :).
     """
+    __gsignals__ = {
+        "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+    }
 
     def __init__(self, name):
         """
             Init lastfm support
             @param name as str
         """
+        GObject.Object.__init__(self)
         self.__name = name
         self.__login = ""
         self.session_key = ""
@@ -192,23 +196,22 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             except Exception as e:
                 Logger.error("Lastfm::unlove(): %s" % e)
 
-    def get_similars(self, artist, scale_factor, cancellable):
+    def search_similar_artists(self, artist, scale_factor, cancellable):
         """
-            Get similar artists
+            Search similar artists
             @param artist as str
             @param scale_factor as int
             @param cancellable as Gio.Cancellable
-            @return artists as [str]
         """
-        artists = []
         try:
+            found = False
             artist_item = self.get_artist(artist)
             for similar_item in artist_item.get_similar():
                 if cancellable.is_cancelled():
-                    return []
+                    raise Exception("cancelled")
+                found = True
                 artist_name = similar_item.item.name
                 cover_uri = similar_item.item.get_cover_image()
-                artists.append(artist_name)
                 # Cache artist cover
                 (status, data) = App().task_helper.load_uri_content_sync(
                         cover_uri, cancellable)
@@ -216,9 +219,11 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                     InformationStore.add_artist_artwork_to_cache(artist_name,
                                                                  data,
                                                                  scale_factor)
+                GLib.idle_add(self.emit, "new-artist", artist_name)
         except Exception as e:
-            Logger.error("LastFM::get_similars(): %s", e)
-        return artists
+            Logger.error("LastFM::search_similar_artists(): %s", e)
+        if not found:
+            GLib.idle_add(self.emit, "new-artist", None)
 
     def on_goa_account_switched(self, obj):
         """
