@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib, Gdk
 
-from random import choice
-
 from lollypop.objects import Album
 from lollypop.define import App, ArtSize, ArtHelperEffect
 
@@ -30,6 +28,7 @@ class ArtistBannerWidget(Gtk.Overlay):
         """
         Gtk.Overlay.__init__(self)
         self.__width = 0
+        self.__album_ids = None
         self.__height = self.default_height
         self.__artist_id = artist_id
         self.__allocation_timeout_id = None
@@ -97,12 +96,15 @@ class ArtistBannerWidget(Gtk.Overlay):
             @param width as int
             @param height as int
         """
-        if App().settings.get_value("show-performers"):
-            album_ids = App().tracks.get_album_ids([self.__artist_id], [])
-        else:
-            album_ids = App().albums.get_ids([self.__artist_id], [])
-        if album_ids:
-            album_id = choice(album_ids)
+        if self.__album_ids is None:
+            if App().settings.get_value("show-performers"):
+                self.__album_ids = App().tracks.get_album_ids(
+                    [self.__artist_id], [])
+            else:
+                self.__album_ids = App().albums.get_ids(
+                    [self.__artist_id], [])
+        if self.__album_ids:
+            album_id = self.__album_ids.pop(0)
             album = Album(album_id)
             App().art_helper.set_album_artwork(
                 album,
@@ -164,7 +166,10 @@ class ArtistBannerWidget(Gtk.Overlay):
             Set album artwork
             @param surface as str
         """
-        if surface is not None:
+        if surface is None:
+            self.__use_album_artwork(self.get_allocated_width(),
+                                     self.get_allocated_height())
+        else:
             self.__artwork.set_from_surface(surface)
 
     def __on_artist_artwork(self, surface):
