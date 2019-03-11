@@ -42,6 +42,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                                                    self.__art_size,
                                                    "small-cover-frame")
         self._artwork.show()
+        self._artwork.get_style_context().add_class("white")
         App().art_helper.set_album_artwork(
                 album,
                 self.__art_size,
@@ -123,7 +124,11 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
             Set album artwork
             @param surface as str
         """
-        self._artwork.set_from_surface(surface)
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+        else:
+            self._artwork.set_from_surface(surface)
 
     def __on_artwork_clicked(self, button):
         """
