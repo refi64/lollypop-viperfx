@@ -426,7 +426,8 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             return True
         if self._album.mtime == 0:
             self._album.save(True)
-            App().art.save_album_artwork(self.__cover_data, self._album.id)
+            if self.__cover_data is not None:
+                App().art.save_album_artwork(self.__cover_data, self._album.id)
             App().art.cache_artists_info()
             button.hide()
         elif self.__view_type & ViewType.SEARCH:
