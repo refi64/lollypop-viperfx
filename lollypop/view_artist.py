@@ -148,6 +148,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
+        self.__on_album_changed(App().player)
         if self.__show_artwork:
             self._album_box.set_margin_top(self._banner.default_height + 15)
         else:
