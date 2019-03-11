@@ -84,6 +84,7 @@ class ScannerContainer:
                 l = self._list_two
                 artist_ids = App().artists.get_ids(genre_ids)
                 if artist_id not in artist_ids:
+                    l.remove_value(artist_id)
                     return
             else:
                 l = self._list_one
