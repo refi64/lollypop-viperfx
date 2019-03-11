@@ -171,7 +171,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         self.__gesture.set_button(0)
         if self.__reveal:
-            self.reveal()
+            self.reveal(True)
         if self.__cover_uri is None:
             self.set_artwork()
         else:
@@ -196,14 +196,11 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         if self._responsive_widget is not None:
             TracksView.prepend_rows(self, tracks)
 
-    def reveal(self, reveal=None,
-               transition_type=Gtk.RevealerTransitionType.SLIDE_DOWN):
+    def reveal(self, reveal=None):
         """
             Reveal/Unreveal tracks
-            @param revleal as bool or None to just change state
-            @param transition_type as Gtk.RevealerTransitionType
+            @param reveal as bool or None to just change state
         """
-        self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
             if self.album.id == App().player.current_track.album.id:
@@ -214,6 +211,10 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self._responsive_widget.show()
                 self.__revealer.add(self._responsive_widget)
             self.__revealer.set_reveal_child(True)
+            if reveal:
+                self.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            else:
+                self.set_state_flags(Gtk.StateFlags.PRELIGHT, True)
 
     def set_playing_indicator(self):
         """
