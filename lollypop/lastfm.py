@@ -386,7 +386,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             return
         try:
             user = self.get_user(self.__login)
-            for loved in user.get_loved_tracks():
+            for loved in user.get_loved_tracks(limit=None):
                 artist = str(loved.track.artist)
                 title = str(loved.track.title)
                 track_id = App().tracks.search_track(artist, title)
