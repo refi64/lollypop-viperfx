@@ -102,7 +102,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         # and down on reveal()
         self._artwork.set_margin_top(self.__MARGIN)
         self.get_style_context().add_class("albumrow")
-        self.get_style_context().add_class("albumrow-hover")
         self.set_sensitive(True)
         self.set_selectable(False)
         self.set_property("has-tooltip", True)
@@ -207,11 +206,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer.set_transition_type(transition_type)
         if self.__revealer.get_reveal_child() and reveal is not True:
             self.__revealer.set_reveal_child(False)
-            self.set_state_flags(Gtk.StateFlags.PRELIGHT, True)
-            if self.__action_button is not None:
-                self.__action_button.set_opacity(1)
-                self.__action_button.set_sensitive(True)
-            self.get_style_context().add_class("albumrow-hover")
             if self.album.id == App().player.current_track.album.id:
                 self.set_state_flags(Gtk.StateFlags.VISITED, True)
         else:
@@ -219,12 +213,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 TracksView.populate(self)
                 self._responsive_widget.show()
                 self.__revealer.add(self._responsive_widget)
-            self.get_style_context().remove_class("albumrow-hover")
             self.__revealer.set_reveal_child(True)
-            if self.__action_button is not None:
-                self.__action_button.set_opacity(0)
-                self.__action_button.set_sensitive(False)
-            self.set_state_flags(Gtk.StateFlags.NORMAL, True)
 
     def set_playing_indicator(self):
         """

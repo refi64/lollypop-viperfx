@@ -371,8 +371,8 @@ popover.background separator {
   	color: inherit;
 }
 
-.albumrow-hover:hover {
-	background-color: alpha(@theme_fg_color, 0.05);
+.albumrow:hover {
+    background-color: alpha(@theme_fg_color, 0.05);
 }
 
 .albumrow .album-menu-button {
@@ -382,7 +382,7 @@ popover.background separator {
 }
 
 .albumrow:hover .album-menu-button {
-  	color: inherit;
+  	color: inherit;	
 }
 
 .albumrow:hover .album-menu-button:hover {
