@@ -89,11 +89,12 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover = NextPopover()
         self.__next_popover.set_relative_to(self.__shuffle_button)
 
-        search_action = Gio.SimpleAction.new("search", None)
+        search_action = Gio.SimpleAction.new("search",
+                                             GLib.VariantType.new("s"))
         self.__search_button = builder.get_object("search-button")
         search_action.connect("activate", self.__on_search_activate)
         App().add_action(search_action)
-        App().set_accels_for_action("app.search", ["<Control>f"])
+        App().set_accels_for_action("app.search('')", ["<Control>f"])
 
         self.__list_button = builder.get_object("list-button")
         self.__list_button.set_property("has-tooltip", True)
@@ -411,11 +412,13 @@ class ToolbarEnd(Gtk.Bin):
             @param action as Gio.SimpleAction
             @param variant as GLib.Variant
         """
+        search = variant.get_string()
         if self.__search_button.get_visible():
             self.__search_button.set_active(
                 not self.__search_button.get_active())
+            self.__search_popover.set_search(search)
         else:
-            App().window.container.show_view(Type.SEARCH)
+            App().window.container.show_view(Type.SEARCH, search)
 
     def __on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

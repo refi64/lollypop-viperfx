@@ -60,7 +60,7 @@ class ViewsContainer:
                        Type.RANDOMS]:
             view = self._get_view_albums([item_id], [])
         elif item_id == Type.SEARCH:
-            view = self.get_view_search()
+            view = self.get_view_search(data)
         elif item_id == Type.INFO:
             view = self._get_view_info()
         elif item_id == Type.GENRES:
@@ -123,19 +123,22 @@ class ViewsContainer:
         view.show()
         return view
 
-    def get_view_search(self):
+    def get_view_search(self, search):
         """
             Get view for search
+            @param search as str
             @return SearchView
         """
         from lollypop.view_search import SearchView
-        # Search view in childrent
+        # Search view in children
         for child in self._stack.get_children():
             if isinstance(child, SearchView):
+                child.set_search(search)
                 return child
         view = SearchView()
         view.set_margin_top(MARGIN_SMALL)
         view.set_margin_start(MARGIN_SMALL)
+        view.set_search(search)
         view.show()
         return view
 

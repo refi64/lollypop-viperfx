@@ -84,6 +84,7 @@ class SimilarsPopover(Popover):
         Popover.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SimilarsPopover.ui")
+        self.__show_all = GLib.find_program_in_path("youtube-dl") is not None
         self.__added = []
         self.connect("map", self.__on_map)
         self.__stack = builder.get_object("stack")
@@ -142,17 +143,20 @@ class SimilarsPopover(Popover):
                 return
             self.__added.append(artist)
             artist_id = App().artists.get_id(artist)
-            # We want real artist name (with case)
-            artist_name = App().artists.get_name(artist_id)
+            row = None
             if artist_id is not None:
+                # We want real artist name (with case)
+                artist_name = App().artists.get_name(artist_id)
                 albums = App().artists.get_albums([artist_id])
                 if albums:
                     row = ArtistRow(artist_name)
-                    row.show()
-                    self.__listbox.add(row)
+            elif self.__show_all:
+                row = ArtistRow(artist)
+            if row is not None:
+                row.show()
+                self.__listbox.add(row)
             GLib.idle_add(self.__populate, artists)
         else:
-            self.__spinner.stop()
             if self.__listbox.get_children():
                 self.__stack.set_visible_child(self.__listbox)
             else:
@@ -190,4 +194,8 @@ class SimilarsPopover(Popover):
         self.popdown()
         artist_name = row.artist_name
         artist_id = App().artists.get_id(artist_name)
-        GLib.idle_add(App().window.container.show_artist_view, [artist_id])
+        if artist_id is None:
+            App().lookup_action("search").activate(GLib.Variant("s",
+                                                                artist_name))
+        else:
+            GLib.idle_add(App().window.container.show_artist_view, [artist_id])

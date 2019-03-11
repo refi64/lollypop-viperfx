@@ -72,11 +72,14 @@ class SearchView(BaseView, Gtk.Bin):
         self.add(self.__widget)
         builder.connect_signals(self)
 
-    def set_text(self, text):
+    def set_search(self, search):
         """
             Set search text
+            @param search as str
         """
-        self.__entry.set_text(text)
+        self.__entry.set_text(search)
+        GLib.idle_add(self.__search_type_action.set_state,
+                      GLib.Variant("s", "web"))
 
     @property
     def should_destroy(self):

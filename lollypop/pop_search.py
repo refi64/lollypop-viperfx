@@ -26,15 +26,19 @@ class SearchPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.__width = 0
+        self.__search = ""
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
 
-    def set_text(self, text):
+    def set_search(self, search):
         """
             Set search text
+            @param search as str
         """
-        self.__entry.set_text(text)
+        self.__search = search
+        if self.get_child() is not None:
+            self.get_child().set_search(search)
 
     def do_get_preferred_width(self):
         if self.__width == 0:
@@ -54,7 +58,7 @@ class SearchPopover(Gtk.Popover):
             Set popover size
             @param widget as Gtk.Widget
         """
-        search_view = App().window.container.get_view_search()
+        search_view = App().window.container.get_view_search(self.__search)
         search_view.show()
         if search_view in App().window.container.stack.get_children():
             App().window.container.stack.remove(search_view)
