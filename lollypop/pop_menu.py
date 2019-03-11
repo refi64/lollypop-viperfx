@@ -567,6 +567,18 @@ class TrackMenuPopover(Popover):
             hgrid.add(year_label)
         hgrid.show()
 
+        if track.is_web:
+            edit = Gtk.Entry()
+            edit.set_margin_top(5)
+            edit.set_margin_start(5)
+            edit.set_margin_end(5)
+            edit.set_margin_bottom(5)
+            edit.set_property("hexpand", True)
+            edit.set_text(track.uri)
+            edit.connect("changed", self.__on_edit_changed, track.id)
+            edit.show()
+            grid.add(edit)
+
         grid.add(hgrid)
         self.add(stack)
 
