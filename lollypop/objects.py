@@ -359,17 +359,18 @@ class Album(Base):
         """
         # We want DB genre ids
         genre_ids = App().albums.get_genre_ids(self.id)
-        for artist_id in self.artist_ids:
-            App().scanner.emit("artist-updated", artist_id, save)
-        for genre_id in genre_ids:
-            App().scanner.emit("genre-updated", genre_id, save)
-        App().scanner.emit("album-updated", self.id, not save)
         if save:
             App().albums.set_mtime(self.id, -1)
         else:
             App().albums.set_mtime(self.id, 0)
         for track in self.tracks:
             track.save(save)
+        self.reset("mtime")
+        for artist_id in self.artist_ids:
+            App().scanner.emit("artist-updated", artist_id, save)
+        for genre_id in genre_ids:
+            App().scanner.emit("genre-updated", genre_id, save)
+        App().scanner.emit("album-updated", self.id, not save)
 
     @property
     def title(self):
@@ -537,6 +538,7 @@ class Track(Base):
             App().tracks.set_mtime(self.id, -1)
         else:
             App().tracks.set_mtime(self.id, 0)
+        self.reset("mtime")
 
     def get_featuring_artist_ids(self, album_artist_ids):
         """
