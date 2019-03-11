@@ -33,7 +33,7 @@ class SpotifyHelper(GObject.Object):
     __CHARTS = "https://spotifycharts.com/regional/%s/weekly/latest/download"
     __gsignals__ = {
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
-                      (GObject.TYPE_PYOBJECT,)),
+                      (GObject.TYPE_PYOBJECT, str)),
         "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
         "search-finished": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
@@ -266,16 +266,7 @@ class SpotifyHelper(GObject.Object):
             Create album and download cover
             @param cancellable as Gio.Cancellable
         """
-        # Create albums
-        album = Album(album_id)
-        App().art.copy_uri_to_cache
-        (status, data) = App().task_helper.load_uri_content_sync(
-            cover_uri, cancellable)
-        if status:
-            App().art.save_album_artwork(data, album_id)
-        if cancellable.is_cancelled():
-            raise Exception("cancelled")
-        GLib.idle_add(self.emit, "new-album", album)
+        GLib.idle_add(self.emit, "new-album", Album(album_id), cover_uri)
 
     def __create_albums_from_tracks_payload(self, payload, album_ids,
                                             cancellable):

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GObject, Pango
+from gi.repository import Gtk, Gdk, Gio, GLib, GObject, Pango
 
 from gettext import gettext as _
 
@@ -22,6 +22,7 @@ from lollypop.objects import Album, Track
 from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
+from lollypop.logger import Logger
 
 
 class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
@@ -59,7 +60,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         else:
             return cover_height + 2
 
-    def __init__(self, album, height, view_type, reveal, parent):
+    def __init__(self, album, height, view_type, reveal, cover_uri, parent):
         """
             Init row widgets
             @param album as Album
@@ -75,11 +76,12 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__revealer = None
         self.__parent = parent
         self.__reveal = reveal
+        self.__cover_uri = cover_uri
         self._artwork = None
+        self.__cover_data = None
         self._album = album
-        self.__x_root = self.__y_root = 0
         self.__view_type = view_type
-        self.__play_indicator = None
+        self.__cancellable = Gio.Cancellable()
         self.set_sensitive(False)
         self.set_property("height-request", height)
         self.connect("destroy", self.__on_destroy)
@@ -121,7 +123,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__title_label.set_property("halign", Gtk.Align.START)
         self.__title_label.get_style_context().add_class("dim-label")
-        self.set_artwork()
         self.__action_button = None
         if self.__view_type & ViewType.DND:
             self.__action_button = Gtk.Button.new_from_icon_name(
@@ -172,6 +173,13 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__gesture.set_button(0)
         if self.__reveal:
             self.reveal()
+        if self.__cover_uri is None:
+            self.set_artwork()
+        else:
+            self.__on_album_artwork(None)
+            App().task_helper.load_uri_content(self.__cover_uri,
+                                               self.__cancellable,
+                                               self.__on_cover_uri_content)
 
     def append_rows(self, tracks):
         """
@@ -339,6 +347,20 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             popover.set_pointing_to(rect)
         popover.popup()
 
+    def __on_cover_uri_content(self, uri, status, data):
+        """
+            Save to tmp cache
+            @param uri as str
+            @param status as bool
+            @param data as bytes
+        """
+        try:
+            if status:
+                self.__cover_data = data
+                self.set_artwork()
+        except Exception as e:
+            Logger.error("AlbumRow::__on_cover_uri_content(): %s", e)
+
     def __on_album_artwork(self, surface):
         """
             Set album artwork
@@ -404,6 +426,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             return True
         if self._album.mtime == 0:
             self._album.save(True)
+            App().art.save_album_artwork(self.__cover_data, self._album.id)
             App().art.cache_artists_info()
             button.hide()
         elif self.__view_type & ViewType.SEARCH:
@@ -451,6 +474,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             Destroyed widget
             @param widget as Gtk.Widget
         """
+        self.__cancellable.cancel()
         self._artwork = None
 
 
@@ -497,13 +521,14 @@ class AlbumsListView(LazyLoadingView, ViewController):
         """
         self.__reveals = album_ids
 
-    def add_album(self, album, reveal):
+    def add_album(self, album, reveal, cover_uri=None):
         """
             Add an album
             @param album as Album
             @param reveal as bool
+            @param cover_uri as str
         """
-        row = self.__row_for_album(album, reveal)
+        row = self.__row_for_album(album, reveal, cover_uri)
         children = self._box.get_children()
         if children:
             previous_row = children[-1]
@@ -686,13 +711,15 @@ class AlbumsListView(LazyLoadingView, ViewController):
             if self._viewport.get_child() is None:
                 self._viewport.add(self._box)
 
-    def __row_for_album(self, album, reveal=False):
+    def __row_for_album(self, album, reveal=False, cover_uri=None):
         """
             Get a row for track id
             @param album as Album
             @param reveal as bool
+            @param cover_uri as str
         """
-        row = AlbumRow(album, self.__height, self._view_type, reveal, self)
+        row = AlbumRow(album, self.__height, self._view_type,
+                       reveal, cover_uri, self)
         row.connect("insert-track", self.__on_insert_track)
         row.connect("insert-album", self.__on_insert_album)
         row.connect("insert-album-after", self.__on_insert_album_after)

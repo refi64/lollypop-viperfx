@@ -259,11 +259,12 @@ class SearchView(BaseView, Gtk.Bin):
         self.__button_stack.set_visible_child(self.__new_button)
         self.__spinner.stop()
 
-    def __on_new_spotify_album(self, spotify, album):
+    def __on_new_spotify_album(self, spotify, album, cover_uri):
         """
             Add album
             @param spotify as SpotifyHelper
-            @param albumas Album
+            @param album as Album
+            @param cover_uri as str
         """
         self.__view.add_album(album, len(album.tracks) == 1)
         self.__stack.set_visible_child_name("view")
