@@ -21,6 +21,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.objects import Album
+from lollypop.information_store import InformationStore
 from lollypop.helper_task import TaskHelper
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
 
@@ -113,32 +114,45 @@ class SpotifyHelper(GObject.Object):
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
 
-    def get_similar_artists(self, artist_id, callback):
+    def get_similar_artists(self, artist_id, scale_factor, cancellable):
         """
             Get artist id
             @param artist_name as str
+            @param scale_factor as int
+            @param cancellable as Gio.Cancellable
             @param callback as function
         """
-        if self.wait_for_token():
-            GLib.timeout_add(
-                500, self.get_similar_artists, artist_id, callback)
-            return
+        artists = []
         try:
-            def on_content(uri, status, data):
-                if status:
-                    decode = json.loads(data.decode("utf-8"))
-                    artists = []
-                    for item in decode["artists"]:
-                        artists.append(item["name"])
-                    callback(artists)
+            while self.wait_for_token():
+                if cancellable.is_cancelled():
+                    raise Exception("cancelled")
+                sleep(1)
             token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
             uri = "https://api.spotify.com/v1/artists/%s/related-artists" %\
                 artist_id
-            helper.load_uri_content(uri, None, on_content)
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["artists"]:
+                    if cancellable.is_cancelled():
+                        return []
+                    artist_name = item["name"]
+                    cover_uri = item["images"][1]["url"]
+                    artists.append(artist_name)
+                    # Cache artist cover
+                    (status, data) = App().task_helper.load_uri_content_sync(
+                            cover_uri, cancellable)
+                    if status:
+                        InformationStore.add_artist_artwork_to_cache(
+                                                              artist_name,
+                                                              data,
+                                                              scale_factor)
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
+        return artists
 
     def search(self, search, cancellable):
         """

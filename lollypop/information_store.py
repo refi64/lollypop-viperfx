@@ -13,7 +13,7 @@
 from gi.repository import Gio, GLib, GdkPixbuf
 
 from lollypop.utils import escape
-from lollypop.define import App
+from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
 
 
@@ -68,69 +68,67 @@ class InformationStore:
             @return path as string/None
         """
         try:
-            filepath = "%s/%s.jpg" % (
-                InformationStore._INFO_PATH,
-                escape(artist))
-            f = Gio.File.new_for_path(filepath)
-            if f.query_exists():
-                info = f.query_info("standard::size",
-                                    Gio.FileQueryInfoFlags.NONE)
-                if info.get_size() == 0:
-                    return None
-                elif not cache:
-                    return filepath
-            else:
-                return None
-            size *= scale_factor
-            extract = None
+            escaped_artist = escape(artist)
             filepath_at_size = "%s/%s_%s.jpg" % (
                 InformationStore._CACHE_PATH,
-                escape(artist),
+                escaped_artist,
                 size)
-            # Make cache for this size
-            f = Gio.File.new_for_path(filepath_at_size)
+            # Search in cache
+            if cache:
+                f = Gio.File.new_for_path(filepath_at_size)
+                if f.query_exists():
+                    return filepath_at_size
+            # Search in store
+            filepath = "%s/%s.jpg" % (
+                InformationStore._INFO_PATH,
+                escaped_artist)
+            f = Gio.File.new_for_path(filepath)
             if not f.query_exists():
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
-                                                                size,
-                                                                size)
-                if pixbuf.get_height() > pixbuf.get_width():
-                    vertical = True
-                elif pixbuf.get_height() < pixbuf.get_width():
-                    vertical = False
+                return None
+            # Empty image, disabled
+            info = f.query_info("standard::size", Gio.FileQueryInfoFlags.NONE)
+            if info.get_size() == 0:
+                return None
+            # We do not want to cache
+            if not cache:
+                return filepath
+
+            # Make cache for this size
+            size *= scale_factor
+            extract = None
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
+                                                            size,
+                                                            size)
+            if pixbuf.get_height() > pixbuf.get_width():
+                vertical = True
+            elif pixbuf.get_height() < pixbuf.get_width():
+                vertical = False
+            else:
+                extract = pixbuf
+            if extract is None:
+                extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                                               True, 8, size, size)
+                if vertical:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                        filepath,
+                        size,
+                        -1,
+                        True)
+                    diff = pixbuf.get_height() - size
+                    pixbuf.copy_area(0, diff / 2, pixbuf.get_width(), size,
+                                     extract, 0, 0)
                 else:
-                    extract = pixbuf
-                if extract is None:
-                    extract = GdkPixbuf.Pixbuf.new(
-                        GdkPixbuf.Colorspace.RGB,
-                        True, 8,
-                        size, size)
-                    if vertical:
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                            filepath,
-                            size,
-                            -1,
-                            True)
-                        diff = pixbuf.get_height() - size
-                        pixbuf.copy_area(0, diff / 2,
-                                         pixbuf.get_width(),
-                                         size,
-                                         extract,
-                                         0, 0)
-                    else:
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                            filepath,
-                            -1,
-                            size,
-                            True)
-                        diff = pixbuf.get_width() - size
-                        pixbuf.copy_area(diff / 2, 0,
-                                         size,
-                                         pixbuf.get_height(),
-                                         extract,
-                                         0, 0)
-                extract.savev(filepath_at_size, "jpeg",
-                              ["quality"], [str(App().settings.get_value(
-                                            "cover-quality").get_int32())])
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                        filepath,
+                        -1,
+                        size,
+                        True)
+                    diff = pixbuf.get_width() - size
+                    pixbuf.copy_area(diff / 2, 0, size, pixbuf.get_height(),
+                                     extract, 0, 0)
+            extract.savev(filepath_at_size, "jpeg",
+                          ["quality"], [str(App().settings.get_value(
+                                        "cover-quality").get_int32())])
             return filepath_at_size
         except Exception as e:
             Logger.error("InformationStore::get_artwork_path(): %s" % e)
@@ -149,6 +147,29 @@ class InformationStore:
         if f.query_exists():
             (status, content, tag) = f.load_contents()
         return content
+
+    def add_artist_artwork_to_cache(artist, data, scale_factor):
+        """
+            Add artist artwork to cache
+            @param artist as str
+            @param data as bytes
+            @param scale_factor as int
+        """
+        for size in [ArtSize.ARTIST_SMALL, ArtSize.BANNER]:
+            size *= scale_factor
+            filepath_at_size = "%s/%s_%s.jpg" % (
+                InformationStore._CACHE_PATH,
+                escape(artist),
+                size)
+            bytes = GLib.Bytes(data)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                               size,
+                                                               size,
+                                                               True,
+                                                               None)
+            stream.close()
+            pixbuf.savev(filepath_at_size, "jpeg", ["quality"], ["100"])
 
     def add_artist_artwork(artist, data):
         """

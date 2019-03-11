@@ -31,6 +31,7 @@ import re
 
 from lollypop.define import App
 from lollypop.objects import Track
+from lollypop.information_store import InformationStore
 from lollypop.logger import Logger
 from lollypop.goa import GoaSyncedAccount
 
@@ -191,19 +192,32 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             except Exception as e:
                 Logger.error("Lastfm::unlove(): %s" % e)
 
-    def get_similars(self, artist):
+    def get_similars(self, artist, scale_factor, cancellable):
         """
             Get similar artists
             @param artist as str
+            @param scale_factor as int
+            @param cancellable as Gio.Cancellable
             @return artists as [str]
         """
         artists = []
         try:
             artist_item = self.get_artist(artist)
             for similar_item in artist_item.get_similar():
-                artists.append(similar_item.item.name)
-        except:
-            pass
+                if cancellable.is_cancelled():
+                    return []
+                artist_name = similar_item.item.name
+                cover_uri = similar_item.item.get_cover_image()
+                artists.append(artist_name)
+                # Cache artist cover
+                (status, data) = App().task_helper.load_uri_content_sync(
+                        cover_uri, cancellable)
+                if status:
+                    InformationStore.add_artist_artwork_to_cache(artist_name,
+                                                                 data,
+                                                                 scale_factor)
+        except Exception as e:
+            Logger.error("LastFM::get_similars(): %s", e)
         return artists
 
     def on_goa_account_switched(self, obj):

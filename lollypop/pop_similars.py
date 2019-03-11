@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, Gio, GLib, Pango
 
 from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
@@ -36,10 +36,11 @@ class ArtistRow(Gtk.ListBoxRow):
         label.set_property("halign", Gtk.Align.START)
         label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__artwork = Gtk.Image.new()
-        self.__artwork.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
+        self.__artwork.set_size_request(ArtSize.ARTIST_SMALL,
+                                        ArtSize.ARTIST_SMALL)
         App().art_helper.set_artist_artwork(artist_name,
-                                            ArtSize.MEDIUM,
-                                            ArtSize.MEDIUM,
+                                            ArtSize.ARTIST_SMALL,
+                                            ArtSize.ARTIST_SMALL,
                                             self.get_scale_factor(),
                                             self.__on_artist_artwork)
         grid.add(self.__artwork)
@@ -67,7 +68,7 @@ class ArtistRow(Gtk.ListBoxRow):
             self.__artwork.get_style_context().add_class("artwork-icon")
             self.__artwork.set_from_icon_name("avatar-default-symbolic",
                                               Gtk.IconSize.INVALID)
-            self.__artwork.set_pixel_size(ArtSize.MEDIUM)
+            self.__artwork.set_pixel_size(ArtSize.ARTIST_SMALL)
         else:
             self.__artwork.set_from_surface(surface)
 
@@ -86,7 +87,9 @@ class SimilarsPopover(Popover):
         builder.add_from_resource("/org/gnome/Lollypop/SimilarsPopover.ui")
         self.__show_all = GLib.find_program_in_path("youtube-dl") is not None
         self.__added = []
+        self.__cancellable = Gio.Cancellable()
         self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
         self.__stack = builder.get_object("stack")
         self.__spinner = builder.get_object("spinner")
         self.__spinner.start()
@@ -114,20 +117,25 @@ class SimilarsPopover(Popover):
                                             self.__on_get_artist_id)
         if App().lastfm is not None:
             App().task_helper.run(self.__get_lastfm_similars, artists,
+                                  self.get_scale_factor(),
                                   callback=(self.__populate,))
 
 #######################
 # PRIVATE             #
 #######################
-    def __get_lastfm_similars(self, artists):
+    def __get_lastfm_similars(self, artists, scale_factor):
         """
             Get similars artists from lastfm
             @param artists as [str]
+            @param scale_factor as int
             @return [str]
         """
         similars = []
         for artist in artists:
-            similars += App().lastfm.get_similars(artist)
+            if not self.__cancellable.is_cancelled():
+                similars += App().lastfm.get_similars(artist,
+                                                      scale_factor,
+                                                      self.__cancellable)
         Logger.info("SimilarsPopover::Last.fm: %s" % similars)
         return similars
 
@@ -167,16 +175,10 @@ class SimilarsPopover(Popover):
             Get similars
             @param artist_id as str
         """
-        App().spotify.get_similar_artists(artist_id,
-                                          self.__on_get_similars)
-
-    def __on_get_similars(self, artists):
-        """
-            Add artists
-            @param artists as str
-        """
-        Logger.info("SimilarsPopover::Spotify: %s" % artists)
-        self.__populate(artists)
+        App().task_helper.run(App().spotify.get_similar_artists, artist_id,
+                              self.get_scale_factor(),
+                              self.__cancellable,
+                              callback=(self.__populate,))
 
     def __on_map(self, widget):
         """
@@ -184,6 +186,13 @@ class SimilarsPopover(Popover):
             @param widget as Gtk.Widget
         """
         self.set_size_request(300, 400)
+
+    def __on_unmap(self, widget):
+        """
+            Cancel loading
+            @param widget as Gtk.Widget
+        """
+        self.__cancellable.cancel()
 
     def __on_row_activated(self, widget, row):
         """
