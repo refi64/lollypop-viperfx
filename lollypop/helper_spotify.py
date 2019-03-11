@@ -351,7 +351,7 @@ class SpotifyHelper(GObject.Object):
         duration = payload["duration_ms"] // 1000
         mb_album_id = mb_track_id = None
         a_sortnames = aa_sortnames = ""
-        cover_uri = payload["album"]["images"][2]["url"]
+        cover_uri = payload["album"]["images"][1]["url"]
         uri = "web://%s" % payload["id"]
         Logger.debug("SpotifyHelper::__save_track(): Add artists %s" % artists)
         artist_ids = t.add_artists(artists, a_sortnames)
