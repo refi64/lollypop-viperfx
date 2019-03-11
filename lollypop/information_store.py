@@ -177,6 +177,7 @@ class InformationStore:
             @param artist as str
             @param data as bytes
         """
+        InformationStore.uncache_artwork(artist)
         filepath = "%s/%s.jpg" % (InformationStore._INFO_PATH, escape(artist))
         if data is None:
             f = Gio.File.new_for_path(filepath)
