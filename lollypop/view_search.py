@@ -77,8 +77,8 @@ class SearchView(BaseView, Gtk.Bin):
             Set search text
             @param search as str
         """
-        self.__entry.set_text(search)
         if search:
+            self.__entry.set_text(search)
             GLib.idle_add(self.__search_type_action.set_state,
                           GLib.Variant("s", "web"))
 
