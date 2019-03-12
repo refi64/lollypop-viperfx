@@ -31,7 +31,6 @@ import re
 
 from lollypop.define import App
 from lollypop.objects import Track
-from lollypop.information_store import InformationStore
 from lollypop.logger import Logger
 from lollypop.goa import GoaSyncedAccount
 
@@ -48,7 +47,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
        really have much option :).
     """
     __gsignals__ = {
-        "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
     }
 
     def __init__(self, name):
@@ -196,11 +195,10 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             except Exception as e:
                 Logger.error("Lastfm::unlove(): %s" % e)
 
-    def search_similar_artists(self, artist, scale_factor, cancellable):
+    def search_similar_artists(self, artist, cancellable):
         """
             Search similar artists
             @param artist as str
-            @param scale_factor as int
             @param cancellable as Gio.Cancellable
         """
         try:
@@ -212,14 +210,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
                 found = True
                 artist_name = similar_item.item.name
                 cover_uri = similar_item.item.get_cover_image()
-                # Cache artist cover
-                (status, data) = App().task_helper.load_uri_content_sync(
-                        cover_uri, cancellable)
-                if status:
-                    InformationStore.add_artist_artwork_to_cache(artist_name,
-                                                                 data,
-                                                                 scale_factor)
-                GLib.idle_add(self.emit, "new-artist", artist_name)
+                GLib.idle_add(self.emit, "new-artist", artist_name, cover_uri)
         except Exception as e:
             Logger.error("LastFM::search_similar_artists(): %s", e)
         if not found:

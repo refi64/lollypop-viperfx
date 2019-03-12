@@ -15,6 +15,8 @@ from gi.repository import Gtk, Gio, GLib, Pango, GObject
 from lollypop.define import App, ArtSize
 from lollypop.utils import get_network_available
 from lollypop.widgets_utils import Popover
+from lollypop.information_store import InformationStore
+from lollypop.logger import Logger
 
 
 class ArtistRow(Gtk.ListBoxRow):
@@ -22,10 +24,12 @@ class ArtistRow(Gtk.ListBoxRow):
         An artist row
     """
 
-    def __init__(self, artist_name):
+    def __init__(self, artist_name, cover_uri, cancellable):
         """
             Init row
             @param artist_name as str
+            @param cover_uri as str
+            @param cancellable as Gio.Cancellable
         """
         Gtk.ListBoxRow.__init__(self)
         self.__artist_name = artist_name
@@ -42,6 +46,10 @@ class ArtistRow(Gtk.ListBoxRow):
                                             ArtSize.ARTIST_SMALL,
                                             self.get_scale_factor(),
                                             self.__on_artist_artwork)
+        if cover_uri:
+            App().task_helper.load_uri_content(cover_uri, cancellable,
+                                               self.__on_uri_content)
+
         grid.add(self.__artwork)
         grid.add(label)
         grid.show_all()
@@ -58,6 +66,29 @@ class ArtistRow(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def __on_uri_content(self, uri, status, data):
+        """
+            Save artwork to cache and set artist artwork
+            @param uri as str
+            @param status as bool
+            @param data as bytes
+        """
+        try:
+            if not status:
+                return
+            self.__cover_data = data
+            scale_factor = self.get_scale_factor()
+            InformationStore.add_artist_artwork_to_cache(self.__artist_name,
+                                                         data,
+                                                         scale_factor)
+            App().art_helper.set_artist_artwork(self.__artist_name,
+                                                ArtSize.ARTIST_SMALL,
+                                                ArtSize.ARTIST_SMALL,
+                                                scale_factor,
+                                                self.__on_artist_artwork,)
+        except Exception as e:
+            Logger.error("ArtistRow::__on_uri_content(): %s", e)
+
     def __on_artist_artwork(self, surface):
         """
             Set artist artwork
@@ -67,8 +98,10 @@ class ArtistRow(Gtk.ListBoxRow):
             self.__artwork.get_style_context().add_class("artwork-icon")
             self.__artwork.set_from_icon_name("avatar-default-symbolic",
                                               Gtk.IconSize.INVALID)
-            self.__artwork.set_pixel_size(ArtSize.ARTIST_SMALL)
+            # artwork-icon padding is 5px
+            self.__artwork.set_pixel_size(ArtSize.ARTIST_SMALL - 20)
         else:
+            self.__artwork.get_style_context().remove_class("artwork-icon")
             self.__artwork.set_from_surface(surface)
 
 
@@ -117,13 +150,12 @@ class SimilarsPopover(Popover):
                 App().spotify.get_artist_id(artist_name,
                                             self.__on_get_artist_id)
             if App().lastfm is not None:
-                App().task_helper.run(self.__search_lastfm_similars, artists,
-                                      self.get_scale_factor())
+                App().task_helper.run(self.__search_lastfm_similars, artists)
 
 #######################
 # PRIVATE             #
 #######################
-    def __search_lastfm_similars(self, artists, scale_factor):
+    def __search_lastfm_similars(self, artists):
         """
             Search similars artists from lastfm
             @param artists as [str]
@@ -132,7 +164,6 @@ class SimilarsPopover(Popover):
         for artist in artists:
             if not self.__cancellable.is_cancelled():
                 App().lastfm.search_similar_artists(artist,
-                                                    scale_factor,
                                                     self.__cancellable)
 
     def __on_get_artist_id(self, artist_id):
@@ -144,10 +175,9 @@ class SimilarsPopover(Popover):
             self.__stack.set_visible_child_name("no-result")
             self.__spinner.stop()
         App().task_helper.run(App().spotify.search_similar_artists, artist_id,
-                              self.get_scale_factor(),
                               self.__cancellable)
 
-    def __on_new_artist(self, provider, artist):
+    def __on_new_artist(self, provider, artist, cover_uri):
         """
             Add artist to view
             @param provider as Spotify/LastFM
@@ -167,9 +197,9 @@ class SimilarsPopover(Popover):
             artist_name = App().artists.get_name(artist_id)
             albums = App().artists.get_albums([artist_id])
             if albums:
-                row = ArtistRow(artist_name)
+                row = ArtistRow(artist_name, None, self.__cancellable)
         elif self.__show_all:
-            row = ArtistRow(artist)
+            row = ArtistRow(artist, cover_uri, self.__cancellable)
         if row is not None:
             row.show()
             self.__listbox.add(row)

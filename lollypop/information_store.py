@@ -168,6 +168,8 @@ class InformationStore:
                                                                size,
                                                                True,
                                                                None)
+            pixbuf = pixbuf.scale_simple(size, size,
+                                         GdkPixbuf.InterpType.NEAREST)
             stream.close()
             pixbuf.savev(filepath_at_size, "jpeg", ["quality"], ["100"])
 

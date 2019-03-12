@@ -21,7 +21,6 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.objects import Album
-from lollypop.information_store import InformationStore
 from lollypop.helper_task import TaskHelper
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
 
@@ -34,7 +33,7 @@ class SpotifyHelper(GObject.Object):
     __gsignals__ = {
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
                       (GObject.TYPE_PYOBJECT, str)),
-        "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
         "search-finished": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
@@ -120,11 +119,10 @@ class SpotifyHelper(GObject.Object):
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
             callback(None)
 
-    def search_similar_artists(self, artist_id, scale_factor, cancellable):
+    def search_similar_artists(self, artist_id, cancellable):
         """
             Search similar artists
             @param artist_name as str
-            @param scale_factor as int
             @param cancellable as Gio.Cancellable
             @param callback as function
         """
@@ -148,15 +146,8 @@ class SpotifyHelper(GObject.Object):
                     found = True
                     artist_name = item["name"]
                     cover_uri = item["images"][1]["url"]
-                    # Cache artist cover
-                    (status, data) = App().task_helper.load_uri_content_sync(
-                            cover_uri, cancellable)
-                    if status:
-                        InformationStore.add_artist_artwork_to_cache(
-                                                              artist_name,
-                                                              data,
-                                                              scale_factor)
-                    GLib.idle_add(self.emit, "new-artist", artist_name)
+                    GLib.idle_add(self.emit, "new-artist",
+                                  artist_name, cover_uri)
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
         if not found:
