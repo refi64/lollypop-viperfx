@@ -230,7 +230,6 @@ class Application(Gtk.Application):
         if not self.settings.get_value("save-state"):
             self.settings.set_value("state-one-ids", GLib.Variant("ai", []))
             self.settings.set_value("state-two-ids", GLib.Variant("ai", []))
-        self.window.container.save_internals()
         # Then vacuum db
         if vacuum:
             self.__vacuum()
@@ -509,6 +508,7 @@ class Application(Gtk.Application):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        self.window.container.save_internals()
         if not self.settings.get_value("background-mode") or\
                 not self.player.is_playing:
             GLib.timeout_add(500, self.quit, True)
