@@ -188,8 +188,8 @@ class SimilarsPopover(Popover):
             @param provider as Spotify/LastFM
             @param artist as str
         """
-        self.__providers -= 1
         if artist is None:
+            self.__providers -= 1
             if self.__providers == 0:
                 self.__stack.set_visible_child_name("no-result")
                 self.__spinner.stop()
