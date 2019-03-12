@@ -33,6 +33,8 @@ class ArtistRow(Gtk.ListBoxRow):
         """
         Gtk.ListBoxRow.__init__(self)
         self.__artist_name = artist_name
+        self.__cover_uri = cover_uri
+        self.__cancellable = cancellable
         grid = Gtk.Grid()
         grid.set_column_spacing(5)
         label = Gtk.Label.new(artist_name)
@@ -46,10 +48,6 @@ class ArtistRow(Gtk.ListBoxRow):
                                             ArtSize.ARTIST_SMALL,
                                             self.get_scale_factor(),
                                             self.__on_artist_artwork)
-        if cover_uri:
-            App().task_helper.load_uri_content(cover_uri, cancellable,
-                                               self.__on_uri_content)
-
         grid.add(self.__artwork)
         grid.add(label)
         grid.show_all()
@@ -95,6 +93,12 @@ class ArtistRow(Gtk.ListBoxRow):
             @param surface as cairo.Surface
         """
         if surface is None:
+            # Last chance to get a cover
+            if self.__cover_uri is not None:
+                App().task_helper.load_uri_content(self.__cover_uri,
+                                                   self.__cancellable,
+                                                   self.__on_uri_content)
+                self.__cover_uri = None
             self.__artwork.get_style_context().add_class("artwork-icon")
             self.__artwork.set_from_icon_name("avatar-default-symbolic",
                                               Gtk.IconSize.INVALID)
