@@ -385,6 +385,8 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
         icon = "edit-find-symbolic"
     elif object_id == Type.GENRES:
         icon = "folder-symbolic"
+    elif object_id == Type.WEB:
+        icon = "goa-panel-symbolic"
     return icon
 
 

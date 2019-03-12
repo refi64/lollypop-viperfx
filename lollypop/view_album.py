@@ -16,7 +16,6 @@ from gettext import gettext as _
 
 from lollypop.define import App, ViewType, Type, MARGIN
 from lollypop.objects import Album
-from lollypop.utils import remove_static_genres
 from lollypop.view_tracks import TracksView
 from lollypop.widgets_album_banner import AlbumBannerWidget
 from lollypop.controller_view import ViewController, ViewControllerType
@@ -42,7 +41,6 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self._album = album
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
-        self.__genre_ids = remove_static_genres(genre_ids)
         self.__grid = Gtk.Grid()
         self.__grid.set_property("vexpand", True)
         self.__grid.set_row_spacing(10)

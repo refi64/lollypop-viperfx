@@ -48,6 +48,9 @@ class ShownLists:
         Type.GENRES: (_("Genres"),
                       SelectionListMask.LIST_ONE |
                       SelectionListMask.ARTISTS_VIEW),
+        Type.WEB: (_("Web"),
+                   SelectionListMask.LIST_ONE |
+                   SelectionListMask.ARTISTS_VIEW),
         Type.ALL: (_("All albums"),
                    SelectionListMask.LIST_ONE |
                    SelectionListMask.ARTISTS_VIEW),

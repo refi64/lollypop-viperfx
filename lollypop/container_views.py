@@ -57,7 +57,8 @@ class ViewsContainer:
                        Type.LOVED,
                        Type.RECENTS,
                        Type.NEVER,
-                       Type.RANDOMS]:
+                       Type.RANDOMS,
+                       Type.WEB]:
             view = self._get_view_albums([item_id], [])
         elif item_id == Type.SEARCH:
             view = self.get_view_search(data)

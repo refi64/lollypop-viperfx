@@ -15,7 +15,7 @@ import itertools
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, Type, OrderBy
 from lollypop.logger import Logger
-from lollypop.utils import remove_static_genres, noaccents
+from lollypop.utils import noaccents
 
 
 class AlbumsDatabase:
@@ -617,7 +617,6 @@ class AlbumsDatabase:
             @param genre id as int
             @return [disc as int]
         """
-        genre_ids = remove_static_genres(genre_ids)
         with SqlCursor(App().db) as sql:
             filters = (album_id,)
             filters += tuple(genre_ids)
@@ -658,7 +657,6 @@ class AlbumsDatabase:
             @param disallow_ignored_tracks as bool
             @return [int]
         """
-        genre_ids = remove_static_genres(genre_ids)
         with SqlCursor(App().db) as sql:
             filters = (album_id, disc)
             request = "SELECT DISTINCT tracks.rowid\
@@ -711,7 +709,6 @@ class AlbumsDatabase:
             @param ignore as bool => ignore albums with loved == 1
             @return albums ids as [int]
         """
-        genre_ids = remove_static_genres(genre_ids)
         orderby = App().settings.get_enum("orderby")
         if artist_ids or orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\

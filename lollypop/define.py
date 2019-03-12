@@ -166,6 +166,7 @@ class Type:
     EQUALIZER = -19
     GENRES = -20
     ALBUM = -21
+    WEB = -22
     ALL = -100
     CURRENT = -101
     USB_DISKS = -200

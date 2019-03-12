@@ -16,7 +16,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, OrderBy
-from lollypop.utils import noaccents, remove_static_genres
+from lollypop.utils import noaccents
 
 
 class TracksDatabase:
@@ -430,7 +430,6 @@ class TracksDatabase:
             @return albums ids as [int]
             @param ignore as bool
         """
-        genre_ids = remove_static_genres(genre_ids)
         orderby = App().settings.get_enum("orderby")
         if artist_ids or orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\

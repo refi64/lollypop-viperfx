@@ -249,7 +249,8 @@ class ListsContainer:
                                  Type.LOVED,
                                  Type.RECENTS,
                                  Type.NEVER,
-                                 Type.RANDOMS]:
+                                 Type.RANDOMS,
+                                 Type.WEB]:
             view = self._get_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
             view = self._get_view_radios()

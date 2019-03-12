@@ -15,14 +15,13 @@ from gi.repository import GLib, Soup, GObject
 import json
 from base64 import b64encode
 from time import time, sleep
-from gettext import gettext as _
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.objects import Album
 from lollypop.helper_task import TaskHelper
-from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
+from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App, Type
 
 
 class SpotifyHelper(GObject.Object):
@@ -338,7 +337,6 @@ class SpotifyHelper(GObject.Object):
         artists = ";".join(_artists)
         album_artists = ";".join(_album_artists)
         album_name = payload["album"]["name"]
-        genres = _("Web")
         discnumber = int(payload["disc_number"])
         discname = None
         tracknumber = int(payload["track_number"])
@@ -380,7 +378,7 @@ class SpotifyHelper(GObject.Object):
         album_id = t.add_album(album_name, mb_album_id, album_artist_ids,
                                "", False, 0, 0, 0)
 
-        genre_ids = t.add_genres(genres)
+        genre_ids = [Type.WEB]
 
         # Add track to db
         Logger.debug("SpotifyHelper::__save_track(): Add track")

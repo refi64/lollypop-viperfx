@@ -17,6 +17,7 @@ from urllib.parse import urlparse
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, Type
+from lollypop.utils import remove_static_genres
 
 
 class Base:
@@ -250,7 +251,7 @@ class Album(Base):
         """
         Base.__init__(self, App().albums)
         self.id = album_id
-        self.genre_ids = genre_ids
+        self.genre_ids = remove_static_genres(genre_ids)
         self._tracks = []
         self._discs = []
         self.__disallow_ignored_tracks = disallow_ignored_tracks
@@ -357,8 +358,6 @@ class Album(Base):
             Save album to collection
             @param save as bool
         """
-        # We want DB genre ids
-        genre_ids = App().albums.get_genre_ids(self.id)
         if save:
             App().albums.set_mtime(self.id, -1)
         else:
@@ -368,8 +367,6 @@ class Album(Base):
         self.reset("mtime")
         for artist_id in self.artist_ids:
             App().scanner.emit("artist-updated", artist_id, save)
-        for genre_id in genre_ids:
-            App().scanner.emit("genre-updated", genre_id, save)
         App().scanner.emit("album-updated", self.id, not save)
 
     @property
