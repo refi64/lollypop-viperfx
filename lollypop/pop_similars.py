@@ -146,6 +146,7 @@ class SimilarsPopover(Popover):
             @param artist ids as int
         """
         if get_network_available():
+            self.__providers = 1
             artists = []
             for artist_id in artist_ids:
                 artist_name = App().artists.get_name(artist_id)
@@ -153,6 +154,7 @@ class SimilarsPopover(Popover):
                 App().spotify.get_artist_id(artist_name,
                                             self.__on_get_artist_id)
             if App().lastfm is not None:
+                self.__providers = 2
                 App().task_helper.run(self.__search_lastfm_similars, artists)
 
 #######################
@@ -186,9 +188,11 @@ class SimilarsPopover(Popover):
             @param provider as Spotify/LastFM
             @param artist as str
         """
+        self.__providers -= 1
         if artist is None:
-            self.__stack.set_visible_child_name("no-result")
-            self.__spinner.stop()
+            if self.__providers == 0:
+                self.__stack.set_visible_child_name("no-result")
+                self.__spinner.stop()
             return
         if artist in self.__added:
             return
