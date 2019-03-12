@@ -212,7 +212,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                 self._responsive_widget.show()
                 self.__revealer.add(self._responsive_widget)
             self.__revealer.set_reveal_child(True)
-            self.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            self.unset_state_flags(Gtk.StateFlags.VISITED)
             self.get_style_context().add_class("albumrow-hover")
 
     def set_playing_indicator(self):
