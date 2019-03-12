@@ -214,7 +214,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         except Exception as e:
             Logger.error("LastFM::search_similar_artists(): %s", e)
         if not found:
-            GLib.idle_add(self.emit, "new-artist", None)
+            GLib.idle_add(self.emit, "new-artist", None, None)
 
     def on_goa_account_switched(self, obj):
         """

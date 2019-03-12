@@ -150,7 +150,7 @@ class SpotifyHelper(GObject.Object):
         except Exception as e:
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
         if not found:
-            GLib.idle_add(self.emit, "new-artist", None)
+            GLib.idle_add(self.emit, "new-artist", None, None)
 
     def search(self, search, cancellable):
         """
