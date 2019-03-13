@@ -11,6 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.objects import Track
+from lollypop.define import NextContext
 
 
 class QueuePlayer:
@@ -24,6 +25,7 @@ class QueuePlayer:
         """
         self.__queue = []
         self.__backup_next = None
+        self.__backup_context = NextContext.NONE
 
     def set_queue(self, queue):
         """
@@ -77,8 +79,7 @@ class QueuePlayer:
             if not self.__queue and self.__backup_next is not None:
                 self._next_track = self.__backup_next
                 self.__backup_next = None
-            else:
-                self.set_next()
+            self.set_next()
             self.set_prev()
         if notify:
             self.emit("queue-changed")
@@ -137,7 +138,12 @@ class QueuePlayer:
         """
         track_id = None
         if self.__queue:
+            if self.__backup_context == NextContext.NONE:
+                self.__backup_context = self._next_context
             track_id = self.__queue[0]
+        elif self.__backup_context != NextContext.NONE:
+            self._next_context = self.__backup_context
+            self.__backup_context = NextContext.NONE
         return Track(track_id)
 
     @property
