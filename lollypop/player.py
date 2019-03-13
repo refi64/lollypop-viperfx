@@ -437,16 +437,15 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         if self.current_track.id == Type.RADIOS:
             return
         try:
+            # Reset finished context
+            self._next_context = NextContext.NONE
+
             # Same track
             if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
                 next_track = self._current_track
             # Look first at user queue
             else:
                 next_track = QueuePlayer.next(self)
-
-            # Reset finished context
-            if next_track.id is not None:
-                self._next_context = NextContext.NONE
 
             # Look at shuffle
             if next_track.id is None:
