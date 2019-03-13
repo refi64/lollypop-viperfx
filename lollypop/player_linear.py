@@ -10,8 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import NextContext
+from lollypop.define import Repeat, App
 from lollypop.player_base import BasePlayer
+from lollypop.objects import Track
 from lollypop.logger import Logger
 
 
@@ -31,8 +32,9 @@ class LinearPlayer(BasePlayer):
             Next track for current album or next album
             @return track as Track
         """
+        repeat = App().settings.get_enum("repeat")
         # If no album available, repeat current track
-        if not self._albums:
+        if not self._albums or repeat == Repeat.TRACK:
             return self._current_track
         album = self._current_track.album
         new_track_position = self._current_track.position + 1
@@ -42,8 +44,10 @@ class LinearPlayer(BasePlayer):
                 pos = self.album_ids.index(album.id)
                 # we are on last album, go to first
                 if pos + 1 >= len(self._albums):
-                    self._next_context = NextContext.STOP
-                    pos = 0
+                    if repeat == Repeat.ALL:
+                        pos = 0
+                    else:
+                        return Track()
                 else:
                     pos += 1
             except Exception as e:
@@ -60,8 +64,9 @@ class LinearPlayer(BasePlayer):
             Prev track base on.current_track context
             @return track as Track
         """
+        repeat = App().settings.get_enum("repeat")
         # If no album available, repeat current track
-        if not self._albums:
+        if not self._albums or repeat == Repeat.TRACK:
             return self._current_track
         album = self._current_track.album
         new_track_position = self._current_track.position - 1
@@ -70,7 +75,10 @@ class LinearPlayer(BasePlayer):
             try:
                 pos = self.album_ids.index(album.id)
                 if pos - 1 < 0:  # we are on last album, go to first
-                    pos = len(self._albums) - 1
+                    if repeat == Repeat.ALL:
+                        pos = len(self._albums) - 1
+                    else:
+                        return Track()
                 else:
                     pos -= 1
             except Exception as e:

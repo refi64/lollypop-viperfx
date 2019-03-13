@@ -28,11 +28,10 @@ MARGIN = 15
 MARGIN_SMALL = 5
 
 
-# Represent what to do on next track
-class NextContext:
-    NONE = 0             # Continue playback
-    REPEAT_TRACK = 1     # Repeat current track
-    STOP = 2             # Stop after track/album/artist
+class Repeat:
+    NONE = 0
+    TRACK = 1
+    ALL = 2
 
 
 class GstPlayFlags:

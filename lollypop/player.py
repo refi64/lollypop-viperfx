@@ -23,7 +23,7 @@ from lollypop.player_playlist import PlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.objects import Track, Album
-from lollypop.define import App, Type, NextContext, LOLLYPOP_DATA_PATH, Shuffle
+from lollypop.define import App, Type, LOLLYPOP_DATA_PATH, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
@@ -43,7 +43,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         PlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
         self.update_crossfading()
-        App().settings.connect("changed::playback", self.__on_playback_changed)
+        App().settings.connect("changed::repeat", self.__on_repeat_changed)
         self._albums_backup = []
 
     def prev(self):
@@ -409,12 +409,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         if self.current_track.id == Type.RADIOS:
             return
         try:
-            # Same track
-            if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
-                prev_track = self._current_track
-            # Look at shuffle
-            else:
-                prev_track = ShufflePlayer.prev(self)
+            prev_track = ShufflePlayer.prev(self)
 
             # Look at user playlist then
             if prev_track.id is None:
@@ -428,24 +423,15 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         except Exception as e:
             Logger.error("Player::set_prev(): %s" % e)
 
-    def set_next(self, force=False):
+    def set_next(self):
         """
             Play next track
             @param sql as sqlite cursor
-            @param force as bool
         """
         if self.current_track.id == Type.RADIOS:
             return
         try:
-            # Reset finished context
-            self._next_context = NextContext.NONE
-
-            # Same track
-            if App().settings.get_enum("playback") == NextContext.REPEAT_TRACK:
-                next_track = self._current_track
-            # Look first at user queue
-            else:
-                next_track = QueuePlayer.next(self)
+            next_track = QueuePlayer.next(self)
 
             # Look at shuffle
             if next_track.id is None:
@@ -453,7 +439,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
 
             # Look at user playlist then
             if next_track.id is None:
-                next_track = PlaylistPlayer.next(self, force)
+                next_track = PlaylistPlayer.next(self)
 
             # Get a linear track then
             if next_track.id is None:
@@ -615,7 +601,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         if track is not None:
             self.load(track)
 
-    def __on_playback_changed(self, settings, value):
+    def __on_repeat_changed(self, settings, value):
         """
             reset next/prev
             @param settings as Gio.Settings, value as str

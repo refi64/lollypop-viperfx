@@ -12,7 +12,7 @@
 
 from gi.repository import GLib
 
-from lollypop.define import NextContext, App
+from lollypop.define import Repeat, App
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
@@ -77,23 +77,25 @@ class PlaylistPlayer(BasePlayer):
         self._playlist_tracks = tracks
         self.emit("playlist-changed")
 
-    def next(self, force):
+    def next(self):
         """
             Next Track
             @param force as bool
             @return Track
         """
+        repeat = App().settings.get_enum("repeat")
+        if repeat == Repeat.TRACK:
+            return self._current_track
         track = Track()
-        if force:
-            current_track_id = self._next_track.id
-        else:
-            current_track_id = self._current_track.id
+        current_track_id = self._current_track.id
         track_ids = self.playlist_track_ids
         if track_ids and current_track_id in track_ids:
             idx = track_ids.index(current_track_id)
             if idx + 1 >= len(track_ids):
-                self._next_context = NextContext.STOP
-                idx = 0
+                if repeat == Repeat.ALL:
+                    idx = 0
+                else:
+                    return track
             else:
                 idx += 1
             track = self._playlist_tracks[idx]
@@ -104,13 +106,19 @@ class PlaylistPlayer(BasePlayer):
             Prev track id
             @return Track
         """
+        repeat = App().settings.get_enum("repeat")
+        if repeat == Repeat.TRACK:
+            return self._current_track
         track = Track()
         current_track_id = self._current_track.id
         track_ids = self.playlist_track_ids
         if track_ids and current_track_id in track_ids:
             idx = track_ids.index(current_track_id)
             if idx - 1 < 0:
-                idx = len(track_ids) - 1
+                if repeat == Repeat.ALL:
+                    idx = len(track_ids) - 1
+                else:
+                    return track
             else:
                 idx -= 1
             track = self._playlist_tracks[idx]

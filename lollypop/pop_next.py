@@ -114,7 +114,7 @@ class NextPopover(Gtk.Popover):
             Skip next track
             @param btn as Gtk.Button
         """
-        App().player.set_next(True)
+        App().player.set_next()
         App().player.emit("queue-changed")
 
 #######################

@@ -12,7 +12,7 @@
 
 import random
 
-from lollypop.define import Shuffle, NextContext, App, Type
+from lollypop.define import Shuffle, Repeat, App, Type
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
 from lollypop.list import LinkedList
@@ -54,6 +54,9 @@ class ShufflePlayer(BasePlayer):
             Next shuffle track
             @return Track
         """
+        repeat = App().settings.get_enum("repeat")
+        if repeat == Repeat.TRACK:
+            return self._current_track
         track = Track()
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_next:
@@ -68,6 +71,9 @@ class ShufflePlayer(BasePlayer):
             Prev track based on history
             @return Track
         """
+        repeat = App().settings.get_enum("repeat")
+        if repeat == Repeat.TRACK:
+            return self._current_track
         track = Track()
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_prev:
@@ -223,7 +229,9 @@ class ShufflePlayer(BasePlayer):
                     self.__already_played_albums = []
                     self.__already_played_tracks = {}
                     self.__history = []
-                    return self.__get_next()
+                    repeat = App().settings.get_enum("repeat")
+                    if repeat == Repeat.ALL:
+                        return self.__get_next()
                 return track
         except Exception as e:  # Recursion error
             Logger.error("ShufflePLayer::__get_next(): %s", e)
@@ -242,7 +250,6 @@ class ShufflePlayer(BasePlayer):
                    track.album not in self.__already_played_tracks.keys() or
                    track not in self.__already_played_tracks[track.album]):
                 return track
-        self._next_context = NextContext.STOP
         return Track()
 
     def __get_tracks_random(self):
@@ -262,7 +269,6 @@ class ShufflePlayer(BasePlayer):
             if album in self.__already_played_tracks.keys():
                 self.__already_played_tracks.pop(album)
                 self.__already_played_albums.append(album)
-        self._next_context = NextContext.STOP
         return Track()
 
     def __add_to_shuffle_history(self, track):

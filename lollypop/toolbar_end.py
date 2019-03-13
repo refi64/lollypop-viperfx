@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
 from lollypop.pop_appmenu import AppMenuPopover
-from lollypop.define import App, Shuffle, NextContext, Type
+from lollypop.define import App, Shuffle, Repeat, Type
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -34,7 +34,6 @@ class ToolbarEnd(Gtk.Bin):
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
-        builder.connect_signals(self)
 
         self.__party_submenu = builder.get_object("party_submenu")
         self.add(builder.get_object("end"))
@@ -48,15 +47,15 @@ class ToolbarEnd(Gtk.Bin):
         self.__shuffle_action.set_state(App().settings.get_value("shuffle"))
         self.__shuffle_action.connect("change-state",
                                       self.__on_shuffle_change_state)
-        self.__playback_action = Gio.SimpleAction.new_stateful(
-            "playback",
+        self.__repeat_action = Gio.SimpleAction.new_stateful(
+            "repeat",
             GLib.VariantType.new("s"),
             GLib.Variant("s", "none"))
-        self.__playback_action.set_state(App().settings.get_value("playback"))
-        self.__playback_action.connect("change-state",
-                                       self.__on_playback_change_state)
+        self.__repeat_action.set_state(App().settings.get_value("repeat"))
+        self.__repeat_action.connect("change-state",
+                                     self.__on_repeat_change_state)
         App().add_action(self.__shuffle_action)
-        App().add_action(self.__playback_action)
+        App().add_action(self.__repeat_action)
 
         self.__shuffle_button = builder.get_object("shuffle-button")
         self.__shuffle_image = builder.get_object("shuffle-button-image")
@@ -65,8 +64,8 @@ class ToolbarEnd(Gtk.Bin):
                                       self.__on_shuffle_button_activate)
         App().add_action(shuffle_button_action)
         App().set_accels_for_action("app.shuffle-button", ["<Control>r"])
-        App().settings.connect("changed::shuffle", self.__on_playback_changed)
-        App().settings.connect("changed::playback", self.__on_playback_changed)
+        App().settings.connect("changed::shuffle", self.__on_repeat_changed)
+        App().settings.connect("changed::repeat", self.__on_repeat_changed)
 
         party_action = Gio.SimpleAction.new_stateful(
             "party",
@@ -103,6 +102,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__home_button = builder.get_object("home-button")
         App().player.connect("playlist-changed", self.__on_playlist_changed)
         self.__set_shuffle_icon()
+        builder.connect_signals(self)
 
     def on_next_changed(self, player):
         """
@@ -308,15 +308,15 @@ class ToolbarEnd(Gtk.Bin):
             Set shuffle icon
         """
         shuffle = App().settings.get_enum("shuffle")
-        repeat = App().settings.get_enum("playback")
-        if repeat == NextContext.REPEAT_TRACK:
+        repeat = App().settings.get_enum("repeat")
+        if repeat == Repeat.TRACK:
             self.__shuffle_image.get_style_context().remove_class("selected")
             self.__shuffle_image.set_from_icon_name(
                 "media-playlist-repeat-song-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
         elif shuffle == Shuffle.NONE:
             self.__shuffle_image.get_style_context().remove_class("selected")
-            if repeat == NextContext.NONE:
+            if repeat == Repeat.ALL:
                 self.__shuffle_image.set_from_icon_name(
                     "media-playlist-repeat-symbolic",
                     Gtk.IconSize.SMALL_TOOLBAR)
@@ -347,7 +347,7 @@ class ToolbarEnd(Gtk.Bin):
         App().player.set_party(value.get_boolean())
         action.set_state(value)
         self.__shuffle_action.set_enabled(not value)
-        self.__playback_action.set_enabled(not value)
+        self.__repeat_action.set_enabled(not value)
         self.on_next_changed(App().player)
 
     def __on_scrobbling_mode_change_state(self, action, value):
@@ -369,13 +369,13 @@ class ToolbarEnd(Gtk.Bin):
         App().settings.set_value("shuffle", value)
         action.set_state(value)
 
-    def __on_playback_change_state(self, action, value):
+    def __on_repeat_change_state(self, action, value):
         """
             Update playback setting
             @param action as Gio.SimpleAction
             @param value as GLib.Variant
         """
-        App().settings.set_value("playback", value)
+        App().settings.set_value("repeat", value)
         action.set_state(value)
 
     def __on_shuffle_button_activate(self, action, param):
@@ -387,7 +387,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__shuffle_button.set_active(
             not self.__shuffle_button.get_active())
 
-    def __on_playback_changed(self, settings, value):
+    def __on_repeat_changed(self, settings, value):
         """
             Update shuffle icon
             @param settings as Gio.Settings

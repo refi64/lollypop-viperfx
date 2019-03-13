@@ -17,7 +17,7 @@ from time import time
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import TagReader
 from lollypop.player_plugins import PluginsPlayer
-from lollypop.define import GstPlayFlags, NextContext, App
+from lollypop.define import GstPlayFlags, App
 from lollypop.codecs import Codecs
 from lollypop.define import Type
 from lollypop.logger import Logger
@@ -408,12 +408,12 @@ class BinPlayer(BasePlayer):
                     pop_to_add = 1
             App().albums.set_more_popular(self._current_track.album_id,
                                           pop_to_add)
-        if self.__need_to_stop():
+        if self._next_track.id is None:
             # We are in gstreamer thread
             GLib.idle_add(self.stop)
             # Reenable as it has been disabled by do_crossfading()
             self.update_crossfading()
-        elif self._next_track.id is not None:
+        else:
             self._load_track(self._next_track)
 
 #######################
@@ -492,7 +492,9 @@ class BinPlayer(BasePlayer):
             @param next as bool
         """
         # No cossfading if we need to stop
-        if self.__need_to_stop():
+        next_ok = next and self._next_track.id is not None
+        prev_ok = not next and self._prev_track.id is not None
+        if track is None and not next_ok or not prev_ok:
             self._crossfading = False
             return
 
@@ -529,7 +531,7 @@ class BinPlayer(BasePlayer):
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self.__volume_up, self._playbin,
                           self._plugins, duration)
-        elif next and self._next_track.id is not None:
+        elif next:
             self.__load(self._next_track, False)
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self.__volume_up, self._playbin,
@@ -539,21 +541,6 @@ class BinPlayer(BasePlayer):
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self.__volume_up, self._playbin,
                           self._plugins, duration)
-
-    def __need_to_stop(self):
-        """
-            Return True if playback needs to stop
-            @return bool
-        """
-        stop = False
-        playback = App().settings.get_enum("playback")
-        if playback == NextContext.STOP:
-            if (not self._albums and
-                not self.queue and
-                not self._playlist_ids) or\
-                    playback == self._next_context:
-                stop = True
-        return stop
 
     def __update_current_duration(self, track, uri):
         """

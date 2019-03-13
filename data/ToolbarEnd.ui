@@ -35,18 +35,18 @@
             <attribute name="label" translatable="yes">Repetition</attribute>
             <item>
               <attribute name="label" translatable="yes">Continuous playback</attribute>
-              <attribute name="action">app.playback</attribute>
-              <attribute name="target">none</attribute>
+              <attribute name="action">app.repeat</attribute>
+              <attribute name="target">all</attribute>
             </item>
             <item>
               <attribute name="label" translatable="yes">Repeat track</attribute>
-              <attribute name="action">app.playback</attribute>
-              <attribute name="target">repeat_track</attribute>
+              <attribute name="action">app.repeat</attribute>
+              <attribute name="target">track</attribute>
             </item>
             <item>
               <attribute name="label" translatable="yes">Do not repeat</attribute>
-              <attribute name="action">app.playback</attribute>
-              <attribute name="target">stop</attribute>
+              <attribute name="action">app.repeat</attribute>
+              <attribute name="target">none</attribute>
             </item>
  	</section>
         <section>

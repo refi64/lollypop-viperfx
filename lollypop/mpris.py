@@ -19,7 +19,7 @@ from gi.repository import Gio, Gst, GLib, Gtk
 from random import randint
 
 from lollypop.logger import Logger
-from lollypop.define import App, ArtSize, Type, Shuffle, NextContext
+from lollypop.define import App, ArtSize, Type, Shuffle, Repeat
 from lollypop.objects import Track
 
 
@@ -199,7 +199,7 @@ class MPRIS(Server):
         App().player.connect("volume-changed", self.__on_volume_changed)
         App().player.connect("rate-changed", self.__on_rate_changed)
         App().settings.connect("changed::shuffle", self.__on_shuffle_changed)
-        App().settings.connect("changed::playback", self.__on_playback_changed)
+        App().settings.connect("changed::repeat", self.__on_repeat_changed)
 
     def Raise(self):
         self.__app.window.setup()
@@ -285,10 +285,10 @@ class MPRIS(Server):
         elif property_name == "PlaybackStatus":
             return GLib.Variant("s", self.__get_status())
         elif property_name == "LoopStatus":
-            repeat = App().settings.get_enum("playback")
-            if repeat == NextContext.NONE:
+            repeat = App().settings.get_enum("repeat")
+            if repeat == Repeat.ALL:
                 value = "Playlist"
-            elif repeat == NextContext.REPEAT_TRACK:
+            elif repeat == Repeat.TRACK:
                 value = "Track"
             else:
                 value = "None"
@@ -347,12 +347,12 @@ class MPRIS(Server):
                 App().settings.set_enum("shuffle", Shuffle.NONE)
         elif property_name == "LoopStatus":
             if new_value == "Playlist":
-                value = NextContext.NONE
+                value = Repeat.ALL
             elif new_value == "Track":
-                value = NextContext.REPEAT_TRACK
+                value = Repeat.TRACK
             else:
-                value = NextContext.STOP
-            App().settings.set_enum("playback", value)
+                value = Repeat.NONE
+            App().settings.set_enum("repeat", value)
 
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
@@ -470,15 +470,15 @@ class MPRIS(Server):
         properties = {"Shuffle": GLib.Variant("b", value)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
-    def __on_playback_changed(self, settings, value):
-        value = App().settings.get_enum("playback")
-        if value == NextContext.NONE:
-            mpris_value = "Playlist"
-        elif value == NextContext.REPEAT_TRACK:
-            mpris_value = "Track"
+    def __on_repeat_changed(self, settings, value):
+        repeat = App().settings.get_enum("repeat")
+        if repeat == Repeat.ALL:
+            value = "Playlist"
+        elif repeat == Repeat.TRACK:
+            value = "Track"
         else:
-            mpris_value = "None"
-        properties = {"LoopStatus": GLib.Variant("s", mpris_value)}
+            value = "None"
+        properties = {"LoopStatus": GLib.Variant("s", value)}
         self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
 
     def __on_rate_changed(self, player, rated_track_id, rating):

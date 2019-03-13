@@ -16,10 +16,10 @@
        <value nick="suspend" value="2"/>
        <value nick="both" value="3"/>
     </enum>
-    <enum id="org.gnome.Lollypop.Playback">
+    <enum id="org.gnome.Lollypop.Repeat">
        <value nick="none" value="0"/>
-       <value nick="repeat_track" value="1"/>
-       <value nick="stop" value="2"/>
+       <value nick="track" value="1"/>
+       <value nick="all" value="2"/>
     </enum>
     <enum id="org.gnome.Lollypop.OrderBy">
        <value nick="artist" value="0"/>
@@ -315,9 +315,9 @@
             <summary>Possibilities for powermanagement options</summary>
             <description>This option inhibits screensaver and suspend during Lollypop playback.</description>
         </key>
-        <key enum="org.gnome.Lollypop.Playback" name="playback">
+        <key enum="org.gnome.Lollypop.Repeat" name="repeat">
             <default>'none'</default>
-            <summary>Playback behaviour</summary>
+            <summary>Repeat</summary>
             <description></description>
         </key>
         <key enum="org.gnome.Lollypop.OrderBy" name="orderby">
