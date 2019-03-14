@@ -194,15 +194,14 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self.__play_all_button.destroy()
             self.__play_all_button = None
 
-    def _on_album_updated(self, scanner, album_id, destroy):
+    def _on_album_updated(self, scanner, album_id, added):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
             @param album id as int
-            @param deleted as bool
-            @param destroy as bool
+            @param added as bool
         """
-        if self._album.id == album_id and destroy:
+        if self._album.id == album_id and not added:
             self.destroy()
 
 #######################

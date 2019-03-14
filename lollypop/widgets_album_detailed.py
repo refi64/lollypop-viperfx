@@ -124,15 +124,14 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
         self.emit("populated")
 
-    def _on_album_updated(self, scanner, album_id, destroy):
+    def _on_album_updated(self, scanner, album_id, added):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
             @param album id as int
-            @param destroy as bool
+            @param added as bool
         """
-        TracksView._on_album_updated(self, scanner, album_id, destroy)
-        AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
+        TracksView._on_album_updated(self, scanner, album_id)
 
 #######################
 # PRIVATE             #

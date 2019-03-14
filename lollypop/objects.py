@@ -367,7 +367,7 @@ class Album(Base):
         self.reset("mtime")
         for artist_id in self.artist_ids:
             App().scanner.emit("artist-updated", artist_id, save)
-        App().scanner.emit("album-updated", self.id, not save)
+        App().scanner.emit("album-updated", self.id, save)
 
     @property
     def title(self):

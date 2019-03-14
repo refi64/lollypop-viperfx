@@ -247,12 +247,11 @@ class TracksView:
 #######################
 # PROTECTED           #
 #######################
-    def _on_album_updated(self, scanner, album_id, destroy):
+    def _on_album_updated(self, scanner, album_id):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
             @param album id as int
-            @param destroy as bool
         """
         if self._album.id != album_id:
             return
