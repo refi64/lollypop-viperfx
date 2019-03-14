@@ -60,7 +60,22 @@ class ArtistMenu(BaseMenu):
         App().add_action(go_artist_action)
         go_artist_action.connect("activate",
                                  self.__go_to_artists)
-        self.append(_("Show albums from artist"), "app.go_artist_action")
+        self.append(_("Available albums"), "app.go_artist_action")
+        search_artist_action = Gio.SimpleAction(name="search_artist_action")
+        App().add_action(search_artist_action)
+        search_artist_action.connect("activate",
+                                     self.__search_artist)
+        self.append(_("Others albums"), "app.search_artist_action")
+
+    def __search_artist(self, action, variant):
+        """
+            Search albums from artist
+            @param Gio.SimpleAction
+            @param GLib.Variant
+        """
+        artist_name = App().artists.get_name(self._object.artist_ids[0])
+        target = "web://%s" % artist_name
+        App().lookup_action("search").activate(GLib.Variant("s", target))
 
     def __go_to_artists(self, action, variant):
         """
