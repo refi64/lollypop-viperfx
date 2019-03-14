@@ -173,6 +173,8 @@ class PlaybackMenu(BaseMenu):
                     track = album.tracks[index]
                     album.remove_track(track)
                     break
+        App().player.set_next()
+        App().player.set_prev()
 
     def __append_to_queue(self, action, variant):
         """
