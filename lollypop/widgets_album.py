@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.define import App
+from lollypop.define import App, ViewType
 from lollypop.widgets_utils import Popover
 
 
@@ -93,7 +93,7 @@ class AlbumWidget:
             popover = Popover.new_from_model(self._artwork,
                                              AlbumMenu(
                                                 self._album,
-                                                self._artist_ids == []))
+                                                ViewType.ALBUM))
             popover.set_position(Gtk.PositionType.BOTTOM)
             rect = Gdk.Rectangle()
             rect.x = event.x

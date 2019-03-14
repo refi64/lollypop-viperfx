@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import App
+from lollypop.define import App, ViewType
 from lollypop.objects import Track, Album
 from lollypop.widgets_utils import Popover
 from lollypop.logger import Logger
@@ -41,26 +41,29 @@ class ArtistMenu(BaseMenu):
         Contextual menu for artist
     """
 
-    def __init__(self, object):
+    def __init__(self, object, view_type):
         """
             Init playlists menu
             @param object as Album/Track
+            @param view_type as ViewType
         """
         BaseMenu.__init__(self, object)
-        self.__set_artists_actions()
+        self.__set_artists_actions(view_type)
 
 #######################
 # PRIVATE             #
 #######################
-    def __set_artists_actions(self):
+    def __set_artists_actions(self, view_type):
         """
-            Set queue actions
+            Set artist actions
+            @param view_type as ViewType
         """
-        go_artist_action = Gio.SimpleAction(name="go_artist_action")
-        App().add_action(go_artist_action)
-        go_artist_action.connect("activate",
-                                 self.__go_to_artists)
-        self.append(_("Available albums"), "app.go_artist_action")
+        if view_type & ViewType.ALBUM:
+            go_artist_action = Gio.SimpleAction(name="go_artist_action")
+            App().add_action(go_artist_action)
+            go_artist_action.connect("activate",
+                                     self.__go_to_artists)
+            self.append(_("Available albums"), "app.go_artist_action")
         search_artist_action = Gio.SimpleAction(name="search_artist_action")
         App().add_action(search_artist_action)
         search_artist_action.connect("activate",
@@ -349,7 +352,7 @@ class ToolbarMenu(BaseMenu):
             playlist_menu = PlaylistsMenu(track)
             self.insert_section(1, _("Playlists"), playlist_menu)
         self.insert_section(2, _("Artist"),
-                            ArtistMenu(track))
+                            ArtistMenu(track, ViewType.ALBUM))
 
 #######################
 # PRIVATE             #
@@ -448,16 +451,15 @@ class AlbumMenu(Gio.Menu):
         Contextual menu for album
     """
 
-    def __init__(self, album, show_artist=False):
+    def __init__(self, album, view_type):
         """
             Init menu model
             @param album as Album
-            @param show artist menu as bool
+            @param view_type as ViewType
         """
         Gio.Menu.__init__(self)
-        if show_artist and album.mtime != 0:
-            self.insert_section(0, _("Artist"),
-                                ArtistMenu(album))
+        self.insert_section(0, _("Artist"),
+                            ArtistMenu(album, view_type))
         if album.mtime != 0:
             self.insert_section(2, _("Playlists"),
                                 PlaylistsMenu(album))

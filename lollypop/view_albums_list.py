@@ -324,7 +324,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             self.get_style_context().remove_class("track-menu-selected")
 
         from lollypop.pop_menu import AlbumMenu
-        menu = AlbumMenu(self._album, True)
+        menu = AlbumMenu(self._album, ViewType.ALBUM)
         popover = Gtk.Popover.new_from_model(widget, menu)
         popover.connect("closed", on_closed)
         self.get_style_context().add_class("track-menu-selected")
