@@ -404,6 +404,12 @@ class MPRIS(Server):
                 self.__metadata["xesam:artist"] = GLib.Variant(
                     "as",
                     [App().player.current_track.radio_name])
+                self.__metadata["xesam:trackNumber"] = GLib.Variant(
+                    "i", 0)
+                self.__metadata["xesam:album"] = GLib.Variant("s", "")
+                self.__metadata["xesam:albumArtist"] = GLib.Variant("as",  [])
+                self.__metadata["mpris:length"] = GLib.Variant("x", 0)
+                self.__metadata["xesam:genre"] = GLib.Variant("as", [])
             else:
                 track_number = App().player.current_track.number
                 if track_number is None:
