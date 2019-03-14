@@ -55,6 +55,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
             @param albums as [Album]
         """
         TracksView.populate(self)
+        self.__scanner_signal_id = None
         self.__grid.add(self._responsive_widget)
         self._viewport.add(self.__grid)
         self._overlay = Gtk.Overlay.new()
@@ -101,6 +102,8 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
+        self.__scanner_signal_id = App().scanner.connect(
+            "album-updated", self.__on_album_updated)
         self._responsive_widget.set_margin_top(
             self.__banner.default_height + 15)
         App().window.emit("show-can-go-back", True)
@@ -109,6 +112,14 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                                  GLib.Variant("ai", self.__genre_ids))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", self.__artist_ids))
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect scanner signal
+        """
+        if self.__scanner_signal_id is not None:
+            App().scanner.disconnect(self.__scanner_signal_id)
+            self.__scanner_signal_id = None
 
     def _on_tracks_populated(self, disc_number):
         """
@@ -139,15 +150,27 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
                 label.set_margin_top(40)
                 label.show()
                 self.__grid.add(label)
-                others_box = AlbumsBoxView([],
-                                           [artist_id],
-                                           ViewType.SMALL)
-                others_box.show()
-                self.__grid.add(others_box)
-                others_box.populate([Album(id) for id in album_ids])
+                self.__others_box = AlbumsBoxView([], [artist_id],
+                                                  ViewType.SMALL)
+                self.__others_box.show()
+                self.__grid.add(self.__others_box)
+                self.__others_box.populate([Album(id) for id in album_ids])
         else:
             TracksView.populate(self)
 
 #######################
 # PRIVATE             #
 #######################
+    def __on_album_updated(self, scanner, album_id, added):
+        """
+            Add album to others if needed
+            @param scanner as CollectionScanner
+            @param album_id as int
+            @param added as bool
+        """
+        album = Album(album_id)
+        for artist_id in album.artist_ids:
+            if artist_id in self.__artist_ids:
+                self.__others_box.add_album(
+                    album, self.__genre_ids, self.__artist_ids, ViewType.SMALL)
+                break

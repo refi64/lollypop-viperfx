@@ -44,6 +44,19 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             self._scrolled.set_policy(Gtk.PolicyType.NEVER,
                                       Gtk.PolicyType.NEVER)
 
+    def add_album(self, album, genre_ids, artist_ids, view_type):
+        """
+            Add a new album
+            @param item as int
+            @param genre_ids as [int]
+            @param artist_ids as [int]
+            @param view_type as ViewType
+        """
+        widget = AlbumSimpleWidget(album, genre_ids, artist_ids, view_type)
+        self._box.insert(widget, -1)
+        widget.show()
+        widget.populate()
+
 #######################
 # PROTECTED           #
 #######################
