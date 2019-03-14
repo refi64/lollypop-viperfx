@@ -870,10 +870,11 @@ class TracksDatabase:
                          WHERE track_genres.track_id NOT IN (\
                             SELECT tracks.rowid FROM tracks)")
 
-    def search(self, searched):
+    def search(self, searched, ephemeral):
         """
             Search for tracks looking like searched
-            @param searched as string
+            @param searched as str
+            @param ephemeral as bool
             @return [int]
         """
         no_accents = noaccents(searched)
@@ -882,11 +883,14 @@ class TracksDatabase:
             for filter in [(no_accents + "%",),
                            ("%" + no_accents,),
                            ("%" + no_accents + "%",)]:
-                result = sql.execute("SELECT tracks.rowid\
-                                      FROM tracks\
-                                      WHERE noaccents(name) LIKE ?\
-                                      AND tracks.mtime!=0 LIMIT 25",
-                                     filter)
+                request = "SELECT tracks.rowid FROM tracks\
+                           WHERE noaccents(name) LIKE ?"
+                if ephemeral:
+                    request += " AND tracks.mtime=0"
+                else:
+                    request += " AND tracks.mtime!=0"
+                request += " LIMIT 25"
+                result = sql.execute(request, filter)
                 items += list(itertools.chain(*result))
             return items
 

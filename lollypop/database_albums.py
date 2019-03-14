@@ -701,12 +701,13 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def get_ids(self, artist_ids, genre_ids, ignore=False):
+    def get_ids(self, artist_ids, genre_ids, ignore=False, ephemeral=False):
         """
             Get albums ids
             @param artist ids as [int]
             @param genre ids as [int]
             @param ignore as bool => ignore albums with loved == 1
+            @param ephemeral as bool
             @return albums ids as [int]
         """
         orderby = App().settings.get_enum("orderby")
@@ -735,8 +736,11 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_artists, artists\
                            WHERE albums.rowid = album_artists.album_id AND\
-                           artists.rowid = album_artists.artist_id AND\
-                           albums.mtime != 0"
+                           artists.rowid = album_artists.artist_id"
+                if ephemeral:
+                    request += " AND albums.mtime=0"
+                else:
+                    request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
                 request += order
@@ -747,12 +751,15 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
                            album_genres, album_artists, artists\
                            WHERE albums.rowid = album_artists.album_id AND\
-                           albums.mtime != 0 AND\
                            artists.rowid = album_artists.artist_id AND\
                            album_genres.album_id=albums.rowid AND ( "
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
                 request += "1=0)"
+                if ephemeral:
+                    request += " AND albums.mtime=0"
+                else:
+                    request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
                 request += order
@@ -763,11 +770,14 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_artists, artists\
                            WHERE album_artists.album_id=albums.rowid AND\
-                           albums.mtime != 0 AND\
                            artists.rowid = album_artists.artist_id AND ("
                 for artist_id in artist_ids:
                     request += "artists.rowid=? OR "
                 request += "1=0)"
+                if ephemeral:
+                    request += " AND albums.mtime=0"
+                else:
+                    request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
                 request += order
@@ -779,7 +789,6 @@ class AlbumsDatabase:
                 request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_genres, album_artists, artists\
                            WHERE album_genres.album_id=albums.rowid AND\
-                           albums.mtime != 0 AND\
                            artists.rowid = album_artists.artist_id AND\
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
@@ -788,6 +797,10 @@ class AlbumsDatabase:
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
                 request += "1=0)"
+                if ephemeral:
+                    request += " AND albums.mtime=0"
+                else:
+                    request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
                 request += order
@@ -983,10 +996,11 @@ class AlbumsDatabase:
                 result = sql.execute(request, filter)
             return list(itertools.chain(*result))
 
-    def search(self, searched):
+    def search(self, searched, ephemeral):
         """
             Search for albums looking like string
             @param search as str
+            @param ephemeral as bool
             @return album ids as [int]
         """
         no_accents = noaccents(searched)
@@ -995,11 +1009,14 @@ class AlbumsDatabase:
             for filter in [(no_accents + "%",),
                            ("%" + no_accents,),
                            ("%" + no_accents + "%",)]:
-                result = sql.execute("SELECT albums.rowid\
-                                      FROM albums\
-                                      WHERE noaccents(name) LIKE ?\
-                                      AND albums.mtime!=0 LIMIT 25",
-                                     filter)
+                request = "SELECT albums.rowid FROM albums\
+                           WHERE noaccents(name) LIKE ?"
+                if ephemeral:
+                    request += " AND albums.mtime=0"
+                else:
+                    request += " AND albums.mtime!=0"
+                request += " LIMIT 25"
+                result = sql.execute(request, filter)
                 items += list(itertools.chain(*result))
             return items
 

@@ -264,8 +264,8 @@ class ArtistsDatabase:
     def search(self, searched):
         """
             Search for artists looking like string
-            @param string
-            @return Array of id as int
+            @param searched as str
+            @return [int]
         """
         no_accents = noaccents(searched)
         with SqlCursor(App().db) as sql:
@@ -273,14 +273,12 @@ class ArtistsDatabase:
             for filter in [(no_accents + "%",),
                            ("%" + no_accents,),
                            ("%" + no_accents + "%",)]:
-                result = sql.execute(
-                                 "SELECT artists.rowid\
-                                  FROM artists, albums, album_artists\
-                                  WHERE album_artists.artist_id=artists.rowid\
-                                  AND album_artists.album_id=albums.rowid\
-                                  AND albums.mtime!=0\
-                                  AND noaccents(artists.name) LIKE ?\
-                                  LIMIT 25", filter)
+                request = "SELECT artists.rowid\
+                           FROM artists, albums, album_artists\
+                           WHERE album_artists.artist_id=artists.rowid\
+                           AND album_artists.album_id=albums.rowid\
+                           AND noaccents(artists.name) LIKE ? LIMIT 25"
+                result = sql.execute(request, filter)
                 items += list(itertools.chain(*result))
             return items
 
