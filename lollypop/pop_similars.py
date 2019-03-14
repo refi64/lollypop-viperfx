@@ -248,7 +248,7 @@ class SimilarsPopover(Popover):
         artist_name = row.artist_name
         artist_id = App().artists.get_id(artist_name)
         if artist_id is None:
-            App().lookup_action("search").activate(GLib.Variant("s",
-                                                                artist_name))
+            target = "web://%s" % artist_name
         else:
-            GLib.idle_add(App().window.container.show_artist_view, [artist_id])
+            target = "local://%s" % artist_name
+        App().lookup_action("search").activate(GLib.Variant("s", target))

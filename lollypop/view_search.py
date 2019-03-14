@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 from random import shuffle
+from urllib.parse import urlparse
 
 from lollypop.define import App, ViewType, Type, Shuffle, MARGIN_SMALL
 from lollypop.view_albums_list import AlbumsListView
@@ -77,7 +78,13 @@ class SearchView(BaseView, Gtk.Bin):
             Set search text
             @param search as str
         """
-        if search:
+        parsed = urlparse(search)
+        search = search.replace("%s://" % parsed.scheme, "")
+        if parsed.scheme == "local":
+            self.__entry.set_text(search)
+            GLib.idle_add(self.__search_type_action.set_state,
+                          GLib.Variant("s", "local"))
+        elif parsed.scheme == "web":
             self.__entry.set_text(search)
             GLib.idle_add(self.__search_type_action.set_state,
                           GLib.Variant("s", "web"))
