@@ -650,6 +650,8 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album_id as int
             @param added as bool
         """
+        if self._view_type & ViewType.SEARCH:
+            return
         if added:
             if self.__genre_ids:
                 # Update recents
