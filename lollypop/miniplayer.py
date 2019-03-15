@@ -35,7 +35,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         self.__size = 0
         self.__allocation_timeout_id = None
-        self.__artwork = None
+        self.__cover = None
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, False,
                                        ArtHelperEffect.BLUR_HARD |
@@ -46,7 +46,6 @@ class MiniPlayer(Gtk.Bin, InformationController,
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
         builder.connect_signals(self)
 
-        self.get_style_context().add_class("black")
         self.__grid = builder.get_object("grid")
         self.__revealer = builder.get_object("revealer")
         self.__revealer_box = builder.get_object("revealer_box")
@@ -104,6 +103,19 @@ class MiniPlayer(Gtk.Bin, InformationController,
 #######################
 # PROTECTED           #
 #######################
+    def _on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self.__grid.get_style_context().add_class("black")
+            self._artwork.get_style_context().add_class("black")
+        else:
+            InformationController._on_album_artwork(self, surface)
+            self.__grid.get_style_context().remove_class("black")
+            self._artwork.get_style_context().remove_class("black")
+
     def _on_lyrics_button_clicked(self, button):
         """
             Show lyrics view
@@ -120,20 +132,20 @@ class MiniPlayer(Gtk.Bin, InformationController,
         if self.__revealer.get_reveal_child():
             self.__revealer.set_reveal_child(False)
             self.emit("revealed", False)
-            if self.__artwork is not None:
-                self.__artwork.destroy()
-                self.__artwork = None
+            if self.__cover is not None:
+                self.__cover.destroy()
+                self.__cover = None
         else:
-            if self.__artwork is None:
-                self.__artwork = App().art_helper.get_image(
+            if self.__cover is None:
+                self.__cover = App().art_helper.get_image(
                                                         ArtSize.BIG,
                                                         ArtSize.BIG,
                                                         "small-cover-frame")
-                self.__artwork.set_property("halign", Gtk.Align.CENTER)
-                self.__artwork.set_property("valign", Gtk.Align.CENTER)
+                self.__cover.set_property("halign", Gtk.Align.CENTER)
+                self.__cover.set_property("valign", Gtk.Align.CENTER)
                 self.__update_artwork()
-                self.__artwork.show()
-                self.__revealer_box.pack_start(self.__artwork,
+                self.__cover.show()
+                self.__revealer_box.pack_start(self.__cover,
                                                True, True, 0)
             self.__revealer.set_reveal_child(True)
             self.emit("revealed", True)
@@ -201,7 +213,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         InformationController.on_current_changed(self, self.__size, None)
         ProgressController.on_current_changed(self, player)
         PlaybackController.on_current_changed(self, player)
-        if self.__artwork is not None:
+        if self.__cover is not None:
             self.__update_artwork()
 
     def __on_status_changed(self, player):
@@ -228,4 +240,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
             Set artwork
             @param surface as str
         """
-        self.__artwork.set_from_surface(surface)
+        if surface is not None:
+            self.__cover.set_from_surface(surface)
+            self.__cover.set_opacity(1)
+        else:
+            self.__cover.set_opacity(0)
