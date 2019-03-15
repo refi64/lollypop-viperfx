@@ -77,7 +77,7 @@ class TuneinPopover(Gtk.Popover):
 
         self.__scrolled = builder.get_object("scrolled")
         self.__stack.add_named(self.__spinner, "spinner")
-        self.__stack.add_named(builder.get_object("notfound"), "notfound")
+        self.__stack.add_named(self.__label, "label")
         self.__stack.add_named(self.__scrolled, "scrolled")
         self.add(widget)
         self.connect("map", self.__on_map)
@@ -89,7 +89,7 @@ class TuneinPopover(Gtk.Popover):
             @param uri as str
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
-            self.__show_not_found(_("Can't connect to TuneIn…"))
+            self.__show_message(_("Can't connect to TuneIn…"))
             return
         if self.__view.get_children():
             return
@@ -162,14 +162,14 @@ class TuneinPopover(Gtk.Popover):
                                 self.__on_uri_content)
         self.__cancellable.reset()
 
-    def __show_not_found(self, message=""):
+    def __show_message(self, message=""):
         """
             Show not found message
             @param message as str
         """
         # TODO Add a string
         self.__label.set_text(message)
-        self.__stack.set_visible_child_name("notfound")
+        self.__stack.set_visible_child_name("label")
         self.__home_btn.set_sensitive(True)
 
     def __add_items(self, items):
@@ -397,12 +397,12 @@ class TuneinPopover(Gtk.Popover):
                     if items:
                         self.__add_items(items)
                     else:
-                        self.__show_not_found(_("No result…"))
+                        self.__show_message(_("No result…"))
                 else:
-                    self.__show_not_found(_("No result…"))
+                    self.__show_message(_("No result…"))
         except Exception as e:
             Logger.error("TuneinPopover::__on_uri_content(): %s" % e)
-            self.__show_not_found(_("Can't connect to TuneIn…"))
+            self.__show_message(_("Can't connect to TuneIn…"))
 
     def __on_button_clicked(self, button, item):
         """
