@@ -481,7 +481,7 @@ class TrackMenu(Gio.Menu):
         Gio.Menu.__init__(self)
         if show_artist and track.mtime != 0:
             self.insert_section(0, _("Artist"),
-                                ArtistMenu(track))
+                                ArtistMenu(track, ViewType.ALBUM))
         self.insert_section(1, _("Playback"),
                             PlaybackMenu(track))
         if track.mtime != 0:
