@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Pango
 
 from time import time
 from gettext import gettext as _
@@ -107,6 +107,7 @@ class View(BaseView, Gtk.Grid):
         label_style = label.get_style_context()
         label_style.add_class("text-xx-large")
         label_style.add_class("dim-label")
+        label.set_ellipsize(Pango.EllipsizeMode.END)
         image = Gtk.Image.new_from_icon_name(self._empty_icon_name,
                                              Gtk.IconSize.DIALOG)
         image.get_style_context().add_class("dim-label")
