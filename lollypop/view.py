@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from time import time
 from gettext import gettext as _
 
-from lollypop.define import ViewType
+from lollypop.define import ViewType, App
 from lollypop.logger import Logger
 from lollypop.adaptive import AdaptiveView
 
@@ -52,6 +52,7 @@ class View(BaseView, Gtk.Grid):
         Gtk.Grid.__init__(self)
         self._view_type = view_type
         self.__overlayed = None
+        self.__scanner_signal_id = None
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
@@ -196,11 +197,31 @@ class View(BaseView, Gtk.Grid):
         self._filter = self.__search_entry.get_text()
         self._box.invalidate_filter()
 
-    def _on_map(self, widget):
+    def _on_album_updated(self, scanner, album_id, added):
+        """
+            Handles changes in collection
+            @param scanner as CollectionScanner
+            @param album_id as int
+            @param added as bool
+        """
         pass
 
+    def _on_map(self, widget):
+        """
+            Connect scanner signal
+            @param widget as Gtk.Widget
+        """
+        self.__scanner_signal_id = App().scanner.connect(
+            "album-updated", self.__on_album_updated)
+
     def _on_unmap(self, widget):
-        pass
+        """
+            Disconnect scanner signal
+            @param widget as Gtk.Widget
+        """
+        if self.__scanner_signal_id is not None:
+            App().scanner.disconnect(self.__scanner_signal_id)
+            self.__scanner_signal_id = None
 
 #######################
 # PRIVATE             #

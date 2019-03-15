@@ -493,10 +493,12 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         Logger.debug("CollectionScanner::add2db(): Add album: "
                      "%s, %s" % (album_name, album_artist_ids))
-        album_id = self.add_album(album_name, mb_album_id,
-                                  album_artist_ids,
-                                  uri, album_loved, album_pop,
-                                  album_rate, mtime)
+        (added, album_id) = self.add_album(album_name, mb_album_id,
+                                           album_artist_ids,
+                                           uri, album_loved, album_pop,
+                                           album_rate, mtime)
+        if added:
+            GLib.idle_add(self.emit, "album-updated", album_id, True)
 
         genre_ids = self.add_genres(genres)
 

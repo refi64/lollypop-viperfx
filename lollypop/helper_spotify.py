@@ -375,8 +375,9 @@ class SpotifyHelper(GObject.Object):
 
         Logger.debug("SpotifyHelper::__save_track(): Add album: "
                      "%s, %s" % (album_name, album_artist_ids))
-        album_id = t.add_album(album_name, mb_album_id, album_artist_ids,
-                               "", False, 0, 0, 0)
+        (added, album_id) = t.add_album(album_name, mb_album_id,
+                                        album_artist_ids,
+                                        "", False, 0, 0, 0)
 
         genre_ids = [Type.WEB]
 
