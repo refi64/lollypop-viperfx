@@ -322,6 +322,7 @@ class SearchView(BaseView, Gtk.Bin):
             @param value as GLib.Variant
         """
         def delayed_action(state):
+            self.__view.clear()
             self.__cancellable.reset()
             if state == "local":
                 self.__new_button.show()
@@ -344,7 +345,6 @@ class SearchView(BaseView, Gtk.Bin):
                 GLib.idle_add(self.__entry.grab_focus)
         self.__cancellable.cancel()
         self.__view.stop()
-        self.__view.clear()
         action.set_state(value)
         state = value.get_string()
         # Let cancellable cancel

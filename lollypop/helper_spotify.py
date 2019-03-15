@@ -231,7 +231,7 @@ class SpotifyHelper(GObject.Object):
                                                  cancellable)
         except Exception as e:
             Logger.error("SpotifyHelper::charts(): %s", e)
-        GLib.idle_add(self.emit, "search-finished", "")
+        GLib.idle_add(self.emit, "search-finished", "@CHARTS@")
 
 #######################
 # PRIVATE             #
