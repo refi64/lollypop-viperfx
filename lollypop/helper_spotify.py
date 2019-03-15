@@ -385,6 +385,10 @@ class SpotifyHelper(GObject.Object):
 
         # Add track to db
         Logger.debug("SpotifyHelper::__save_track(): Add track")
+        track_id = App().tracks.get_id_by(title, album_id)
+        # Track already in DB
+        if track_id is not None:
+            return (album_id, track_id, None)
         track_id = App().tracks.add(title, uri, duration,
                                     tracknumber, discnumber, discname,
                                     album_id, year, timestamp, 0,

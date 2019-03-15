@@ -201,7 +201,9 @@ class Database:
         # Do not check tracks for internal albums
         # Spotify is sometimes wrong and we do not want to add a Spotify
         # track to a local album
-        if mtime == 0 and track is not None:
+        if mtime == 0:
+            return False
+        elif track is not None:
             track_id = App().tracks.get_id_by(track,
                                               album_id,
                                               artist_ids)

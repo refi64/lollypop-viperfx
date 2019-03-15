@@ -160,7 +160,7 @@ class TracksDatabase:
                 return v[0]
             return None
 
-    def get_id_by(self, name, album_id, artist_ids):
+    def get_id_by(self, name, album_id, artist_ids=[]):
         """
             Return track id for name/album/artists
             @param name as str
@@ -168,18 +168,24 @@ class TracksDatabase:
             @return track id as int
         """
         with SqlCursor(App().db) as sql:
-            filters = (name, album_id) + tuple(artist_ids)
-            request = "SELECT tracks.rowid FROM tracks\
-                       WHERE name = ? COLLATE NOCASE\
-                       AND album_id = ?\
-                       AND EXISTS (\
-                            SELECT rowid\
-                            FROM track_artists\
-                            WHERE track_artists.track_id=tracks.rowid\
-                            AND ("
-            for artist_id in artist_ids:
-                request += " track_artists.artist_id=? OR"
-            request += " 1=0))"
+            if artist_ids:
+                filters = (name, album_id) + tuple(artist_ids)
+                request = "SELECT tracks.rowid FROM tracks\
+                           WHERE name = ? COLLATE NOCASE\
+                           AND album_id = ?\
+                           AND EXISTS (\
+                                SELECT rowid\
+                                FROM track_artists\
+                                WHERE track_artists.track_id=tracks.rowid\
+                                AND ("
+                for artist_id in artist_ids:
+                    request += " track_artists.artist_id=? OR"
+                request += " 1=0))"
+            else:
+                filters = (name, album_id)
+                request = "SELECT tracks.rowid FROM tracks\
+                           WHERE name = ? COLLATE NOCASE\
+                           AND album_id = ?"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
@@ -870,11 +876,10 @@ class TracksDatabase:
                          WHERE track_genres.track_id NOT IN (\
                             SELECT tracks.rowid FROM tracks)")
 
-    def search(self, searched, ephemeral):
+    def search(self, searched):
         """
             Search for tracks looking like searched
             @param searched as str
-            @param ephemeral as bool
             @return [int]
         """
         no_accents = noaccents(searched)
@@ -884,12 +889,8 @@ class TracksDatabase:
                            ("%" + no_accents,),
                            ("%" + no_accents + "%",)]:
                 request = "SELECT tracks.rowid FROM tracks\
-                           WHERE noaccents(name) LIKE ?"
-                if ephemeral:
-                    request += " AND tracks.mtime=0"
-                else:
-                    request += " AND tracks.mtime!=0"
-                request += " LIMIT 25"
+                           WHERE noaccents(name) LIKE ?\
+                           AND tracks.mtime!=0 LIMIT 25"
                 result = sql.execute(request, filter)
                 items += list(itertools.chain(*result))
             return items

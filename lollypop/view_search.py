@@ -186,17 +186,9 @@ class SearchView(BaseView, Gtk.Bin):
             if state == "local":
                 search = Search()
                 search.get(current_search,
-                           False,
                            self.__cancellable,
                            callback=(self.__on_search_get, current_search))
             elif state == "web":
-                search = Search()
-                search.get(current_search,
-                           True,
-                           self.__cancellable,
-                           callback=(self.__on_search_get,
-                                     current_search,
-                                     False))
                 App().task_helper.run(App().spotify.search,
                                       current_search,
                                       self.__cancellable)
@@ -236,14 +228,12 @@ class SearchView(BaseView, Gtk.Bin):
         else:
             self.destroy()
 
-    def __on_search_get(self, result, search, finish=True):
+    def __on_search_get(self, result, search):
         """
             Add rows for internal results
             @param result as [(int, Album, bool)]
-            @param finish as bool
         """
-        if finish:
-            self.__on_search_finished(None, search)
+        self.__on_search_finished(None, search)
         if result:
             albums = []
             reveal_albums = []

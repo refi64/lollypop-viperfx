@@ -25,15 +25,14 @@ class Search:
         """
         pass
 
-    def get(self, current_search, ephemeral, cancellable, callback):
+    def get(self, current_search, cancellable, callback):
         """
             Get track for name (lowercase)
             @param current_search as str
-            @param ephemeral as bool
             @param cancellable as Gio.Cancellable
             @param callback as callback
         """
-        App().task_helper.run(self.__get, current_search, ephemeral,
+        App().task_helper.run(self.__get, current_search,
                               cancellable, callback=callback)
 
 #######################
@@ -78,47 +77,44 @@ class Search:
                 break
         return list(set(artist_ids))
 
-    def __search_tracks(self, search_items, ephemeral, cancellable):
+    def __search_tracks(self, search_items, cancellable):
         """
             Get tracks for search items
             @param search_items as [str]
-            @param ephemeral as bool
             @param cancellable as Gio.Cancellable
             @return (result [int], score as int)
         """
         track_ids = []
         for search_str in search_items:
-            track_ids += App().tracks.search(search_str, ephemeral)
+            track_ids += App().tracks.search(search_str)
             if cancellable.is_cancelled():
                 break
         return list(set(track_ids))
 
-    def __search_albums(self, search_items, ephemeral, cancellable):
+    def __search_albums(self, search_items, cancellable):
         """
             Get albums for search items
             @param search_items as [str]
-            @param ephemeral as bool
             @param cancellable as Gio.Cancellable
             @return (result [int], score as int)
         """
         album_ids = []
         for search_str in search_items:
-            album_ids = App().albums.search(search_str, ephemeral)
+            album_ids = App().albums.search(search_str)
             if cancellable.is_cancelled():
                 break
         return list(set(album_ids))
 
-    def __get(self, search_items, ephemeral, cancellable):
+    def __get(self, search_items, cancellable):
         """
             Get track for name
             @param search_items as str
-            @param ephemeral as bool
             @param cancellable as Gio.Cancellable
             @return items as [(int, Album, bool)]
         """
         split_items = self.__split_string(search_items)
-        album_ids = self.__search_albums(split_items, ephemeral, cancellable)
-        track_ids = self.__search_tracks(split_items, ephemeral, cancellable)
+        album_ids = self.__search_albums(split_items, cancellable)
+        track_ids = self.__search_tracks(split_items, cancellable)
         artist_ids = self.__search_artists(split_items, cancellable)
         albums = []
         all_album_ids = []
@@ -150,8 +146,7 @@ class Search:
         for artist_id in artist_ids:
             if cancellable.is_cancelled():
                 return []
-            for album_id in App().albums.get_ids([artist_id], [],
-                                                 False, ephemeral):
+            for album_id in App().albums.get_ids([artist_id], []):
                 if album_id not in all_album_ids:
                     album = Album(album_id)
                     score = self.__calculate_score(album.name, search_items)
