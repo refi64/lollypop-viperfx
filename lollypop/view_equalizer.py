@@ -39,6 +39,13 @@ class EqualizerView(View):
         App().window.emit("show-can-go-back", True)
         App().window.emit("can-go-back-changed", True)
 
+    def _on_unmap(self, widget):
+        """
+            Destroy self
+            @param widget as Gtk.Widget
+        """
+        self.destroy_later()
+
 ############
 # PRIVATE  #
 ############
