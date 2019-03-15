@@ -163,7 +163,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
 #######################
     def __on_album_updated(self, scanner, album_id, added):
         """
-            Add album to others if needed
+            Handles changes in collection
             @param scanner as CollectionScanner
             @param album_id as int
             @param added as bool

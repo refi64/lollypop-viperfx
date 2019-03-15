@@ -647,6 +647,8 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
+        self.__scanner_signal_id = App().scanner.connect(
+            "album-updated", self.__on_album_updated)
         if not self.__genre_ids and not self.__artist_ids:
             return
         if self.__genre_ids:
@@ -659,6 +661,14 @@ class AlbumsListView(LazyLoadingView, ViewController):
                                      GLib.Variant("ai", self.__artist_ids))
             App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", []))
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect scanner signal
+        """
+        if self.__scanner_signal_id is not None:
+            App().scanner.disconnect(self.__scanner_signal_id)
+            self.__scanner_signal_id = None
 
 #######################
 # PRIVATE             #
@@ -875,3 +885,17 @@ class AlbumsListView(LazyLoadingView, ViewController):
             child.set_state_flags(Gtk.StateFlags.SELECTED, True)
         for child in children[end:]:
             child.set_state_flags(Gtk.StateFlags.NORMAL, True)
+
+    def __on_album_updated(self, scanner, album_id, added):
+        """
+            Handles changes in collection
+            @param scanner as CollectionScanner
+            @param album_id as int
+            @param added as bool
+        """
+        if added:
+            pass
+        else:
+            for child in self._box.get_children():
+                if child.album.id == album_id:
+                    child.destroy()
