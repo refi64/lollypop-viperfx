@@ -68,7 +68,7 @@ class ArtistMenu(BaseMenu):
         App().add_action(search_artist_action)
         search_artist_action.connect("activate",
                                      self.__search_artist)
-        self.append(_("Others albums"), "app.search_artist_action")
+        self.append(_("Other albums"), "app.search_artist_action")
 
     def __search_artist(self, action, variant):
         """

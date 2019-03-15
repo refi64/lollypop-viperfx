@@ -373,7 +373,7 @@ Lollypop needs this to search for artwork.&lt;/small&gt;</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
-            <property name="label" translatable="yes">&lt;small&gt;You need to enable "Custom Search API" and "Youtube API v3" for your project.&lt;/small&gt;</property>
+            <property name="label" translatable="yes">&lt;small&gt;You need to enable "Custom Search API" and "YouTube API v3" for your project.&lt;/small&gt;</property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>
             <style>
