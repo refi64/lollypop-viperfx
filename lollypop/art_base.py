@@ -106,15 +106,19 @@ class BaseArt(GObject.GObject):
         new_pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
                                           True, 8, max_value, max_value)
         if width > height:
-            new_x = diff
+            new_x = diff // 2
             new_y = 0
+            new_width = max_value
+            new_height = max_value - new_y
         else:
             new_x = 0
-            new_y = diff
+            new_y = diff // 2
+            new_height = max_value
+            new_width = max_value - new_x
         pixbuf.copy_area(new_x,
                          new_y,
-                         max_value,
-                         max_value,
+                         new_width,
+                         new_height,
                          new_pixbuf,
                          0, 0)
         return new_pixbuf
