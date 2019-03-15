@@ -143,6 +143,45 @@ class ViewsContainer:
         view.show()
         return view
 
+    def get_view_album_ids(self, genre_ids, artist_ids):
+        """
+            Get albums view for genres/artists
+            @param genre ids as [int]
+            @param artist_ids as [int]
+            @return [int]
+        """
+        items = []
+        is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
+        if genre_ids and genre_ids[0] == Type.ALL:
+            if is_compilation or\
+                    App().settings.get_value(
+                        "show-compilations-in-album-view"):
+                items = App().albums.get_compilation_ids([])
+            if not is_compilation:
+                items += App().albums.get_ids([], [])
+        elif genre_ids and genre_ids[0] == Type.POPULARS:
+            items = App().albums.get_rated()
+            count = 100 - len(items)
+            for album in App().albums.get_populars(count):
+                if album not in items:
+                    items.append(album)
+        elif genre_ids and genre_ids[0] == Type.LOVED:
+            items = App().albums.get_loved_albums()
+        elif genre_ids and genre_ids[0] == Type.RECENTS:
+            items = App().albums.get_recents()
+        elif genre_ids and genre_ids[0] == Type.NEVER:
+            items = App().albums.get_never_listened_to()
+        elif genre_ids and genre_ids[0] == Type.RANDOMS:
+            items = App().albums.get_randoms()
+        else:
+            if is_compilation or\
+                    App().settings.get_value(
+                        "show-compilations-in-album-view"):
+                items = App().albums.get_compilation_ids(genre_ids)
+            if not is_compilation:
+                items += App().albums.get_ids([], genre_ids)
+        return items
+
     def show_artist_view(self, artist_ids):
         """
             Go to artist view
@@ -373,38 +412,9 @@ class ViewsContainer:
             @param is compilation as bool
         """
         def load():
-            items = []
-            is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
-            if genre_ids and genre_ids[0] == Type.ALL:
-                if is_compilation or\
-                        App().settings.get_value(
-                            "show-compilations-in-album-view"):
-                    items = App().albums.get_compilation_ids([])
-                if not is_compilation:
-                    items += App().albums.get_ids([], [])
-            elif genre_ids and genre_ids[0] == Type.POPULARS:
-                items = App().albums.get_rated()
-                count = 100 - len(items)
-                for album in App().albums.get_populars(count):
-                    if album not in items:
-                        items.append(album)
-            elif genre_ids and genre_ids[0] == Type.LOVED:
-                items = App().albums.get_loved_albums()
-            elif genre_ids and genre_ids[0] == Type.RECENTS:
-                items = App().albums.get_recents()
-            elif genre_ids and genre_ids[0] == Type.NEVER:
-                items = App().albums.get_never_listened_to()
-            elif genre_ids and genre_ids[0] == Type.RANDOMS:
-                items = App().albums.get_randoms()
-            else:
-                if is_compilation or\
-                        App().settings.get_value(
-                            "show-compilations-in-album-view"):
-                    items = App().albums.get_compilation_ids(genre_ids)
-                if not is_compilation:
-                    items += App().albums.get_ids([], genre_ids)
+            album_ids = self.get_view_album_ids(genre_ids, artist_ids)
             return [Album(album_id, genre_ids, artist_ids)
-                    for album_id in items]
+                    for album_id in album_ids]
 
         if App().window.is_adaptive:
             from lollypop.view_albums_list import AlbumsListView

@@ -80,19 +80,13 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             @param album_id as int
             @param added as bool
         """
-        if self.__genre_ids:
-            # Update recents
-            if self.__genre_ids[0] == Type.RECENTS:
-                self.insert_album(Album(album_id), 0)
-            # Do not update static genres
-            elif self.__genre_ids[0] < 0:
-                return
-        else:
-            ids = App().albums.get_ids(self.__artist_ids, self.__genre_ids)
-            if album_id not in ids:
-                return
-            index = ids.index(album_id)
-            self.insert_album(Album(album_id), index)
+        album_ids = App().window.container.get_view_album_ids(
+                                            self.__genre_ids,
+                                            self.__artist_ids)
+        if album_id not in album_ids:
+            return
+        index = album_ids.index(album_id)
+        self.insert_album(Album(album_id), index)
 
     def _on_artwork_changed(self, artwork, album_id):
         """

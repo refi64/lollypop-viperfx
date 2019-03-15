@@ -19,7 +19,7 @@ from lollypop.shown import ShownLists
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
-from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL, Type
+from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
 from lollypop.logger import Logger
@@ -653,19 +653,13 @@ class AlbumsListView(LazyLoadingView, ViewController):
         if self._view_type & ViewType.SEARCH:
             return
         if added:
-            if self.__genre_ids:
-                # Update recents
-                if self.__genre_ids[0] == Type.RECENTS:
-                    self.insert_album(Album(album_id), False, 0)
-                # Do not update static genres
-                elif self.__genre_ids[0] < 0:
-                    return
-            else:
-                ids = App().albums.get_ids(self.__artist_ids, self.__genre_ids)
-                if album_id not in ids:
-                    return
-                index = ids.index(album_id)
-                self.insert_album(Album(album_id), False, index)
+            album_ids = App().window.container.get_view_album_ids(
+                                            self.__genre_ids,
+                                            self.__artist_ids)
+            if album_id not in album_ids:
+                return
+            index = album_ids.index(album_id)
+            self.insert_album(Album(album_id), False, index)
         else:
             for child in self._box.get_children():
                 if child.album.id == album_id:
