@@ -65,20 +65,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         else:
             self._reload_navigation_view()
 
-    def save_internals(self):
-        """
-            Save paned position
-        """
-        main_pos = self.__paned_one.get_position()
-        listview_pos = self.__paned_two.get_position()
-        listview_pos = listview_pos if listview_pos > 100 else 100
-        App().settings.set_value("paned-mainlist-width",
-                                 GLib.Variant("i",
-                                              main_pos))
-        App().settings.set_value("paned-listview-width",
-                                 GLib.Variant("i",
-                                              listview_pos))
-
     def show_sidebar(self, show):
         """
             Show/Hide navigation sidebar
@@ -199,6 +185,9 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         self.__paned_one = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         self.__paned_two = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
 
+        self.__paned_one.connect("notify::position", self.__on_paned_position)
+        self.__paned_two.connect("notify::position", self.__on_paned_position)
+
         self.__progress = ProgressBar()
         self.__progress.get_style_context().add_class("progress-bottom")
         self.__progress.set_property("valign", Gtk.Align.END)
@@ -208,9 +197,29 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         self.__paned_two.add2(self._stack)
         self.__paned_one.add1(self._list_one)
         self.__paned_one.add2(self.__paned_two)
-        self.__paned_one.set_position(
-            App().settings.get_value("paned-mainlist-width").get_int32())
-        self.__paned_two.set_position(
-            App().settings.get_value("paned-listview-width").get_int32())
+        position1 = App().settings.get_value(
+            "paned-mainlist-width").get_int32()
+        position2 = App().settings.get_value(
+            "paned-listview-width").get_int32()
+        self.__paned_one.set_position(position1)
+        # GTK does not like paned inside paned set_position()
+        GLib.timeout_add(100, self.__paned_two.set_position, position2)
         self.__paned_one.show()
         self.__paned_two.show()
+
+    def __on_paned_position(self, paned, param):
+        """
+            Save paned position
+            @param paned as Gtk.Paned
+            @param param as GParamSpec
+        """
+        position = paned.get_property(param.name)
+        if paned == self.__paned_one:
+            setting = "paned-mainlist-width"
+        else:
+            setting = "paned-listview-width"
+        if position < 100:
+            position = 100
+        App().settings.set_value(setting,
+                                 GLib.Variant("i",
+                                              position))

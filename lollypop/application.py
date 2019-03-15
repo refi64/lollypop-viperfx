@@ -508,7 +508,6 @@ class Application(Gtk.Application):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self.window.container.save_internals()
         if not self.settings.get_value("background-mode") or\
                 not self.player.is_playing:
             GLib.timeout_add(500, self.quit, True)
