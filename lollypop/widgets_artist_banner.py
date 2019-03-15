@@ -29,6 +29,7 @@ class ArtistBannerWidget(Gtk.Overlay):
         Gtk.Overlay.__init__(self)
         self.__width = 0
         self.__album_ids = None
+        self.__album_id = None
         self.__height = self.default_height
         self.__artist_id = artist_id
         self.__allocation_timeout_id = None
@@ -96,16 +97,20 @@ class ArtistBannerWidget(Gtk.Overlay):
             @param width as int
             @param height as int
         """
-        if self.__album_ids is None:
-            if App().settings.get_value("show-performers"):
-                self.__album_ids = App().tracks.get_album_ids(
-                    [self.__artist_id], [])
-            else:
-                self.__album_ids = App().albums.get_ids(
-                    [self.__artist_id], [])
-        if self.__album_ids:
-            album_id = self.__album_ids.pop(0)
-            album = Album(album_id)
+        # Select an album
+        if self.__album_id is None:
+            if self.__album_ids is None:
+                if App().settings.get_value("show-performers"):
+                    self.__album_ids = App().tracks.get_album_ids(
+                        [self.__artist_id], [])
+                else:
+                    self.__album_ids = App().albums.get_ids(
+                        [self.__artist_id], [])
+            if self.__album_ids:
+                self.__album_id = self.__album_ids.pop(0)
+        # Get artwork
+        if self.__album_id is not None:
+            album = Album(self.__album_id)
             App().art_helper.set_album_artwork(
                 album,
                 width,
@@ -167,6 +172,7 @@ class ArtistBannerWidget(Gtk.Overlay):
             @param surface as str
         """
         if surface is None:
+            self.__album_id = None
             self.__use_album_artwork(self.get_allocated_width(),
                                      self.get_allocated_height())
         else:
