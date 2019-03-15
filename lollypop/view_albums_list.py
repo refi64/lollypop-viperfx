@@ -19,7 +19,7 @@ from lollypop.shown import ShownLists
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
-from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL
+from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL, Type
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
 from lollypop.logger import Logger
@@ -512,22 +512,23 @@ class AlbumsListView(LazyLoadingView, ViewController):
         """
         self.__reveals = album_ids
 
-    def add_album(self, album, reveal, cover_uri=None):
+    def insert_album(self, album, reveal, position, cover_uri=None):
         """
             Add an album
             @param album as Album
             @param reveal as bool
+            @param position as int
             @param cover_uri as str
         """
         row = self.__row_for_album(album, reveal, cover_uri)
         children = self._box.get_children()
         if children:
-            previous_row = children[-1]
+            previous_row = children[position]
             row.set_previous_row(previous_row)
             previous_row.set_next_row(row)
         row.populate()
         row.show()
-        self._box.add(row)
+        self._box.insert(row, position)
         if self._viewport.get_child() is None:
             self._viewport.add(self._box)
 
@@ -650,7 +651,19 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param added as bool
         """
         if added:
-            pass
+            if self.__genre_ids:
+                # Update recents
+                if self.__genre_ids[0] == Type.RECENTS:
+                    self.insert_album(Album(album_id), False, 0)
+                # Do not update static genres
+                elif self.__genre_ids[0] < 0:
+                    return
+            else:
+                ids = App().albums.get_ids(self.__artist_ids, self.__genre_ids)
+                if album_id not in ids:
+                    return
+                index = ids.index(album_id)
+                self.insert_album(Album(album_id), False, index)
         else:
             for child in self._box.get_children():
                 if child.album.id == album_id:
@@ -661,6 +674,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
+        LazyLoadingView._on_map(self, widget)
         if not self.__genre_ids and not self.__artist_ids:
             return
         if self.__genre_ids:
