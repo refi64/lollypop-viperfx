@@ -701,13 +701,13 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def get_ids(self, artist_ids, genre_ids, ignore=False, ephemeral=False):
+    def get_ids(self, artist_ids, genre_ids, ignore=False, ephemeral=None):
         """
             Get albums ids
             @param artist ids as [int]
             @param genre ids as [int]
             @param ignore as bool => ignore albums with loved == 1
-            @param ephemeral as bool
+            @param ephemeral as bool/None
             @return albums ids as [int]
         """
         orderby = App().settings.get_enum("orderby")
@@ -739,7 +739,7 @@ class AlbumsDatabase:
                            artists.rowid = album_artists.artist_id"
                 if ephemeral:
                     request += " AND albums.mtime=0"
-                else:
+                elif ephemeral is not None:
                     request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
@@ -758,7 +758,7 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ephemeral:
                     request += " AND albums.mtime=0"
-                else:
+                elif ephemeral is not None:
                     request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
@@ -776,7 +776,7 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ephemeral:
                     request += " AND albums.mtime=0"
-                else:
+                elif ephemeral is not None:
                     request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
@@ -799,7 +799,7 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ephemeral:
                     request += " AND albums.mtime=0"
-                else:
+                elif ephemeral is not None:
                     request += " AND albums.mtime!=0"
                 if ignore:
                     request += " AND albums.loved != -1"
