@@ -283,7 +283,7 @@ class SearchView(BaseView, Gtk.Bin):
             @param album as Album
             @param cover_uri as str
         """
-        self.__view.add_album(album, len(album.tracks) == 1, cover_uri)
+        self.__view.insert_album(album, len(album.tracks) == 1, -1, cover_uri)
         self.__stack.set_visible_child_name("view")
 
     def __on_search_finished(self, api, search):
