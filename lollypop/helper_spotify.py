@@ -220,6 +220,8 @@ class SpotifyHelper(GObject.Object):
                         Logger.warning("SpotifyHelper::charts(): %s", e)
             album_ids = []
             for spotify_id in spotify_ids:
+                if cancellable.is_cancelled():
+                    raise Exception("cancelled")
                 payload = self.__get_track_payload(helper,
                                                    spotify_id,
                                                    cancellable)
