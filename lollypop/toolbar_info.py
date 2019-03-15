@@ -100,7 +100,9 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             player as Player
         """
         if self.get_realized():
-            InformationController.on_current_changed(self, self.art_size, None)
+            InformationController.on_current_changed(self,
+                                                     self.__art_size,
+                                                     None)
 
 #######################
 # PROTECTED           #
@@ -114,6 +116,19 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
+    def _on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.BUTTON)
+            self._artwork.set_size_request(self.__art_size, self.__art_size)
+        else:
+            InformationController._on_album_artwork(self, surface)
+            self._artwork.set_size_request(-1, -1)
+
 #######################
 # PRIVATE             #
 #######################
@@ -124,7 +139,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param album id as int
         """
         if App().player.current_track.album.id == album_id:
-            self.update_artwork(self.art_size, self.art_size)
+            self.update_artwork(self.__art_size, self.__art_size)
 
     def __update_logo(self, art, name):
         """
@@ -134,7 +149,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
         if App().player.current_track.album_artist == name:
             pixbuf = App().art.get_radio_artwork(
-                name, self.art_size, self.art_size)
+                name, self.__art_size, self.__art_size)
             self._artwork.set_from_surface(pixbuf)
 
     def __popup_menu(self):
@@ -197,8 +212,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             Calculate art size
             @param toolbar as ToolbarInfos
         """
-        art_size = self.get_allocated_height()
-        self.set_art_size(art_size)
+        self.__art_size = self.get_allocated_height()
         if App().player.current_track.id is not None:
             self.on_current_changed(App().player)
 

@@ -60,9 +60,9 @@ class FullScreen(Gtk.Window, InformationController,
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
-            self.__artsize = int(ArtSize.FULLSCREEN * geometry.height / 1080)
+            self.__art_size = int(ArtSize.FULLSCREEN * geometry.height / 1080)
         else:
-            self.__artsize = int(ArtSize.FULLSCREEN * geometry.width / 1920)
+            self.__art_size = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
         widget = builder.get_object("widget")
         grid = builder.get_object("grid")
@@ -181,7 +181,7 @@ class FullScreen(Gtk.Window, InformationController,
             @param player as Player
         """
         InformationController.on_current_changed(self,
-                                                 self.__artsize,
+                                                 self.__art_size,
                                                  self.__font_size)
         ProgressController.on_current_changed(self, player)
         if player.current_track.id is not None:
@@ -196,6 +196,19 @@ class FullScreen(Gtk.Window, InformationController,
 #######################
 # PROTECTED           #
 #######################
+    def _on_album_artwork(self, surface):
+        """
+            Set album artwork
+            @param surface as str
+        """
+        if surface is None:
+            self._artwork.set_from_icon_name("folder-music-symbolic",
+                                             Gtk.IconSize.DIALOG)
+            self._artwork.set_size_request(self.__art_size, self.__art_size)
+        else:
+            InformationController._on_album_artwork(self, surface)
+            self._artwork.set_size_request(-1, -1)
+
     def _on_close_button_clicked(self, widget):
         """
             Destroy self
@@ -234,7 +247,7 @@ class FullScreen(Gtk.Window, InformationController,
             context.add_class("cover-frame")
             InformationController.__init__(self, False, ArtHelperEffect.NONE)
         InformationController.on_current_changed(self,
-                                                 self.__artsize,
+                                                 self.__art_size,
                                                  self.__font_size)
 
 #######################

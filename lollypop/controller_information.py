@@ -101,36 +101,22 @@ class InformationController:
                 width,
                 height,
                 self._artwork.get_scale_factor(),
-                self.__on_album_artwork,
+                self._on_album_artwork,
                 self.__effect)
             if self.__show_tooltip:
                 self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)
 
-    def set_art_size(self, art_size):
-        """
-            Set a new art_size for controller
-            @param art_size as int
-        """
-        self.__art_size = art_size
-
-    @property
-    def art_size(self):
-        """
-            Art size as int
-        """
-        return self.__art_size
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_album_artwork(self, surface):
+    def _on_album_artwork(self, surface):
         """
             Set album artwork
             @param surface as str
         """
         self._artwork.set_from_surface(surface)
 
+#######################
+# PRIVATE             #
+#######################
     def __on_radio_artwork(self, surface):
         """
             Set radio artwork
