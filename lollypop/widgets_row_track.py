@@ -75,6 +75,13 @@ class TrackRow(Row, DNDRow):
 #######################
 # PROTECTED           #
 #######################
+    def _check_track(self):
+        """
+            Check track always valid, destroy if not
+        """
+        if self._track not in self._track.album.tracks:
+            self.destroy()
+
     def _on_destroy(self, widget):
         """
             Destroyed widget

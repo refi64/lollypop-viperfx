@@ -230,6 +230,12 @@ class Row(Gtk.ListBoxRow):
         from lollypop.pop_menu import TrackMenu
         return TrackMenu(self._track)
 
+    def _check_track(self):
+        """
+            Check track always valid, destroy if not
+        """
+        pass
+
     def _on_destroy(self, widget):
         pass
 
@@ -243,15 +249,11 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        def check_track():
-            if self._track not in self._track.album.tracks:
-                self.destroy()
-
         def on_closed(widget):
             self.get_style_context().remove_class("track-menu-selected")
             self.set_indicator()
             # Event happens before Gio.Menu activation
-            GLib.idle_add(check_track)
+            GLib.idle_add(self._check_track)
 
         from lollypop.pop_menu import TrackMenuPopover, RemoveMenuPopover
         if self.get_state_flags() & Gtk.StateFlags.SELECTED:

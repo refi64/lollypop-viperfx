@@ -131,6 +131,13 @@ class QueueRow(Row, DNDRow):
 #######################
 # PRIVATE             #
 #######################
+    def _check_track(self):
+        """
+            Check track always valid, destroy if not
+        """
+        if self._track.id not in App().player.queue:
+            self.destroy()
+
     def __on_album_artwork(self, surface):
         """
             Set album artwork
