@@ -258,7 +258,6 @@ class View(BaseView, Gtk.Grid):
             Clean up widget
             @param widget as Gtk.Widget
         """
-        print("bye")
         if self.__scanner_signal_id is not None:
             App().scanner.disconnect(self.__scanner_signal_id)
             self.__scanner_signal_id = None
