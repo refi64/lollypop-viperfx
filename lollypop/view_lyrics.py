@@ -150,10 +150,15 @@ class LyricsView(View, InformationController):
                 None,
                 False)
         else:
-            artist = GLib.uri_escape_string(
-                self.__current_track.artists[0],
-                None,
-                False)
+            if self.__current_track.artists:
+                artist = GLib.uri_escape_string(
+                    self.__current_track.artists[0],
+                    None,
+                    False)
+            elif self.__current_track.album_artists:
+                artist = self.__current_track.album_artists[0]
+            else:
+                artist = ""
             title = GLib.uri_escape_string(
                 self.__current_track.name,
                 None,
@@ -179,7 +184,12 @@ class LyricsView(View, InformationController):
             artist = split[0]
             title = split[1]
         else:
-            artist = self.__current_track.artists
+            if self.__current_track.artists:
+                artist = self.__current_track.artists[0]
+            elif self.__current_track.album_artists:
+                artist = self.__current_track.album_artists[0]
+            else:
+                artist = ""
             title = self.__current_track.name
         string = escape("%s %s" % (artist, title))
         uri = "https://genius.com/%s-lyrics" % string.replace(" ", "-")
