@@ -55,6 +55,14 @@ class FlowBoxView(LazyLoadingView):
         else:
             LazyLoadingView.populate(self)
 
+    @property
+    def children(self):
+        """
+            Get box children
+            @return [Gtk.Widget]
+        """
+        return self._box.get_children()
+
 #######################
 # PROTECTED           #
 #######################

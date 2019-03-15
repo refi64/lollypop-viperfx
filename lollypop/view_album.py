@@ -168,9 +168,22 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
             @param album_id as int
             @param added as bool
         """
-        album = Album(album_id)
-        for artist_id in album.artist_ids:
-            if artist_id in self.__artist_ids:
-                self.__others_box.add_album(
-                    album, self.__genre_ids, self.__artist_ids, ViewType.SMALL)
-                break
+        # Check we are not destroyed
+        if album_id == self._album.id and not added:
+            self.hide()
+            self.destroy_later()
+            return
+        # Check for children
+        if added:
+            album = Album(album_id)
+            for artist_id in album.artist_ids:
+                if artist_id in self.__artist_ids:
+                    self.__others_box.add_album(album, self.__genre_ids,
+                                                self.__artist_ids,
+                                                ViewType.SMALL)
+                    break
+        else:
+            for child in self.__others_box.children:
+                if child.album.id == album.id:
+                    child.destroy()
+                    break
