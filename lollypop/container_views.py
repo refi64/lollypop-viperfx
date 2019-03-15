@@ -109,7 +109,7 @@ class ViewsContainer:
         """
         if App().player.queue and not view_type & ViewType.FULLSCREEN:
             from lollypop.view_queue import QueueView
-            view = QueueView()
+            view = QueueView(view_type)
             view.populate()
         elif App().player.playlist_ids:
             from lollypop.view_playlists import PlaylistsView
