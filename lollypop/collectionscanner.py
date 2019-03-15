@@ -493,13 +493,10 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         Logger.debug("CollectionScanner::add2db(): Add album: "
                      "%s, %s" % (album_name, album_artist_ids))
-        (added, album_id) = self.add_album(album_name, mb_album_id,
-                                           album_artist_ids,
-                                           uri, album_loved, album_pop,
-                                           album_rate, mtime)
-        if added:
-            GLib.idle_add(self.emit, "album-updated", album_id, True)
-
+        (album_added, album_id) = self.add_album(album_name, mb_album_id,
+                                                 album_artist_ids,
+                                                 uri, album_loved, album_pop,
+                                                 album_rate, mtime)
         genre_ids = self.add_genres(genres)
 
         # Add track to db
@@ -518,4 +515,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         SqlCursor.commit(App().db)
         for genre_id in genre_ids:
             GLib.idle_add(self.emit, "genre-updated", genre_id, True)
+        if album_added:
+            GLib.idle_add(self.emit, "album-updated", album_id, True)
         return track_id

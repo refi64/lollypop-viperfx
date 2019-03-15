@@ -15,6 +15,7 @@ from gi.repository import GLib, Gtk
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.define import App, Type, ViewType
+from lollypop.objects import Album
 from lollypop.utils import get_icon_name
 from lollypop.shown import ShownLists
 from lollypop.controller_view import ViewController, ViewControllerType
@@ -44,16 +45,15 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             self._scrolled.set_policy(Gtk.PolicyType.NEVER,
                                       Gtk.PolicyType.NEVER)
 
-    def add_album(self, album, genre_ids, artist_ids, view_type):
+    def insert_album(self, album, position):
         """
             Add a new album
-            @param item as int
-            @param genre_ids as [int]
-            @param artist_ids as [int]
-            @param view_type as ViewType
+            @param album as Album
+            @param pos as int
         """
-        widget = AlbumSimpleWidget(album, genre_ids, artist_ids, view_type)
-        self._box.insert(widget, -1)
+        widget = AlbumSimpleWidget(album, self.__genre_ids,
+                                   self.__artist_ids, self._view_type)
+        self._box.insert(widget, position)
         widget.show()
         widget.populate()
 
@@ -72,6 +72,26 @@ class AlbumsBoxView(FlowBoxView, ViewController):
                                         self._view_type)
         if widget is not None:
             widget.connect("overlayed", self.on_overlayed)
+
+    def _on_album_updated(self, scanner, album_id, added):
+        """
+            Handles changes in collection
+            @param scanner as CollectionScanner
+            @param album_id as int
+            @param added as bool
+        """
+        # Update recents
+        if self.__genre_ids[0] == Type.RECENTS:
+            self.insert_album(Album(album_id), 0)
+        # Do not update static genres
+        elif self.__genre_ids[0] < 0:
+            return
+        else:
+            ids = App().albums.get_ids(self.__artist_ids, self.__genre_ids)
+            if album_id not in ids:
+                return
+            index = ids.index(album_id)
+            self.insert_album(Album(album_id), index)
 
     def _on_artwork_changed(self, artwork, album_id):
         """
@@ -100,6 +120,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Set active ids
         """
+        FlowBoxView._on_map(self, widget)
         if self._view_type & ViewType.SMALL:
             return
         if self.__genre_ids:

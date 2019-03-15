@@ -212,7 +212,7 @@ class View(BaseView, Gtk.Grid):
             @param widget as Gtk.Widget
         """
         self.__scanner_signal_id = App().scanner.connect(
-            "album-updated", self.__on_album_updated)
+            "album-updated", self._on_album_updated)
 
     def _on_unmap(self, widget):
         """
