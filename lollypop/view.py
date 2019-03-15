@@ -52,7 +52,8 @@ class View(BaseView, Gtk.Grid):
         Gtk.Grid.__init__(self)
         self._view_type = view_type
         self.__overlayed = None
-        self.__scanner_signal_id = None
+        self.__scanner_signal_id = App().scanner.connect(
+            "album-updated", self._on_album_updated)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
@@ -88,9 +89,9 @@ class View(BaseView, Gtk.Grid):
         self._scrolled.connect("leave-notify-event", self.__on_leave_notify)
         self._scrolled.show()
         self._viewport = Gtk.Viewport()
-        self._viewport.connect("destroy", self.__on_destroy)
         self._scrolled.add(self._viewport)
         self._viewport.show()
+        self.connect("destroy", self.__on_destroy)
         self.connect("map", self._on_map)
         self.connect("unmap", self._on_unmap)
 
@@ -208,21 +209,10 @@ class View(BaseView, Gtk.Grid):
         pass
 
     def _on_map(self, widget):
-        """
-            Connect scanner signal
-            @param widget as Gtk.Widget
-        """
-        self.__scanner_signal_id = App().scanner.connect(
-            "album-updated", self._on_album_updated)
+        pass
 
     def _on_unmap(self, widget):
-        """
-            Disconnect scanner signal
-            @param widget as Gtk.Widget
-        """
-        if self.__scanner_signal_id is not None:
-            App().scanner.disconnect(self.__scanner_signal_id)
-            self.__scanner_signal_id = None
+        pass
 
 #######################
 # PRIVATE             #
@@ -263,11 +253,15 @@ class View(BaseView, Gtk.Grid):
            event.y >= allocation.height:
             self.disable_overlay()
 
-    def __on_destroy(self, viewport):
+    def __on_destroy(self, widget):
         """
-            Mark widget as destroyed
-            @param viewport as Gtk.Viewport
+            Clean up widget
+            @param widget as Gtk.Widget
         """
+        print("bye")
+        if self.__scanner_signal_id is not None:
+            App().scanner.disconnect(self.__scanner_signal_id)
+            self.__scanner_signal_id = None
         self._viewport = None
 
 

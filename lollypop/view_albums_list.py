@@ -674,7 +674,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
-        LazyLoadingView._on_map(self, widget)
         if not self.__genre_ids and not self.__artist_ids:
             return
         if self.__genre_ids:

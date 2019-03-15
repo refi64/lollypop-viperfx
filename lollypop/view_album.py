@@ -105,8 +105,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         """
         # Check we are not destroyed
         if album_id == self._album.id and not added:
-            self.hide()
-            self.destroy_later()
+            App().window.go_back()
             return
 
     def _on_map(self, widget):
