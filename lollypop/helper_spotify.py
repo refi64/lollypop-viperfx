@@ -388,7 +388,7 @@ class SpotifyHelper(GObject.Object):
         track_id = App().tracks.get_id_by(title, album_id)
         # Track already in DB
         if track_id is not None:
-            return (album_id, track_id, None)
+            return (album_id, track_id, cover_uri)
         track_id = App().tracks.add(title, uri, duration,
                                     tracknumber, discnumber, discname,
                                     album_id, year, timestamp, 0,
