@@ -124,7 +124,7 @@ class ViewsContainer:
         view.show()
         return view
 
-    def get_view_search(self, search):
+    def get_view_search(self, search=""):
         """
             Get view for search
             @param search as str
