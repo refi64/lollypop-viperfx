@@ -46,6 +46,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         builder.add_from_resource("/org/gnome/Lollypop/MiniPlayer.ui")
         builder.connect_signals(self)
 
+        self.get_style_context().add_class("black")
         self.__grid = builder.get_object("grid")
         self.__revealer = builder.get_object("revealer")
         self.__revealer_box = builder.get_object("revealer_box")
