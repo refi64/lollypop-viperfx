@@ -76,7 +76,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
 
         adaptive_window = App().window.is_adaptive
         if self._rounded_artists_view is not None:
-            self._rounded_artists_view.destroy_later()
+            self._rounded_artists_view.make_destroyable()
             self._rounded_artists_view = None
         if show or adaptive_window:
             if not adaptive_window:

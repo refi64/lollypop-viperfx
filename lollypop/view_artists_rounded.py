@@ -71,6 +71,12 @@ class RoundedArtistsView(FlowBoxView):
             self.__lazy_queue_backup = self._lazy_queue
         FlowBoxView.stop(self)
 
+    def make_destroyable(self):
+        """
+            Mark view as destroyable
+        """
+        self.__destroy = True
+
     @property
     def should_destroy(self):
         return self.__destroy

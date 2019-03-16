@@ -124,6 +124,14 @@ class ListsContainer:
         if state_two_ids:
             self._list_two.connect("populated", select_list_two, state_two_ids)
         if state_one_ids:
+            # Here we are just handling missing Type.ARTISTS from list
+            if state_one_ids[0] == Type.ARTISTS:
+                from lollypop.shown import ShownLists
+                shown_lists = ShownLists.get(SelectionListMask.LIST_ONE)
+                ids = [l[0] for l in shown_lists]
+                if Type.ARTISTS not in ids:
+                    self._list_one.add_value((Type.ARTISTS,
+                                             _("All artists"), ""))
             self._list_one.select_ids(state_one_ids)
         elif not App().window.is_adaptive:
             self._list_one.select_first()
