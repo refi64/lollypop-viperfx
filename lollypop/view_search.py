@@ -37,6 +37,8 @@ class SearchView(BaseView, Gtk.Bin):
         self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
         self.__timeout_id = None
+        self.__new_album_signal_id = None
+        self.__search_finished_signal_id = None
         self.__current_search = ""
         self.__cancellable = Gio.Cancellable()
         self.__history = []
@@ -89,6 +91,13 @@ class SearchView(BaseView, Gtk.Bin):
             GLib.idle_add(self.__search_type_action.set_state,
                           GLib.Variant("s", "web"))
 
+    def cancel(self):
+        """
+            Cancel current search and replace cancellable
+        """
+        self.__cancellable.cancel()
+        self.__cancellable = Gio.Cancellable()
+
     @property
     def should_destroy(self):
         """
@@ -136,7 +145,7 @@ class SearchView(BaseView, Gtk.Bin):
         if self.__timeout_id:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
-        self.__cancellable.cancel()
+        self.cancel()
         self.__view.stop()
         self.__current_search = widget.get_text().strip()
         self.__timeout_id = GLib.timeout_add(
@@ -233,7 +242,7 @@ class SearchView(BaseView, Gtk.Bin):
             Add rows for internal results
             @param result as [(int, Album, bool)]
         """
-        self.__on_search_finished(None, search)
+        self.__on_search_finished(None)
         if result:
             albums = []
             reveal_albums = []
@@ -250,8 +259,12 @@ class SearchView(BaseView, Gtk.Bin):
             Init signals and grab focus
             @param widget as Gtk.Widget
         """
-        App().spotify.connect("new-album", self.__on_new_spotify_album)
-        App().spotify.connect("search-finished", self.__on_search_finished)
+        if self.__new_album_signal_id is None:
+            self.__new_album_signal_id = App().spotify.connect(
+                "new-album", self.__on_new_spotify_album)
+        if self.__search_finished_signal_id is None:
+            self.__search_finished_signal_id = App().spotify.connect(
+                "search-finished", self.__on_search_finished)
         GLib.idle_add(self.__entry.grab_focus)
 
     def __on_unmap(self, widget):
@@ -259,9 +272,13 @@ class SearchView(BaseView, Gtk.Bin):
             Clean up
             @param widget as Gtk.Widget
         """
-        App().spotify.disconnect_by_func(self.__on_new_spotify_album)
-        App().spotify.disconnect_by_func(self.__on_search_finished)
-        self.__cancellable.cancel()
+        if self.__new_album_signal_id is not None:
+            App().spotify.disconnect(self.__new_album_signal_id)
+            self.__new_album_signal_id = None
+        if self.__search_finished_signal_id is not None:
+            App().spotify.disconnect(self.__search_finished_signal_id)
+            self.__search_finished_signal_id = None
+        self.cancel()
         self.__view.stop()
         self.__button_stack.set_visible_child(self.__new_button)
         self.__spinner.stop()
@@ -276,14 +293,11 @@ class SearchView(BaseView, Gtk.Bin):
         self.__view.insert_album(album, len(album.tracks) == 1, -1, cover_uri)
         self.__stack.set_visible_child_name("view")
 
-    def __on_search_finished(self, api, search):
+    def __on_search_finished(self, api):
         """
             Stop spinner
             @param api ignored
-            @param search as str
         """
-        if self.__current_search != search:
-            return
         self.__spinner.stop()
         self.__button_stack.set_visible_child(self.__new_button)
         if not self.__view.children:
@@ -311,31 +325,28 @@ class SearchView(BaseView, Gtk.Bin):
             @param action as Gio.SimpleAction
             @param value as GLib.Variant
         """
-        def delayed_action(state):
-            self.__view.clear()
-            self.__cancellable.reset()
-            if state == "local":
-                self.__new_button.show()
-                self.__button_stack.set_visible_child(self.__new_button)
-            else:
-                self.__new_button.hide()
-            if state == "charts":
-                self.__header_stack.set_visible_child_name("locale")
-                self.__play_button.set_sensitive(True)
-                self.__button_stack.set_visible_child(self.__spinner)
-                self.__history = []
-                self.__spinner.start()
-                self.__stack.set_visible_child_name("view")
-                App().task_helper.run(App().spotify.charts,
-                                      self.__cancellable,
-                                      self.__combo_locale.get_active_id())
-            else:
-                self.__header_stack.set_visible_child_name("entry")
-                self.__populate()
-                GLib.idle_add(self.__entry.grab_focus)
-        self.__cancellable.cancel()
+        self.cancel()
         self.__view.stop()
         action.set_state(value)
         state = value.get_string()
-        # Let cancellable cancel
-        GLib.timeout_add(500, delayed_action, state)
+        # A new album signal may be in queue, so clear after
+        GLib.idle_add(self.__view.clear)
+        if state == "local":
+            self.__new_button.show()
+            self.__button_stack.set_visible_child(self.__new_button)
+        else:
+            self.__new_button.hide()
+        if state == "charts":
+            self.__header_stack.set_visible_child_name("locale")
+            self.__play_button.set_sensitive(True)
+            self.__button_stack.set_visible_child(self.__spinner)
+            self.__history = []
+            self.__spinner.start()
+            self.__stack.set_visible_child_name("view")
+            App().task_helper.run(App().spotify.charts,
+                                  self.__cancellable,
+                                  self.__combo_locale.get_active_id())
+        else:
+            self.__header_stack.set_visible_child_name("entry")
+            self.__populate()
+            GLib.idle_add(self.__entry.grab_focus)

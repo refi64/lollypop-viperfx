@@ -33,7 +33,7 @@ class SpotifyHelper(GObject.Object):
         "new-album": (GObject.SignalFlags.RUN_FIRST, None,
                       (GObject.TYPE_PYOBJECT, str)),
         "new-artist": (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
-        "search-finished": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        "search-finished": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self):
@@ -182,8 +182,11 @@ class SpotifyHelper(GObject.Object):
                                                  album_ids,
                                                  cancellable)
         except Exception as e:
-            Logger.error("SpotifyHelper::search(): %s", e)
-        GLib.idle_add(self.emit, "search-finished", search)
+            Logger.warning("SpotifyHelper::search(): %s", e)
+            # Do not emit search-finished on cancel
+            if str(e) == "cancelled":
+                return
+        GLib.idle_add(self.emit, "search-finished")
 
     def charts(self, cancellable, language="global"):
         """
@@ -230,8 +233,11 @@ class SpotifyHelper(GObject.Object):
                                                  album_ids,
                                                  cancellable)
         except Exception as e:
-            Logger.error("SpotifyHelper::charts(): %s", e)
-        GLib.idle_add(self.emit, "search-finished", "@CHARTS@")
+            Logger.warning("SpotifyHelper::charts(): %s", e)
+            # Do not emit search-finished on cancel
+            if str(e) == "cancelled":
+                return
+        GLib.idle_add(self.emit, "search-finished")
 
 #######################
 # PRIVATE             #
@@ -258,7 +264,8 @@ class SpotifyHelper(GObject.Object):
             Create album and download cover
             @param cancellable as Gio.Cancellable
         """
-        GLib.idle_add(self.emit, "new-album", Album(album_id), cover_uri)
+        if not cancellable.is_cancelled():
+            GLib.idle_add(self.emit, "new-album", Album(album_id), cover_uri)
 
     def __create_albums_from_tracks_payload(self, payload, album_ids,
                                             cancellable):
@@ -272,7 +279,7 @@ class SpotifyHelper(GObject.Object):
         # Populate tracks
         for item in payload:
             if cancellable.is_cancelled():
-                return
+                raise Exception("cancelled")
             if App().db.exists_in_db(item["album"]["name"],
                                      [artist["name"]
                                      for artist in item["artists"]],
