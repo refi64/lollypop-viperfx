@@ -241,8 +241,10 @@ class MiniPlayer(Gtk.Bin, InformationController,
             Set artwork
             @param surface as str
         """
-        if surface is not None:
-            self.__cover.set_from_surface(surface)
-            self.__cover.set_opacity(1)
+        if surface is None:
+            self.__cover.get_style_context().add_class("white")
+            self.__cover.set_from_icon_name("emblem-music-symbolic",
+                                            Gtk.IconSize.DIALOG)
         else:
-            self.__cover.set_opacity(0)
+            self.__cover.get_style_context().remove_class("white")
+            self.__cover.set_from_surface(surface)
