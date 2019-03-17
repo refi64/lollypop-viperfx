@@ -340,7 +340,7 @@ class Album(Base):
         """
         if self.id >= 0:
             App().albums.set_uri(self.id, uri)
-            self.uri = uri
+        self.uri = uri
 
     def get_track(self, track_id):
         """

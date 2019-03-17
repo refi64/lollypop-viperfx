@@ -10,9 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import TotemPlParser, Gst, Gio
+from gi.repository import TotemPlParser, Gst, Gio, GLib
 
 from lollypop.radios import Radios
+from lollypop.define import App
 from lollypop.player_base import BasePlayer
 from lollypop.logger import Logger
 
@@ -43,12 +44,16 @@ class RadioPlayer(BasePlayer):
             try:
                 self.emit("loading-changed", True)
                 self.__current = track
-                parser = TotemPlParser.Parser.new()
-                parser.connect("entry-parsed", self.__on_entry_parsed,
-                               track, play)
-                parser.parse_async(track.uri, True,
-                                   None, self.__on_parse_finished,
+                if track.uri.find("youtu.be") != -1 or\
+                        track.uri.find("youtube.com") != -1:
+                    App().task_helper.run(self.__load_youtube_track, track)
+                else:
+                    parser = TotemPlParser.Parser.new()
+                    parser.connect("entry-parsed", self.__on_entry_parsed,
                                    track, play)
+                    parser.parse_async(track.uri, True,
+                                       None, self.__on_parse_finished,
+                                       track, play)
             except Exception as e:
                 Logger.error("RadioPlayer::load(): %s" % e)
             if self.is_party:
@@ -61,6 +66,17 @@ class RadioPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
+    def __load_youtube_track(self, track):
+        """
+            Load YouTube track
+            @param track as Track
+        """
+        from lollypop.helper_web_youtube import YouTubeHelper
+        helper = YouTubeHelper()
+        uri = helper.get_uri_content(track)
+        track.set_uri(uri)
+        GLib.idle_add(self.__start_playback, track, True)
+
     def __start_playback(self, track, play):
         """
             Start playing track

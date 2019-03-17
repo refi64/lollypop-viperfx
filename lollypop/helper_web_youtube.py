@@ -54,20 +54,22 @@ class YouTubeHelper:
         """
         # Remove playlist args
         uri = sub("list=.*", "", track.uri)
-        argv = ["youtube-dl", "-g", "-f", "bestaudio", uri, None]
-        (s, o, e, s) = GLib.spawn_sync(None,
-                                       argv,
-                                       None,
-                                       GLib.SpawnFlags.SEARCH_PATH,
-                                       None)
-        if o:
-            return o.decode("utf-8")
-        else:
-            error = e.decode("utf-8")
-            if App().notify is not None:
-                App().notify.send(error)
-            Logger.warning("YouTubeHelper::get_uri_content(): %s", error)
-            return None
+        argv_list = [
+            ["youtube-dl", "-g", "-f", "bestaudio", uri, None],
+            ["youtube-dl", "-g", uri, None]]
+        for argv in argv_list:
+            (s, o, e, s) = GLib.spawn_sync(None,
+                                           argv,
+                                           None,
+                                           GLib.SpawnFlags.SEARCH_PATH,
+                                           None)
+            if o:
+                return o.decode("utf-8")
+        error = e.decode("utf-8")
+        if App().notify is not None:
+            App().notify.send(error)
+        Logger.warning("YouTubeHelper::get_uri_content(): %s", error)
+        return None
 
 #######################
 # PRIVATE             #
