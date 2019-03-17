@@ -126,23 +126,20 @@ class ArtistViewCommon:
             else:
                 album_ids = App().albums.get_ids(self._artist_ids,
                                                  self._genre_ids)
-            len_album_ids = len(album_ids)
-            player_album_ids = App().player.album_ids
-            len_player_album_ids = len(player_album_ids)
             icon_name = self._add_button.get_image().get_icon_name()[0]
             add = icon_name == "list-add-symbolic"
             for album_id in album_ids:
-                if add and album_id not in player_album_ids:
+                if add and album_id not in App().player.album_ids:
                     App().player.add_album(Album(album_id,
                                                  self._genre_ids,
                                                  self._artist_ids))
-                elif not add and album_id in player_album_ids:
-                    if len_player_album_ids > len_album_ids and\
-                            App().player.current_track.album.id == album_id:
-                        App().player.skip_album()
+                elif not add and album_id in App().player.album_ids:
                     App().player.remove_album_by_id(album_id)
-            if len_player_album_ids == len_album_ids:
+            if len(App().player.album_ids) == 0:
                 App().player.stop()
+            elif App().player.current_track.album.id\
+                    not in App().player.album_ids:
+                App().player.skip_album()
             self._update_icon(not add)
         except Exception as e:
             Logger.error("ArtistView::_on_add_clicked: %s" % e)
