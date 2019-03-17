@@ -47,12 +47,17 @@ class ProgressController:
         self._timelabel.set_text("0:00")
         if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
-            self._total_time_label.set_text("")
+            self._progress.set_opacity(0)
+            self._timelabel.set_opacity(0)
+            self._total_time_label.set_opacity(0)
             self._progress.set_range(0.0, 0.0)
         else:
             if player.current_track.mtime <= 0:
                 style_context.add_class("youtube-scale")
             self._progress.set_sensitive(True)
+            self._progress.set_opacity(1)
+            self._timelabel.set_opacity(1)
+            self._total_time_label.set_opacity(1)
             self._progress.set_range(0.0, player.current_track.duration)
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
