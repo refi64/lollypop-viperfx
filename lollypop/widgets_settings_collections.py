@@ -179,11 +179,7 @@ class CollectionsSettingsWidget(Gtk.Bin):
             @param button as Gtk.Button
         """
         try:
-            App().player.stop()
-            App().player.reset_pcn()
-            App().player.emit("current-changed")
-            App().player.emit("prev-changed")
-            App().player.emit("next-changed")
+            App().player.stop(True)
             App().cursors = {}
             uris = App().tracks.get_uris()
             self.__progress.show()

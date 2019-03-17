@@ -108,14 +108,22 @@ class BinPlayer(BasePlayer):
             self._playbin.set_state(Gst.State.PAUSED)
         self.emit("status-changed")
 
-    def stop(self):
+    def stop(self, force=False):
         """
             Change player state to STOPPED
+            @param force as bool
         """
         self._current_track = Track()
         self._playbin.set_state(Gst.State.NULL)
         self.emit("status-changed")
         self.emit("current-changed")
+        if force:
+            self._prev_track = Track()
+            self._next_track = Track()
+            App().player.emit("prev-changed")
+            App().player.emit("next-changed")
+            self._albums = []
+            self.reset_history()
 
     def stop_all(self):
         """
@@ -294,7 +302,7 @@ class BinPlayer(BasePlayer):
     def _on_stream_start(self, bus, message):
         """
             On stream start
-            Emit "current-changed" to notify others components
+            Handle stream start: scrobbling, notify, ...
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
