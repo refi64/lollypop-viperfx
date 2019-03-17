@@ -433,10 +433,18 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         try:
             next_track = QueuePlayer.next(self)
 
+            current_backup = None
+            # Make current track backuped one for restore from queue
+            if next_track.id is None:
+                if self._current_track_backup.id is not None:
+                    current_backup = self._current_track
+                    self._current_track = self._current_track_backup
+            elif self._current_track_backup.id is None:
+                self._current_track_backup = self._current_track
+
             # Look at shuffle
             if next_track.id is None:
                 next_track = ShufflePlayer.next(self)
-
             # Look at user playlist then
             if next_track.id is None:
                 next_track = PlaylistPlayer.next(self)
@@ -444,6 +452,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             # Get a linear track then
             if next_track.id is None:
                 next_track = LinearPlayer.next(self)
+
+            # Restore current track
+            if current_backup is not None:
+                self._current_track = current_backup
+
             self._next_track = next_track
             if next_track.is_web:
                 App().task_helper.run(self._load_from_web, next_track, False)
@@ -538,13 +551,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             ShufflePlayer._on_stream_start(self, bus, message)
         if self.track_in_queue(self._current_track):
             self.remove_from_queue(self._current_track.id)
-        else:
-            # Do not update next if user clicked on a track
-            if self.is_party and self._current_track != self._next_track:
-                pass
-            else:
-                self.set_next()
-            self.set_prev()
+        self.set_prev()
+        # Reset queue backup, we can reset now we are back from queue
+        if self._current_track_backup.id == self._prev_track.id:
+            self._current_track_backup = Track()
+        self.set_next()
         BinPlayer._on_stream_start(self, bus, message)
 
 #######################

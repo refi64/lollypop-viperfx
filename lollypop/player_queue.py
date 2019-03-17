@@ -23,7 +23,6 @@ class QueuePlayer:
             Init queue
         """
         self.__queue = []
-        self.__backup_next = None
 
     def set_queue(self, queue):
         """
@@ -42,8 +41,6 @@ class QueuePlayer:
         if track_id in self.__queue:
             self.__queue.remove(track_id)
         self.__queue.append(track_id)
-        if self.__backup_next is None:
-            self.__backup_next = self._next_track
         self.set_next()
         self.set_prev()
         if notify:
@@ -59,8 +56,6 @@ class QueuePlayer:
         if track_id in self.__queue:
             self.__queue.remove(track_id)
         self.__queue.insert(pos, track_id)
-        if self.__backup_next is None:
-            self.__backup_next = self._next_track
         self.set_next()
         self.set_prev()
         if notify:
@@ -74,12 +69,6 @@ class QueuePlayer:
         """
         if track_id in self.__queue:
             self.__queue.remove(track_id)
-            if not self.__queue and self.__backup_next is not None:
-                self._next_track = self.__backup_next
-                self.__backup_next = None
-            else:
-                self.set_next()
-            self.set_prev()
         if notify:
             self.emit("queue-changed")
 
@@ -90,12 +79,6 @@ class QueuePlayer:
             @param notify as bool
         """
         self.__queue = []
-        if self.__backup_next is None:
-            self.set_next()
-        else:
-            self._next_track = self.__backup_next
-            self.__backup_next = None
-        self.set_prev()
         if notify:
             self.emit("queue-changed")
 
