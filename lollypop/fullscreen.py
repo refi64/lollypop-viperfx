@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 from datetime import datetime
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ViewType, ArtHelperEffect
+from lollypop.define import App, ArtSize, ViewType, ArtHelperEffect, Type
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
 from lollypop.controller_progress import ProgressController
@@ -196,13 +196,17 @@ class FullScreen(Gtk.Window, InformationController,
 #######################
 # PROTECTED           #
 #######################
-    def _on_album_artwork(self, surface):
+    def _on_artwork(self, surface):
         """
-            Set album artwork
+            Set artwork
             @param surface as str
         """
         if surface is None:
-            self._artwork.set_from_icon_name("folder-music-symbolic",
+            if App().player.current_track.id == Type.RADIOS:
+                icon_name = "audio-input-microphone-symbolic"
+            else:
+                icon_name = "folder-music-symbolic"
+            self._artwork.set_from_icon_name(icon_name,
                                              Gtk.IconSize.DIALOG)
             self._artwork.set_size_request(self.__art_size, self.__art_size)
         else:

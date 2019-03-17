@@ -116,13 +116,17 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
-    def _on_album_artwork(self, surface):
+    def _on_artwork(self, surface):
         """
-            Set album artwork
+            Set artwork
             @param surface as str
         """
         if surface is None:
-            self._artwork.set_from_icon_name("folder-music-symbolic",
+            if App().player.current_track.id == Type.RADIOS:
+                icon_name = "audio-input-microphone-symbolic"
+            else:
+                icon_name = "folder-music-symbolic"
+            self._artwork.set_from_icon_name(icon_name,
                                              Gtk.IconSize.BUTTON)
             self._artwork.set_size_request(self.__art_size, self.__art_size)
         else:

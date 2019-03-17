@@ -93,7 +93,7 @@ class InformationController:
                 width,
                 height,
                 self._artwork.get_scale_factor(),
-                self.__on_radio_artwork,
+                self._on_artwork,
                 self.__effect)
         elif App().player.current_track.id is not None:
             App().art_helper.set_album_artwork(
@@ -101,28 +101,18 @@ class InformationController:
                 width,
                 height,
                 self._artwork.get_scale_factor(),
-                self._on_album_artwork,
+                self._on_artwork,
                 self.__effect)
             if self.__show_tooltip:
                 self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)
 
-    def _on_album_artwork(self, surface):
+    def _on_artwork(self, surface):
         """
             Set album artwork
             @param surface as str
         """
         self._artwork.set_from_surface(surface)
-
 #######################
 # PRIVATE             #
 #######################
-    def __on_radio_artwork(self, surface):
-        """
-            Set radio artwork
-            @param surface as str
-        """
-        if surface is None:
-            self._artwork.hide()
-        else:
-            self._artwork.set_from_surface(surface)

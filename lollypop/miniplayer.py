@@ -243,7 +243,11 @@ class MiniPlayer(Gtk.Bin, InformationController,
         """
         if surface is None:
             self.__cover.get_style_context().add_class("white")
-            self.__cover.set_from_icon_name("emblem-music-symbolic",
+            if App().player.current_track.id == Type.RADIOS:
+                icon_name = "audio-input-microphone-symbolic"
+            else:
+                icon_name = "folder-music-symbolic"
+            self.__cover.set_from_icon_name(icon_name,
                                             Gtk.IconSize.DIALOG)
         else:
             self.__cover.get_style_context().remove_class("white")
