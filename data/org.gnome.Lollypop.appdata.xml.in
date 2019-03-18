@@ -27,8 +27,11 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.922" date="2019-02-25">
+    <release version="1.0" date="2019-03-18">
       <description>
+	<ul>Spotify/YouTube playback back from hell</ul>
+	<ul>New application menu</ul>
+	<ul>Many bug fixes</ul>
       </description>
     </release>
   </releases>
