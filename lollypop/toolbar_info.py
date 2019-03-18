@@ -130,7 +130,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
                                              Gtk.IconSize.BUTTON)
             self._artwork.set_size_request(self.__art_size, self.__art_size)
         else:
-            InformationController._on_album_artwork(self, surface)
+            InformationController._on_artwork(self, surface)
             self._artwork.set_size_request(-1, -1)
 
 #######################
