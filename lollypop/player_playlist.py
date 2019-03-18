@@ -85,9 +85,9 @@ class PlaylistPlayer(BasePlayer):
         """
         repeat = App().settings.get_enum("repeat")
         if repeat == Repeat.TRACK:
-            return self._current_track
+            return self._current_playback_track
         track = Track()
-        current_track_id = self._current_track.id
+        current_track_id = self._current_playback_track.id
         track_ids = self.playlist_track_ids
         if track_ids and current_track_id in track_ids:
             idx = track_ids.index(current_track_id)
@@ -108,9 +108,9 @@ class PlaylistPlayer(BasePlayer):
         """
         repeat = App().settings.get_enum("repeat")
         if repeat == Repeat.TRACK:
-            return self._current_track
+            return self._current_playback_track
         track = Track()
-        current_track_id = self._current_track.id
+        current_track_id = self._current_playback_track.id
         track_ids = self.playlist_track_ids
         if track_ids and current_track_id in track_ids:
             idx = track_ids.index(current_track_id)

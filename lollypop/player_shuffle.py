@@ -56,7 +56,7 @@ class ShufflePlayer(BasePlayer):
         """
         repeat = App().settings.get_enum("repeat")
         if repeat == Repeat.TRACK:
-            return self._current_track
+            return self._current_playback_track
         track = Track()
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_next:
@@ -73,13 +73,13 @@ class ShufflePlayer(BasePlayer):
         """
         repeat = App().settings.get_enum("repeat")
         if repeat == Repeat.TRACK:
-            return self._current_track
+            return self._current_playback_track
         track = Track()
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.shuffle_has_prev:
                 track = self.__history.prev.value
             else:
-                track = self._current_track
+                track = self._current_playback_track
         return track
 
     def set_party(self, party):
@@ -105,7 +105,7 @@ class ShufflePlayer(BasePlayer):
         if party:
             self.set_party_ids()
             # Start a new song if not playing
-            if (self._current_track.id in [None, Type.RADIOS])\
+            if (self._current_playback_track.id in [None, Type.RADIOS])\
                     and self._albums:
                 track = self.__get_tracks_random()
                 self.load(track)
@@ -113,7 +113,7 @@ class ShufflePlayer(BasePlayer):
                 self.play()
         else:
             # We want current album to continue playback
-            self._albums = [self._current_track.album]
+            self._albums = [self._current_playback_track.album]
         self.set_next()
         self.set_prev()
         self.emit("party-changed", party)
@@ -170,26 +170,26 @@ class ShufflePlayer(BasePlayer):
                 prev = self.__history.prev
                 # Next track
                 if next is not None and\
-                        self._current_track == next.value:
+                        self._current_playback_track == next.value:
                     next = self.__history.next
                     next.set_prev(self.__history)
                     self.__history = next
                 # Previous track
                 elif prev is not None and\
-                        self._current_track == prev.value:
+                        self._current_playback_track == prev.value:
                     prev = self.__history.prev
                     prev.set_next(self.__history)
                     self.__history = prev
                 # New track
-                elif self.__history.value != self._current_track:
-                    new_list = LinkedList(self._current_track,
+                elif self.__history.value != self._current_playback_track:
+                    new_list = LinkedList(self._current_playback_track,
                                           None,
                                           self.__history)
                     self.__history = new_list
             else:
-                new_list = LinkedList(self._current_track)
+                new_list = LinkedList(self._current_playback_track)
                 self.__history = new_list
-            self.__add_to_shuffle_history(self._current_track)
+            self.__add_to_shuffle_history(self._current_playback_track)
 
 #######################
 # PRIVATE             #
@@ -209,7 +209,7 @@ class ShufflePlayer(BasePlayer):
             else:
                 self._plugins1.rgvolume.props.album_mode = 1
                 self._plugins2.rgvolume.props.album_mode = 1
-        if self._current_track.id is not None:
+        if self._current_playback_track.id is not None:
             self.set_next()
 
     def __get_next(self):
