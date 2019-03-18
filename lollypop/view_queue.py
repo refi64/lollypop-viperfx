@@ -144,7 +144,7 @@ class QueueView(View):
         """
         if len(self.__view.get_children()) > 0:
             row = self.__view.get_children()[0]
-            if row.id == player.current_track.id:
+            if row.track.id == player.current_track.id:
                 row.destroy()
 
     def __on_child_destroyed(self, row):
