@@ -237,8 +237,9 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__width = allocation.width
         App().art_helper.set_album_artwork(
                 self.__album,
-                allocation.width - self.__padding,
-                allocation.height - self.__padding,
+                # +100 to prevent resize lag
+                allocation.width + 100,
+                allocation.height,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
                 ArtHelperEffect.RESIZE |
@@ -262,8 +263,9 @@ class AlbumBannerWidget(Gtk.Bin):
         if album_id == self.__album.id:
             App().art_helper.set_album_artwork(
                             self.__album,
-                            self.get_allocated_width() - self.__padding,
-                            self.get_allocated_height() - self.__padding,
+                            # +100 to prevent resize lag
+                            self.get_allocated_width() + 100,
+                            self.get_allocated_height(),
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
                             ArtHelperEffect.RESIZE |

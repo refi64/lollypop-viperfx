@@ -111,7 +111,8 @@ class PlaylistBannerWidget(Gtk.Overlay):
         if self.__track is not None:
             App().art_helper.set_album_artwork(
                 self.__track.album,
-                allocation.width,
+                # +100 to prevent resize lag
+                allocation.width + 100,
                 allocation.height,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,

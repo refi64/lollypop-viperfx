@@ -35,7 +35,6 @@ class ArtistBannerWidget(Gtk.Overlay):
         self.__allocation_timeout_id = None
         self.set_property("valign", Gtk.Align.START)
         self.__artwork = Gtk.Image()
-        self.__artwork.get_style_context().add_class("black")
         self.get_style_context().add_class("black")
         self.__artwork.show()
         self.add(self.__artwork)
@@ -113,7 +112,8 @@ class ArtistBannerWidget(Gtk.Overlay):
             album = Album(self.__album_id)
             App().art_helper.set_album_artwork(
                 album,
-                width,
+                # +100 to prevent resize lag
+                width + 100,
                 height,
                 self.__artwork.get_scale_factor(),
                 self.__on_album_artwork,
@@ -134,7 +134,8 @@ class ArtistBannerWidget(Gtk.Overlay):
             artist = App().artists.get_name(self.__artist_id)
             App().art_helper.set_artist_artwork(
                                         artist,
-                                        allocation.width,
+                                        # +100 to prevent resize lag
+                                        allocation.width + 100,
                                         allocation.height,
                                         self.get_scale_factor(),
                                         self.__on_artist_artwork,
