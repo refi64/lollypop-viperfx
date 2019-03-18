@@ -76,11 +76,6 @@ class LovedWidget(Gtk.Bin):
             loved = Type.NONE
         self.__object.set_loved(loved)
         if isinstance(self.__object, Track):
-            albums = App().player.get_albums_for_id(self.__object.album.id)
-            for album in albums:
-                new_album = album.clone(True)
-                index = albums.index(album)
-                App().player.albums[index] = new_album
             # Update state on Last.fm
             if App().lastfm is not None:
                 lastfm_status = True if loved == 1 else False
