@@ -463,9 +463,7 @@ class Application(Gtk.Application):
             elif self.window is not None:
                 self.window.setup()
                 if not self.window.is_visible():
-                    # https://bugzilla.gnome.org/show_bug.cgi?id=766284
-                    monotonic_time = int(GLib.get_monotonic_time() / 1000)
-                    self.window.present_with_time(monotonic_time)
+                    self.window.present()
                     self.player.emit("status-changed")
                     self.player.emit("current-changed")
             Gdk.notify_startup_complete()
@@ -518,6 +516,4 @@ class Application(Gtk.Application):
             Call default handler
             @param application as Gio.Application
         """
-        # https://bugzilla.gnome.org/show_bug.cgi?id=766284
-        monotonic_time = int(GLib.get_monotonic_time() / 1000)
-        self.window.present_with_time(monotonic_time)
+        self.window.present()
