@@ -20,6 +20,7 @@ from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
 from lollypop.define import SidebarContent
+from lollypop.logger import Logger
 from lollypop.utils import get_icon_name
 from lollypop.shown import ShownLists, ShownPlaylists
 
@@ -266,7 +267,10 @@ class SelectionList(BaseView, Gtk.Overlay):
         """
             Select first available item
         """
-        self.__selection.select_iter(self.__model[0].iter)
+        try:
+            self.__selection.select_iter(self.__model[0].iter)
+        except Exception as e:
+            Logger.warning("SelectionList::select_first(): %s", e)
 
     def redraw(self):
         """
