@@ -253,7 +253,15 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         files = []
         dirs = []
-        walk_uris = list(uris)
+        walk_uris = []
+        # Check collection exists
+        for uri in uris:
+            f = Gio.File.new_for_uri(uri)
+            if f.query_exists():
+                walk_uris.append(uri)
+            else:
+                return (None, None)
+
         while walk_uris:
             uri = walk_uris.pop(0)
             try:
@@ -297,6 +305,11 @@ class CollectionScanner(GObject.GObject, TagReader):
             @thread safe
         """
         (files, dirs) = self.__get_objects_for_uris(scan_type, uris)
+
+        if files is None:
+            if App().notify is not None:
+                App().notify.send(_("Scan disabled, missing collection"))
+            return
 
         if scan_type == ScanType.NEW_FILES:
             db_uris = App().tracks.get_uris(uris)
