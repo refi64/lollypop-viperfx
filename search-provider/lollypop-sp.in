@@ -214,7 +214,7 @@ class SearchLollypopService(Server, Gio.Application):
         search = " ".join(terms)
         try:
             # Search for albums
-            for id in self.albums.search(search, None):
+            for id in self.albums.search(search):
                 ids.append("a:"+str(id))
             # Search for artists
             for artist_id in self.artists.search(search):
