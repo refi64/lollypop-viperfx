@@ -93,7 +93,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         """
         if self.is_goa:
             App().task_helper.run(self.__connect, full_sync)
-        elif Gio.NetworkMonitor.get_default().get_network_available():
+        else:
             from lollypop.helper_passwords import PasswordsHelper
             helper = PasswordsHelper()
             helper.get(self.__name,
@@ -292,6 +292,8 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param full_sync as bool
             @thread safe
         """
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return
         try:
             self.session_key = ""
             if self.is_goa:
@@ -328,7 +330,8 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param mb_track_id as str
             @thread safe
         """
-        if App().settings.get_value("disable-scrobbling"):
+        if App().settings.get_value("disable-scrobbling") or\
+                not Gio.NetworkMonitor.get_default().get_network_available():
             return
         Logger.debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (
                                                             artist,
@@ -356,7 +359,8 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param duration as int
             @thread safe
         """
-        if App().settings.get_value("disable-scrobbling"):
+        if App().settings.get_value("disable-scrobbling") or\
+                not Gio.NetworkMonitor.get_default().get_network_available():
             return
         try:
             self.update_now_playing(artist=artist,
@@ -417,6 +421,6 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param monitory as Gio.NetworkMonitor
             @param value as GSpec
         """
-        value = monitor.get_property(spec)
+        value = monitor.get_property("network-available")
         if value and not self.available:
-            self.__connect()
+            self.connect()
