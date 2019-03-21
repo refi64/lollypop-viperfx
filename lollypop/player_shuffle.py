@@ -114,8 +114,9 @@ class ShufflePlayer(BasePlayer):
         else:
             # We want current album to continue playback
             self._albums = [self._current_playback_track.album]
-        self.set_next()
-        self.set_prev()
+        if self._current_playback_track.id is not None:
+            self.set_next()
+            self.set_prev()
         self.emit("party-changed", party)
 
     def set_party_ids(self):
