@@ -82,6 +82,8 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
                                    api_key=self.__API_KEY,
                                    api_secret=self.__API_SECRET)
         self.connect()
+        Gio.NetworkMonitor.get_default().connect("notify::network-available",
+                                                 self.__on_network_available)
 
     def connect(self, full_sync=False, callback=None, *args):
         """
@@ -408,3 +410,13 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         if Gio.NetworkMonitor.get_default().get_network_available():
             App().task_helper.run(self.__connect, full_sync,
                                   callback=(callback, *args))
+
+    def __on_network_available(self, monitor, spec):
+        """
+            Connect if network is available and not already connected
+            @param monitory as Gio.NetworkMonitor
+            @param value as GSpec
+        """
+        value = monitor.get_property(spec)
+        if value and not self.available:
+            self.__connect()
