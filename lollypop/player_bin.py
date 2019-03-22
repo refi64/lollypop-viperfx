@@ -370,7 +370,9 @@ class BinPlayer(BasePlayer):
                 App().scanner.stop()
                 self.stop()
             elif App().notify is not None:
-                App().notify.send(message.parse_error()[0].message)
+                parsed = message.parse_error()
+                if parsed:
+                    App().notify.send(parsed[0].message)
                 self.stop()
 
     def _on_bus_eos(self, bus, message):
@@ -382,7 +384,9 @@ class BinPlayer(BasePlayer):
         Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
             if App().notify is not None:
-                App().notify.send(message.parse_error()[0].message)
+                parsed = message.parse_error()
+                if parsed:
+                    App().notify.send(parsed[0].message)
             self.stop()
 
     def _on_stream_about_to_finish(self, playbin):
