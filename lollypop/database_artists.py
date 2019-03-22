@@ -291,7 +291,8 @@ class ArtistsDatabase:
             result = sql.execute("SELECT COUNT(DISTINCT artists.rowid)\
                                   FROM artists, album_artists, albums\
                                   WHERE album_artists.album_id=albums.rowid\
-                                  AND artists.rowid=album_artists.artist_id")
+                                  AND artists.rowid=album_artists.artist_id\
+                                  AND albums.mtime!=0")
             v = result.fetchone()
             if v is not None:
                 return v[0]

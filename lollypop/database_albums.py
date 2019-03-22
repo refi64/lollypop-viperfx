@@ -1033,7 +1033,8 @@ class AlbumsDatabase:
             @return int
         """
         with SqlCursor(App().db) as sql:
-            result = sql.execute("SELECT COUNT(1) FROM albums")
+            result = sql.execute("SELECT COUNT(1) FROM albums\
+                                  WHERE mtime !=0")
             v = result.fetchone()
             if v is not None:
                 return v[0]
