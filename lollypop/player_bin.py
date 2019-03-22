@@ -371,8 +371,9 @@ class BinPlayer(BasePlayer):
                 self.stop()
             elif App().notify is not None:
                 parsed = message.parse_error()
-                if parsed:
-                    App().notify.send(parsed[0].message)
+                for item in parsed:
+                    if item is not None:
+                        App().notify.send(item.message)
                 self.stop()
 
     def _on_bus_eos(self, bus, message):
@@ -383,10 +384,6 @@ class BinPlayer(BasePlayer):
         self.emit("loading-changed", False)
         Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
         if self._playbin.get_bus() == bus:
-            if App().notify is not None:
-                parsed = message.parse_error()
-                if parsed:
-                    App().notify.send(parsed[0].message)
             self.stop()
 
     def _on_stream_about_to_finish(self, playbin):
@@ -504,8 +501,8 @@ class BinPlayer(BasePlayer):
             @param next as bool
         """
         # No cossfading if we need to stop
-        next_ok = next and self._next_track.id is not None
-        prev_ok = not next and self._prev_track.id is not None
+        next_ok = not next or self._next_track.id is not None
+        prev_ok = next or self._prev_track.id is not None
         if not next_ok or not prev_ok:
             return
 
