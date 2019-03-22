@@ -502,8 +502,7 @@ class BinPlayer(BasePlayer):
         # No cossfading if we need to stop
         next_ok = next and self._next_track.id is not None
         prev_ok = not next and self._prev_track.id is not None
-        if track is None and not next_ok or not prev_ok:
-            self._crossfading = False
+        if not next_ok or not prev_ok:
             return
 
         if track is None:
