@@ -197,6 +197,24 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             except Exception as e:
                 Logger.error("Lastfm::unlove(): %s" % e)
 
+    def get_similar_artists(self, artist, cancellable):
+        """
+            Search similar artists
+            @param artist as str
+            @param cancellable as Gio.Cancellable
+            @return [str]
+        """
+        artists = []
+        try:
+            artist_item = self.get_artist(artist)
+            for similar_item in artist_item.get_similar():
+                if cancellable.is_cancelled():
+                    raise Exception("cancelled")
+                artists.append(similar_item.item.name)
+        except Exception as e:
+            Logger.error("LastFM::get_similar_artists(): %s", e)
+        return artists
+
     def search_similar_artists(self, artist, cancellable):
         """
             Search similar artists
