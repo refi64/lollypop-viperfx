@@ -14,7 +14,7 @@ from gi.repository import Gtk, GObject
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.view_tracks import TracksView
-from lollypop.define import App, Sizing, ArtSize
+from lollypop.define import App, Sizing, ArtSize, ViewType
 from lollypop.widgets_album_banner import AlbumBannerWidget
 
 
@@ -51,7 +51,9 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
         TracksView.populate(self)
         if not self.get_children():
-            self.__banner = AlbumBannerWidget(self._album, self._view_type)
+            self.__banner = AlbumBannerWidget(self._album,
+                                              self._view_type |
+                                              ViewType.MEDIUM)
             self.__banner.show()
             self.add(self.__banner)
             self.add(self._responsive_widget)

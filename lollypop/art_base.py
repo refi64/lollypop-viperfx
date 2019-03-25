@@ -51,7 +51,7 @@ class BaseArt(GObject.GObject):
         if value < ArtSize.SMALL or value > ArtSize.MAX:
             value = 200
         ArtSize.BIG = value
-        # For a 200 album artwork, we want a 60 artist artwork
+        ArtSize.BANNER = ArtSize.BIG * 150 / 200
         ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
 
     def clean_store(self, filename):

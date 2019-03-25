@@ -34,6 +34,7 @@ class AlbumBannerWidget(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.__width = 0
         self.__padding = 0
+        art_size = 0
         self.__allocation_timeout_id = None
         self.__album = album
         self.__view_type = view_type
@@ -47,19 +48,32 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__year_label = builder.get_object("year_label")
         self.__duration_label = builder.get_object("duration_label")
         menu_button = builder.get_object("menu_button")
-        if view_type & ViewType.ALBUM and not view_type & ViewType.SMALL:
+        if view_type & ViewType.SMALL:
+            art_size = ArtSize.LARGE
+            icon_size = Gtk.IconSize.BUTTON
+            self.__title_label.get_style_context().add_class(
+                "text-large")
+            self.__year_label.get_style_context().add_class(
+                "text-large")
+            self.__cover_widget = CoverWidget(album, ArtSize.LARGE)
+        elif view_type & ViewType.MEDIUM:
+            art_size = ArtSize.BANNER
+            icon_size = Gtk.IconSize.LARGE_TOOLBAR
+            self.__title_label.get_style_context().add_class(
+                "text-x-large")
+            self.__year_label.get_style_context().add_class(
+                "text-large")
+            self.__cover_widget = CoverWidget(album)
+        else:
+            art_size = ArtSize.BANNER
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
                 "text-x-large")
-        else:
-            icon_size = Gtk.IconSize.BUTTON
-            if not view_type & ViewType.SMALL:
-                self.__title_label.get_style_context().add_class(
-                    "text-large")
-                self.__year_label.get_style_context().add_class(
-                    "text-large")
+        self.__cover_widget = CoverWidget(album, art_size)
+        self.__cover_widget.set_vexpand(True)
+        self.__cover_widget.show()
         menu_button.get_image().set_from_icon_name("view-more-symbolic",
                                                    icon_size)
         album_name = GLib.markup_escape_text(album.name)
@@ -98,12 +112,6 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__grid.get_style_context().add_class("banner-frame")
             # See application.css: cover-frame
             self.__padding = 8
-        if view_type & ViewType.SMALL or not view_type & ViewType.ALBUM:
-            self.__cover_widget = CoverWidget(album, ArtSize.LARGE)
-        else:
-            self.__cover_widget = CoverWidget(album)
-        self.__cover_widget.set_vexpand(True)
-        self.__cover_widget.show()
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.__rating_grid = builder.get_object("rating_grid")
         if album.mtime <= 0:
@@ -204,11 +212,12 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Get default height
         """
-        if self.__view_type & ViewType.ALBUM and\
-                not self.__view_type & ViewType.SMALL:
-            return ArtSize.BANNER + 40
-        else:
+        if self.__view_type & ViewType.SMALL:
             return ArtSize.LARGE + 20
+        elif self.__view_type & ViewType.MEDIUM:
+            return ArtSize.BANNER + 20
+        else:
+            return ArtSize.BANNER + 40
 
 #######################
 # PROTECTED           #
