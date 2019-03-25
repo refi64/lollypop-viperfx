@@ -239,7 +239,8 @@ class Album(Base):
                 "duration": 0,
                 "mtime": 1,
                 "synced": False,
-                "loved": False}
+                "loved": False,
+                "mb_album_id": None}
 
     def __init__(self, album_id=None, genre_ids=[], artist_ids=[],
                  disallow_ignored_tracks=False):

@@ -438,6 +438,20 @@ class AlbumsDatabase:
                                  (album_id,))
             return list(itertools.chain(*result))
 
+    def get_mb_album_id(self, album_id):
+        """
+            Get MusicBrainz album id for album id
+            @param album id as int
+            @return MusicBrainz album id as str
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT mb_album_id FROM albums\
+                                  WHERE rowid=?", (album_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return -1
+
     def get_mtime(self, album_id):
         """
             Get modification time
