@@ -69,6 +69,7 @@ class SimilarsPlayer:
         # Check if we need to add a new album
         if App().settings.get_enum("repeat") == Repeat.AUTO and\
                 player.next_track.id is None and\
+                player.albums and\
                 Gio.NetworkMonitor.get_default().get_network_available() and\
                 player.current_track.artist_ids:
             artist_id = player.current_track.artist_ids[0]
