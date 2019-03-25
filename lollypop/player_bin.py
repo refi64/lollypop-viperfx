@@ -331,19 +331,17 @@ class BinPlayer(BasePlayer):
         reader = TagReader()
         tags = message.parse_tag()
         title = reader.get_title(tags, "")
-        if title != "" and self._current_track.name != title:
+        if len(title) > 1 and self._current_track.name != title:
             self._current_track.name = title
             changed = True
-        if self._current_track.name == "":
-            self._current_track.name = self._current_track.uri
-            changed = True
+            if self._current_track.name == "":
+                self._current_track.name = self._current_track.uri
         artists = reader.get_artists(tags)
-        if artists != "" and self._current_track.artists != artists:
+        if len(artists) > 1 and self._current_track.artists != artists:
             self._current_track.artists = artists.split(",")
             changed = True
-        if not self._current_track.artists:
-            self._current_track.artists = self._current_track.album_artists
-            changed = True
+            if not self._current_track.artists:
+                self._current_track.artists = self._current_track.album_artists
         if changed:
             self.emit("current-changed")
 
