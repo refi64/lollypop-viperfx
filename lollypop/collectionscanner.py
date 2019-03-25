@@ -442,6 +442,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         discname = self.get_discname(tags)
         tracknumber = self.get_tracknumber(tags, name)
         track_popm = self.get_popm(tags)
+        bpm = self.get_bpm(tags)
         (year, timestamp) = self.get_original_year(tags)
         if year is None:
             (year, timestamp) = self.get_year(tags)
@@ -518,7 +519,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                                     tracknumber, discnumber, discname,
                                     album_id, year, timestamp, track_pop,
                                     track_rate, track_loved, track_ltime,
-                                    mtime, mb_track_id)
+                                    mtime, mb_track_id, bpm)
         Logger.debug("CollectionScanner::add2db(): Update track")
         self.update_track(track_id, artist_ids, genre_ids)
         Logger.debug("CollectionScanner::add2db(): Update album")

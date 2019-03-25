@@ -95,7 +95,8 @@ class Database:
                                               rate INT NOT NULL,
                                               ltime INT NOT NULL,
                                               mtime INT NOT NULL,
-                                              mb_track_id TEXT
+                                              mb_track_id TEXT,
+                                              bpm DOUBLE
                                               )"""
     __create_track_artists = """CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,

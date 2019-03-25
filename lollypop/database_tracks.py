@@ -33,7 +33,7 @@ class TracksDatabase:
 
     def add(self, name, uri, duration, tracknumber, discnumber, discname,
             album_id, year, timestamp, popularity, rate, loved, ltime, mtime,
-            mb_track_id):
+            mb_track_id, bpm):
         """
             Add a new track to database
             @param name as string
@@ -52,6 +52,7 @@ class TracksDatabase:
             @param ltime as int
             @param mtime as int
             @param mb_track_id as str
+            @param bpm as double
             @return inserted rowid as int
             @warning: commit needed
         """
@@ -61,7 +62,7 @@ class TracksDatabase:
                 discnumber, discname, album_id,\
                 year, timestamp, popularity, rate, loved,\
                 ltime, mtime, mb_track_id) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
                     name,
                     uri,
                     duration,
@@ -76,7 +77,8 @@ class TracksDatabase:
                     loved,
                     ltime,
                     mtime,
-                    mb_track_id))
+                    mb_track_id,
+                    bpm))
             return result.lastrowid
 
     def add_artist(self, track_id, artist_id):

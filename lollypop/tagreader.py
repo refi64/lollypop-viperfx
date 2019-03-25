@@ -372,9 +372,25 @@ class TagReader(Discoverer):
             values = get_ogg()
         return values
 
+    def get_bpm(self, tags):
+        """
+            Get BPM from tags
+            @param tags as Gst.TagList
+            @return int/None
+        """
+        try:
+            if tags is not None:
+                (exists, bpm) = tags.get_double_index("beats-per-minute", 0)
+                if exists:
+                    return bpm
+        except:
+            pass
+        return None
+
     def get_popm(self, tags):
         """
             Get popularity tag
+            @param tags as Gst.TagList
             @return value as Lollypop rating
         """
         if tags is None:

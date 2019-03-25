@@ -3,9 +3,9 @@
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkAdjustment" id="adjustment1">
-    <property name="lower">1000</property>
+    <property name="lower">10</property>
     <property name="upper">3000</property>
-    <property name="value">2000</property>
+    <property name="value">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -30,6 +30,7 @@
           <item id="album" translatable="yes">Album</item>
           <item id="rating" translatable="yes">Rating</item>
           <item id="year" translatable="yes">Year</item>
+          <item id="bpm" translatable="yes">BPM</item>
         </items>
         <signal name="changed" handler="_on_type_combobox_changed" swapped="no"/>
       </object>

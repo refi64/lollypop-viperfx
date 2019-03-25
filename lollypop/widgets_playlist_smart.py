@@ -20,7 +20,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         A smart playlist widget (WHERE SQL subrequest)
     """
     __TEXT = ["genre", "album", "artist"]
-    __INT = ["rating", "year"]
+    __INT = ["rating", "year", "bpm"]
 
     def __init__(self, size_group):
         """
@@ -69,6 +69,9 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         if t == "tracks.year":
             self.__type_combobox.set_active_id("year")
             self.__spin_button.set_value(int(value))
+        elif t == "tracks.bpm":
+            self.__type_combobox.set_active_id("bpm")
+            self.__spin_button.set_value(int(value))
         elif t == "genres.name":
             self.__type_combobox.set_active_id("genre")
             self.__entry.set_text(value)
@@ -95,21 +98,17 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         request_check = self.__operand_combobox.get_active_id()
         sql = None
         if request_type == "rating":
-            if request_check.find("LIKE") != -1:
-                rate = "%" + self.__rate + "%"
-            else:
-                rate = self.__rate
             sql = "( ((tracks.rate %s '%s'))" +\
                   " OR ((albums.rate %s '%s')) )"
-            sql = sql % (request_check, rate,
-                         request_check, rate)
+            sql = sql % (request_check, self.__rate,
+                         request_check, self.__rate)
         elif request_type == "year":
-            request_value = int(self.__spin_button.get_value())
-            if request_check.find("LIKE") != -1:
-                value = "%" + request_value + "%"
-            else:
-                value = request_value
+            value = int(self.__spin_button.get_value())
             sql = "( ((tracks.year %s '%s')) )"
+            sql = sql % (request_check, value)
+        elif request_type == "bpm":
+            value = int(self.__spin_button.get_value())
+            sql = "( ((tracks.bpm %s '%s')) )"
             sql = sql % (request_check, value)
         elif request_type == "genre":
             request_value = self.__entry.get_text().replace("'", "''")
@@ -171,7 +170,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         else:
             self.__operand_combobox.set_active_id(self.__operand)
 
-        if combobox.get_active_id() == "year":
+        if combobox.get_active_id() in ["year", "bpm"]:
             self.__stack.set_visible_child_name("int")
         elif combobox.get_active_id() == "rating":
             self.__stack.set_visible_child_name("rating")
