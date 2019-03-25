@@ -34,33 +34,33 @@ class SimilarsPlayer:
 #######################
 # PRIVATE             #
 #######################
-    def __add_a_new_album(self, similar_artist_id):
+    def __add_a_new_album(self, similar_artist_ids):
         """
             Add a new album to playback
-            @param similar_artist_id as int
+            @param similar_artist_ids as [int]
         """
         # Get an album
-        album_ids = App().albums.get_ids([similar_artist_id], [])
-        if album_ids:
-            shuffle(album_ids)
-            self.add_album(Album(album_ids[0]))
+        album_ids = App().albums.get_ids(similar_artist_ids, [])
+        shuffle(album_ids)
+        while album_ids:
+            album_id = album_ids.pop(0)
+            if album_id not in self.album_ids:
+                self.add_album(Album(album_id))
+                break
 
-    def __get_artist_id(self, artists):
+    def __get_artist_ids(self, artists):
         """
             Get a valid artist id from list
             @param artists as [str]
             @return artist_id as int
         """
-        similar_artist_id = None
-        shuffle(artists)
+        similar_artist_ids = []
         for artist in artists:
             similar_artist_id = App().artists.get_id(artist)
             if similar_artist_id is not None:
                 if App().artists.get_albums([similar_artist_id]):
-                    break
-                else:
-                    similar_artist_id = None
-        return similar_artist_id
+                    similar_artist_ids.append(similar_artist_id)
+        return similar_artist_ids
 
     def __on_next_changed(self, player):
         """
@@ -98,25 +98,23 @@ class SimilarsPlayer:
             Add one album or run a Spotify search if none
             @param artists as [str]
         """
-        similar_artist_id = self.__get_artist_id(artists)
-        if similar_artist_id is None:
+        similar_artist_ids = self.__get_artist_ids(artists)
+        if not similar_artist_ids:
             if self.current_track.artist_ids:
                 artist_id = self.current_track.artist_ids[0]
                 artist_name = App().artists.get_name(artist_id)
                 App().spotify.get_artist_id(artist_name,
                                             self.__on_get_spotify_artist_id)
         else:
-            name = App().artists.get_name(similar_artist_id)
-            Logger.info("Found a similar artist via Last.fm: %s", name)
-            self.__add_a_new_album(similar_artist_id)
+            Logger.info("Found a similar artist via Last.fm")
+            self.__add_a_new_album(similar_artist_ids)
 
     def __on_spotify_similar_artists(self, artists):
         """
             Add one album
             @param artists as [str]
         """
-        similar_artist_id = self.__get_artist_id(artists)
-        if similar_artist_id is not None:
-            name = App().artists.get_name(similar_artist_id)
-            Logger.info("Found a similar artist via Spotify: %s", name)
-            self.__add_a_new_album(similar_artist_id)
+        similar_artist_ids = self.__get_artist_ids(artists)
+        if similar_artist_ids:
+            Logger.info("Found similar artists via Spotify:")
+            self.__add_a_new_album(similar_artist_ids)
