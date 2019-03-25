@@ -61,7 +61,7 @@ class TracksDatabase:
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
                 year, timestamp, popularity, rate, loved,\
-                ltime, mtime, mb_track_id) VALUES\
+                ltime, mtime, mb_track_id, bpm) VALUES\
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
                     name,
                     uri,
