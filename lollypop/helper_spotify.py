@@ -118,6 +118,32 @@ class SpotifyHelper(GObject.Object):
             Logger.error("SpotifyHelper::get_artist_id(): %s", e)
             callback(None)
 
+    def get_similar_artists(self, artist_id, cancellable):
+        """
+           Get similar artists
+           @param artist_id as int
+           @return artists as [str]
+        """
+        artists = []
+        try:
+            while self.wait_for_token():
+                if cancellable.is_cancelled():
+                    raise Exception("cancelled")
+                sleep(1)
+            token = "Bearer %s" % self.__token
+            helper = TaskHelper()
+            helper.add_header("Authorization", token)
+            uri = "https://api.spotify.com/v1/artists/%s/related-artists" %\
+                artist_id
+            (status, data) = helper.load_uri_content_sync(uri, cancellable)
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["artists"]:
+                    artists.append(item["name"])
+        except Exception as e:
+            Logger.error("SpotifyHelper::get_similar_artists(): %s", e)
+        return artists
+
     def search_similar_artists(self, artist_id, cancellable):
         """
             Search similar artists
@@ -148,7 +174,7 @@ class SpotifyHelper(GObject.Object):
                     GLib.idle_add(self.emit, "new-artist",
                                   artist_name, cover_uri)
         except Exception as e:
-            Logger.error("SpotifyHelper::get_artist_id(): %s", e)
+            Logger.error("SpotifyHelper::search_similar_artists(): %s", e)
         if not found:
             GLib.idle_add(self.emit, "new-artist", None, None)
 

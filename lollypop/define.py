@@ -30,8 +30,9 @@ MARGIN_SMALL = 5
 
 class Repeat:
     NONE = 0
-    TRACK = 1
-    ALL = 2
+    AUTO = 1
+    TRACK = 2
+    ALL = 3
 
 
 class GstPlayFlags:

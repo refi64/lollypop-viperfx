@@ -39,6 +39,11 @@
               <attribute name="target">all</attribute>
             </item>
             <item>
+              <attribute name="label" translatable="yes">Automatic playback</attribute>
+              <attribute name="action">app.repeat</attribute>
+              <attribute name="target">auto</attribute>
+            </item>
+            <item>
               <attribute name="label" translatable="yes">Repeat track</attribute>
               <attribute name="action">app.repeat</attribute>
               <attribute name="target">track</attribute>

@@ -18,8 +18,9 @@
     </enum>
     <enum id="org.gnome.Lollypop.Repeat">
        <value nick="none" value="0"/>
-       <value nick="track" value="1"/>
-       <value nick="all" value="2"/>
+       <value nick="auto" value="1"/>
+       <value nick="track" value="2"/>
+       <value nick="all" value="3"/>
     </enum>
     <enum id="org.gnome.Lollypop.OrderBy">
        <value nick="artist" value="0"/>

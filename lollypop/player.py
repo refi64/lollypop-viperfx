@@ -20,6 +20,7 @@ from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_playlist import PlaylistPlayer
+from lollypop.player_similars import SimilarsPlayer
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.objects import Track, Album
@@ -27,7 +28,7 @@ from lollypop.define import App, Type, LOLLYPOP_DATA_PATH, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
-             LinearPlayer, ShufflePlayer):
+             LinearPlayer, ShufflePlayer, SimilarsPlayer):
     """
         Player object used to manage playback and playlists
     """
@@ -42,6 +43,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         ShufflePlayer.__init__(self)
         PlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
+        SimilarsPlayer.__init__(self)
         self.update_crossfading()
         App().settings.connect("changed::repeat", self.__on_repeat_changed)
         self._albums_backup = []

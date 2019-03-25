@@ -13,7 +13,6 @@
 from gi.repository import Gtk, Gio, GLib, Pango, GObject
 
 from lollypop.define import App, ArtSize
-from lollypop.utils import get_network_available
 from lollypop.widgets_utils import Popover
 from lollypop.information_store import InformationStore
 from lollypop.logger import Logger
@@ -145,7 +144,7 @@ class SimilarsPopover(Popover):
             Populate view artist ids
             @param artist ids as int
         """
-        if get_network_available():
+        if Gio.NetworkMonitor.get_default().get_network_available():
             self.__providers = 1
             artists = []
             for artist_id in artist_ids:
@@ -179,6 +178,7 @@ class SimilarsPopover(Popover):
         if artist_id is None:
             self.__stack.set_visible_child_name("no-result")
             self.__spinner.stop()
+            return
         App().task_helper.run(App().spotify.search_similar_artists, artist_id,
                               self.__cancellable)
 
