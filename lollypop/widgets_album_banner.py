@@ -151,7 +151,10 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__duration_label.hide()
             self.__rating_grid.hide()
             self.__year_label.set_vexpand(True)
-            if not self.__view_type & ViewType.SMALL:
+            if self.__view_type & ViewType.SMALL:
+                self.__title_label.get_style_context().remove_class(
+                    "text-large")
+            else:
                 self.__title_label.get_style_context().remove_class(
                     "text-xx-large")
                 self.__title_label.get_style_context().add_class(
@@ -168,7 +171,10 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__duration_label.show()
             self.__rating_grid.show()
             self.__year_label.set_vexpand(False)
-            if not self.__view_type & ViewType.SMALL:
+            if self.__view_type & ViewType.SMALL:
+                self.__title_label.get_style_context().add_class(
+                    "text-large")
+            else:
                 self.__title_label.get_style_context().remove_class(
                     "text-x-large")
                 self.__title_label.get_style_context().add_class(
