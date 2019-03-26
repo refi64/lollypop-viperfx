@@ -448,7 +448,8 @@ class Track(Base):
                 "timestamp": None,
                 "mtime": 1,
                 "loved": False,
-                "mb_track_id": None}
+                "mb_track_id": None,
+                "mb_artist_ids": []}
 
     def __init__(self, track_id=None, album=None):
         """
