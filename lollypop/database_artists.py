@@ -29,20 +29,22 @@ class ArtistsDatabase:
         """
         pass
 
-    def add(self, name, sortname):
+    def add(self, name, sortname, mb_artist_id):
         """
             Add a new artist to database
             @param artist name as string
             @param sortname as string
+            @param mb_artist_id as str
             @return inserted rowid as int
             @warning: commit needed
         """
         if sortname == "":
             sortname = format_artist_name(name)
         with SqlCursor(App().db, True) as sql:
-            result = sql.execute("INSERT INTO artists (name, sortname)\
-                                  VALUES (?, ?)",
-                                 (name, sortname))
+            result = sql.execute("INSERT INTO artists (name, sortname,\
+                                  mb_artist_id)\
+                                  VALUES (?, ?, ?)",
+                                 (name, sortname, mb_artist_id))
             return result.lastrowid
 
     def set_sortname(self, artist_id, sortname):
@@ -72,7 +74,7 @@ class ArtistsDatabase:
                 return v[0]
             return self.get_name(artist_id)
 
-    def get_id(self, name):
+    def get_id(self, name, mb_artist_id=None):
         """
             Get artist id
             @param Artist name as string
@@ -81,12 +83,15 @@ class ArtistsDatabase:
         # Special case, id name is fully uppercase, do not use NOCASE
         # We want to have a different artist
         with SqlCursor(App().db) as sql:
-            if name.isupper():
-                result = sql.execute("SELECT rowid from artists\
-                                      WHERE name=?", (name,))
-            else:
-                result = sql.execute("SELECT rowid from artists\
-                                      WHERE name=? COLLATE NOCASE", (name,))
+            query = "SELECT rowid from artists\
+                     WHERE name=?"
+            params = [name]
+            if mb_artist_id:
+                query += " AND mb_artist_id=?"
+                params.append(mb_artist_id)
+            if not name.isupper():
+                query += " COLLATE NOCASE"
+            result = sql.execute(query, params)
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -108,6 +113,20 @@ class ArtistsDatabase:
             if v is not None:
                 return v[0]
             return None
+
+    def get_mb_artist_id(self, artist_id):
+        """
+            Get MusicBrainz artist id for artist id
+            @param artist id as int
+            @return MusicBrainz artist id as str
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT mb_artist_id FROM albums\
+                                  WHERE rowid=?", (artist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return -1
 
     def get_albums(self, artist_ids):
         """

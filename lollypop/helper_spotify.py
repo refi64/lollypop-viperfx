@@ -395,7 +395,7 @@ class SpotifyHelper(GObject.Object):
 
         Logger.debug("SpotifyHelper::__save_track(): "
                      "Add album artists %s" % album_artists)
-        album_artist_ids = t.add_album_artists(album_artists, aa_sortnames)
+        album_artist_ids = t.add_artists(album_artists, aa_sortnames)
         # User does not want compilations
         if not App().settings.get_value("show-compilations") and\
                 not album_artist_ids:

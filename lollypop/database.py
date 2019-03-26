@@ -71,7 +71,8 @@ class Database:
                                               synced INT NOT NULL)"""
     __create_artists = """CREATE TABLE artists (id INTEGER PRIMARY KEY,
                                                name TEXT NOT NULL,
-                                               sortname TEXT NOT NULL)"""
+                                               sortname TEXT NOT NULL,
+                                               mb_artist_id TEXT)"""
     __create_genres = """CREATE TABLE genres (id INTEGER PRIMARY KEY,
                                             name TEXT NOT NULL)"""
     __create_album_artists = """CREATE TABLE album_artists (
