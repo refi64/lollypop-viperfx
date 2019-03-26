@@ -295,37 +295,39 @@ class Application(Gtk.Application):
         """
             Save window position and view
         """
-        if self.settings.get_value("save-state"):
-            # Save current track
-            if self.player.current_track.id is None:
-                track_id = -1
-            elif self.player.current_track.id == Type.RADIOS:
-                from lollypop.radios import Radios
-                radios = Radios()
-                track_id = radios.get_id(
-                    self.player.current_track.radio_name)
-            else:
-                track_id = self.player.current_track.id
-                # Save albums context
-                try:
-                    with open(LOLLYPOP_DATA_PATH + "/Albums.bin", "wb") as f:
-                        dump(list(self.player.albums), f)
-                except Exception as e:
-                    Logger.error("Application::__save_state(): %s" % e)
-            dump(track_id, open(LOLLYPOP_DATA_PATH + "/track_id.bin", "wb"))
-            dump([self.player.is_playing, self.player.is_party],
-                 open(LOLLYPOP_DATA_PATH + "/player.bin", "wb"))
-            dump(self.player.queue,
-                 open(LOLLYPOP_DATA_PATH + "/queue.bin", "wb"))
-            # Save current playlist
-            if self.player.current_track.id == Type.RADIOS:
-                playlist_ids = [Type.RADIOS]
-            elif not self.player.playlist_ids:
-                playlist_ids = []
-            else:
-                playlist_ids = self.player.playlist_ids
-            dump(playlist_ids,
-                 open(LOLLYPOP_DATA_PATH + "/playlist_ids.bin", "wb"))
+        if not self.settings.get_value("save-state"):
+            return
+
+        if self.player.current_track.id is None or\
+                self.player.current_track.mtime == 0:
+            track_id = -1
+        elif self.player.current_track.id == Type.RADIOS:
+            from lollypop.radios import Radios
+            radios = Radios()
+            track_id = radios.get_id(
+                self.player.current_track.radio_name)
+        else:
+            track_id = self.player.current_track.id
+            # Save albums context
+            try:
+                with open(LOLLYPOP_DATA_PATH + "/Albums.bin", "wb") as f:
+                    dump(list(self.player.albums), f)
+            except Exception as e:
+                Logger.error("Application::__save_state(): %s" % e)
+        dump(track_id, open(LOLLYPOP_DATA_PATH + "/track_id.bin", "wb"))
+        dump([self.player.is_playing, self.player.is_party],
+             open(LOLLYPOP_DATA_PATH + "/player.bin", "wb"))
+        dump(self.player.queue,
+             open(LOLLYPOP_DATA_PATH + "/queue.bin", "wb"))
+        # Save current playlist
+        if self.player.current_track.id == Type.RADIOS:
+            playlist_ids = [Type.RADIOS]
+        elif not self.player.playlist_ids:
+            playlist_ids = []
+        else:
+            playlist_ids = self.player.playlist_ids
+        dump(playlist_ids,
+             open(LOLLYPOP_DATA_PATH + "/playlist_ids.bin", "wb"))
         if self.player.current_track.id is not None:
             position = self.player.position
         else:
