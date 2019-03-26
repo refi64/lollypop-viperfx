@@ -426,7 +426,7 @@ class SpotifyHelper(GObject.Object):
                                     tracknumber, discnumber, discname,
                                     album_id, year, timestamp, 0,
                                     0, False, 0,
-                                    0, mb_track_id)
+                                    0, mb_track_id, 0)
         Logger.debug("SpotifyHelper::__save_track(): Update track")
         App().scanner.update_track(track_id, artist_ids, genre_ids)
         Logger.debug("SpotifyHelper::__save_track(): Update album")
