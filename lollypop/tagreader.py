@@ -543,8 +543,11 @@ class TagReader(Discoverer):
                     if sortname is None:
                         sortname = format_artist_name(artist)
                     artist_id = App().artists.add(artist, sortname, mbid)
-                elif sortname is not None:
-                    App().artists.set_sortname(artist_id, sortname)
+                else:
+                    if sortname is not None:
+                        App().artists.set_sortname(artist_id, sortname)
+                    if mbid is not None:
+                        App().artists.set_mb_artist_id(artist_id, mbid)
                 i += 1
                 artist_ids.append(artist_id)
         return artist_ids

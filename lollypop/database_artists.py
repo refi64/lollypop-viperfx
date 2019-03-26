@@ -87,7 +87,7 @@ class ArtistsDatabase:
                      WHERE name=?"
             params = [name]
             if mb_artist_id:
-                query += " AND mb_artist_id=?"
+                query += " AND (mb_artist_id=? OR mb_artist_id IS NULL)"
                 params.append(mb_artist_id)
             if not name.isupper():
                 query += " COLLATE NOCASE"
@@ -113,6 +113,19 @@ class ArtistsDatabase:
             if v is not None:
                 return v[0]
             return None
+
+    def set_mb_artist_id(self, artist_id, mb_artist_id):
+        """
+            Set MusicBrainz artist id
+            @param id as int
+            @param MusicBrainz artist id as str
+            @warning: commit needed
+        """
+        with SqlCursor(App().db, True) as sql:
+            sql.execute("UPDATE artists\
+                         SET mb_artist_id=?\
+                         WHERE rowid=?",
+                        (mb_artist_id, artist_id))
 
     def get_mb_artist_id(self, artist_id):
         """
