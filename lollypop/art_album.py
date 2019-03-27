@@ -231,6 +231,23 @@ class AlbumArt:
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)
             return None
 
+    def copy_from_web_to_store(self, album_id):
+        """
+            Copy artwork from web path to store path
+            @param album_id as int
+        """
+        try:
+            album = Album(album_id)
+            filename = self.get_album_cache_name(album) + ".jpg"
+            web_path = self._WEB_PATH + "/" + filename
+            store_path = self._STORE_PATH + "/" + filename
+            web_file = Gio.File.new_for_path(web_path)
+            store_file = Gio.File.new_for_path(store_path)
+            web_file.copy(store_file, Gio.FileCopyFlags.OVERWRITE,
+                          None, None, None)
+        except Exception as e:
+            Logger.error("AlbumArt::copy_from_web_to_store(): %s", e)
+
     def save_album_artwork(self, data, album_id):
         """
             Save data for album id

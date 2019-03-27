@@ -78,7 +78,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         self.__reveal = reveal
         self.__cover_uri = cover_uri
         self._artwork = None
-        self.__cover_data = None
         self._album = album
         self.__view_type = view_type
         self.__cancellable = Gio.Cancellable()
@@ -345,8 +344,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         try:
             if status:
-                self.__cover_data = data
-                App().art.save_album_artwork(self.__cover_data, self._album.id)
+                App().art.save_album_artwork(data, self._album.id)
                 self.set_artwork()
         except Exception as e:
             Logger.error("AlbumRow::__on_cover_uri_content(): %s", e)
@@ -415,10 +413,9 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         if not self.get_state_flags() & Gtk.StateFlags.PRELIGHT:
             return True
         if self._album.mtime == 0:
-            self._album.save(True)
-            if self.__cover_data is not None:
-                App().art.save_album_artwork(self.__cover_data, self._album.id)
+            App().art.copy_from_web_to_store(self._album.id)
             App().art.cache_artists_info()
+            self._album.save(True)
             self.destroy()
         elif self.__view_type & ViewType.SEARCH:
             popover = self.get_ancestor(Gtk.Popover)
