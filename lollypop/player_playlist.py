@@ -35,7 +35,10 @@ class PlaylistPlayer(BasePlayer):
             @param track as Track
             @param position as int
         """
-        self._playlist_tracks.insert(position, track)
+        if position == -1:
+            self._playlist_tracks.append(track)
+        else:
+            self._playlist_tracks.insert(position, track)
         self.set_next()
         self.set_prev()
         self.emit("playlist-changed")
@@ -95,7 +98,7 @@ class PlaylistPlayer(BasePlayer):
                 if repeat == Repeat.ALL:
                     idx = 0
                 else:
-                    return track
+                    return Track()
             else:
                 idx += 1
             track = self._playlist_tracks[idx]
@@ -118,7 +121,7 @@ class PlaylistPlayer(BasePlayer):
                 if repeat == Repeat.ALL:
                     idx = len(track_ids) - 1
                 else:
-                    return track
+                    return Track()
             else:
                 idx -= 1
             track = self._playlist_tracks[idx]

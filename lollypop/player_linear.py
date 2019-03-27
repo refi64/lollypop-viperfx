@@ -33,8 +33,9 @@ class LinearPlayer(BasePlayer):
             @return track as Track
         """
         repeat = App().settings.get_enum("repeat")
-        # If no album available, repeat current track
-        if not self._albums or repeat == Repeat.TRACK:
+        if not self._albums:
+            return Track()
+        elif repeat == Repeat.TRACK:
             return self._current_playback_track
         album = self._current_playback_track.album
         new_track_position = self._current_playback_track.position + 1
@@ -65,8 +66,9 @@ class LinearPlayer(BasePlayer):
             @return track as Track
         """
         repeat = App().settings.get_enum("repeat")
-        # If no album available, repeat current track
-        if not self._albums or repeat == Repeat.TRACK:
+        if not self._albums:
+            return Track()
+        elif repeat == Repeat.TRACK:
             return self._current_playback_track
         album = self._current_playback_track.album
         new_track_position = self._current_playback_track.position - 1

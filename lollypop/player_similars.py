@@ -12,7 +12,7 @@
 
 from gi.repository import Gio
 
-from lollypop.objects import Album
+from lollypop.objects import Album, Track
 from lollypop.logger import Logger
 from lollypop.define import App, Repeat
 
@@ -48,6 +48,23 @@ class SimilarsPlayer:
                 self.add_album(Album(album_id))
                 break
 
+    def __add_a_new_track(self, similar_artist_ids):
+        """
+            Add a new track to playback
+            @param similar_artist_ids as [int]
+        """
+        # Get an album
+        album_ids = App().albums.get_ids(similar_artist_ids, [])
+        track_ids = []
+        for album_id in album_ids:
+            track_ids += Album(album_id).track_ids
+        shuffle(track_ids)
+        while track_ids:
+            track_id = track_ids.pop(0)
+            if track_id not in self.playlist_track_ids:
+                self.insert_track(Track(track_id), -1)
+                break
+
     def __get_artist_ids(self, artists):
         """
             Get a valid artist id from list
@@ -69,7 +86,7 @@ class SimilarsPlayer:
         # Check if we need to add a new album
         if App().settings.get_enum("repeat") == Repeat.AUTO and\
                 player.next_track.id is None and\
-                player.albums and\
+                player.current_track.id >= 0 and\
                 Gio.NetworkMonitor.get_default().get_network_available() and\
                 player.current_track.artist_ids:
             artist_id = player.current_track.artist_ids[0]
@@ -108,7 +125,10 @@ class SimilarsPlayer:
                                             self.__on_get_spotify_artist_id)
         else:
             Logger.info("Found a similar artist via Last.fm")
-            self.__add_a_new_album(similar_artist_ids)
+            if self.albums:
+                self.__add_a_new_album(similar_artist_ids)
+            else:
+                self.__add_a_new_track(similar_artist_ids)
 
     def __on_spotify_similar_artists(self, artists):
         """
@@ -118,4 +138,7 @@ class SimilarsPlayer:
         similar_artist_ids = self.__get_artist_ids(artists)
         if similar_artist_ids:
             Logger.info("Found similar artists via Spotify:")
-            self.__add_a_new_album(similar_artist_ids)
+            if self.albums:
+                self.__add_a_new_album(similar_artist_ids)
+            else:
+                self.__add_a_new_track(similar_artist_ids)

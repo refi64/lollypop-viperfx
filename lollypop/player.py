@@ -438,6 +438,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             # Look at shuffle
             if next_track.id is None:
                 next_track = ShufflePlayer.next(self)
+
             # Look at user playlist then
             if next_track.id is None:
                 next_track = PlaylistPlayer.next(self)
