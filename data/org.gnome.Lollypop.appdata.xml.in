@@ -29,9 +29,7 @@
   <releases>
     <release version="1.0.3" date="2019-03-28">
       <description>
-	<ul>Fix a crash in Smart Playlists</ul>
-	<ul>Add BPM support to Smart Playlists</ul>
-	<ul>Add auto playback</ul>
+	<ul></ul>
       </description>
     </release>
   </releases>
