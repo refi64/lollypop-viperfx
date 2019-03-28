@@ -198,6 +198,7 @@ popover.background separator {
 .banner-frame {
     border-bottom: 1px solid shade(@theme_bg_color, 0.85);
     transition: 1000ms linear;
+    background-color: transparent;
     padding: 3px;
     margin-bottom: 2px;
 }
@@ -205,6 +206,7 @@ popover.background separator {
 .banner-frame:selected {
     border-bottom: 1px solid @theme_selected_bg_color;
     transition: 1000ms linear;
+    background-color: transparent;
     color: @theme_fg_color;
 }
 
