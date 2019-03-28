@@ -134,8 +134,8 @@
                 <property name="active">0</property>
                 <items>
                   <item id="random()" translatable="yes">random</item>
-                  <item id="tracks.album_id" translatable="yes">album</item>
-                  <item id="track_artists.artist_id" translatable="yes">artist</item>
+                  <item id="albums.name" translatable="yes">album</item>
+                  <item id="artists.name" translatable="yes">artist</item>
                   <item id="tracks.year DESC" translatable="yes">year DESC</item>
                   <item id="tracks.year ASC" translatable="yes">year ASC</item>
                   <item id="tracks.duration DESC" translatable="yes">duration DESC</item>

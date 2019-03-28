@@ -151,17 +151,21 @@ class Database:
             @param request as str
             @return list
         """
-        with SqlCursor(App().db) as sql:
-            result = sql.execute(request)
-            # Special case for OR request
-            if request.find("ORDER BY random()") == -1 and\
-                    request.find("UNION") != -1:
-                ids = []
-                for (id, other) in list(result):
-                    ids.append(id)
-                return ids
-            else:
-                return list(itertools.chain(*result))
+        try:
+            with SqlCursor(App().db) as sql:
+                result = sql.execute(request)
+                # Special case for OR request
+                if request.find("ORDER BY random()") == -1 and\
+                        request.find("UNION") != -1:
+                    ids = []
+                    for (id, other) in list(result):
+                        ids.append(id)
+                    return ids
+                else:
+                    return list(itertools.chain(*result))
+        except Exception as e:
+            Logger.error("Database::execute(): %s", e)
+        return []
 
     def get_cursor(self):
         """

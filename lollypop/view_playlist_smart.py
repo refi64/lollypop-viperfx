@@ -117,16 +117,21 @@ class SmartPlaylistView(View):
                 request += ", %s" % orderby
             request += " FROM tracks"
             subrequest = " WHERE %s" % child.sql
-            if subrequest.find("genres.") != -1:
+            if orderby.find("albums.name") != -1:
+                subrequest += " AND tracks.album_id = albums.rowid"
+            elif orderby.find("artists.name") != -1:
+                subrequest += " AND track_artists.artist_id = artists.rowid\
+                                AND track_artists.track_id = tracks.rowid"
+            if subrequest.find(" genres."):
                 request += ", %s" % "genres"
-            if subrequest.find("artists.") != -1:
+            if subrequest.find(" artists."):
                 request += ", %s" % "artists"
-            if subrequest.find("albums.") != -1:
+            if subrequest.find(" albums.") != -1:
                 request += ", %s" % "albums"
-            if subrequest.find("track_genres.") != -1:
-                request += ", %s" % "track_genres"
-            if subrequest.find("track_artists.") != -1:
-                request += ", %s" % "track_artists"
+            if subrequest.find(" track_genres.") != -1:
+                request += ", %s" % " track_genres"
+            if subrequest.find(" track_artists.") != -1:
+                request += ", %s" % " track_artists"
             request += subrequest + " UNION "
         request = request[:-7]  # " UNION "
         if orderby == "random()":
@@ -141,23 +146,28 @@ class SmartPlaylistView(View):
             Get request for AND operand
             @return str
         """
+        orderby = self.__select_combobox.get_active_id()
         request = "SELECT DISTINCT(tracks.rowid) FROM tracks"
         subrequest = " WHERE"
         for child in self.__listbox.get_children():
             if child.sql is not None:
                 subrequest += " %s AND" % child.sql
         subrequest = subrequest[:-3]
-        if subrequest.find("genres.") != -1:
+        if orderby.find("albums.name") != -1:
+            subrequest += " AND tracks.album_id = albums.rowid"
+        elif orderby.find("artists.name") != -1:
+            subrequest += " AND track_artists.artist_id = artists.rowid\
+                            AND track_artists.track_id = tracks.rowid"
+        if subrequest.find(" genres.") != -1:
             request += ", %s" % "genres"
-        if subrequest.find("artists.") != -1:
+        if subrequest.find(" artists.") != -1:
             request += ", %s" % "artists"
-        if subrequest.find("albums.") != -1:
+        if subrequest.find(" albums.") != -1:
             request += ", %s" % "albums"
-        if subrequest.find("track_genres.") != -1:
+        if subrequest.find(" track_genres.") != -1:
             request += ", %s" % "track_genres"
-        if subrequest.find("track_artists.") != -1:
+        if subrequest.find(" track_artists.") != -1:
             request += ", %s" % "track_artists"
-        orderby = self.__select_combobox.get_active_id()
         subrequest += " ORDER BY %s" % orderby
         subrequest += " LIMIT %s" % int(self.__limit_spin.get_value())
         return request + subrequest
