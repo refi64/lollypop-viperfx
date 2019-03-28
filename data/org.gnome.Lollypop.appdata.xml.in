@@ -27,11 +27,11 @@
     </ul>
   </description>
   <releases>
-    <release version="1.0" date="2019-03-18">
+    <release version="1.0.3" date="2019-03-28">
       <description>
-	<ul>Spotify/YouTube playback back from hell</ul>
-	<ul>New application menu</ul>
-	<ul>Many bug fixes</ul>
+	<ul>Fix a crash in Smart Playlists</ul>
+	<ul>Add BPM support to Smart Playlists</ul>
+	<ul>Add auto playback</ul>
       </description>
     </release>
   </releases>
