@@ -164,7 +164,7 @@ class Database:
                 else:
                     return list(itertools.chain(*result))
         except Exception as e:
-            Logger.error("Database::execute(): %s", e)
+            Logger.error("Database::execute(): %s -> %s", e, request)
         return []
 
     def get_cursor(self):
