@@ -99,7 +99,7 @@
         <property name="valign">center</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Playback type</property>
+        <property name="tooltip_text" translatable="yes">Playback options</property>
         <property name="menu_model">shuffle-menu</property>
         <signal name="toggled" handler="_on_shuffle_button_toggled" swapped="no"/>
         <child>
