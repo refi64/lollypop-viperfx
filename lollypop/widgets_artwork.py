@@ -32,7 +32,7 @@ from lollypop.utils import get_network_available
 from lollypop.helper_task import TaskHelper
 
 
-class ArtworkSearchWebView(Gtk.Bin):
+class ArtworkSearchWebView(Gtk.OffscreenWindow):
     """
         Search for image through Google Image
     """
@@ -46,7 +46,7 @@ class ArtworkSearchWebView(Gtk.Bin):
             Init webview
             @param spinner as Gtk.Spinner
         """
-        Gtk.Bin.__init__(self)
+        Gtk.OffscreenWindow.__init__(self)
         self.__spinner = spinner
         self.__webview = WebKit2.WebView()
         self.__webview.show()
@@ -54,13 +54,14 @@ class ArtworkSearchWebView(Gtk.Bin):
         self.__webview.connect("load-changed", self.__on_load_changed)
         self.__webview.connect("resource-load-started",
                                self.__on_resource_load_started)
+        self.show()
 
     def search(self, terms):
         """
             Search for terms
             @param terms as str
         """
-        uri = "https://www.google.fr/search?q=%s&tbm=isch" %\
+        uri = "https://duckduckgo.com/?q=%s&t=h_&iax=images&ia=images" %\
             GLib.uri_escape_string(terms, None, True)
         self.__webview.load_uri(uri)
 
@@ -91,9 +92,7 @@ class ArtworkSearchWebView(Gtk.Bin):
         """
         uri = resource.get_uri()
         parsed = urlparse(uri)
-        if parsed.scheme in ["http", "https"] and\
-                not parsed.netloc.find("google") != -1 and\
-                not parsed.netloc.find("gstatic") != -1:
+        if parsed.netloc == "proxy.duckduckgo.com":
             self.emit("populated", uri)
 
 
@@ -323,14 +322,9 @@ class ArtworkSearchWidget(Gtk.Bin):
         # Fallback to link extraction
         if uris is None and WEBKIT2:
             if self.__web_search is None:
-                self.__back_button.show()
                 self.__web_search = ArtworkSearchWebView(self.__spinner)
                 self.__web_search.connect("populated",
                                           self.__on_web_search_populated)
-                self.__web_search.show()
-                self.__entry.hide()
-                self.__stack.add_named(self.__web_search, "web")
-                self.__stack.set_visible_child_name("web")
                 self.__web_search.search(self.__get_current_search())
         # Populate the view
         elif uris:
@@ -408,12 +402,6 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param web_search as ArtworkSearchWebView
             @param uri as str
         """
-        if self.__stack.get_visible_child() == web_search:
-            for child in self.__view.get_children():
-                child.destroy()
-            self.__stack.set_visible_child_name("main")
-            self.__spinner.start()
-            self.__back_button.set_sensitive(True)
         helper = TaskHelper()
         helper.load_uri_content(uri,
                                 self.__cancellable,
