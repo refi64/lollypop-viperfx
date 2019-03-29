@@ -79,6 +79,8 @@ class Downloader:
             @param content as bytes
             @return [urls as string]
         """
+        if not get_network_available("GOOGLE"):
+            return []
         uris = []
         try:
             decode = json.loads(content.decode("utf-8"))
@@ -89,7 +91,7 @@ class Downloader:
         except Exception as e:
             Logger.error("Downloader::get_google_artwork(): %s, %s" %
                          (e, decode))
-        return uris or None
+        return uris
 
 #######################
 # PROTECTED           #
@@ -100,7 +102,7 @@ class Downloader:
             @param artist as str
             @return uri as str
         """
-        if App().lastfm is not None:
+        if get_network_available("LASTFM") and App().lastfm is not None:
             return App().lastfm.get_artist_artwork_uri(artist)
         else:
             return None
@@ -111,6 +113,8 @@ class Downloader:
             @param artist as str
             @return uri as str/None
         """
+        if not get_network_available("DEEZER"):
+            return None
         try:
             artist_formated = GLib.uri_escape_string(
                 artist, None, True).replace(" ", "+")
@@ -131,6 +135,8 @@ class Downloader:
             @param artist as str
             @return uri as str/None
         """
+        if not get_network_available("SPOTIFY"):
+            return None
         try:
             artist_formated = GLib.uri_escape_string(
                 artist, None, True).replace(" ", "+")
@@ -158,6 +164,8 @@ class Downloader:
             @return image as bytes
             @tread safe
         """
+        if not get_network_available("DEEZER"):
+            return None
         image = None
         try:
             album_formated = GLib.uri_escape_string(album, None, True)
@@ -187,6 +195,8 @@ class Downloader:
             @return image as bytes
             @tread safe
         """
+        if not get_network_available("SPOTIFY"):
+            return None
         image = None
         artists_spotify_ids = []
         try:
@@ -232,6 +242,8 @@ class Downloader:
             @return image as bytes
             @tread safe
         """
+        if not get_network_available("ITUNES"):
+            return None
         image = None
         try:
             album_formated = GLib.uri_escape_string(
@@ -262,6 +274,8 @@ class Downloader:
             @return data as bytes
             @tread safe
         """
+        if not get_network_available("LASTFM"):
+            return None
         image = None
         if App().lastfm is not None:
             try:
