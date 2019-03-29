@@ -68,6 +68,18 @@ class ViewType:
     FULLSCREEN = 1 << 12
 
 
+NetworkAccessACL = {
+    "DATA": 1 << 1,
+    "LASTFM": 1 << 2,
+    "SPOTIFY": 1 << 3,
+    "YOUTUBE": 1 << 4,
+    "GOOGLE": 1 << 5,
+    "DUCKDUCKGO": 1 << 6,
+    "WIKIPEDIA": 1 << 7,
+    "LYRICS": 1 << 8,
+}
+
+
 class IndicatorType:
     NONE = 1 << 0
     PLAY = 1 << 1

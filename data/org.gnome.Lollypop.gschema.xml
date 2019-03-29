@@ -64,6 +64,11 @@
             <summary>Access network</summary>
             <description></description>
         </key>
+        <key type="i" name="network-access-acl">
+            <default>510</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="b" name="save-to-tags">
             <default>false</default>
             <summary>Save artwork/popularity in tags</summary>
