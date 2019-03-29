@@ -11,13 +11,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Soup, GObject, Gio, GLib
+from gi.repository import Soup, GObject, GLib
 
 import json
 import time
 
 from lollypop.logger import Logger
 from lollypop.define import App
+from lollypop.utils import get_network_available
 
 HOST_NAME = "api.listenbrainz.org"
 PATH_SUBMIT = "/1/submit-listens"
@@ -96,7 +97,7 @@ class ListenBrainz(GObject.GObject):
             @param listen_type as str
             @param payload as []
         """
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available("MUSICBRAINZ"):
             self.__clean_queue()
             App().task_helper.run(self.__request, listen_type, payload)
         else:
