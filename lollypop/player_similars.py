@@ -12,11 +12,12 @@
 
 from gi.repository import Gio
 
+from random import shuffle
+
 from lollypop.objects import Album, Track
 from lollypop.logger import Logger
 from lollypop.define import App, Repeat
-
-from random import shuffle
+from lollypop.utils import get_network_available
 
 
 class SimilarsPlayer:
@@ -92,12 +93,12 @@ class SimilarsPlayer:
                 player.current_track.artist_ids:
             artist_id = player.current_track.artist_ids[0]
             artist_name = App().artists.get_name(artist_id)
-            if App().lastfm is not None:
+            if App().lastfm is not None and get_network_available("LASTFM"):
                 App().task_helper.run(
                               App().lastfm.get_similar_artists,
                               artist_name, self.__cancellable,
                               callback=(self.__on_lastfm_similar_artists,))
-            else:
+            elif get_network_available("SPOTIFY"):
                 App().spotify.get_artist_id(artist_name,
                                             self.__on_get_spotify_artist_id)
 

@@ -16,6 +16,7 @@ from lollypop.define import App, ArtSize
 from lollypop.widgets_utils import Popover
 from lollypop.information_store import InformationStore
 from lollypop.logger import Logger
+from lollypop.utils import get_network_available
 
 
 class ArtistRow(Gtk.ListBoxRow):
@@ -144,17 +145,17 @@ class SimilarsPopover(Popover):
             Populate view artist ids
             @param artist ids as int
         """
-        if Gio.NetworkMonitor.get_default().get_network_available():
-            self.__providers = 1
-            artists = []
-            for artist_id in artist_ids:
-                artist_name = App().artists.get_name(artist_id)
-                artists.append(artist_name)
+        self.__providers = 1
+        artists = []
+        for artist_id in artist_ids:
+            artist_name = App().artists.get_name(artist_id)
+            artists.append(artist_name)
+            if get_network_available("SPOTIFY"):
                 App().spotify.get_artist_id(artist_name,
                                             self.__on_get_artist_id)
-            if App().lastfm is not None:
-                self.__providers = 2
-                App().task_helper.run(self.__search_lastfm_similars, artists)
+        if App().lastfm is not None and get_network_available("LASTFM"):
+            self.__providers = 2
+            App().task_helper.run(self.__search_lastfm_similars, artists)
 
 #######################
 # PRIVATE             #
