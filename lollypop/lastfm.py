@@ -138,7 +138,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param track as Track
             @param timestamp as int
         """
-        if not get_network_available("LASTFM") and self.available:
+        if get_network_available("LASTFM") and self.available:
             self.__clean_queue()
             App().task_helper.run(
                        self.__scrobble,
@@ -155,7 +155,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             Submit a playing now notification for a track
             @param track as Track
         """
-        if not get_network_available("LASTFM") and\
+        if get_network_available("LASTFM") and\
                 track.id > 0 and self.available:
             App().task_helper.run(
                        self.__now_playing,
@@ -173,7 +173,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if not get_network_available("LASTFM") and self.available:
+        if get_network_available("LASTFM") and self.available:
             track = self.get_track(artist, title)
             try:
                 track.love()
@@ -188,7 +188,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if not get_network_available("LASTFM") and self.available:
+        if get_network_available("LASTFM") and self.available:
             track = self.get_track(artist, title)
             try:
                 track.unlove()
@@ -247,7 +247,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param track as Track
             @param loved as bool
         """
-        if not get_network_available("LASTFM") and self.available:
+        if get_network_available("LASTFM") and self.available:
             if loved == 1:
                 self.love(",".join(track.artists), track.name)
             else:
