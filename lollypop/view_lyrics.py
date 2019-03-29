@@ -80,6 +80,9 @@ class LyricsView(View, InformationController):
                 self.__download_wikia_lyrics()
             elif get_network_available("GENIUS"):
                 self.__download_genius_lyrics()
+            else:
+                self.__lyrics_label.set_text(
+                    _("Lyrics search disabled by user"))
 
 ##############
 # PROTECTED  #
