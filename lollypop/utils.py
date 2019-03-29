@@ -20,7 +20,7 @@ import time
 from functools import wraps
 
 from lollypop.logger import Logger
-from lollypop.define import App, Type, SelectionListMask
+from lollypop.define import App, Type, SelectionListMask, NetworkAccessACL
 
 
 def seconds_to_string(duration):
@@ -177,13 +177,21 @@ def debug(str):
         print(str)
 
 
-def get_network_available():
+def get_network_available(acl_name=""):
     """
-        Return True if network avaialble
+        Return True if network available
+        @param acl_name as str
         @return bool
     """
-    return Gio.NetworkMonitor.get_default().get_network_available() and\
-        App().settings.get_value("network-access")
+    if not App().settings.get_value("network-access"):
+        return False
+    elif acl_name == "":
+        return Gio.NetworkMonitor.get_default().get_network_available()
+    else:
+        acl = App().settings.get_value("network-access-acl").get_int32()
+        if acl & NetworkAccessACL[acl_name]:
+            return Gio.NetworkMonitor.get_default().get_network_available()
+    return False
 
 
 def noaccents(string):

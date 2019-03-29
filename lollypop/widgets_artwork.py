@@ -101,8 +101,6 @@ class ArtworkSearchWidget(Gtk.Bin):
         Search for artwork
     """
 
-    # FIXME: Missing Gio.Cancellable()
-
     def __init__(self, artist_id, album):
         """
             Init search
@@ -186,12 +184,7 @@ class ArtworkSearchWidget(Gtk.Bin):
                     self.__add_pixbuf(uri, status, content, print)
                 except Exception as e:
                     Logger.error("ArtworkSearch::populate(): %s" % e)
-        # Then google
-        uri = App().art.get_google_search_uri(self.__get_current_search())
-        helper = TaskHelper()
-        helper.load_uri_content(uri,
-                                self.__cancellable,
-                                self.__on_google_content_loaded)
+        self.__on_search_timeout(self.__get_current_search())
 
     def stop(self):
         """
@@ -319,15 +312,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         if self.__cancellable.is_cancelled():
             return
         helper = TaskHelper()
-        # Fallback to link extraction
-        if uris is None and WEBKIT2:
-            if self.__web_search is None:
-                self.__web_search = ArtworkSearchWebView(self.__spinner)
-                self.__web_search.connect("populated",
-                                          self.__on_web_search_populated)
-                self.__web_search.search(self.__get_current_search())
-        # Populate the view
-        elif uris:
+        if uris:
             uri = uris.pop(0)
             helper.load_uri_content(uri,
                                     self.__cancellable,
@@ -452,9 +437,15 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__spinner.start()
         self.__timeout_id = None
         self.__cancellable.reset()
-        if get_network_available():
+        if get_network_available("GOOGLE"):
             uri = App().art.get_google_search_uri(string)
             helper = TaskHelper()
             helper.load_uri_content(uri,
                                     self.__cancellable,
                                     self.__on_google_content_loaded)
+        elif get_network_available("DUCKDUCKGO") and WEBKIT2:
+            if self.__web_search is None:
+                self.__web_search = ArtworkSearchWebView(self.__spinner)
+                self.__web_search.connect("populated",
+                                          self.__on_web_search_populated)
+            self.__web_search.search(self.__get_current_search())

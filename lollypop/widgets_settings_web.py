@@ -10,11 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
 from lollypop.define import App
+from lollypop.utils import get_network_available
 from lollypop.logger import Logger
 
 
@@ -105,7 +106,7 @@ class WebSettingsWidget(Gtk.Bin):
             @param button as Gtk.Button
         """
         self.__update_fm_settings("lastfm")
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             self.__lastfm_test_image.set_from_icon_name(
                 "computer-fail-symbolic",
                 Gtk.IconSize.MENU)
@@ -117,7 +118,7 @@ class WebSettingsWidget(Gtk.Bin):
             @param button as Gtk.Button
         """
         self.__update_fm_settings("librefm")
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available():
             self.__librefm_test_image.set_from_icon_name(
                 "computer-fail-symbolic",
                 Gtk.IconSize.MENU)
