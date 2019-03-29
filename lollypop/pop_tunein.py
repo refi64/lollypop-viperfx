@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, ArtSize
+from lollypop.utils import get_network_available
 from lollypop.art import Art
 from lollypop.list import LinkedList
 from lollypop.objects import Track
@@ -88,7 +89,7 @@ class TuneinPopover(Gtk.Popover):
             Populate view for uri
             @param uri as str
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available("TUNEIN"):
             self.__show_message(_("Can't connect to TuneIn…"))
             return
         if self.__view.get_children():
@@ -350,7 +351,7 @@ class TuneinPopover(Gtk.Popover):
             self.__scrolled.get_vadjustment().set_value(0.0)
             self.__populate(item.URL)
         elif item.TYPE == "audio":
-            if Gio.NetworkMonitor.get_default().get_network_available():
+            if get_network_available("TUNEIN"):
                 # Cache for toolbar
                 App().task_helper.run(App().art.copy_uri_to_cache,
                                       item.LOGO, item.TEXT,

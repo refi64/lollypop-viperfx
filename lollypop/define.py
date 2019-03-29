@@ -77,6 +77,7 @@ NetworkAccessACL = {
     "DUCKDUCKGO": 1 << 6,
     "WIKIPEDIA": 1 << 7,
     "LYRICS": 1 << 8,
+    "TUNEIN": 1 << 9
 }
 
 
