@@ -16,6 +16,7 @@ from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.define import App, ArtSize
 from lollypop.logger import Logger
+from lollypop.utils import get_network_available
 from lollypop.widgets_utils import Popover
 from lollypop.helper_task import TaskHelper
 from lollypop.art import Art
@@ -92,15 +93,18 @@ class RadioPopover(Popover):
             @param widget as Gtk.Widget
         """
         self.__save_radio()
-        name = self.__radios.get_name(self.__radio_id)
-        uri = App().art.get_google_search_uri("%s+%s+%s" %
-                                              (name, "logo", "radio"))
         self.__stack.get_visible_child().hide()
         self.__stack.set_visible_child_name("spinner")
-        helper = TaskHelper()
-        helper.load_uri_content(uri,
-                                self.__cancellable,
-                                self.__on_google_content_loaded)
+        if get_network_available("GOOGLE"):
+            name = self.__radios.get_name(self.__radio_id)
+            uri = App().art.get_google_search_uri("%s+%s+%s" %
+                                                  (name, "logo", "radio"))
+            helper = TaskHelper()
+            helper.load_uri_content(uri,
+                                    self.__cancellable,
+                                    self.__on_google_content_loaded)
+        else:
+            self.__on_google_content_loaded(False, [], None)
         self.set_size_request(700, 400)
 
     def _on_save_button_clicked(self, widget):
@@ -264,6 +268,8 @@ class RadioPopover(Popover):
         if loaded:
             uris = App().art.get_google_artwork(content)
             self.__populate(uris)
+        else:
+            self.__stack.set_visible_child_name("notfound")
 
     def __on_activate(self, flowbox, child):
         """
