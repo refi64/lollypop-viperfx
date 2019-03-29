@@ -89,9 +89,10 @@ class BehaviourSettingsWidget(Gtk.Bin):
     def _on_enable_network_access_state_set(self, widget, state):
         """
             Save network access state
-            @param widget as Gtk.Switch
+            @param widget as Gtk.Button
             @param state as bool
         """
+        widget.set_sensitive(state)
         App().settings.set_value("network-access",
                                  GLib.Variant("b", state))
 
