@@ -43,18 +43,18 @@ class Downloader:
             Download album artwork
             @param album id as int
         """
-        if album_id in self.__albums_history:
+        if album_id in self.__albums_history or\
+                not get_network_available("DATA"):
             return
-        if get_network_available():
-            self.__albums_queue.append(album_id)
-            if not self.__in_albums_download:
-                App().task_helper.run(self.__cache_albums_art)
+        self.__albums_queue.append(album_id)
+        if not self.__in_albums_download:
+            App().task_helper.run(self.__cache_albums_art)
 
     def cache_artists_info(self):
         """
             Cache info for all artists
         """
-        if self.__cache_artists_running:
+        if self.__cache_artists_running or not get_network_available("DATA"):
             return
         self.__cache_artists_running = True
         App().task_helper.run(self.__cache_artists_artwork)
@@ -323,8 +323,7 @@ class Downloader:
         """
         # Then cache for lastfm/spotify/deezer/...
         for (artist_id, artist, sort) in App().artists.get([]):
-            if not get_network_available() or\
-                    InformationStore.artwork_exists(artist):
+            if InformationStore.artwork_exists(artist):
                 continue
             artwork_set = False
             for (api, helper, unused) in InformationStore.WEBSERVICES:
