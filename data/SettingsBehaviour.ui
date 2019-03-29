@@ -646,6 +646,7 @@
                     <property name="tooltip_text" translatable="yes">Radios search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
+                    <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -672,6 +673,7 @@
                     <property name="tooltip_text" translatable="yes">Scrobbler, information, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
+                    <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -698,6 +700,7 @@
                     <property name="tooltip_text" translatable="yes">Search lyrics</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
+                    <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
