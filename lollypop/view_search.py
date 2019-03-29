@@ -19,6 +19,7 @@ from urllib.parse import urlparse
 from lollypop.define import App, ViewType, Type, Shuffle, MARGIN_SMALL
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.search import Search
+from lollypop.utils import get_network_available
 from lollypop.view import BaseView
 from lollypop.logger import Logger
 
@@ -53,8 +54,9 @@ class SearchView(BaseView, Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchView.ui")
         self.__widget = builder.get_object("widget")
-        if GLib.find_program_in_path("youtube-dl") is None:
-            Logger.warning("youtube-dl is missing")
+        if GLib.find_program_in_path("youtube-dl") is None or\
+                not get_network_available("SPOTIFY") or\
+                not get_network_available("YOUTUBE"):
             builder.get_object("bottom_buttons").hide()
         self.__new_button = builder.get_object("new_button")
         self.__play_button = builder.get_object("play_button")
