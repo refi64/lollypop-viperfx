@@ -16,7 +16,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, OrderBy
-from lollypop.utils import noaccents
+from lollypop.utils import noaccents, get_network_available
 
 
 class TracksDatabase:
@@ -468,6 +468,8 @@ class TracksDatabase:
                            album_id=tracks.album_id"
                 if ignore:
                     request += " AND tracks.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND tracks.mtime != -1"
                 request += order
                 result = sql.execute(request)
             # Get albums for genres
@@ -484,6 +486,8 @@ class TracksDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND tracks.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND tracks.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             # Get albums for artist
@@ -499,6 +503,8 @@ class TracksDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND tracks.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND tracks.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             # Get albums for artist id and genre id
@@ -520,6 +526,8 @@ class TracksDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND tracks.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND tracks.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))

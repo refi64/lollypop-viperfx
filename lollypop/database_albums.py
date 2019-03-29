@@ -15,7 +15,7 @@ import itertools
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, Type, OrderBy
 from lollypop.logger import Logger
-from lollypop.utils import noaccents
+from lollypop.utils import noaccents, get_network_available
 
 
 class AlbumsDatabase:
@@ -753,6 +753,8 @@ class AlbumsDatabase:
                            artists.rowid = album_artists.artist_id"
                 if ignore:
                     request += " AND albums.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND albums.mtime != -1"
                 request += order
                 result = sql.execute(request)
             # Get albums for genres
@@ -769,6 +771,8 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND albums.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND albums.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             # Get albums for artist
@@ -784,6 +788,8 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND albums.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND albums.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             # Get albums for artist id and genre id
@@ -804,6 +810,8 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND albums.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND albums.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
@@ -828,6 +836,8 @@ class AlbumsDatabase:
                            AND album_artists.album_id=albums.rowid"
                 if ignore:
                     request += " AND albums.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND albums.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             # Get compilation for genre id
@@ -846,6 +856,8 @@ class AlbumsDatabase:
                 request += "1=0)"
                 if ignore:
                     request += " AND albums.loved != -1"
+                if not get_network_available("YOUTUBE"):
+                    request += " AND albums.mtime != -1"
                 request += order
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
