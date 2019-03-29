@@ -19,7 +19,7 @@ from lollypop.radios import Radios
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.shown import ShownLists
-from lollypop.utils import get_icon_name
+from lollypop.utils import get_icon_name, get_network_available
 
 
 class RadiosView(FlowBoxView, ViewController):
@@ -42,8 +42,9 @@ class RadiosView(FlowBoxView, ViewController):
         builder.connect_signals(self)
         self.insert_row(0)
         self.attach(builder.get_object("widget"), 0, 0, 1, 1)
-        self.__pop_tunein = TuneinPopover(self.__radios)
-        self.__pop_tunein.set_relative_to(builder.get_object("search_btn"))
+        self.__pop_tunein = None
+        if not get_network_available("TUNEIN"):
+            builder.get_object("search_btn").hide()
 
     def populate(self, radio_ids):
         """
@@ -81,8 +82,11 @@ class RadiosView(FlowBoxView, ViewController):
             Show popover for searching radios
             @param widget as Gtk.Widget
         """
-        self.__pop_tunein.populate()
-        self.__pop_tunein.show()
+        if self.__pop_tunein is None:
+            self.__pop_tunein = TuneinPopover(self.__radios)
+            self.__pop_tunein.populate()
+        self.__pop_tunein.set_relative_to(widget)
+        self.__pop_tunein.popup()
 
     def _on_artwork_changed(self, artwork, name):
         """
@@ -116,7 +120,9 @@ class RadiosView(FlowBoxView, ViewController):
         if self.__signal_id is not None:
             self.__radios.disconnect(self.__signal_id)
             self.__signal_id = None
-        self.__pop_tunein.destroy()
+        if self.__pop_tunein is not None:
+            self.__pop_tunein.destroy()
+            self.__pop_tunein = None
 
 #######################
 # PRIVATE             #
