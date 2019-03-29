@@ -82,7 +82,7 @@ class LyricsView(View, InformationController):
                 self.__download_genius_lyrics()
             else:
                 self.__lyrics_label.set_text(
-                    _("Lyrics search disabled by user"))
+                    _("You have disabled lyrics search in network settings !"))
 
 ##############
 # PROTECTED  #
