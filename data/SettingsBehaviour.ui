@@ -514,7 +514,7 @@
                     <property name="name">LASTFM</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Scrobbler, artwork, ...</property>
+                    <property name="tooltip_text" translatable="yes">Scrobbler, artwork, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -529,7 +529,7 @@
                     <property name="name">SPOTIFY</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Songs search, artwork, ...</property>
+                    <property name="tooltip_text" translatable="yes">Search songs , artwork, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -559,7 +559,7 @@
                     <property name="name">GOOGLE</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artwork</property>
+                    <property name="tooltip_text" translatable="yes">Artwork search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -574,7 +574,7 @@
                     <property name="name">DUCKDUCKGO</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artist biography, artwork</property>
+                    <property name="tooltip_text" translatable="yes">Artist biography, artwork search, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -589,7 +589,7 @@
                     <property name="name">WIKIA</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Lyrics</property>
+                    <property name="tooltip_text" translatable="yes">Search lyrics</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -643,7 +643,7 @@
                     <property name="name">TUNEIN</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artwork</property>
+                    <property name="tooltip_text" translatable="yes">Radios search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                   </object>
@@ -669,7 +669,7 @@
                     <property name="name">MUSICBRAINZ</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Scrobbler, information, ...</property>
+                    <property name="tooltip_text" translatable="yes">Scrobbler, information, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                   </object>
@@ -695,7 +695,7 @@
                     <property name="name">GENIUS</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Lyrics</property>
+                    <property name="tooltip_text" translatable="yes">Search lyrics</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                   </object>
