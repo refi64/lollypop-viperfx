@@ -101,6 +101,8 @@ class RoundedArtistsView(FlowBoxView):
             @param flowbox as Gtk.Flowbox
             @param widget as ArtistRoundedWidget
         """
+        App().window.emit("show-can-go-back", True)
+        App().window.emit("can-go-back-changed", True)
         App().window.container.show_view(widget.data)
 
     def _on_map(self, widget):
