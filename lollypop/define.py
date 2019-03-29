@@ -76,9 +76,12 @@ NetworkAccessACL = {
     "GOOGLE": 1 << 5,
     "DUCKDUCKGO": 1 << 6,
     "WIKIPEDIA": 1 << 7,
-    "LYRICS": 1 << 8,
-    "TUNEIN": 1 << 9,
-    "MUSICBRAINZ": 1 << 10
+    "TUNEIN": 1 << 8,
+    "MUSICBRAINZ": 1 << 9,
+    "ITUNES": 1 << 10,
+    "DEEZER": 1 << 11,
+    "WIKIA": 1 << 12,
+    "GENIUS": 1 << 13
 }
 
 

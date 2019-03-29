@@ -17,7 +17,7 @@ from gettext import gettext as _
 from lollypop.view import View
 from lollypop.define import App, Sizing, Type
 from lollypop.controller_information import InformationController
-from lollypop.utils import escape
+from lollypop.utils import escape, get_network_available
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 from lollypop.helper_art import ArtHelperEffect
@@ -76,8 +76,10 @@ class LyricsView(View, InformationController):
         if self.__lyrics_text:
             self.__lyrics_label.set_text(self.__lyrics_text)
         else:
-            self.__download_wikia_lyrics()
-            self.__download_genius_lyrics()
+            if get_network_available("WIKIA"):
+                self.__download_wikia_lyrics()
+            elif get_network_available("GENIUS"):
+                self.__download_genius_lyrics()
 
 ##############
 # PROTECTED  #
