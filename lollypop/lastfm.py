@@ -31,6 +31,7 @@ import re
 
 from lollypop.define import App
 from lollypop.objects import Track
+from lollypop.utils import get_network_available
 from lollypop.logger import Logger
 from lollypop.goa import GoaSyncedAccount
 
@@ -108,7 +109,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param artist as str
             @return uri as str/None
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available("LASTFM"):
             return (None, None, None)
         last_artist = self.get_artist(artist)
         uri = last_artist.get_cover_image(3)
@@ -120,7 +121,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param artist as str
             @return content as str/None
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available("LASTFM"):
             return None
         last_artist = self.get_artist(artist)
         try:
@@ -137,8 +138,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param track as Track
             @param timestamp as int
         """
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-                self.available:
+        if not get_network_available("LASTFM") and self.available:
             self.__clean_queue()
             App().task_helper.run(
                        self.__scrobble,
@@ -155,7 +155,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             Submit a playing now notification for a track
             @param track as Track
         """
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
+        if not get_network_available("LASTFM") and\
                 track.id > 0 and self.available:
             App().task_helper.run(
                        self.__now_playing,
@@ -173,8 +173,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-                self.available:
+        if not get_network_available("LASTFM") and self.available:
             track = self.get_track(artist, title)
             try:
                 track.love()
@@ -189,8 +188,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-                self.available:
+        if not get_network_available("LASTFM") and self.available:
             track = self.get_track(artist, title)
             try:
                 track.unlove()
@@ -249,8 +247,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param track as Track
             @param loved as bool
         """
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-                self.available:
+        if not get_network_available("LASTFM") and self.available:
             if loved == 1:
                 self.love(",".join(track.artists), track.name)
             else:
@@ -310,7 +307,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param full_sync as bool
             @thread safe
         """
-        if not Gio.NetworkMonitor.get_default().get_network_available():
+        if not get_network_available("LASTFM"):
             return
         try:
             self.session_key = ""
@@ -349,7 +346,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         if App().settings.get_value("disable-scrobbling") or\
-                not Gio.NetworkMonitor.get_default().get_network_available():
+                not get_network_available("LASTFM"):
             return
         Logger.debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (
                                                             artist,
@@ -378,7 +375,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @thread safe
         """
         if App().settings.get_value("disable-scrobbling") or\
-                not Gio.NetworkMonitor.get_default().get_network_available():
+                not get_network_available("LASTFM"):
             return
         try:
             self.update_now_playing(artist=artist,
@@ -429,7 +426,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             return
         self.__login = attributes["login"]
         self.__password = password
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if get_network_available("LASTFM"):
             App().task_helper.run(self.__connect, full_sync,
                                   callback=(callback, *args))
 
