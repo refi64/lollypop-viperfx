@@ -75,6 +75,12 @@ class NextPopover(Gtk.Popover):
         """
         self.__inhibited = b
 
+    def do_get_preferred_width(self):
+        """
+            Force width for label ellipsize
+        """
+        return (300, 300)
+
     @property
     def inhibited(self):
         """

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="image1">
@@ -18,9 +18,10 @@
       <object class="GtkLabel" id="artist">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="hexpand">True</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
-        <property name="max_width_chars">20</property>
         <style>
           <class name="lollypop-title"/>
         </style>
@@ -34,9 +35,10 @@
       <object class="GtkLabel" id="title">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="hexpand">True</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
-        <property name="max_width_chars">20</property>
         <style>
           <class name="lollypop-subtitle"/>
         </style>
@@ -81,6 +83,7 @@
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label" translatable="yes">Next track</property>
         <attributes>
           <attribute name="scale" value="0.80000000000000004"/>
@@ -119,8 +122,10 @@
     </child>
     <child>
       <object class="GtkImage" id="cover">
+        <property name="visible">True</property>
         <property name="can_focus">False</property>
-            <property name="visible">True</property>
+        <property name="halign">start</property>
+        <property name="valign">center</property>
         <style>
           <class name="small-cover-frame"/>
         </style>
