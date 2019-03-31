@@ -368,10 +368,8 @@ class BinPlayer(BasePlayer):
                 App().scanner.stop()
                 self.stop()
             elif App().notify is not None:
-                parsed = message.parse_error()
-                for item in parsed:
-                    if item is not None:
-                        App().notify.send(item.message)
+                (error, parsed) = message.parse_error()
+                App().notify.send(parsed)
                 self.stop()
 
     def _on_bus_eos(self, bus, message):
