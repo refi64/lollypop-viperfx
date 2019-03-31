@@ -18,7 +18,7 @@ from base64 import b64encode
 from lollypop.information_store import InformationStore
 from lollypop.define import App, GOOGLE_API_ID, Type
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
-from lollypop.utils import get_network_available
+from lollypop.utils import get_network_available, noaccents
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 
@@ -155,7 +155,8 @@ class Downloader:
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["artists"]["items"]:
-                    if item["name"].lower() == artist.lower():
+                    if noaccents(item["name"].lower()) ==\
+                            noaccents(artist.lower()):
                         return item["images"][0]["url"]
         except Exception as e:
             Logger.debug("Downloader::_get_spotify_artist_artwork(): %s [%s]" %
@@ -182,7 +183,8 @@ class Downloader:
                 decode = json.loads(data.decode("utf-8"))
                 uri = None
                 for item in decode["data"]:
-                    if item["artist"]["name"].lower() == artist.lower():
+                    if noaccents(item["artist"]["name"].lower()) ==\
+                            noaccents(artist.lower()):
                         uri = item["cover_xl"]
                         break
                 if uri is not None:
@@ -228,7 +230,8 @@ class Downloader:
                     decode = json.loads(data.decode("utf-8"))
                     uri = None
                     for item in decode["items"]:
-                        if item["name"] == album:
+                        if noaccents(item["name"].lower()) ==\
+                                noaccents(album.lower()):
                             uri = item["images"][0]["url"]
                             break
                     if uri is not None:
@@ -260,7 +263,8 @@ class Downloader:
             if status:
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["results"]:
-                    if item["artistName"].lower() == artist.lower():
+                    if noaccents(item["artistName"].lower()) ==\
+                            noaccents(artist.lower()):
                         uri = item["artworkUrl60"].replace("60x60",
                                                            "512x512")
                         (status,
