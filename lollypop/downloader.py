@@ -93,6 +93,12 @@ class Downloader:
                          (e, decode))
         return uris
 
+    def reset_history(self):
+        """
+            Reset download history
+        """
+        self.__albums_history = []
+
 #######################
 # PROTECTED           #
 #######################
