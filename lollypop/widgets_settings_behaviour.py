@@ -111,6 +111,7 @@ class BehaviourSettingsWidget(Gtk.Bin):
         acl = App().settings.set_value("network-access-acl",
                                        GLib.Variant("i", acl))
         App().art.reset_history()
+        App().art.cache_artists_info()
 
     def _on_switch_scan_state_set(self, widget, state):
         """
