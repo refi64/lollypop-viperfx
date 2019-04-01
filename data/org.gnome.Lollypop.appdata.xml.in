@@ -27,9 +27,10 @@
     </ul>
   </description>
   <releases>
-    <release version="1.0.3" date="2019-03-28">
+    <release version="1.0.4" date="2019-04-01">
       <description>
-	<ul></ul>
+	<ul>New privacy setting</ul>
+	<ul>Bug fixes</ul>
       </description>
     </release>
   </releases>
