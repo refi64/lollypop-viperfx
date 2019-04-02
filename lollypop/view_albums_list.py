@@ -651,7 +651,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             @param album_id as int
             @param added as bool
         """
-        if self._view_type & ViewType.SEARCH:
+        if self._view_type & (ViewType.SEARCH | ViewType.DND):
             return
         if added:
             album_ids = App().window.container.get_view_album_ids(
