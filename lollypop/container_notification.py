@@ -62,7 +62,7 @@ class NotificationContainer:
         def enable_data():
             network_access_acl = App().settings.get_value(
                 "network-access-acl").get_int32()
-            network_access_acl |= NetworkAccessACL.DATA
+            network_access_acl |= NetworkAccessACL["DATA"]
             App().settings.set_value("network-access-acl",
                                      GLib.Variant("i", network_access_acl))
 
