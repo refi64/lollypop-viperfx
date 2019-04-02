@@ -54,11 +54,4 @@ configure_file(
   install_dir: bindir
 )
 
-configure_file(
-  input: 'lollypop-cli.in',
-  output: 'lollypop-cli',
-  configuration: conf,
-  install_dir: bindir
-)
-
 meson.add_install_script('meson_post_install.py')
