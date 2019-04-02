@@ -16,7 +16,7 @@ from lollypop.define import App, SidebarContent
 from lollypop.view import View
 from lollypop.adaptive import AdaptiveStack
 from lollypop.container_device import DeviceContainer
-from lollypop.container_donation import DonationContainer
+from lollypop.container_notification import NotificationContainer
 from lollypop.container_scanner import ScannerContainer
 from lollypop.container_playlists import PlaylistsContainer
 from lollypop.container_lists import ListsContainer
@@ -24,7 +24,7 @@ from lollypop.container_views import ViewsContainer
 from lollypop.progressbar import ProgressBar
 
 
-class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
+class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
                 ScannerContainer, PlaylistsContainer,
                 ListsContainer, ViewsContainer):
     """
@@ -37,7 +37,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         """
         Gtk.Overlay.__init__(self)
         DeviceContainer.__init__(self)
-        DonationContainer.__init__(self)
+        NotificationContainer.__init__(self)
         ScannerContainer.__init__(self)
         PlaylistsContainer.__init__(self)
         ListsContainer.__init__(self)
