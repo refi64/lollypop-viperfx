@@ -521,12 +521,16 @@ class TagReader(Discoverer):
             @commit needed
         """
         artist_ids = []
+        artistsplit = artists.split(";")
         sortsplit = sortnames.split(";")
         sortlen = len(sortsplit)
         mbidsplit = mb_artist_ids.split(";")
         mbidlen = len(mbidsplit)
+        if len(artistsplit) != mbidlen:
+            mbidsplit = []
+            mbidlen = 0
         i = 0
-        for artist in artists.split(";"):
+        for artist in artistsplit:
             artist = artist.strip()
             if artist != "":
                 if i >= mbidlen or mbidsplit[i] == "":
