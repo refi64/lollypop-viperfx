@@ -210,13 +210,9 @@ class MPRIS(Server):
 
     def Next(self):
         App().player.next()
-        if App().notify is not None:
-            App().notify.lock(2000)
 
     def Previous(self):
         App().player.prev()
-        if App().notify is not None:
-            App().notify.lock(2000)
 
     def Pause(self):
         App().player.pause()

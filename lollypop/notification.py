@@ -52,22 +52,6 @@ class NotificationManager:
             self.__on_notifications_settings_changed,
         )
 
-    def lock(self, seconds):
-        """
-            Lock notifications
-            @param seconds as int
-        """
-        def enable_notifications():
-            self.__notification_timeout_id = None
-            self.__disable_all_notifications = App().settings.get_value(
-                "disable-notifications",
-            )
-        self.__disable_all_notifications = True
-        if self.__notification_timeout_id is not None:
-            GLib.source_remove(self.__notification_timeout_id)
-        self.__notification_timeout_id = GLib.timeout_add(
-            2000, enable_notifications)
-
     def send(self, title, body=""):
         """
             Send message to user
@@ -137,7 +121,7 @@ class NotificationManager:
         if self.__notification_timeout_id is not None:
             GLib.source_remove(self.__notification_timeout_id)
         self.__notification_timeout_id = GLib.timeout_add(
-            2000, self.__withdraw_notification)
+            5000, self.__withdraw_notification)
 
     def __on_notifications_settings_changed(self, *ignore):
         self.__disable_all_notifications = App().settings.get_value(
