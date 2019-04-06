@@ -90,6 +90,9 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         if event.type == Gdk.EventType.FOCUS_CHANGE and\
                 self.__container.view is not None:
             self.__container.view.disable_overlay()
+        if event.type == Gdk.EventType.BUTTON_RELEASE and\
+                event.button.button == 8:
+            App().window.go_back()
         Gtk.ApplicationWindow.do_event(self, event)
 
     @property
