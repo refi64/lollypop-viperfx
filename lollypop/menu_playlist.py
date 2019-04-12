@@ -123,7 +123,7 @@ class PlaylistMenu(Gio.Menu):
                     stream.write(string.encode("utf-8"))
                 stream.close()
         except Exception as e:
-            Logger.error("PlaylistMenu::__on_save_response():", e)
+            Logger.error("PlaylistMenu::__on_save_response(): %s", e)
 
     def __on_split_action_change_state(self, action, value):
         """
