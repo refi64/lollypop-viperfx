@@ -211,8 +211,11 @@ class TracksView:
             @return [Gtk.ListBoxRow]
         """
         rows = []
-        for dic in [self._tracks_widget_left, self._tracks_widget_right]:
-            for widget in dic.values():
+        for disc in self.__discs:
+            for widget in [
+                self._tracks_widget_left[disc.number],
+                self._tracks_widget_right[disc.number]
+            ]:
                 rows += widget.get_children()
         return rows
 
