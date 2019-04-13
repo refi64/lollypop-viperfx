@@ -107,16 +107,24 @@ class TagReader(Discoverer):
                 composers.append(read)
         return "; ".join(composers)
 
+    def get_mb_id(self, tags, name):
+        """
+            Get MusicBrainz ID
+            @param tags as Gst.TagList
+            @return str
+        """
+        if tags is None or not name:
+            return ""
+        (exists, mbid) = tags.get_string_index("musicbrainz-" + name, 0)
+        return mbid or ""
+
     def get_mb_album_id(self, tags):
         """
             Get album id (musicbrainz)
             @param tags as Gst.TagList
             @return str
         """
-        if tags is None:
-            return ""
-        (exists, album_id) = tags.get_string_index("musicbrainz-albumid", 0)
-        return album_id or ""
+        return self.get_mb_id(tags, 'albumid')
 
     def get_mb_track_id(self, tags):
         """
@@ -124,11 +132,23 @@ class TagReader(Discoverer):
             @param tags as Gst.TagList
             @return str
         """
-        if tags is None:
-            return ""
-        (exists, recording_id) = tags.get_string_index("musicbrainz-trackid",
-                                                       0)
-        return recording_id or ""
+        return self.get_mb_id(tags, 'trackid')
+
+    def get_mb_artist_id(self, tags):
+        """
+            Get artist id (musicbrainz)
+            @param tags as Gst.TagList
+            @return str
+        """
+        return self.get_mb_id(tags, 'artistid')
+
+    def get_mb_album_artist_id(self, tags):
+        """
+            Get album artist id (musicbrainz)
+            @param tags as Gst.TagList
+            @return str
+        """
+        return self.get_mb_id(tags, 'albumartistid')
 
     def get_version(self, tags):
         """
@@ -492,7 +512,7 @@ class TagReader(Discoverer):
             lyrics = get_ogg()
         return lyrics
 
-    def add_artists(self, artists, sortnames):
+    def add_artists(self, artists, sortnames, mb_artist_ids=""):
         """
             Add artists to db
             @param artists as [string]
@@ -501,14 +521,24 @@ class TagReader(Discoverer):
             @commit needed
         """
         artist_ids = []
+        artistsplit = artists.split(";")
         sortsplit = sortnames.split(";")
         sortlen = len(sortsplit)
+        mbidsplit = mb_artist_ids.split(";")
+        mbidlen = len(mbidsplit)
+        if len(artistsplit) != mbidlen:
+            mbidsplit = []
+            mbidlen = 0
         i = 0
-        for artist in artists.split(";"):
+        for artist in artistsplit:
             artist = artist.strip()
             if artist != "":
+                if i >= mbidlen or mbidsplit[i] == "":
+                    mbid = None
+                else:
+                    mbid = mbidsplit[i].strip()
                 # Get artist id, add it if missing
-                artist_id = App().artists.get_id(artist)
+                artist_id = App().artists.get_id(artist, mbid)
                 if i >= sortlen or sortsplit[i] == "":
                     sortname = None
                 else:
@@ -516,41 +546,12 @@ class TagReader(Discoverer):
                 if artist_id is None:
                     if sortname is None:
                         sortname = format_artist_name(artist)
-                    artist_id = App().artists.add(artist, sortname)
-                elif sortname is not None:
-                    App().artists.set_sortname(artist_id, sortname)
-                i += 1
-                artist_ids.append(artist_id)
-        return artist_ids
-
-    def add_album_artists(self, artists, sortnames):
-        """
-            Add album artist to db
-            @param artists as [string]
-            @param sortnames as [string]
-            @param artist ids as int
-            @return [int]
-            @commit needed
-        """
-        artist_ids = []
-        sortsplit = sortnames.split(";")
-        sortlen = len(sortsplit)
-        i = 0
-        for artist in artists.split(";"):
-            artist = artist.strip()
-            if artist != "":
-                # Get album artist id, add it if missing
-                artist_id = App().artists.get_id(artist)
-                if i >= sortlen or sortsplit[i] == "":
-                    sortname = None
+                    artist_id = App().artists.add(artist, sortname, mbid)
                 else:
-                    sortname = sortsplit[i].strip()
-                if artist_id is None:
-                    if sortname is None:
-                        sortname = format_artist_name(artist)
-                    artist_id = App().artists.add(artist, sortname)
-                elif sortname is not None:
-                    App().artists.set_sortname(artist_id, sortname)
+                    if sortname is not None:
+                        App().artists.set_sortname(artist_id, sortname)
+                    if mbid is not None:
+                        App().artists.set_mb_artist_id(artist_id, mbid)
                 i += 1
                 artist_ids.append(artist_id)
         return artist_ids

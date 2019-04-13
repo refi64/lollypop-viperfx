@@ -151,7 +151,8 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             29: self.__upgrade_29,
             30: "ALTER TABLE tracks ADD loved INT NOT NULL DEFAULT 0",
             31: self.__upgrade_31,
-            32: "ALTER TABLE tracks ADD bpm DOUBLE"
+            32: "ALTER TABLE tracks ADD bpm DOUBLE",
+            33: "ALTER TABLE artists ADD mb_artist_id TEXT"
         }
 
 #######################

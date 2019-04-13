@@ -437,6 +437,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         album_name = self.get_album_name(tags)
         mb_album_id = self.get_mb_album_id(tags)
         mb_track_id = self.get_mb_track_id(tags)
+        mb_artist_id = self.get_mb_artist_id(tags)
+        mb_album_artist_id = self.get_mb_album_artist_id(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
         discname = self.get_discname(tags)
@@ -488,11 +490,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             album_mtime = mtime
 
         Logger.debug("CollectionScanner::add2db(): Add artists %s" % artists)
-        artist_ids = self.add_artists(artists, a_sortnames)
+        artist_ids = self.add_artists(artists, a_sortnames, mb_artist_id)
 
         Logger.debug("CollectionScanner::add2db(): "
                      "Add album artists %s" % album_artists)
-        album_artist_ids = self.add_album_artists(album_artists, aa_sortnames)
+        album_artist_ids = self.add_artists(album_artists, aa_sortnames,
+                                            mb_album_artist_id)
 
         # User does not want compilations
         if self.__disable_compilations and not album_artist_ids:

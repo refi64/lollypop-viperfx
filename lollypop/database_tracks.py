@@ -393,6 +393,20 @@ class TracksDatabase:
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
 
+    def get_mb_artist_ids(self, track_id):
+        """
+            Get MusicBrainz artist ids
+            @param track id as int
+            @return artist ids as [int]
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT mb_artist_id\
+                                  FROM artists, track_artists\
+                                  WHERE track_artists.track_id=?\
+                                  AND track_artists.artist_id=artists.rowid",
+                                 (track_id,))
+            return list(itertools.chain(*result))
+
     def get_artists(self, track_id):
         """
             Get artist names

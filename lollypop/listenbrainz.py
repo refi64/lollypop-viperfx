@@ -171,6 +171,9 @@ class ListenBrainz(GObject.GObject):
                 "track_name": track.title,
                 "release_name": track.album_name,
                 "additional_info": {
+                    "artist_mbids": [
+                        mbid for mbid in track.mb_artist_ids if mbid
+                    ],
                     "release_mbid": track.album.mb_album_id,
                     "recording_mbid": track.mb_track_id,
                     "tracknumber": track.number
