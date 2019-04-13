@@ -108,10 +108,7 @@ class PlaylistMenu(Gio.Menu):
         """
         try:
             if response_id == Gtk.ResponseType.ACCEPT:
-                uris = []
-                for box in self.__playlists_widget.boxes:
-                    for child in box.get_children():
-                        uris.append(child.track.uri)
+                uris = App().playlists.get_track_uris(self.__playlist_id)
                 stream = dialog.get_file().replace(
                     None,
                     False,
@@ -123,7 +120,7 @@ class PlaylistMenu(Gio.Menu):
                     stream.write(string.encode("utf-8"))
                 stream.close()
         except Exception as e:
-            Logger.error("PlaylistMenu::__on_save_response():", e)
+            Logger.error("PlaylistMenu::__on_save_response(): %s", e)
 
     def __on_split_action_change_state(self, action, value):
         """
