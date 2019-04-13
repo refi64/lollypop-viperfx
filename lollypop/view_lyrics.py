@@ -168,7 +168,7 @@ class LyricsView(View, InformationController):
                 self.__current_track.name,
                 None,
                 False)
-        uri = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
+        uri = "https://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
         helper = TaskHelper()
         helper.load_uri_content(uri,
                                 self.__cancellable,
