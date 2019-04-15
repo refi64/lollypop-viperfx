@@ -143,6 +143,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
             @param album id as int
         """
         if App().player.current_track.album.id == album_id:
+            self._previous_artwork_id = None
             self.update_artwork(self.__art_size, self.__art_size)
 
     def __update_logo(self, art, name):
