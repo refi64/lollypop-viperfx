@@ -138,7 +138,6 @@ class ArtHelper(GObject.Object):
         """
         surface = None
         if pixbuf is not None:
-            pixbuf = pixbuf.copy()
             if effect & ArtHelperEffect.RESIZE:
                 pixbuf = pixbuf.scale_simple(width * scale_factor,
                                              height * scale_factor,
