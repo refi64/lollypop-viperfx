@@ -422,6 +422,11 @@ class EditMenu(BaseMenu):
             @param save as bool
         """
         self._object.save(save)
+        App().tracks.del_non_persistent()
+        App().tracks.clean()
+        App().albums.clean()
+        App().artists.clean()
+        App().genres.clean()
 
     def __edit_tag(self, action, variant):
         """
