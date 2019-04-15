@@ -178,19 +178,30 @@ class AlbumArt:
                     data = None
                     if uri is not None:
                         f = Gio.File.new_for_uri(uri)
-                        (status, data, tag) = f.load_contents(None)
-                        bytes = GLib.Bytes(data)
-                        stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                            stream,
-                            width,
-                            height,
-                            True,
-                            None)
+                        path = f.get_path()
+                        # Bypass
+                        # https://gitlab.gnome.org/GNOME/pygobject/issues/322
+                        if path is not None:
+                            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                                path,
+                                width,
+                                height,
+                                True)
+                        else:
+                            (status, data, tag) = f.load_contents(None)
+                            bytes = GLib.Bytes(data)
+                            stream = Gio.MemoryInputStream.new_from_bytes(
+                                bytes)
+                            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                stream,
+                                width,
+                                height,
+                                True,
+                                None)
+                            stream.close()
                         # Pixbuf will be resized, cropping not needed
                         if not effect & ArtHelperEffect.RESIZE:
                             pixbuf = self._crop_pixbuf(pixbuf)
-                        stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
                     try:
