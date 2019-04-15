@@ -79,7 +79,9 @@ class ScannerContainer:
         genre_ids = []
         if App().settings.get_value("show-sidebar"):
             sidebar_content = App().settings.get_enum("sidebar-content")
-            if sidebar_content == SidebarContent.GENRES:
+            if sidebar_content == SidebarContent.DEFAULT:
+                return
+            elif sidebar_content == SidebarContent.GENRES:
                 genre_ids = self._list_one.selected_ids
                 l = self._list_two
                 artist_ids = App().artists.get_ids(genre_ids)
