@@ -126,20 +126,19 @@ class ArtHelper(GObject.Object):
 #######################
 # PROTECTED           #
 #######################
-    def _on_get_artwork_pixbuf(self, _pixbuf, width, height, scale_factor,
+    def _on_get_artwork_pixbuf(self, pixbuf, width, height, scale_factor,
                                callback, effect):
         """
             Set pixbuf as surface
-            @param _pixbuf as Gdk.Pixbuf
+            @param pixbuf as Gdk.Pixbuf
             @param size as int
             @param scale_factor as int
             @param callback as function
             @param effect as ArtHelperEffect
         """
         surface = None
-        if _pixbuf is not None:
-            pixbuf = _pixbuf.copy()
-            del _pixbuf
+        if pixbuf is not None:
+            pixbuf = pixbuf.copy()
             if effect & ArtHelperEffect.RESIZE:
                 pixbuf = pixbuf.scale_simple(width * scale_factor,
                                              height * scale_factor,
