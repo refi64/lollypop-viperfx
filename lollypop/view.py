@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib, Pango
 
 from time import time
 from gettext import gettext as _
+import gc
 
 from lollypop.define import ViewType, App
 from lollypop.logger import Logger
@@ -262,6 +263,7 @@ class View(BaseView, Gtk.Grid):
             App().scanner.disconnect(self.__scanner_signal_id)
             self.__scanner_signal_id = None
         self._viewport = None
+        gc.collect()
 
 
 class LazyLoadingView(View):
