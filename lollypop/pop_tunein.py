@@ -161,7 +161,7 @@ class TuneinPopover(Gtk.Popover):
         helper.load_uri_content(uri,
                                 self.__cancellable,
                                 self.__on_uri_content)
-        self.__cancellable.reset()
+        self.__cancellable = Gio.Cancellable()
 
     def __show_message(self, message=""):
         """

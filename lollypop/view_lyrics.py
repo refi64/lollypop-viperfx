@@ -62,7 +62,7 @@ class LyricsView(View, InformationController):
         self.__update_lyrics_style()
         self.__lyrics_label.set_text(_("Loading…"))
         self.__cancellable.cancel()
-        self.__cancellable.reset()
+        self.__cancellable = Gio.Cancellable()
         # First try to get lyrics from tags
         from lollypop.tagreader import TagReader
         reader = TagReader()

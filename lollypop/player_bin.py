@@ -247,7 +247,7 @@ class BinPlayer(BasePlayer):
         Logger.debug("BinPlayer::_load_track(): %s" % track.uri)
         try:
             self.__cancellable.cancel()
-            self.__cancellable.reset()
+            self.__cancellable = Gio.Cancellable()
             self._current_track = track
             # We check track is URI track, if yes, do a load from Web
             # Will not work if we add another music provider one day

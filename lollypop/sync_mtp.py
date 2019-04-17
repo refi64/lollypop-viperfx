@@ -227,10 +227,9 @@ class MtpSync(GObject.Object):
             @param uri as str
         """
         try:
-            self.__cancellable.reset()
+            self.__cancellable = Gio.Cancellable()
             self.__uri = uri
             self.__on_mtp_files = self.__get_track_files()
-            self.__cancellable.reset()
             self.__convert_bitrate = App().settings.get_value(
                 "convert-bitrate").get_int32()
             self.__errors_count = 0

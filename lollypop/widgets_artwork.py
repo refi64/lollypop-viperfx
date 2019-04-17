@@ -304,7 +304,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             Search artwork on the web
             @param string as str
         """
-        self.__cancellable.reset()
+        self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
         if get_network_available("GOOGLE"):
             uri = App().art.get_google_search_uri(search)

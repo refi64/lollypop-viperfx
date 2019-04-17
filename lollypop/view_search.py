@@ -187,7 +187,7 @@ class SearchView(BaseView, Gtk.Bin):
             Populate searching items
             in db based on text entry current text
         """
-        self.__cancellable.reset()
+        self.__cancellable = Gio.Cancellable()
         self.__button_stack.set_visible_child(self.__spinner)
         self.__history = []
         if len(self.__current_search) > 2:
