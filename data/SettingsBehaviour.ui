@@ -420,10 +420,11 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">Download artwork in the background</property>
                     <property name="halign">start</property>
                     <property name="hexpand">True</property>
-                    <property name="label" translatable="yes">Background data</property>
+                    <property name="label" translatable="yes">Background data
+&lt;span size="x-small" alpha="70%"&gt;Search artwork in background&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
                   </object>
@@ -436,9 +437,10 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">Get similar artists from Last.fm</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Last.fm</property>
+                    <property name="label" translatable="yes">Last.fm
+&lt;span size="x-small" alpha="70%"&gt;Scrobbler, artwork, …&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -449,9 +451,10 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">Spotify search</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Spotify</property>
+                    <property name="label" translatable="yes">Spotify
+&lt;span size="x-small" alpha="70%"&gt;Search songs , artwork, …&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -462,9 +465,10 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">YouTube playback</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">YouTube</property>
+                    <property name="label" translatable="yes">YouTube
+&lt;span size="x-small" alpha="70%"&gt;Songs playback&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -475,9 +479,10 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">Google artwork search</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Google</property>
+                    <property name="label" translatable="yes">Google
+&lt;span size="x-small" alpha="70%"&gt;Artwork search&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -488,9 +493,10 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">DuckDuckGo artwork search and Wikipedia search</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">DuckDuckGo</property>
+                    <property name="label" translatable="yes">DuckDuckGo
+&lt;span size="x-small" alpha="70%"&gt;Artist biography, artwork search, …&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -502,7 +508,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Wikia</property>
+                    <property name="label" translatable="yes">Wikia
+&lt;span size="x-small" alpha="70%"&gt;Search lyrics&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -514,7 +522,6 @@
                     <property name="name">LASTFM</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Scrobbler, artwork, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -529,7 +536,6 @@
                     <property name="name">SPOTIFY</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Search songs , artwork, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -544,7 +550,6 @@
                     <property name="name">YOUTUBE</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Songs playback</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -559,7 +564,6 @@
                     <property name="name">GOOGLE</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artwork search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -574,7 +578,6 @@
                     <property name="name">DUCKDUCKGO</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artist biography, artwork search, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -589,7 +592,6 @@
                     <property name="name">WIKIA</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Search lyrics</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -604,7 +606,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Wikipedia</property>
+                    <property name="label" translatable="yes">Wikipedia
+&lt;span size="x-small" alpha="70%"&gt;Artist biography&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -616,7 +620,6 @@
                     <property name="name">WIKIPEDIA</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artist biography</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -631,7 +634,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Tunein</property>
+                    <property name="label" translatable="yes">Tunein
+&lt;span size="x-small" alpha="70%"&gt;Radios search&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -643,7 +648,6 @@
                     <property name="name">TUNEIN</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Radios search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -658,7 +662,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">MusicBrainz</property>
+                    <property name="label" translatable="yes">MusicBrainz
+&lt;span size="x-small" alpha="70%"&gt;Scrobbler, information, …&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -670,7 +676,6 @@
                     <property name="name">MUSICBRAINZ</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Scrobbler, information, …</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -685,7 +690,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Genius</property>
+                    <property name="label" translatable="yes">Genius
+&lt;span size="x-small" alpha="70%"&gt;Search lyrics&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -697,7 +704,6 @@
                     <property name="name">GENIUS</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Search lyrics</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -743,7 +749,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">ITunes</property>
+                    <property name="label" translatable="yes">ITunes
+&lt;span size="x-small" alpha="70%"&gt;Artwork search&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -755,7 +763,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Deezer</property>
+                    <property name="label" translatable="yes">Deezer
+&lt;span size="x-small" alpha="70%"&gt;Artwork search&lt;/span&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -767,7 +777,6 @@
                     <property name="name">ITUNES</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artwork search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
@@ -782,7 +791,6 @@
                     <property name="name">DEEZER</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Artwork search</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="state-set" handler="_on_enable_switch_state_set" swapped="no"/>
