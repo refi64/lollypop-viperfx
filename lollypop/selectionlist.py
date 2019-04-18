@@ -118,6 +118,7 @@ class SelectionList(BaseView, Gtk.Overlay):
                                  self.__on_selection_changed)
         self.__populating = False
         self.emit("populated")
+        self.__scrolled.get_vadjustment().set_value(0)
 
     def remove_value(self, object_id):
         """
