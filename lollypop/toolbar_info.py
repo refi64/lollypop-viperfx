@@ -104,6 +104,14 @@ class ToolbarInfo(Gtk.Bin, InformationController):
                                                      self.__art_size,
                                                      None)
 
+    @property
+    def art_size(self):
+        """
+            Get art size
+            return int
+        """
+        return self.__art_size
+
 #######################
 # PROTECTED           #
 #######################
