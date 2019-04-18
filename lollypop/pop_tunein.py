@@ -152,6 +152,7 @@ class TuneinPopover(Gtk.Popover):
             @param uri as str
         """
         self.__clear()
+        self.__cancellable = Gio.Cancellable()
         self.__spinner.start()
         self.__stack.set_visible_child_name("spinner")
         self.__back_btn.set_sensitive(False)
@@ -161,7 +162,6 @@ class TuneinPopover(Gtk.Popover):
         helper.load_uri_content(uri,
                                 self.__cancellable,
                                 self.__on_uri_content)
-        self.__cancellable = Gio.Cancellable()
 
     def __show_message(self, message=""):
         """
@@ -401,6 +401,8 @@ class TuneinPopover(Gtk.Popover):
                         self.__show_message(_("No result…"))
                 else:
                     self.__show_message(_("No result…"))
+            else:
+                raise Exception(status)
         except Exception as e:
             Logger.error("TuneinPopover::__on_uri_content(): %s" % e)
             self.__show_message(_("Can't connect to TuneIn…"))
