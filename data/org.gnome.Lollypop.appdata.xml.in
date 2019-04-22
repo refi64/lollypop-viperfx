@@ -27,9 +27,9 @@
     </ul>
   </description>
   <releases>
-    <release version="1.0.4" date="2019-04-01">
+    <release version="1.0.6" date="2019-04-22">
       <description>
-	<ul></ul>
+	<ul>Bug fixes</ul>
       </description>
     </release>
   </releases>
