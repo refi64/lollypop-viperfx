@@ -181,7 +181,7 @@ class TagReader(Discoverer):
         """
             Return artist sort names
             @param tags as Gst.TagList
-            @return artist sort names as string;string
+            @return artist sort names as "str;str"
         """
         if tags is None:
             return ""
@@ -197,7 +197,7 @@ class TagReader(Discoverer):
         """
             Return album artist sort names
             @param tags as Gst.TagList
-            @return artist sort names as string;string
+            @return artist sort names as "str;str"
         """
         if tags is None:
             return ""
@@ -208,6 +208,28 @@ class TagReader(Discoverer):
             if exists and read.strip(" "):
                 sortnames.append(read)
         return "; ".join(sortnames)
+
+    def get_remixers(self, tags):
+        """
+            Get remixers tag
+            @param tags as Gst.TagList
+            @return artist sort names as "str,str"
+        """
+        if tags is None:
+            return _("Unknown")
+        remixers = []
+        for i in range(tags.get_tag_size("interpreted-by")):
+            (exists, read) = tags.get_string_index("interpreted-by", i)
+            # We need to check tag is not just spaces
+            if exists and read.strip(" "):
+                remixers.append(read)
+        if not remixers:
+            for i in range(tags.get_tag_size("extended-comment")):
+                (exists, read) = tags.get_string_index("extended-comment", i)
+                if exists and read.startswith("REMIXER="):
+                    remixer = read[8:]
+                    remixers.append(remixer)
+        return ", ".join(remixers).replace(";", ",")
 
     def get_album_artists(self, tags):
         """
