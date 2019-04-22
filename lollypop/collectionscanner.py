@@ -432,6 +432,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         composers = self.get_composers(tags)
         performers = self.get_performers(tags)
         remixers = self.get_remixers(tags)
+        if remixers != "":
+            artists += ";%s" % remixers
         a_sortnames = self.get_artist_sortnames(tags)
         aa_sortnames = self.get_album_artist_sortnames(tags)
         album_artists = self.get_album_artists(tags)
@@ -453,8 +455,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         if version != "":
             title += " (%s)" % version
-        if remixers != "":
-            title += _(" remixed by %s") % remixers
+
         # If no artists tag, use album artist
         if artists == "":
             artists = album_artists

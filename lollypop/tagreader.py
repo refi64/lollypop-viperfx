@@ -229,7 +229,7 @@ class TagReader(Discoverer):
                 if exists and read.startswith("REMIXER="):
                     remixer = read[8:]
                     remixers.append(remixer)
-        return ", ".join(remixers).replace(";", ",")
+        return "; ".join(remixers)
 
     def get_album_artists(self, tags):
         """
