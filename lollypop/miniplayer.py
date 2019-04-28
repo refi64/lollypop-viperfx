@@ -139,8 +139,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
         else:
             if self.__cover is None:
                 self.__cover = App().art_helper.get_image(
-                                                        ArtSize.BIG,
-                                                        ArtSize.BIG,
+                                                        ArtSize.MINIPLAYER,
+                                                        ArtSize.MINIPLAYER,
                                                         "small-cover-frame")
                 self.__cover.set_property("halign", Gtk.Align.CENTER)
                 self.__cover.set_property("valign", Gtk.Align.CENTER)
@@ -161,16 +161,16 @@ class MiniPlayer(Gtk.Bin, InformationController,
         if App().player.current_track.id == Type.RADIOS:
             App().art_helper.set_radio_artwork(
                 App().player.current_track.radio_name,
-                ArtSize.BIG,
-                ArtSize.BIG,
+                ArtSize.MINIPLAYER,
+                ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
                 self.__on_artwork,
                 ArtHelperEffect.NONE)
         else:
             App().art_helper.set_album_artwork(
                 App().player.current_track.album,
-                ArtSize.BIG,
-                ArtSize.BIG,
+                ArtSize.MINIPLAYER,
+                ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
                 self.__on_artwork,
                 ArtHelperEffect.NONE)
