@@ -43,6 +43,7 @@ class ApplicationActions:
 
         equalizer_action = Gio.SimpleAction.new("equalizer", None)
         equalizer_action.connect("activate", self.__on_equalizer_activate)
+        App().set_accels_for_action("app.equalizer", ["<Shift><Alt>e"])
         App().add_action(equalizer_action)
 
         show_sidebar = App().settings.get_value("show-sidebar")
