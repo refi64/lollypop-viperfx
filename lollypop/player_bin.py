@@ -374,18 +374,28 @@ class BinPlayer(BasePlayer):
 
     def _on_bus_eos(self, bus, message):
         """
-            On end of stream, stop playback
+            Continue playback if possible and wanted
             go next otherwise
         """
-        self.emit("loading-changed", False)
-        Logger.debug("Player::__on_bus_eos(): %s" % self._current_track.uri)
-        if self._playbin.get_bus() == bus:
-            self.stop()
+        # Don't do anything if crossfade on, track already changed
+        if self._crossfading:
+            return
+        if self._current_track.id == Type.RADIOS:
+            return
+        if self.is_playing and self._playbin.get_bus() == bus:
+            if self._next_track.id is None:
+                # We are in gstreamer thread
+                GLib.idle_add(self.stop)
+                # Reenable as it has been disabled by do_crossfading()
+                self.update_crossfading()
+            else:
+                self._load_track(self._next_track)
+                self.next()
 
     def _on_stream_about_to_finish(self, playbin):
         """
             When stream is about to finish, switch to next track without gap
-            @param playbin as Gst bin
+            @param playbin as Gst.Bin
         """
         Logger.debug("Player::__on_stream_about_to_finish(): %s" % playbin)
         # Don't do anything if crossfade on, track already changed
