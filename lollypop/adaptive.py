@@ -180,7 +180,7 @@ class AdaptiveWindow:
             Init adaptive mode, Gtk.Window should be initialised
         """
         self._adaptive_stack = None
-        self.__configure_timeout_id = None
+        self.__configure_event_connected = False
         self.__stack = None
         self.__paned = []
 
@@ -236,17 +236,17 @@ class AdaptiveWindow:
             Will start to listen to configure event
             @param width as int
         """
+        def connect_configure_event():
+            self.connect("configure-event", self.__on_configure_event)
+
         if width < self._ADAPTIVE_STACK:
             self.__set_adaptive_stack(True)
         else:
             self.__set_adaptive_stack(False)
         # We delay connect to ignore initial configure events
-        if self.__configure_timeout_id is None:
-            self.__configure_timeout_id = GLib.timeout_add(
-                                                 1000,
-                                                 self.connect,
-                                                 "configure-event",
-                                                 self.__on_configure_event)
+        if not self.__configure_event_connected:
+            self.__configure_event_connected = True
+            GLib.timeout_add(1000, connect_configure_event)
 
     @property
     def can_go_back(self):
