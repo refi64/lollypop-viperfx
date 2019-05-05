@@ -54,12 +54,9 @@ class SearchView(BaseView, Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SearchView.ui")
         self.__widget = builder.get_object("widget")
-        if GLib.find_program_in_path("youtube-dl") is None or\
-                not get_network_available("SPOTIFY") or\
-                not get_network_available("YOUTUBE"):
-            builder.get_object("bottom_buttons").hide()
         self.__new_button = builder.get_object("new_button")
         self.__play_button = builder.get_object("play_button")
+        self.__bottom_buttons = builder.get_object("bottom_buttons")
         self.__entry = builder.get_object("entry")
         self.__spinner = builder.get_object("spinner")
         self.__header_stack = builder.get_object("header_stack")
@@ -261,6 +258,12 @@ class SearchView(BaseView, Gtk.Bin):
             Init signals and grab focus
             @param widget as Gtk.Widget
         """
+        if GLib.find_program_in_path("youtube-dl") is None or\
+                not get_network_available("SPOTIFY") or\
+                not get_network_available("YOUTUBE"):
+            self.__bottom_buttons.hide()
+        else:
+            self.__bottom_buttons.show()
         if self.__new_album_signal_id is None:
             self.__new_album_signal_id = App().spotify.connect(
                 "new-album", self.__on_new_spotify_album)
