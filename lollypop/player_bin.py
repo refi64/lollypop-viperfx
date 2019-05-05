@@ -82,7 +82,7 @@ class BinPlayer(BasePlayer):
            self._current_track.id != Type.RADIOS:
             duration = App().settings.get_value(
                 "transition-duration").get_int32()
-            self.__do_crossfade(duration, track, False)
+            self.__do_crossfade(duration, track)
         else:
             self.__load(track)
 
@@ -499,19 +499,12 @@ class BinPlayer(BasePlayer):
             plugins.volume.props.volume = 0.0
             playbin.set_state(Gst.State.NULL)
 
-    def __do_crossfade(self, duration, track=None, next=True):
+    def __do_crossfade(self, duration, track=None):
         """
             Crossfade tracks
             @param duration as int
             @param track as Track
-            @param next as bool
         """
-        # No cossfading if we need to stop
-        next_ok = not next or self._next_track.id is not None
-        prev_ok = next or self._prev_track.id is not None
-        if not next_ok or not prev_ok:
-            return
-
         if track is None:
             self._scrobble(self._current_track, self._start_time)
             # Increment popularity
@@ -540,18 +533,13 @@ class BinPlayer(BasePlayer):
             self._playbin = self.__playbin2
             self._plugins = self._plugins2
 
-        if track is not None:
+        if track is not None and track.id is not None:
             self.__load(track, False)
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self.__volume_up, self._playbin,
                           self._plugins, duration)
-        elif next:
+        elif self._next_track.id is not None:
             self.__load(self._next_track, False)
-            self._plugins.volume.props.volume = 0
-            GLib.idle_add(self.__volume_up, self._playbin,
-                          self._plugins, duration)
-        elif self._prev_track.id is not None:
-            self.__load(self._prev_track, False)
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self.__volume_up, self._playbin,
                           self._plugins, duration)
