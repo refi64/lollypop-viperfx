@@ -24,14 +24,15 @@ class InformationStore:
     _INFO_PATH = GLib.get_user_data_dir() + "/lollypop/info"
     _CACHE_PATH = GLib.get_user_cache_dir() + "/lollypop_info"
 
-    WEBSERVICES = [("lastfm", "_get_lastfm_artist_artwork_uri",
-                    "_get_lastfm_album_artwork"),
+    WEBSERVICES = [
                    ("spotify", "_get_spotify_artist_artwork_uri",
                     "_get_spotify_album_artwork"),
                    ("deezer", "_get_deezer_artist_artwork_uri",
                     "_get_deezer_album_artwork"),
                    ("itunes", None,
-                    "_get_itunes_album_artwork")]
+                    "_get_itunes_album_artwork"),
+                   ("lastfm", "_get_lastfm_artist_artwork_uri",
+                    "_get_lastfm_album_artwork")]
 
     def init():
         """
