@@ -102,6 +102,8 @@ class View(BaseView, Gtk.Grid):
             @param destroy_children as bool
         """
         grid = Gtk.Grid()
+        grid.set_margin_start(20)
+        grid.set_margin_end(20)
         grid.set_column_spacing(20)
         label = Gtk.Label.new()
         label.set_markup("<b>%s</b>" % GLib.markup_escape_text(
@@ -109,7 +111,8 @@ class View(BaseView, Gtk.Grid):
         label_style = label.get_style_context()
         label_style.add_class("text-xx-large")
         label_style.add_class("dim-label")
-        label.set_ellipsize(Pango.EllipsizeMode.END)
+        label.set_line_wrap_mode(Pango.WrapMode.WORD)
+        label.set_line_wrap(True)
         image = Gtk.Image.new_from_icon_name(self._empty_icon_name,
                                              Gtk.IconSize.DIALOG)
         image.get_style_context().add_class("dim-label")

@@ -18,7 +18,7 @@ from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.define import App, Type, ViewType
 from lollypop.objects import Album
-from lollypop.utils import get_icon_name
+from lollypop.utils import get_icon_name, get_network_available
 from lollypop.shown import ShownLists
 from lollypop.controller_view import ViewController, ViewControllerType
 
@@ -41,9 +41,15 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         self.__genre_ids = genre_ids
         self.__artist_ids = artist_ids
         if genre_ids and genre_ids[0] < 0:
-            if genre_ids[0] == Type.WEB and\
-                    GLib.find_program_in_path("youtube-dl") is None:
-                self._empty_message = _("Missing youtube-dl command")
+            if genre_ids[0] == Type.WEB:
+                if GLib.find_program_in_path("youtube-dl") is None:
+                    self._empty_message = _("Missing youtube-dl command")
+                    self._box.hide()
+                elif not get_network_available("SPOTIFY") or\
+                        not get_network_available("YOUTUBE"):
+                    self._empty_message = _("You need to enable Spotify ") + \
+                                          _("and YouTube in network settings")
+                    self._box.hide()
             else:
                 self._empty_message = ShownLists.IDS[genre_ids[0]][0]
             self._empty_icon_name = get_icon_name(genre_ids[0])

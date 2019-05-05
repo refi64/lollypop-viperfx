@@ -49,7 +49,7 @@ class FlowBoxView(LazyLoadingView):
             Populate items
             @param items
         """
-        if items:
+        if items and self._box.get_visible():
             self._items = items
             GLib.idle_add(self._add_items, self._items)
         else:
