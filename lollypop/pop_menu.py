@@ -161,7 +161,8 @@ class PlaybackMenu(BaseMenu):
         """
             Add an action to stop playback after track
         """
-        if isinstance(self._object, Track):
+        if self.__is_in_current_playlist() and \
+                isinstance(self._object, Track):
             stop_after_action = Gio.SimpleAction(name="stop_after_action")
             App().add_action(stop_after_action)
             if self._object.id == App().player.stop_after_track_id:
