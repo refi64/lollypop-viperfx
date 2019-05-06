@@ -65,7 +65,7 @@ class PlaylistsView(LazyLoadingView, ViewController):
         self.__title_label.set_margin_start(MARGIN)
         self.__duration_label.set_margin_start(MARGIN)
         self.__buttons.set_margin_end(MARGIN)
-        if self.__view_type & ViewType.POPOVER:
+        if self.__view_type & (ViewType.POPOVER | ViewType.FULLSCREEN):
             self.__duration_label.set_margin_end(MARGIN)
             self.__title_label.get_style_context().add_class("dim-label")
             self.__duration_label.get_style_context().add_class("dim-label")
@@ -153,7 +153,7 @@ class PlaylistsView(LazyLoadingView, ViewController):
             @param adj as Gtk.Adjustment
         """
         LazyLoadingView._on_value_changed(self, adj)
-        if not self.__view_type & ViewType.POPOVER:
+        if not self.__view_type & (ViewType.POPOVER | ViewType.FULLSCREEN):
             title_style_context = self.__title_label.get_style_context()
             if adj.get_value() == adj.get_lower():
                 height = self.__banner.default_height
