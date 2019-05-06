@@ -102,6 +102,7 @@ class PlaybackMenu(BaseMenu):
         BaseMenu.__init__(self, track)
         self.__set_playback_actions()
         self.__set_queue_actions()
+        self.__set_stop_after_action()
 
 #######################
 # PRIVATE             #
@@ -155,6 +156,31 @@ class PlaybackMenu(BaseMenu):
             del_queue_action.connect("activate",
                                      self.__remove_from_queue)
             self.append(_("Remove from queue"), "app.del_queue_action")
+
+    def __set_stop_after_action(self):
+        """
+            Add an action to stop playback after track
+        """
+        if isinstance(self._object, Track):
+            stop_after_action = Gio.SimpleAction(name="stop_after_action")
+            App().add_action(stop_after_action)
+            if self._object.id == App().player.stop_after_track_id:
+                stop_after_action.connect("activate", self.__stop_after, None)
+                self.append(_("Do not stop after"),
+                            "app.stop_after_action")
+            else:
+                stop_after_action.connect("activate", self.__stop_after,
+                                          self._object.id)
+                self.append(_("Stop after"), "app.stop_after_action")
+
+    def __stop_after(self, action, variant, track_id):
+        """
+            Tell player to stop after track
+            @param Gio.SimpleAction
+            @param GLib.Variant
+            @param track_id as int/None
+        """
+        App().player.stop_after(track_id)
 
     def __append_to_playback(self, action, variant):
         """

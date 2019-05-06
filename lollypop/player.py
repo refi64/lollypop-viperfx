@@ -44,6 +44,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         PlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
         SimilarsPlayer.__init__(self)
+        self.__stop_after_track_id = None
         self.update_crossfading()
         App().settings.connect("changed::repeat", self.__on_repeat_changed)
         self._albums_backup = []
@@ -321,6 +322,13 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         self.set_prev()
         self.emit("playlist-changed")
 
+    def stop_after(self, track_id):
+        """
+            Tell player to stop after track_id
+            @param track_id as int
+        """
+        self.__stop_after_track_id = track_id
+
     def get_current_artists(self):
         """
             Get current artist
@@ -430,7 +438,9 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             Play next track
             @param sql as sqlite cursor
         """
-        if self.current_track.id == Type.RADIOS:
+        if self.current_track.id == Type.RADIOS or\
+                self._current_track.id == self.__stop_after_track_id:
+            self._next_track = Track()
             return
         try:
             next_track = QueuePlayer.next(self)
@@ -529,6 +539,14 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             @return albums ids as [int]
         """
         return [album.id for album in self._albums]
+
+    @property
+    def stop_after_track_id(self):
+        """
+            Get stop after track id
+            @return int
+        """
+        return self.__stop_after_track_id
 
 #######################
 # PROTECTED           #
