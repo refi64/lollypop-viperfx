@@ -27,9 +27,10 @@
     </ul>
   </description>
   <releases>
-    <release version="1.0.8" date="2019-05-04">
+    <release version="1.0.9" date="2019-05-07">
       <description>
 	<ul>Bug fixes</ul>
+	<ul>Allow user to stop playback after any track</ul>
       </description>
     </release>
   </releases>
