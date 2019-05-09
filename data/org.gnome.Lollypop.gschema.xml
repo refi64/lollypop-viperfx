@@ -185,7 +185,7 @@
             <description></description>
         </key>
         <key type="b" name="show-compilations">
-            <default>false</default>
+            <default>true</default>
             <summary>Handle compilations</summary>
             <description></description>
         </key>
