@@ -199,7 +199,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
             Handle widget cleanup
             @param widget as Gtk.Widget
         """
-        ProgressController.do_destroy(self)
+        ProgressController.on_destroy(self)
+        PlaybackController.on_destroy(self)
         App().player.disconnect(self.__signal_id1)
         App().player.disconnect(self.__signal_id2)
         App().player.disconnect(self.__signal_id3)

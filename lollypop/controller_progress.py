@@ -100,7 +100,7 @@ class ProgressController:
                 self._timelabel.set_text(seconds_to_string(value))
         return True
 
-    def do_destroy(self):
+    def on_destroy(self):
         """
             Remove timeout
         """
