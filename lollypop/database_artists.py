@@ -226,10 +226,10 @@ class ArtistsDatabase:
             if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
                 result = sql.execute(
-                    "SELECT DISTINCT %s FROM artists, album_artists, albums\
-                                  WHERE artists.rowid=album_artists.artist_id\
-                                  AND albums.rowid=album_artists.album_id\
-                                  AND albums.mtime!=0\
+                    "SELECT DISTINCT %s FROM artists, track_artists, tracks\
+                                  WHERE artists.rowid=track_artists.artist_id\
+                                  AND tracks.rowid=track_artists.track_id\
+                                  AND tracks.mtime!=0\
                                   ORDER BY artists.sortname\
                                   COLLATE NOCASE COLLATE LOCALIZED" % select)
             else:
