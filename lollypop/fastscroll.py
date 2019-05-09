@@ -33,6 +33,7 @@ class FastScroll(Gtk.ScrolledWindow):
             @param scrolled as Gtk.ScrolledWindow
         """
         Gtk.ScrolledWindow.__init__(self)
+        self.__main_scrolled = scrolled
         self.get_style_context().add_class("fastscroll")
         self.__leave_timeout_id = None
         self.set_vexpand(True)
@@ -55,8 +56,10 @@ class FastScroll(Gtk.ScrolledWindow):
         eventbox.connect("button-press-event", self.__on_button_press)
         eventbox.show()
         self.add(eventbox)
-        scrolled.get_vadjustment().connect("value_changed", self.__on_scroll)
+        self.__main_scrolled.get_vadjustment().connect(
+            "value_changed", self.__on_main_scrolled)
         self.connect("leave-notify-event", self.__on_leave_notify)
+        self.connect("scroll-event", self.__on_scroll_event)
 
     def clear(self):
         """
@@ -239,7 +242,16 @@ class FastScroll(Gtk.ScrolledWindow):
             self.__leave_timeout_id = None
         self.__leave_timeout_id = GLib.timeout_add(250, self.hide)
 
-    def __on_scroll(self, adj):
+    def __on_scroll_event(self, scrolled, event):
+        """
+            Pass event to main scrolled
+            @param scrolled as Gtk.ScrolledWindow
+            @param event as Gdk.Event
+        """
+        self.__main_scrolled.do_scroll_event(self.__main_scrolled, event)
+        return True
+
+    def __on_main_scrolled(self, adj):
         """
             Show a popover with current letter
             @param adj as Gtk.Adjustement
