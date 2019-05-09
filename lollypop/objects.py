@@ -214,14 +214,6 @@ class Disc:
                 self.album.artist_ids,
                 self.number,
                 self.__disallow_ignored_tracks)]
-            if not self.__tracks:
-                self.__tracks = [Track(track_id, self.album)
-                                 for track_id in self.db.get_disc_track_ids(
-                    self.album.id,
-                    self.album.genre_ids,
-                    [],
-                    self.number,
-                    self.__disallow_ignored_tracks)]
         return self.__tracks
 
 

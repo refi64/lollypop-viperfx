@@ -426,6 +426,8 @@ class TracksView:
                 width = 2
                 pos = 1
             for disc in self.__discs:
+                if not disc.tracks:
+                    continue
                 show_label = len(self.__discs) > 1
                 disc_names = self._album.disc_names(disc.number)
                 if show_label or disc_names:
