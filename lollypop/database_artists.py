@@ -101,7 +101,7 @@ class ArtistsDatabase:
         """
             Get artist name
             @param Artist id as int
-            @return Artist name as string
+            @return str
         """
         with SqlCursor(App().db) as sql:
             if artist_id == Type.COMPILATIONS:
@@ -112,7 +112,7 @@ class ArtistsDatabase:
             v = result.fetchone()
             if v is not None:
                 return v[0]
-            return None
+            return ""
 
     def set_mb_artist_id(self, artist_id, mb_artist_id):
         """
