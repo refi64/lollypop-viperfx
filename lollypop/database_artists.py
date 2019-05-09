@@ -307,9 +307,7 @@ class ArtistsDatabase:
                            ("%" + no_accents + "%",)]:
                 request = "SELECT artists.rowid\
                            FROM artists, albums, album_artists\
-                           WHERE album_artists.artist_id=artists.rowid\
-                           AND album_artists.album_id=albums.rowid\
-                           AND noaccents(artists.name) LIKE ? LIMIT 25"
+                           WHERE noaccents(artists.name) LIKE ? LIMIT 25"
                 result = sql.execute(request, filter)
                 items += list(itertools.chain(*result))
             return items

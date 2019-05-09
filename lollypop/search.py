@@ -119,9 +119,12 @@ class Search:
         albums = []
         all_album_ids = []
 
+        for artist_id in artist_ids:
+            track_ids += App().tracks.get_ids_by_artist(artist_id)
+
         # Merge albums for tracks
         album_tracks = {}
-        for track_id in track_ids:
+        for track_id in list(set(track_ids)):
             if cancellable.is_cancelled():
                 return []
             track = Track(track_id)
@@ -142,17 +145,6 @@ class Search:
                 album = Album(album_id)
                 score = self.__calculate_score(album.name, search_items)
                 albums.append((score, album, False))
-        # Get tracks/albums for artists
-        for artist_id in artist_ids:
-            if cancellable.is_cancelled():
-                return []
-            for album_id in App().albums.get_ids([artist_id], []):
-                if album_id not in all_album_ids:
-                    album = Album(album_id)
-                    score = self.__calculate_score(album.name, search_items)
-                    for artist in album.artists:
-                        score += self.__calculate_score(artist, search_items)
-                    albums.append((score, album, False))
         # Create albums from track results
         for key in album_tracks.keys():
             if cancellable.is_cancelled():
@@ -164,6 +156,6 @@ class Search:
                 for track in album.tracks:
                     score += self.__calculate_score(track.name, search_items)
                 all_album_ids.append(album.id)
-                albums.append((score, album, True))
+                albums.append((score, album, len(tracks) < 3))
         albums.sort(key=lambda tup: tup[0], reverse=True)
         return [(album, in_tracks) for (score, album, in_tracks) in albums]
