@@ -165,6 +165,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             album_pop = App().albums.get_popularity(album_id)
             album_rate = App().albums.get_rate(album_id)
             album_loved = App().albums.get_loved(album_id)
+            # Force genre for album
+            App().albums.set_genre_ids(album_id, genre_ids)
             if backup:
                 f = Gio.File.new_for_uri(uri)
                 name = f.get_basename()

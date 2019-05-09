@@ -386,6 +386,21 @@ class AlbumsDatabase:
                 return v[0]
             return None
 
+    def set_genre_ids(self, album_id, genre_ids):
+        """
+            Set genre_ids for album
+            @param album_id as int
+            @param genre_ids as [int]
+        """
+        with SqlCursor(App().db) as sql:
+            request = "DELETE from album_genres\
+                       WHERE album_genres.album_id=?"
+            sql.execute(request, (album_id,))
+            for genre_id in genre_ids:
+                request = "INSERT INTO album_genres (album_id, genre_id)\
+                           VALUES (?, ?)"
+                sql.execute(request, (album_id, genre_id))
+
     def get_genre_ids(self, album_id):
         """
             Get genre ids
