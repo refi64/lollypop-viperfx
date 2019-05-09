@@ -53,11 +53,10 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Play previous track
         """
-        if self._prev_track.id is not None:
-            if self.position / Gst.SECOND > 2:
-                self.seek(0)
-            else:
-                self.load(self._prev_track)
+        if self.position / Gst.SECOND > 2:
+            self.seek(0)
+        elif self._prev_track.id is not None:
+            self.load(self._prev_track)
         else:
             self.stop()
 
