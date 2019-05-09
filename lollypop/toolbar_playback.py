@@ -66,6 +66,15 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         else:
             self.__buttons.show()
 
+    @property
+    def seek_wanted(self):
+        """
+            True if previous is about seeking at beginning
+            @return bool
+        """
+        return self._prev_button.get_image().get_icon_name()[0] ==\
+            "media-seek-backward-symbolic"
+
 #######################
 # Protected           #
 #######################

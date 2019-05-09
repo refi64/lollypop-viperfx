@@ -53,8 +53,11 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Play previous track
         """
-        if self.position / Gst.SECOND > 2:
+        if App().window.toolbar.playback.seek_wanted:
             self.seek(0)
+            self.emit("current-changed")
+            if not self.is_playing:
+                self.play()
         elif self._prev_track.id is not None:
             self.load(self._prev_track)
         else:

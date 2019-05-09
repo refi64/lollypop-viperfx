@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Gtk
 
 from gettext import gettext as _
 
@@ -26,13 +26,25 @@ class PlaybackController:
         """
             Init controller
         """
-        pass
+        self.__prev_button_timeout_id = None
 
     def on_current_changed(self, player):
         """
             Update toolbar
             @param player as Player
         """
+        def update_button():
+            self.__prev_button_timeout_id = None
+            self._prev_button.get_image().set_from_icon_name(
+                "media-seek-backward-symbolic", Gtk.IconSize.BUTTON)
+
+        if self.__prev_button_timeout_id is not None:
+            GLib.source_remove(self.__prev_button_timeout_id)
+        self._prev_button.get_image().set_from_icon_name(
+            "media-skip-backward-symbolic", Gtk.IconSize.BUTTON)
+        self.__prev_button_timeout_id = GLib.timeout_add(2000,
+                                                         update_button)
+
         if App().player.current_track.id is None:
             self._play_button.set_sensitive(False)
             self._prev_button.set_sensitive(False)
