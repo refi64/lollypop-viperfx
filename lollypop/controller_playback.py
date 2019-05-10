@@ -38,7 +38,8 @@ class PlaybackController:
             self._prev_button.get_image().set_from_icon_name(
                 "media-seek-backward-symbolic", Gtk.IconSize.BUTTON)
 
-        self.on_destroy()
+        if self.__prev_button_timeout_id is not None:
+            GLib.source_remove(self.__prev_button_timeout_id)
         self._prev_button.get_image().set_from_icon_name(
             "media-skip-backward-symbolic", Gtk.IconSize.BUTTON)
         self.__prev_button_timeout_id = GLib.timeout_add(2000,
