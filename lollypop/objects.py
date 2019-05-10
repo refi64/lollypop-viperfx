@@ -222,7 +222,7 @@ class Album(Base):
         Represent an album
     """
     DEFAULTS = {"name": "",
-                "artists": "",
+                "artists": [],
                 "artist_ids": [],
                 "year": None,
                 "timestamp": None,
@@ -432,8 +432,8 @@ class Track(Base):
                 "genre_ids": [],
                 "popularity": 0,
                 "album_name": "",
-                "artists": "",
-                "genres": "",
+                "artists": [],
+                "genres": [],
                 "duration": 0,
                 "number": 0,
                 "year": None,

@@ -38,18 +38,21 @@ class Search:
 #######################
 # PRIVATE             #
 #######################
-    def __calculate_score(self, string, search_items):
+    def __calculate_score(self, object, search_items):
         """
             Calculate string score for search items
-            @param string as str
+            @param object as Track/Album
             @param search_item as str
         """
-        string = string.lower()
-        initial_score = 10 if string.startswith(search_items) else 0
-        split_search = self.__split_string(search_items)
-        split_string = self.__split_string(string)
-        join = list(set(split_string) & set(split_search))
-        return initial_score + len(join)
+        score = 0
+        for string in [object.name] + object.artists:
+            string = string.lower()
+            initial_score = 10 if string.startswith(search_items) else 0
+            split_search = self.__split_string(search_items)
+            split_string = self.__split_string(string)
+            join = list(set(split_string) & set(split_search))
+            score += initial_score + len(join)
+        return score
 
     def __split_string(self, search_items):
         """
@@ -143,7 +146,7 @@ class Search:
             if album_id not in all_album_ids:
                 all_album_ids.append(album_id)
                 album = Album(album_id)
-                score = self.__calculate_score(album.name, search_items)
+                score = self.__calculate_score(album, search_items)
                 albums.append((score, album, False))
         # Create albums from track results
         for key in album_tracks.keys():
@@ -152,9 +155,9 @@ class Search:
             (album, tracks) = album_tracks[key]
             if album.id not in all_album_ids:
                 album.set_tracks(tracks)
-                score = self.__calculate_score(album.name, search_items)
+                score = self.__calculate_score(album, search_items)
                 for track in album.tracks:
-                    score += self.__calculate_score(track.name, search_items)
+                    score += self.__calculate_score(track, search_items)
                 all_album_ids.append(album.id)
                 albums.append((score, album, len(tracks) < 3))
         albums.sort(key=lambda tup: tup[0], reverse=True)
