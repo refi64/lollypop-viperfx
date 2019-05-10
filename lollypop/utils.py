@@ -348,12 +348,13 @@ def is_readonly(uri):
     return not info.get_attribute_boolean("access::can-write")
 
 
-def remove_static_genres(genre_ids):
+def remove_static(ids):
     """
-        Remove static genre ids
-        @param genre ids as [int]
+        Remove static ids
+        @param ids as [int]
+        @return [int]
     """
-    return [item for item in genre_ids if item >= 0]
+    return [item for item in ids if item >= 0]
 
 
 def get_icon_name(object_id, type=SelectionListMask.ARTISTS):

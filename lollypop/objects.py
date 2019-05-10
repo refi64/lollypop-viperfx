@@ -17,7 +17,7 @@ from urllib.parse import urlparse
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, Type
-from lollypop.utils import remove_static_genres
+from lollypop.utils import remove_static
 
 
 class Base:
@@ -207,11 +207,12 @@ class Disc:
             @return [Track]
         """
         if not self.__tracks and self.album.id is not None:
+            artist_ids = remove_static(self.album.artist_ids)
             self.__tracks = [Track(track_id, self.album)
                              for track_id in self.db.get_disc_track_ids(
                 self.album.id,
                 self.album.genre_ids,
-                self.album.artist_ids,
+                artist_ids,
                 self.number,
                 self.__disallow_ignored_tracks)]
         return self.__tracks
@@ -244,7 +245,7 @@ class Album(Base):
         """
         Base.__init__(self, App().albums)
         self.id = album_id
-        self.genre_ids = remove_static_genres(genre_ids)
+        self.genre_ids = remove_static(genre_ids)
         self._tracks = []
         self._discs = []
         self.__disallow_ignored_tracks = disallow_ignored_tracks
