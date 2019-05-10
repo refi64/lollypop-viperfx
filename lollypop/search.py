@@ -172,6 +172,6 @@ class Search:
                 for track in album.tracks:
                     score += self.__calculate_score(track, search_items)
                 all_album_ids.append(album.id)
-                albums.append((score, album, len(tracks) < 3))
+                albums.append((score, album, True))
         albums.sort(key=lambda tup: tup[0], reverse=True)
         return [(album, in_tracks) for (score, album, in_tracks) in albums]

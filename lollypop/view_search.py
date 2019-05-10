@@ -248,7 +248,7 @@ class SearchView(BaseView, Gtk.Bin):
             for (album, in_tracks) in result:
                 albums.append(album)
                 if in_tracks:
-                    reveal_albums.append(album.id)
+                    reveal_albums.append(album)
             self.__view.set_reveal(reveal_albums)
             self.__view.populate(albums)
             self.__stack.set_visible_child_name("view")

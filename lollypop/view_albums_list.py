@@ -506,12 +506,12 @@ class AlbumsListView(LazyLoadingView, ViewController):
         self._scrolled.set_property("expand", True)
         self.add(self._scrolled)
 
-    def set_reveal(self, album_ids):
+    def set_reveal(self, albums):
         """
             Set albums to reveal on populate
-            @param album_ids as [int]s
+            @param album_ids as [Album]
         """
-        self.__reveals = album_ids
+        self.__reveals = albums
 
     def insert_album(self, album, reveal, position, cover_uri=None):
         """
@@ -705,7 +705,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
             return
         if albums:
             album = albums.pop(0)
-            row = self.__row_for_album(album, album.id in self.__reveals)
+            row = self.__row_for_album(album, album in self.__reveals)
             row.set_previous_row(previous_row)
             if previous_row is not None:
                 previous_row.set_next_row(row)
