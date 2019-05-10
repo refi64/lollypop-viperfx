@@ -121,13 +121,16 @@ class Search:
         artist_ids = self.__search_artists(split_items, cancellable)
         albums = []
         all_album_ids = []
+        album_tracks = {}
 
+        # Get performers tracks
         for artist_id in artist_ids:
-            track_ids += App().tracks.get_ids_by_artist(artist_id)
+            for track_id in App().tracks.get_ids_by_performer(artist_id):
+                if track_id not in track_ids:
+                    track_ids.append(track_id)
 
         # Merge albums for tracks
-        album_tracks = {}
-        for track_id in list(set(track_ids)):
+        for track_id in track_ids:
             if cancellable.is_cancelled():
                 return []
             track = Track(track_id)
@@ -139,6 +142,7 @@ class Search:
                 album_tracks[track.album.id] = (album, tracks)
             else:
                 album_tracks[track.album.id] = (album, [track])
+
         # Create albums for album results
         for album_id in album_ids:
             if cancellable.is_cancelled():
@@ -148,6 +152,15 @@ class Search:
                 album = Album(album_id)
                 score = self.__calculate_score(album, search_items)
                 albums.append((score, album, False))
+        # Get tracks/albums for artists
+        for artist_id in artist_ids:
+            if cancellable.is_cancelled():
+                return []
+            for album_id in App().albums.get_ids([artist_id], []):
+                if album_id not in all_album_ids:
+                    album = Album(album_id)
+                    score = self.__calculate_score(album, search_items)
+                    albums.append((score, album, False))
         # Create albums from track results
         for key in album_tracks.keys():
             if cancellable.is_cancelled():
