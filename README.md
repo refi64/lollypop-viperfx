@@ -1,7 +1,5 @@
 # Lollypop music player
 
-Join Lollypop on matrix. Install GNOME Fractal client.
-
 ![Lollypop logo](https://gitlab.gnome.org/gnumdk/lollypop/raw/master/data/icons/hicolor/256x256/apps/org.gnome.Lollypop.png)
 
 Lollypop is a new GNOME music playing application.
