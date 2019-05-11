@@ -340,16 +340,17 @@ class Application(Gtk.Application):
         """
             VACUUM DB
         """
-        if self.scanner.is_locked():
-            self.scanner.stop()
-            GLib.idle_add(self.__vacuum)
-            return
-        self.tracks.del_non_persistent()
-        self.tracks.clean()
-        self.albums.clean()
-        self.artists.clean()
-        self.genres.clean()
         try:
+            if self.scanner.is_locked():
+                self.scanner.stop()
+                GLib.idle_add(self.__vacuum)
+                return
+            self.tracks.del_non_persistent()
+            self.tracks.clean()
+            self.albums.clean()
+            self.artists.clean()
+            self.genres.clean()
+
             from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:
                 sql.isolation_level = None
