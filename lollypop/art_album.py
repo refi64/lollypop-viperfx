@@ -256,44 +256,48 @@ class AlbumArt:
         """
         try:
             album = Album(album_id)
-            arturi = None
             save_to_tags = App().settings.get_value("save-to-tags")
             uri_count = App().albums.get_uri_count(album.uri)
             filename = self.get_album_cache_name(album) + ".jpg"
-            if save_to_tags:
-                helper = TaskHelper()
-                helper.run(self.__save_artwork_to_tags, data, album)
 
             if album.mtime == 0:
                 store_path = self._WEB_PATH + "/" + filename
+                save_to_tags = False
             else:
                 store_path = self._STORE_PATH + "/" + filename
+
             if album.uri == "" or is_readonly(album.uri):
-                arturi = GLib.filename_to_uri(store_path)
+                art_uri = GLib.filename_to_uri(store_path)
+                save_to_tags = False
             # Many albums with same path, suffix with artist_album name
             elif uri_count > 1:
-                arturi = album.uri + "/" + filename
+                art_uri = album.uri + "/" + filename
                 favorite_uri = album.uri + "/" + self.__favorite
                 favorite = Gio.File.new_for_uri(favorite_uri)
                 if favorite.query_exists():
                     favorite.trash()
             else:
-                arturi = album.uri + "/" + self.__favorite
-            # Save cover to uri
-            dst = Gio.File.new_for_uri(arturi)
-            if not save_to_tags or dst.query_exists():
-                bytes = GLib.Bytes(data)
-                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-                stream.close()
-                pixbuf.savev(store_path, "jpeg", ["quality"],
-                             [str(App().settings.get_value(
-                                 "cover-quality").get_int32())])
-                dst = Gio.File.new_for_uri(arturi)
-                src = Gio.File.new_for_path(store_path)
-                src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
-                self.clean_album_cache(album)
-                GLib.idle_add(self.album_artwork_update, album.id)
+                art_uri = album.uri + "/" + self.__favorite
+
+            # Save cover
+            if save_to_tags:
+                helper = TaskHelper()
+                helper.run(self.__save_artwork_to_tags, data, album)
+            else:
+                dst = Gio.File.new_for_uri(art_uri)
+                if dst.query_exists():
+                    bytes = GLib.Bytes(data)
+                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+                    stream.close()
+                    pixbuf.savev(store_path, "jpeg", ["quality"],
+                                 [str(App().settings.get_value(
+                                     "cover-quality").get_int32())])
+                    dst = Gio.File.new_for_uri(art_uri)
+                    src = Gio.File.new_for_path(store_path)
+                    src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
+                    self.clean_album_cache(album)
+                    GLib.idle_add(self.album_artwork_update, album.id)
         except Exception as e:
             Logger.error("AlbumArt::save_album_artwork(): %s" % e)
 
