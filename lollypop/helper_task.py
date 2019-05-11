@@ -94,7 +94,7 @@ class TaskHelper:
         """
         try:
             session = Soup.Session.new()
-            # Post message
+            # Set headers
             if self.__headers:
                 msg = Soup.Message.new("GET", uri)
                 headers = msg.get_property("request-headers")
