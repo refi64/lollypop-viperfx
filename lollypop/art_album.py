@@ -279,25 +279,26 @@ class AlbumArt:
             else:
                 art_uri = album.uri + "/" + self.__favorite
 
-            # Save cover
+            # Save cover to tags
             if save_to_tags:
                 helper = TaskHelper()
                 helper.run(self.__save_artwork_to_tags, data, album)
-            else:
+            # Save cover to file
+            # We need to write it on save_to_tags
+            dst = Gio.File.new_for_uri(art_uri)
+            if not save_to_tags or dst.query_exists():
+                bytes = GLib.Bytes(data)
+                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+                stream.close()
+                pixbuf.savev(store_path, "jpeg", ["quality"],
+                             [str(App().settings.get_value(
+                                 "cover-quality").get_int32())])
                 dst = Gio.File.new_for_uri(art_uri)
-                if dst.query_exists():
-                    bytes = GLib.Bytes(data)
-                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-                    stream.close()
-                    pixbuf.savev(store_path, "jpeg", ["quality"],
-                                 [str(App().settings.get_value(
-                                     "cover-quality").get_int32())])
-                    dst = Gio.File.new_for_uri(art_uri)
-                    src = Gio.File.new_for_path(store_path)
-                    src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
-                    self.clean_album_cache(album)
-                    GLib.idle_add(self.album_artwork_update, album.id)
+                src = Gio.File.new_for_path(store_path)
+                src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
+                self.clean_album_cache(album)
+                GLib.idle_add(self.album_artwork_update, album.id)
         except Exception as e:
             Logger.error("AlbumArt::save_album_artwork(): %s" % e)
 
