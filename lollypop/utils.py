@@ -341,11 +341,14 @@ def is_readonly(uri):
     """
         Check if uri is readonly
     """
-    f = Gio.File.new_for_uri(uri)
-    info = f.query_info("access::can-write",
-                        Gio.FileQueryInfoFlags.NONE,
-                        None)
-    return not info.get_attribute_boolean("access::can-write")
+    try:
+        f = Gio.File.new_for_uri(uri)
+        info = f.query_info("access::can-write",
+                            Gio.FileQueryInfoFlags.NONE,
+                            None)
+        return not info.get_attribute_boolean("access::can-write")
+    except:
+        return True
 
 
 def remove_static(ids):
