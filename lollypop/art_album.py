@@ -192,7 +192,7 @@ class AlbumArt:
                             pixbuf = self._crop_pixbuf(pixbuf)
                         stream.close()
                 # Use tags artwork
-                if pixbuf is None and album.tracks:
+                if pixbuf is None and album.tracks and album.uri != "":
                     try:
                         pixbuf = self.pixbuf_from_tags(
                             album.tracks[0].uri, width, height)
