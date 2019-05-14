@@ -187,9 +187,6 @@ class AlbumArt:
                             height,
                             True,
                             None)
-                        # Pixbuf will be resized, cropping not needed
-                        if not effect & ArtHelperEffect.RESIZE:
-                            pixbuf = self._crop_pixbuf(pixbuf)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
@@ -215,9 +212,9 @@ class AlbumArt:
                             True,
                             None)
                         stream.close()
-                        # Pixbuf will be resized, cropping not needed
-                        if not effect & ArtHelperEffect.RESIZE:
-                            pixbuf = self._crop_pixbuf(pixbuf)
+                # Pixbuf will be resized, cropping not needed
+                if pixbuf is not None and not effect & ArtHelperEffect.RESIZE:
+                    pixbuf = self._crop_pixbuf(pixbuf)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
@@ -373,7 +370,7 @@ class AlbumArt:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    width,
                                                                    height,
-                                                                   False,
+                                                                   True,
                                                                    None)
                 stream.close()
         except Exception as e:
