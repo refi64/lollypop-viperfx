@@ -358,8 +358,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     (status, content, tag) = f.load_contents()
                     data = json.loads(content)
                     self.save_track(
-                       None, ",".join(data["artists"]), "", "",
-                       ",".join(data["album_artists"]),
+                       None, ";".join(data["artists"]), "", "",
+                       ";".join(data["album_artists"]),
                        "", "", data["album_name"], "", data["uri"],
                        data["album_loved"], data["album_popularity"],
                        data["album_rate"], -1, data["title"], data["duration"],
