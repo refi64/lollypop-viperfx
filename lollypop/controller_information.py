@@ -99,6 +99,7 @@ class InformationController:
             if self.__per_track_cover:
                 effect = self.__effect | ArtHelperEffect.NO_CACHE
                 album = App().player.current_track.album
+                App().art.clean_album_cache(album)
                 album.set_tracks([App().player.current_track])
             else:
                 effect = self.__effect

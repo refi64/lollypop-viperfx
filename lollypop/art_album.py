@@ -13,6 +13,7 @@
 from gi.repository import GLib, GdkPixbuf, Gio, Gst
 
 import re
+from random import choice
 
 from lollypop.tagreader import TagReader
 from lollypop.define import App, ArtSize, ArtHelperEffect
@@ -191,8 +192,9 @@ class AlbumArt:
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
                     try:
-                        pixbuf = self.pixbuf_from_tags(
-                            album.tracks[0].uri, width, height)
+                        track = choice(album.tracks)
+                        pixbuf = self.pixbuf_from_tags(track.uri,
+                                                       width, height)
                     except Exception as e:
                         print("AlbumArt::get_album_artwork()", e)
 
