@@ -620,6 +620,34 @@ class TracksDatabase:
                 return v[0]
             return 0
 
+    def get_discnumber(self, track_id):
+        """
+            Get disc number for track id
+            @param track id as int
+            @return discnumber as int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT discnumber FROM tracks\
+                                  WHERE rowid=?", (track_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
+    def get_discname(self, track_id):
+        """
+            Get disc name for track id
+            @param track id as int
+            @return discname as str
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT discname FROM tracks\
+                                  WHERE rowid=?", (track_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return ""
+
     def get_duration(self, track_id):
         """
             Get track duration for track id

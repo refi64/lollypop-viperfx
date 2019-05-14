@@ -16,12 +16,10 @@ import json
 from base64 import b64encode
 from time import time, sleep
 
-from lollypop.sqlcursor import SqlCursor
-from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.objects import Album
 from lollypop.helper_task import TaskHelper
-from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App, Type
+from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
 
 
 class SpotifyHelper(GObject.Object):
@@ -360,7 +358,6 @@ class SpotifyHelper(GObject.Object):
             @param payload as {}
             @return track_id
         """
-        t = TagReader()
         title = payload["name"]
         _artists = []
         for artist in payload["artists"]:
@@ -386,52 +383,12 @@ class SpotifyHelper(GObject.Object):
             timestamp = None
             year = None
         duration = payload["duration_ms"] // 1000
-        mb_album_id = mb_track_id = None
-        a_sortnames = aa_sortnames = ""
         cover_uri = payload["album"]["images"][1]["url"]
         uri = "web://%s" % payload["id"]
-        Logger.debug("SpotifyHelper::__save_track(): Add artists %s" % artists)
-        artist_ids = t.add_artists(artists, a_sortnames)
-
-        Logger.debug("SpotifyHelper::__save_track(): "
-                     "Add album artists %s" % album_artists)
-        album_artist_ids = t.add_artists(album_artists, aa_sortnames)
-        # User does not want compilations
-        if not App().settings.get_value("show-compilations") and\
-                not album_artist_ids:
-            album_artist_ids = artist_ids
-
-        missing_artist_ids = list(set(album_artist_ids) - set(artist_ids))
-        # https://github.com/gnumdk/lollypop/issues/507#issuecomment-200526942
-        # Special case for broken tags
-        # Can't do more because don't want to break split album behaviour
-        if len(missing_artist_ids) == len(album_artist_ids):
-            artist_ids += missing_artist_ids
-
-        Logger.debug("SpotifyHelper::__save_track(): Add album: "
-                     "%s, %s" % (album_name, album_artist_ids))
-        (added, album_id) = t.add_album(album_name, mb_album_id,
-                                        album_artist_ids,
-                                        "", False, 0, 0, 0)
-
-        genre_ids = [Type.WEB]
-
-        # Add track to db
-        Logger.debug("SpotifyHelper::__save_track(): Add track")
-        track_id = App().tracks.get_id_by(title, album_id)
-        # Track already in DB
-        if track_id is not None:
-            return (album_id, track_id, cover_uri)
-        track_id = App().tracks.add(title, uri, duration,
-                                    tracknumber, discnumber, discname,
-                                    album_id, year, timestamp, 0,
-                                    0, False, 0,
-                                    0, mb_track_id, 0)
-        Logger.debug("SpotifyHelper::__save_track(): Update track")
-        App().scanner.update_track(track_id, artist_ids, genre_ids)
-        Logger.debug("SpotifyHelper::__save_track(): Update album")
-        SqlCursor.commit(App().db)
-        App().scanner.update_album(album_id, album_artist_ids,
-                                   genre_ids, year, timestamp)
-        SqlCursor.commit(App().db)
+        (track_id, album_id) = App().scanner.save_track(
+                   None, artists, "", "", album_artists, "", "",
+                   album_name, None, uri, 0, 0,
+                   0, 0, title, duration, tracknumber,
+                   discnumber, discname, year, timestamp, 0,
+                   0, 0, 0, 0, "", 0)
         return (album_id, track_id, cover_uri)

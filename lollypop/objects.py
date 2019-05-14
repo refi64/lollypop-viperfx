@@ -11,13 +11,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, Gio
+
+import json
 
 from urllib.parse import urlparse
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, Type
-from lollypop.utils import remove_static
+from lollypop.utils import remove_static, escape
 
 
 class Base:
@@ -230,6 +232,7 @@ class Album(Base):
                 "uri": "",
                 "tracks_count": 1,
                 "duration": 0,
+                "popularity": 0,
                 "mtime": 1,
                 "synced": False,
                 "loved": False,
@@ -437,6 +440,8 @@ class Track(Base):
                 "genres": [],
                 "duration": 0,
                 "number": 0,
+                "discnumber": 0,
+                "discname": "",
                 "year": None,
                 "timestamp": None,
                 "mtime": 1,
@@ -524,13 +529,48 @@ class Track(Base):
     def save(self, save):
         """
             Save track to collection
+            Cache it to Web Collection (for restore on reset)
             @param save as bool
         """
-        if save:
-            App().tracks.set_mtime(self.id, -1)
-        else:
-            App().tracks.set_mtime(self.id, 0)
-        self.reset("mtime")
+        try:
+            filename = "%s_%s_%s" % (self.album.name, self.artists, self.name)
+            filepath = "%s/%s.txt" % (App().scanner._WEB_COLLECTION,
+                                      escape(filename))
+            f = Gio.File.new_for_path(filepath)
+            if save:
+                App().tracks.set_mtime(self.id, -1)
+                data = {
+                    "title": self.name,
+                    "album_name": self.album.name,
+                    "artists": self.artists,
+                    "album_artists": self.album.artists,
+                    "album_loved": self.album.loved,
+                    "album_popularity": self.album.popularity,
+                    "album_rate": self.album.get_rate(),
+                    "discnumber": self.discnumber,
+                    "discname": self.discname,
+                    "duration": self.duration,
+                    "tracknumber": App().tracks.get_number(self.id),
+                    "track_popularity": self.popularity,
+                    "track_loved": self.loved,
+                    "track_rate": self.get_rate(),
+                    "year": self.year,
+                    "timestamp": self.timestamp,
+                    "uri": self.uri
+                }
+                content = json.dumps(data).encode("utf-8")
+                fstream = f.replace(None, False,
+                                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                    None)
+                if fstream is not None:
+                    fstream.write(content, None)
+                    fstream.close()
+            else:
+                App().tracks.set_mtime(self.id, 0)
+                f.delete()
+            self.reset("mtime")
+        except Exception as e:
+            Logger.error("Track::save(): %s", e)
 
     def get_featuring_artist_ids(self, album_artist_ids):
         """

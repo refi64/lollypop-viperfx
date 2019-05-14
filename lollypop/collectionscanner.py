@@ -21,14 +21,15 @@ from gi.repository.Gio import FILE_ATTRIBUTE_STANDARD_NAME, \
 from gettext import gettext as _
 from threading import Thread
 from time import time
+import json
 
 from lollypop.inotify import Inotify
-from lollypop.define import App, ScanType
+from lollypop.define import App, ScanType, Type
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.database_history import History
-from lollypop.utils import is_audio, is_pls, get_mtime, profile
+from lollypop.utils import is_audio, is_pls, get_mtime, profile, create_dir
 
 
 SCAN_QUERY_INFO = "{},{},{},{}".format(FILE_ATTRIBUTE_STANDARD_NAME,
@@ -48,6 +49,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         "album-updated": (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
+    _WEB_COLLECTION = GLib.get_user_data_dir() + "/lollypop/web_collection"
+
     def __init__(self):
         """
             Init collection scanner
@@ -63,6 +66,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         else:
             self.__inotify = None
         App().albums.update_max_count()
+        create_dir(self._WEB_COLLECTION)
 
     def update(self, scan_type, uris=[]):
         """
@@ -124,6 +128,95 @@ class CollectionScanner(GObject.GObject, TagReader):
         App().albums.set_year(album_id, year)
         timestamp = App().tracks.get_timestamp_for_album(album_id)
         App().albums.set_timestamp(album_id, timestamp)
+
+    def save_track(self, genres, artists, a_sortnames, mb_artist_id,
+                   album_artists, aa_sortnames, mb_album_artist_id,
+                   album_name, mb_album_id, uri, album_loved, album_pop,
+                   album_rate, album_mtime, title, duration, tracknumber,
+                   discnumber, discname, year, timestamp, track_mtime,
+                   track_pop, track_rate, track_loved, track_ltime,
+                   mb_track_id, bpm):
+        """
+            Add track to DB
+            @param genres as str/None
+            @param artists as str
+            @param a_sortnames as str
+            @param mb_artist_id as str
+            @param album_artists as str
+            @param aa_sortnames as str
+            @param mb_album_artist_id as str
+            @param album_name as str
+            @param mb_album_id as str
+            @param uri as str
+            @param album_loved as int
+            @param album_pop as int
+            @param album_rate as int
+            @param album_mtime as int
+            @param title as str
+            @param duration as int
+            @param tracknumber as int
+            @param discnumber as int
+            @param discname as str
+            @param year as int
+            @param timestamp as int
+            @param track_mtime as int
+            @param track_pop as int
+            @param track_rate as int
+            @param track_loved as int
+            @param track_ltime as int
+            @param mb_track_id as str
+            @param bpm as int
+        """
+        Logger.debug(
+            "CollectionScanner::save_track(): Add artists %s" % artists)
+        artist_ids = self.add_artists(artists, a_sortnames, mb_artist_id)
+
+        Logger.debug("CollectionScanner::save_track(): "
+                     "Add album artists %s" % album_artists)
+        album_artist_ids = self.add_artists(album_artists, aa_sortnames,
+                                            mb_album_artist_id)
+
+        # User does not want compilations
+        if self.__disable_compilations and not album_artist_ids:
+            album_artist_ids = artist_ids
+
+        missing_artist_ids = list(set(album_artist_ids) - set(artist_ids))
+        # https://github.com/gnumdk/lollypop/issues/507#issuecomment-200526942
+        # Special case for broken tags
+        # Can't do more because don't want to break split album behaviour
+        if len(missing_artist_ids) == len(album_artist_ids):
+            artist_ids += missing_artist_ids
+
+        Logger.debug("CollectionScanner::save_track(): Add album: "
+                     "%s, %s" % (album_name, album_artist_ids))
+        (album_added, album_id) = self.add_album(album_name, mb_album_id,
+                                                 album_artist_ids,
+                                                 uri, album_loved, album_pop,
+                                                 album_rate, album_mtime)
+        if genres is None:
+            genre_ids = [Type.WEB]
+        else:
+            genre_ids = self.add_genres(genres)
+
+        # Add track to db
+        Logger.debug("CollectionScanner::save_track(): Add track")
+        track_id = App().tracks.add(title, uri, duration,
+                                    tracknumber, discnumber, discname,
+                                    album_id, year, timestamp, track_pop,
+                                    track_rate, track_loved, track_ltime,
+                                    track_mtime, mb_track_id, bpm)
+        Logger.debug("CollectionScanner::save_track(): Update track")
+        self.update_track(track_id, artist_ids, genre_ids)
+        Logger.debug("CollectionScanner::save_track(): Update album")
+        SqlCursor.commit(App().db)
+        self.update_album(album_id, album_artist_ids,
+                          genre_ids, year, timestamp)
+        SqlCursor.commit(App().db)
+        for genre_id in genre_ids:
+            GLib.idle_add(self.emit, "genre-updated", genre_id, True)
+        if album_added:
+            GLib.idle_add(self.emit, "album-updated", album_id, True)
+        return (track_id, album_id)
 
     def update_track(self, track_id, artist_ids, genre_ids):
         """
@@ -245,6 +338,38 @@ class CollectionScanner(GObject.GObject, TagReader):
             if d.startswith("file://"):
                 self.__inotify.add_monitor(d)
 
+    def __import_web_tracks(self):
+        """
+            Import locally saved web tracks
+        """
+        try:
+            # Directly add files, walk through directories
+            f = Gio.File.new_for_path(self._WEB_COLLECTION)
+            infos = f.enumerate_children(SCAN_QUERY_INFO,
+                                         Gio.FileQueryInfoFlags.NONE,
+                                         None)
+            for info in infos:
+                f = infos.get_child(info)
+                if info.get_is_hidden():
+                    continue
+                elif info.get_file_type() == Gio.FileType.DIRECTORY:
+                    pass
+                else:
+                    (status, content, tag) = f.load_contents()
+                    data = json.loads(content)
+                    self.save_track(
+                       None, ",".join(data["artists"]), "", "",
+                       ",".join(data["album_artists"]),
+                       "", "", data["album_name"], "", data["uri"],
+                       data["album_loved"], data["album_popularity"],
+                       data["album_rate"], -1, data["title"], data["duration"],
+                       data["tracknumber"], data["discnumber"],
+                       data["discname"], data["year"], data["timestamp"], -1,
+                       data["track_popularity"], data["track_rate"],
+                       data["track_loved"], 0, "", 0)
+        except Exception as e:
+            Logger.error("CollectionScanner::__import_web_tracks(): %s", e)
+
     @profile
     def __get_objects_for_uris(self, scan_type, uris):
         """
@@ -306,6 +431,9 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as [str]
             @thread safe
         """
+        if not App().tracks.get_mtimes():
+            self.__import_web_tracks()
+
         (files, dirs) = self.__get_objects_for_uris(scan_type, uris)
 
         if files is None:
@@ -415,11 +543,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         SqlCursor.remove(App().db)
         return new_tracks
 
-    def __add2db(self, uri, mtime):
+    def __add2db(self, uri, track_mtime):
         """
             Add new file(or update one) to db with information
             @param uri as string
-            @param mtime as int
+            @param track_mtime as int
             @return track id as int
             @warning, be sure SqlCursor is available for App().db
         """
@@ -492,51 +620,14 @@ class CollectionScanner(GObject.GObject, TagReader):
             track_rate = track_popm
         # If nothing in stats, use track mtime
         if album_mtime == 0:
-            album_mtime = mtime
+            album_mtime = track_mtime
 
-        Logger.debug("CollectionScanner::add2db(): Add artists %s" % artists)
-        artist_ids = self.add_artists(artists, a_sortnames, mb_artist_id)
-
-        Logger.debug("CollectionScanner::add2db(): "
-                     "Add album artists %s" % album_artists)
-        album_artist_ids = self.add_artists(album_artists, aa_sortnames,
-                                            mb_album_artist_id)
-
-        # User does not want compilations
-        if self.__disable_compilations and not album_artist_ids:
-            album_artist_ids = artist_ids
-
-        missing_artist_ids = list(set(album_artist_ids) - set(artist_ids))
-        # https://github.com/gnumdk/lollypop/issues/507#issuecomment-200526942
-        # Special case for broken tags
-        # Can't do more because don't want to break split album behaviour
-        if len(missing_artist_ids) == len(album_artist_ids):
-            artist_ids += missing_artist_ids
-
-        Logger.debug("CollectionScanner::add2db(): Add album: "
-                     "%s, %s" % (album_name, album_artist_ids))
-        (album_added, album_id) = self.add_album(album_name, mb_album_id,
-                                                 album_artist_ids,
-                                                 uri, album_loved, album_pop,
-                                                 album_rate, mtime)
-        genre_ids = self.add_genres(genres)
-
-        # Add track to db
-        Logger.debug("CollectionScanner::add2db(): Add track")
-        track_id = App().tracks.add(title, uri, duration,
-                                    tracknumber, discnumber, discname,
-                                    album_id, year, timestamp, track_pop,
-                                    track_rate, track_loved, track_ltime,
-                                    mtime, mb_track_id, bpm)
-        Logger.debug("CollectionScanner::add2db(): Update track")
-        self.update_track(track_id, artist_ids, genre_ids)
-        Logger.debug("CollectionScanner::add2db(): Update album")
-        SqlCursor.commit(App().db)
-        self.update_album(album_id, album_artist_ids,
-                          genre_ids, year, timestamp)
-        SqlCursor.commit(App().db)
-        for genre_id in genre_ids:
-            GLib.idle_add(self.emit, "genre-updated", genre_id, True)
-        if album_added:
-            GLib.idle_add(self.emit, "album-updated", album_id, True)
+        (track_id, album_id) = self.save_track(
+                   genres, artists, a_sortnames, mb_artist_id,
+                   album_artists, aa_sortnames, mb_album_artist_id,
+                   album_name, mb_album_id, uri, album_loved, album_pop,
+                   album_rate, album_mtime, title, duration, tracknumber,
+                   discnumber, discname, year, timestamp, track_mtime,
+                   track_pop, track_rate, track_loved, track_ltime,
+                   mb_track_id, bpm)
         return track_id
