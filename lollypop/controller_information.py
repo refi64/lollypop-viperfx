@@ -83,7 +83,7 @@ class InformationController:
             @param height as int
         """
         same_artwork = self._previous_artwork_id ==\
-            App().player.current_track.album.id
+            App().player.current_track.album.id and not self.__per_track_cover
         if width < 1 or height < 1 or same_artwork:
             return
         self._previous_artwork_id = App().player.current_track.album.id
@@ -96,13 +96,20 @@ class InformationController:
                 self._on_artwork,
                 self.__effect)
         elif App().player.current_track.id is not None:
+            if self.__per_track_cover:
+                effect = self.__effect | ArtHelperEffect.NO_CACHE
+                album = App().player.current_track.album
+                album.set_tracks([App().player.current_track])
+            else:
+                effect = self.__effect
+                album = App().player.current_track.album,
             App().art_helper.set_album_artwork(
-                App().player.current_track.album,
+                album,
                 width,
                 height,
                 self._artwork.get_scale_factor(),
                 self._on_artwork,
-                self.__effect)
+                effect)
             if self.__show_tooltip:
                 self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)

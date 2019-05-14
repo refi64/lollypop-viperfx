@@ -167,7 +167,7 @@ class AlbumArt:
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_jpg)
-            if f.query_exists():
+            if not effect & ArtHelperEffect.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
                                                                 width,
                                                                 height)
