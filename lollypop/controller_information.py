@@ -103,7 +103,7 @@ class InformationController:
                 album.set_tracks([App().player.current_track])
             else:
                 effect = self.__effect
-                album = App().player.current_track.album,
+                album = App().player.current_track.album
             App().art_helper.set_album_artwork(
                 album,
                 width,
