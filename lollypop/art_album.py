@@ -169,9 +169,8 @@ class AlbumArt:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_jpg)
             if not effect & ArtHelperEffect.NO_CACHE and f.query_exists():
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
-                                                                width,
-                                                                height)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
+                return pixbuf
             else:
                 # Use favorite folder artwork
                 if pixbuf is None:
@@ -182,12 +181,8 @@ class AlbumArt:
                         (status, data, tag) = f.load_contents(None)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                            stream,
-                            width,
-                            height,
-                            True,
-                            None)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
+                            stream, None)
                         stream.close()
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
@@ -207,16 +202,14 @@ class AlbumArt:
                         (status, data, tag) = f.load_contents(None)
                         bytes = GLib.Bytes(data)
                         stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                            stream,
-                            width,
-                            height,
-                            True,
-                            None)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
+                            stream, None)
                         stream.close()
                 # Pixbuf will be resized, cropping not needed
                 if pixbuf is not None and not effect & ArtHelperEffect.RESIZE:
                     pixbuf = self._crop_pixbuf(pixbuf)
+                    pixbuf = pixbuf.scale_simple(width, height,
+                                                 GdkPixbuf.InterpType.BILINEAR)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)

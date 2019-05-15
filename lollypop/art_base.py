@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GdkPixbuf, Gio, GLib
+from gi.repository import GObject, Gio, GLib
 
 from lollypop.define import ArtSize, App, TAG_EDITORS
 from lollypop.logger import Logger
@@ -95,33 +95,18 @@ class BaseArt(GObject.GObject):
         height = pixbuf.get_height()
         if width == height:
             return pixbuf
-        max_value = max(width, height)
-        min_value = min(width, height)
-        diff = max_value - min_value
-        if diff > max_value / 4:
-            return pixbuf
-        pixbuf = pixbuf.scale_simple(width + diff,
-                                     height + diff,
-                                     GdkPixbuf.InterpType.BILINEAR)
-        new_pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                          True, 8, max_value, max_value)
-        if width > height:
-            new_x = diff // 2
-            new_y = 0
-            new_width = max_value
-            new_height = max_value - new_y
+        elif width > height:
+            diff = (width - height)
+            return pixbuf.new_subpixbuf(diff // 2,
+                                        0,
+                                        width - diff,
+                                        height)
         else:
-            new_x = 0
-            new_y = diff // 2
-            new_height = max_value
-            new_width = max_value - new_x
-        pixbuf.copy_area(new_x,
-                         new_y,
-                         new_width,
-                         new_height,
-                         new_pixbuf,
-                         0, 0)
-        return new_pixbuf
+            diff = (height - width)
+            return pixbuf.new_subpixbuf(0,
+                                        diff // 2,
+                                        width,
+                                        height - diff)
 
 #######################
 # PRIVATE             #
