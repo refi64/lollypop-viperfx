@@ -210,8 +210,7 @@ class FastScroll(Gtk.ScrolledWindow):
         char = None
         for child in self.__grid.get_children():
             allocation = child.get_allocation()
-            if event.y >= allocation.y and\
-               event.y <= allocation.y + allocation.height:
+            if allocation.y <= event.y <= allocation.y + allocation.height:
                 char = child.get_text()
                 break
         if char is not None:

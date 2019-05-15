@@ -290,7 +290,7 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
 
     def __upgrade_16(self, db):
         """
-            Get ride of paths
+            Get rid of paths
         """
         paths = App().settings.get_value("music-path")
         uris = []
