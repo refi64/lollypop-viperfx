@@ -154,7 +154,7 @@ class YouTubeHelper:
             @return youtube id as str
         """
         try:
-            from bs4 import BeautifulSoup
+            from beautifulsoup4 import BeautifulSoup
         except:
             print("$ sudo pip3 install beautifulsoup4")
             return None
