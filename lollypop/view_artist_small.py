@@ -58,7 +58,7 @@ class ArtistViewSmall(View, ArtistViewCommon):
         """
         height = self._banner.default_height // 3
         self._banner.set_height(height)
-        self.__album_box.set_margin_top(height + 15)
+        self.__album_box.set_margin_top(height)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", self._genre_ids))
         App().settings.set_value("state-two-ids",
