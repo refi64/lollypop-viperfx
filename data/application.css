@@ -102,7 +102,7 @@ popover.background separator {
 
 .background-opacity {
     background-color: @theme_bg_color;
-    opacity: 0.9;
+    opacity: 0.99;
 }
 
 .selected {
@@ -169,6 +169,11 @@ popover.background separator {
 
 .borders {
     border: 1px solid shade(@theme_bg_color, 0.7);
+}
+
+.borders-left-top {
+    border-top: 1px solid shade(@theme_bg_color, 0.7);
+    border-left: 1px solid shade(@theme_bg_color, 0.7);
 }
 
 .black {

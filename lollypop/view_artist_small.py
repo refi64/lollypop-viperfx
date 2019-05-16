@@ -43,6 +43,9 @@ class ArtistViewSmall(View, ArtistViewCommon):
         self.__album_box = AlbumsBoxView(genre_ids,
                                          artist_ids,
                                          ViewType.MEDIUM | ViewType.SCROLLED)
+        height = self._banner.default_height // 3
+        self._banner.set_height(height)
+        self.__album_box.set_margin_top(height)
         self.__album_box.populate([Album(id) for id in album_ids])
         self.__album_box.show()
         self.__overlay.add_overlay(self.__album_box)
@@ -56,9 +59,6 @@ class ArtistViewSmall(View, ArtistViewCommon):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
-        height = self._banner.default_height // 3
-        self._banner.set_height(height)
-        self.__album_box.set_margin_top(height)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", self._genre_ids))
         App().settings.set_value("state-two-ids",

@@ -15,14 +15,16 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 from datetime import datetime
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ViewType, ArtHelperEffect, Type
+from lollypop.define import App, ArtSize, ArtHelperEffect, Type
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
 from lollypop.controller_progress import ProgressController
+from lollypop.container import Container
+from lollypop.adaptive import AdaptiveWindow
 from lollypop.logger import Logger
 
 
-class FullScreen(Gtk.Window, InformationController,
+class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                  PlaybackController, ProgressController):
     """
         Show a fullscreen window showing current track context
@@ -34,6 +36,7 @@ class FullScreen(Gtk.Window, InformationController,
             @param app as Gio.Application
         """
         Gtk.Window.__init__(self)
+        AdaptiveWindow.__init__(self)
         self.set_title("Lollypop")
         self.connect("motion-notify-event", self.__on_motion_notify_event)
         self.connect("leave-notify-event", self.__on_leave_notify_event)
@@ -47,7 +50,7 @@ class FullScreen(Gtk.Window, InformationController,
             InformationController.__init__(self, False, ArtHelperEffect.NONE)
         self.set_application(app)
         self.__timeout_id = None
-        self.__signal1_id = self.__signal2_id = self.__signal3_id = None
+        self.__signal1_id = self.__signal2_id = None
         self.set_decorated(False)
 
         builder = Gtk.Builder()
@@ -56,7 +59,7 @@ class FullScreen(Gtk.Window, InformationController,
 
         # Calculate cover size
         screen = Gdk.Screen.get_default()
-        monitor = screen.get_monitor_at_window(App().window.get_window())
+        monitor = screen.get_monitor_at_window(App().main_window.get_window())
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
@@ -95,25 +98,48 @@ class FullScreen(Gtk.Window, InformationController,
         self._total_time_label = builder.get_object("duration")
         self.connect("key-release-event", self.__on_key_release_event)
 
-        # Add an AlbumListView on the right
-        self.__view = App().window.container.get_view_current(
-            ViewType.DND | ViewType.FULLSCREEN)
-        self.__view.get_style_context().add_class("background-opacity")
-        self.__view.show()
-        self.__revealer.add(self.__view)
+        # Add a navigation widget on the right
+        self.__back_button = Gtk.Button.new_from_icon_name(
+            "go-previous-symbolic", Gtk.IconSize.BUTTON)
+        self.__back_button.set_sensitive(False)
+        self.__back_button.set_relief(Gtk.ReliefStyle.NONE)
+        self.__back_button.set_property("valign", Gtk.Align.START)
+        self.__back_button.set_property("halign", Gtk.Align.START)
+        self.__back_button.connect("clicked", self.__on_back_button_clicked)
+        self.__back_button.set_margin_start(5)
+        self.__back_button.set_margin_end(5)
+        self.__back_button.set_margin_top(5)
+        self.__back_button.set_margin_bottom(5)
+        self.__back_button.show()
+        self.__container = Container()
+        self.set_stack(self.__container.stack)
+        self.add_paned(self.__container.paned_one, self.__container.list_one)
+        self.add_paned(self.__container.paned_two, self.__container.list_two)
+        self.__container.show()
+        self.__container.show_sidebar(True)
+        self.set_adaptive_stack(True)
+        self.__sidebar = Gtk.Grid()
+        self.__sidebar.set_orientation(Gtk.Orientation.VERTICAL)
+        self.__sidebar.get_style_context().add_class("borders-left-top")
+        self.__sidebar.show()
+        self.__sidebar.add(self.__back_button)
+        self.__sidebar.add(self.__container)
+        self.__sidebar.set_size_request(450, -1)
+        self.connect("can-go-back-changed", self.__on_can_go_back_changed)
+        self.connect("show-can-go-back", self.__on_show_can_go_back)
+        self.__sidebar.get_style_context().add_class("background-opacity")
+        self.__revealer.add(self.__sidebar)
         self.add(widget)
 
     def do_show(self):
         """
             Init signals, set color and go party mode if nothing is playing
         """
-        App().window.hide()
+        App().main_window.hide()
         self.__signal1_id = App().player.connect("current-changed",
                                                  self.on_current_changed)
         self.__signal2_id = App().player.connect("status-changed",
                                                  self.on_status_changed)
-        self.__signal3_id = App().player.connect("party-changed",
-                                                 self.__on_party_changed)
         self.on_status_changed(App().player)
         self.on_current_changed(App().player)
         Gtk.Window.do_show(self)
@@ -129,7 +155,7 @@ class FullScreen(Gtk.Window, InformationController,
                                                  show_seconds)
         self.update_position(App().player.position / Gst.SECOND)
         screen = Gdk.Screen.get_default()
-        monitor = screen.get_monitor_at_window(App().window.get_window())
+        monitor = screen.get_monitor_at_window(App().main_window.get_window())
         self.fullscreen_on_monitor(screen, monitor)
 
         # Disable screensaver (idle)
@@ -141,9 +167,8 @@ class FullScreen(Gtk.Window, InformationController,
         """
             Remove signals and unset color
         """
-        App().window.setup()
-        App().window.show()
-        self.__view.stop()
+        App().main_window.setup()
+        App().main_window.show()
         Gtk.Window.do_hide(self)
         if self.__signal1_id is not None:
             App().player.disconnect(self.__signal1_id)
@@ -151,14 +176,11 @@ class FullScreen(Gtk.Window, InformationController,
         if self.__signal2_id is not None:
             App().player.disconnect(self.__signal2_id)
             self.__signal2_id = None
-        if self.__signal3_id is not None:
-            App().player.disconnect(self.__signal3_id)
-            self.__signal3_id = None
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
         App().inhibitor.manual_uninhibit()
-        ProgressController.do_destroy(self)
+        ProgressController.on_destroy(self)
 
     def on_status_changed(self, player):
         """
@@ -193,6 +215,22 @@ class FullScreen(Gtk.Window, InformationController,
                                         (self.__font_size - 1,
                                          GLib.markup_escape_text(album_name)))
 
+    @property
+    def miniplayer(self):
+        return App().main_window.miniplayer
+
+    @property
+    def toolbar(self):
+        return App().main_window.toolbar
+
+    @property
+    def container(self):
+        """
+            Get container
+            @return Container
+        """
+        return self.__container
+
 #######################
 # PROTECTED           #
 #######################
@@ -218,7 +256,6 @@ class FullScreen(Gtk.Window, InformationController,
             Destroy self
             @param widget as Gtk.Button
         """
-        self.__view.stop()
         self.destroy()
 
     def _on_image_realize(self, eventbox):
@@ -293,16 +330,8 @@ class FullScreen(Gtk.Window, InformationController,
         """
         if event.window == widget.get_window():
             reveal = event.x > widget.get_allocated_width() -\
-                self.__view.get_allocated_width() - 100
+                self.__sidebar.get_allocated_width() - 100
             self.__revealer.set_reveal_child(reveal)
-
-    def __on_party_changed(self, player, party):
-        """
-            Populate view again
-            @param player as Player
-            @param party as bool
-        """
-        self.__view.populate(player.albums)
 
     def __on_key_release_event(self, widget, event):
         """
@@ -312,3 +341,32 @@ class FullScreen(Gtk.Window, InformationController,
         """
         if event.keyval == Gdk.KEY_Escape:
             self.destroy()
+
+    def __on_back_button_clicked(self, button):
+        """
+            Go back in container stack
+            @param button as Gtk.Button
+        """
+        self.go_back()
+
+    def __on_show_can_go_back(self, window, back):
+        """
+            Show back button
+            @param window as Gtk.Window
+            @param back as bool
+        """
+        if back:
+            self.__back_button.show()
+        else:
+            self.__back_button.hide()
+
+    def __on_can_go_back_changed(self, window, back):
+        """
+            Make button sensitive
+            @param window as Gtk.Window
+            @param back as bool
+        """
+        if back:
+            self.__back_button.set_sensitive(True)
+        else:
+            self.__back_button.set_sensitive(False)

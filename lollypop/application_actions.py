@@ -104,10 +104,7 @@ class ApplicationActions:
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        if App().window.is_visible():
-            from lollypop.fullscreen import FullScreen
-            fs = FullScreen(App())
-            fs.show()
+        App().fullscreen()
 
     def __on_equalizer_activate(self, action, param):
         """

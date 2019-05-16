@@ -102,12 +102,12 @@ class Application(Gtk.Application):
                     GLib.setenv("SSL_CERT_FILE", path, True)
                     break
         self.cursors = {}
-        self.window = None
         self.notify = None
         self.scrobblers = []
         self.debug = False
         self.shown_sidebar_tooltip = False
-        self.__fs = None
+        self.__window = None
+        self.__fs_window = None
         self.__scanner_timeout_id = None
         self.__scanner_uris = []
         GLib.set_application_name("Lollypop")
@@ -215,11 +215,11 @@ class Application(Gtk.Application):
         """
         Gtk.Application.do_startup(self)
 
-        if self.window is None:
+        if self.__window is None:
             self.init()
-            self.window = Window()
-            self.window.connect("delete-event", self.__hide_on_delete)
-            self.window.show()
+            self.__window = Window()
+            self.__window.connect("delete-event", self.__hide_on_delete)
+            self.__window.show()
             self.player.restore_state()
 
     def quit(self, vacuum=False):
@@ -234,7 +234,7 @@ class Application(Gtk.Application):
         if vacuum:
             self.__vacuum()
             self.art.clean_web()
-        self.window.hide()
+        self.__window.hide()
         Gio.Application.quit(self)
 
     def is_fullscreen(self):
@@ -249,8 +249,8 @@ class Application(Gtk.Application):
             @param dialog as Gtk.Dialog
             @param response id as int
         """
-        if self.window is not None:
-            self.window.set_mini()
+        if self.__window is not None:
+            self.__window.set_mini()
 
     def load_listenbrainz(self):
         """
@@ -266,6 +266,18 @@ class Application(Gtk.Application):
             self.settings.bind("listenbrainz-user-token", listenbrainz,
                                "user_token", 0)
 
+    def fullscreen(self):
+        """
+            Go fullscreen
+        """
+        def on_destroy(window):
+            self.__fs_window = None
+
+        from lollypop.fullscreen import FullScreen
+        self.__fs_window = FullScreen(self)
+        self.__fs_window.show()
+        self.__fs_window.connect("destroy", on_destroy)
+
     @property
     def lastfm(self):
         """
@@ -279,6 +291,24 @@ class Application(Gtk.Application):
             if isinstance(scrobbler, LastFMNetwork):
                 return scrobbler
         return None
+
+    @property
+    def main_window(self):
+        """
+            Get main window
+        """
+        return self.__window
+
+    @property
+    def window(self):
+        """
+            Get current application window
+            @return Gtk.Window
+        """
+        if self.__fs_window is not None:
+            return self.__fs_window
+        else:
+            return self.__window
 
     @property
     def gtk_application_prefer_dark_theme(self):
@@ -334,7 +364,7 @@ class Application(Gtk.Application):
             position = 0
         dump(position, open(LOLLYPOP_DATA_PATH + "/position.bin", "wb"))
         self.player.stop_all()
-        self.window.container.stop_all()
+        self.__window.container.stop_all()
 
     def __vacuum(self):
         """
@@ -430,7 +460,7 @@ class Application(Gtk.Application):
             elif options.contains("prev"):
                 self.player.prev()
             elif options.contains("emulate-phone"):
-                self.window.container.add_fake_phone()
+                self.__window.container.add_fake_phone()
             elif len(args) > 1:
                 uris = []
                 pls = []
@@ -463,10 +493,10 @@ class Application(Gtk.Application):
                                        self.__on_parse_finished, uris)
                 else:
                     self.__on_parse_finished(None, None, uris)
-            elif self.window is not None:
-                self.window.setup()
-                if not self.window.is_visible():
-                    self.window.present()
+            elif self.__window is not None:
+                self.__window.setup()
+                if not self.__window.is_visible():
+                    self.__window.present()
                     self.player.emit("status-changed")
                     self.player.emit("current-changed")
             Gdk.notify_startup_complete()
@@ -519,4 +549,4 @@ class Application(Gtk.Application):
             Call default handler
             @param application as Gio.Application
         """
-        self.window.present()
+        self.__window.present()

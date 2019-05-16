@@ -230,48 +230,7 @@ class AdaptiveWindow:
         if self._adaptive_stack:
             self.__stack.set_visible_child(self.__paned[0][1])
 
-    def do_adaptive_mode(self, width):
-        """
-            Handle basic adaptive mode
-            Will start to listen to configure event
-            @param width as int
-        """
-        def connect_configure_event():
-            self.connect("configure-event", self.__on_configure_event)
-
-        if width < self._ADAPTIVE_STACK:
-            self.__set_adaptive_stack(True)
-        else:
-            self.__set_adaptive_stack(False)
-        # We delay connect to ignore initial configure events
-        if not self.__configure_event_connected:
-            self.__configure_event_connected = True
-            GLib.timeout_add(1000, connect_configure_event)
-
-    @property
-    def can_go_back(self):
-        """
-            True if can go back
-            @return bool
-        """
-        return len(self.__stack.history) > 1
-
-    @property
-    def is_adaptive(self):
-        """
-            True if adaptive is on
-            @return bool
-        """
-        return self._adaptive_stack is True
-
-#############
-# PROTECTED #
-#############
-
-############
-# PRIVATE  #
-############
-    def __set_adaptive_stack(self, b):
+    def set_adaptive_stack(self, b):
         """
             Move paned child to stack
             @param b as bool
@@ -304,6 +263,47 @@ class AdaptiveWindow:
             self.emit("adaptive-changed", False)
             self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
+    def do_adaptive_mode(self, width):
+        """
+            Handle basic adaptive mode
+            Will start to listen to configure event
+            @param width as int
+        """
+        def connect_configure_event():
+            self.connect("configure-event", self.__on_configure_event)
+
+        if width < self._ADAPTIVE_STACK:
+            self.set_adaptive_stack(True)
+        else:
+            self.set_adaptive_stack(False)
+        # We delay connect to ignore initial configure events
+        if not self.__configure_event_connected:
+            self.__configure_event_connected = True
+            GLib.timeout_add(1000, connect_configure_event)
+
+    @property
+    def can_go_back(self):
+        """
+            True if can go back
+            @return bool
+        """
+        return len(self.__stack.history) > 1
+
+    @property
+    def is_adaptive(self):
+        """
+            True if adaptive is on
+            @return bool
+        """
+        return self._adaptive_stack is True
+
+#############
+# PROTECTED #
+#############
+
+############
+# PRIVATE  #
+############
     def __on_configure_event(self, widget, event):
         """
             Delay event
