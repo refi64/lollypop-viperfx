@@ -65,6 +65,8 @@ class EqualizerWidget(Gtk.Bin):
         enabled_equalizer = App().settings.get_value("equalizer-enabled")
         if enabled_equalizer:
             builder.get_object("equalizer_checkbox").set_active(True)
+        else:
+            self.__combobox.set_sensitive(False)
         for i in range(0, 10):
             scale = builder.get_object("scale%s" % i)
             scale.set_value(equalizer[i])
@@ -118,6 +120,7 @@ class EqualizerWidget(Gtk.Bin):
         for plugin in App().player.plugins:
             plugin.init()
         App().player.reload_track()
+        self.__combobox.set_sensitive(active)
         for i in range(0, 10):
             attr = getattr(self, "__scale%s" % i)
             attr.set_sensitive(active)
