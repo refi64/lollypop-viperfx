@@ -29,6 +29,7 @@ class ProgressController:
         self.__seeking = False
         # Update pogress position
         self.__timeout_id = None
+        App().player.connect("seeked", self.__on_seeked)
 
     def on_current_changed(self, player):
         """
@@ -104,6 +105,7 @@ class ProgressController:
         """
             Remove timeout
         """
+        App().player.disconnect_by_func(self.__on_seeked)
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
@@ -169,3 +171,9 @@ class ProgressController:
 #######################
 # PRIVATE             #
 #######################
+    def __on_seeked(self, player, position):
+        """
+            Update position
+            @param position as int
+        """
+        self.update_position(position)

@@ -77,13 +77,6 @@ class Toolbar(Gtk.HeaderBar):
                 self.__toolbar_info.set_width((available - title) / 1.5)
             self.__width = window.get_width()
 
-    def update_position(self, value=None):
-        """
-            Update progress bar position
-            @param value as int
-        """
-        self.__toolbar_title.update_position(value)
-
     def set_mini(self, mini):
         """
             Set toolbar working when small

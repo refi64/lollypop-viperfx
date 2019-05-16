@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib, Gtk
+from gi.repository import Gio, GLib, Gtk, Gst
 
 from lollypop.define import App, ScanType, Type
 
@@ -66,9 +66,68 @@ class ApplicationActions:
         quit_action.connect("activate", lambda x, y: App().quit(True))
         App().add_action(quit_action)
 
+        seek_action = Gio.SimpleAction.new("seek",
+                                           GLib.VariantType.new("i"))
+        seek_action.connect("activate", self.__on_seek_action)
+        App().add_action(seek_action)
+        player_action = Gio.SimpleAction.new("shortcut",
+                                             GLib.VariantType.new("s"))
+        player_action.connect("activate", self.__on_player_action)
+        App().add_action(player_action)
+
+        self.__setup_global_shortcuts()
+
 #######################
 # PRIVATE             #
 #######################
+    def __setup_global_shortcuts(self):
+        """
+            Setup global shortcuts
+        """
+        App().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
+        App().set_accels_for_action("app.shortcut::volume",
+                                    ["<Shift><Alt>v"])
+        App().set_accels_for_action("app.shortcut::lyrics",
+                                    ["<Shift><Alt>l"])
+        App().set_accels_for_action("app.shortcut::next_album", ["<Control>n"])
+        App().set_accels_for_action("app.shortcut::current_artist",
+                                    ["<Control><Alt>a"])
+        App().set_accels_for_action("app.shortcut::show_sidebar", ["F9"])
+        App().set_accels_for_action("app.update_db", ["<Control>u"])
+        App().set_accels_for_action("app.settings(-14)", ["<Control>comma"])
+        App().set_accels_for_action("app.fullscreen", ["F11", "F7"])
+        App().set_accels_for_action("app.mini", ["<Control>m"])
+        App().set_accels_for_action("app.about", ["F3"])
+        App().set_accels_for_action("app.shortcuts", ["F2"])
+        App().set_accels_for_action("app.help", ["F1"])
+        App().set_accels_for_action("app.quit", ["<Control>q"])
+        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
+            App().set_accels_for_action("app.seek(10)",
+                                        ["<Shift><Alt>Left"])
+            App().set_accels_for_action("app.seek(-10)",
+                                        ["<Shift><Alt>Right"])
+            App().set_accels_for_action("app.shortcut::go_back",
+                                        ["<Alt>Right", "Back"])
+        else:
+            App().set_accels_for_action("app.seek(10)",
+                                        ["<Shift><Alt>Right"])
+            App().set_accels_for_action("app.seek(-10)",
+                                        ["<Shift><Alt>Left"])
+            App().set_accels_for_action("app.shortcut::go_back",
+                                        ["<Alt>Left", "Back"])
+        App().set_accels_for_action("app.shortcut::play_pause",
+                                    ["<Alt>c"])
+        App().set_accels_for_action("app.shortcut::play", ["<Alt>x"])
+        App().set_accels_for_action("app.shortcut::stop", ["<Alt>v"])
+        App().set_accels_for_action("app.shortcut::next", ["<Alt>n"])
+        App().set_accels_for_action("app.shortcut::prev", ["<Alt>p"])
+        App().set_accels_for_action("app.shortcut::loved", ["<Alt>l"])
+        App().set_accels_for_action("app.shortcut::reload", ["<Control>r"])
+        App().set_accels_for_action("app.shortcut::volume_up",
+                                    ["<Shift><Alt>Up"])
+        App().set_accels_for_action("app.shortcut::volume_down",
+                                    ["<Shift><Alt>Down"])
+
     def __on_update_db_activate(self, action=None, param=None):
         """
             Search for new music
@@ -158,3 +217,82 @@ class ApplicationActions:
             @param action as Gio.SimpleAction
         """
         action.set_enabled(not App().player.current_track.id is None)
+
+    def __on_seek_action(self, action, param):
+        """
+            Seek in stream
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        seconds = param.get_int32()
+        position = App().player.position
+        seek = position / Gst.SECOND + seconds
+        if seek < 0:
+            seek = 0
+        if seek > App().player.current_track.duration:
+            seek = App().player.current_track.duration - 2
+        App().player.seek(seek)
+
+    def __on_player_action(self, action, param):
+        """
+            Change player state
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        string = param.get_string()
+        if string == "play_pause":
+            App().player.play_pause()
+        elif string == "play":
+            App().player.play()
+        elif string == "stop":
+            App().player.stop()
+        elif string == "next":
+            App().player.next()
+        elif string == "next_album":
+            App().player.skip_album()
+        elif string == "prev":
+            App().player.prev()
+        elif string == "go_back":
+            App().window.go_back()
+        elif string == "lyrics":
+            App().window.container.show_lyrics()
+        elif string == "reload":
+            App().window.container.reload_view()
+        elif string == "volume_up":
+            App().player.set_volume(App().player.volume + 0.1)
+        elif string == "volume_down":
+            App().player.set_volume(App().player.volume - 0.1)
+        elif string == "show_sidebar":
+            value = App().settings.get_value("show-sidebar")
+            App().settings.set_value("show-sidebar",
+                                     GLib.Variant("b", not value))
+            App().main_window.container.show_sidebar(not value)
+        elif string == "filter":
+            if App().main_window.container.view is not None:
+                App().main_window.container.view.enable_filter()
+        elif string == "volume":
+            App().window.container.show_view([Type.EQUALIZER])
+        elif string == "current_artist":
+            if App().player.current_track.id is not None and\
+                    App().player.current_track.id > 0:
+                artist_ids = App().player.current_track.album.artist_ids
+                App().window.container.show_artist_view(artist_ids)
+        elif string == "loved":
+            track = App().player.current_track
+            if track.id is not None and track.id >= 0:
+                if track.loved < 1:
+                    loved = track.loved + 1
+                else:
+                    loved = Type.NONE
+                track.set_loved(loved)
+                if App().notify is not None:
+                    if track.loved == 1:
+                        heart = "❤"
+                    elif track.loved == -1:
+                        heart = "⏭"
+                    else:
+                        heart = "♡"
+                    App().notify.send("%s - %s: %s" %
+                                      (", ".join(track.artists),
+                                       track.name,
+                                       heart))
