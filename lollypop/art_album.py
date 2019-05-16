@@ -187,7 +187,10 @@ class AlbumArt:
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
                     try:
-                        track = choice(album.tracks)
+                        if effect & ArtHelperEffect.RESIZE:
+                            track = album.tracks[0]
+                        else:
+                            track = choice(album.tracks)
                         pixbuf = self.pixbuf_from_tags(track.uri,
                                                        width, height)
                     except Exception as e:
