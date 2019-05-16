@@ -277,11 +277,13 @@
         <property name="halign">start</property>
         <property name="spacing">5</property>
         <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+          <object class="GtkCheckButton" id="equalizer_checkbox">
             <property name="label" translatable="yes">Equalizer preset:</property>
-            <property name="ellipsize">end</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="_on_equalizer_checkbox_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

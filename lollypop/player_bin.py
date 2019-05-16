@@ -143,6 +143,16 @@ class BinPlayer(BasePlayer):
         else:
             self.play()
 
+    def reload_track(self):
+        """
+            Reload track at current position
+        """
+        if self.current_track.id is None:
+            return
+        position = self.position
+        self.__load(self.current_track)
+        GLib.timeout_add(100, self.seek, position / Gst.SECOND)
+
     def seek(self, position):
         """
             Seek current track to position
@@ -150,7 +160,7 @@ class BinPlayer(BasePlayer):
         """
         if self._current_track.id is None:
             return
-        # Seems gstreamer doesn"t like seeking to end, sometimes
+        # Seems gstreamer doesn't like seeking to end, sometimes
         # doesn"t go to next track
         if position >= self._current_track.duration:
             self.next()

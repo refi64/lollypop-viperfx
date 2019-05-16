@@ -60,14 +60,17 @@ class EqualizerWidget(Gtk.Bin):
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/EqualizerWidget.ui")
-        builder.connect_signals(self)
         self.__combobox = builder.get_object("combobox")
         equalizer = App().settings.get_value("equalizer")
+        enabled_equalizer = App().settings.get_value("equalizer-enabled")
+        if enabled_equalizer:
+            builder.get_object("equalizer_checkbox").set_active(True)
         for i in range(0, 10):
             scale = builder.get_object("scale%s" % i)
             scale.set_value(equalizer[i])
             setattr(self, "__scale%s" % i, scale)
             scale.connect("value-changed", self.__on_scale_value_changed, i)
+            scale.set_sensitive(enabled_equalizer)
         self.add(builder.get_object("widget"))
         preset = ()
         for i in App().settings.get_value("equalizer"):
@@ -75,6 +78,7 @@ class EqualizerWidget(Gtk.Bin):
         for key in PRESETS.keys():
             self.__combobox.append(key, key)
         self.__set_combobox_value()
+        builder.connect_signals(self)
 
     def do_get_preferred_width(self):
         return (250, 600)
@@ -102,6 +106,21 @@ class EqualizerWidget(Gtk.Bin):
                 attr = getattr(self, "__scale%s" % i)
                 attr.set_value(value)
                 i += 1
+
+    def _on_equalizer_checkbox_toggled(self, button):
+        """
+            Enable/disable equalizer
+            @param button as Gtk.ToggleButton
+        """
+        active = button.get_active()
+        App().settings.set_value("equalizer-enabled",
+                                 GLib.Variant("b", active))
+        for plugin in App().player.plugins:
+            plugin.init()
+        App().player.reload_track()
+        for i in range(0, 10):
+            attr = getattr(self, "__scale%s" % i)
+            attr.set_sensitive(active)
 
 #######################
 # PRIVATE             #
