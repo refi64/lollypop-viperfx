@@ -241,7 +241,7 @@ class Application(Gtk.Application):
         """
             Return True if application is fullscreen
         """
-        return self.__fs is not None
+        return self.__fs_window is not None
 
     def set_mini(self, action, param):
         """
