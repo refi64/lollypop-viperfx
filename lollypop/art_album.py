@@ -362,11 +362,7 @@ class AlbumArt:
             if exist:
                 bytes = GLib.Bytes(mapflags.data)
                 stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   width,
-                                                                   height,
-                                                                   True,
-                                                                   None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
                 stream.close()
         except Exception as e:
             Logger.error("AlbumArt::pixbuf_from_tags(): %s" % e)
