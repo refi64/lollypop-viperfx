@@ -480,7 +480,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             if self.container.view is not None:
                 self.container.view.enable_filter()
         elif string == "volume":
-            self.container.show_view(Type.EQUALIZER)
+            self.container.show_view([Type.EQUALIZER])
         elif string == "current_artist":
             if App().player.current_track.id is not None and\
                     App().player.current_track.id > 0:

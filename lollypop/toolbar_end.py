@@ -418,7 +418,7 @@ class ToolbarEnd(Gtk.Bin):
                 not self.__search_button.get_active())
             self.__search_popover.set_search(search)
         else:
-            App().window.container.show_view(Type.SEARCH, search)
+            App().window.container.show_view([Type.SEARCH], search)
 
     def __on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

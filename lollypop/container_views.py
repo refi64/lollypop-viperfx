@@ -45,58 +45,60 @@ class ViewsContainer:
         self._stack.set_visible_child(view)
         current.disable_overlay()
 
-    def show_view(self, item_id, data=None, switch=True):
+    def show_view(self, item_ids, data=None, switch=True):
         """
             Show view for item id
-            @param item_id as int
+            @param item_ids as [int]
             @param data as object
             @param switch as bool
         """
+        if not item_ids:
+            return
         App().window.emit("can-go-back-changed", True)
-        if item_id in [Type.POPULARS,
-                       Type.LOVED,
-                       Type.RECENTS,
-                       Type.NEVER,
-                       Type.RANDOMS,
-                       Type.WEB]:
-            view = self._get_view_albums([item_id], [])
-        elif item_id == Type.SEARCH:
+        if item_ids[0] in [Type.POPULARS,
+                           Type.LOVED,
+                           Type.RECENTS,
+                           Type.NEVER,
+                           Type.RANDOMS,
+                           Type.WEB]:
+            view = self._get_view_albums(item_ids, [])
+        elif item_ids[0] == Type.SEARCH:
             view = self.get_view_search(data)
-        elif item_id == Type.INFO:
+        elif item_ids[0] == Type.INFO:
             view = self._get_view_info()
-        elif item_id == Type.GENRES:
+        elif item_ids[0] == Type.GENRES:
             if data is None:
                 view = self._get_view_genres()
             else:
                 view = self._get_view_albums([data], [])
-        elif item_id == Type.ALBUM:
+        elif item_ids[0] == Type.ALBUM:
             view = self._get_view_album(data)
-        elif item_id == Type.YEARS:
+        elif item_ids[0] == Type.YEARS:
             if data is None:
                 view = self._get_view_albums_decades()
             else:
                 view = self._get_view_albums_years(data)
-        elif item_id == Type.PLAYLISTS:
+        elif item_ids[0] == Type.PLAYLISTS:
             view = self._get_view_playlists([] if data is None else data)
-        elif item_id == Type.RADIOS:
+        elif item_ids[0] == Type.RADIOS:
             view = self._get_view_radios()
-        elif item_id == Type.EQUALIZER:
+        elif item_ids[0] == Type.EQUALIZER:
             from lollypop.view_equalizer import EqualizerView
             view = EqualizerView()
-        elif item_id in [Type.SETTINGS,
-                         Type.SETTINGS_APPEARANCE,
-                         Type.SETTINGS_BEHAVIOUR,
-                         Type.SETTINGS_COLLECTIONS,
-                         Type.SETTINGS_WEB]:
-            view = self._get_view_settings(item_id)
-        elif Type.DEVICES - 999 < item_id < Type.DEVICES:
-            view = self._get_view_device(item_id)
-        elif item_id == Type.ALL:
-            view = self._get_view_albums([item_id], [])
-        elif item_id == Type.COMPILATIONS:
-            view = self._get_view_albums([], [item_id])
+        elif item_ids[0] in [Type.SETTINGS,
+                             Type.SETTINGS_APPEARANCE,
+                             Type.SETTINGS_BEHAVIOUR,
+                             Type.SETTINGS_COLLECTIONS,
+                             Type.SETTINGS_WEB]:
+            view = self._get_view_settings(item_ids[0])
+        elif Type.DEVICES - 999 < item_ids[0] < Type.DEVICES:
+            view = self._get_view_device(item_ids[0])
+        elif item_ids[0] == Type.ALL:
+            view = self._get_view_albums(item_ids, [])
+        elif item_ids[0] == Type.COMPILATIONS:
+            view = self._get_view_albums([], item_ids)
         else:
-            view = self._get_view_artists([], [item_id])
+            view = self._get_view_artists([], item_ids)
         view.show()
         self._stack.add(view)
         if switch:
@@ -191,7 +193,7 @@ class ViewsContainer:
                 not App().window.is_adaptive:
             App().window.container.show_artists_albums(artist_ids)
         else:
-            App().window.container.show_view(artist_ids[0])
+            App().window.container.show_view(artist_ids)
 
 ##############
 # PROTECTED  #
@@ -493,12 +495,12 @@ class ViewsContainer:
             self._rounded_artists_view = self._get_view_artists_rounded(True)
             self._stack.set_visible_child(self._rounded_artists_view)
         if state_one_ids and state_two_ids:
-            self.show_view(state_one_ids[0], None, False)
-            self.show_view(state_one_ids[0], state_two_ids)
-        elif state_one_ids and state_one_ids[0] != Type.ARTISTS:
-            self.show_view(state_one_ids[0])
+            self.show_view(state_one_ids, None, False)
+            self.show_view(state_one_ids, state_two_ids)
+        elif state_one_ids and state_one_ids != Type.ARTISTS:
+            self.show_view(state_one_ids)
         elif state_two_ids:
-            self.show_view(state_two_ids[0])
+            self.show_view(state_two_ids)
         else:
             App().window.emit("can-go-back-changed", False)
             self._stack.set_visible_child(self._rounded_artists_view)

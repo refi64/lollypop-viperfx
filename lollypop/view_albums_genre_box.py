@@ -67,4 +67,4 @@ class AlbumsGenreBoxView(FlowBoxView):
             return
         App().window.emit("show-can-go-back", True)
         App().window.emit("can-go-back-changed", True)
-        App().window.container.show_view(Type.GENRES, widget.data)
+        App().window.container.show_view([Type.GENRES], widget.data)

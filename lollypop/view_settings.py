@@ -129,7 +129,7 @@ class SettingsView(View):
             @param listbox as Gtk.ListBox
             @param row as SettingsViewRow
         """
-        App().window.container.show_view(row.type)
+        App().window.container.show_view([row.type])
 
 
 class SettingsChildView(View):

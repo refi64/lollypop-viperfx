@@ -145,7 +145,7 @@ class PlaylistsManagerView(FlowBoxView):
         if show_sidebar and show_genres and not App().window.is_adaptive:
             App().window.container.list_two.select_ids([widget.data])
         else:
-            App().window.container.show_view(Type.PLAYLISTS, [widget.data])
+            App().window.container.show_view([Type.PLAYLISTS], [widget.data])
 
 #######################
 # PRIVATE             #

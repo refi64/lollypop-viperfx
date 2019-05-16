@@ -304,7 +304,7 @@ class AlbumBannerWidget(Gtk.Bin):
         """
         App().window.emit("can-go-back-changed", True)
         App().window.emit("show-can-go-back", True)
-        App().window.container.show_view(Type.YEARS, [self.__album.year])
+        App().window.container.show_view([Type.YEARS], [self.__album.year])
 
     def __on_size_allocate(self, widget, allocation):
         """

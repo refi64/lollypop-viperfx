@@ -121,7 +121,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             return
         if album_widget.artwork is None:
             return
-        App().window.container.show_view(Type.ALBUM, album_widget.album)
+        App().window.container.show_view([Type.ALBUM], album_widget.album)
 
     def _on_map(self, widget):
         """

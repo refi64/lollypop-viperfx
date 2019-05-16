@@ -115,7 +115,7 @@ class ApplicationActions:
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        App().window.container.show_view(Type.EQUALIZER)
+        App().window.container.show_view([Type.EQUALIZER])
 
     def __on_settings_activate(self, action, param):
         """
@@ -124,7 +124,7 @@ class ApplicationActions:
             @param param as GLib.Variant
         """
         if App().window.is_adaptive:
-            App().window.container.show_view(Type.SETTINGS)
+            App().window.container.show_view([Type.SETTINGS])
         else:
             from lollypop.dialog_settings import SettingsDialog
             dialog = SettingsDialog(param.get_int32())
