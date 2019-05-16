@@ -232,6 +232,9 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             for year in filter2_ids:
                 album_ids += App().albums.get_albums_for_year(year)
                 album_ids += App().albums.get_compilations_for_year(year)
+            # Reset filter2_ids as contains unwanted filter for later
+            # Album constructor
+            filter2_ids = []
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
