@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import App, SidebarContent
+from lollypop.define import App, SidebarContent, Type
 from lollypop.view import View
 from lollypop.adaptive import AdaptiveStack
 from lollypop.container_device import DeviceContainer
@@ -206,6 +206,17 @@ class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
         GLib.timeout_add(100, self.__paned_two.set_position, position2)
         self.__paned_one.show()
         self.__paned_two.show()
+        search_action = App().lookup_action("search")
+        search_action.connect("activate", self.__on_search_activate)
+
+    def __on_search_activate(self, action, variant):
+        """
+            @param action as Gio.SimpleAction
+            @param variant as GLib.Variant
+        """
+        if App().window.is_adaptive:
+            search = variant.get_string()
+            App().window.container.show_view([Type.SEARCH], search)
 
     def __on_paned_position(self, paned, param):
         """

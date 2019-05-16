@@ -75,6 +75,11 @@ class ApplicationActions:
         player_action.connect("activate", self.__on_player_action)
         App().add_action(player_action)
 
+        search_action = Gio.SimpleAction.new("search",
+                                             GLib.VariantType.new("s"))
+        App().add_action(search_action)
+        App().set_accels_for_action("app.search('')", ["<Control>f"])
+
         self.__setup_global_shortcuts()
 
 #######################
