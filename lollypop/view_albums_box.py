@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gtk
+from gi.repository import GLib, Gtk, Gio
 
 from gettext import gettext as _
 
@@ -42,7 +42,11 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         self.__artist_ids = artist_ids
         if genre_ids and genre_ids[0] < 0:
             if genre_ids[0] == Type.WEB:
-                if GLib.find_program_in_path("youtube-dl") is None:
+                if not Gio.NetworkMonitor.get_default(
+                        ).get_network_available():
+                    self._empty_message = _("Network not available")
+                    self._box.hide()
+                elif GLib.find_program_in_path("youtube-dl") is None:
                     self._empty_message = _("Missing youtube-dl command")
                     self._box.hide()
                 elif not get_network_available("SPOTIFY") or\
