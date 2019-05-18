@@ -203,19 +203,15 @@ class Database:
             artist_id = App().artists.get_id(artist)
             artist_ids.append(artist_id)
         album_id = App().albums.get_id_by_name_artists(album, artist_ids)
-        mtime = App().albums.get_mtime(album_id)
-        # Do not check tracks for internal albums
-        # Spotify is sometimes wrong and we do not want to add a Spotify
-        # track to a local album
-        if mtime == 0:
+        if album_id is None:
             return False
-        elif track is not None:
+        elif App().albums.get_mtime(album_id) > 0 or track is None:
+            return True
+        else:
             track_id = App().tracks.get_id_by(track,
                                               album_id,
                                               artist_ids)
             return track_id is not None
-        else:
-            return album_id is not None
 
 #######################
 # PRIVATE             #
