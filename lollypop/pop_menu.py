@@ -182,6 +182,8 @@ class PlaybackMenu(BaseMenu):
             @param track_id as int/None
         """
         App().player.stop_after(track_id)
+        if track_id == App().player.current_track.id:
+            App().player.set_next()
 
     def __append_to_playback(self, action, variant):
         """
