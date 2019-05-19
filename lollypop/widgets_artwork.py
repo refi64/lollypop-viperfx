@@ -320,7 +320,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             self.__web_search.search(search)
         else:
             self.__label.set_text(
-                _("Google or Duckduckgo disabled in settings"))
+                _("Google and Duckduckgo disabled in settings"))
 
     def __populate(self, uris):
         """
