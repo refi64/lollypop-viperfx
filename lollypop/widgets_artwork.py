@@ -318,6 +318,9 @@ class ArtworkSearchWidget(Gtk.Bin):
                 self.__web_search.connect("populated",
                                           self.__on_web_search_populated)
             self.__web_search.search(search)
+        else:
+            self.__label.set_text(
+                _("Google or Duckduckgo disabled in settings"))
 
     def __populate(self, uris):
         """
