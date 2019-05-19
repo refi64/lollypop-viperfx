@@ -445,6 +445,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
         if self.current_track.id == Type.RADIOS or\
                 self._current_track.id == self.__stop_after_track_id:
+            self.__stop_after_track_id = None
             self._next_track = Track()
             return
         try:
