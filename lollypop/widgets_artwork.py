@@ -34,20 +34,18 @@ from lollypop.helper_task import TaskHelper
 
 class ArtworkSearchWebView(Gtk.OffscreenWindow):
     """
-        Search for image through Google Image
+        Search for image through Duckduckgo Image
     """
 
     __gsignals__ = {
         "populated": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
-    def __init__(self, spinner):
+    def __init__(self):
         """
             Init webview
-            @param spinner as Gtk.Spinner
         """
         Gtk.OffscreenWindow.__init__(self)
-        self.__spinner = spinner
         self.__webview = WebKit2.WebView()
         self.__webview.show()
         self.add(self.__webview)
@@ -81,7 +79,7 @@ class ArtworkSearchWebView(Gtk.OffscreenWindow):
             @param event as WebKit2.LoadEvent
         """
         if event == WebKit2.LoadEvent.FINISHED:
-            self.__spinner.stop()
+            self.emit("populated", None)
 
     def __on_resource_load_started(self, webview, resource, request):
         """
@@ -113,6 +111,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__web_search = None
         self.__album = album
         self.__artist_id = artist_id
+        self.__uris = []
         self.__cancellable = Gio.Cancellable()
         is_compilation = album is not None and\
             album.artist_ids and\
@@ -159,7 +158,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
             Populate view
         """
-        self.__spinner.start()
+        self.__uris = []
         image = Gtk.Image.new_from_icon_name("edit-clear-all-symbolic",
                                              Gtk.IconSize.DIALOG)
         image.set_property("valign", Gtk.Align.CENTER)
@@ -177,8 +176,7 @@ class ArtworkSearchWidget(Gtk.Bin):
 
         # First load local files
         if self.__album is not None:
-            uris = App().art.get_album_artworks(self.__album)
-            self.__populate(uris)
+            self.__uris = App().art.get_album_artworks(self.__album)
         self.__search_for_artwork()
 
     def stop(self):
@@ -307,43 +305,44 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
         if get_network_available("GOOGLE"):
+            self.__spinner.start()
             uri = App().art.get_google_search_uri(search)
             helper = TaskHelper()
             helper.load_uri_content(uri,
                                     self.__cancellable,
                                     self.__on_google_content_loaded)
         elif get_network_available("DUCKDUCKGO") and WEBKIT2:
+            self.__spinner.start()
             if self.__web_search is None:
-                self.__web_search = ArtworkSearchWebView(self.__spinner)
+                self.__web_search = ArtworkSearchWebView()
                 self.__web_search.connect("populated",
                                           self.__on_web_search_populated)
             self.__web_search.search(search)
         else:
+            self.__populate()
             self.__label.set_text(
                 _("DuckDuckGo and Google turned off in the settings"))
 
-    def __populate(self, uris):
+    def __populate(self):
         """
             Add uris to view
-            @param uris as [str]
         """
         if self.__cancellable.is_cancelled():
             return
         try:
             helper = TaskHelper()
-            if uris:
-                uri = uris.pop(0)
+            if self.__uris:
+                uri = self.__uris.pop(0)
                 if uri.startswith("file://"):
                     f = Gio.File.new_for_uri(uri)
                     (status, content, tag) = f.load_contents()
                     self.__add_pixbuf(uri, status,
-                                      content, self.__populate, uris)
+                                      content, self.__populate)
                 else:
                     helper.load_uri_content(uri,
                                             self.__cancellable,
                                             self.__add_pixbuf,
-                                            self.__populate,
-                                            uris)
+                                            self.__populate)
             else:
                 self.__spinner.stop()
         except Exception as e:
@@ -414,13 +413,10 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param web_search as ArtworkSearchWebView
             @param uri as str
         """
-        self.__spinner.start()
-        helper = TaskHelper()
-        helper.load_uri_content(uri,
-                                self.__cancellable,
-                                self.__add_pixbuf,
-                                self.__populate,
-                                [])
+        if uri is None:
+            self.__populate()
+        else:
+            self.__uris.append(uri)
 
     def __on_google_content_loaded(self, uri, loaded, content):
         """
@@ -430,9 +426,8 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param content as bytes
         """
         if loaded:
-            self.__spinner.start()
-            uris = App().art.get_google_artwork(content)
-            self.__populate(uris)
+            self.__uris += App().art.get_google_artwork(content)
+        self.__populate()
 
     def __on_activate(self, flowbox, child):
         """
