@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Pango
 
 
 class AppNotification(Gtk.Revealer):
@@ -18,10 +18,10 @@ class AppNotification(Gtk.Revealer):
         Show a notification to user with a button connected to an action
     """
 
-    def __init__(self, label, button_labels, actions):
+    def __init__(self, message, button_labels, actions):
         """
             Init notification
-            @param label as str
+            @param message as str
             @param button_label as [str]
             @param action as [callback]
         """
@@ -29,15 +29,20 @@ class AppNotification(Gtk.Revealer):
         widget = Gtk.Grid()
         widget.get_style_context().add_class("app-notification")
         widget.set_column_spacing(5)
-        widget.add(Gtk.Label.new(label))
+        label = Gtk.Label.new(message)
+        label.set_line_wrap_mode(Pango.WrapMode.WORD)
+        label.set_line_wrap(True)
+        widget.add(label)
         for i in range(0, len(button_labels)):
             button = Gtk.Button.new()
             button.set_label(button_labels[i])
             button.connect("clicked", self.__on_button_clicked, actions[i])
+            button.set_property("valign", Gtk.Align.START)
             widget.add(button)
         button = Gtk.Button.new_from_icon_name("window-close-symbolic",
                                                Gtk.IconSize.BUTTON)
         button.connect("clicked", self.__on_button_clicked, None)
+        button.set_property("valign", Gtk.Align.START)
         widget.add(button)
         widget.show_all()
         self.add(widget)
