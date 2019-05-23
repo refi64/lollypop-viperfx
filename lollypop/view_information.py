@@ -167,7 +167,8 @@ class InformationView(BaseView, Gtk.Bin):
                 albums.append(Album(album_id))
             if not albums:
                 albums = [App().player.current_track.album]
-            albums_view.populate(albums)
+            # Allows view to be shown without lag
+            GLib.idle_add(albums_view.populate, albums)
         App().task_helper.run(InformationStore.get_bio, self.__artist_name,
                               callback=(self.__on_get_bio,))
 
@@ -309,8 +310,9 @@ class InformationView(BaseView, Gtk.Bin):
             @param content as bytes
         """
         if content is not None:
-            self.__bio_label.set_markup(
-                GLib.markup_escape_text(content.decode("utf-8")))
+            # Allows view to be shown without lag
+            GLib.idle_add(self.__bio_label.set_markup,
+                          GLib.markup_escape_text(content.decode("utf-8")))
         elif not App().settings.get_value("network-access"):
             if self.__minimal:
                 self.__stack.set_visible_child_name("data")
