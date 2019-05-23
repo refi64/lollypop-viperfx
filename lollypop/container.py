@@ -129,7 +129,7 @@ class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
             # Select artists on list one
             self.show_lists(artist_ids, [])
         else:
-            self.show_view(artist_ids[0])
+            self.show_view(artist_ids)
 
     @property
     def view(self):
