@@ -66,6 +66,7 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         self._overlay.add_overlay(self.__banner)
         self.add(self._overlay)
         self._responsive_widget.show()
+        self._scrolled.get_vscrollbar().set_margin_top(self.__banner.height)
 
 #######################
 # PROTECTED           #
@@ -77,9 +78,11 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         """
         LazyLoadingView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower():
-            self.__banner.set_height(self.__banner.default_height)
+            height = self.__banner.default_height
         else:
-            self.__banner.set_height(self.__banner.default_height // 3)
+            height = self.__banner.default_height // 3
+        self.__banner.set_height(height)
+        self._scrolled.get_vscrollbar().set_margin_top(height)
 
     def _on_current_changed(self, player):
         """

@@ -48,6 +48,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         self._album_box.set_margin_start(MARGIN)
         self._album_box.set_margin_end(MARGIN)
         self.__set_artwork()
+        self._scrolled.get_vscrollbar().set_margin_top(self._banner.height)
 
     def jump_to_current(self):
         """
@@ -85,6 +86,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         # Make grid cover artwork
         # No idea why...
         self._banner.set_height(height)
+        self._scrolled.get_vscrollbar().set_margin_top(height)
         self._buttons.set_size_request(-1, height + 1)
 
     def _on_label_realize(self, eventbox):
@@ -207,7 +209,9 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                         self.__on_artist_artwork)
         else:
             self._title_label.set_margin_start(MARGIN)
-            self._banner.set_height(self._banner.default_height / 3)
+            height = self._banner.default_height // 3
+            self._banner.set_height(height)
+            self._scrolled.get_vscrollbar().set_margin_start(height)
 
     def __update_jump_button(self):
         """
