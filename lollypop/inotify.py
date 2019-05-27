@@ -29,7 +29,8 @@ class Inotify:
             Init inode notification
         """
         self.__monitors = {}
-        self.__timeout_id = None
+        self.__collection_timeout_id = None
+        self.__disable_timeout_id = None
 
     def add_monitor(self, uri):
         """
@@ -49,6 +50,19 @@ class Inotify:
         except Exception as e:
             Logger.error("Inotify::add_monitor(): %s" % e)
 
+    def disable(self, timeout=10000):
+        """
+            Disable inotify for timeout
+            @param timeout as int
+        """
+        def on_timeout():
+            self.__disable_timeout_id = None
+        if self.__collection_timeout_id is not None:
+            GLib.source_remove(self.__collection_timeout_id)
+        if self.__disable_timeout_id is not None:
+            GLib.source_remove(self.__disable_timeout_id)
+        self.__disable_timeout_id = GLib.timeout_add(timeout, on_timeout)
+
 #######################
 # PRIVATE             #
 #######################
@@ -61,6 +75,8 @@ class Inotify:
             @param other_file as Gio.File/None
             @param event as Gio.FileMonitorEvent
         """
+        if self.__disable_timeout_id is not None:
+            return
         changed_uri = changed_file.get_uri()
         # Do not monitor our self
         if changed_uri in self.__monitors.keys() and\
@@ -84,13 +100,14 @@ class Inotify:
                              event)
         # Run update delayed
         else:
-            if self.__timeout_id is not None:
-                GLib.source_remove(self.__timeout_id)
+            if self.__collection_timeout_id is not None:
+                GLib.source_remove(self.__collection_timeout_id)
             if changed_file.has_parent():
                 uris = [changed_file.get_parent().get_uri()]
             else:
                 uris = [changed_uri]
-            self.__timeout_id = GLib.timeout_add(self.__TIMEOUT,
+            self.__collection_timeout_id = GLib.timeout_add(
+                                                 self.__TIMEOUT,
                                                  self.__run_collection_update,
                                                  uris)
 
@@ -99,5 +116,5 @@ class Inotify:
             Run a collection update
             @param uris as [str]
         """
-        self.__timeout_id = None
+        self.__collection_timeout_id = None
         App().scanner.update(ScanType.NEW_FILES, uris)

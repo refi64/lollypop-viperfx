@@ -297,6 +297,14 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         self.__thread = None
 
+    @property
+    def inotify(self):
+        """
+            Get Inotify object
+            @return Inotify
+        """
+        return self.__inotify
+
 #######################
 # PRIVATE             #
 #######################

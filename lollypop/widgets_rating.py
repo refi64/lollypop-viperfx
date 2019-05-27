@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
+from time import time
 
 from lollypop.objects import Track
 from lollypop.define import App, Type
@@ -141,7 +142,7 @@ class RatingWidget(Gtk.Bin):
         if App().settings.get_value("save-to-tags") and\
                 isinstance(self.__object, Track) and\
                 self.__object.id >= 0:
-            self.__set_popularity(pop)
+            App().task_helper.run(self.__set_popularity, pop)
         return True
 
 #######################
@@ -181,12 +182,13 @@ class RatingWidget(Gtk.Bin):
                             "set POPM %s" % value, path]
                 else:
                     argv = ["kid3-cli", "-c", "set POPM %s" % value, path]
+                if App().scanner.inotify is not None:
+                    App().scanner.inotify.disable()
                 (pid, stdin, stdout, stderr) = GLib.spawn_async(
                     argv, flags=GLib.SpawnFlags.SEARCH_PATH |
-                    GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
-                    standard_input=False,
-                    standard_output=False,
-                    standard_error=False
+                    GLib.SpawnFlags.STDOUT_TO_DEV_NULL
                 )
+                # Force mtime update to not run a collection update
+                App().tracks.set_mtime(self.__object.id, int(time()) + 10)
         except Exception as e:
             Logger.error("RatingWidget::__on_can_set_popularity(): %s" % e)
