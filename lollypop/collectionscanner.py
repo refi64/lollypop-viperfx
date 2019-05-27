@@ -267,10 +267,10 @@ class CollectionScanner(GObject.GObject, TagReader):
                                    track_ltime, album_mtime, track_loved,
                                    album_loved, album_pop, album_rate)
             App().tracks.remove(track_id)
+            App().albums.clean()
+            App().genres.clean()
+            App().artists.clean()
             if notify:
-                App().albums.clean()
-                App().genres.clean()
-                App().artists.clean()
                 if App().albums.get_name(album_id) is None:
                     GLib.idle_add(self.emit, "album-updated",
                                   album_id, False)
