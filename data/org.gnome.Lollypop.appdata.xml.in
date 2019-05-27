@@ -27,10 +27,9 @@
     </ul>
   </description>
   <releases>
-    <release version="1.0.11" date="2019-05-19">
+    <release version="1.0.12" date="2019-05-27">
       <description>
 	<ul>Bug fixes</ul>
-	<ul>Enhanced fullscreen mode</ul>
       </description>
     </release>
   </releases>
