@@ -136,7 +136,7 @@ class ArtistArt:
             Get a uniq string for artist
             @param artist as str
         """
-        name = "@ARTIST@_%s" % (escape(artist))
+        name = "@ARTIST@_%s" % (escape(artist)[:100])
         return name
 
     def uncache_artist_artwork(self, artist):

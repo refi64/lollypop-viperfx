@@ -53,7 +53,8 @@ class Art(BaseArt, AlbumArt, ArtistArt, RadioArt, Downloader):
             Remove all covers from cache
         """
         try:
-            rmtree(self._CACHE_PATH)
-            create_dir(self._CACHE_PATH)
+            from pathlib import Path
+            for p in Path(self._CACHE_PATH).glob("@ALBUM@*.jpg"):
+                p.unlink()
         except Exception as e:
             Logger.error("Art::clean_all_cache(): %s", e)

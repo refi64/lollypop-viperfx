@@ -12,7 +12,6 @@
 
 from gi.repository import GLib, GdkPixbuf, Gio, Gst
 
-import re
 from random import choice
 
 from lollypop.tagreader import TagReader
@@ -326,18 +325,11 @@ class AlbumArt:
             Remove cover from cache for album id
             @param album as Album
         """
-        cache_name = self.get_album_cache_name(album)
         try:
-            d = Gio.File.new_for_path(self._CACHE_PATH)
-            infos = d.enumerate_children(
-                "standard::name",
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                None)
-            for info in infos:
-                f = infos.get_child(info)
-                basename = f.get_basename()
-                if re.search(r"%s_.*\.jpg" % re.escape(cache_name), basename):
-                    f.delete()
+            from pathlib import Path
+            name = self.get_album_cache_name(album)
+            for p in Path(self._CACHE_PATH).glob("%s*.jpg" % name):
+                p.unlink()
         except Exception as e:
             Logger.error("AlbumArt::clean_album_cache(): %s" % e)
 
@@ -376,9 +368,9 @@ class AlbumArt:
             Get a uniq string for album
             @param album as Album
         """
-        name = "%s_%s_%s" % (" ".join(album.artists)[:100],
-                             album.name[:100],
-                             album.year)
+        name = "@ALBUM@%s_%s_%s" % (" ".join(album.artists)[:100],
+                                    album.name[:100],
+                                    album.year)
         return escape(name)
 
 #######################
