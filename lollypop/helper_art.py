@@ -141,7 +141,7 @@ class ArtHelper(GObject.Object):
                                              height * scale_factor,
                                              GdkPixbuf.InterpType.NEAREST)
             if effect & ArtHelperEffect.BLUR:
-                pixbuf = self.__get_blur(pixbuf, width, height, 10)
+                pixbuf = self.__get_blur(pixbuf, width, height, 25)
             elif effect & ArtHelperEffect.BLUR_HARD:
                 pixbuf = self.__get_blur(pixbuf, width, height, 50)
             if effect & ArtHelperEffect.ROUNDED:

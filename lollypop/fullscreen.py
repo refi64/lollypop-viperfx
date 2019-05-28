@@ -38,6 +38,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         Gtk.Window.__init__(self)
         AdaptiveWindow.__init__(self)
         self.set_title("Lollypop")
+        self.__allocation = Gdk.Rectangle()
         self.connect("motion-notify-event", self.__on_motion_notify_event)
         self.connect("leave-notify-event", self.__on_leave_notify_event)
         rotate_album = App().settings.get_value("rotate-fullscreen-album")
@@ -128,13 +129,14 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self.__sidebar.set_size_request(450, -1)
         self.connect("can-go-back-changed", self.__on_can_go_back_changed)
         self.connect("show-can-go-back", self.__on_show_can_go_back)
+        self.connect("size-allocate", self.__on_size_allocate)
         self.__sidebar.get_style_context().add_class("background-opacity")
         self.__revealer.add(self.__sidebar)
         self.add(widget)
 
     def do_show(self):
         """
-            Init signals, set color and go party mode if nothing is playing
+            Setup window for current screen
         """
         App().main_window.hide()
         self.__signal1_id = App().player.connect("current-changed",
@@ -166,7 +168,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
 
     def do_hide(self):
         """
-            Remove signals and unset color
+            Clean window
         """
         App().main_window.setup()
         App().main_window.show()
@@ -207,19 +209,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                                                  self.__art_size,
                                                  self.__font_size)
         ProgressController.on_current_changed(self, player)
-        # Update background
-        if App().settings.get_value("artist-artwork"):
-            App().art_helper.set_artist_artwork(
-                                        player.current_track.artists[0],
-                                        self.get_allocated_width(),
-                                        self.get_allocated_height(),
-                                        self.get_scale_factor(),
-                                        self.__on_artist_artwork,
-                                        ArtHelperEffect.RESIZE |
-                                        ArtHelperEffect.BLUR_HARD |
-                                        ArtHelperEffect.DARKER)
-        else:
-            self.__background_artwork.set_surface(None)
+        self.__update_background()
         if player.current_track.id is not None:
             album_name = player.current_track.album.name
             if player.current_track.year:
@@ -308,6 +298,24 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
 #######################
 # PRIVATE             #
 #######################
+    def __update_background(self):
+        """
+            Update window background
+        """
+        # Update background
+        allocation = self.get_allocation()
+        if App().settings.get_value("artist-artwork") and allocation.width > 1:
+            App().art_helper.set_artist_artwork(
+                                        App().player.current_track.artists[0],
+                                        allocation.width,
+                                        allocation.height,
+                                        self.get_scale_factor(),
+                                        self.__on_artist_artwork,
+                                        ArtHelperEffect.BLUR |
+                                        ArtHelperEffect.DARKER)
+        else:
+            self.__background_artwork.set_from_surface(None)
+
     def __update_datetime(self, show_seconds=False):
         """
             Update datetime in headerbar
@@ -391,3 +399,17 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             self.__back_button.set_sensitive(True)
         else:
             self.__back_button.set_sensitive(False)
+
+    def __on_size_allocate(self, widget, allocation):
+        """
+            Update background if needed
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if allocation.width <= 1 or\
+                allocation.height <= 1 or\
+                allocation.width == self.__allocation.width or\
+                allocation.height == self.__allocation.height:
+            return
+        self.__allocation = allocation
+        self.__update_background()
