@@ -16,9 +16,7 @@ from PIL import Image, ImageFilter
 import cairo
 
 from lollypop.define import App, ArtHelperEffect
-from lollypop.logger import Logger
 from lollypop.utils import get_round_surface
-from lollypop.information_store import InformationStore
 
 
 class ArtHelper(GObject.Object):
@@ -251,14 +249,7 @@ class ArtHelper(GObject.Object):
             @return GdkPixbuf.Pixbuf
         """
         # Do not save blur to cache
-        cache = False if effect & (ArtHelperEffect.BLUR |
-                                   ArtHelperEffect.BLUR_HARD) else True
-        path = InformationStore.get_artwork_path(artist, width,
-                                                 scale_factor, cache)
-        try:
-            if path is not None:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-                return pixbuf
-        except Exception as e:
-            Logger.warning("ArtHelper::__get_artist_artwork(): %s", e)
-        return None
+        if not effect & (ArtHelperEffect.BLUR | ArtHelperEffect.BLUR_HARD):
+            effect |= ArtHelperEffect.SAVE
+        return App().art.get_artist_artwork(artist, width, height,
+                                            scale_factor, effect)

@@ -28,6 +28,16 @@ class Downloader:
         Download from the web
     """
 
+    _WEBSERVICES = [
+                   ("spotify", "_get_spotify_artist_artwork_uri",
+                    "_get_spotify_album_artwork"),
+                   ("deezer", "_get_deezer_artist_artwork_uri",
+                    "_get_deezer_album_artwork"),
+                   ("itunes", None,
+                    "_get_itunes_album_artwork"),
+                   ("lastfm", "_get_lastfm_artist_artwork_uri",
+                    "_get_lastfm_album_artwork")]
+
     def __init__(self):
         """
             Init art downloader
@@ -333,10 +343,10 @@ class Downloader:
         """
         # Then cache for lastfm/spotify/deezer/...
         for (artist_id, artist, sort) in App().artists.get([]):
-            if InformationStore.artwork_exists(artist):
+            if App().art.artist_artwork_exists(artist)[0]:
                 continue
             artwork_set = False
-            for (api, helper, unused) in InformationStore.WEBSERVICES:
+            for (api, helper, unused) in self._WEBSERVICES:
                 Logger.debug("Downloader::__cache_artists_info(): %s@%s" %
                              (artist, api))
                 if helper is None:
@@ -349,23 +359,17 @@ class Downloader:
                          data) = App().task_helper.load_uri_content_sync(uri,
                                                                          None)
                         if status:
-                            InformationStore.add_artist_artwork(
-                                artist,
-                                data)
+                            App().art.add_artist_artwork(artist, data)
                             artwork_set = True
                             Logger.debug("""Downloader::
                                          __cache_artists_info(): %s""" % uri)
                         else:
-                            InformationStore.add_artist_artwork(
-                                artist,
-                                None)
+                            App().art.add_artist_artwork(artist, None)
                         break
                 except Exception as e:
                     Logger.error("Downloader::__cache_artists_info(): %s, %s" %
                                  (e, artist))
-                    InformationStore.add_artist_artwork(
-                                artist,
-                                None)
+                    App().art.add_artist_artwork(artist, None)
             if artwork_set:
                 GLib.idle_add(App().art.emit, "artist-artwork-changed", artist)
         self.__cache_artists_running = False
@@ -387,7 +391,7 @@ class Downloader:
                     artist = ""
                 else:
                     artist = ", ".join(App().albums.get_artists(album_id))
-                for (api, unused, helper) in InformationStore.WEBSERVICES:
+                for (api, unused, helper) in self._WEBSERVICES:
                     if helper is None:
                         continue
                     method = getattr(self, helper)

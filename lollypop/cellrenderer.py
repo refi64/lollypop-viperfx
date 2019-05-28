@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 from math import pi
 
 from lollypop.define import App, ArtSize, Type, SidebarContent
-from lollypop.information_store import InformationStore
 from lollypop.objects import Album
 
 
@@ -144,12 +143,9 @@ class CellRendererArtist(Gtk.CellRendererText):
         if self.rowid in self.__surfaces.keys():
             surface = self.__surfaces[self.rowid]
         if surface is None:
-            path = InformationStore.get_artwork_path(
-                self.artist, size, self.__scale_factor)
-            if path is not None:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
-                                                                size,
-                                                                size)
+            pixbuf = App().art.get_artist_artwork(
+                self.artist, size, size, self.__scale_factor)
+            if pixbuf is not None:
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                     pixbuf,
                     self.__scale_factor,

@@ -10,140 +10,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib, GdkPixbuf
+from gi.repository import Gio
 
 from lollypop.utils import escape
 from lollypop.define import App
-from lollypop.logger import Logger
 
 
 class InformationStore:
     """
         Generic class to cache text and images
     """
-    _INFO_PATH = GLib.get_user_data_dir() + "/lollypop/info"
-    _CACHE_PATH = GLib.get_user_cache_dir() + "/lollypop_info"
-
-    WEBSERVICES = [
-                   ("spotify", "_get_spotify_artist_artwork_uri",
-                    "_get_spotify_album_artwork"),
-                   ("deezer", "_get_deezer_artist_artwork_uri",
-                    "_get_deezer_album_artwork"),
-                   ("itunes", None,
-                    "_get_itunes_album_artwork"),
-                   ("lastfm", "_get_lastfm_artist_artwork_uri",
-                    "_get_lastfm_album_artwork")]
 
     def init():
         """
             Init store
         """
-        try:
-            d = Gio.File.new_for_path(InformationStore._INFO_PATH)
-            if not d.query_exists():
-                d.make_directory_with_parents()
-        except:
-            Logger.info("Can't create %s" % InformationStore._INFO_PATH)
-        try:
-            d = Gio.File.new_for_path(InformationStore._CACHE_PATH)
-            if not d.query_exists():
-                d.make_directory_with_parents()
-        except:
-            Logger.info("Can't create %s" % InformationStore._CACHE_PATH)
-
-    def artwork_exists(artist):
-        """
-            True if artwork exists
-            @param artist as str
-            @return bool
-        """
-        filepath = "%s/%s.jpg" % (InformationStore._INFO_PATH,
-                                  escape(artist))
-        return GLib.file_test(filepath, GLib.FileTest.EXISTS)
-
-    def get_artwork_path(artist, size, scale_factor, cache=True):
-        """
-            Return path for artwork
-            @param artist as string
-            @param size as int
-            @param scale_factor as int
-            @param cache as bool
-            @return path as string/None
-        """
-        try:
-            escaped_artist = escape(artist)
-            filepath_at_size = "%s/%s_%s.jpg" % (
-                InformationStore._CACHE_PATH,
-                escaped_artist,
-                size)
-            # Search in cache
-            if cache:
-                f = Gio.File.new_for_path(filepath_at_size)
-                if f.query_exists():
-                    return filepath_at_size
-            # Search in store
-            files = ["%s/%s.jpg" % (
-                     InformationStore._INFO_PATH,
-                     escaped_artist),
-                     "%s/web_%s.jpg" % (
-                     InformationStore._INFO_PATH,
-                     escaped_artist)]
-            filepath = None
-            for _filepath in files:
-                f = Gio.File.new_for_path(_filepath)
-                if f.query_exists():
-                    filepath = _filepath
-                    break
-            if filepath is None:
-                return None
-            # Empty image, disabled
-            info = f.query_info("standard::size", Gio.FileQueryInfoFlags.NONE)
-            if info.get_size() == 0:
-                return None
-            # We do not want to cache
-            if not cache:
-                return filepath
-
-            # Make cache for this size
-            size *= scale_factor
-            extract = None
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
-                                                            size,
-                                                            size)
-            if pixbuf.get_height() > pixbuf.get_width():
-                vertical = True
-            elif pixbuf.get_height() < pixbuf.get_width():
-                vertical = False
-            else:
-                extract = pixbuf
-            if extract is None:
-                extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                               True, 8, size, size)
-                if vertical:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                        filepath,
-                        size,
-                        -1,
-                        True)
-                    diff = pixbuf.get_height() - size
-                    pixbuf.copy_area(0, diff / 2, pixbuf.get_width(), size,
-                                     extract, 0, 0)
-                else:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                        filepath,
-                        -1,
-                        size,
-                        True)
-                    diff = pixbuf.get_width() - size
-                    pixbuf.copy_area(diff / 2, 0, size, pixbuf.get_height(),
-                                     extract, 0, 0)
-            extract.savev(filepath_at_size, "jpeg",
-                          ["quality"], [str(App().settings.get_value(
-                                        "cover-quality").get_int32())])
-            return filepath_at_size
-        except Exception as e:
-            Logger.error("InformationStore::get_artwork_path(): %s" % e)
-            return None
+        pass
 
     def get_bio(artist):
         """
@@ -151,7 +33,7 @@ class InformationStore:
             @param artist as str
             @return content as bytes
         """
-        filepath = "%s/%s.txt" % (InformationStore._INFO_PATH,
+        filepath = "%s/%s.txt" % (App().art._INFO_PATH,
                                   escape(artist))
         content = None
         f = Gio.File.new_for_path(filepath)
@@ -159,39 +41,13 @@ class InformationStore:
             (status, content, tag) = f.load_contents()
         return content
 
-    def add_artist_artwork(artist, data, is_web=False):
-        """
-            Add artist artwork to store
-            @param artist as str
-            @param data as bytes
-            @param is_web as bool
-        """
-        InformationStore.uncache_artwork(artist)
-        if is_web:
-            filepath = "%s/web_%s.jpg" % (InformationStore._INFO_PATH,
-                                          escape(artist))
-        else:
-            filepath = "%s/%s.jpg" % (InformationStore._INFO_PATH,
-                                      escape(artist))
-        if data is None:
-            f = Gio.File.new_for_path(filepath)
-            fstream = f.replace(None, False,
-                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
-            fstream.close()
-        else:
-            bytes = GLib.Bytes(data)
-            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-            stream.close()
-            pixbuf.savev(filepath, "jpeg", ["quality"], ["100"])
-
     def add_artist_bio(artist, content):
         """
             Add artist bio to store
             @param artist as str
             @param content as str
         """
-        filepath = "%s/%s.txt" % (InformationStore._INFO_PATH,
+        filepath = "%s/%s.txt" % (App().art._INFO_PATH,
                                   escape(artist))
         if content is not None:
             f = Gio.File.new_for_path(filepath)
@@ -200,16 +56,3 @@ class InformationStore:
             if fstream is not None:
                 fstream.write(content, None)
                 fstream.close()
-
-    def uncache_artwork(artist):
-        """
-            Remove artwork from cache
-            @param artist as str
-        """
-        try:
-            from pathlib import Path
-            search = "%s*.jpg" % escape(artist)
-            for p in Path(InformationStore._CACHE_PATH).glob(search):
-                p.unlink()
-        except Exception as e:
-            Logger.error("InformationStore::uncache_artwork(): %s" % e)

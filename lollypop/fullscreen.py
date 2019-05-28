@@ -68,7 +68,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             self.__art_size = int(ArtSize.FULLSCREEN * geometry.width / 1920)
         self.__font_size = int(14 * geometry.height / 1080)
         widget = builder.get_object("widget")
-        grid = builder.get_object("grid")
+        self.__overlay_grid = builder.get_object("overlay_grid")
         self._play_button = builder.get_object("play_btn")
         self._next_button = builder.get_object("next_btn")
         self._prev_button = builder.get_object("prev_btn")
@@ -78,10 +78,10 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         preferences = Gio.Settings.new("org.gnome.desktop.wm.preferences")
         layout = preferences.get_value("button-layout").get_string()
         if layout.split(":")[0] == "close":
-            grid.attach(close_btn, 0, 0, 1, 1)
+            self.__overlay_grid.attach(close_btn, 0, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.START)
         else:
-            grid.attach(close_btn, 2, 0, 1, 1)
+            self.__overlay_grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._artwork = builder.get_object("cover")
         if rotate_album:
@@ -111,6 +111,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self.__back_button.set_margin_top(5)
         self.__back_button.set_margin_bottom(5)
         self.__back_button.show()
+        self.__background_artwork = builder.get_object("background_artwork")
         self.__container = Container()
         self.set_stack(self.__container.stack)
         self.add_paned(self.__container.paned_one, self.__container.list_one)
@@ -206,6 +207,19 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                                                  self.__art_size,
                                                  self.__font_size)
         ProgressController.on_current_changed(self, player)
+        # Update background
+        if App().settings.get_value("artist-artwork"):
+            App().art_helper.set_artist_artwork(
+                                        player.current_track.artists[0],
+                                        self.get_allocated_width(),
+                                        self.get_allocated_height(),
+                                        self.get_scale_factor(),
+                                        self.__on_artist_artwork,
+                                        ArtHelperEffect.RESIZE |
+                                        ArtHelperEffect.BLUR_HARD |
+                                        ArtHelperEffect.DARKER)
+        else:
+            self.__background_artwork.set_surface(None)
         if player.current_track.id is not None:
             album_name = player.current_track.album.name
             if player.current_track.year:
@@ -308,6 +322,13 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             self.__timeout_id = GLib.timeout_add(60000, self.__update_datetime)
             return False
         return True
+
+    def __on_artist_artwork(self, surface):
+        """
+            Set background artwork
+            @param surface as str
+        """
+        self.__background_artwork.set_from_surface(surface)
 
     def __on_leave_notify_event(self, widget, event):
         """
