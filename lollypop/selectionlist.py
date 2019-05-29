@@ -281,27 +281,12 @@ class SelectionList(BaseView, Gtk.Overlay):
             Select listbox items
             @param object id as int
         """
-        return
-        self.__selection.unselect_all()
+        self.__listbox.unselect_all()
         if ids:
-            try:
-                # Check if items are available for selection
-                items = []
-                for i in list(ids):
-                    for item in self.__model:
-                        if item[0] == i:
-                            items.append(item)
-                for item in items:
-                    self.__selection.select_iter(item.iter)
-                self.emit("item-selected")
-                # Scroll to first item
-                if items:
-                    self.__listbox.scroll_to_cell(items[0].path,
-                                                  None,
-                                                  True,
-                                                  0, 0)
-            except:
-                self.__last_motion_event = None
+            for row in self.__listbox.get_children():
+                if row.id in ids:
+                    self.__listbox.select_row(row)
+            self.emit("item-selected")
 
     def grab_focus(self):
         """
