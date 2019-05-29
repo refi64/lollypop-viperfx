@@ -103,7 +103,6 @@ class FastScroll(Gtk.ScrolledWindow):
         label.show()
         self.__grid.add(label)
         GLib.timeout_add(500, self.__check_value_to_mark)
-        GLib.timeout_add(500, self.__set_margin)
 
     def show(self):
         """
