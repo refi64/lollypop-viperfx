@@ -33,8 +33,9 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         Gtk.ScrolledWindow.__init__(self)
         self.__main_scrolled = scrolled
+        self.__leave_timeout_id = None
         self.get_style_context().add_class("no-border")
-        self.set_margin_end(2)
+        self.set_margin_end(10)
         self.set_vexpand(True)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.EXTERNAL)
@@ -230,3 +231,15 @@ class FastScroll(Gtk.ScrolledWindow):
         if self.__chars:
             GLib.idle_add(self.__check_value_to_mark)
             GLib.idle_add(self.__set_margin)
+
+    def __on_leave_notify(self, widget, event):
+        """
+            Force hide after a timeout that can be killed by show
+        """
+        def hide():
+            self.__leave_timeout_id = None
+            self.hide()
+        if self.__leave_timeout_id is not None:
+            GLib.source_remove(self.__leave_timeout_id)
+            self.__leave_timeout_id = None
+        self.__leave_timeout_id = GLib.timeout_add(250, hide)

@@ -60,7 +60,7 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__grid.show()
             self.__grid.add(self.__artwork)
             self.__grid.add(self.__label)
-            self.__grid.set_margin_end(15)
+            self.__grid.set_margin_end(20)
             self.add(self.__grid)
             self.set_artwork()
 
@@ -182,6 +182,8 @@ class SelectionList(BaseView, Gtk.Overlay):
         self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
         self.__scrolled.add(self.__listbox)
+        self.__scrolled.connect("enter-notify-event", self.__on_enter_notify)
+        self.__scrolled.connect("leave-notify-event", self.__on_leave_notify)
         self.__scrolled.show()
         self.add(self.__scrolled)
         self.__fastscroll = FastScroll(self.__listbox,
@@ -197,10 +199,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             @param type as SelectionListMask
         """
         self.__mask = self.__base_type | type
-        if self.__mask & SelectionListMask.ARTISTS:
-            self.__scrolled.get_vscrollbar().hide()
-        else:
-            self.__scrolled.get_vscrollbar().show()
 
     def populate(self, values):
         """
@@ -221,7 +219,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             if child.id == object_id:
                 child.destroy()
                 break
-        self.__update_fastscroll_visibility()
 
     def add_value(self, value):
         """
@@ -234,7 +231,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             if child.id == value[0]:
                 return
         self.__add_value(value[0], value[1], value[2])
-        self.__update_fastscroll_visibility()
 
     def update_value(self, object_id, name):
         """
@@ -253,7 +249,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             self.__add_value((object_id, name, name))
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
-        self.__update_fastscroll_visibility()
 
     def update_values(self, values):
         """
@@ -274,7 +269,6 @@ class SelectionList(BaseView, Gtk.Overlay):
                 self.__add_value(value)
         if self.__mask & SelectionListMask.ARTISTS:
             self.__fastscroll.populate()
-        self.__update_fastscroll_visibility()
 
     def select_ids(self, ids=[]):
         """
@@ -302,7 +296,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             child.destroy()
         self.__fastscroll.clear()
         self.__fastscroll.clear_chars()
-        self.__update_fastscroll_visibility()
 
     def get_headers(self, mask):
         """
@@ -386,18 +379,6 @@ class SelectionList(BaseView, Gtk.Overlay):
 #######################
 # PRIVATE             #
 #######################
-    def __update_fastscroll_visibility(self):
-        """
-            Show fastscroll if view scrollable
-        """
-        adj = self.__scrolled.get_vadjustment()
-        if adj is None:
-            return
-        if adj.get_upper() > self.__scrolled.get_allocated_height():
-            self.__fastscroll.show()
-        else:
-            self.__fastscroll.hide()
-
     def __add_values(self, values):
         """
             Add values to the list
@@ -411,7 +392,6 @@ class SelectionList(BaseView, Gtk.Overlay):
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
             self.emit("populated")
-            self.__update_fastscroll_visibility()
             self.__sort = True
 
     def __add_value(self, rowid, name, sortname):
@@ -499,6 +479,31 @@ class SelectionList(BaseView, Gtk.Overlay):
                 if row.id >= 0 and row.name == artist:
                     row.set_artwork()
                     break
+
+    def __on_enter_notify(self, widget, event):
+        """
+            Disable shortcuts
+            @param widget as Gtk.widget
+            @param event as Gdk.Event
+        """
+        if widget.get_vadjustment().get_upper() >\
+                widget.get_allocated_height() and\
+                self.__mask & SelectionListMask.ARTISTS:
+            self.__fastscroll.show()
+
+    def __on_leave_notify(self, widget, event):
+        """
+            Hide popover
+            @param widget as Gtk.widget
+            @param event as GdK.Event
+        """
+        allocation = widget.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
+            if self.__mask & SelectionListMask.ARTISTS:
+                self.__fastscroll.hide()
 
     def __on_row_activated(self, listbox, row):
         """
