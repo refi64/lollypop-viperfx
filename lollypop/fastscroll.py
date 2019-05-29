@@ -102,7 +102,8 @@ class FastScroll(Gtk.ScrolledWindow):
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▼")
         label.show()
         self.__grid.add(label)
-        GLib.timeout_add(500, self.__check_value_to_mark)
+        GLib.idle_add(self.__check_value_to_mark)
+        GLib.idle_add(self.__set_margin)
 
     def show(self):
         """
@@ -123,6 +124,21 @@ class FastScroll(Gtk.ScrolledWindow):
 #######################
 # PRIVATE             #
 #######################
+    def __set_margin(self):
+        """
+            Get top non static entry and set margin based on it position
+        """
+        margin = 0
+        for row in self.__listbox.get_children():
+            if row.id >= 0:
+                values = row.translate_coordinates(self.__main_scrolled, 0, 0)
+                if values is not None:
+                    margin = values[1] + 5
+                if margin < 5:
+                    margin = 5
+                self.set_margin_top(margin)
+                break
+
     def __check_value_to_mark(self):
         """
             Look at visible listbox range, and mark char as needed
@@ -213,3 +229,4 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         if self.__chars:
             GLib.idle_add(self.__check_value_to_mark)
+            GLib.idle_add(self.__set_margin)

@@ -52,11 +52,7 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__artwork = Gtk.Image.new()
             self.__label = Gtk.Label.new()
             self.__label.set_markup(GLib.markup_escape_text(name))
-            self.__label.set_line_wrap_mode(Pango.WrapMode.WORD)
-            self.__label.set_lines(2)
             self.__label.set_ellipsize(Pango.EllipsizeMode.END)
-            self.__label.set_justify(Gtk.Justification.LEFT)
-            self.__label.set_xalign(0)
             self.__label.set_property("has-tooltip", True)
             self.__label.connect("query-tooltip", on_query_tooltip)
             self.__label.show()
@@ -129,15 +125,11 @@ class SelectionListRow(Gtk.ListBoxRow):
             @param small as bool
         """
         if small:
-            self.__label.set_line_wrap(True)
-            self.__label.set_lines(2)
             self.__grid.set_column_spacing(5)
             self.__grid.set_margin_start(2)
             self.__grid.set_margin_top(2)
             self.__grid.set_margin_bottom(2)
         else:
-            self.__label.set_line_wrap(False)
-            self.__label.set_lines(1)
             self.__grid.set_column_spacing(10)
             self.__grid.set_margin_start(5)
             self.__grid.set_margin_top(5)
@@ -241,7 +233,7 @@ class SelectionList(BaseView, Gtk.Overlay):
         for child in self.__listbox.get_children():
             if child.id == value[0]:
                 return
-        self.__add_value(value)
+        self.__add_value(value[0], value[1], value[2])
         self.__update_fastscroll_visibility()
 
     def update_value(self, object_id, name):
@@ -413,8 +405,10 @@ class SelectionList(BaseView, Gtk.Overlay):
         """
             Show fastscroll if view scrollable
         """
-        if self.__scrolled.get_vadjustment().get_upper() >\
-                self.__scrolled.get_allocated_height():
+        adj = self.__scrolled.get_vadjustment()
+        if adj is None:
+            return
+        if adj.get_upper() > self.__scrolled.get_allocated_height():
             self.__fastscroll.show()
         else:
             self.__fastscroll.hide()

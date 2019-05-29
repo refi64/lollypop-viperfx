@@ -93,8 +93,8 @@ class InformationController:
                 width,
                 height,
                 self._artwork.get_scale_factor(),
-                self._on_artwork,
-                self.__effect)
+                self.__effect,
+                self._on_artwork,)
         elif App().player.current_track.id is not None:
             if self.__per_track_cover:
                 effect = self.__effect | ArtHelperEffect.NO_CACHE
@@ -109,8 +109,8 @@ class InformationController:
                 width,
                 height,
                 self._artwork.get_scale_factor(),
-                self._on_artwork,
-                effect)
+                effect,
+                self._on_artwork,)
             if self.__show_tooltip:
                 self._artwork.set_tooltip_text(
                     App().player.current_track.album.name)

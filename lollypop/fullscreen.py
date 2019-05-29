@@ -310,9 +310,9 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
-                                        self.__on_artist_artwork,
                                         ArtHelperEffect.BLUR |
-                                        ArtHelperEffect.DARKER)
+                                        ArtHelperEffect.DARKER,
+                                        self.__on_artist_artwork,)
         else:
             self.__background_artwork.set_from_surface(None)
 
