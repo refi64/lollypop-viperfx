@@ -109,13 +109,7 @@ class ArtistArt:
             else:
                 (exists, path) = self.artist_artwork_exists(artist)
                 if exists:
-                    f = Gio.File.new_for_path(path)
-                    (status, data, tag) = f.load_contents(None)
-                    bytes = GLib.Bytes(data)
-                    stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
-                        stream, None)
-                    stream.close()
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
                 # Pixbuf will be resized, cropping not needed
                 if pixbuf is not None and not effect & ArtHelperEffect.RESIZE:
                     pixbuf = self._crop_pixbuf(pixbuf)
