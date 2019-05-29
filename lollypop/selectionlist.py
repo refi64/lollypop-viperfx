@@ -428,6 +428,7 @@ class SelectionList(LazyLoadingView):
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
             self.__sort = True
+            self.emit("populated")
             GLib.idle_add(self.lazy_loading)
 
     def __add_value(self, rowid, name, sortname):
