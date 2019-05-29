@@ -202,12 +202,13 @@ class SelectionList(LazyLoadingView):
         self.__mask = 0
         self.__height = SelectionListRow.get_best_height(self)
         self.__listbox = Gtk.ListBox()
-        self.__listbox.connect("row-activated", self.__on_row_activated)
+        self.__listbox.connect("row-selected", self.__on_row_selected)
         self.__listbox.connect("button-release-event",
                                self.__on_button_release_event)
         self.__listbox.connect("key-press-event",
                                self.__on_key_press_event)
         self.__listbox.set_sort_func(self.__sort_func)
+        self.__listbox.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.__listbox.show()
         self._viewport.add(self.__listbox)
         self._scrolled.connect("enter-notify-event", self.__on_enter_notify)
@@ -506,7 +507,16 @@ class SelectionList(LazyLoadingView):
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
             popover.popup()
-            return True
+        elif event.button == 1:
+            state = event.get_state()
+            if state & Gdk.ModifierType.CONTROL_MASK or\
+                    state & Gdk.ModifierType.SHIFT_MASK:
+                return False
+            else:
+                listbox.unselect_all()
+                row = listbox.get_row_at_y(event.y)
+                row.activate()
+                return True
 
     def __on_artist_artwork_changed(self, art, artist):
         """
@@ -545,7 +555,7 @@ class SelectionList(LazyLoadingView):
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.hide()
 
-    def __on_row_activated(self, listbox, row):
+    def __on_row_selected(self, listbox, row):
         """
             Emit selected item signal
         """
