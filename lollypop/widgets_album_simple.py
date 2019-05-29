@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_album import AlbumWidget
 from lollypop.helper_overlay_album import OverlayAlbumHelper
-from lollypop.define import App, ArtSize, Shuffle, ViewType, ArtHelperEffect
+from lollypop.define import App, ArtSize, Shuffle, ViewType, ArtBehaviour
 from lollypop.utils import on_query_tooltip, on_realize
 
 
@@ -123,7 +123,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                            self.__art_size,
                                            self.__art_size,
                                            self._artwork.get_scale_factor(),
-                                           ArtHelperEffect.SAVE,
+                                           ArtBehaviour.SAVE,
                                            self.__on_album_artwork)
 
     def do_get_preferred_width(self):

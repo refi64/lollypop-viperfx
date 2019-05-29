@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.define import App, ArtSize, ArtBehaviour
 
 
 class NextPopover(Gtk.Popover):
@@ -52,7 +52,7 @@ class NextPopover(Gtk.Popover):
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
                                            self.__cover.get_scale_factor(),
-                                           ArtHelperEffect.SAVE,
+                                           ArtBehaviour.SAVE,
                                            self.__on_album_artwork)
         self.__cover.set_tooltip_text(App().player.next_track.album.name)
         queue = App().player.queue

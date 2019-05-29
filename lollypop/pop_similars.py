@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gio, GLib, Pango, GObject
 
-from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.define import App, ArtSize, ArtBehaviour
 from lollypop.widgets_utils import Popover
 from lollypop.information_store import InformationStore
 from lollypop.logger import Logger
@@ -82,7 +82,7 @@ class ArtistRow(Gtk.ListBoxRow):
                                                 ArtSize.ARTIST_SMALL,
                                                 ArtSize.ARTIST_SMALL,
                                                 scale_factor,
-                                                ArtHelperEffect.SAVE,
+                                                ArtBehaviour.SAVE,
                                                 self.__on_artist_artwork,)
         except Exception as e:
             Logger.error("ArtistRow::__on_uri_content(): %s", e)

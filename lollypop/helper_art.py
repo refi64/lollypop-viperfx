@@ -15,7 +15,7 @@ from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
 from PIL import Image, ImageFilter
 import cairo
 
-from lollypop.define import App, ArtHelperEffect
+from lollypop.define import App, ArtBehaviour
 from lollypop.utils import get_round_surface
 
 
@@ -57,7 +57,7 @@ class ArtHelper(GObject.Object):
             @param album as Album
             @param width as int
             @param height as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @param callback as function
         """
         App().task_helper.run(self.__get_album_artwork,
@@ -82,7 +82,7 @@ class ArtHelper(GObject.Object):
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @param callback as function
         """
         App().task_helper.run(self.__get_radio_artwork,
@@ -107,7 +107,7 @@ class ArtHelper(GObject.Object):
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @param callback as function
         """
         App().task_helper.run(self.__get_artist_artwork,
@@ -134,26 +134,26 @@ class ArtHelper(GObject.Object):
             @param pixbuf as Gdk.Pixbuf
             @param size as int
             @param scale_factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @param callback as function
         """
         surface = None
         if pixbuf is not None:
-            if effect & ArtHelperEffect.RESIZE:
+            if effect & ArtBehaviour.RESIZE:
                 pixbuf = pixbuf.scale_simple(width * scale_factor,
                                              height * scale_factor,
                                              GdkPixbuf.InterpType.NEAREST)
-            if effect & ArtHelperEffect.BLUR:
+            if effect & ArtBehaviour.BLUR:
                 pixbuf = self.__get_blur(pixbuf, 25)
-            elif effect & ArtHelperEffect.BLUR_HARD:
+            elif effect & ArtBehaviour.BLUR_HARD:
                 pixbuf = self.__get_blur(pixbuf, 50)
-            if effect & ArtHelperEffect.ROUNDED:
+            if effect & ArtBehaviour.ROUNDED:
                 radius = pixbuf.get_width() / 2
                 surface = get_round_surface(pixbuf, scale_factor, radius)
             else:
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                         pixbuf, scale_factor, None)
-            if effect & ArtHelperEffect.DARKER:
+            if effect & ArtBehaviour.DARKER:
                 self.__set_color(surface, 0, 0, 0)
         callback(surface, *args)
 
@@ -214,7 +214,7 @@ class ArtHelper(GObject.Object):
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @return GdkPixbuf.Pixbuf
         """
         return App().art.get_album_artwork(album, width, height,
@@ -227,7 +227,7 @@ class ArtHelper(GObject.Object):
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @return GdkPixbuf.Pixbuf
         """
         return App().art.get_radio_artwork(radio, width, height,

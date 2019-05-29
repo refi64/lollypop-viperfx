@@ -14,7 +14,7 @@ from gi.repository import Gtk, GObject
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.define import App, ArtSize, ArtBehaviour
 from lollypop.helper_overlay_album import OverlayAlbumHelper
 from lollypop.utils import on_realize
 
@@ -48,7 +48,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                 self.__art_size,
                 self.__art_size,
                 self._artwork.get_scale_factor(),
-                ArtHelperEffect.SAVE,
+                ArtBehaviour.SAVE,
                 self.__on_album_artwork)
         self._overlay = Gtk.Overlay.new()
         self._overlay.show()
@@ -116,7 +116,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                 self.__art_size,
                 self.__art_size,
                 self._artwork.get_scale_factor(),
-                ArtHelperEffect.NONE,
+                ArtBehaviour.NONE,
                 self.__on_album_artwork)
 
     def __on_album_artwork(self, surface):

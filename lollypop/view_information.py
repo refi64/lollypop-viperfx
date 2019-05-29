@@ -18,7 +18,7 @@ from lollypop.define import App, ArtSize, ViewType, MARGIN, MARGIN_SMALL
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape
-from lollypop.helper_art import ArtHelperEffect
+from lollypop.helper_art import ArtBehaviour
 from lollypop.information_store import InformationStore
 from lollypop.view_albums_list import AlbumsListView
 from lollypop.view import BaseView
@@ -155,8 +155,8 @@ class InformationView(BaseView, Gtk.Bin):
                                     ArtSize.ARTIST_SMALL * 3,
                                     ArtSize.ARTIST_SMALL * 3,
                                     self.__artist_artwork.get_scale_factor(),
-                                    ArtHelperEffect.ROUNDED |
-                                    ArtHelperEffect.SAVE,
+                                    ArtBehaviour.ROUNDED |
+                                    ArtBehaviour.SAVE,
                                     self.__on_artist_artwork)
             albums_view = AlbumsListView(ViewType.POPOVER)
             albums_view.set_size_request(300, -1)

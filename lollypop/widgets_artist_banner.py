@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib, Gdk
 
 from lollypop.objects import Album
-from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.define import App, ArtSize, ArtBehaviour
 
 
 class ArtistBannerWidget(Gtk.Overlay):
@@ -117,10 +117,10 @@ class ArtistBannerWidget(Gtk.Overlay):
                 width + 100,
                 height,
                 self.__artwork.get_scale_factor(),
-                ArtHelperEffect.RESIZE |
-                ArtHelperEffect.BLUR_HARD |
-                ArtHelperEffect.DARKER |
-                ArtHelperEffect.SAVE,
+                ArtBehaviour.RESIZE |
+                ArtBehaviour.BLUR_HARD |
+                ArtBehaviour.DARKER |
+                ArtBehaviour.SAVE,
                 self.__on_album_artwork)
 
     def __handle_size_allocate(self, allocation):
@@ -140,10 +140,10 @@ class ArtistBannerWidget(Gtk.Overlay):
                                         allocation.width + 100,
                                         allocation.height,
                                         self.get_scale_factor(),
-                                        ArtHelperEffect.RESIZE |
-                                        ArtHelperEffect.BLUR_HARD |
-                                        ArtHelperEffect.DARKER |
-                                        ArtHelperEffect.SAVE,
+                                        ArtBehaviour.RESIZE |
+                                        ArtBehaviour.BLUR_HARD |
+                                        ArtBehaviour.DARKER |
+                                        ArtBehaviour.SAVE,
                                         self.__on_artist_artwork)
         else:
             self.__use_album_artwork(allocation.width, allocation.height)

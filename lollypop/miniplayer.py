@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GObject, GLib
 
-from lollypop.helper_art import ArtHelperEffect
+from lollypop.helper_art import ArtBehaviour
 from lollypop.controller_information import InformationController
 from lollypop.controller_progress import ProgressController
 from lollypop.controller_playback import PlaybackController
@@ -38,8 +38,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
         self.__cover = None
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, False,
-                                       ArtHelperEffect.BLUR_HARD |
-                                       ArtHelperEffect.DARKER)
+                                       ArtBehaviour.BLUR_HARD |
+                                       ArtBehaviour.DARKER)
         ProgressController.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()
@@ -164,7 +164,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                 ArtSize.MINIPLAYER,
                 ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
-                ArtHelperEffect.SAVE,
+                ArtBehaviour.SAVE,
                 self.__on_artwork)
         else:
             App().art_helper.set_album_artwork(
@@ -172,7 +172,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                 ArtSize.MINIPLAYER,
                 ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
-                ArtHelperEffect.SAVE,
+                ArtBehaviour.SAVE,
                 self.__on_artwork)
 
     def __handle_size_allocate(self, allocation):

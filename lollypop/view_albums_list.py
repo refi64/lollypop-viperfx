@@ -20,7 +20,7 @@ from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
 from lollypop.define import ArtSize, App, ViewType, MARGIN, MARGIN_SMALL, Type
-from lollypop.define import ArtHelperEffect
+from lollypop.define import ArtBehaviour
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_row_dnd import DNDRow
 from lollypop.logger import Logger
@@ -249,7 +249,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
                                            self._artwork.get_scale_factor(),
-                                           ArtHelperEffect.SAVE,
+                                           ArtBehaviour.SAVE,
                                            self.__on_album_artwork)
 
     @property

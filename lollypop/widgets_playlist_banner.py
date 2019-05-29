@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from random import choice
 
 from lollypop.objects import Track
-from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.define import App, ArtSize, ArtBehaviour
 
 
 class PlaylistBannerWidget(Gtk.Overlay):
@@ -115,10 +115,10 @@ class PlaylistBannerWidget(Gtk.Overlay):
                 allocation.width + 100,
                 allocation.height,
                 self.__artwork.get_scale_factor(),
-                ArtHelperEffect.RESIZE |
-                ArtHelperEffect.BLUR_HARD |
-                ArtHelperEffect.DARKER |
-                ArtHelperEffect.SAVE,
+                ArtBehaviour.RESIZE |
+                ArtBehaviour.BLUR_HARD |
+                ArtBehaviour.DARKER |
+                ArtBehaviour.SAVE,
                 self.__on_album_artwork)
 
     def __on_album_artwork(self, surface):

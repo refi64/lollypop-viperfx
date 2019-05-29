@@ -20,7 +20,7 @@ from lollypop.controller_information import InformationController
 from lollypop.utils import escape, get_network_available
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
-from lollypop.helper_art import ArtHelperEffect
+from lollypop.helper_art import ArtBehaviour
 
 
 class LyricsView(View, InformationController):
@@ -33,7 +33,7 @@ class LyricsView(View, InformationController):
             Init view
         """
         View.__init__(self)
-        InformationController.__init__(self, False, ArtHelperEffect.BLUR)
+        InformationController.__init__(self, False, ArtBehaviour.BLUR)
         self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0

@@ -14,7 +14,7 @@ from gi.repository import Gtk
 
 from random import shuffle
 
-from lollypop.define import App, SelectionListMask, ArtHelperEffect
+from lollypop.define import App, SelectionListMask, ArtBehaviour
 from lollypop.utils import get_icon_name
 from lollypop.objects import Album
 from lollypop.widgets_flowbox_rounded import RoundedFlowBoxWidget
@@ -92,8 +92,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._art_size,
                                             self._art_size,
                                             self._artwork.get_scale_factor(),
-                                            ArtHelperEffect.ROUNDED |
-                                            ArtHelperEffect.SAVE,
+                                            ArtBehaviour.ROUNDED |
+                                            ArtBehaviour.SAVE,
                                             self.__on_artist_artwork)
         else:
             album_ids = App().albums.get_ids([self._data], [])
@@ -104,8 +104,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._art_size,
                                             self._art_size,
                                             self._artwork.get_scale_factor(),
-                                            ArtHelperEffect.ROUNDED |
-                                            ArtHelperEffect.SAVE,
+                                            ArtBehaviour.ROUNDED |
+                                            ArtBehaviour.SAVE,
                                             self.__on_artist_artwork)
             else:
                 set_icon_name()

@@ -12,7 +12,7 @@
 
 from gi.repository import GLib
 
-from lollypop.define import Type, App, ArtHelperEffect
+from lollypop.define import Type, App, ArtBehaviour
 
 
 class InformationController:
@@ -20,11 +20,11 @@ class InformationController:
         Information controller (title, artist, album, cover)
     """
 
-    def __init__(self, show_tooltip=True, effect=ArtHelperEffect.SAVE):
+    def __init__(self, show_tooltip=True, effect=ArtBehaviour.SAVE):
         """
             Init controller
             @param show_tooltip as bool
-            @param effect as effect=ArtHelperEffect
+            @param effect as effect=ArtBehaviour
         """
         self._infobox = None
         self.__effect = effect
@@ -97,7 +97,7 @@ class InformationController:
                 self._on_artwork,)
         elif App().player.current_track.id is not None:
             if self.__per_track_cover:
-                effect = self.__effect | ArtHelperEffect.NO_CACHE
+                effect = self.__effect | ArtBehaviour.NO_CACHE
                 album = App().player.current_track.album
                 App().art.clean_album_cache(album)
                 album.set_tracks([App().player.current_track])

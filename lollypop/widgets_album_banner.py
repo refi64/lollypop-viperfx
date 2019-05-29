@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.define import App, ArtSize, MARGIN, Type, ViewType
-from lollypop.define import ArtHelperEffect
+from lollypop.define import ArtBehaviour
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.widgets_cover import CoverWidget
@@ -257,10 +257,10 @@ class AlbumBannerWidget(Gtk.Bin):
                 allocation.width + 100,
                 allocation.height,
                 self.__artwork.get_scale_factor(),
-                ArtHelperEffect.RESIZE |
-                ArtHelperEffect.BLUR_HARD |
-                ArtHelperEffect.DARKER |
-                ArtHelperEffect.SAVE,
+                ArtBehaviour.RESIZE |
+                ArtBehaviour.BLUR_HARD |
+                ArtBehaviour.DARKER |
+                ArtBehaviour.SAVE,
                 self.__on_album_artwork)
 
     def __on_destroy(self, widget):
@@ -285,10 +285,10 @@ class AlbumBannerWidget(Gtk.Bin):
                             self.get_allocated_height(),
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
-                            ArtHelperEffect.RESIZE |
-                            ArtHelperEffect.BLUR_HARD |
-                            ArtHelperEffect.DARKER |
-                            ArtHelperEffect.SAVE)
+                            ArtBehaviour.RESIZE |
+                            ArtBehaviour.BLUR_HARD |
+                            ArtBehaviour.DARKER |
+                            ArtBehaviour.SAVE)
 
     def __on_album_artwork(self, surface):
         """

@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Pango, GObject
 
-from lollypop.define import App, ArtSize, Type, ArtHelperEffect
+from lollypop.define import App, ArtSize, Type, ArtBehaviour
 from lollypop.utils import on_query_tooltip
 from lollypop.helper_overlay_radio import OverlayRadioHelper
 
@@ -95,7 +95,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayRadioHelper):
                                            self.__art_size,
                                            self.__art_size,
                                            self._artwork.get_scale_factor(),
-                                           ArtHelperEffect.SAVE,
+                                           ArtBehaviour.SAVE,
                                            self.__on_radio_artwork)
 
     def set_sensitive(self, b):

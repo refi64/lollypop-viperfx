@@ -15,7 +15,7 @@ from gi.repository import GLib, GdkPixbuf, Gio, Gst
 from random import choice
 
 from lollypop.tagreader import TagReader
-from lollypop.define import App, ArtSize, ArtHelperEffect
+from lollypop.define import App, ArtSize, ArtBehaviour
 from lollypop.objects import Album
 from lollypop.logger import Logger
 from lollypop.utils import escape, is_readonly
@@ -146,14 +146,14 @@ class AlbumArt:
         return uris
 
     def get_album_artwork(self, album, width, height, scale,
-                          effect=ArtHelperEffect.SAVE):
+                          effect=ArtBehaviour.SAVE):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param width as int
             @param height as int
             @param scale factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @return cairo surface
             @thread safe
         """
@@ -167,7 +167,7 @@ class AlbumArt:
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_jpg)
-            if not effect & ArtHelperEffect.NO_CACHE and f.query_exists():
+            if not effect & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 return pixbuf
             else:
@@ -186,7 +186,7 @@ class AlbumArt:
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
                     try:
-                        if effect & ArtHelperEffect.RESIZE:
+                        if effect & ArtBehaviour.RESIZE:
                             track = album.tracks[0]
                         else:
                             track = choice(album.tracks)
@@ -208,14 +208,14 @@ class AlbumArt:
                             stream, None)
                         stream.close()
                 # Pixbuf will be resized, cropping not needed
-                if pixbuf is not None and not effect & ArtHelperEffect.RESIZE:
+                if pixbuf is not None and not effect & ArtBehaviour.RESIZE:
                     pixbuf = self._crop_pixbuf(pixbuf)
                     pixbuf = pixbuf.scale_simple(width, height,
                                                  GdkPixbuf.InterpType.BILINEAR)
                 # Search on the web
                 if pixbuf is None:
                     self.cache_album_art(album.id)
-                elif effect & ArtHelperEffect.SAVE:
+                elif effect & ArtBehaviour.SAVE:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
                                      "cover-quality").get_int32())])

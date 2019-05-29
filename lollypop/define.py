@@ -41,7 +41,7 @@ class GstPlayFlags:
     GST_PLAY_FLAG_TEXT = 1 << 3   # We want subtitle output
 
 
-class ArtHelperEffect:
+class ArtBehaviour:
     NONE = 1 << 1
     ROUNDED = 1 << 2
     BLUR = 1 << 3

@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, Gst
 from datetime import datetime
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ArtHelperEffect, Type
+from lollypop.define import App, ArtSize, ArtBehaviour, Type
 from lollypop.controller_information import InformationController
 from lollypop.controller_playback import PlaybackController
 from lollypop.controller_progress import ProgressController
@@ -46,9 +46,9 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         ProgressController.__init__(self)
         if rotate_album:
             InformationController.__init__(self, False,
-                                           ArtHelperEffect.ROUNDED)
+                                           ArtBehaviour.ROUNDED)
         else:
-            InformationController.__init__(self, False, ArtHelperEffect.NONE)
+            InformationController.__init__(self, False, ArtBehaviour.NONE)
         self.set_application(app)
         self.__timeout_id = None
         self.__signal1_id = self.__signal2_id = None
@@ -286,11 +286,11 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             context.add_class("image-rotate")
             context.remove_class("cover-frame")
             InformationController.__init__(self, False,
-                                           ArtHelperEffect.ROUNDED)
+                                           ArtBehaviour.ROUNDED)
         else:
             context.remove_class("image-rotate")
             context.add_class("cover-frame")
-            InformationController.__init__(self, False, ArtHelperEffect.NONE)
+            InformationController.__init__(self, False, ArtBehaviour.NONE)
         InformationController.on_current_changed(self,
                                                  self.__art_size,
                                                  self.__font_size)
@@ -310,8 +310,8 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
-                                        ArtHelperEffect.BLUR |
-                                        ArtHelperEffect.DARKER,
+                                        ArtBehaviour.BLUR |
+                                        ArtBehaviour.DARKER,
                                         self.__on_artist_artwork,)
         else:
             self.__background_artwork.set_from_surface(None)

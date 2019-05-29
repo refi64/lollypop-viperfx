@@ -18,7 +18,7 @@ from locale import strcoll
 from lollypop.view import LazyLoadingView
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
-from lollypop.define import SidebarContent, ArtHelperEffect
+from lollypop.define import SidebarContent, ArtBehaviour
 from lollypop.logger import Logger
 from lollypop.utils import get_icon_name, on_query_tooltip
 from lollypop.shown import ShownLists, ShownPlaylists
@@ -116,8 +116,8 @@ class SelectionListRow(Gtk.ListBoxRow):
                                     ArtSize.ARTIST_SMALL,
                                     ArtSize.ARTIST_SMALL,
                                     self.get_scale_factor(),
-                                    ArtHelperEffect.ROUNDED |
-                                    ArtHelperEffect.SAVE,
+                                    ArtBehaviour.ROUNDED |
+                                    ArtBehaviour.SAVE,
                                     self.__on_artist_artwork)
             self.__artwork.show()
         elif self.__rowid < 0:

@@ -12,7 +12,7 @@
 
 from gi.repository import GLib, GdkPixbuf, Gio
 
-from lollypop.define import App, ArtHelperEffect
+from lollypop.define import App, ArtBehaviour
 from lollypop.logger import Logger
 from lollypop.utils import escape
 
@@ -82,14 +82,14 @@ class ArtistArt:
             pixbuf.savev(filepath, "jpeg", ["quality"], ["100"])
 
     def get_artist_artwork(self, artist, width, height, scale,
-                           effect=ArtHelperEffect.SAVE):
+                           effect=ArtBehaviour.SAVE):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param artist as str
             @param width as int
             @param height as int
             @param scale factor as int
-            @param effect as ArtHelperEffect
+            @param effect as ArtBehaviour
             @return cairo surface
             @thread safe
         """
@@ -103,7 +103,7 @@ class ArtistArt:
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_jpg)
-            if not effect & ArtHelperEffect.NO_CACHE and f.query_exists():
+            if not effect & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 return pixbuf
             else:
@@ -111,11 +111,11 @@ class ArtistArt:
                 if exists:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
                 # Pixbuf will be resized, cropping not needed
-                if pixbuf is not None and not effect & ArtHelperEffect.RESIZE:
+                if pixbuf is not None and not effect & ArtBehaviour.RESIZE:
                     pixbuf = self._crop_pixbuf(pixbuf)
                     pixbuf = pixbuf.scale_simple(width, height,
                                                  GdkPixbuf.InterpType.BILINEAR)
-                if pixbuf is not None and effect & ArtHelperEffect.SAVE:
+                if pixbuf is not None and effect & ArtBehaviour.SAVE:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
                                      "cover-quality").get_int32())])
