@@ -249,7 +249,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
                                            self._artwork.get_scale_factor(),
-                                           ArtHelperEffect.NONE,
+                                           ArtHelperEffect.SAVE,
                                            self.__on_album_artwork)
 
     @property

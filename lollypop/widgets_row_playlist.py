@@ -112,7 +112,7 @@ class PlaylistRow(Row, DNDRow):
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
                                            self.__artwork.get_scale_factor(),
-                                           ArtHelperEffect.NONE,
+                                           ArtHelperEffect.SAVE,
                                            self.__on_album_artwork)
 
     def hide_artwork(self):

@@ -164,16 +164,16 @@ class MiniPlayer(Gtk.Bin, InformationController,
                 ArtSize.MINIPLAYER,
                 ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
-                self.__on_artwork,
-                ArtHelperEffect.NONE)
+                ArtHelperEffect.SAVE,
+                self.__on_artwork)
         else:
             App().art_helper.set_album_artwork(
                 App().player.current_track.album,
                 ArtSize.MINIPLAYER,
                 ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
-                self.__on_artwork,
-                ArtHelperEffect.NONE)
+                ArtHelperEffect.SAVE,
+                self.__on_artwork)
 
     def __handle_size_allocate(self, allocation):
         """

@@ -92,7 +92,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._art_size,
                                             self._art_size,
                                             self._artwork.get_scale_factor(),
-                                            ArtHelperEffect.ROUNDED,
+                                            ArtHelperEffect.ROUNDED |
+                                            ArtHelperEffect.SAVE,
                                             self.__on_artist_artwork)
         else:
             album_ids = App().albums.get_ids([self._data], [])
@@ -103,7 +104,8 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._art_size,
                                             self._art_size,
                                             self._artwork.get_scale_factor(),
-                                            ArtHelperEffect.ROUNDED,
+                                            ArtHelperEffect.ROUNDED |
+                                            ArtHelperEffect.SAVE,
                                             self.__on_artist_artwork)
             else:
                 set_icon_name()

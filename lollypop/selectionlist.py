@@ -78,7 +78,8 @@ class SelectionListRow(Gtk.ListBoxRow):
                                     ArtSize.ARTIST_SMALL,
                                     ArtSize.ARTIST_SMALL,
                                     self.get_scale_factor(),
-                                    ArtHelperEffect.ROUNDED,
+                                    ArtHelperEffect.ROUNDED |
+                                    ArtHelperEffect.SAVE,
                                     self.__on_artist_artwork)
             self.__artwork.show()
             self.__update_spacing(True)

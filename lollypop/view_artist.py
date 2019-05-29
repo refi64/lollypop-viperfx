@@ -206,7 +206,8 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                         ArtSize.BANNER,
                                         ArtSize.BANNER,
                                         self.get_scale_factor(),
-                                        ArtHelperEffect.ROUNDED,
+                                        ArtHelperEffect.ROUNDED |
+                                        ArtHelperEffect.SAVE,
                                         self.__on_artist_artwork)
         else:
             self._title_label.set_margin_start(MARGIN)

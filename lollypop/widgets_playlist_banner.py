@@ -117,7 +117,8 @@ class PlaylistBannerWidget(Gtk.Overlay):
                 self.__artwork.get_scale_factor(),
                 ArtHelperEffect.RESIZE |
                 ArtHelperEffect.BLUR_HARD |
-                ArtHelperEffect.DARKER,
+                ArtHelperEffect.DARKER |
+                ArtHelperEffect.SAVE,
                 self.__on_album_artwork)
 
     def __on_album_artwork(self, surface):

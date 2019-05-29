@@ -144,9 +144,9 @@ class ArtHelper(GObject.Object):
                                              height * scale_factor,
                                              GdkPixbuf.InterpType.NEAREST)
             if effect & ArtHelperEffect.BLUR:
-                pixbuf = self.__get_blur(pixbuf, width, height, 25)
+                pixbuf = self.__get_blur(pixbuf, 25)
             elif effect & ArtHelperEffect.BLUR_HARD:
-                pixbuf = self.__get_blur(pixbuf, width, height, 50)
+                pixbuf = self.__get_blur(pixbuf, 50)
             if effect & ArtHelperEffect.ROUNDED:
                 radius = pixbuf.get_width() / 2
                 surface = get_round_surface(pixbuf, scale_factor, radius)
@@ -174,12 +174,10 @@ class ArtHelper(GObject.Object):
         ctx.set_source_rgba(r, g, b, 0.5)
         ctx.fill()
 
-    def __get_blur(self, pixbuf, w, h, gaussian):
+    def __get_blur(self, pixbuf, gaussian):
         """
             Blur surface using PIL
             @param pixbuf as GdkPixbuf.Pixbuf
-            @param w as int
-            @param h as int
             @param gaussian as int
             @return GdkPixbuf.Pixbuf
         """
@@ -219,9 +217,6 @@ class ArtHelper(GObject.Object):
             @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
-        # Do not save blur to cache
-        if not effect & (ArtHelperEffect.BLUR | ArtHelperEffect.BLUR_HARD):
-            effect |= ArtHelperEffect.SAVE
         return App().art.get_album_artwork(album, width, height,
                                            scale_factor, effect)
 
@@ -235,11 +230,8 @@ class ArtHelper(GObject.Object):
             @param effect as ArtHelperEffect
             @return GdkPixbuf.Pixbuf
         """
-        # Do not save blur to cache
-        cache = False if effect & (ArtHelperEffect.BLUR |
-                                   ArtHelperEffect.BLUR_HARD) else True
         return App().art.get_radio_artwork(radio, width, height,
-                                           scale_factor, cache)
+                                           scale_factor, True)
 
     def __get_artist_artwork(self, artist, width, height,
                              scale_factor, effect):
@@ -251,8 +243,5 @@ class ArtHelper(GObject.Object):
             @param scale_factor as int
             @return GdkPixbuf.Pixbuf
         """
-        # Do not save blur to cache
-        if not effect & (ArtHelperEffect.BLUR | ArtHelperEffect.BLUR_HARD):
-            effect |= ArtHelperEffect.SAVE
         return App().art.get_artist_artwork(artist, width, height,
                                             scale_factor, effect)

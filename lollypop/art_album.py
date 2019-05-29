@@ -368,10 +368,10 @@ class AlbumArt:
             Get a uniq string for album
             @param album as Album
         """
-        name = "@ALBUM@%s_%s_%s" % (" ".join(album.artists)[:100],
-                                    album.name[:100],
-                                    album.year)
-        return escape(name)
+        name = "%s_%s_%s" % (" ".join(album.artists)[:100],
+                             album.name[:100],
+                             album.year)
+        return "@ALBUM@" + escape(name)
 
 #######################
 # PRIVATE             #
