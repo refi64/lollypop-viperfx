@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 from gettext import gettext as _
 from locale import strcoll
 
-from lollypop.view import BaseView
+from lollypop.view import LazyLoadingView
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
 from lollypop.define import SidebarContent, ArtHelperEffect
@@ -33,29 +33,63 @@ class SelectionListRow(Gtk.ListBoxRow):
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, rowid, name, sortname, mask):
+    def get_best_height(widget):
+        """
+            Calculate widget height
+            @param widget as Gtk.Widget
+        """
+        ctx = widget.get_pango_context()
+        layout = Pango.Layout.new(ctx)
+        layout.set_text("a", 1)
+        font_height = int(layout.get_pixel_size()[1])
+        return font_height
+
+    def __init__(self, rowid, name, sortname, mask, height):
         """
             Init row
             @param rowid as int
             @param name as str
             @param sortname as str
             @param mask as SelectionListMask
+            @param height as str
         """
         Gtk.ListBoxRow.__init__(self)
         self.__rowid = rowid
         self.__name = name
         self.__sortname = sortname
         self.__mask = mask
+
         if rowid == Type.SEPARATOR:
+            height = -1
+        elif self.__mask & SelectionListMask.ARTISTS and\
+                self.__rowid >= 0 and\
+                App().settings.get_value("artist-artwork"):
+            self.get_style_context().add_class("row")
+            if height < ArtSize.ARTIST_SMALL:
+                height = ArtSize.ARTIST_SMALL
+        elif App().settings.get_enum("sidebar-content") ==\
+                SidebarContent.DEFAULT:
+            self.get_style_context().add_class("row-big")
+        else:
+            self.get_style_context().add_class("row")
+        self.set_size_request(-1, height)
+
+    def populate(self):
+        """
+            Populate widget
+        """
+        if self.__rowid == Type.SEPARATOR:
             separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
             separator.show()
             self.add(separator)
             self.set_sensitive(False)
+            self.emit("populated")
         else:
             self.__grid = Gtk.Grid()
+            self.__grid.set_column_spacing(5)
             self.__artwork = Gtk.Image.new()
             self.__label = Gtk.Label.new()
-            self.__label.set_markup(GLib.markup_escape_text(name))
+            self.__label.set_markup(GLib.markup_escape_text(self.__name))
             self.__label.set_ellipsize(Pango.EllipsizeMode.END)
             self.__label.set_property("has-tooltip", True)
             self.__label.connect("query-tooltip", on_query_tooltip)
@@ -66,13 +100,14 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__grid.add(self.__label)
             self.__grid.set_margin_end(20)
             self.add(self.__grid)
+            self.set_artwork()
 
     def set_artwork(self):
         """
-            Set row artwork
+            set_artwork widget
         """
         if self.__rowid == Type.SEPARATOR:
-            self.emit("populated")
+            pass
         elif self.__mask & SelectionListMask.ARTISTS and\
                 self.__rowid >= 0 and\
                 App().settings.get_value("artist-artwork"):
@@ -85,18 +120,23 @@ class SelectionListRow(Gtk.ListBoxRow):
                                     ArtHelperEffect.SAVE,
                                     self.__on_artist_artwork)
             self.__artwork.show()
-            self.__update_spacing(True)
         elif self.__rowid < 0:
             icon_name = get_icon_name(self.__rowid, self.__mask)
             self.__artwork.set_from_icon_name(icon_name,
                                               Gtk.IconSize.BUTTON)
             self.__artwork.show()
-            self.__update_spacing(False)
             self.emit("populated")
         else:
             self.__artwork.hide()
-            self.__update_spacing(False)
             self.emit("populated")
+
+    @property
+    def is_populated(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return True
 
     @property
     def name(self):
@@ -125,22 +165,6 @@ class SelectionListRow(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
-    def __update_spacing(self, small):
-        """
-            Update internal spacing
-            @param small as bool
-        """
-        if small:
-            self.__grid.set_column_spacing(5)
-            self.__grid.set_margin_start(2)
-            self.__grid.set_margin_top(2)
-            self.__grid.set_margin_bottom(2)
-        else:
-            self.__grid.set_column_spacing(10)
-            self.__grid.set_margin_start(5)
-            self.__grid.set_margin_top(5)
-            self.__grid.set_margin_bottom(5)
-
     def __on_artist_artwork(self, surface):
         """
             Set artist artwork
@@ -157,7 +181,7 @@ class SelectionListRow(Gtk.ListBoxRow):
         self.emit("populated")
 
 
-class SelectionList(BaseView, Gtk.Overlay):
+class SelectionList(LazyLoadingView):
     """
         A list for artists/genres
     """
@@ -172,11 +196,11 @@ class SelectionList(BaseView, Gtk.Overlay):
             Init Selection list ui
             @param base_type as SelectionListMask
         """
-        Gtk.Overlay.__init__(self)
-        BaseView.__init__(self)
+        LazyLoadingView.__init__(self)
         self.__base_type = base_type
         self.__sort = False
         self.__mask = 0
+        self.__height = SelectionListRow.get_best_height(self)
         self.__listbox = Gtk.ListBox()
         self.__listbox.connect("row-activated", self.__on_row_activated)
         self.__listbox.connect("button-release-event",
@@ -185,17 +209,18 @@ class SelectionList(BaseView, Gtk.Overlay):
                                self.__on_key_press_event)
         self.__listbox.set_sort_func(self.__sort_func)
         self.__listbox.show()
-        self.__scrolled = Gtk.ScrolledWindow()
-        self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        self.__scrolled.add(self.__listbox)
-        self.__scrolled.connect("enter-notify-event", self.__on_enter_notify)
-        self.__scrolled.connect("leave-notify-event", self.__on_leave_notify)
-        self.__scrolled.show()
-        self.add(self.__scrolled)
+        self._viewport.add(self.__listbox)
+        self._scrolled.connect("enter-notify-event", self.__on_enter_notify)
+        self._scrolled.connect("leave-notify-event", self.__on_leave_notify)
+        overlay = Gtk.Overlay.new()
+        overlay.set_hexpand(True)
+        overlay.set_vexpand(True)
+        overlay.show()
+        overlay.add(self._scrolled)
         self.__fastscroll = FastScroll(self.__listbox,
-                                       self.__scrolled)
-        self.add_overlay(self.__fastscroll)
+                                       self._scrolled)
+        overlay.add_overlay(self.__fastscroll)
+        self.add(overlay)
         self.get_style_context().add_class("sidebar")
         App().art.connect("artist-artwork-changed",
                           self.__on_artist_artwork_changed)
@@ -215,7 +240,7 @@ class SelectionList(BaseView, Gtk.Overlay):
         self.__sort = False
         self.clear()
         self.__add_values(values)
-        self.__scrolled.get_vadjustment().set_value(0)
+        self._scrolled.get_vadjustment().set_value(0)
 
     def remove_value(self, object_id):
         """
@@ -237,7 +262,8 @@ class SelectionList(BaseView, Gtk.Overlay):
         for child in self.__listbox.get_children():
             if child.id == value[0]:
                 return
-        self.__add_value(value[0], value[1], value[2])
+        row = self.__add_value(value[0], value[1], value[2])
+        row.populate()
 
     def update_value(self, object_id, name):
         """
@@ -253,7 +279,8 @@ class SelectionList(BaseView, Gtk.Overlay):
                 break
         if not found:
             self.__fastscroll.clear()
-            self.__add_value((object_id, name, name))
+            row = self.__add_value((object_id, name, name))
+            row.populate()
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
 
@@ -273,7 +300,8 @@ class SelectionList(BaseView, Gtk.Overlay):
         item_ids = set([child.id for child in self.__listbox.get_children()])
         for value in values:
             if not value[0] in item_ids:
-                self.__add_value(value)
+                row = self.__add_value(value)
+                row.populate()
         if self.__mask & SelectionListMask.ARTISTS:
             self.__fastscroll.populate()
 
@@ -391,19 +419,16 @@ class SelectionList(BaseView, Gtk.Overlay):
             Add values to the list
             @param items as [(int,str)]
         """
-        def on_row_populated(row):
-            self.__add_values(values)
-
         if values:
             (rowid, name, sortname) = values.pop(0)
             row = self.__add_value(rowid, name, sortname)
-            row.connect("populated", on_row_populated)
-            row.set_artwork()
+            self._lazy_queue.append(row)
+            GLib.idle_add(self.__add_values, values)
         else:
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
-            self.emit("populated")
             self.__sort = True
+            GLib.idle_add(self.lazy_loading)
 
     def __add_value(self, rowid, name, sortname):
         """
@@ -416,7 +441,8 @@ class SelectionList(BaseView, Gtk.Overlay):
         if rowid > 0 and sortname and\
                 self.__mask & SelectionListMask.ARTISTS:
             self.__fastscroll.add_char(sortname[0])
-        row = SelectionListRow(rowid, name, sortname, self.__mask)
+        row = SelectionListRow(rowid, name, sortname,
+                               self.__mask, self.__height)
         row.show()
         self.__listbox.add(row)
         return row
