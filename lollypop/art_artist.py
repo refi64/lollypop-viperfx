@@ -119,12 +119,8 @@ class ArtistArt:
                 # Pixbuf will be resized, cropping not needed
                 if pixbuf is not None and not effect & ArtHelperEffect.RESIZE:
                     pixbuf = self._crop_pixbuf(pixbuf)
-                    size = max(width, height)
-                    pixbuf = pixbuf.scale_simple(size, size,
+                    pixbuf = pixbuf.scale_simple(width, height,
                                                  GdkPixbuf.InterpType.BILINEAR)
-                    pixbuf = pixbuf.new_subpixbuf(0, 0,
-                                                  width,
-                                                  height)
                 if pixbuf is not None and effect & ArtHelperEffect.SAVE:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                                  [str(App().settings.get_value(
