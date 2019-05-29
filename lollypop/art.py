@@ -54,7 +54,7 @@ class Art(BaseArt, AlbumArt, ArtistArt, RadioArt, Downloader):
         """
         try:
             from pathlib import Path
-            for p in Path(self._CACHE_PATH).glob("@ALBUM@*.jpg"):
+            for p in Path(self._CACHE_PATH).glob("*.jpg"):
                 p.unlink()
         except Exception as e:
             Logger.error("Art::clean_all_cache(): %s", e)
