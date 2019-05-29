@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk, Pango, GLib
 
-from lollypop.define import App, ArtSize, Type, MARGIN_SMALL
+from lollypop.define import App, ArtSize, Type, MARGIN_SMALL, ArtHelperEffect
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -113,6 +113,7 @@ class QueueRow(Row, DNDRow):
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
                                            self.__artwork.get_scale_factor(),
+                                           ArtHelperEffect.NONE,
                                            self.__on_album_artwork)
             self.__artwork.set_margin_top(2)
             self.set_margin_bottom(2)

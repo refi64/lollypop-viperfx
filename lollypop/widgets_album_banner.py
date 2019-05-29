@@ -257,10 +257,10 @@ class AlbumBannerWidget(Gtk.Bin):
                 allocation.width + 100,
                 allocation.height,
                 self.__artwork.get_scale_factor(),
-                self.__on_album_artwork,
                 ArtHelperEffect.RESIZE |
                 ArtHelperEffect.BLUR_HARD |
-                ArtHelperEffect.DARKER)
+                ArtHelperEffect.DARKER,
+                self.__on_album_artwork)
 
     def __on_destroy(self, widget):
         """

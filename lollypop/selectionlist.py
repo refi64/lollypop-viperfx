@@ -16,13 +16,146 @@ from gettext import gettext as _
 from locale import strcoll
 
 from lollypop.view import BaseView
-from lollypop.cellrenderer import CellRendererArtist
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
-from lollypop.define import SidebarContent
+from lollypop.define import SidebarContent, ArtHelperEffect
 from lollypop.logger import Logger
-from lollypop.utils import get_icon_name
+from lollypop.utils import get_icon_name, on_query_tooltip
 from lollypop.shown import ShownLists, ShownPlaylists
+
+
+class SelectionListRow(Gtk.ListBoxRow):
+    """
+        A selection list row
+    """
+
+    def __init__(self, rowid, name, sortname, mask):
+        """
+            Init row
+            @param rowid as int
+            @param name as str
+            @param sortname as str
+            @param mask as SelectionListMask
+        """
+        Gtk.ListBoxRow.__init__(self)
+        self.__rowid = rowid
+        self.__name = name
+        self.__sortname = sortname
+        self.__mask = mask
+        if rowid == Type.SEPARATOR:
+            separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
+            separator.show()
+            self.add(separator)
+            self.set_sensitive(False)
+        else:
+            self.__grid = Gtk.Grid()
+            self.__artwork = Gtk.Image.new()
+            self.__label = Gtk.Label.new()
+            self.__label.set_markup(GLib.markup_escape_text(name))
+            self.__label.set_line_wrap_mode(Pango.WrapMode.WORD)
+            self.__label.set_lines(2)
+            self.__label.set_ellipsize(Pango.EllipsizeMode.END)
+            self.__label.set_justify(Gtk.Justification.LEFT)
+            self.__label.set_xalign(0)
+            self.__label.set_property("has-tooltip", True)
+            self.__label.connect("query-tooltip", on_query_tooltip)
+            self.__label.show()
+            self.__grid.show()
+            self.__grid.show()
+            self.__grid.add(self.__artwork)
+            self.__grid.add(self.__label)
+            self.__grid.set_margin_end(15)
+            self.add(self.__grid)
+            self.set_artwork()
+
+    def set_artwork(self):
+        """
+            Set row artwork
+        """
+        if self.__rowid == Type.SEPARATOR:
+            return
+        if self.__mask & SelectionListMask.ARTISTS and\
+                self.__rowid >= 0 and\
+                App().settings.get_value("artist-artwork"):
+            App().art_helper.set_artist_artwork(
+                                    self.__name,
+                                    ArtSize.ARTIST_SMALL,
+                                    ArtSize.ARTIST_SMALL,
+                                    self.get_scale_factor(),
+                                    ArtHelperEffect.ROUNDED,
+                                    self.__on_artist_artwork)
+            self.__artwork.show()
+            self.__update_spacing(True)
+        elif self.__rowid < 0:
+            icon_name = get_icon_name(self.__rowid, self.__mask)
+            self.__artwork.set_from_icon_name(icon_name,
+                                              Gtk.IconSize.BUTTON)
+            self.__artwork.show()
+            self.__update_spacing(False)
+        else:
+            self.__artwork.hide()
+            self.__update_spacing(False)
+
+    @property
+    def name(self):
+        """
+            Get row name
+            @return str
+        """
+        return self.__name
+
+    @property
+    def sortname(self):
+        """
+            Get row sortname
+            @return str
+        """
+        return self.__sortname
+
+    @property
+    def id(self):
+        """
+            Get row id
+            @return int
+        """
+        return self.__rowid
+
+#######################
+# PRIVATE             #
+#######################
+    def __update_spacing(self, small):
+        """
+            Update internal spacing
+            @param small as bool
+        """
+        if small:
+            self.__label.set_line_wrap(True)
+            self.__label.set_lines(2)
+            self.__grid.set_column_spacing(5)
+            self.__grid.set_margin_start(2)
+            self.__grid.set_margin_top(2)
+            self.__grid.set_margin_bottom(2)
+        else:
+            self.__label.set_line_wrap(False)
+            self.__label.set_lines(1)
+            self.__grid.set_column_spacing(10)
+            self.__grid.set_margin_start(5)
+            self.__grid.set_margin_top(5)
+            self.__grid.set_margin_bottom(5)
+
+    def __on_artist_artwork(self, surface):
+        """
+            Set artist artwork
+            @param surface as cairo.Surface
+        """
+        if surface is None:
+            self.__artwork.set_from_icon_name(
+                                              "avatar-default-symbolic",
+                                              Gtk.IconSize.DND)
+        else:
+            self.__artwork.set_from_surface(surface)
+            self.__artwork.get_style_context().remove_class(
+                "artwork-icon")
 
 
 class SelectionList(BaseView, Gtk.Overlay):
@@ -43,54 +176,26 @@ class SelectionList(BaseView, Gtk.Overlay):
         Gtk.Overlay.__init__(self)
         BaseView.__init__(self)
         self.__base_type = base_type
-        self.__timeout = None
-        self.__modifier = False
-        self.__populating = False
+        self.__sort = False
         self.__mask = 0
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/SelectionList.ui")
-        builder.connect_signals(self)
-        self.__selection = builder.get_object("selection")
-        self.__selection.set_select_function(self.__selection_validation)
-        self.__selection.connect("changed", self.__on_selection_changed)
-        self.__model = Gtk.ListStore(int, str, str, str)
-        self.__model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        self.__model.set_sort_func(0, self.__sort_items)
-        self.__view = builder.get_object("view")
-        self.__view.set_model(self.__model)
-        if base_type in [SelectionListMask.LIST_ONE,
-                         SelectionListMask.LIST_TWO]:
-            self.__view.get_style_context().add_class("sidebar")
-        self.__view.set_row_separator_func(self.__row_separator_func)
-        self.__renderer0 = CellRendererArtist()
-        self.__renderer0.set_property("ellipsize-set", True)
-        self.__renderer0.set_property("ellipsize", Pango.EllipsizeMode.END)
-        self.__renderer1 = Gtk.CellRendererPixbuf()
-        # 16px for Gtk.IconSize.MENU
-        self.__renderer1.set_fixed_size(16, -1)
-        column = Gtk.TreeViewColumn("")
-        column.set_expand(True)
-        column.pack_start(self.__renderer0, True)
-        column.add_attribute(self.__renderer0, "text", 1)
-        column.add_attribute(self.__renderer0, "artist", 1)
-        column.add_attribute(self.__renderer0, "rowid", 0)
-        column.pack_start(self.__renderer1, False)
-        column.add_attribute(self.__renderer1, "icon-name", 2)
-        self.__view.append_column(column)
-        self.__view.set_property("has_tooltip", True)
+        self.__listbox = Gtk.ListBox()
+        self.__listbox.connect("row-activated", self.__on_row_activated)
+        self.__listbox.connect("button-release-event",
+                               self.__on_button_release_event)
+        self.__listbox.connect("key-press-event",
+                               self.__on_key_press_event)
+        self.__listbox.set_sort_func(self.__sort_func)
+        self.__listbox.show()
         self.__scrolled = Gtk.ScrolledWindow()
         self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
-        self.__scrolled.add(self.__view)
+        self.__scrolled.add(self.__listbox)
         self.__scrolled.show()
         self.add(self.__scrolled)
-        self.__fast_scroll = FastScroll(self.__view,
-                                        self.__model,
-                                        self.__scrolled)
-        self.add_overlay(self.__fast_scroll)
-        self.__scrolled.connect("enter-notify-event", self.__on_enter_notify)
-        self.__scrolled.connect("leave-notify-event", self.__on_leave_notify)
-
+        self.__fastscroll = FastScroll(self.__listbox,
+                                       self.__scrolled)
+        self.add_overlay(self.__fastscroll)
+        self.get_style_context().add_class("sidebar")
         App().art.connect("artist-artwork-changed",
                           self.__on_artist_artwork_changed)
 
@@ -100,46 +205,44 @@ class SelectionList(BaseView, Gtk.Overlay):
             @param type as SelectionListMask
         """
         self.__mask = self.__base_type | type
-        self.__renderer0.set_is_artists(type & SelectionListMask.ARTISTS)
+        if self.__mask & SelectionListMask.ARTISTS:
+            self.__scrolled.get_vscrollbar().hide()
+        else:
+            self.__scrolled.get_vscrollbar().show()
 
     def populate(self, values):
         """
             Populate view with values
             @param [(int, str, optional str)], will be deleted
         """
-        if self.__populating:
-            return
-        self.__populating = True
-        self.__selection.disconnect_by_func(
-                                         self.__on_selection_changed)
+        self.__sort = False
         self.clear()
         self.__add_values(values)
-        self.__selection.connect("changed",
-                                 self.__on_selection_changed)
-        self.__populating = False
-        self.emit("populated")
         self.__scrolled.get_vadjustment().set_value(0)
 
     def remove_value(self, object_id):
         """
-            Remove row from model
+            Remove id from list
             @param object id as int
         """
-        for item in self.__model:
-            if item[0] == object_id:
-                self.__model.remove(item.iter)
+        for child in self.__listbox.get_children():
+            if child.id == object_id:
+                child.destroy()
                 break
+        self.__update_fastscroll_visibility()
 
     def add_value(self, value):
         """
             Add item to list
             @param value as (int, str, optional str)
         """
+        self.__sort = True
         # Do not add value if already exists
-        for item in self.__model:
-            if item[0] == value[0]:
+        for child in self.__listbox.get_children():
+            if child.id == value[0]:
                 return
         self.__add_value(value)
+        self.__update_fastscroll_visibility()
 
     def update_value(self, object_id, name):
         """
@@ -148,52 +251,45 @@ class SelectionList(BaseView, Gtk.Overlay):
             @param name as str
         """
         found = False
-        for item in self.__model:
-            if item[0] == object_id:
-                item[1] = name
+        for child in self.__listbox.get_children():
+            if child.id == object_id:
+                child.set_name(name)
                 found = True
                 break
         if not found:
+            self.__fastscroll.clear()
             self.__add_value((object_id, name, name))
+            if self.__mask & SelectionListMask.ARTISTS:
+                self.__fastscroll.populate()
+        self.__update_fastscroll_visibility()
 
     def update_values(self, values):
         """
             Update view with values
             @param [(int, str, optional str)]
         """
-        update_fast_scroll = self.__mask & SelectionListMask.ARTISTS and\
-            self.__fast_scroll is not None
-        if update_fast_scroll:
-            self.__fast_scroll.clear()
+        if self.__mask & SelectionListMask.ARTISTS:
+            self.__fastscroll.clear()
         # Remove not found items but not devices
         value_ids = set([v[0] for v in values])
-        for item in self.__model:
-            if item[0] > Type.DEVICES and not item[0] in value_ids:
-                self.__model.remove(item.iter)
+        for child in self.__listbox.get_children():
+            if child.id > Type.DEVICES and child.id not in value_ids:
+                self.remove_value(child.id)
         # Add items which are not already in the list
-        item_ids = set([i[0] for i in self.__model])
+        item_ids = set([child.id for child in self.__listbox.get_children()])
         for value in values:
             if not value[0] in item_ids:
                 self.__add_value(value)
-        if update_fast_scroll:
-            self.__fast_scroll.populate()
-
-    def get_value(self, object_id):
-        """
-            Return value for id
-            @param id as int
-            @return value as string
-        """
-        for item in self.__model:
-            if item[0] == object_id:
-                return item[1]
-        return ""
+        if self.__mask & SelectionListMask.ARTISTS:
+            self.__fastscroll.populate()
+        self.__update_fastscroll_visibility()
 
     def select_ids(self, ids=[]):
         """
-            Make treeview select first default item
+            Select listbox items
             @param object id as int
         """
+        return
         self.__selection.unselect_all()
         if ids:
             try:
@@ -203,19 +299,15 @@ class SelectionList(BaseView, Gtk.Overlay):
                     for item in self.__model:
                         if item[0] == i:
                             items.append(item)
-                self.__selection.disconnect_by_func(
-                                         self.__on_selection_changed)
                 for item in items:
                     self.__selection.select_iter(item.iter)
-                self.__selection.connect("changed",
-                                         self.__on_selection_changed)
                 self.emit("item-selected")
                 # Scroll to first item
                 if items:
-                    self.__view.scroll_to_cell(items[0].path,
-                                               None,
-                                               True,
-                                               0, 0)
+                    self.__listbox.scroll_to_cell(items[0].path,
+                                                  None,
+                                                  True,
+                                                  0, 0)
             except:
                 self.__last_motion_event = None
 
@@ -223,17 +315,17 @@ class SelectionList(BaseView, Gtk.Overlay):
         """
             Grab focus on treeview
         """
-        self.__view.grab_focus()
+        self.__listbox.grab_focus()
 
     def clear(self):
         """
             Clear treeview
         """
-        self.__model.clear()
-        if self.__fast_scroll is not None:
-            self.__fast_scroll.clear()
-            self.__fast_scroll.clear_chars()
-            self.__fast_scroll.hide()
+        for child in self.__listbox.get_children():
+            child.destroy()
+        self.__fastscroll.clear()
+        self.__fastscroll.clear_chars()
+        self.__update_fastscroll_visibility()
 
     def get_headers(self, mask):
         """
@@ -269,7 +361,9 @@ class SelectionList(BaseView, Gtk.Overlay):
             Select first available item
         """
         try:
-            self.__selection.select_iter(self.__model[0].iter)
+            row = self.__listbox.get_children()[0]
+            self.__listbox.select_row(row)
+            self.emit("item-selected")
         except Exception as e:
             Logger.warning("SelectionList::select_first(): %s", e)
 
@@ -277,12 +371,8 @@ class SelectionList(BaseView, Gtk.Overlay):
         """
             Redraw list
         """
-        selected_ids = self.selected_ids
-        self.__view.set_model(None)
-        self.__renderer0.set_is_artists(
-            self.__mask & SelectionListMask.ARTISTS)
-        self.__view.set_model(self.__model)
-        GLib.idle_add(self.select_ids, selected_ids)
+        for row in self.__listbox.get_children():
+            row.set_artwork()
 
     @property
     def should_destroy(self):
@@ -306,7 +396,7 @@ class SelectionList(BaseView, Gtk.Overlay):
             Get items count in list
             @return int
         """
-        return len(self.__model)
+        return len(self.__listbox.get_children())
 
     @property
     def selected_ids(self):
@@ -314,152 +404,61 @@ class SelectionList(BaseView, Gtk.Overlay):
             Get selected ids
             @return array of ids as [int]
         """
-        selected_ids = []
-        (model, items) = self.__selection.get_selected_rows()
-        if model is not None:
-            for item in items:
-                selected_ids.append(model[item][0])
-        return selected_ids
-
-#######################
-# PROTECTED           #
-#######################
-    def _on_key_press_event(self, entry, event):
-        """
-            Forward to popover history listbox if needed
-            @param entry as Gtk.Entry
-            @param event as Gdk.Event
-        """
-        if event.keyval in [Gdk.KEY_Left, Gdk.KEY_Right]:
-            self.emit("pass-focus")
-
-    def _on_button_press_event(self, view, event):
-        """
-            Handle modifier
-            @param view as Gtk.TreeView
-            @param event as Gdk.Event
-        """
-        if event.button == 1:
-            view.grab_focus()
-            state = event.get_state()
-            if state & Gdk.ModifierType.CONTROL_MASK or\
-               state & Gdk.ModifierType.SHIFT_MASK:
-                self.__modifier = True
-        elif self.__base_type in [SelectionListMask.LIST_ONE,
-                                  SelectionListMask.LIST_TWO]:
-            from lollypop.pop_menu_views import ViewsMenuPopover
-            info = view.get_dest_row_at_pos(event.x, event.y)
-            if info is not None:
-                (path, position) = info
-                iterator = self.__model.get_iter(path)
-                rowid = self.__model.get_value(iterator, 0)
-            else:
-                rowid = Type.ALL
-            popover = ViewsMenuPopover(self, rowid, self.mask)
-            popover.set_relative_to(view)
-            rect = Gdk.Rectangle()
-            rect.x = event.x
-            rect.y = event.y
-            rect.width = rect.height = 1
-            popover.set_pointing_to(rect)
-            popover.popup()
-            return True
-
-    def _on_button_release_event(self, view, event):
-        """
-            Handle modifier
-            @param view as Gtk.TreeView
-            @param event as Gdk.Event
-        """
-        self.__modifier = False
-
-    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
-        """
-            Show tooltip if needed
-            @param widget as Gtk.Widget
-            @param x as int
-            @param y as int
-            @param keyboard as bool
-            @param tooltip as Gtk.Tooltip
-        """
-        def shown_sidebar_tooltip():
-            App().shown_sidebar_tooltip = True
-
-        if keyboard:
-            return True
-        (exists, tx, ty, model, path, i) = self.__view.get_tooltip_context(
-            x,
-            y,
-            False)
-        if exists:
-            ctx = self.__view.get_pango_context()
-            layout = Pango.Layout.new(ctx)
-            iterator = self.__model.get_iter(path)
-            if iterator is not None:
-                text = self.__model.get_value(iterator, 1)
-                column = self.__view.get_column(0)
-                (position, width) = column.cell_get_position(self.__renderer0)
-                if App().settings.get_value("artist-artwork") and\
-                        self.__mask & SelectionListMask.ARTISTS:
-                    width -= ArtSize.ARTIST_SMALL +\
-                        CellRendererArtist.xshift * 2
-                layout.set_ellipsize(Pango.EllipsizeMode.END)
-                if self.__model.get_value(iterator, 0) < 0:
-                    width -= 8
-                layout.set_width(Pango.units_from_double(width))
-                layout.set_text(text, -1)
-                if layout.is_ellipsized():
-                    tooltip.set_markup(GLib.markup_escape_text(text))
-                    return True
-                elif not App().shown_sidebar_tooltip:
-                    GLib.timeout_add(1000, shown_sidebar_tooltip)
-                    tooltip.set_markup(_("Right click to configure"))
-                    return True
-        return False
+        return [row.id for row in self.__listbox.get_selected_rows()]
 
 #######################
 # PRIVATE             #
 #######################
-    def __add_value(self, value):
+    def __update_fastscroll_visibility(self):
         """
-            Add value to the model
-            @param value as [int, str, optional str]
+            Show fastscroll if view scrollable
         """
-        item_id = value[0]
-        name = value[1]
-        sort = value[2]
-        if name == "":
-            name = _("Unknown")
-            icon_name = "dialog-warning-symbolic"
-        icon_name = get_icon_name(item_id, self.__mask)
-        if item_id > 0 and sort and\
-                self.__mask & SelectionListMask.ARTISTS and\
-                self.__fast_scroll is not None:
-            self.__fast_scroll.add_char(sort[0])
-        self.__model.append([item_id,
-                            name,
-                            icon_name,
-                            sort])
+        if self.__scrolled.get_vadjustment().get_upper() >\
+                self.__scrolled.get_allocated_height():
+            self.__fastscroll.show()
+        else:
+            self.__fastscroll.hide()
 
     def __add_values(self, values):
         """
             Add values to the list
             @param items as [(int,str)]
         """
-        for value in values:
-            self.__add_value(value)
-        if self.__mask & SelectionListMask.ARTISTS and\
-                self.__fast_scroll is not None:
-            self.__fast_scroll.populate()
+        if values:
+            (rowid, name, sortname) = values.pop(0)
+            self.__add_value(rowid, name, sortname)
+            GLib.idle_add(self.__add_values, values)
+        else:
+            if self.__mask & SelectionListMask.ARTISTS:
+                self.__fastscroll.populate()
+            self.emit("populated")
+            self.__update_fastscroll_visibility()
+            self.__sort = True
 
-    def __sort_items(self, model, itera, iterb, data):
+    def __add_value(self, rowid, name, sortname):
         """
-            Sort model
+            Add value to list
+            @param rowid as int
+            @param name as str
+            @param sortname as str
         """
-        if self.__populating:
+        if rowid > 0 and sortname and\
+                self.__mask & SelectionListMask.ARTISTS:
+            self.__fastscroll.add_char(sortname[0])
+        row = SelectionListRow(rowid, name, sortname, self.__mask)
+        row.show()
+        self.__listbox.add(row)
+
+    def __sort_func(self, row_a, row_b):
+        """
+            Sort rows
+            @param row_a as SelectionListRow
+            @param row_b as SelectionListRow
+        """
+        if not self.__sort:
             return False
-        a_index = model.get_value(itera, 0)
-        b_index = model.get_value(iterb, 0)
+        a_index = row_a.id
+        b_index = row_b.id
 
         # Static vs static
         if a_index < 0 and b_index < 0:
@@ -473,93 +472,57 @@ class SelectionList(BaseView, Gtk.Overlay):
         # String comparaison for non static
         else:
             if self.__mask & SelectionListMask.ARTISTS:
-                a = App().artists.get_sortname(a_index)
-                b = App().artists.get_sortname(b_index)
+                a = row_a.sortname
+                b = row_b.sortname
             else:
-                a = model.get_value(itera, 1)
-                b = model.get_value(iterb, 1)
+                a = row_a.name
+                b = row_b.name
             return strcoll(a, b)
 
-    def __row_separator_func(self, model, iterator):
+    def __on_key_press_event(self, entry, event):
         """
-            Draw a separator if needed
-            @param model as Gtk.TreeModel
-            @param iterator as Gtk.TreeIter
-        """
-        return model.get_value(iterator, 0) == Type.SEPARATOR
-
-    def __selection_validation(self, selection, model, path, current):
-        """
-            Check if selection is valid
-            @param selection as Gtk.TreeSelection
-            @param model as Gtk.TreeModel
-            @param path as Gtk.TreePath
-            @param current as bool
-            @return bool
-        """
-        ids = self.selected_ids
-        if not ids:
-            return True
-        elif self.__modifier:
-            iterator = self.__model.get_iter(path)
-            value = self.__model.get_value(iterator, 0)
-            if value < 0 and len(ids) > 1:
-                return False
-            else:
-                static = False
-                for i in ids:
-                    if i < 0:
-                        static = True
-                if static:
-                    return False
-                elif value > 0:
-                    return True
-                else:
-                    return False
-        else:
-            return True
-
-    def __on_enter_notify(self, widget, event):
-        """
-            Disable shortcuts
-            @param widget as Gtk.widget
+            Forward to popover history listbox if needed
+            @param entry as Gtk.Entry
             @param event as Gdk.Event
         """
-        if widget.get_vadjustment().get_upper() >\
-                widget.get_allocated_height() and\
-                self.__mask & SelectionListMask.ARTISTS and\
-                self.__fast_scroll is not None:
-            self.__fast_scroll.show()
+        if event.keyval in [Gdk.KEY_Left, Gdk.KEY_Right]:
+            self.emit("pass-focus")
 
-    def __on_leave_notify(self, widget, event):
+    def __on_button_release_event(self, listbox, event):
         """
-            Hide popover
-            @param widget as Gtk.widget
-            @param event as GdK.Event
+            Handle modifier
+            @param listbox as Gtk.ListBox
+            @param event as Gdk.Event
         """
-        allocation = widget.get_allocation()
-        if event.x <= 0 or\
-           event.x >= allocation.width or\
-           event.y <= 0 or\
-           event.y >= allocation.height:
-            if self.__mask & SelectionListMask.ARTISTS\
-                    and self.__fast_scroll is not None:
-                self.__fast_scroll.hide()
+        if event.button != 1 and\
+                self.__base_type in [SelectionListMask.LIST_ONE,
+                                     SelectionListMask.LIST_TWO]:
+            from lollypop.pop_menu_views import ViewsMenuPopover
+            row = listbox.get_row_at_y(event.y)
+            popover = ViewsMenuPopover(self, row.id, self.mask)
+            popover.set_relative_to(listbox)
+            rect = Gdk.Rectangle()
+            rect.x = event.x
+            rect.y = event.y
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+            popover.popup()
+            return True
 
     def __on_artist_artwork_changed(self, art, artist):
         """
             Update row
+            @param art as Art
+            @param artist as str
         """
         if self.__mask & SelectionListMask.ARTISTS:
-            self.__renderer0.on_artist_artwork_changed(artist)
-            for item in self.__model:
-                if item[1] == artist:
-                    item[1] = artist
+            for row in self.__listbox.get_children():
+                if row.id >= 0 and row.name == artist:
+                    row.set_artwork()
                     break
 
-    def __on_selection_changed(self, selection):
+    def __on_row_activated(self, listbox, row):
         """
-            Forward as "item-selected"
-            @param view as Gtk.TreeSelection
+            Emit selected item signal
         """
         self.emit("item-selected")

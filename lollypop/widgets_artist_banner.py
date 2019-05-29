@@ -117,10 +117,10 @@ class ArtistBannerWidget(Gtk.Overlay):
                 width + 100,
                 height,
                 self.__artwork.get_scale_factor(),
-                self.__on_album_artwork,
                 ArtHelperEffect.RESIZE |
                 ArtHelperEffect.BLUR_HARD |
-                ArtHelperEffect.DARKER)
+                ArtHelperEffect.DARKER,
+                self.__on_album_artwork)
 
     def __handle_size_allocate(self, allocation):
         """
@@ -139,10 +139,10 @@ class ArtistBannerWidget(Gtk.Overlay):
                                         allocation.width + 100,
                                         allocation.height,
                                         self.get_scale_factor(),
-                                        self.__on_artist_artwork,
                                         ArtHelperEffect.RESIZE |
                                         ArtHelperEffect.BLUR_HARD |
-                                        ArtHelperEffect.DARKER)
+                                        ArtHelperEffect.DARKER,
+                                        self.__on_artist_artwork)
         else:
             self.__use_album_artwork(allocation.width, allocation.height)
 

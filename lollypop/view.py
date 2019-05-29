@@ -95,6 +95,7 @@ class View(BaseView, Gtk.Grid):
         self.connect("destroy", self.__on_destroy)
         self.connect("map", self._on_map)
         self.connect("unmap", self._on_unmap)
+        self.get_style_context().add_class("view")
 
     def populate(self):
         """

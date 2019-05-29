@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ViewType, MARGIN
+from lollypop.define import App, ArtSize, ViewType, MARGIN, ArtHelperEffect
 from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
 from lollypop.view_artist_common import ArtistViewCommon
@@ -206,6 +206,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                         ArtSize.BANNER,
                                         ArtSize.BANNER,
                                         self.get_scale_factor(),
+                                        ArtHelperEffect.ROUNDED,
                                         self.__on_artist_artwork)
         else:
             self._title_label.set_margin_start(MARGIN)

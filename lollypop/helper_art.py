@@ -50,15 +50,15 @@ class ArtHelper(GObject.Object):
         return image
 
     def set_album_artwork(self, album, width, height, scale_factor,
-                          callback, effect=ArtHelperEffect.NONE):
+                          effect, callback, *args):
         """
             Set artwork for album id
             @param image as Gtk.Image
             @param album as Album
             @param width as int
             @param height as int
-            @param callback as function
             @param effect as ArtHelperEffect
+            @param callback as function
         """
         App().task_helper.run(self.__get_album_artwork,
                               album,
@@ -70,19 +70,20 @@ class ArtHelper(GObject.Object):
                                         width,
                                         height,
                                         scale_factor,
+                                        effect,
                                         callback,
-                                        effect))
+                                        *args))
 
     def set_radio_artwork(self, radio, width, height, scale_factor,
-                          callback, effect=ArtHelperEffect.NONE):
+                          effect, callback, *args):
         """
             Set artwork for album id
             @param radio as str
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param callback as function
             @param effect as ArtHelperEffect
+            @param callback as function
         """
         App().task_helper.run(self.__get_radio_artwork,
                               radio,
@@ -94,19 +95,20 @@ class ArtHelper(GObject.Object):
                                         width,
                                         height,
                                         scale_factor,
+                                        effect,
                                         callback,
-                                        effect))
+                                        *args))
 
     def set_artist_artwork(self, artist, width, height, scale_factor,
-                           callback, effect=ArtHelperEffect.ROUNDED):
+                           effect, callback, *args):
         """
             Set artwork for album id
             @param artist as str
             @param width as int
             @param height as int
             @param scale_factor as int
-            @param callback as function
             @param effect as ArtHelperEffect
+            @param callback as function
         """
         App().task_helper.run(self.__get_artist_artwork,
                               artist,
@@ -118,21 +120,22 @@ class ArtHelper(GObject.Object):
                                         width,
                                         height,
                                         scale_factor,
+                                        effect,
                                         callback,
-                                        effect))
+                                        *args))
 
 #######################
 # PROTECTED           #
 #######################
     def _on_get_artwork_pixbuf(self, pixbuf, width, height, scale_factor,
-                               callback, effect):
+                               effect, callback, *args):
         """
             Set pixbuf as surface
             @param pixbuf as Gdk.Pixbuf
             @param size as int
             @param scale_factor as int
-            @param callback as function
             @param effect as ArtHelperEffect
+            @param callback as function
         """
         surface = None
         if pixbuf is not None:
@@ -152,7 +155,7 @@ class ArtHelper(GObject.Object):
                         pixbuf, scale_factor, None)
             if effect & ArtHelperEffect.DARKER:
                 self.__set_color(surface, 0, 0, 0)
-        callback(surface)
+        callback(surface, *args)
 
 #######################
 # PRIVATE             #

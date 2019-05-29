@@ -25,27 +25,23 @@ class FastScroll(Gtk.ScrolledWindow):
         Do not call show on widget, not needed
     """
 
-    def __init__(self, view, model, scrolled):
+    def __init__(self, listbox, scrolled):
         """
             Init widget
-            @param view as Gtk.TreeView
-            @param model as Gtk.ListStore
+            @param listbox as Gtk.ListBox
             @param scrolled as Gtk.ScrolledWindow
         """
         Gtk.ScrolledWindow.__init__(self)
         self.__main_scrolled = scrolled
-        self.get_style_context().add_class("fastscroll")
-        self.__leave_timeout_id = None
-        self.set_vexpand(True)
-        self.set_margin_end(10)
         self.get_style_context().add_class("no-border")
+        self.set_margin_end(2)
+        self.set_vexpand(True)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.EXTERNAL)
         self.set_property("halign", Gtk.Align.END)
         self.get_vscrollbar().hide()
         self.__chars = []
-        self.__view = view
-        self.__model = model
+        self.__listbox = listbox
         self.__scrolled = scrolled
         self.__grid = Gtk.Grid()
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
@@ -58,7 +54,6 @@ class FastScroll(Gtk.ScrolledWindow):
         self.add(eventbox)
         self.__main_scrolled.get_vadjustment().connect(
             "value_changed", self.__on_main_scrolled)
-        self.connect("leave-notify-event", self.__on_leave_notify)
         self.connect("scroll-event", self.__on_scroll_event)
 
     def clear(self):
@@ -67,6 +62,7 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         for child in self.__grid.get_children():
             child.destroy()
+        self.hide()
 
     def clear_chars(self):
         """
@@ -87,20 +83,22 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Populate widget based on current chars
         """
+        if not self.__chars:
+            return
         label = Gtk.Label.new()
-        label.set_margin_left(10)
+        label.set_margin_start(10)
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▲")
         label.show()
         self.__grid.add(label)
         for c in sorted(self.__chars, key=strxfrm):
             label = Gtk.Label.new()
-            label.set_margin_left(10)
+            label.set_margin_start(10)
             label.set_markup('<span font="Monospace"><b>%s</b></span>' % c)
-            label.set_opacity(0.2)
+            label.set_opacity(0.4)
             label.show()
             self.__grid.add(label)
         label = Gtk.Label.new()
-        label.set_margin_left(10)
+        label.set_margin_start(10)
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▼")
         label.show()
         self.__grid.add(label)
@@ -126,49 +124,27 @@ class FastScroll(Gtk.ScrolledWindow):
 #######################
 # PRIVATE             #
 #######################
-    def __set_margin(self):
-        """
-            Get top non static entry and set margin based on it position
-        """
-        for row in self.__model:
-            if row[0] >= 0:
-                margin = self.__view.get_background_area(row.path).y + 5
-                if margin < 5:
-                    margin = 5
-                self.set_margin_top(margin)
-                break
-
     def __check_value_to_mark(self):
         """
-            Look at visible treeview range, and mark char as needed
+            Look at visible listbox range, and mark char as needed
         """
-        try:
-            (start, end) = self.__view.get_visible_range()
-            # As start may not really visible, use next
-            # start.next()
-            if start is not None and end is not None:
-                # Check if start is really visible
-                area = self.__view.get_cell_area(start)
-                if area.y + area.height / 2 < 0:
-                    start.next()
-                # Check if start is non static:
-                value = self.__get_value_for_path(start, 0)
-                while value is not None and value < 0:
-                    start.next()
-                    value = self.__get_value_for_path(start, 0)
-                # Check if end is really visible
-                area = self.__view.get_cell_area(end)
-                scrolled_allocation = self.__scrolled.get_allocation()
-                if area.y + area.height / 2 > scrolled_allocation.height:
-                    end.prev()
-                start_value = self.__get_value_for_path(start, 3)
-                end_value = self.__get_value_for_path(end, 3)
-                if start_value is not None and end_value is not None:
-                    start_value = noaccents(index_of(start_value[0])).upper()
-                    end_value = noaccents(index_of(end_value[0])).upper()
-                    self.__mark_values(start_value, end_value)
-        except:
-            pass  # get_visible_range() == None
+        start = self.__scrolled.get_vadjustment().get_value()
+        end = start + self.__scrolled.get_allocated_height()
+        start_value = None
+        end_value = None
+        for row in self.__listbox.get_children():
+            if row.id < 0:
+                continue
+            values = row.translate_coordinates(self.__listbox, 0, 0)
+            if values is not None:
+                if values[1] >= start and start_value is None:
+                    start_value = noaccents(row.sortname[0]).upper()
+                elif values[1] <= end:
+                    end_value = noaccents(row.sortname[0]).upper()
+                else:
+                    break
+        if start_value is not None and end_value is not None:
+            self.__mark_values(start_value, end_value)
 
     def __mark_values(self, start, end):
         """
@@ -184,30 +160,20 @@ class FastScroll(Gtk.ScrolledWindow):
             label = child.get_text()
             mark = True if label in selected else False
             if mark:
-                child.set_opacity(0.8)
+                child.set_opacity(0.9)
                 if label == chars[start_idx]:
-                    y = child.translate_coordinates(self.__grid, 0, 0)[1]
-                    self.get_vadjustment().set_value(y)
+                    values = child.translate_coordinates(self.__grid, 0, 0)
+                    if values is not None:
+                        self.get_vadjustment().set_value(values[1])
             else:
-                child.set_opacity(0.2)
-
-    def __get_value_for_path(self, path, pos):
-        """
-            Return value for path
-            @param path as Gtk.TreePath
-        """
-        row = path[0]
-        if row is not None:
-            iter = self.__model.get_iter(row)
-            value = self.__model.get_value(iter, pos)
-            return value
-        return None
+                child.set_opacity(0.4)
 
     def __on_button_press(self, eventbox, event):
         """
             Scroll to activated child char
         """
         char = None
+        row = None
         for child in self.__grid.get_children():
             allocation = child.get_allocation()
             if allocation.y <= event.y <= allocation.y + allocation.height:
@@ -215,31 +181,22 @@ class FastScroll(Gtk.ScrolledWindow):
                 break
         if char is not None:
             if char == "▲":
-                self.__view.scroll_to_cell(
-                                self.__model.get_path(self.__model[0].iter),
-                                None, True, 0, 0)
+                row = self.__listbox.get_children()[0]
             elif char == "▼":
-                self.__view.scroll_to_cell(
-                                self.__model.get_path(self.__model[-1].iter),
-                                None, True, 0, 0)
+                row = self.__listbox.get_children()[-1]
             else:
-                for row in self.__model:
-                    if row[0] < 0:
+                for child in self.__listbox.get_children():
+                    if child.id < 0:
                         continue
-                    if noaccents(index_of(row[3]))[0].upper() == char:
-                        self.__view.scroll_to_cell(
-                            self.__model.get_path(row.iter),
-                            None, True, 0, 0)
+                    if noaccents(index_of(child.sortname))[0].upper() == char:
+                        row = child
                         break
-
-    def __on_leave_notify(self, widget, event):
-        """
-            Force hide after a timeout that can be killed by show
-        """
-        if self.__leave_timeout_id is not None:
-            GLib.source_remove(self.__leave_timeout_id)
-            self.__leave_timeout_id = None
-        self.__leave_timeout_id = GLib.timeout_add(250, self.hide)
+        if row is not None:
+            values = row.translate_coordinates(self.__listbox,
+                                               0, 0)
+            if values is not None:
+                adj = self.__scrolled.get_vadjustment()
+                adj.set_value(values[1])
 
     def __on_scroll_event(self, scrolled, event):
         """
@@ -255,5 +212,5 @@ class FastScroll(Gtk.ScrolledWindow):
             Show a popover with current letter
             @param adj as Gtk.Adjustement
         """
-        GLib.idle_add(self.__check_value_to_mark)
-        GLib.idle_add(self.__set_margin)
+        if self.__chars:
+            GLib.idle_add(self.__check_value_to_mark)
