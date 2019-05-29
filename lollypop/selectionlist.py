@@ -29,6 +29,10 @@ class SelectionListRow(Gtk.ListBoxRow):
         A selection list row
     """
 
+    __gsignals__ = {
+        "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
+
     def __init__(self, rowid, name, sortname, mask):
         """
             Init row
@@ -62,15 +66,14 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__grid.add(self.__label)
             self.__grid.set_margin_end(20)
             self.add(self.__grid)
-            self.set_artwork()
 
     def set_artwork(self):
         """
             Set row artwork
         """
         if self.__rowid == Type.SEPARATOR:
-            return
-        if self.__mask & SelectionListMask.ARTISTS and\
+            self.emit("populated")
+        elif self.__mask & SelectionListMask.ARTISTS and\
                 self.__rowid >= 0 and\
                 App().settings.get_value("artist-artwork"):
             App().art_helper.set_artist_artwork(
@@ -89,9 +92,11 @@ class SelectionListRow(Gtk.ListBoxRow):
                                               Gtk.IconSize.BUTTON)
             self.__artwork.show()
             self.__update_spacing(False)
+            self.emit("populated")
         else:
             self.__artwork.hide()
             self.__update_spacing(False)
+            self.emit("populated")
 
     @property
     def name(self):
@@ -149,6 +154,7 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__artwork.set_from_surface(surface)
             self.__artwork.get_style_context().remove_class(
                 "artwork-icon")
+        self.emit("populated")
 
 
 class SelectionList(BaseView, Gtk.Overlay):
@@ -385,10 +391,14 @@ class SelectionList(BaseView, Gtk.Overlay):
             Add values to the list
             @param items as [(int,str)]
         """
+        def on_row_populated(row):
+            self.__add_values(values)
+
         if values:
             (rowid, name, sortname) = values.pop(0)
-            self.__add_value(rowid, name, sortname)
-            GLib.idle_add(self.__add_values, values)
+            row = self.__add_value(rowid, name, sortname)
+            row.connect("populated", on_row_populated)
+            row.set_artwork()
         else:
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
@@ -401,6 +411,7 @@ class SelectionList(BaseView, Gtk.Overlay):
             @param rowid as int
             @param name as str
             @param sortname as str
+            @return row as SelectionListRow
         """
         if rowid > 0 and sortname and\
                 self.__mask & SelectionListMask.ARTISTS:
@@ -408,6 +419,7 @@ class SelectionList(BaseView, Gtk.Overlay):
         row = SelectionListRow(rowid, name, sortname, self.__mask)
         row.show()
         self.__listbox.add(row)
+        return row
 
     def __sort_func(self, row_a, row_b):
         """
