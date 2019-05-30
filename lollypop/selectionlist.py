@@ -86,7 +86,7 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.emit("populated")
         else:
             self.__grid = Gtk.Grid()
-            self.__grid.set_column_spacing(5)
+            self.__grid.set_column_spacing(7)
             self.__artwork = Gtk.Image.new()
             self.__label = Gtk.Label.new()
             self.__label.set_markup(GLib.markup_escape_text(self.__name))
