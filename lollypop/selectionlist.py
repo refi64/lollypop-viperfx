@@ -572,4 +572,5 @@ class SelectionList(LazyLoadingView):
         """
             Emit selected item signal
         """
-        self.emit("item-selected")
+        if row is not None:
+            self.emit("item-selected")
