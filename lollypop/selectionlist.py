@@ -316,7 +316,6 @@ class SelectionList(LazyLoadingView):
             for row in self.__listbox.get_children():
                 if row.id in ids:
                     self.__listbox.select_row(row)
-            self.emit("item-selected")
 
     def grab_focus(self):
         """
@@ -369,7 +368,6 @@ class SelectionList(LazyLoadingView):
         try:
             row = self.__listbox.get_children()[0]
             self.__listbox.select_row(row)
-            self.emit("item-selected")
         except Exception as e:
             Logger.warning("SelectionList::select_first(): %s", e)
 
