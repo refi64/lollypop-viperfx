@@ -153,6 +153,14 @@ class AppearanceSettingsWidget(Gtk.Bin):
         App().settings.set_enum("sidebar-content", widget.get_active())
         App().window.container.update_list_one()
 
+    def _on_clean_artwork_cache_clicked(self, button):
+        """
+            Clean artwork cache
+            @param button as Gtk.Button
+        """
+        App().task_helper.run(App().art.clean_all_cache)
+        button.set_sensitive(False)
+
 #######################
 # PRIVATE             #
 #######################
