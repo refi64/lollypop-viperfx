@@ -10,9 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gio, GLib
+from gi.repository import GObject, Gio, GLib, GdkPixbuf
 
-from lollypop.define import ArtSize, App, TAG_EDITORS
+from PIL import Image, ImageFilter
+
+from lollypop.define import ArtSize, App, TAG_EDITORS, ArtBehaviour
 from lollypop.logger import Logger
 
 
@@ -85,6 +87,37 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
+    def _load_behaviour(self, pixbuf, cache_path_jpg, width, height,
+                        scale_factor, behaviour):
+        """
+            Load behaviour on pixbuf
+            @param cache_path_jpg as pixbuf cache path
+            @param width as int
+            @param height as int
+            @param scale_factor as int
+            @param behaviour as ArtBehaviour
+        """
+        # Handle resize
+        if behaviour & ArtBehaviour.RESIZE:
+            pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                         height * scale_factor,
+                                         GdkPixbuf.InterpType.NEAREST)
+        # Else center image
+        else:
+            pixbuf = self._crop_pixbuf(pixbuf)
+            pixbuf = pixbuf.scale_simple(width, height,
+                                         GdkPixbuf.InterpType.BILINEAR)
+        # Handle blur
+        if behaviour & ArtBehaviour.BLUR:
+            pixbuf = self._get_blur(pixbuf, 25)
+        elif behaviour & ArtBehaviour.BLUR_HARD:
+            pixbuf = self._get_blur(pixbuf, 50)
+        if behaviour & ArtBehaviour.SAVE:
+            pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
+                         [str(App().settings.get_value(
+                             "cover-quality").get_int32())])
+        return pixbuf
+
     def _crop_pixbuf(self, pixbuf):
         """
             Return croped pixbuf if needed
@@ -107,6 +140,39 @@ class BaseArt(GObject.GObject):
                                         diff // 2,
                                         width,
                                         height - diff)
+
+    def _get_blur(self, pixbuf, gaussian):
+        """
+            Blur surface using PIL
+            @param pixbuf as GdkPixbuf.Pixbuf
+            @param gaussian as int
+            @return GdkPixbuf.Pixbuf
+        """
+        if pixbuf is None:
+            return None
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        data = pixbuf.get_pixels()
+        stride = pixbuf.get_rowstride()
+        has_alpha = pixbuf.get_has_alpha()
+        if has_alpha:
+            mode = "RGBA"
+            dst_row_stride = width * 4
+        else:
+            mode = "RGB"
+            dst_row_stride = width * 3
+        tmp = Image.frombytes(mode, (width, height),
+                              data, "raw", mode, stride)
+        tmp = tmp.filter(ImageFilter.GaussianBlur(gaussian))
+        bytes = GLib.Bytes.new(tmp.tobytes())
+        pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(bytes,
+                                                 GdkPixbuf.Colorspace.RGB,
+                                                 has_alpha,
+                                                 8,
+                                                 width,
+                                                 height,
+                                                 dst_row_stride)
+        return pixbuf
 
 #######################
 # PRIVATE             #

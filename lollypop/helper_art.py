@@ -10,9 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib, Gtk, Gdk, GdkPixbuf
+from gi.repository import GObject, GLib, Gtk, Gdk
 
-from PIL import Image, ImageFilter
 import cairo
 
 from lollypop.define import App, ArtBehaviour
@@ -130,7 +129,7 @@ class ArtHelper(GObject.Object):
     def _on_get_artwork_pixbuf(self, pixbuf, width, height, scale_factor,
                                effect, callback, *args):
         """
-            Set pixbuf as surface
+            Transform pixbuf to surface and load surface effects
             @param pixbuf as Gdk.Pixbuf
             @param size as int
             @param scale_factor as int
@@ -139,27 +138,32 @@ class ArtHelper(GObject.Object):
         """
         surface = None
         if pixbuf is not None:
-            if effect & ArtBehaviour.RESIZE:
-                pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                             height * scale_factor,
-                                             GdkPixbuf.InterpType.NEAREST)
-            if effect & ArtBehaviour.BLUR:
-                pixbuf = self.__get_blur(pixbuf, 25)
-            elif effect & ArtBehaviour.BLUR_HARD:
-                pixbuf = self.__get_blur(pixbuf, 50)
             if effect & ArtBehaviour.ROUNDED:
                 radius = pixbuf.get_width() / 2
                 surface = get_round_surface(pixbuf, scale_factor, radius)
             else:
                 surface = Gdk.cairo_surface_create_from_pixbuf(
                         pixbuf, scale_factor, None)
-            if effect & ArtBehaviour.DARKER:
-                self.__set_color(surface, 0, 0, 0)
-        callback(surface, *args)
+        App().task_helper.run(self.__surface_effects, surface, width, height,
+                              scale_factor, effect, callback, *args)
 
 #######################
 # PRIVATE             #
 #######################
+    def __surface_effects(self, surface, width, height, scale_factor,
+                          effect, callback, *args):
+        """
+            Load surface effects
+            @param surface as cairo.Surface
+            @param size as int
+            @param scale_factor as int
+            @param effect as ArtBehaviour
+            @param callback as function
+        """
+        if effect & ArtBehaviour.DARKER:
+            self.__set_color(surface, 0, 0, 0)
+        GLib.idle_add(callback, surface, *args)
+
     def __set_color(self, surface, r, g, b):
         """
             Get a darker pixbuf
@@ -173,39 +177,6 @@ class ArtHelper(GObject.Object):
         ctx.rectangle(0, 0, surface.get_width(), surface.get_height())
         ctx.set_source_rgba(r, g, b, 0.5)
         ctx.fill()
-
-    def __get_blur(self, pixbuf, gaussian):
-        """
-            Blur surface using PIL
-            @param pixbuf as GdkPixbuf.Pixbuf
-            @param gaussian as int
-            @return GdkPixbuf.Pixbuf
-        """
-        if pixbuf is None:
-            return None
-        width = pixbuf.get_width()
-        height = pixbuf.get_height()
-        data = pixbuf.get_pixels()
-        stride = pixbuf.get_rowstride()
-        has_alpha = pixbuf.get_has_alpha()
-        if has_alpha:
-            mode = "RGBA"
-            dst_row_stride = width * 4
-        else:
-            mode = "RGB"
-            dst_row_stride = width * 3
-        tmp = Image.frombytes(mode, (width, height),
-                              data, "raw", mode, stride)
-        tmp = tmp.filter(ImageFilter.GaussianBlur(gaussian))
-        bytes = GLib.Bytes.new(tmp.tobytes())
-        pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(bytes,
-                                                 GdkPixbuf.Colorspace.RGB,
-                                                 has_alpha,
-                                                 8,
-                                                 width,
-                                                 height,
-                                                 dst_row_stride)
-        return pixbuf
 
     def __get_album_artwork(self, album, width, height, scale_factor, effect):
         """

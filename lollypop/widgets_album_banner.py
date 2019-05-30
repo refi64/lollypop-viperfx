@@ -259,8 +259,7 @@ class AlbumBannerWidget(Gtk.Bin):
                 self.__artwork.get_scale_factor(),
                 ArtBehaviour.RESIZE |
                 ArtBehaviour.BLUR_HARD |
-                ArtBehaviour.DARKER |
-                ArtBehaviour.SAVE,
+                ArtBehaviour.DARKER,
                 self.__on_album_artwork)
 
     def __on_destroy(self, widget):

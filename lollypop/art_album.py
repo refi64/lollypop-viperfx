@@ -145,29 +145,28 @@ class AlbumArt:
             print("AlbumArt::get_album_artworks()", e)
         return uris
 
-    def get_album_artwork(self, album, width, height, scale,
-                          effect=ArtBehaviour.SAVE):
+    def get_album_artwork(self, album, width, height, scale_factor,
+                          behaviour=ArtBehaviour.SAVE):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param width as int
             @param height as int
-            @param scale factor as int
-            @param effect as ArtBehaviour
+            @param scale_factor factor as int
+            @param behaviour as ArtBehaviour
             @return cairo surface
             @thread safe
         """
-        width *= scale
-        height *= scale
         filename = self.get_album_cache_name(album)
         cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH, filename,
-                                              width, height)
+                                              width * scale_factor,
+                                              height * scale_factor)
         pixbuf = None
 
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_jpg)
-            if not effect & ArtBehaviour.NO_CACHE and f.query_exists():
+            if not behaviour & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 return pixbuf
             else:
@@ -186,12 +185,13 @@ class AlbumArt:
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
                     try:
-                        if effect & ArtBehaviour.RESIZE:
+                        if behaviour & ArtBehaviour.RESIZE:
                             track = album.tracks[0]
                         else:
                             track = choice(album.tracks)
                         pixbuf = self.pixbuf_from_tags(track.uri,
-                                                       width, height)
+                                                       width * scale_factor,
+                                                       height * scale_factor)
                     except Exception as e:
                         print("AlbumArt::get_album_artwork()", e)
 
@@ -207,20 +207,12 @@ class AlbumArt:
                         pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
                             stream, None)
                         stream.close()
-                # Pixbuf will be resized, cropping not needed
-                if pixbuf is not None and not effect & ArtBehaviour.RESIZE:
-                    pixbuf = self._crop_pixbuf(pixbuf)
-                    pixbuf = pixbuf.scale_simple(width, height,
-                                                 GdkPixbuf.InterpType.BILINEAR)
-                # Search on the web
                 if pixbuf is None:
-                    self.cache_album_art(album.id)
-                elif effect & ArtBehaviour.SAVE:
-                    pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
-                                 [str(App().settings.get_value(
-                                     "cover-quality").get_int32())])
-            return pixbuf
-
+                    return None
+                pixbuf = self._load_behaviour(pixbuf, cache_path_jpg,
+                                              width, height,
+                                              scale_factor, behaviour)
+                return pixbuf
         except Exception as e:
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)
             return None
