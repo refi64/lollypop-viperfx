@@ -108,7 +108,10 @@ class ArtistArt:
             else:
                 (exists, path) = self.artist_artwork_exists(artist)
                 if exists:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+                    try:
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+                    except:
+                        pass  # Empty file
                 if pixbuf is None:
                     return None
                 pixbuf = self._load_behaviour(pixbuf, cache_path_jpg,
