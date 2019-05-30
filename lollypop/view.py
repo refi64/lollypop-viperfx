@@ -292,7 +292,8 @@ class LazyLoadingView(View):
         """
             Stop loading
         """
-        self._lazy_queue = None
+        self._lazy_queue = []
+        self.__priority_queue = []
         View.stop(self)
 
     def lazy_loading(self):
@@ -300,8 +301,6 @@ class LazyLoadingView(View):
             Load the view in a lazy way
         """
         widget = None
-        if self._lazy_queue is None:
-            return
         if self.__priority_queue:
             widget = self.__priority_queue.pop(0)
             self._lazy_queue.remove(widget)
