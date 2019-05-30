@@ -313,9 +313,15 @@ class SelectionList(LazyLoadingView):
         """
         self.__listbox.unselect_all()
         if ids:
+            first_row = None
             for row in self.__listbox.get_children():
                 if row.id in ids:
+                    if first_row is None:
+                        first_row = row
                     self.__listbox.select_row(row)
+            # Scroll to first item
+            if first_row is not None:
+                GLib.idle_add(self.__scroll_to_row, first_row)
 
     def grab_focus(self):
         """
@@ -413,6 +419,15 @@ class SelectionList(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
+    def __scroll_to_row(self, row):
+        """
+            Scroll to row
+            @param row as SelectionListRow
+        """
+        coordinates = row.translate_coordinates(self.__listbox, 0, 0)
+        if coordinates:
+            self._scrolled.get_vadjustment().set_value(coordinates[1])
+
     def __add_values(self, values):
         """
             Add values to the list
