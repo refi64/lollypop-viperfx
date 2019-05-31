@@ -165,7 +165,7 @@ class DeviceManagerWidget(Gtk.Bin):
         """
             Popup menu for album
             @param button as Gtk.Button
-            @param album id as int
+            @param album_id as int
         """
         parent = self.__menu_items.get_parent()
         if parent is not None:

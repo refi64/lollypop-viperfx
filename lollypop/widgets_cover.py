@@ -106,7 +106,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
         """
             Update cover for album_id
             @param art as Art
-            @param album id as int
+            @param album_id as int
         """
         if self._album is None:
             return

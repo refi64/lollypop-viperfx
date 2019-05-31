@@ -105,7 +105,6 @@ class AdaptiveStack(Gtk.Stack):
         """
             Remove from stack and history
             @param widget as Gtk.Widget
-            @param destroy as bool
         """
         if widget in self.__history:
             self.__history.remove(widget)

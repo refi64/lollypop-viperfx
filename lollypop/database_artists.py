@@ -63,7 +63,7 @@ class ArtistsDatabase:
     def get_sortname(self, artist_id):
         """
             Return sortname
-            @param artist id as int
+            @param artist_id as int
             @return sortname as string
         """
         with SqlCursor(App().db) as sql:
@@ -100,7 +100,7 @@ class ArtistsDatabase:
     def get_name(self, artist_id):
         """
             Get artist name
-            @param Artist id as int
+            @param artist_id as int
             @return str
         """
         with SqlCursor(App().db) as sql:
@@ -130,7 +130,7 @@ class ArtistsDatabase:
     def get_mb_artist_id(self, artist_id):
         """
             Get MusicBrainz artist id for artist id
-            @param artist id as int
+            @param artist_id as int
             @return MusicBrainz artist id as str
         """
         with SqlCursor(App().db) as sql:
@@ -283,7 +283,7 @@ class ArtistsDatabase:
     def exists(self, artist_id):
         """
             Return True if artist exist
-            @param artist id as int
+            @param artist_id as int
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT COUNT(1) FROM artists WHERE rowid=?",

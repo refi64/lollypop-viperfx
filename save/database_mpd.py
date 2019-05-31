@@ -25,7 +25,7 @@ class MpdDatabase:
         """
             Count songs and play time
             @param album as string
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @param year as int
         """
@@ -46,7 +46,7 @@ class MpdDatabase:
         """
             Get tracks path
             @param album as string
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @param year as int
             @return paths as [str]
@@ -60,7 +60,7 @@ class MpdDatabase:
         """
             Get tracks path
             @param album as string
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @param year as int
             @return paths as [str]
@@ -73,7 +73,7 @@ class MpdDatabase:
     def get_albums_names(self, artist_id, genre_id, year):
         """
             Get albums names
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @param year as int
             @return names as [str]
@@ -105,7 +105,7 @@ class MpdDatabase:
     def get_artists_names(self, genre_id):
         """
             Get artists names
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @return names as [str]
         """
@@ -131,7 +131,7 @@ class MpdDatabase:
         """
             Get all availables albums years
             @param album as string
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @return years as [str]
         """
@@ -191,7 +191,7 @@ class MpdDatabase:
             @param sql as sqlite cursor
             @param select as string
             @param album as string
-            @param artist id as int
+            @param artist_id as int
             @param genre id as int
             @param year as int
             @return sqlite cursor

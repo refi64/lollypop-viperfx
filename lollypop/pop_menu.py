@@ -304,7 +304,7 @@ class PlaylistsMenu(BaseMenu):
             Add to playlist
             @param Gio.SimpleAction
             @param GLib.Variant
-            @param playlist id as int
+            @param playlist_id as int
         """
         def add(playlist_id):
             tracks = []
@@ -326,7 +326,7 @@ class PlaylistsMenu(BaseMenu):
             @param GLib.Variant
             @param object id as int
             @param is album as bool
-            @param playlist id as int
+            @param playlist_id as int
         """
         def remove(playlist_id):
             tracks = []

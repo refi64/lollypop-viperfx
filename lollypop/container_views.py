@@ -148,7 +148,7 @@ class ViewsContainer:
     def get_view_album_ids(self, genre_ids, artist_ids):
         """
             Get albums view for genres/artists
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param artist_ids as [int]
             @return [int]
         """
@@ -201,7 +201,7 @@ class ViewsContainer:
     def _get_view_playlists(self, playlist_ids=[]):
         """
             Get playlists view for playlists
-            @param playlist ids as [int]
+            @param playlist_ids as [int]
             @return View
         """
         def load():
@@ -303,7 +303,7 @@ class ViewsContainer:
         """
             Get artists view for genres/artists
             @param genre ids as [int]
-            @param artist ids as [int]
+            @param artist_ids as [int]
         """
         def load():
             if genre_ids and genre_ids[0] == Type.ALL:

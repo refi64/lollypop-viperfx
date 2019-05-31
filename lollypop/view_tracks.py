@@ -254,7 +254,7 @@ class TracksView:
         """
             On album modified, disable it
             @param scanner as CollectionScanner
-            @param album id as int
+            @param album_id as int
         """
         if self._album.id != album_id:
             return

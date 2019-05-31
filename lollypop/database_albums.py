@@ -63,7 +63,7 @@ class AlbumsDatabase:
         """
             Add artist to track
             @param album_id as int
-            @param artist id as int
+            @param artist_id as int
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -456,7 +456,7 @@ class AlbumsDatabase:
     def get_mb_album_id(self, album_id):
         """
             Get MusicBrainz album id for album id
-            @param album id as int
+            @param album_id as int
             @return MusicBrainz album id as str
         """
         with SqlCursor(App().db) as sql:
@@ -681,7 +681,7 @@ class AlbumsDatabase:
 
             @param album_id as int
             @param genre ids as [int]
-            @param artist ids as [int]
+            @param artist_ids as [int]
             @param disc as int
             @param disallow_ignored_tracks as bool
             @return [int]
@@ -733,7 +733,7 @@ class AlbumsDatabase:
     def get_ids(self, artist_ids, genre_ids, ignore=False):
         """
             Get albums ids
-            @param artist ids as [int]
+            @param artist_ids as [int]
             @param genre ids as [int]
             @param ignore as bool => ignore albums with loved == 1
             @return albums ids as [int]

@@ -238,7 +238,7 @@ class AlbumArt:
         """
             Save data for album id
             @param data as bytes
-            @param album id as int
+            @param album_id as int
         """
         try:
             album = Album(album_id)
@@ -291,7 +291,7 @@ class AlbumArt:
     def album_artwork_update(self, album_id):
         """
             Announce album cover update
-            @param album id as int
+            @param album_id as int
         """
         self.emit("album-artwork-changed", album_id)
 

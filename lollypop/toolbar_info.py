@@ -148,7 +148,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
             Update cover for album_id
             @param art as Art
-            @param album id as int
+            @param album_id as int
         """
         if App().player.current_track.album.id == album_id:
             self._previous_artwork_id = None

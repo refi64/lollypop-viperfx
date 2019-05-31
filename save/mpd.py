@@ -1131,7 +1131,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
     def _string_for_track_id(self, track_id, index=Type.NONE):
         """
             Get mpd protocol string for track id
-            @param track id as int
+            @param track_id as int
             @param track index as int
             @return str
         """
@@ -1388,7 +1388,7 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         """
             Add playlist to idle if mpd
             @param playlists as Playlists
-            @param playlist id as int
+            @param playlist_id as int
         """
         if playlist_id == Type.MPD:
             if not Lp().player.is_party():

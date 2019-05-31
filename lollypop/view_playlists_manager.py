@@ -94,7 +94,7 @@ class PlaylistsManagerView(FlowBoxView):
         """
             Add albums to the view
             Start lazy loading
-            @param playlist ids as [int]
+            @param playlist_ids as [int]
         """
         self._remove_placeholder()
         widget = FlowBoxView._add_items(self, playlist_ids,

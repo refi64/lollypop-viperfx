@@ -144,7 +144,7 @@ class SimilarsPopover(Popover):
     def populate(self, artist_ids):
         """
             Populate view artist ids
-            @param artist ids as int
+            @param artist_ids as int
         """
         self.__providers = 1
         artists = []

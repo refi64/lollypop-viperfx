@@ -35,7 +35,7 @@ class QueuePlayer:
         """
             Append track to queue,
             remove previous track if exist
-            @param track id as int
+            @param track_id as int
             @param notify as bool
         """
         if track_id in self.__queue:
@@ -50,7 +50,7 @@ class QueuePlayer:
         """
             Prepend track to queue,
             remove previous track if exist
-            @param track id as int
+            @param track_id as int
             @param notify as bool
         """
         if track_id in self.__queue:
@@ -64,7 +64,7 @@ class QueuePlayer:
     def remove_from_queue(self, track_id, notify=True):
         """
             Remove track from queue
-            @param track id as int
+            @param track_id as int
             @param notify as bool
         """
         if track_id in self.__queue:
@@ -108,7 +108,7 @@ class QueuePlayer:
     def get_track_position(self, track_id):
         """
             Return track position in queue
-            @param track id as int
+            @param track_id as int
             @return position as int
         """
         return self.__queue.index(track_id) + 1
