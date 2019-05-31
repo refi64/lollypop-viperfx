@@ -31,7 +31,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
     def __init__(self, genre_ids, artist_ids, view_type=ViewType.SCROLLED):
         """
             Init album view
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param artist_ids as [int]
             @param view_type as ViewType
         """
@@ -65,7 +65,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Add a new album
             @param album as Album
-            @param pos as int
+            @param position as int
         """
         widget = AlbumSimpleWidget(album, self.__genre_ids,
                                    self.__artist_ids, self._view_type)

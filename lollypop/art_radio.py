@@ -39,6 +39,7 @@ class RadioArt:
     def get_radio_cache_path(self, name, width, height):
         """
             get cover cache path for radio
+            @param name as str
             @param width as int
             @param height as int
             @return cover path as string or None if no cover
@@ -65,7 +66,7 @@ class RadioArt:
     def get_radio_artwork(self, name, width, height, scale, cache=True):
         """
             Return a cairo surface for radio name
-            @param radio name as string
+            @param name as string
             @param width as int
             @param height as int
             @param scale factor as int
@@ -102,7 +103,8 @@ class RadioArt:
             Copy uri to cache at size
             @param uri as str
             @param name as str
-            @param size as int
+            @param width as int
+            @param height as int
             @thread safe
         """
         helper = TaskHelper()
@@ -116,8 +118,8 @@ class RadioArt:
     def rename_radio(self, old_name, new_name):
         """
             Rename artwork
-            @param old name as str
-            @param new name as str
+            @param old_name as str
+            @param new_name as str
         """
         old = "%s/%s.png" % (self._RADIOS_PATH, old_name)
         new = "%s/%s.png" % (self._RADIOS_PATH, new_name)
@@ -144,14 +146,14 @@ class RadioArt:
     def radio_artwork_update(self, name):
         """
             Announce radio logo update
-            @param radio name as string
+            @param name as string
         """
         self.emit("radio-artwork-changed", name)
 
     def clean_radio_cache(self, name):
         """
             Remove logo from cache for radio
-            @param radio name as string
+            @param name as string
         """
         cache_name = self.__get_radio_cache_name(name)
         try:

@@ -324,7 +324,7 @@ class PlaylistsMenu(BaseMenu):
             Del from playlist
             @param Gio.SimpleAction
             @param GLib.Variant
-            @param object id as int
+            @param object_id as int
             @param is album as bool
             @param playlist_id as int
         """

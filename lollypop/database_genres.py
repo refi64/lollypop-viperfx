@@ -31,7 +31,7 @@ class GenresDatabase:
     def add(self, name):
         """
             Add a new genre to database
-            @param Name as string
+            @param name as string
             @return inserted rowid as int
             @warning: commit needed
         """
@@ -57,8 +57,8 @@ class GenresDatabase:
     def get_name(self, genre_id):
         """
             Get genre name for genre id
-            @param string
-            @return int
+            @param genre_id as int
+            @return str
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT name FROM genres\
@@ -71,6 +71,7 @@ class GenresDatabase:
     def get_album_ids(self, genre_id, ignore=False):
         """
             Get all availables albums for genres
+            @param genre_id as int
             @param ignore as bool
             @return [int]
         """

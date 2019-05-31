@@ -40,7 +40,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
             Init simple album widget
             @param album as Album
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param artist_ids as [int]
             @param view_type as ViewType
         """

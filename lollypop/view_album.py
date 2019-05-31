@@ -52,7 +52,6 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
     def populate(self):
         """
             Populate the view with album
-            @param albums as [Album]
         """
         TracksView.populate(self)
         self.__grid.add(self._responsive_widget)

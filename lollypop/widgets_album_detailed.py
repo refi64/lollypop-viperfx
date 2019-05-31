@@ -32,7 +32,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
             Init detailed album widget
             @param album as Album
             @param label_height as int
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param artist_ids as [int]
             @param view_type as ViewType
         """

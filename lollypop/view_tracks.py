@@ -145,9 +145,9 @@ class TracksView:
     def rows_animation(self, x, y, widget):
         """
             Show animation to help user dnd
-            @parma x as int
+            @param x as int
             @param y as int
-            @param relate widget as Gtk.Widget
+            @param widget as Gtk.Widget
         """
         if self._responsive_widget is None:
             return None

@@ -77,7 +77,7 @@ class AlbumsDatabase:
         """
             Add genre to album
             @param album_id as int
-            @param genre id as int
+            @param genre_id as int
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -138,6 +138,7 @@ class AlbumsDatabase:
     def set_rate(self, album_id, rate):
         """
             Set album rate
+            @param album_id as int
             @param rate as int
         """
         with SqlCursor(App().db, True) as sql:
@@ -169,7 +170,8 @@ class AlbumsDatabase:
     def set_uri(self, album_id, uri):
         """
             Set album uri for album id
-            @param album_id as int, uri as string
+            @param album_id as int
+            @param uri as string
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -286,7 +288,7 @@ class AlbumsDatabase:
         """
             Increment popularity field for album id
             @param album_id as int
-            @param pop as int
+            @param pop_to_add as int
             @raise sqlite3.OperationalError on db update
         """
         with SqlCursor(App().db, True) as sql:
@@ -643,7 +645,7 @@ class AlbumsDatabase:
         """
             Get disc numbers
             @param album_id as int
-            @param genre id as int
+            @param genre_ids as [int]
             @return [disc as int]
         """
         with SqlCursor(App().db) as sql:
@@ -680,7 +682,7 @@ class AlbumsDatabase:
             Get tracks ids for album id disc
 
             @param album_id as int
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param artist_ids as [int]
             @param disc as int
             @param disallow_ignored_tracks as bool
@@ -734,7 +736,7 @@ class AlbumsDatabase:
         """
             Get albums ids
             @param artist_ids as [int]
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param ignore as bool => ignore albums with loved == 1
             @return albums ids as [int]
         """
@@ -881,7 +883,7 @@ class AlbumsDatabase:
         """
             Album duration in seconds
             @param album_id as int
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @return album duration as int
         """
         with SqlCursor(App().db) as sql:
@@ -952,8 +954,9 @@ class AlbumsDatabase:
     def get_albums_for_year(self, year, limit=-1):
         """
             Return albums for year
-            @return album ids as [int]
+            @param year as int
             @param limit as int
+            @return album ids as [int]
         """
         with SqlCursor(App().db) as sql:
             if limit != -1:
@@ -989,8 +992,9 @@ class AlbumsDatabase:
     def get_compilations_for_year(self, year, limit=-1):
         """
             Return compilations for year
-            @return album ids as [int]
+            @param year as int
             @param limit as int
+            @return album ids as [int]
         """
         with SqlCursor(App().db) as sql:
             if limit != -1:
@@ -1027,7 +1031,7 @@ class AlbumsDatabase:
     def search(self, searched):
         """
             Search for albums looking like string
-            @param search as str
+            @param searched as str
             @return album ids as [int]
         """
         no_accents = noaccents(searched)

@@ -72,7 +72,7 @@ class History:
             @param ltime as int
             @param mtime as int
             @param loved as bool
-            @param loved album as bool
+            @param loved_album as bool
             @param album_popularity as int
             @param album_rate as int
             @thread safe
@@ -96,8 +96,8 @@ class History:
 
     def get(self, name, duration):
         """
-            Get stats for track with filename and duration
-            @param path as str
+            Get stats for track with name and duration
+            @param name as str
             @param duration as int
             @return (popularity, ltime, mtime,
                      loved album, album_popularity)
@@ -120,7 +120,7 @@ class History:
         """
             Return True if entry exists
             @param name as str
-            @parma duration as int
+            @param duration as int
             @return bool
         """
         with SqlCursor(self) as sql:

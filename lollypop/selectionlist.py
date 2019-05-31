@@ -246,7 +246,7 @@ class SelectionList(LazyLoadingView):
     def remove_value(self, object_id):
         """
             Remove id from list
-            @param object id as int
+            @param object_id as int
         """
         for child in self.__listbox.get_children():
             if child.id == object_id:
@@ -269,7 +269,7 @@ class SelectionList(LazyLoadingView):
     def update_value(self, object_id, name):
         """
             Update object with new name
-            @param object id as int
+            @param object_id as int
             @param name as str
         """
         found = False
@@ -309,7 +309,7 @@ class SelectionList(LazyLoadingView):
     def select_ids(self, ids=[]):
         """
             Select listbox items
-            @param object id as int
+            @param ids as [int]
         """
         self.__listbox.unselect_all()
         if ids:

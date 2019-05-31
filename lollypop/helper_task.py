@@ -39,15 +39,15 @@ class TaskHelper:
         """
         self.__headers.append((name, value))
 
-    def run(self, command, *args, **kwd):
+    def run(self, command, *args, **kwargs):
         """
-            run command with params and return to callback
+            Run command with params and return to callback
             @param command as function
             @param *args as command arguments
-            @param **kwd as { "callback": (function, *args) }
+            @param **kwargs
         """
         thread = Thread(target=self.__run,
-                        args=(command, kwd, *args))
+                        args=(command, kwargs, *args))
         thread.daemon = True
         thread.start()
 

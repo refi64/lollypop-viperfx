@@ -29,7 +29,7 @@ class ArtistViewSmall(View, ArtistViewCommon):
         """
             Init ArtistView
             @param artist_id as int (Current if None)
-            @param genre id as int
+            @param genre_id as int
         """
         View.__init__(self)
         self._genre_ids = genre_ids

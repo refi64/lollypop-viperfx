@@ -100,7 +100,6 @@ class View(BaseView, Gtk.Grid):
     def populate(self):
         """
             Populate view with default message
-            @param destroy_children as bool
         """
         grid = Gtk.Grid()
         grid.set_margin_start(20)

@@ -32,7 +32,7 @@ class ArtistsDatabase:
     def add(self, name, sortname, mb_artist_id):
         """
             Add a new artist to database
-            @param artist name as string
+            @param name as string
             @param sortname as string
             @param mb_artist_id as str
             @return inserted rowid as int
@@ -47,18 +47,18 @@ class ArtistsDatabase:
                                  (name, sortname, mb_artist_id))
             return result.lastrowid
 
-    def set_sortname(self, artist_id, sortname):
+    def set_sortname(self, artist_id, sort_name):
         """
             Set sort name
-            @param id as int
-            @param sort name a str
+            @param artist_id as int
+            @param sort_name a str
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
             sql.execute("UPDATE artists\
                          SET sortname=?\
                          WHERE rowid=?",
-                        (sortname, artist_id))
+                        (sort_name, artist_id))
 
     def get_sortname(self, artist_id):
         """
@@ -77,7 +77,8 @@ class ArtistsDatabase:
     def get_id(self, name, mb_artist_id=None):
         """
             Get artist id
-            @param Artist name as string
+            @param name as string
+            @param mb_artist_id as str
             @return Artist id as int
         """
         # Special case, id name is fully uppercase, do not use NOCASE
@@ -117,8 +118,8 @@ class ArtistsDatabase:
     def set_mb_artist_id(self, artist_id, mb_artist_id):
         """
             Set MusicBrainz artist id
-            @param id as int
-            @param MusicBrainz artist id as str
+            @param artist_id as int
+            @param mb_artist_id as str
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -178,7 +179,7 @@ class ArtistsDatabase:
     def get(self, genre_ids=[]):
         """
             Get all available album artists
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @return [int, str, str]
         """
         if App().settings.get_value("show-artist-sort"):
@@ -214,7 +215,7 @@ class ArtistsDatabase:
     def get_all(self, genre_ids=[]):
         """
             Get all available artists
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @return [int, str, str]
         """
         if App().settings.get_value("show-artist-sort"):
@@ -250,7 +251,7 @@ class ArtistsDatabase:
     def get_ids(self, genre_ids=[]):
         """
             Get all available album artists
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @return artist ids as [int]
         """
         with SqlCursor(App().db) as sql:

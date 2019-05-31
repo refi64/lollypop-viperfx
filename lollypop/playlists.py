@@ -78,7 +78,7 @@ class Playlists(GObject.GObject):
     def add(self, name):
         """
             Add a playlist
-            @param playlist name as str
+            @param name as str
             @return playlist_id as int
             @thread safe
         """
@@ -95,7 +95,6 @@ class Playlists(GObject.GObject):
         """
             Return True if playlist exists
             @param playlist_id as int
-            @param bool
         """
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid\
@@ -147,6 +146,7 @@ class Playlists(GObject.GObject):
     def add_uri(self, playlist_id, uri, signal=False):
         """
             Add uri to playlist
+            @param playlist_id as int
             @param uri as str
             @param signal as bool
         """
@@ -291,7 +291,7 @@ class Playlists(GObject.GObject):
     def get_track_uris(self, playlist_id):
         """
             Return availables track uris for playlist
-            @param playlist name as str
+            @param playlist_id as int
             @return [str]
         """
         with SqlCursor(self) as sql:
@@ -382,7 +382,7 @@ class Playlists(GObject.GObject):
     def get_id(self, playlist_name):
         """
             Get playlist id
-            @param playlist name as str
+            @param playlist_name as str
             @return playlst id as int
         """
         if playlist_name == _("Loved tracks"):

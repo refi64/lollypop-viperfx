@@ -52,10 +52,10 @@ class ArtHelper(GObject.Object):
                           effect, callback, *args):
         """
             Set artwork for album id
-            @param image as Gtk.Image
             @param album as Album
             @param width as int
             @param height as int
+            @param scale_factor as int
             @param effect as ArtBehaviour
             @param callback as function
         """

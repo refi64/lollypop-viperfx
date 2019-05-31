@@ -28,6 +28,7 @@ class WebHelper:
     def set_uri(self, track, cancellable):
         """
             Set uri for track
+            @param track as Track
             @param cancellable as Gio.Cancellable
         """
         if track.is_http:

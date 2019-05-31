@@ -26,7 +26,7 @@ from lollypop.define import App, Type, SelectionListMask, NetworkAccessACL
 def seconds_to_string(duration):
     """
         Convert seconds to a pretty string
-        @param seconds as int
+        @param duration as int
     """
     hours = duration // 3600
     if hours == 0:
@@ -171,7 +171,7 @@ def set_proxy_from_gnome():
 def debug(str):
     """
         Print debug
-        @param debug as str
+        @param str as str
     """
     if App().debug is True:
         print(str)
@@ -208,7 +208,7 @@ def noaccents(string):
 def escape(str, ignore=["_", "-", " ", "."]):
     """
         Escape string
-        @param string as str
+        @param str as str
         @param ignore as [str]
     """
     return "".join([c for c in str if
@@ -298,7 +298,7 @@ def get_mtime(info):
 def format_artist_name(name):
     """
         Return formated artist name
-        @param str
+        @param name as str
     """
     if not App().settings.get_value("smart-artist-sort"):
         return name
@@ -315,7 +315,7 @@ def format_artist_name(name):
 def translate_artist_name(name):
     """
         Return translate formated artist name
-        @param str
+        @param name as str
     """
     split = name.split("@@@@")
     if len(split) == 2:
@@ -376,7 +376,7 @@ def remove_static(ids):
 def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
     """
         Return icon name for id
-        @param ojbect_id as int
+        @param object_id as int
         @param type as SelectionListMask
     """
     icon = ""
