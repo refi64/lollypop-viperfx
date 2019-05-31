@@ -30,6 +30,7 @@ class DeviceWidget(Gtk.ListBoxRow):
             @param mount as Gio.Mount (with valid volume)
         """
         Gtk.ListBoxRow.__init__(self)
+        self.get_style_context().add_class("background")
         self.__name = mount.get_name()
         self.__uri = mount.get_default_location().get_uri()
         builder = Gtk.Builder()
