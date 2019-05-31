@@ -27,7 +27,7 @@ class DeviceWidget(Gtk.ListBoxRow):
     def __init__(self, mount):
         """
             Init widget
-            @param mount as Gio.Mount (with valid volume)
+            @param mount as Gio.Mount
         """
         Gtk.ListBoxRow.__init__(self)
         self.get_style_context().add_class("background")
@@ -37,9 +37,10 @@ class DeviceWidget(Gtk.ListBoxRow):
         builder.add_from_resource("/org/gnome/Lollypop/DeviceWidget.ui")
         self.__progress = builder.get_object("progress")
         builder.get_object("name").set_label(self.__name)
-        icon = mount.get_volume().get_symbolic_icon()
-        device_symbolic = builder.get_object("device-symbolic")
-        device_symbolic.set_from_gicon(icon, Gtk.IconSize.MENU)
+        if mount.get_volume() is not None:
+            icon = mount.get_volume().get_symbolic_icon()
+            device_symbolic = builder.get_object("device-symbolic")
+            device_symbolic.set_from_gicon(icon, Gtk.IconSize.MENU)
         self.add(builder.get_object("widget"))
         builder.connect_signals(self)
         self.__calculate_free_space()

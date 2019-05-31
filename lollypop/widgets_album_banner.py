@@ -234,7 +234,7 @@ class AlbumBannerWidget(Gtk.Bin):
             Show album menu
             @param button as Gtk.Button
         """
-        from lollypop.pop_menu import AlbumMenu
+        from lollypop.menu_objects import AlbumMenu
         menu = AlbumMenu(self.__album, self.__view_type)
         popover = Gtk.Popover.new_from_model(button, menu)
         popover.popup()

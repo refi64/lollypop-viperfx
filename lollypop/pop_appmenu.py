@@ -12,9 +12,8 @@
 
 from gi.repository import Gtk, Gio
 
-from urllib.parse import urlparse
-
 from lollypop.define import App
+from lollypop.utils import is_device
 from lollypop.widgets_device import DeviceWidget
 
 
@@ -69,15 +68,7 @@ class AppMenuPopover(Gtk.Popover):
             Add a device
             @param mount as Gio.Mount
         """
-        if mount.get_volume() is None:
-            return
-        uri = mount.get_default_location().get_uri()
-        drive = mount.get_drive()
-        if uri is None:
-            return
-        parsed = urlparse(uri)
-        is_removable = drive is not None and drive.is_removable()
-        if is_removable or parsed.scheme == "mtp":
+        if is_device(mount):
             widget = DeviceWidget(mount)
             widget.show()
             self.__listbox.add(widget)

@@ -14,6 +14,7 @@ from gi.repository import Gio, GLib, Gdk, GdkPixbuf
 
 from math import pi
 from gettext import gettext as _
+from urllib.parse import urlparse
 import unicodedata
 import cairo
 import time
@@ -411,6 +412,24 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
     elif object_id == Type.WEB:
         icon = "goa-panel-symbolic"
     return icon
+
+
+def is_device(mount):
+    """
+        True if mount is a Lollypop device
+        @param mount as Gio.Mount
+        @return bool
+    """
+    if mount.get_volume() is None:
+        return False
+    uri = mount.get_default_location().get_uri()
+    if uri is None:
+        return False
+    parsed = urlparse(uri)
+    if parsed.scheme == "mtp":
+        return True
+    drive = mount.get_drive()
+    return drive is not None and drive.is_removable()
 
 
 def profile(f):

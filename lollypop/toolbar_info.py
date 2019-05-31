@@ -171,7 +171,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         """
         if App().window.is_adaptive or not self._artwork.get_visible():
             return
-        from lollypop.pop_menu import ToolbarMenu
+        from lollypop.menu_toolbar import ToolbarMenu
         menu = ToolbarMenu(App().player.current_track)
         if App().player.current_track.id >= 0:
             from lollypop.pop_menu import TrackMenuPopover

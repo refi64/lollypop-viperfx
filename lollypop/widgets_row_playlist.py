@@ -13,7 +13,6 @@
 from gi.repository import GObject, Gtk, Pango, GLib
 
 from lollypop.define import App, ArtSize, Type, ViewType, ArtBehaviour
-from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_row import Row
 from lollypop.widgets_row_dnd import DNDRow
 
@@ -141,6 +140,7 @@ class PlaylistRow(Row, DNDRow):
         """
             Return TrackMenu
         """
+        from lollypop.menu_objects import TrackMenu
         return TrackMenu(self._track, True)
 
     def _on_destroy(self, widget):
