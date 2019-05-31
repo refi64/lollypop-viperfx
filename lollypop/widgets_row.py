@@ -227,7 +227,7 @@ class Row(Gtk.ListBoxRow):
         """
             Return TrackMenu
         """
-        from lollypop.pop_menu import TrackMenu
+        from lollypop.menu_objects import TrackMenu
         return TrackMenu(self._track)
 
     def _check_track(self):

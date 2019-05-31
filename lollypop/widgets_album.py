@@ -89,7 +89,7 @@ class AlbumWidget:
             @param event as Gdk.EventButton
         """
         if event.button != 1:
-            from lollypop.pop_menu import AlbumMenu
+            from lollypop.menu_objects import AlbumMenu
             popover = Popover.new_from_model(self._artwork,
                                              AlbumMenu(
                                                 self._album,
