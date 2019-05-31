@@ -109,7 +109,7 @@ class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
     def show_artists_albums(self, artist_ids):
         """
             Show albums from artists
-            @param artist_ids as list
+            @param artist_ids as [int]
         """
         def select_list_two(selection_list, artist_ids):
             self._list_two.select_ids(artist_ids)
