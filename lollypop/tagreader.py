@@ -610,7 +610,7 @@ class TagReader(Discoverer):
             @param loved as bool
             @param popularity as int
             @param rate as int
-            @param synce as int
+            @param synced as int
             @param mtime as int
             @return (added as bool, album_id as int)
             @commit needed

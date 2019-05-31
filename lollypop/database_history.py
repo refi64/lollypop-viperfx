@@ -73,7 +73,7 @@ class History:
             @param ltime as int
             @param mtime as int
             @param loved as bool
-            @param loved_album as bool
+            @param album_loved as bool
             @param album_popularity as int
             @param album_rate as int
             @param album_synced as int
