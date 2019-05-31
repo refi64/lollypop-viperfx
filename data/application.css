@@ -11,6 +11,29 @@
     padding: 6px 5px 6px 5px;
 }
 
+.progressbar {
+    border: none;
+    background-color: transparent;
+    background-image: none;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.progressbar progress {
+    background-color: @theme_selected_bg_color;
+    background-image: none;
+    border: none;
+    min-height: 2px;
+}
+
+.progressbar trough {
+    border: none;
+    background-color: transparent;
+    background-image: none;
+}
+
 Gtk.ListBoxRow .loved-button {
 	border-color: transparent;
 	background-color: transparent;
