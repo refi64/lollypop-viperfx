@@ -374,11 +374,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                        ";".join(data["album_artists"]),
                        "", "", data["album_name"], "", data["uri"],
                        data["album_loved"], data["album_popularity"],
-                       data["album_rate"], -1, data["title"], data["duration"],
-                       data["tracknumber"], data["discnumber"],
-                       data["discname"], data["year"], data["timestamp"], -1,
-                       data["track_popularity"], data["track_rate"],
-                       data["track_loved"], 0, "", 0)
+                       data["album_rate"], 0, -1, data["title"],
+                       data["duration"], data["tracknumber"],
+                       data["discnumber"], data["discname"], data["year"],
+                       data["timestamp"], -1, data["track_popularity"],
+                       data["track_rate"], data["track_loved"], 0, "", 0)
         except Exception as e:
             Logger.error("CollectionScanner::__import_web_tracks(): %s", e)
 
