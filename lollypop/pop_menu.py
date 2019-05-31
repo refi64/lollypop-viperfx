@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.define import App, ViewType
+from lollypop.utils import is_device
 from lollypop.objects import Track, Album
 from lollypop.widgets_utils import Popover
 from lollypop.logger import Logger
@@ -395,6 +396,80 @@ class ToolbarMenu(BaseMenu):
         App().window.container.show_lyrics()
 
 
+class SyncMenu(BaseMenu):
+    """
+        Sync menu for album
+    """
+
+    def __init__(self, object):
+        """
+            Init menu
+        """
+        BaseMenu.__init__(self, object)
+        self.__vm = Gio.VolumeMonitor.get()
+        self.__vm.connect("mount-added", self.__on_mount_added)
+        self.__set_sync_action()
+
+#######################
+# PRIVATE             #
+#######################
+    def __add_sync_action(self, mount):
+        """
+            Add sync action for mount
+            @param mount as Gio.Mount
+        """
+        if not is_device(mount):
+            return
+        devices = list(App().settings.get_value("devices"))
+        name = mount.get_name()
+        action_name = "sync_%s" % name
+        try:
+            index = devices.index(name) + 1
+            synced = self._object.synced & (1 << index)
+        except:
+            synced = False
+        sync_action = Gio.SimpleAction.new_stateful(
+                                          action_name,
+                                          None,
+                                          GLib.Variant.new_boolean(synced))
+        App().add_action(sync_action)
+        sync_action.connect("change-state",
+                            self.__on_sync_action_change_state,
+                            name)
+        self.append(_("Sync with %s" % name), "app.%s" % action_name)
+
+    def __set_sync_action(self):
+        """
+            Set sync action
+        """
+        for mount in self.__vm.get_mounts():
+            self.__add_sync_action(mount)
+
+    def __on_mount_added(self, vm, mount):
+        """
+            On volume mounter
+            @param vm as Gio.VolumeMonitor
+            @param mount as Gio.Mount
+        """
+        self.__add_sync_action(mount)
+
+    def __on_sync_action_change_state(self, action, variant, name):
+        """
+            Save album to collection
+            @param Gio.SimpleAction
+            @param GLib.Variant
+            @param name as str
+        """
+        action.set_state(variant)
+        devices = list(App().settings.get_value("devices"))
+        if name not in devices:
+            devices.append(name)
+            App().settings.set_value("devices", GLib.Variant("as", devices))
+        index = devices.index(name) + 1
+        synced = self._object.synced | (1 << index)
+        App().albums.set_synced(self._object.id, synced)
+
+
 class EditMenu(BaseMenu):
     """
         Edition menu for album
@@ -413,7 +488,6 @@ class EditMenu(BaseMenu):
         BaseMenu.__init__(self, obj)
         if isinstance(object, Album):
             self.__set_save_action()
-            self.__set_sync_action()
         if object.is_in_user_collection and App().art.tag_editor:
             self.__set_edit_action()
 
@@ -525,10 +599,9 @@ class AlbumMenu(Gio.Menu):
         self.insert_section(0, _("Artist"),
                             ArtistMenu(album, view_type))
         if album.mtime != 0:
-            self.insert_section(2, _("Playlists"),
-                                PlaylistsMenu(album))
-        self.insert_section(3, _("Edit"),
-                            EditMenu(album))
+            self.insert_section(2, _("Playlists"), PlaylistsMenu(album))
+        self.insert_section(3, _("Synchronization"), SyncMenu(album))
+        self.insert_section(4, _("Edit"), EditMenu(album))
 
 
 class TrackMenu(Gio.Menu):

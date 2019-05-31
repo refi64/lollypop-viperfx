@@ -246,8 +246,8 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-        <key type="i" name="paned-device-width">
-            <default>300</default>
+        <key type="as" name="devices">
+            <default>[]</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>
