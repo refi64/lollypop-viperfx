@@ -251,8 +251,6 @@ class ListsContainer:
             view = self.get_view_current()
         elif selected_ids[0] == Type.SEARCH:
             view = self.get_view_search()
-        elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
-            view = self._get_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.LOVED,
                                  Type.RECENTS,
@@ -284,7 +282,6 @@ class ListsContainer:
                 and self._list_two.is_visible()\
                 and (
                     selected_ids[0] >= 0 or
-                    Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES or
                     selected_ids[0] == Type.ALL):
             self._stack.set_visible_child(self._list_two)
         elif view is not None:
@@ -292,11 +289,9 @@ class ListsContainer:
 
     def __on_list_one_populated(self, selection_list):
         """
-            Add device to list one
             @param selection_list as SelectionList
         """
-        for dev in self.devices.values():
-            self._list_one.add_value((dev.id, dev.name, dev.name))
+        pass
 
     def __on_list_two_selected(self, selection_list):
         """

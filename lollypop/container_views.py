@@ -91,8 +91,6 @@ class ViewsContainer:
                              Type.SETTINGS_COLLECTIONS,
                              Type.SETTINGS_WEB]:
             view = self._get_view_settings(item_ids[0])
-        elif Type.DEVICES - 999 < item_ids[0] < Type.DEVICES:
-            view = self._get_view_device(item_ids[0])
         elif item_ids[0] == Type.ALL:
             view = self._get_view_albums(item_ids, [])
         elif item_ids[0] == Type.COMPILATIONS:
@@ -282,8 +280,6 @@ class ViewsContainer:
                 if compilation_ids:
                     mask |= SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
-                for dev in self.devices.values():
-                    items.append((dev.id, dev.name, dev.name))
             items += artist_ids
             return items
 
