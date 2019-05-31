@@ -110,7 +110,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
+        <property name="top_attach">3</property>
       </packing>
     </child>
     <child>
@@ -123,7 +123,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">3</property>
+        <property name="top_attach">4</property>
       </packing>
     </child>
     <child>
@@ -136,7 +136,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">4</property>
+        <property name="top_attach">5</property>
       </packing>
     </child>
     <child>
@@ -149,7 +149,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">5</property>
+        <property name="top_attach">6</property>
       </packing>
     </child>
     <child>
@@ -188,6 +188,19 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkListBox" id="listbox">
+        <property name="visible">False</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
+        <property name="can_focus">False</property>
+        <property name="selection_mode">none</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
       </packing>
     </child>
   </object>

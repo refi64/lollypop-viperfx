@@ -31,6 +31,7 @@ class ToolbarEnd(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.set_hexpand(True)
         self.__search_popover = None
+        self.__app_menu_popover = None
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
@@ -221,10 +222,12 @@ class ToolbarEnd(Gtk.Bin):
            @param button as Gtk.MenuButton
         """
         if button.get_active():
-            popover = AppMenuPopover()
-            popover.set_relative_to(button)
-            popover.connect("closed", self.__on_popover_closed, button)
-            popover.popup()
+            if self.__app_menu_popover is None:
+                self.__app_menu_popover = AppMenuPopover()
+                self.__app_menu_popover.connect(
+                    "closed", self.__on_popover_closed, button)
+            self.__app_menu_popover.set_relative_to(button)
+            self.__app_menu_popover.popup()
             self.__next_popover.hide()
             self.__next_popover.inhibit(True)
         else:

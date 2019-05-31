@@ -389,7 +389,7 @@ class SpotifyHelper(GObject.Object):
         (track_id, album_id) = App().scanner.save_track(
                    None, artists, "", "", album_artists, "", "",
                    album_name, None, uri, 0, 0,
-                   0, 0, title, duration, tracknumber,
+                   0, 0, 0, title, duration, tracknumber,
                    discnumber, discname, year, timestamp, 0,
                    0, 0, 0, 0, "", 0)
         return (album_id, track_id, cover_uri)

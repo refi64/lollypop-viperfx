@@ -394,8 +394,6 @@ def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
         icon = "document-open-recent-symbolic"
     elif object_id == Type.RADIOS:
         icon = "audio-input-microphone-symbolic"
-    elif object_id < Type.DEVICES:
-        icon = "multimedia-player-symbolic"
     elif object_id == Type.RANDOMS:
         icon = "media-playlist-shuffle-symbolic"
     elif object_id == Type.LOVED:

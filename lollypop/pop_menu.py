@@ -413,6 +413,7 @@ class EditMenu(BaseMenu):
         BaseMenu.__init__(self, obj)
         if isinstance(object, Album):
             self.__set_save_action()
+            self.__set_sync_action()
         if object.is_in_user_collection and App().art.tag_editor:
             self.__set_edit_action()
 
@@ -426,13 +427,31 @@ class EditMenu(BaseMenu):
         if self._object.mtime == 0:
             save_action = Gio.SimpleAction(name="save_album_action")
             App().add_action(save_action)
-            save_action.connect("activate", self.__save_to_collection, True)
+            save_action.connect("activate",
+                                self.__on_save_action_activate,
+                                True)
             self.append(_("Save in collection"), "app.save_album_action")
         elif self._object.mtime == -1:
             save_action = Gio.SimpleAction(name="remove_album_action")
             App().add_action(save_action)
-            save_action.connect("activate", self.__save_to_collection, False)
+            save_action.connect("activate",
+                                self.__on_save_action_activate,
+                                False)
             self.append(_("Remove from collection"), "app.remove_album_action")
+
+    def __set_sync_action(self):
+        """
+            Set sync action
+        """
+        synced = self._object.synced
+        sync_action = Gio.SimpleAction.new_stateful(
+                                           "sync_album_action",
+                                           None,
+                                           GLib.Variant.new_boolean(synced))
+        App().add_action(sync_action)
+        sync_action.connect("change-state",
+                            self.__on_sync_action_change_state)
+        self.append(_("Sync with devices"), "app.sync_album_action")
 
     def __set_edit_action(self):
         """
@@ -440,10 +459,20 @@ class EditMenu(BaseMenu):
         """
         edit_tag_action = Gio.SimpleAction(name="edit_tag_action")
         App().add_action(edit_tag_action)
-        edit_tag_action.connect("activate", self.__edit_tag)
+        edit_tag_action.connect("activate", self.__on_edit_tag_action_activate)
         self.append(_("Modify information"), "app.edit_tag_action")
 
-    def __save_to_collection(self, action, variant, save):
+    def __on_sync_action_change_state(self, action, variant):
+        """
+            Save album to collection
+            @param Gio.SimpleAction
+            @param GLib.Variant
+            @param save as bool
+        """
+        action.set_state(variant)
+        App().albums.set_synced(self._object.id, variant.get_boolean())
+
+    def __on_save_action_activate(self, action, variant, save):
         """
             Save album to collection
             @param Gio.SimpleAction
@@ -457,7 +486,7 @@ class EditMenu(BaseMenu):
         App().artists.clean()
         App().genres.clean()
 
-    def __edit_tag(self, action, variant):
+    def __on_edit_tag_action_activate(self, action, variant):
         """
             Run tag editor
             @param Gio.SimpleAction
@@ -477,7 +506,8 @@ class EditMenu(BaseMenu):
                 standard_error=False
             )
         except Exception as e:
-            Logger.error("MenuPopover::__edit_tag(): %s" % e)
+            Logger.error("MenuPopover::__on_edit_tag_action_activate(): %s"
+                         % e)
 
 
 class AlbumMenu(Gio.Menu):

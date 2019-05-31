@@ -55,7 +55,7 @@ class RoundedArtistsView(FlowBoxView):
 
     def remove_value(self, item_id):
         """
-            Remove item from devices
+            Remove value
             @param item_id as int
         """
         for child in self._box.get_children():

@@ -15,7 +15,6 @@ from gi.repository import Gtk, GLib
 from lollypop.define import App, SidebarContent, Type
 from lollypop.view import View
 from lollypop.adaptive import AdaptiveStack
-from lollypop.container_device import DeviceContainer
 from lollypop.container_notification import NotificationContainer
 from lollypop.container_scanner import ScannerContainer
 from lollypop.container_playlists import PlaylistsContainer
@@ -24,7 +23,7 @@ from lollypop.container_views import ViewsContainer
 from lollypop.progressbar import ProgressBar
 
 
-class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
+class Container(Gtk.Overlay, NotificationContainer,
                 ScannerContainer, PlaylistsContainer,
                 ListsContainer, ViewsContainer):
     """
@@ -36,7 +35,6 @@ class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
             Init container
         """
         Gtk.Overlay.__init__(self)
-        DeviceContainer.__init__(self)
         NotificationContainer.__init__(self)
         ScannerContainer.__init__(self)
         PlaylistsContainer.__init__(self)
@@ -99,10 +97,9 @@ class Container(Gtk.Overlay, DeviceContainer, NotificationContainer,
             if self._list_one.get_visible():
                 self._list_two.hide()
                 self._list_one.hide()
-            from lollypop.view_device import DeviceView
             from lollypop.view_search import SearchView
             for child in self._stack.get_children():
-                if type(child) not in [DeviceView, SearchView]:
+                if type(child) != SearchView:
                     child.destroy()
             self._reload_navigation_view()
 

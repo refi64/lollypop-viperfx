@@ -292,10 +292,10 @@ class SelectionList(LazyLoadingView):
         """
         if self.__mask & SelectionListMask.ARTISTS:
             self.__fastscroll.clear()
-        # Remove not found items but not devices
+        # Remove not found items
         value_ids = set([v[0] for v in values])
         for child in self.__listbox.get_children():
-            if child.id > Type.DEVICES and child.id not in value_ids:
+            if child.id not in value_ids:
                 self.remove_value(child.id)
         # Add items which are not already in the list
         item_ids = set([child.id for child in self.__listbox.get_children()])
