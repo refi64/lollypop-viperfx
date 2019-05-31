@@ -31,7 +31,7 @@ class AlbumsDatabase:
         self._cached_randoms = []
 
     def add(self, album_name, mb_album_id, artist_ids,
-            uri, loved, popularity, rate, mtime):
+            uri, loved, popularity, rate, synced, mtime):
         """
             Add a new album to database
             @param album_name as str
@@ -41,6 +41,7 @@ class AlbumsDatabase:
             @param loved as bool
             @param popularity as int
             @param rate as int
+            @param synced as int
             @param mtime as int
             @return inserted rowid as int
             @warning: commit needed
@@ -52,7 +53,7 @@ class AlbumsDatabase:
                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                  (album_name, mb_album_id or None,
                                   artist_ids == [], uri, loved, popularity,
-                                  rate, mtime, 0))
+                                  rate, mtime, synced))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -218,7 +219,6 @@ class AlbumsDatabase:
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT synced FROM albums WHERE\
                                  rowid=?", (album_id,))
-
             v = result.fetchone()
             if v is not None:
                 return v[0]

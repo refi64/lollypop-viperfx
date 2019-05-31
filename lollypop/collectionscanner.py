@@ -132,10 +132,10 @@ class CollectionScanner(GObject.GObject, TagReader):
     def save_track(self, genres, artists, a_sortnames, mb_artist_id,
                    album_artists, aa_sortnames, mb_album_artist_id,
                    album_name, mb_album_id, uri, album_loved, album_pop,
-                   album_rate, album_mtime, title, duration, tracknumber,
-                   discnumber, discname, year, timestamp, track_mtime,
-                   track_pop, track_rate, track_loved, track_ltime,
-                   mb_track_id, bpm):
+                   album_rate, album_synced, album_mtime, title, duration,
+                   tracknumber, discnumber, discname, year, timestamp,
+                   track_mtime, track_pop, track_rate, track_loved,
+                   track_ltime, mb_track_id, bpm):
         """
             Add track to DB
             @param genres as str/None
@@ -151,6 +151,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param album_loved as int
             @param album_pop as int
             @param album_rate as int
+            @param album_synced as int
             @param album_mtime as int
             @param title as str
             @param duration as int
@@ -192,7 +193,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         (album_added, album_id) = self.add_album(album_name, mb_album_id,
                                                  album_artist_ids,
                                                  uri, album_loved, album_pop,
-                                                 album_rate, album_mtime)
+                                                 album_rate, album_synced,
+                                                 album_mtime)
         if genres is None:
             genre_ids = [Type.WEB]
         else:
@@ -258,6 +260,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             album_pop = App().albums.get_popularity(album_id)
             album_rate = App().albums.get_rate(album_id)
             album_loved = App().albums.get_loved(album_id)
+            album_synced = App().albums.get_synced(album_id)
             # Force genre for album
             App().albums.set_genre_ids(album_id, genre_ids)
             if backup:
@@ -265,7 +268,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                 name = f.get_basename()
                 self.__history.add(name, duration, track_pop, track_rate,
                                    track_ltime, album_mtime, track_loved,
-                                   album_loved, album_pop, album_rate)
+                                   album_loved, album_pop, album_rate,
+                                   album_synced)
             App().tracks.remove(track_id)
             App().albums.clean()
             App().genres.clean()
@@ -617,7 +621,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         if track_id is None:
             (track_pop, track_rate, track_ltime,
              album_mtime, track_loved, album_loved,
-             album_pop, album_rate) = self.__history.get(name, duration)
+             album_pop, album_rate, album_synced) = self.__history.get(
+                name, duration)
         # Delete track and restore from it
         else:
             (track_pop, track_rate, track_ltime,
@@ -634,8 +639,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                    genres, artists, a_sortnames, mb_artist_id,
                    album_artists, aa_sortnames, mb_album_artist_id,
                    album_name, mb_album_id, uri, album_loved, album_pop,
-                   album_rate, album_mtime, title, duration, tracknumber,
-                   discnumber, discname, year, timestamp, track_mtime,
-                   track_pop, track_rate, track_loved, track_ltime,
-                   mb_track_id, bpm)
+                   album_rate, album_synced, album_mtime, title, duration,
+                   tracknumber, discnumber, discname, year, timestamp,
+                   track_mtime, track_pop, track_rate, track_loved,
+                   track_ltime, mb_track_id, bpm)
         return track_id
