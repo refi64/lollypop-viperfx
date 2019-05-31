@@ -84,8 +84,8 @@ class TracksDatabase:
     def add_artist(self, track_id, artist_id):
         """
             Add artist to track
-            @param track id as int
-            @param artist id as int
+            @param track_id as int
+            @param artist_id as int
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -98,7 +98,7 @@ class TracksDatabase:
     def add_genre(self, track_id, genre_id):
         """
             Add genre to track
-            @param track id as int
+            @param track_id as int
             @param genre id as int
             @warning: commit needed
         """
@@ -166,7 +166,7 @@ class TracksDatabase:
         """
             Return track id for name/album/artists
             @param name as str
-            @param album id as int
+            @param album_id as int
             @return track id as int
         """
         with SqlCursor(App().db) as sql:
@@ -230,7 +230,7 @@ class TracksDatabase:
     def get_name(self, track_id):
         """
             Get track name for track id
-            @param Track id as int
+            @param track_id as int
             @return Name as string
         """
         with SqlCursor(App().db) as sql:
@@ -244,7 +244,7 @@ class TracksDatabase:
     def get_year(self, track_id):
         """
             Get track year
-            @param track id as int
+            @param track_id as int
             @return year as int
         """
         with SqlCursor(App().db) as sql:
@@ -258,7 +258,7 @@ class TracksDatabase:
     def get_timestamp(self, track_id):
         """
             Get track timestamp
-            @param track id as int
+            @param track_id as int
             @return timestamp as int
         """
         with SqlCursor(App().db) as sql:
@@ -273,7 +273,7 @@ class TracksDatabase:
         """
             Get album year based on tracks
             Use most used year by tracks
-            @param album id as int
+            @param album_id as int
             @return int
         """
         with SqlCursor(App().db) as sql:
@@ -292,7 +292,7 @@ class TracksDatabase:
         """
             Get album timestamp based on tracks
             Use most used timestamp by tracks
-            @param album id as int
+            @param album_id as int
             @return int
         """
         with SqlCursor(App().db) as sql:
@@ -311,7 +311,7 @@ class TracksDatabase:
     def get_rate(self, track_id):
         """
             Get track rate
-            @param track id as int
+            @param track_id as int
             @return rate as int
         """
         with SqlCursor(App().db) as sql:
@@ -325,7 +325,7 @@ class TracksDatabase:
     def get_uri(self, track_id):
         """
             Get track uri for track id
-            @param Track id as int
+            @param track_id as int
             @return uri as string
         """
         with SqlCursor(App().db) as sql:
@@ -339,7 +339,7 @@ class TracksDatabase:
     def set_uri(self, track_id, uri):
         """
             Set track uri
-            @param Track id as int
+            @param track_id as int
             @param uri as string
         """
         with SqlCursor(App().db, True) as sql:
@@ -350,7 +350,7 @@ class TracksDatabase:
     def set_rate(self, track_id, rate):
         """
             Set track rate
-            @param Track id as int
+            @param track_id as int
             @param rate as int
         """
         with SqlCursor(App().db, True) as sql:
@@ -361,7 +361,7 @@ class TracksDatabase:
     def get_album_id(self, track_id):
         """
             Get album id for track id
-            @param track id as int
+            @param track_id as int
             @return album id as int
         """
         with SqlCursor(App().db) as sql:
@@ -375,7 +375,7 @@ class TracksDatabase:
     def get_mb_track_id(self, track_id):
         """
             Get MusicBrainz recording id for track id
-            @param track id as int
+            @param track_id as int
             @return recording id as int
         """
         with SqlCursor(App().db) as sql:
@@ -389,7 +389,7 @@ class TracksDatabase:
     def get_album_name(self, track_id):
         """
             Get album name for track id
-            @param track id as int
+            @param track_id as int
             @return album name as str
         """
         with SqlCursor(App().db) as sql:
@@ -404,7 +404,7 @@ class TracksDatabase:
     def get_artist_ids(self, track_id):
         """
             Get artist ids
-            @param track id as int
+            @param track_id as int
             @return artist ids as [int]
         """
         with SqlCursor(App().db) as sql:
@@ -415,7 +415,7 @@ class TracksDatabase:
     def get_mb_artist_ids(self, track_id):
         """
             Get MusicBrainz artist ids
-            @param track id as int
+            @param track_id as int
             @return artist ids as [int]
         """
         with SqlCursor(App().db) as sql:
@@ -429,7 +429,7 @@ class TracksDatabase:
     def get_artists(self, track_id):
         """
             Get artist names
-            @param track id as int
+            @param track_id as int
             @return artists as [str]
         """
         with SqlCursor(App().db) as sql:
@@ -442,7 +442,7 @@ class TracksDatabase:
     def get_genre_ids(self, track_id):
         """
             Get genre ids
-            @param track id as int
+            @param track_id as int
             @return genre ids as [int]
         """
         with SqlCursor(App().db) as sql:
@@ -453,7 +453,7 @@ class TracksDatabase:
     def get_genres(self, track_id):
         """
             Get genres
-            @param track id as int
+            @param track_id as int
             @return [str]
         """
         with SqlCursor(App().db) as sql:
@@ -466,7 +466,7 @@ class TracksDatabase:
     def get_album_ids(self, artist_ids, genre_ids, ignore=False):
         """
             Get albums ids
-            @param artist ids as [int]
+            @param artist_ids as [int]
             @param genre ids as [int]
             @return albums ids as [int]
             @param ignore as bool
@@ -609,7 +609,7 @@ class TracksDatabase:
     def get_number(self, track_id):
         """
             Get track position in album
-            @param track id as int
+            @param track_id as int
             @return position as int
         """
         with SqlCursor(App().db) as sql:
@@ -623,7 +623,7 @@ class TracksDatabase:
     def get_discnumber(self, track_id):
         """
             Get disc number for track id
-            @param track id as int
+            @param track_id as int
             @return discnumber as int
         """
         with SqlCursor(App().db) as sql:
@@ -637,7 +637,7 @@ class TracksDatabase:
     def get_discname(self, track_id):
         """
             Get disc name for track id
-            @param track id as int
+            @param track_id as int
             @return discname as str
         """
         with SqlCursor(App().db) as sql:
@@ -651,7 +651,7 @@ class TracksDatabase:
     def get_duration(self, track_id):
         """
             Get track duration for track id
-            @param Track id as int
+            @param track_id as int
             @return duration as int
         """
         with SqlCursor(App().db) as sql:
@@ -665,7 +665,7 @@ class TracksDatabase:
     def set_duration(self, track_id, duration):
         """
             Get track duration for track id
-            @param Track id as int
+            @param track_id as int
             @param duration as int
         """
         with SqlCursor(App().db, True) as sql:
@@ -697,7 +697,7 @@ class TracksDatabase:
     def get_for_artist(self, artist_id):
         """
             Get tracks for artist_id where artist_id isn't main artist
-            @param artist id as int
+            @param artist_id as int
             @return list of [tracks id as int, track name as string]
         """
         with SqlCursor(App().db) as sql:
@@ -773,7 +773,7 @@ class TracksDatabase:
     def set_more_popular(self, track_id):
         """
             Increment popularity field
-            @param track id as int
+            @param track_id as int
             @raise sqlite3.OperationalError on db update
         """
         with SqlCursor(App().db, True) as sql:
@@ -791,7 +791,7 @@ class TracksDatabase:
     def set_listened_at(self, track_id, time):
         """
             Set ltime for track
-            @param track id as int
+            @param track_id as int
             @param time as int
         """
         with SqlCursor(App().db, True) as sql:
@@ -836,7 +836,7 @@ class TracksDatabase:
     def set_popularity(self, track_id, popularity):
         """
             Set popularity
-            @param track id as int
+            @param track_id as int
             @param popularity as int
         """
         with SqlCursor(App().db, True) as sql:
@@ -846,7 +846,7 @@ class TracksDatabase:
     def get_popularity(self, track_id):
         """
             Get popularity
-            @param track id  as int
+            @param track_id  as int
             @return popularity as int
         """
         with SqlCursor(App().db) as sql:
@@ -884,7 +884,7 @@ class TracksDatabase:
     def get_ltime(self, track_id):
         """
             Get listen time
-            @param track id  as int
+            @param track_id  as int
             @return listen time as int
         """
         with SqlCursor(App().db) as sql:
@@ -995,7 +995,7 @@ class TracksDatabase:
     def remove(self, track_id):
         """
             Remove track
-            @param track id as int
+            @param track_id as int
         """
         with SqlCursor(App().db, True) as sql:
             sql.execute("DELETE FROM track_genres\

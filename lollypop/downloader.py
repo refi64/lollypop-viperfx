@@ -51,7 +51,7 @@ class Downloader:
     def cache_album_art(self, album_id):
         """
             Download album artwork
-            @param album id as int
+            @param album_id as int
         """
         if album_id in self.__albums_history or\
                 not get_network_available("DATA"):

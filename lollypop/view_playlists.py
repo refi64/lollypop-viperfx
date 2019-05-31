@@ -294,7 +294,7 @@ class PlaylistsView(LazyLoadingView, ViewController):
         """
             Update tracks widgets
             @param playlists as Playlists
-            @param playlist id as int
+            @param playlist_id as int
             @param uri as str
             @param pos as int
         """
@@ -307,7 +307,7 @@ class PlaylistsView(LazyLoadingView, ViewController):
         """
             Update tracks widgets
             @param playlists as Playlists
-            @param playlist id as int
+            @param playlist_id as int
             @param uri as str
             @param pos as int
         """

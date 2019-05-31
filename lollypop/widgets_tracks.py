@@ -46,7 +46,7 @@ class TracksWidget(Gtk.ListBox):
     def update_playing(self, track_id):
         """
             Update playing track
-            @param track id as int
+            @param track_id as int
         """
         for row in self.get_children():
             row.set_indicator()
@@ -74,8 +74,8 @@ class TracksWidget(Gtk.ListBox):
         """
             Updates the loved icon
             @param playlist as Playlist
-            @param playlist id as int
-            @param track id as int
+            @param playlist_id as int
+            @param track_id as int
         """
         if playlist_id != Type.LOVED:
             return

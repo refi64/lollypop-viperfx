@@ -71,7 +71,7 @@ class ScannerContainer:
         """
             Add/remove artist to/from list
             @param scanner as CollectionScanner
-            @param artist id as int
+            @param artist_id as int
             @param add as bool
         """
         artist_name = App().artists.get_name(artist_id)

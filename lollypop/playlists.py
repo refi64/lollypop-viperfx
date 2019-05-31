@@ -94,7 +94,7 @@ class Playlists(GObject.GObject):
     def exists(self, playlist_id):
         """
             Return True if playlist exists
-            @param playlist id as int
+            @param playlist_id as int
             @param bool
         """
         with SqlCursor(self) as sql:
@@ -138,7 +138,7 @@ class Playlists(GObject.GObject):
     def clear(self, playlist_id):
         """
             Clear playlsit
-            @param playlist id as int
+            @param playlist_id as int
         """
         with SqlCursor(self, True) as sql:
             sql.execute("DELETE FROM tracks\
@@ -164,7 +164,7 @@ class Playlists(GObject.GObject):
     def add_uris(self, playlist_id, uris, signal=False):
         """
             Add uris to playlists (even if exists)
-            @param playlist id as int
+            @param playlist_id as int
             @param uris as [str]
             @param signal as bool
         """
@@ -174,7 +174,7 @@ class Playlists(GObject.GObject):
     def add_tracks(self, playlist_id, tracks, signal=False):
         """
             Add tracks to playlist
-            @param playlist id as int
+            @param playlist_id as int
             @param tracks as [Track]
             @param signal as bool
         """
@@ -224,7 +224,7 @@ class Playlists(GObject.GObject):
     def remove_uris(self, playlist_id, uris, signal=False):
         """
             Remove uris from playlist
-            @param playlist id as int
+            @param playlist_id as int
             @param uris as [str]
             @param signal as bool
         """
@@ -234,7 +234,7 @@ class Playlists(GObject.GObject):
     def remove_tracks(self, playlist_id, tracks, signal=False):
         """
             Remove tracks from playlist
-            @param playlist id as int
+            @param playlist_id as int
             @param tracks as [Track]
             @param signal as bool
         """
@@ -360,7 +360,7 @@ class Playlists(GObject.GObject):
     def get_track_ids_sorted(self, playlist_id):
         """
             Return availables track ids for playlist sorted by artist/album
-            @param playlist id as int
+            @param playlist_id as int
             @return array of track id as int
         """
         with SqlCursor(self) as sql:
@@ -400,7 +400,7 @@ class Playlists(GObject.GObject):
     def get_name(self, playlist_id):
         """
             Get playlist name
-            @param playlist id as int
+            @param playlist_id as int
             @return playlist name as str
         """
         if playlist_id == Type.LOVED:
@@ -552,7 +552,7 @@ class Playlists(GObject.GObject):
     def import_uri(self, playlist_id, uri, start=None, down=True):
         """
             Import uri in playlist
-            @param playlist id as int
+            @param playlist_id as int
             @param uri as str
             @param start track id as int
             @param down as bool
@@ -615,8 +615,8 @@ class Playlists(GObject.GObject):
     def get_position(self, playlist_id, track_id):
         """
             Get track position in playlist
-            @param playlist id as int
-            @param track id as int
+            @param playlist_id as int
+            @param track_id as int
             @return position as int
         """
         i = 0
@@ -629,7 +629,7 @@ class Playlists(GObject.GObject):
     def exists_track(self, playlist_id, uri):
         """
             Check if track id exist in playlist
-            @param playlist id as int
+            @param playlist_id as int
             @param uri as str
             @return bool
         """
@@ -647,7 +647,7 @@ class Playlists(GObject.GObject):
     def exists_album(self, playlist_id, album):
         """
             Return True if object_id is already present in playlist
-            @param playlist id as int
+            @param playlist_id as int
             @param album as Album/Disc
             @return bool
         """

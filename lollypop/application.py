@@ -243,11 +243,9 @@ class Application(Gtk.Application):
         """
         return self.__fs_window is not None
 
-    def set_mini(self, action, param):
+    def set_mini(self):
         """
             Set mini player on/off
-            @param dialog as Gtk.Dialog
-            @param response id as int
         """
         if self.__window is not None:
             self.__window.set_mini()

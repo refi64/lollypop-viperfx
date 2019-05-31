@@ -32,7 +32,7 @@ class PlaylistsWidget(Gtk.Grid):
     def __init__(self, playlist_ids, view_type):
         """
             Init playlist Widget
-            @param playlist ids as [int]
+            @param playlist_ids as [int]
             @param view_type as ViewType
         """
         Gtk.Grid.__init__(self)
@@ -161,7 +161,7 @@ class PlaylistsWidget(Gtk.Grid):
     def append(self, track_id):
         """
             Add track to widget
-            @param track id as int
+            @param track_id as int
         """
         length = len(self.children)
         position = length + 1

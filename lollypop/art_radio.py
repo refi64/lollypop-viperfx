@@ -190,7 +190,7 @@ class RadioArt:
     def __get_radio_cache_name(self, name):
         """
             Get a uniq string for radio
-            @param album id as int
+            @param album_id as int
             @param sql as sqlite cursor
         """
         return "@@" + name.replace("/", "-") + "@@radio@@"

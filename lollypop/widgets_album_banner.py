@@ -274,7 +274,7 @@ class AlbumBannerWidget(Gtk.Bin):
         """
             Update cover for album_id
             @param art as Art
-            @param album id as int
+            @param album_id as int
         """
         if album_id == self.__album.id:
             App().art_helper.set_album_artwork(

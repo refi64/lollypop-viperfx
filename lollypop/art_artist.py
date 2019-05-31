@@ -88,7 +88,7 @@ class ArtistArt:
             @param artist as str
             @param width as int
             @param height as int
-            @param scale factor as int
+            @param scale_factor as int
             @param behaviour as ArtBehaviour
             @return cairo surface
             @thread safe

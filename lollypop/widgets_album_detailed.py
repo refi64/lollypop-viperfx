@@ -33,7 +33,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
             @param album as Album
             @param label_height as int
             @param genre ids as [int]
-            @param artist ids as [int]
+            @param artist_ids as [int]
             @param view_type as ViewType
         """
         Gtk.Grid.__init__(self)
@@ -130,7 +130,7 @@ class AlbumDetailedWidget(Gtk.Grid, AlbumWidget, TracksView):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
-            @param album id as int
+            @param album_id as int
             @param added as bool
         """
         TracksView._on_album_updated(self, scanner, album_id)

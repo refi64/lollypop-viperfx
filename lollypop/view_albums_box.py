@@ -32,7 +32,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Init album view
             @param genre ids as [int]
-            @param artist ids as [int]
+            @param artist_ids as [int]
             @param view_type as ViewType
         """
         FlowBoxView.__init__(self, view_type)
@@ -80,7 +80,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Add albums to the view
             Start lazy loading
-            @param album ids as [int]
+            @param album_ids as [int]
         """
         widget = FlowBoxView._add_items(self, album_ids,
                                         self.__genre_ids,

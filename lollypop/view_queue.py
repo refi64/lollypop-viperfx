@@ -108,7 +108,7 @@ class QueueView(View):
     def __row_for_track_id(self, track_id):
         """
             Get a row for track id
-            @param track id as int
+            @param track_id as int
         """
         row = QueueRow(Track(track_id), self.__view_type)
         row.connect("insert-track", self.__on_insert_track)

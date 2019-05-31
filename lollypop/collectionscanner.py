@@ -221,9 +221,9 @@ class CollectionScanner(GObject.GObject, TagReader):
     def update_track(self, track_id, artist_ids, genre_ids):
         """
             Set track artists/genres
-            @param track id as int
-            @param artist ids as [int]
-            @param genre ids as [int]
+            @param track_id as int
+            @param artist_ids as [int]
+            @param genre_ids as [int]
             @param mtime as int
             @param popularity as int
             @commit needed

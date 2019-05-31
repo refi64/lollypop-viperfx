@@ -201,7 +201,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
-            @param album id as int
+            @param album_id as int
             @param added as bool
         """
         if self._album.id == album_id and not added:

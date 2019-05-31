@@ -101,7 +101,7 @@ class ArtworkSearchWidget(Gtk.Bin):
     def __init__(self, artist_id, album):
         """
             Init search
-            @param artist id as int/None
+            @param artist_id as int/None
             @param album as Album/None
         """
         Gtk.Bin.__init__(self)
