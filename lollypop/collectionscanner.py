@@ -106,7 +106,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param album_artist_ids as [int]
             @param genre_ids as [int]
             @param year as int
-            @param timestmap as int
+            @param timestamp as int
             @commit needed
         """
         if album_artist_ids:
@@ -226,8 +226,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param track_id as int
             @param artist_ids as [int]
             @param genre_ids as [int]
-            @param mtime as int
-            @param popularity as int
             @commit needed
         """
         # Set artists/genres for track

@@ -27,7 +27,7 @@ class ArtistAlbumsView(LazyLoadingView, ViewController):
         """
             Init ArtistAlbumsView
             @param artist_ids as [int]
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param view_type as ViewType
         """
         LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)

@@ -26,7 +26,7 @@ class MpdDatabase:
             Count songs and play time
             @param album as string
             @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @param year as int
         """
         songs = 0
@@ -47,7 +47,7 @@ class MpdDatabase:
             Get tracks path
             @param album as string
             @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @param year as int
             @return paths as [str]
         """
@@ -61,7 +61,7 @@ class MpdDatabase:
             Get tracks path
             @param album as string
             @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @param year as int
             @return paths as [str]
         """
@@ -74,7 +74,7 @@ class MpdDatabase:
         """
             Get albums names
             @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @param year as int
             @return names as [str]
         """
@@ -105,8 +105,7 @@ class MpdDatabase:
     def get_artists_names(self, genre_id):
         """
             Get artists names
-            @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @return names as [str]
         """
         from_str = "artists, albums "
@@ -132,7 +131,7 @@ class MpdDatabase:
             Get all availables albums years
             @param album as string
             @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @return years as [str]
         """
         from_str = "albums "
@@ -192,7 +191,7 @@ class MpdDatabase:
             @param select as string
             @param album as string
             @param artist_id as int
-            @param genre id as int
+            @param genre_id as int
             @param year as int
             @return sqlite cursor
         """

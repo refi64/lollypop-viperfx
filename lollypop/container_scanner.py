@@ -56,7 +56,7 @@ class ScannerContainer:
         """
             Add genre to genre list
             @param scanner as CollectionScanner
-            @param genre id as int
+            @param genre_id as int
             @param add as bool
         """
         sidebar_content = App().settings.get_enum("sidebar-content")

@@ -185,7 +185,7 @@ class ListsContainer:
         """
             Setup list for artists
             @param list as SelectionList
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param update as bool, if True, just update entries
         """
         def load():

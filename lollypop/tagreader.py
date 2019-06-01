@@ -41,7 +41,7 @@ class Discoverer:
     def get_info(self, uri):
         """
             Return information for file at uri
-            @param path as str
+            @param uri as str
             @Exception GLib.Error
             @return GstPbutils.DiscovererInfo
         """
@@ -111,6 +111,7 @@ class TagReader(Discoverer):
         """
             Get MusicBrainz ID
             @param tags as Gst.TagList
+            @param name as str
             @return str
         """
         if tags is None or not name:
@@ -539,6 +540,7 @@ class TagReader(Discoverer):
             Add artists to db
             @param artists as [string]
             @param sortnames as [string]
+            @param mb_artist_ids as [string]
             @return [int]
             @commit needed
         """
@@ -601,14 +603,14 @@ class TagReader(Discoverer):
                   uri, loved, popularity, rate, synced, mtime):
         """
             Add album to db
-            @param album name as str
-            @param album artist_ids as [int]
+            @param album_name as str
+            @param mb_album_id as str
+            @param artist_ids as [int]
             @param uri as str
-            @param year as int
             @param loved as bool
             @param popularity as int
             @param rate as int
-            @param synce as int
+            @param synced as int
             @param mtime as int
             @return (added as bool, album_id as int)
             @commit needed

@@ -30,7 +30,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
         """
             Init ArtistView
             @param artist_id as int (Current if None)
-            @param genre id as int
+            @param genre_id as int
         """
         view_type = ViewType.TWO_COLUMNS
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids, view_type)

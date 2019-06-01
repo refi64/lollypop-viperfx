@@ -74,7 +74,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
     def do_event(self, event):
         """
             Update overlays as internal widget may not have received the signal
-            @param widget as Gtk.Widget
             @param event as Gdk.event
         """
         if event.type == Gdk.EventType.FOCUS_CHANGE and\

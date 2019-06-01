@@ -293,7 +293,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
     def play_uris(self, uris):
         """
             Play uris
-            @param uri as [str]
+            @param uris as [str]
         """
         # First get tracks
         tracks = []
@@ -441,7 +441,6 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
     def set_next(self):
         """
             Play next track
-            @param sql as sqlite cursor
         """
         if self.current_track.id == Type.RADIOS or\
                 self._current_track.id == self.__stop_after_track_id:

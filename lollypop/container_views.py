@@ -298,7 +298,7 @@ class ViewsContainer:
     def _get_view_artists(self, genre_ids, artist_ids):
         """
             Get artists view for genres/artists
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param artist_ids as [int]
         """
         def load():
@@ -406,7 +406,7 @@ class ViewsContainer:
     def _get_view_albums(self, genre_ids, artist_ids):
         """
             Get albums view for genres/artists
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @param is compilation as bool
         """
         def load():

@@ -61,7 +61,7 @@ class Toolbar(Gtk.HeaderBar):
     def set_content_width(self, window_width):
         """
             Calculate infos/title width
-            @param window width as int
+            @param window_width as int
         """
         width = self.__toolbar_playback.get_preferred_width()[1]
         width += self.__toolbar_end.get_preferred_width()[1]

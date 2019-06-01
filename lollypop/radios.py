@@ -56,7 +56,7 @@ class Radios(GObject.GObject):
     def add(self, name, uri):
         """
             Add a radio, update url if radio already exists in db
-            @param radio name as str
+            @param name as str
             @param uri as str
             @return radio id as int
         """

@@ -55,7 +55,7 @@ class ChooserWidget(Gtk.FlowBoxChild):
     def set_dir(self, uri):
         """
             Set current selected uri for chooser
-            @param directory uri as string
+            @param uri as string
         """
         if uri:
             self.__chooser_btn.set_uri(uri)
@@ -63,14 +63,14 @@ class ChooserWidget(Gtk.FlowBoxChild):
     def set_icon(self, image):
         """
             Set image for action button
-            @param Gtk.Image
+            @param image as Gtk.Image
         """
         self.__action_btn.set_image(image)
 
     def set_action(self, action):
         """
             Set action callback for button clicked signal
-            @param func
+            @param action
         """
         self.__action = action
 

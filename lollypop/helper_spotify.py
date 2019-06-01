@@ -120,6 +120,7 @@ class SpotifyHelper(GObject.Object):
         """
            Get similar artists
            @param artist_id as int
+           @param cancellable as Gio.Cancellable
            @return artists as [str]
         """
         artists = []
@@ -142,12 +143,11 @@ class SpotifyHelper(GObject.Object):
             Logger.error("SpotifyHelper::get_similar_artists(): %s", e)
         return artists
 
-    def search_similar_artists(self, artist_id, cancellable):
+    def search_similar_artists(self, spotify_id, cancellable):
         """
             Search similar artists
-            @param artist_name as str
+            @param spotify_id as str
             @param cancellable as Gio.Cancellable
-            @param callback as function
         """
         try:
             while self.wait_for_token():
@@ -158,8 +158,8 @@ class SpotifyHelper(GObject.Object):
             token = "Bearer %s" % self.__token
             helper = TaskHelper()
             helper.add_header("Authorization", token)
-            uri = "https://api.spotify.com/v1/artists/%s/related-artists" %\
-                artist_id
+            uri = "https://api.spotify.com/v1/artists/%s/related-artists" % \
+                  spotify_id
             (status, data) = helper.load_uri_content_sync(uri, cancellable)
             if status:
                 decode = json.loads(data.decode("utf-8"))
@@ -217,6 +217,7 @@ class SpotifyHelper(GObject.Object):
             Get albums related to search
             We need a thread because we are going to populate DB
             @param cancellable as Gio.Cancellable
+            @param language as str
         """
         from csv import reader
         try:

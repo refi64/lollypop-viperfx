@@ -218,7 +218,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
     def set_playing_indicator(self):
         """
             Show play indicator
-            @param show as bool
         """
         if self._artwork is None:
             return
@@ -511,7 +510,7 @@ class AlbumsListView(LazyLoadingView, ViewController):
     def set_reveal(self, albums):
         """
             Set albums to reveal on populate
-            @param album_ids as [Album]
+            @param albums as [Album]
         """
         self.__reveals = albums
 

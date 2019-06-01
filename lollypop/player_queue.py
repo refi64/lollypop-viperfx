@@ -51,6 +51,7 @@ class QueuePlayer:
             Prepend track to queue,
             remove previous track if exist
             @param track_id as int
+            @param pos as int
             @param notify as bool
         """
         if track_id in self.__queue:

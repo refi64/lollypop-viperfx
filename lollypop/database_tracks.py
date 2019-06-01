@@ -43,7 +43,6 @@ class TracksDatabase:
             @param discnumber as int
             @param discname as str
             @param album_id as int
-            @param genre_id as int
             @param year as int
             @param timestamp as int
             @param popularity as int
@@ -99,7 +98,7 @@ class TracksDatabase:
         """
             Add genre to track
             @param track_id as int
-            @param genre id as int
+            @param genre_id as int
             @warning: commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -167,6 +166,7 @@ class TracksDatabase:
             Return track id for name/album/artists
             @param name as str
             @param album_id as int
+            @param artist_ids as [int]
             @return track id as int
         """
         with SqlCursor(App().db) as sql:
@@ -467,7 +467,7 @@ class TracksDatabase:
         """
             Get albums ids
             @param artist_ids as [int]
-            @param genre ids as [int]
+            @param genre_ids as [int]
             @return albums ids as [int]
             @param ignore as bool
         """
@@ -937,7 +937,6 @@ class TracksDatabase:
     def clean(self):
         """
             Clean database for track id
-            @param track_id as int
             @warning commit needed
         """
         with SqlCursor(App().db, True) as sql:
@@ -972,7 +971,6 @@ class TracksDatabase:
             Get track id for artist and title
             @param artist as string
             @param title as string
-            @param sql as sqlite cursor
             @return track id as int
         """
         artist = noaccents(artist.lower())

@@ -49,6 +49,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         """
             Show/hide back button
             @param b as bool
+            @param sensitive as bool
         """
         if b:
             self.__back_button.show()
