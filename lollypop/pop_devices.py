@@ -35,16 +35,25 @@ class DevicesPopover(Gtk.Popover):
         self.__syncing = 0
         self.__timeout_id = None
         self.__progressbar = progressbar
+        self.__scrolled = Gtk.ScrolledWindow()
+        self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        self.__scrolled.show()
+        self.__viewport = Gtk.Viewport()
+        self.__viewport.set_margin_start(5)
+        self.__viewport.set_margin_end(5)
+        self.__viewport.set_margin_top(5)
+        self.__viewport.set_margin_bottom(5)
+        self.__scrolled.add(self.__viewport)
+        self.__viewport.show()
         self.__listbox = Gtk.ListBox()
-        self.__listbox.set_margin_start(5)
-        self.__listbox.set_margin_end(5)
-        self.__listbox.set_margin_top(5)
-        self.__listbox.set_margin_bottom(5)
         self.__listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         # Volume manager
         self.__vm = Gio.VolumeMonitor.get()
         self.__vm.connect("mount-added", self.__on_mount_added)
         self.__vm.connect("mount-removed", self.__on_mount_removed)
+        self.__viewport.add(self.__listbox)
+        self.add(self.__scrolled)
 
     def populate(self):
         """
@@ -52,7 +61,6 @@ class DevicesPopover(Gtk.Popover):
         """
         for mount in self.__vm.get_mounts():
             self.__add_device(mount)
-        self.add(self.__listbox)
 
     def add_fake_phone(self):
         """
@@ -68,6 +76,7 @@ class DevicesPopover(Gtk.Popover):
             d.make_directory_with_parents()
         widget = DeviceWidget(name, uri)
         widget.connect("syncing", self.__on_syncing)
+        widget.connect("size-allocate", self.__on_size_allocate)
         widget.show()
         self.__listbox.add(widget)
         self.__listbox.show()
@@ -109,6 +118,7 @@ class DevicesPopover(Gtk.Popover):
                 icon = None
             widget = DeviceWidget(name, uri, icon)
             widget.connect("syncing", self.__on_syncing)
+            widget.connect("size-allocate", self.__on_size_allocate)
             widget.show()
             self.__listbox.add(widget)
             self.__listbox.show()
@@ -155,6 +165,18 @@ class DevicesPopover(Gtk.Popover):
             @param mount as Gio.Mount
         """
         self.__remove_device(mount)
+
+    def __on_size_allocate(self, widget, allocation):
+        """
+            Show scrollbar if needed
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        height = 0
+        for child in self.__listbox.get_children():
+            if child.is_visible():
+                height += child.get_allocated_height()
+        self.__scrolled.set_size_request(-1, min(400, height))
 
     def __on_syncing(self, widget, status):
         """
