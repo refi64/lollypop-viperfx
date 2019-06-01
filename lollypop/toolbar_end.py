@@ -31,11 +31,11 @@ class ToolbarEnd(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.set_hexpand(True)
         self.__search_popover = None
-        self.__app_menu_popover = None
+        self.__appmenu_popover = None
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
-
+        self.__appmenu_button = builder.get_object("appmenu_button")
         self.__party_submenu = builder.get_object("party_submenu")
         self.add(builder.get_object("end"))
 
@@ -139,6 +139,18 @@ class ToolbarEnd(Gtk.Bin):
         self.__search_popover.set_text(search)
 
     @property
+    def appmenu_popover(self):
+        """
+            Get application menu Popover
+            @return AppMenuPopover
+        """
+        if self.__appmenu_popover is None:
+            self.__appmenu_popover = AppMenuPopover()
+            self.__appmenu_popover.connect(
+                "closed", self.__on_popover_closed, self.__appmenu_button)
+        return self.__appmenu_popover
+
+    @property
     def home_button(self):
         """
             Get home button
@@ -222,12 +234,8 @@ class ToolbarEnd(Gtk.Bin):
            @param button as Gtk.MenuButton
         """
         if button.get_active():
-            if self.__app_menu_popover is None:
-                self.__app_menu_popover = AppMenuPopover()
-                self.__app_menu_popover.connect(
-                    "closed", self.__on_popover_closed, button)
-            self.__app_menu_popover.set_relative_to(button)
-            self.__app_menu_popover.popup()
+            self.appmenu_popover.set_relative_to(button)
+            self.appmenu_popover.popup()
             self.__next_popover.hide()
             self.__next_popover.inhibit(True)
         else:

@@ -37,7 +37,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton">
+      <object class="GtkButton" id="sync_button">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
@@ -45,6 +45,7 @@
         <property name="halign">center</property>
         <property name="image">image1</property>
         <property name="relief">none</property>
+        <signal name="clicked" handler="_on_sync_button_clicked" swapped="no"/>
         <style>
           <class name="no-padding"/>
         </style>

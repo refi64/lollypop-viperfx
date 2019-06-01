@@ -41,6 +41,23 @@ class AppMenuPopover(Gtk.Popover):
             self.__add_device(mount)
         self.add(builder.get_object("widget"))
 
+    def add_fake_phone(self):
+        """
+            Add a fake phone device
+        """
+        name = "Librem phone"
+        uri = "file:///tmp/librem/"
+        d = Gio.File.new_for_uri(uri + "Internal Memory")
+        if not d.query_exists():
+            d.make_directory_with_parents()
+        d = Gio.File.new_for_uri(uri + "SD Card")
+        if not d.query_exists():
+            d.make_directory_with_parents()
+        widget = DeviceWidget(name, uri)
+        widget.show()
+        self.__listbox.add(widget)
+        self.__listbox.show()
+
 #######################
 # PROTECTED           #
 #######################
@@ -69,7 +86,13 @@ class AppMenuPopover(Gtk.Popover):
             @param mount as Gio.Mount
         """
         if is_device(mount):
-            widget = DeviceWidget(mount)
+            name = mount.get_name()
+            uri = mount.get_default_location().get_uri()
+            if mount.get_volume() is not None:
+                icon = mount.get_volume().get_symbolic_icon()
+            else:
+                icon = None
+            widget = DeviceWidget(name, uri, icon)
             widget.show()
             self.__listbox.add(widget)
             self.__listbox.show()

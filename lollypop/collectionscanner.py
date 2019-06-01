@@ -377,6 +377,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                        data["discnumber"], data["discname"], data["year"],
                        data["timestamp"], -1, data["track_popularity"],
                        data["track_rate"], data["track_loved"], 0, "", 0)
+            infos.close(None)
         except Exception as e:
             Logger.error("CollectionScanner::__import_web_tracks(): %s", e)
 
@@ -423,6 +424,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                         else:
                             mtime = get_mtime(info)
                             files.append((mtime, child_uri))
+                    infos.close(None)
                 # Only happens if files passed as args
                 else:
                     mtime = get_mtime(info)

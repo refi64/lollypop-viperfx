@@ -24,21 +24,22 @@ class DeviceWidget(Gtk.ListBoxRow):
         A device widget for sync
     """
 
-    def __init__(self, mount):
+    def __init__(self, name, uri, icon=None):
         """
             Init widget
-            @param mount as Gio.Mount
+            @param name as str
+            @param uri as str
+            @param icon as Gio.Icon
         """
         Gtk.ListBoxRow.__init__(self)
         self.get_style_context().add_class("background")
-        self.__name = mount.get_name()
-        self.__uri = mount.get_default_location().get_uri()
+        self.__name = name
+        self.__uri = uri
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/DeviceWidget.ui")
         self.__progress = builder.get_object("progress")
         builder.get_object("name").set_label(self.__name)
-        if mount.get_volume() is not None:
-            icon = mount.get_volume().get_symbolic_icon()
+        if icon is not None:
             device_symbolic = builder.get_object("device-symbolic")
             device_symbolic.set_from_gicon(icon, Gtk.IconSize.MENU)
         self.add(builder.get_object("widget"))
@@ -56,10 +57,63 @@ class DeviceWidget(Gtk.ListBoxRow):
 #######################
 # PROTECTED           #
 #######################
+    def _on_sync_button_clicked(self, button):
+        """
+            Sync music on device
+            @param button as Gtk.Button
+        """
+        uri = self.__get_best_uri_for_sync()
+        if uri is None:
+            return
 
 #######################
 # PRIVATE             #
 #######################
+    def __get_best_uri_for_sync(self):
+        """
+            Get best URI for synchronization:
+                - A folder with lollypop sync DB
+                - A SD Card
+            @return str
+        """
+        uris = []
+        try:
+            # First test we have a normal Music folder at root
+            # We try to create one, MTP will fail
+            music_uri = "%s/Music" % self.__uri
+            music_dir = Gio.File.new_for_uri(music_uri)
+            try:
+                music_dir.make_directory_with_parents()
+            except:
+                pass
+            if music_dir.query_exists():
+                return music_uri
+
+            # Search for previous sync or for SD CARD
+            d = Gio.File.new_for_uri(self.__uri)
+            infos = d.enumerate_children(
+                "standard::name,standard::type",
+                Gio.FileQueryInfoFlags.NONE,
+                None)
+
+            for info in infos:
+                if info.get_file_type() != Gio.FileType.DIRECTORY:
+                    continue
+                f = infos.get_child(info)
+                uri = f.get_uri() + "/Music"
+                previous_sync = Gio.File.new_for_uri("%s/unsync" % uri)
+                if previous_sync.query_exists():
+                    uris.insert(0, uri)
+                elif info.get_name().lower().startswith("SD"):
+                    sync = Gio.File.new_for_uri(uri)
+                    sync.make_directory_with_parents()
+                    uris.append(uri)
+            infos.close(None)
+            return uris
+        except Exception as e:
+            Logger.error("DeviceManagerView::_get_files: %s: %s" % (uri, e))
+        return uris[0] if uris else None
+
     def __calculate_free_space(self):
         """
             Calculate free space on device
