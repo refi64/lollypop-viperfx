@@ -458,7 +458,7 @@ class Application(Gtk.Application):
             elif options.contains("prev"):
                 self.player.prev()
             elif options.contains("emulate-phone"):
-                self.__window.toolbar.end.appmenu_popover.add_fake_phone()
+                self.__window.toolbar.end.devices_popover.add_fake_phone()
             elif len(args) > 1:
                 uris = []
                 pls = []

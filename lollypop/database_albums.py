@@ -192,9 +192,10 @@ class AlbumsDatabase:
             except:  # Database is locked
                 pass
 
-    def get_synced_ids(self):
+    def get_synced_ids(self, index):
         """
             Get synced album ids
+            @param index as int => device index from gsettings
         """
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
@@ -202,13 +203,13 @@ class AlbumsDatabase:
                        WHERE album_artists.album_id = albums.rowid\
                        AND (album_artists.artist_id = artists.rowid\
                             OR album_artists.artist_id=?)\
-                       AND synced=1 AND albums.mtime != 0"
+                       AND synced & (1 << ?) AND albums.mtime != 0"
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
                      albums.timestamp,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
-            filters = (Type.COMPILATIONS,)
+            filters = (Type.COMPILATIONS, index)
             result = sql.execute(request + order, filters)
             return list(itertools.chain(*result))
 

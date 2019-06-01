@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
 from lollypop.pop_appmenu import AppMenuPopover
+from lollypop.pop_devices import DevicesPopover
 from lollypop.define import App, Shuffle, Repeat
 
 
@@ -31,11 +32,10 @@ class ToolbarEnd(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.set_hexpand(True)
         self.__search_popover = None
-        self.__appmenu_popover = None
+        self.__devices_popover = None
         self.__timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarEnd.ui")
-        self.__appmenu_button = builder.get_object("appmenu_button")
         self.__party_submenu = builder.get_object("party_submenu")
         self.add(builder.get_object("end"))
 
@@ -58,8 +58,9 @@ class ToolbarEnd(Gtk.Bin):
         App().add_action(self.__shuffle_action)
         App().add_action(self.__repeat_action)
 
-        self.__shuffle_button = builder.get_object("shuffle-button")
-        self.__shuffle_image = builder.get_object("shuffle-button-image")
+        self.__shuffle_button = builder.get_object("shuffle_button")
+        self.__shuffle_button_image = builder.get_object(
+            "shuffle_button_image")
         shuffle_button_action = Gio.SimpleAction.new("shuffle-button", None)
         shuffle_button_action.connect("activate",
                                       self.__on_shuffle_button_activate)
@@ -89,18 +90,27 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover = NextPopover()
         self.__next_popover.set_relative_to(self.__shuffle_button)
 
-        self.__search_button = builder.get_object("search-button")
+        self.__search_button = builder.get_object("search_button")
 
         search_action = App().lookup_action("search")
         search_action.connect("activate", self.__on_search_activate)
 
-        self.__list_button = builder.get_object("list-button")
+        self.__list_button = builder.get_object("list_button")
         self.__list_button.set_property("has-tooltip", True)
         self.__list_button.connect("query-tooltip",
                                    self.__on_list_button_query_tooltip)
-        self.__home_button = builder.get_object("home-button")
+        self.__home_button = builder.get_object("home_button")
         App().player.connect("playlist-changed", self.__on_playlist_changed)
         self.__set_shuffle_icon()
+
+        devices_button = builder.get_object("devices_button")
+        self.__devices_popover = DevicesPopover()
+        self.__devices_popover.connect(
+                "closed", self.__on_popover_closed, devices_button)
+        self.__devices_popover.connect("content-changed",
+                                       self.__on_devices_content_changed,
+                                       devices_button)
+        self.__devices_popover.populate()
         builder.connect_signals(self)
 
     def on_next_changed(self, player):
@@ -139,16 +149,12 @@ class ToolbarEnd(Gtk.Bin):
         self.__search_popover.set_text(search)
 
     @property
-    def appmenu_popover(self):
+    def devices_popover(self):
         """
-            Get application menu Popover
+            Get Devices Popover
             @return AppMenuPopover
         """
-        if self.__appmenu_popover is None:
-            self.__appmenu_popover = AppMenuPopover()
-            self.__appmenu_popover.connect(
-                "closed", self.__on_popover_closed, self.__appmenu_button)
-        return self.__appmenu_popover
+        return self.__devices_popover
 
     @property
     def home_button(self):
@@ -172,7 +178,7 @@ class ToolbarEnd(Gtk.Bin):
     def _on_list_button_toggled(self, button):
         """
             Show current playback context popover
-            @param button as Gtk.MenuButton
+            @param button as Gtk.ToggleButton
         """
         if not button.get_active():
             return
@@ -195,57 +201,69 @@ class ToolbarEnd(Gtk.Bin):
     def _on_search_button_toggled(self, button):
         """
             Show search popover
-            @param button as Gtk.Button
+            @param button as Gtk.ToggleButton
         """
-        if not button.get_active():
-            self.__search_popover.popdown()
-            return
-        self.__next_popover.hide()
-        self.__next_popover.inhibit(True)
-        if self.__search_popover is None:
-            from lollypop.pop_search import SearchPopover
-            self.__search_popover = SearchPopover()
-            self.__search_popover.connect("closed",
-                                          self.__on_popover_closed,
-                                          button)
-        self.__search_popover.set_relative_to(button)
-        self.__search_popover.popup()
-        return True
+        if button.get_active():
+            if self.__search_popover is None:
+                from lollypop.pop_search import SearchPopover
+                self.__search_popover = SearchPopover()
+                self.__search_popover.connect("closed",
+                                              self.__on_popover_closed,
+                                              button)
+            self.__search_popover.set_relative_to(button)
+            self.__search_popover.popup()
+        self.__handle_next_popover(button)
 
     def _on_shuffle_button_toggled(self, button):
         """
-           Create submenu
-           @param button as Gtk.MenuButton
+           Popup shuffle menu
+           @param button as Gtk.ToggleButton
         """
         if button.get_active():
             # Create submenu "Configure party mode"
             self.__party_submenu.remove_all()
             self.__init_party_submenu()
-            self.__next_popover.hide()
-            self.__next_popover.inhibit(True)
-        else:
-            self.__next_popover.inhibit(False)
-            if self.__next_popover.should_be_shown():
-                self.__next_popover.popup()
+        self.__handle_next_popover(button)
+
+    def _on_devices_button_toggled(self, button):
+        """
+           Create submenu
+           @param button as Gtk.ToggleButton
+        """
+        if button.get_active():
+            self.__devices_popover.set_relative_to(button)
+            self.__devices_popover.popup()
+        self.__handle_next_popover(button)
 
     def _on_settings_button_toggled(self, button):
         """
-           Create submenu
-           @param button as Gtk.MenuButton
+           Popup application menu
+           @param button as Gtk.ToggleButton
         """
         if button.get_active():
-            self.appmenu_popover.set_relative_to(button)
-            self.appmenu_popover.popup()
-            self.__next_popover.hide()
-            self.__next_popover.inhibit(True)
-        else:
-            self.__next_popover.inhibit(False)
-            if self.__next_popover.should_be_shown():
-                self.__next_popover.popup()
+            appmenu_popover = AppMenuPopover()
+            appmenu_popover.connect(
+                "closed", self.__on_popover_closed, button)
+            appmenu_popover.set_relative_to(button)
+            appmenu_popover.popup()
+        self.__handle_next_popover(button)
 
 #######################
 # PRIVATE             #
 #######################
+    def __handle_next_popover(self, button):
+        """
+            Handle next popover visiblity based on button
+            @param button as Gtk.ToggleButton
+        """
+        if button.get_active():
+            self.__next_popover.hide()
+            self.__next_popover.inhibit(True)
+        else:
+            self.__next_popover.inhibit(False)
+            if self.__next_popover.should_be_shown():
+                self.__next_popover.popup()
+
     def __init_party_submenu(self):
         """
             Init party submenu with current ids
@@ -319,28 +337,31 @@ class ToolbarEnd(Gtk.Bin):
         shuffle = App().settings.get_enum("shuffle")
         repeat = App().settings.get_enum("repeat")
         if repeat == Repeat.TRACK:
-            self.__shuffle_image.get_style_context().remove_class("selected")
-            self.__shuffle_image.set_from_icon_name(
+            self.__shuffle_button_image.get_style_context().remove_class(
+                "selected")
+            self.__shuffle_button_image.set_from_icon_name(
                 "media-playlist-repeat-song-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
         elif shuffle == Shuffle.NONE:
-            self.__shuffle_image.get_style_context().remove_class("selected")
+            self.__shuffle_button_image.get_style_context().remove_class(
+                "selected")
             if repeat == Repeat.ALL:
-                self.__shuffle_image.set_from_icon_name(
+                self.__shuffle_button_image.set_from_icon_name(
                     "media-playlist-repeat-symbolic",
                     Gtk.IconSize.SMALL_TOOLBAR)
             else:
-                self.__shuffle_image.set_from_icon_name(
+                self.__shuffle_button_image.set_from_icon_name(
                     "media-playlist-consecutive-symbolic",
                     Gtk.IconSize.SMALL_TOOLBAR)
         else:
-            self.__shuffle_image.set_from_icon_name(
+            self.__shuffle_button_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
             if shuffle == Shuffle.TRACKS:
-                self.__shuffle_image.get_style_context().add_class("selected")
+                self.__shuffle_button_image.get_style_context().add_class(
+                    "selected")
             else:
-                self.__shuffle_image.get_style_context().remove_class(
+                self.__shuffle_button_image.get_style_context().remove_class(
                     "selected")
 
     def __on_party_mode_change_state(self, action, value):
@@ -452,3 +473,15 @@ class ToolbarEnd(Gtk.Bin):
             self.__list_button.set_sensitive(True)
         else:
             self.__list_button.set_sensitive(False)
+
+    def __on_devices_content_changed(self, popover, count, devices_button):
+        """
+            Hide/Show button
+            @param popover as DevicesPopover
+            @param count as int
+            @param devices_button as Gtk.ToggleButton
+        """
+        if count:
+            devices_button.show()
+        else:
+            devices_button.hide()

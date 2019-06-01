@@ -94,7 +94,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkMenuButton" id="shuffle-button">
+      <object class="GtkMenuButton" id="shuffle_button">
         <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="can_focus">False</property>
@@ -103,7 +103,7 @@
         <property name="menu_model">shuffle-menu</property>
         <signal name="toggled" handler="_on_shuffle_button_toggled" swapped="no"/>
         <child>
-          <object class="GtkImage" id="shuffle-button-image">
+          <object class="GtkImage" id="shuffle_button_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_size">1</property>
@@ -121,7 +121,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkToggleButton" id="search-button">
+      <object class="GtkToggleButton" id="search_button">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="receives_default">False</property>
@@ -148,7 +148,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkToggleButton" id="list-button">
+      <object class="GtkToggleButton" id="list_button">
         <property name="sensitive">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -175,7 +175,34 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="home-button">
+      <object class="GtkToggleButton" id="devices_button">
+        <property name="sensitive">True</property>
+        <property name="visible">False</property>
+        <property name="can_focus">False</property>
+        <property name="receives_default">False</property>
+        <property name="valign">center</property>
+        <signal name="toggled" handler="_on_devices_button_toggled" swapped="no"/>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">multimedia-player-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="pack_type">end</property>
+        <property name="position">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="home_button">
         <property name="sensitive">True</property>
         <property name="visible">False</property>
         <property name="can_focus">False</property>
@@ -195,7 +222,7 @@
         <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="pack_type">end</property>
-        <property name="position">5</property>
+        <property name="position">6</property>
       </packing>
     </child>
   </object>

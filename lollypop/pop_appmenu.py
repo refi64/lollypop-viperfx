@@ -10,62 +10,35 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk
 
 from lollypop.define import App
-from lollypop.utils import is_device
-from lollypop.widgets_device import DeviceWidget
+from lollypop.widgets_utils import Popover
 
 
-class AppMenuPopover(Gtk.Popover):
+class AppMenuPopover(Popover):
     """
-        Application menu with some extra widgets (sync, volume, ...)
+        Configure defaults items
     """
 
     def __init__(self):
         """
             Init popover
         """
-        Gtk.Popover.__init__(self)
+        Popover.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
+        self.add(builder.get_object("widget"))
         self.__volume = builder.get_object("volume")
         self.__volume.set_value(App().player.volume)
-        self.__listbox = builder.get_object("listbox")
         builder.connect_signals(self)
-        # Volume manager
-        self.__vm = Gio.VolumeMonitor.get()
-        self.__vm.connect("mount-added", self.__on_mount_added)
-        self.__vm.connect("mount-removed", self.__on_mount_removed)
-        for mount in self.__vm.get_mounts():
-            self.__add_device(mount)
-        self.add(builder.get_object("widget"))
-
-    def add_fake_phone(self):
-        """
-            Add a fake phone device
-        """
-        name = "Librem phone"
-        uri = "file:///tmp/librem/"
-        d = Gio.File.new_for_uri(uri + "Internal Memory")
-        if not d.query_exists():
-            d.make_directory_with_parents()
-        d = Gio.File.new_for_uri(uri + "SD Card")
-        if not d.query_exists():
-            d.make_directory_with_parents()
-        widget = DeviceWidget(name, uri)
-        widget.show()
-        self.__listbox.add(widget)
-        self.__listbox.show()
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
 #######################
 # PROTECTED           #
 #######################
     def _on_button_clicked(self, button):
-        """
-            Hide popover
-            @param button as Gtk.Button
-        """
         self.hide()
 
     def _on_volume_value_changed(self, scale):
@@ -80,51 +53,6 @@ class AppMenuPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def __add_device(self, mount):
-        """
-            Add a device
-            @param mount as Gio.Mount
-        """
-        if is_device(mount):
-            name = mount.get_name()
-            uri = mount.get_default_location().get_uri()
-            if mount.get_volume() is not None:
-                icon = mount.get_volume().get_symbolic_icon()
-            else:
-                icon = None
-            widget = DeviceWidget(name, uri, icon)
-            widget.show()
-            self.__listbox.add(widget)
-            self.__listbox.show()
-
-    def __remove_device(self, mount):
-        """
-            Remove volume from device list
-            @param mount as Gio.Mount
-        """
-        uri = mount.get_default_location().get_uri()
-        for widget in self.__listbox.get_children():
-            if widget.uri == uri:
-                widget.destroy()
-        if not self.__listbox.get_children():
-            self.__listbox.hide()
-
-    def __on_mount_added(self, vm, mount):
-        """
-            On volume mounter
-            @param vm as Gio.VolumeMonitor
-            @param mount as Gio.Mount
-        """
-        self.__add_device(mount)
-
-    def __on_mount_removed(self, vm, mount):
-        """
-            On volume removed, clean selection list
-            @param vm as Gio.VolumeMonitor
-            @param mount as Gio.Mount
-        """
-        self.__remove_device(mount)
-
     def __on_volume_changed(self, player):
         """
             Set scale value
@@ -133,3 +61,17 @@ class AppMenuPopover(Gtk.Popover):
         volume = self.__volume.get_value()
         if player.volume != volume:
             self.__volume.set_value(player.volume)
+
+    def __on_map(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        App().player.connect("volume-changed", self.__on_volume_changed)
+
+    def __on_unmap(self, widget):
+        """
+            Disconnect signals
+            @param widget as Gtk.Widget
+        """
+        App().player.disconnect_by_func(self.__on_volume_changed)

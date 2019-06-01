@@ -220,11 +220,12 @@ class MtpSync(GObject.Object):
             return True
         return False
 
-    def sync(self, uri):
+    def sync(self, uri, index):
         """
             Sync playlists with device. If playlists contains Type.NONE,
             sync albums marked as to be synced
             @param uri as str
+            @param index as int => device index
         """
         try:
             self.__cancellable = Gio.Cancellable()
@@ -240,12 +241,12 @@ class MtpSync(GObject.Object):
 
             Logger.debug("Get new tracks before sync")
             # New tracks for synced albums
-            album_ids = App().albums.get_synced_ids()
+            album_ids = App().albums.get_synced_ids(index)
             for album_id in album_ids:
                 album = Album(album_id)
                 self.__total += len(album.track_ids)
             # New tracks for playlists
-            playlist_ids = App().playlists.get_synced_ids()
+            playlist_ids = App().playlists.get_synced_ids(index)
             for playlist_id in playlist_ids:
                 name = App().playlists.get_name(playlist_id)
                 playlists.append(escape(name))
@@ -256,13 +257,10 @@ class MtpSync(GObject.Object):
                     track_ids = App().playlists.get_track_ids(playlist_id)
                 self.__total += len(track_ids)
 
-            Logger.debug("Get old tracks")
-            self.__total += len(self.__on_mtp_files)
-
             # Copy new tracks to device
             if not self.__cancellable.is_cancelled():
                 Logger.debug("Sync albums")
-                self.__sync_albums()
+                self.__sync_albums(index)
                 Logger.debug("Sync playlists")
                 self.__sync_playlists(playlist_ids)
 
@@ -530,11 +528,12 @@ class MtpSync(GObject.Object):
                       self.__done / self.__total)
         return (track_name, artists, album_name, is_compilation)
 
-    def __sync_albums(self):
+    def __sync_albums(self, index):
         """
             Sync albums to device
+            @param index as int
         """
-        album_ids = App().albums.get_synced_ids()
+        album_ids = App().albums.get_synced_ids(index)
         for album_id in album_ids:
             album = Album(album_id)
             for track_id in album.track_ids:
@@ -616,9 +615,6 @@ class MtpSync(GObject.Object):
             to_delete = Gio.File.new_for_uri(uri)
             self.__retry(to_delete.delete, (None,))
             self.__mtp_syncdb.delete_uri(uri)
-            self.__done += 1
-            GLib.idle_add(self.emit, "sync-progress",
-                          self.__done / self.__total)
 
     def __convert(self, src, dst):
         """

@@ -25,7 +25,7 @@
     background-color: @theme_selected_bg_color;
     background-image: none;
     border: none;
-    min-height: 2px;
+    min-height: 4px;
 }
 
 .progressbar trough {

@@ -460,7 +460,7 @@ class Playlists(GObject.GObject):
                     return v[0]
                 return False
 
-    def get_synced_ids(self):
+    def get_synced_ids(self, index):
         """
             Return availables synced playlists
             @return [int]
@@ -469,9 +469,10 @@ class Playlists(GObject.GObject):
             synced_ids = list(App().settings.get_value("sync-internal-ids"))
             result = sql.execute("SELECT rowid\
                                   FROM playlists\
-                                  WHERE synced=1\
+                                  WHERE synced & (1 << ?)\
                                   ORDER BY name\
-                                  COLLATE NOCASE COLLATE LOCALIZED")
+                                  COLLATE NOCASE COLLATE LOCALIZED",
+                                 (index,))
             return list(itertools.chain(*result)) + synced_ids
 
     def get_smart(self, playlist_id):

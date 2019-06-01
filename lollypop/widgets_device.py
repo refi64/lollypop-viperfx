@@ -17,6 +17,8 @@ from gi.repository.Gio import FILE_ATTRIBUTE_FILESYSTEM_SIZE, \
                               FILE_ATTRIBUTE_FILESYSTEM_FREE
 
 from lollypop.logger import Logger
+from lollypop.define import App
+from lollypop.sync_mtp import MtpSync
 
 
 class DeviceWidget(Gtk.ListBoxRow):
@@ -35,16 +37,26 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.get_style_context().add_class("background")
         self.__name = name
         self.__uri = uri
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/DeviceWidget.ui")
-        self.__progress = builder.get_object("progress")
-        builder.get_object("name").set_label(self.__name)
+        self.__builder = Gtk.Builder()
+        self.__builder.add_from_resource("/org/gnome/Lollypop/DeviceWidget.ui")
+        self.__progress = self.__builder.get_object("progress")
+        self.__revealer = self.__builder.get_object("revealer")
+        self.__builder.get_object("name").set_label(self.__name)
+        self.__combobox = self.__builder.get_object("combobox")
         if icon is not None:
-            device_symbolic = builder.get_object("device-symbolic")
-            device_symbolic.set_from_gicon(icon, Gtk.IconSize.MENU)
-        self.add(builder.get_object("widget"))
-        builder.connect_signals(self)
+            device_symbolic = self.__builder.get_object("device-symbolic")
+            device_symbolic.set_from_gicon(icon, Gtk.IconSize.DND)
+        self.add(self.__builder.get_object("widget"))
+        self.__builder.connect_signals(self)
         self.__calculate_free_space()
+        self.__mtp_sync = MtpSync()
+        self.__mtp_sync.connect("sync-finished", self.__on_sync_finished)
+        self.__mtp_sync.connect("sync-progress", self.__on_sync_progress)
+        for encoder in self.__mtp_sync._GST_ENCODER.keys():
+            if not self.__mtp_sync.check_encoder_status(encoder):
+                self.__builder.get_object(encoder).set_sensitive(False)
+        App().task_helper.run(self.__get_basename_for_sync,
+                              callback=(self.__set_combobox_content,))
 
     @property
     def uri(self):
@@ -57,39 +69,86 @@ class DeviceWidget(Gtk.ListBoxRow):
 #######################
 # PROTECTED           #
 #######################
+    def _on_reveal_button_clicked(self, button):
+        """
+            Show advanced devices options
+            @param button as Gtk.Button
+        """
+        revealed = self.__revealer.get_reveal_child()
+        self.__revealer.set_reveal_child(not revealed)
+
     def _on_sync_button_clicked(self, button):
         """
             Sync music on device
             @param button as Gtk.Button
         """
-        uri = self.__get_best_uri_for_sync()
-        if uri is None:
-            return
+        self.__progress.set_fraction(0)
+        uri = self.__get_music_uri()
+        try:
+            devices = list(App().settings.get_value("devices"))
+            index = devices.index(self.__name) + 1
+        except Exception as e:
+            Logger.warning("DeviceWidget::_on_sync_button_clicked(): %s", e)
+            index = 1
+        App().task_helper.run(self.__mtp_sync.sync, uri, index)
+
+    def _on_convert_toggled(self, widget):
+        """
+            Save option
+            @param widget as Gtk.RadioButton
+        """
+        if widget.get_active():
+            encoder = widget.get_name()
+            if encoder == "convert_none":
+                self.__switch_normalize.set_sensitive(False)
+                self.__mtp_sync.db.set_normalize(False)
+                self.__mtp_sync.db.set_encoder("convert_none")
+            else:
+                self.__switch_normalize.set_sensitive(True)
+                self.__mtp_sync.db.set_encoder(encoder)
+
+    def _on_normalize_state_set(self, widget, state):
+        """
+            Save option
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        self.__mtp_sync.db.set_normalize(state)
+
+    def _on_combobox_changed(self, combobox):
+        """
+            Update DB
+            @param combobox as Gtk.ComboxText
+        """
+        self.__load_uri_settings(self.__get_music_uri())
 
 #######################
 # PRIVATE             #
 #######################
-    def __get_best_uri_for_sync(self):
+    def __get_music_uri(self):
         """
-            Get best URI for synchronization:
-                - A folder with lollypop sync DB
-                - A SD Card
+            Get music URI on device
             @return str
         """
-        uris = []
-        try:
-            # First test we have a normal Music folder at root
-            # We try to create one, MTP will fail
-            music_uri = "%s/Music" % self.__uri
-            music_dir = Gio.File.new_for_uri(music_uri)
-            try:
-                music_dir.make_directory_with_parents()
-            except:
-                pass
-            if music_dir.query_exists():
-                return music_uri
+        if self.__combobox.get_visible():
+            uri = "%s/%s/Music" % (self.__uri,
+                                   self.__combobox.get_active_text())
+        else:
+            uri = "%s/Music" % self.__uri
+        return uri
 
-            # Search for previous sync or for SD CARD
+    def __get_basename_for_sync(self):
+        """
+            Get basename base on device content
+            @return str
+        """
+        names = []
+        try:
+            if not self.__uri.startswith("mtp://") and\
+                    self.__name != "Librem phone":
+                return []
+
+            # Search for previous sync
             d = Gio.File.new_for_uri(self.__uri)
             infos = d.enumerate_children(
                 "standard::name,standard::type",
@@ -103,16 +162,43 @@ class DeviceWidget(Gtk.ListBoxRow):
                 uri = f.get_uri() + "/Music"
                 previous_sync = Gio.File.new_for_uri("%s/unsync" % uri)
                 if previous_sync.query_exists():
-                    uris.insert(0, uri)
-                elif info.get_name().lower().startswith("SD"):
-                    sync = Gio.File.new_for_uri(uri)
-                    sync.make_directory_with_parents()
-                    uris.append(uri)
+                    names.insert(0, info.get_name())
+                else:
+                    names.append(info.get_name())
             infos.close(None)
-            return uris
         except Exception as e:
-            Logger.error("DeviceManagerView::_get_files: %s: %s" % (uri, e))
-        return uris[0] if uris else None
+            Logger.error("DeviceWidget::__get_best_uri_for_sync: %s: %s"
+                         % (uri, e))
+        return names
+
+    def __set_combobox_content(self, names):
+        """
+            Set combobox content based on names
+            @param names as [str]
+        """
+        if names:
+            self.__combobox.show()
+            for name in names:
+                self.__combobox.append_text(name)
+            self.__combobox.set_active(0)
+        else:
+            self.__combobox.hide()
+
+    def __load_uri_settings(self, uri):
+        """
+            Load settings at URI
+            @param uri as str
+        """
+        self.__mtp_sync.db.load(uri)
+        encoder = self.__mtp_sync.db.encoder
+        normalize = self.__mtp_sync.db.normalize
+        self.__switch_normalize = self.__builder.get_object("switch_normalize")
+        self.__switch_normalize.set_sensitive(False)
+        self.__switch_normalize.set_active(normalize)
+        self.__builder.get_object(encoder).set_active(True)
+        for encoder in self.__mtp_sync._GST_ENCODER.keys():
+            if not self.__mtp_sync.check_encoder_status(encoder):
+                self.__builder.get_object(encoder).set_sensitive(False)
 
     def __calculate_free_space(self):
         """
@@ -141,3 +227,19 @@ class DeviceWidget(Gtk.ListBoxRow):
             self.__progress.set_fraction(fraction)
         except Exception as e:
             Logger.error("DeviceWiget::__on_filesystem_info(): %s", e)
+
+    def __on_sync_progress(self, mtp_sync, value):
+        """
+            Update progress bar
+            @param mtp_sync as MtpSync
+            @param value as float
+        """
+        self.__progress.set_fraction(value)
+
+    def __on_sync_finished(self, mtp_sync):
+        """
+            Emit finished signal
+            @param mtp_sync as MtpSync
+        """
+        self.__progress.set_fraction(0)
+        self.__calculate_free_space()
