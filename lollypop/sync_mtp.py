@@ -201,7 +201,6 @@ class MtpSync(GObject.Object):
         """
         GObject.Object.__init__(self)
         self.__cancellable = Gio.Cancellable()
-        self.__cancellable.cancel()
         self.__errors_count = 0
         self.__on_mtp_files = []
         self.__last_error = ""
@@ -297,20 +296,19 @@ class MtpSync(GObject.Object):
         finally:
             Logger.debug("Save sync db")
             self.__mtp_syncdb.save()
-            self.__cancellable.cancel()
+            self.cancel()
             if self.__errors_count != 0:
                 Logger.debug("Sync errors")
                 GLib.idle_add(self.emit, "sync-errors", self.__last_error)
             Logger.debug("Sync finished")
             GLib.idle_add(self.emit, "sync-finished")
 
-    @property
-    def cancellable(self):
+    def cancel(self):
         """
-            Get cancellable
-            @return Gio.Cancellable
+            Cancel sync
         """
-        return self.__cancellable
+        Logger.warning("MtpSync::cancel()")
+        self.__cancellable.cancel()
 
     @property
     def db(self):
@@ -330,7 +328,7 @@ class MtpSync(GObject.Object):
         """
         # Max allowed errors
         if self.__errors_count > 5:
-            self.__cancellable.cancel()
+            self.cancel()
             return
         try:
             func(*args)

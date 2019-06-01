@@ -13,6 +13,20 @@
 from gi.repository import Gtk, GLib
 
 
+class ButtonProgressBar(Gtk.ProgressBar):
+    """
+        Simple progress bar with width contraint
+    """
+
+    def __init__(self):
+        Gtk.ProgressBar.__init__(self)
+        self.set_property("valign", Gtk.Align.END)
+        self.get_style_context().add_class("progressbar-button")
+
+    def do_get_preferred_width(self):
+        return (24, 24)
+
+
 class ProgressBar(Gtk.ProgressBar):
     """
         A smart/smooth FIFO progress bar

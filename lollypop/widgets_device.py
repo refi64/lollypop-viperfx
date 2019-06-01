@@ -11,10 +11,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib, Gio, GObject
 
 from gi.repository.Gio import FILE_ATTRIBUTE_FILESYSTEM_SIZE, \
                               FILE_ATTRIBUTE_FILESYSTEM_FREE
+
+from gettext import gettext as _
 
 from lollypop.logger import Logger
 from lollypop.define import App
@@ -25,6 +27,10 @@ class DeviceWidget(Gtk.ListBoxRow):
     """
         A device widget for sync
     """
+
+    __gsignals__ = {
+        "syncing": (GObject.SignalFlags.RUN_FIRST, None, (bool,)),
+    }
 
     def __init__(self, name, uri, icon=None):
         """
@@ -37,12 +43,14 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.get_style_context().add_class("background")
         self.__name = name
         self.__uri = uri
+        self.__progress = 0
         self.__builder = Gtk.Builder()
         self.__builder.add_from_resource("/org/gnome/Lollypop/DeviceWidget.ui")
-        self.__progress = self.__builder.get_object("progress")
+        self.__progressbar = self.__builder.get_object("progress")
         self.__revealer = self.__builder.get_object("revealer")
         self.__builder.get_object("name").set_label(self.__name)
         self.__combobox = self.__builder.get_object("combobox")
+        self.__sync_button = self.__builder.get_object("sync_button")
         if icon is not None:
             device_symbolic = self.__builder.get_object("device-symbolic")
             device_symbolic.set_from_gicon(icon, Gtk.IconSize.DND)
@@ -66,12 +74,20 @@ class DeviceWidget(Gtk.ListBoxRow):
         """
         return self.__uri
 
+    @property
+    def progress(self):
+        """
+            Get progress status
+            @return int
+        """
+        return self.__progress
+
 #######################
 # PROTECTED           #
 #######################
     def _on_reveal_button_clicked(self, button):
         """
-            Show advanced devices options
+            Show advanced device options
             @param button as Gtk.Button
         """
         revealed = self.__revealer.get_reveal_child()
@@ -82,15 +98,22 @@ class DeviceWidget(Gtk.ListBoxRow):
             Sync music on device
             @param button as Gtk.Button
         """
-        self.__progress.set_fraction(0)
-        uri = self.__get_music_uri()
-        try:
-            devices = list(App().settings.get_value("devices"))
-            index = devices.index(self.__name) + 1
-        except Exception as e:
-            Logger.warning("DeviceWidget::_on_sync_button_clicked(): %s", e)
-            index = 1
-        App().task_helper.run(self.__mtp_sync.sync, uri, index)
+        if self.__sync_button.get_label() == _("Synchronize"):
+            self.__progress = 0
+            uri = self.__get_music_uri()
+            try:
+                devices = list(App().settings.get_value("devices"))
+                index = devices.index(self.__name) + 1
+            except Exception as e:
+                Logger.warning("DeviceWidget::_on_sync_button_clicked(): %s",
+                               e)
+                index = 1
+            App().task_helper.run(self.__mtp_sync.sync, uri, index)
+            self.emit("syncing", True)
+            button.set_label(_("Cancel"))
+        else:
+            self.__mtp_sync.cancel()
+            button.set_sensitive(False)
 
     def _on_convert_toggled(self, widget):
         """
@@ -224,7 +247,7 @@ class DeviceWidget(Gtk.ListBoxRow):
             free = info.get_attribute_uint64(FILE_ATTRIBUTE_FILESYSTEM_FREE)
             used = size - free
             fraction = 1 * used / size
-            self.__progress.set_fraction(fraction)
+            self.__progressbar.set_fraction(fraction)
         except Exception as e:
             Logger.error("DeviceWiget::__on_filesystem_info(): %s", e)
 
@@ -234,12 +257,14 @@ class DeviceWidget(Gtk.ListBoxRow):
             @param mtp_sync as MtpSync
             @param value as float
         """
-        self.__progress.set_fraction(value)
+        self.__progress = value
 
     def __on_sync_finished(self, mtp_sync):
         """
             Emit finished signal
             @param mtp_sync as MtpSync
         """
-        self.__progress.set_fraction(0)
-        self.__calculate_free_space()
+        self.emit("syncing", False)
+        self.__progress = 0
+        self.__sync_button.set_label(_("Synchronize"))
+        self.__sync_button.set_sensitive(True)

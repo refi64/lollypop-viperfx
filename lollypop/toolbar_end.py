@@ -18,6 +18,7 @@ from lollypop.pop_next import NextPopover
 from lollypop.pop_appmenu import AppMenuPopover
 from lollypop.pop_devices import DevicesPopover
 from lollypop.define import App, Shuffle, Repeat
+from lollypop.progressbar import ButtonProgressBar
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -103,8 +104,12 @@ class ToolbarEnd(Gtk.Bin):
         App().player.connect("playlist-changed", self.__on_playlist_changed)
         self.__set_shuffle_icon()
 
+        button_progress_bar = ButtonProgressBar()
+        overlay = builder.get_object("overlay")
+        overlay.add_overlay(button_progress_bar)
+        overlay.set_overlay_pass_through(button_progress_bar, True)
         devices_button = builder.get_object("devices_button")
-        self.__devices_popover = DevicesPopover()
+        self.__devices_popover = DevicesPopover(button_progress_bar)
         self.__devices_popover.connect(
                 "closed", self.__on_popover_closed, devices_button)
         self.__devices_popover.connect("content-changed",

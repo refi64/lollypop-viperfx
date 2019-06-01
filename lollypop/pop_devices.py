@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GObject
+from gi.repository import Gtk, Gio, GObject, GLib
 
 from lollypop.define import App
 from lollypop.utils import is_device
@@ -26,11 +26,15 @@ class DevicesPopover(Gtk.Popover):
         "content-changed": (GObject.SignalFlags.RUN_FIRST, None, (int,)),
     }
 
-    def __init__(self):
+    def __init__(self, progressbar):
         """
             Init popover
+            @param progressbar Gtk.ProgressBar
         """
         Gtk.Popover.__init__(self)
+        self.__syncing = 0
+        self.__timeout_id = None
+        self.__progressbar = progressbar
         self.__listbox = Gtk.ListBox()
         self.__listbox.set_margin_start(5)
         self.__listbox.set_margin_end(5)
@@ -63,6 +67,7 @@ class DevicesPopover(Gtk.Popover):
         if not d.query_exists():
             d.make_directory_with_parents()
         widget = DeviceWidget(name, uri)
+        widget.connect("syncing", self.__on_syncing)
         widget.show()
         self.__listbox.add(widget)
         self.__listbox.show()
@@ -103,6 +108,7 @@ class DevicesPopover(Gtk.Popover):
             else:
                 icon = None
             widget = DeviceWidget(name, uri, icon)
+            widget.connect("syncing", self.__on_syncing)
             widget.show()
             self.__listbox.add(widget)
             self.__listbox.show()
@@ -116,8 +122,23 @@ class DevicesPopover(Gtk.Popover):
         uri = mount.get_default_location().get_uri()
         for widget in self.__listbox.get_children():
             if widget.uri == uri:
+                widget.disconnect_by_func(self.__on_syncing)
                 widget.destroy()
         self.emit("content-changed", len(self.__listbox.get_children()))
+
+    def __update_progress(self):
+        """
+            Update progressbar
+        """
+        progress = 0.0
+        nb_syncs = 0
+        for row in self.__listbox.get_children():
+            nb_syncs += 1
+            progress += row.progress
+        if nb_syncs:
+            value = progress / nb_syncs
+            self.__progressbar.set_fraction(value)
+        return True
 
     def __on_mount_added(self, vm, mount):
         """
@@ -134,3 +155,26 @@ class DevicesPopover(Gtk.Popover):
             @param mount as Gio.Mount
         """
         self.__remove_device(mount)
+
+    def __on_syncing(self, widget, status):
+        """
+            Start/stop progress status
+            @param widget as Gtk.Widget
+            @param status as bool
+        """
+        def hide_progress():
+            if self.__timeout_id is None:
+                self.__progressbar.hide()
+
+        if status:
+            self.__syncing += 1
+        else:
+            self.__syncing -= 1
+        if self.__syncing > 0 and self.__timeout_id is None:
+            self.__progressbar.show()
+            self.__timeout_id = GLib.timeout_add(1000,
+                                                 self.__update_progress)
+        elif self.__syncing == 0 and self.__timeout_id is not None:
+            GLib.timeout_add(1000, hide_progress)
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
