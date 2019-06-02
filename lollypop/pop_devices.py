@@ -184,7 +184,7 @@ class DevicesPopover(Gtk.Popover):
         for child in self.__listbox.get_children():
             if child.is_visible():
                 height += child.get_allocated_height()
-        self.__scrolled.set_size_request(-1, min(400, height))
+        self.__scrolled.set_size_request(300, min(400, height))
 
     def __on_syncing(self, widget, status):
         """
