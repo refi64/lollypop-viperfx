@@ -229,21 +229,20 @@ class MtpSync(GObject.Object):
         try:
             self.__cancellable = Gio.Cancellable()
             self.__uri = uri
-            self.__on_mtp_files = self.__get_track_files()
             self.__convert_bitrate = App().settings.get_value(
                 "convert-bitrate").get_int32()
             self.__errors_count = 0
-            # For progress bar
             self.__total = 0
             self.__done = 0
             playlists = []
+            tracks = []
 
-            Logger.debug("Get new tracks before sync")
+            Logger.info("Geting tracks to sync")
             # New tracks for synced albums
             album_ids = App().albums.get_synced_ids(index)
             for album_id in album_ids:
                 album = Album(album_id)
-                self.__total += len(album.track_ids)
+                tracks += album.tracks
             # New tracks for playlists
             playlist_ids = App().playlists.get_synced_ids(index)
             for playlist_id in playlist_ids:
@@ -251,46 +250,30 @@ class MtpSync(GObject.Object):
                 playlists.append(escape(name))
                 if App().playlists.get_smart(playlist_id):
                     request = App().playlists.get_smart_sql(playlist_id)
-                    track_ids = App().db.execute(request)
+                    for track_id in App().db.execute(request):
+                        tracks.append(Track(track_id))
                 else:
-                    track_ids = App().playlists.get_track_ids(playlist_id)
-                self.__total += len(track_ids)
+                    for track_id in App().playlists.get_track_ids(playlist_id):
+                        tracks.append(Track(track_id))
 
-            # Copy new tracks to device
-            if not self.__cancellable.is_cancelled():
-                Logger.debug("Sync albums")
-                self.__sync_albums(index)
-                Logger.debug("Sync playlists")
-                self.__sync_playlists(playlist_ids)
+            Logger.info("Getting URIs to copy")
+            uris = self.__get_uris_to_copy(tracks, playlists)
+            self.__total = len(tracks)
 
-            # Remove old tracks from device
-            if not self.__cancellable.is_cancelled():
-                Logger.debug("Remove from device")
-                self.__remove_from_device(playlist_ids)
+            Logger.info("Delete old files")
+            self.__delete_old_uris(uris)
 
-            # Remove empty dirs
-            if not self.__cancellable.is_cancelled():
-                Logger.debug("Remove empty dirs")
-                self.__remove_empty_dirs()
-
-            if not self.__cancellable.is_cancelled():
-                Logger.debug("Remove old playlists")
-                # Remove old playlists
-                d = Gio.File.new_for_uri(self.__uri)
-                infos = d.enumerate_children(
-                    "standard::name",
-                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                    None)
-                for info in infos:
-                    name = info.get_name()
-                    if name.endswith(".m3u") and name[:-4] not in playlists:
-                        f = infos.get_child(info)
-                        self.__retry(f.delete, (None,))
+            Logger.info("Copy files")
+            for (src_uri, dst_uri) in uris:
+                self.__copy_file(src_uri, dst_uri)
+                self.__done += 1
+                GLib.idle_add(self.emit, "sync-progress",
+                              self.__done / self.__total)
 
             Logger.debug("Create unsync")
             d = Gio.File.new_for_uri(self.__uri + "/unsync")
             if not d.query_exists():
-                self.__retry(d.make_directory_with_parents, (None,))
+                d.make_directory_with_parents()
         except Exception as e:
             Logger.error("MtpSync::__sync(): %s" % e)
         finally:
@@ -307,7 +290,7 @@ class MtpSync(GObject.Object):
         """
             Cancel sync
         """
-        Logger.warning("MtpSync::cancel()")
+        Logger.info("MtpSync::cancel()")
         self.__cancellable.cancel()
 
     @property
@@ -318,85 +301,85 @@ class MtpSync(GObject.Object):
         return self.__mtp_syncdb
 
 ############
-# Private  #
+# PRIVATE  #
 ############
-    def __retry(self, func, args):
+    def __get_album_on_device_uri(self, track):
         """
-            Try to execute func and handle errors
-            @param func as function
-            @param args as tuple
+            Get on device URI for album
+            @param track as Track
+            @return URI as str
         """
-        # Max allowed errors
-        if self.__errors_count > 5:
-            self.cancel()
-            return
-        try:
-            func(*args)
-        except Exception as e:
-            Logger.error("MtpSync::_retry(%s, %s): %s" % (func, args, e))
-            self.__last_error = e
-            self.__errors_count += 1
-            sleep(1)
+        album_name = track.album_name.lower()
+        is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
+        if is_compilation:
+            return "%s/%s" % (self.__uri, escape(album_name[:100]))
+        else:
+            artists = ", ".join(track.album.artists).lower()
+            string = escape("%s_%s" % (artists, album_name))
+            return "%s/%s" % (self.__uri, string[:100])
 
-    def __remove_empty_dirs(self):
+    def __get_uris_to_copy(self, tracks, playlists):
         """
-            Delete empty dirs
+            Get on device URI for all tracks
+            @param tracks as [Track]
         """
-        to_delete = []
-        dir_uris = [self.__uri]
-        try:
-            # First get all directories
-            while dir_uris:
-                if self.__cancellable.is_cancelled():
-                    break
-                uri = dir_uris.pop(0)
-                d = Gio.File.new_for_uri(uri)
-                infos = d.enumerate_children(
+        uris = []
+        art_uris = []
+        playlist_uris = []
+        for track in tracks:
+            f = Gio.File.new_for_uri(track.uri)
+            album_device_uri = self.__get_album_on_device_uri(track)
+            album_local_uri = f.get_parent().get_uri()
+            filename = f.get_basename()
+            uris.append(("%s/%s" % (album_local_uri, filename),
+                         "%s/%s" % (album_device_uri, escape(filename))))
+            art_uri = App().art.get_album_artwork_uri(track.album)
+            if art_uri is not None:
+                art_filename = Gio.File.new_for_uri(art_uri).get_basename()
+                art_uris.append((art_uri,
+                                 "%s/%s" % (album_device_uri,
+                                            escape(art_filename))))
+#        for playlist in playlists:
+#            on_disk_path = "/tmp/lollypop_%s.m3u" % playlist
+#            on_device_uri = "%s/%s" (self.__uri, playlist)
+        return uris + art_uris + playlist_uris
+
+    def __delete_old_uris(self, uris):
+        """
+            Delete old URIs from device
+            @param uris as [str]
+        """
+        on_device_uris = self.__on_device_uris()
+        for (src_uri, dst_uri) in uris:
+            if dst_uri in on_device_uris:
+                on_device_uris.remove(dst_uri)
+        for uri in on_device_uris:
+            if self.__cancellable.is_cancelled():
+                break
+            try:
+                f = Gio.File.new_for_uri(uri)
+                parent = f.get_parent()
+                f.delete(self.__cancellable)
+                self.__mtp_syncdb.delete_uri(uri)
+                infos = parent.enumerate_children(
                     "standard::name,standard::type",
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                     None)
-                for info in infos:
-                    if self.__cancellable.is_cancelled():
-                        break
-                    if info.get_file_type() == Gio.FileType.DIRECTORY:
-                        if info.get_name() != "unsync":
-                            f = infos.get_child(info)
-                            # We need to check for dir to be empty
-                            # On some device, Gio.File.delete() remove
-                            # non empty directories #828
-                            subinfos = f.enumerate_children(
-                                "standard::name,standard::type",
-                                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                                None)
-                            subfiles = False
-                            for info in subinfos:
-                                subfiles = True
-                                dir_uris.append(f.get_uri())
-                                break
-                            if not subfiles:
-                                to_delete.append(f.get_uri())
-            # Then delete
-            for d in to_delete:
-                if self.__cancellable.is_cancelled():
-                    break
-                d = Gio.File.new_for_uri(d)
-                try:
-                    d.delete()
-                except:
-                    pass
-        except Exception as e:
-            Logger.error("MtpSync::__remove_empty_dirs(): %s, %s" % (e, uri))
+                if len(list(infos)) == 0:
+                    parent.delete(self.__cancellable)
+            except Exception as e:
+                Logger.error("MtpSync::__delete_old_uris(): %s", e)
 
-    def __get_track_files(self):
+    def __on_device_uris(self):
         """
-            Return files in self.__uri/tracks
+            Get URIS on device
             @return [str]
         """
         children = []
         dir_uris = [self.__uri]
         d = Gio.File.new_for_uri(self.__uri)
         if not d.query_exists():
-            self.__retry(d.make_directory_with_parents, (None,))
+            d.make_directory_with_parents(None)
         while dir_uris:
             if self.__cancellable.is_cancelled():
                 break
@@ -424,76 +407,41 @@ class MtpSync(GObject.Object):
                 Logger.error("MtpSync::__get_track_files(): %s, %s" % (e, uri))
         return children
 
-    def __sync_track_id(self, track):
+    def __copy_file(self, src_uri, dst_uri):
         """
-            Sync track to device
-            @param track as Track
-            @return (str, str, str, bool)
+            Copy source to destination
+            @param src_uri as str
+            @param dst_uri as str
         """
-        Logger.debug("MtpSync::__sync_track_id(): %s" % track.uri)
-        album_name = escape(track.album_name.lower())
-        is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
-        if is_compilation:
-            artists = None
-            on_device_album_uri = "%s/%s" %\
-                                  (self.__uri,
-                                   album_name)
-        else:
-            artists = escape(", ".join(track.album.artists).lower())
-            on_device_album_uri = "%s/%s_%s" %\
-                                  (self.__uri,
-                                   artists,
-                                   album_name)
-
-        d = Gio.File.new_for_uri(on_device_album_uri)
-        if not d.query_exists():
-            self.__retry(d.make_directory_with_parents, (None,))
-        # Copy album art
-        art = App().art.get_album_artwork_uri(track.album)
-        Logger.debug("MtpSync::__sync_track_id(): %s" % art)
-        if art is not None:
-            src_art = Gio.File.new_for_uri(art)
-            art_uri = "%s/cover.jpg" % on_device_album_uri
-            # To be sure to get uri correctly escaped for Gio
-            f = Gio.File.new_for_uri(art_uri)
-            dst_art = Gio.File.new_for_uri(art_uri)
-            if dst_art.get_uri() in self.__on_mtp_files:
-                self.__on_mtp_files.remove(dst_art.get_uri())
-            if not dst_art.query_exists():
-                self.__retry(src_art.copy,
-                             (dst_art, Gio.FileCopyFlags.OVERWRITE,
-                              None, None))
-        f = Gio.File.new_for_uri(track.uri)
-        track_name = escape(f.get_basename())
-        # Check extension, if not mp3, convert
-        m = match(r".*(\.[^.]*)", track.uri)
+        Logger.debug("MtpSync::__copy_file(): %s -> %s"
+                     % (src_uri, dst_uri))
+        src = Gio.File.new_for_uri(src_uri)
+        dst = Gio.File.new_for_uri(dst_uri)
+        parent = dst.get_parent()
+        if not parent.query_exists():
+            parent.make_directory_with_parents()
+        # Check extension for convertion
+        m = match(r".*(\.[^.]*)", src_uri)
         ext = m.group(1)
         convert_ext = self.__EXTENSION[self.__mtp_syncdb.encoder]
-        if (convert_ext is not None and
+        if ext.lower() in [".png", ".jpg", ".jpeg", "gif"]:
+            convertion_needed = False
+        elif (convert_ext is not None and
                 ext != convert_ext) or self.__mtp_syncdb.normalize:
             convertion_needed = True
-            track_name = track_name.replace(ext, convert_ext)
+            dst_uri = dst_uri.replace(ext, convert_ext)
         else:
             convertion_needed = False
-        src_track = Gio.File.new_for_uri(track.uri)
-        info = src_track.query_info("time::modified",
-                                    Gio.FileQueryInfoFlags.NONE,
-                                    None)
-        # Prefix track with mtime to make sure updating it later
+        info = src.query_info("time::modified",
+                              Gio.FileQueryInfoFlags.NONE,
+                              None)
         mtime = info.get_attribute_uint64("time::modified")
-        dst_uri = "%s/%s" % (on_device_album_uri,
-                             track_name)
-        dst_track = Gio.File.new_for_uri(dst_uri)
-        if dst_track.get_uri() in self.__on_mtp_files:
-            self.__on_mtp_files.remove(dst_track.get_uri())
-        if not dst_track.query_exists() or\
-            self.__mtp_syncdb.get_mtime(
-                dst_track.get_uri()) < mtime:
+        if not dst.query_exists() or\
+                self.__mtp_syncdb.get_mtime(dst_uri) < mtime:
             if convertion_needed:
-                convert_uri = "file:///tmp/%s" % track_name
+                convert_uri = "file:///tmp/lollypop_convert"
                 convert_file = Gio.File.new_for_uri(convert_uri)
-                pipeline = self.__convert(src_track,
-                                          convert_file)
+                pipeline = self.__convert(src, convert_file)
                 # Check if encoding is finished
                 if pipeline is not None:
                     bus = pipeline.get_bus()
@@ -507,112 +455,16 @@ class MtpSync(GObject.Object):
                     pipeline.set_state(Gst.State.PAUSED)
                     pipeline.set_state(Gst.State.READY)
                     pipeline.set_state(Gst.State.NULL)
-                    self.__retry(
-                        convert_file.move,
-                        (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                         None, None))
+                    convert_file.move(
+                        dst, Gio.FileCopyFlags.OVERWRITE, None, None)
                     # To be sure
                     try:
                         convert_file.delete(None)
                     except:
                         pass
             else:
-                self.__retry(src_track.copy,
-                             (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                              None, None))
-            self.__mtp_syncdb.set_mtime(dst_track.get_uri(), mtime)
-        self.__done += 1
-        GLib.idle_add(self.emit, "sync-progress",
-                      self.__done / self.__total)
-        return (track_name, artists, album_name, is_compilation)
-
-    def __sync_albums(self, index):
-        """
-            Sync albums to device
-            @param index as int
-        """
-        album_ids = App().albums.get_synced_ids(index)
-        for album_id in album_ids:
-            album = Album(album_id)
-            for track_id in album.track_ids:
-                if self.__cancellable.is_cancelled():
-                    return
-                self.__sync_track_id(Track(track_id))
-
-    def __sync_playlists(self, playlist_ids):
-        """
-            Sync file from playlist to device
-            @param playlist_ids as [int]
-        """
-        for playlist_id in playlist_ids:
-            if self.__cancellable.is_cancelled():
-                break
-            m3u = None
-            stream = None
-            playlist = escape(App().playlists.get_name(playlist_id))
-            try:
-                # Create playlist
-                m3u = Gio.File.new_for_path(
-                    "/tmp/lollypop_%s.m3u" % (playlist,))
-                self.__retry(
-                    m3u.replace_contents,
-                    (b"#EXTM3U\n",
-                     None,
-                     False,
-                     Gio.FileCreateFlags.REPLACE_DESTINATION,
-                     None))
-                stream = m3u.open_readwrite(None)
-            except Exception as e:
-                Logger.error("DeviceWidget::__sync_playlists(): %s" % e)
-            if App().playlists.get_smart(playlist_id):
-                request = App().playlists.get_smart_sql(playlist_id)
-                track_ids = App().db.execute(request)
-            else:
-                track_ids = App().playlists.get_track_ids(playlist_id)
-            # Start copying
-            for track_id in track_ids:
-                if self.__cancellable.is_cancelled():
-                    break
-                if track_id is None:
-                    self.__done += 1
-                    continue
-                track = Track(track_id)
-                (track_name, artists, album_name, is_compilation) =\
-                    self.__sync_track_id(track)
-                if stream is not None:
-                    if is_compilation:
-                        line = "%s/%s\n" %\
-                            (album_name,
-                             track_name)
-                    else:
-                        line = "%s_%s/%s\n" %\
-                            (artists,
-                             album_name,
-                             track_name)
-                    self.__retry(stream.get_output_stream().write,
-                                 (line.encode(encoding="UTF-8"), None))
-            if stream is not None:
-                stream.close()
-            if m3u is not None:
-                dst = Gio.File.new_for_uri(
-                    self.__uri + "/" + playlist + ".m3u")
-                self.__retry(m3u.move,
-                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
-
-    def __remove_from_device(self, playlist_ids):
-        """
-            Delete files not available in playlist
-            @param playlist_ids as [int]
-        """
-        # Delete unwanted files on mtp device
-        for uri in self.__on_mtp_files:
-            if self.__cancellable.is_cancelled():
-                return
-            Logger.debug("MtpSync::__remove_from_device(): deleting %s" %
-                         uri)
-            to_delete = Gio.File.new_for_uri(uri)
-            self.__retry(to_delete.delete, (None,))
-            self.__mtp_syncdb.delete_uri(uri)
+                src.copy(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
+            self.__mtp_syncdb.set_mtime(dst_uri, mtime)
 
     def __convert(self, src, dst):
         """

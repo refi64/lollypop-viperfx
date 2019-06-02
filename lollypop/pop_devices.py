@@ -14,7 +14,6 @@ from gi.repository import Gtk, Gio, GObject, GLib
 
 from lollypop.define import App
 from lollypop.utils import is_device
-from lollypop.widgets_device import DeviceWidget
 
 
 class DevicesPopover(Gtk.Popover):
@@ -66,6 +65,7 @@ class DevicesPopover(Gtk.Popover):
         """
             Add a fake phone device
         """
+        from lollypop.widgets_device import DeviceWidget
         name = "Librem phone"
         uri = "file:///tmp/librem/"
         d = Gio.File.new_for_uri(uri + "Internal Memory")
@@ -118,6 +118,7 @@ class DevicesPopover(Gtk.Popover):
             @param mount as Gio.Mount
         """
         if is_device(mount):
+            from lollypop.widgets_device import DeviceWidget
             name = mount.get_name()
             uri = mount.get_default_location().get_uri()
             if mount.get_volume() is not None:

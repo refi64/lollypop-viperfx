@@ -131,7 +131,7 @@ class SyncAlbumMenu(SyncMenu):
         if state:
             synced = self.__album.synced | (1 << index)
         else:
-            synced = self._album.synced & ~(1 << index)
+            synced = self.__album.synced & ~(1 << index)
         App().albums.set_synced(self.__album.id, synced)
         self.__album.reset("synced")
 
