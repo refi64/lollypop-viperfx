@@ -246,6 +246,7 @@ class DeviceWidget(Gtk.ListBoxRow):
                 self.__combobox.append_text(name)
             self.__combobox.set_active(0)
         else:
+            self.__load_uri_settings(self.__get_music_uri())
             self.__combobox.hide()
 
     def __load_uri_settings(self, uri):
