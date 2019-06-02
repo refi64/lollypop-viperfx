@@ -66,6 +66,10 @@ class ViewsContainer:
             view = self.get_view_search(data)
         elif item_ids[0] == Type.INFO:
             view = self._get_view_info()
+        elif item_ids[0] == Type.DEVICE_ALBUMS:
+            view = self._get_view_device_albums(data)
+        elif item_ids[0] == Type.DEVICE_PLAYLISTS:
+            view = self._get_view_device_playlists(data)
         elif item_ids[0] == Type.GENRES:
             if data is None:
                 view = self._get_view_genres()
@@ -255,8 +259,23 @@ class ViewsContainer:
         else:
             from lollypop.view_playlists_manager import PlaylistsManagerView
             view = PlaylistsManagerView(None, ViewType.SCROLLED)
-            view.populate(App().playlists.get_ids())
+            view.populate()
             view.show()
+        return view
+
+    def _get_view_device_playlists(self, index):
+        """
+            Show playlists for device at index
+            @param index as int
+        """
+        def load():
+            return App().playlists.get_synced_ids(index)
+
+        from lollypop.view_playlists_manager import PlaylistsManagerView
+        view = PlaylistsManagerView(None, ViewType.SCROLLED)
+        view.show()
+        loader = Loader(target=load, view=view)
+        loader.start()
         return view
 
     def _get_view_artists_rounded(self, static):
@@ -421,6 +440,27 @@ class ViewsContainer:
         else:
             from lollypop.view_albums_box import AlbumsBoxView
             view = AlbumsBoxView(genre_ids, artist_ids)
+        loader = Loader(target=load, view=view)
+        loader.start()
+        view.show()
+        return view
+
+    def _get_view_device_albums(self, index):
+        """
+            Show albums for device at index
+            @param index as int
+        """
+        def load():
+            album_ids = App().albums.get_synced_ids(index)
+            return [Album(album_id) for album_id in album_ids]
+
+        if App().window.is_adaptive:
+            from lollypop.view_albums_list import AlbumsListView
+            view = AlbumsListView(ViewType.DEFAULT, [], [])
+            view.set_margin_start(MARGIN_SMALL)
+        else:
+            from lollypop.view_albums_box import AlbumsBoxView
+            view = AlbumsBoxView([], [])
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()

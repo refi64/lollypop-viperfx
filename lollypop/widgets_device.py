@@ -19,7 +19,7 @@ from gi.repository.Gio import FILE_ATTRIBUTE_FILESYSTEM_SIZE, \
 from gettext import gettext as _
 
 from lollypop.logger import Logger
-from lollypop.define import App
+from lollypop.define import App, Type
 from lollypop.sync_mtp import MtpSync
 
 
@@ -106,6 +106,22 @@ class DeviceWidget(Gtk.ListBoxRow):
         revealed = self.__revealer.get_reveal_child()
         self.__revealer.set_reveal_child(not revealed)
 
+    def _on_content_albums_clicked(self, button):
+        """
+            Show synced albums
+            @param button as Gtk.Button
+        """
+        index = self.__get_device_index()
+        App().window.container.show_view([Type.DEVICE_ALBUMS], index)
+
+    def _on_content_playlists_clicked(self, button):
+        """
+            Show synced playlists
+            @param button as Gtk.Button
+        """
+        index = self.__get_device_index()
+        App().window.container.show_view([Type.DEVICE_PLAYLISTS], index)
+
     def _on_sync_button_clicked(self, button):
         """
             Sync music on device
@@ -114,13 +130,7 @@ class DeviceWidget(Gtk.ListBoxRow):
         if self.__sync_button.get_label() == _("Synchronize"):
             self.__progress = 0
             uri = self.__get_music_uri()
-            try:
-                devices = list(App().settings.get_value("devices"))
-                index = devices.index(self.__name) + 1
-            except Exception as e:
-                Logger.warning("DeviceWidget::_on_sync_button_clicked(): %s",
-                               e)
-                index = 1
+            index = self.__get_device_index()
             App().task_helper.run(self.__mtp_sync.sync, uri, index)
             self.emit("syncing", True)
             button.set_label(_("Cancel"))
@@ -161,6 +171,20 @@ class DeviceWidget(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def __get_device_index(self):
+        """
+            Get current device index
+            @return int
+        """
+        try:
+            devices = list(App().settings.get_value("devices"))
+            index = devices.index(self.__name) + 1
+        except Exception as e:
+            Logger.warning("DeviceWidget::__get_device_index(): %s",
+                           e)
+            index = 1
+        return index
+
     def __get_music_uri(self):
         """
             Get music URI on device

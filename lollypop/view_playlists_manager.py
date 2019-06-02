@@ -47,19 +47,20 @@ class PlaylistsManagerView(FlowBoxView):
         self.attach(new_playlist_button, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
 
-    def populate(self, items):
+    def populate(self, items=[]):
         """
             Populate items
             @param items
         """
         if self.__obj is not None:
             new_items = []
-            for item in items:
+            for item in App().playlists.get_ids():
                 if not App().playlists.get_smart(item):
                     new_items.append(item)
             items = new_items
-        else:
-            items = [i[0] for i in ShownPlaylists.get()] + items
+        elif not items:
+            items = [i[0] for i in ShownPlaylists.get()]
+            items += App().playlists.get_ids()
         FlowBoxView.populate(self, items)
 
     def add_value(self, item):

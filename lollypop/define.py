@@ -188,8 +188,8 @@ class Type:
     WEB = -22
     ALL = -100
     CURRENT = -101
-    USB_DISKS = -200
-    DEVICES = -1000
+    DEVICE_ALBUMS = -1000
+    DEVICE_PLAYLISTS = -1001
     SEPARATOR = -2000
     COMPILATIONS = -2001
 
@@ -218,6 +218,5 @@ STATIC_ALBUM_NAME = {
     Type.RADIOS: "Radios",
     Type.YEARS: "Years",
     Type.ALL: "All albums",
-    Type.COMPILATIONS: "Compilations",
-    Type.USB_DISKS: "USB disks",
+    Type.COMPILATIONS: "Compilations"
 }

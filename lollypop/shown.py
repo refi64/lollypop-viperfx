@@ -56,8 +56,6 @@ class ShownLists:
                    SelectionListMask.ARTISTS_VIEW),
         Type.ARTISTS: (_("All artists"), SelectionListMask.LIST_ONE),
         Type.COMPILATIONS: (_("Compilations"), SelectionListMask.COMPILATIONS),
-        Type.USB_DISKS: (_("USB disks"),
-                         SelectionListMask.LIST_DEVICE),
     }
 
     def get(mask, get_all=False):
@@ -68,8 +66,6 @@ class ShownLists:
             @return [(,)]
         """
         wanted = list(App().settings.get_value("shown-album-lists"))
-        if get_all:
-            wanted.append(Type.USB_DISKS)
         lists = []
         for key in ShownLists.IDS.keys():
             (string, id_mask) = ShownLists.IDS[key]
