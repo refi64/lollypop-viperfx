@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.define import App
 from lollypop.logger import Logger
+from lollypop.menu_sync import SyncPlaylistsMenu
 
 
 class PlaylistMenu(Gio.Menu):
@@ -51,6 +52,8 @@ class PlaylistMenu(Gio.Menu):
         App().add_action(remove_action)
         remove_action.connect("activate", self.__on_remove_action_activate)
         self.append(_("Remove playlist"), "app.remove_pl_action")
+        self.append_section(_("Synchronization"),
+                            SyncPlaylistsMenu(playlist_id))
 
 #######################
 # PRIVATE             #

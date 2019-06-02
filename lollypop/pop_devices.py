@@ -82,6 +82,14 @@ class DevicesPopover(Gtk.Popover):
         self.__listbox.show()
         self.emit("content-changed", len(self.__listbox.get_children()))
 
+    @property
+    def devices(self):
+        """
+            Get current devices
+            @return [str]
+        """
+        return [child.name for child in self.__listbox.get_children()]
+
 #######################
 # PROTECTED           #
 #######################

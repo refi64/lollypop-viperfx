@@ -84,8 +84,8 @@
             <summary>Enabled genres in party mode</summary>
             <description>ID for genres.</description>
         </key>
-            <key type="ai" name="sync-internal-ids">
-            <default>[]</default>
+            <key type="s" name="sync-internal-ids">
+            <default>""</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>

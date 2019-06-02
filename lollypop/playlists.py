@@ -17,6 +17,7 @@ import itertools
 import sqlite3
 from datetime import datetime
 from threading import Lock
+import json
 
 from lollypop.database import Database
 from lollypop.define import App, Type
@@ -441,15 +442,25 @@ class Playlists(GObject.GObject):
                 names.append(self.get_name(playlist_id))
         return names
 
-    def get_synced(self, playlist_id):
+    def get_synced(self, playlist_id, index):
         """
             True if playlist synced
             @param playlist_id as int
+            @param index as int
             @return bool
         """
         if playlist_id < 0:
-            playlist_ids = list(App().settings.get_value("sync-internal-ids"))
-            return playlist_id in playlist_ids
+            internal_ids = App().settings.get_value(
+                    "sync-internal-ids").get_string()
+            try:
+                data = json.loads(internal_ids)
+            except:
+                data = {}
+            synced_ids = []
+            for playlist_id in data.keys():
+                if data[playlist_id] & (1 << index):
+                    synced_ids.append(playlist_id)
+            return playlist_id in synced_ids
         else:
             with SqlCursor(self) as sql:
                 result = sql.execute("SELECT synced\
@@ -466,7 +477,16 @@ class Playlists(GObject.GObject):
             @return [int]
         """
         with SqlCursor(self) as sql:
-            synced_ids = list(App().settings.get_value("sync-internal-ids"))
+            internal_ids = App().settings.get_value(
+                    "sync-internal-ids").get_string()
+            try:
+                data = json.loads(internal_ids)
+            except:
+                data = {}
+            synced_ids = []
+            for playlist_id in data.keys():
+                if data[playlist_id] & (1 << index):
+                    synced_ids.append(playlist_id)
             result = sql.execute("SELECT rowid\
                                   FROM playlists\
                                   WHERE synced & (1 << ?)\
@@ -512,13 +532,16 @@ class Playlists(GObject.GObject):
             @param synced as bool
         """
         if playlist_id < 0:
-            synced_ids = list(App().settings.get_value("sync-internal-ids"))
-            if synced and playlist_id not in synced_ids:
-                synced_ids.append(playlist_id)
-            elif not synced and playlist_id in synced_ids:
-                synced_ids.remove(playlist_id)
+            internal_ids = App().settings.get_value(
+                "sync-internal-ids").get_string()
+            try:
+                data = json.loads(internal_ids)
+            except:
+                data = {}
+            data[playlist_id] = synced
+            internal_ids = json.dumps(data)
             App().settings.set_value("sync-internal-ids",
-                                     GLib.Variant("ai", synced_ids))
+                                     GLib.Variant("s", internal_ids))
         else:
             with SqlCursor(self, True) as sql:
                 sql.execute("UPDATE playlists\

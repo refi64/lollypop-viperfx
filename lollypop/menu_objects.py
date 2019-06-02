@@ -19,7 +19,7 @@ from lollypop.menu_playlists import PlaylistsMenu
 from lollypop.menu_artist import ArtistMenu
 from lollypop.menu_edit import EditMenu
 from lollypop.menu_playback import PlaybackMenu
-from lollypop.menu_sync import SyncMenu
+from lollypop.menu_sync import SyncAlbumMenu
 
 
 class AlbumMenu(Gio.Menu):
@@ -38,7 +38,7 @@ class AlbumMenu(Gio.Menu):
                             ArtistMenu(album, view_type))
         if album.mtime != 0:
             self.insert_section(2, _("Playlists"), PlaylistsMenu(album))
-        self.insert_section(3, _("Synchronization"), SyncMenu(album))
+        self.insert_section(3, _("Synchronization"), SyncAlbumMenu(album))
         self.insert_section(4, _("Edit"), EditMenu(album))
 
 

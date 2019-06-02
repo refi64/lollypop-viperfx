@@ -60,6 +60,11 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.__mtp_sync = MtpSync()
         self.__mtp_sync.connect("sync-finished", self.__on_sync_finished)
         self.__mtp_sync.connect("sync-progress", self.__on_sync_progress)
+        # Be sure device exists in index
+        devices = list(App().settings.get_value("devices"))
+        if name not in devices:
+            devices.append(name)
+            App().settings.set_value("devices", GLib.Variant("as", devices))
         for encoder in self.__mtp_sync._GST_ENCODER.keys():
             if not self.__mtp_sync.check_encoder_status(encoder):
                 self.__builder.get_object(encoder).set_sensitive(False)
@@ -73,6 +78,14 @@ class DeviceWidget(Gtk.ListBoxRow):
             @return str
         """
         return self.__uri
+
+    @property
+    def name(self):
+        """
+            Get device name
+            @return str
+        """
+        return self.__name
 
     @property
     def progress(self):

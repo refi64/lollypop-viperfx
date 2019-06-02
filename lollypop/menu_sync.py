@@ -13,54 +13,60 @@
 from gi.repository import Gio, GLib
 
 from gettext import gettext as _
+from hashlib import sha256
 
 from lollypop.define import App
-from lollypop.utils import is_device
+from lollypop.logger import Logger
 
 
 class SyncMenu(Gio.Menu):
     """
-        Sync menu for album
+        Sync menu
     """
 
-    def __init__(self, album):
+    def __init__(self):
         """
             Init menu
-            @param album as Album
         """
         Gio.Menu.__init__(self)
-        self.__album = album
-        self.__vm = Gio.VolumeMonitor.get()
-        self.__vm.connect("mount-added", self.__on_mount_added)
-        self.__set_sync_action()
+        for name in App().window.toolbar.end.devices_popover.devices:
+            self.__add_sync_action(name)
+
+#######################
+# PROTECTED           #
+#######################
+    def _get_synced(self, index):
+        pass
+
+    def _set_synced(self, index):
+        pass
 
 #######################
 # PRIVATE             #
 #######################
-    def __add_sync_action(self, mount):
+    def __add_sync_action(self, name):
         """
-            Add sync action for mount
-            @param mount as Gio.Mount
+            Add sync action
+            @param name as str
         """
-        if not is_device(mount):
-            return
         devices = list(App().settings.get_value("devices"))
-        name = mount.get_name()
         action_name = "sync_%s" % name
+        encoded = sha256(action_name.encode("utf-8")).hexdigest()
         try:
             index = devices.index(name) + 1
-            synced = self.__album.synced & (1 << index)
-        except:
+            synced = self._get_synced(index)
+        except Exception as e:
+            Logger.warning("SyncMenu::__add_sync_action(): %s", e)
             synced = False
         sync_action = Gio.SimpleAction.new_stateful(
-                                          action_name,
+                                          encoded,
                                           None,
                                           GLib.Variant.new_boolean(synced))
         App().add_action(sync_action)
         sync_action.connect("change-state",
                             self.__on_sync_action_change_state,
                             name)
-        self.append(_("Sync with %s" % name), "app.%s" % action_name)
+        self.append(_("Sync with %s" % name), "app.%s" % encoded)
 
     def __set_sync_action(self):
         """
@@ -90,5 +96,80 @@ class SyncMenu(Gio.Menu):
             devices.append(name)
             App().settings.set_value("devices", GLib.Variant("as", devices))
         index = devices.index(name) + 1
-        synced = self.__album.synced | (1 << index)
+        self._set_synced(index, variant.get_boolean())
+
+
+class SyncAlbumMenu(SyncMenu):
+    """
+        Sync menu for album
+    """
+
+    def __init__(self, album):
+        """
+            Init menu
+            @param album as Album
+        """
+        self.__album = album
+        SyncMenu.__init__(self)
+
+#######################
+# PROTECTED           #
+#######################
+    def _get_synced(self, index):
+        """
+            Get synced state for index
+            @param index as int
+            @return bool
+        """
+        return self.__album.synced & (1 << index)
+
+    def _set_synced(self, index, state):
+        """
+            Set synced state for index
+            @param index as int
+            @param state as bool
+        """
+        if state:
+            synced = self.__album.synced | (1 << index)
+        else:
+            synced = self._album.synced & ~(1 << index)
         App().albums.set_synced(self.__album.id, synced)
+        self.__album.reset("synced")
+
+
+class SyncPlaylistsMenu(SyncMenu):
+    """
+        Sync menu for playlist
+    """
+
+    def __init__(self, playlist_id):
+        """
+            Init menu
+            @param album as Album
+        """
+        self.__playlist_id = playlist_id
+        SyncMenu.__init__(self)
+
+#######################
+# PROTECTED           #
+#######################
+    def _get_synced(self, index):
+        """
+            Get synced state for index
+            @param index as int
+            @return bool
+        """
+        return App().playlists.get_synced(self.__playlist_id, index)
+
+    def _set_synced(self, index, state):
+        """
+            Set synced state for index
+            @param index as int
+            @param state as bool
+        """
+        initial = App().playlists.get_synced(self.__playlist_id)
+        if state:
+            synced = initial | (1 << index)
+        else:
+            synced = initial & ~(1 << index)
+        App().playlists.set_synced(self.__playlist_id, synced)
