@@ -172,7 +172,7 @@ class DevicesPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
-        height = 0
+        height = 10
         for child in self.__listbox.get_children():
             if child.is_visible():
                 height += child.get_allocated_height()
