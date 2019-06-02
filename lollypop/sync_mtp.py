@@ -386,8 +386,9 @@ class MtpSync(GObject.Object):
         """
         on_device_uris = self.__on_device_uris()
         for (src_uri, dst_uri) in uris:
-            if dst_uri in on_device_uris:
-                on_device_uris.remove(dst_uri)
+            dst = Gio.File.new_for_uri(dst_uri)
+            if dst.get_uri() in on_device_uris:
+                on_device_uris.remove(dst.get_uri())
         for uri in on_device_uris:
             if self.__cancellable.is_cancelled():
                 break
@@ -436,8 +437,7 @@ class MtpSync(GObject.Object):
                         if info.get_name() == "lollypop-sync.db":
                             continue
                         f = infos.get_child(info)
-                        if not f.get_uri().endswith(".m3u"):
-                            children.append(f.get_uri())
+                        children.append(f.get_uri())
             except Exception as e:
                 Logger.error("MtpSync::__get_track_files(): %s, %s" % (e, uri))
         return children
@@ -469,8 +469,6 @@ class MtpSync(GObject.Object):
             @param src_uri as str
             @param dst_uri as str
         """
-        Logger.debug("MtpSync::__copy_file(): %s -> %s"
-                     % (src_uri, dst_uri))
         src = Gio.File.new_for_uri(src_uri)
         (convertion_needed,
          dst_uri) = self.__is_convertion_needed(src_uri, dst_uri)
@@ -484,6 +482,8 @@ class MtpSync(GObject.Object):
         mtime = info.get_attribute_uint64("time::modified")
         if not dst.query_exists() or\
                 self.__mtp_syncdb.get_mtime(dst_uri) < mtime:
+            Logger.debug("MtpSync::__copy_file(): %s -> %s"
+                         % (src_uri, dst_uri))
             if convertion_needed:
                 convert_uri = "file:///tmp/lollypop_convert"
                 convert_file = Gio.File.new_for_uri(convert_uri)
