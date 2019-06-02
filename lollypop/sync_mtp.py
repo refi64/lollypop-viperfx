@@ -234,7 +234,6 @@ class MtpSync(GObject.Object):
             self.__errors_count = 0
             self.__total = 0
             self.__done = 0
-            playlists = []
             tracks = []
 
             Logger.info("Geting tracks to sync")
@@ -246,8 +245,6 @@ class MtpSync(GObject.Object):
             # New tracks for playlists
             playlist_ids = App().playlists.get_synced_ids(index)
             for playlist_id in playlist_ids:
-                name = App().playlists.get_name(playlist_id)
-                playlists.append(escape(name))
                 if App().playlists.get_smart(playlist_id):
                     request = App().playlists.get_smart_sql(playlist_id)
                     for track_id in App().db.execute(request):
@@ -257,7 +254,7 @@ class MtpSync(GObject.Object):
                         tracks.append(Track(track_id))
 
             Logger.info("Getting URIs to copy")
-            uris = self.__get_uris_to_copy(tracks, playlists)
+            uris = self.__get_uris_to_copy(tracks)
             self.__total = len(tracks)
 
             Logger.info("Delete old files")
@@ -270,6 +267,7 @@ class MtpSync(GObject.Object):
                 GLib.idle_add(self.emit, "sync-progress",
                               self.__done / self.__total)
 
+            self.__write_playlists(playlist_ids)
             Logger.debug("Create unsync")
             d = Gio.File.new_for_uri(self.__uri + "/unsync")
             if not d.query_exists():
@@ -312,23 +310,24 @@ class MtpSync(GObject.Object):
         album_name = track.album_name.lower()
         is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
         if is_compilation:
-            return "%s/%s" % (self.__uri, escape(album_name[:100]))
+            return escape(album_name[:100])
         else:
             artists = ", ".join(track.album.artists).lower()
             string = escape("%s_%s" % (artists, album_name))
-            return "%s/%s" % (self.__uri, string[:100])
+            return string[:100]
 
-    def __get_uris_to_copy(self, tracks, playlists):
+    def __get_uris_to_copy(self, tracks):
         """
             Get on device URI for all tracks
             @param tracks as [Track]
         """
         uris = []
         art_uris = []
-        playlist_uris = []
         for track in tracks:
             f = Gio.File.new_for_uri(track.uri)
-            album_device_uri = self.__get_album_on_device_uri(track)
+            album_device_uri = "%s/%s" % (self.__uri,
+                                          self.__get_album_on_device_uri(
+                                            track))
             album_local_uri = f.get_parent().get_uri()
             filename = f.get_basename()
             uris.append(("%s/%s" % (album_local_uri, filename),
@@ -339,10 +338,46 @@ class MtpSync(GObject.Object):
                 art_uris.append((art_uri,
                                  "%s/%s" % (album_device_uri,
                                             escape(art_filename))))
-#        for playlist in playlists:
-#            on_disk_path = "/tmp/lollypop_%s.m3u" % playlist
-#            on_device_uri = "%s/%s" (self.__uri, playlist)
-        return uris + art_uris + playlist_uris
+        return uris + art_uris
+
+    def __write_playlists(self, playlist_ids):
+        """
+            Write playlists on disk
+            @param playlist_ids as [int]
+        """
+        for playlist_id in playlist_ids:
+            try:
+                name = escape(App().playlists.get_name(playlist_id))
+                dst_uri = "%s/%s.m3u" % (self.__uri, name)
+                if App().playlists.get_smart(playlist_id):
+                    request = App().playlists.get_smart_sql(playlist_id)
+                    track_ids = App().db.execute(request)
+                else:
+                    track_ids = App().playlists.get_track_ids(playlist_id)
+                # Create playlist
+                m3u = Gio.File.new_for_path("/tmp/lollypop_%s.m3u" % name)
+                content = "#EXTM3U\n"
+                for track_id in track_ids:
+                    track = Track(track_id)
+                    if self.__cancellable.is_cancelled():
+                        break
+                    f = Gio.File.new_for_uri(track.uri)
+                    filename = f.get_basename()
+                    album_uri = self.__get_album_on_device_uri(track)
+                    uri = "%s/%s" % (album_uri, filename)
+                    (convertion_needed,
+                     uri) = self.__is_convertion_needed(track.uri, uri)
+                    content += "%s\n" % uri
+                    m3u.replace_contents(
+                                    content.encode("utf-8"),
+                                    None,
+                                    False,
+                                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                    self.__cancellable)
+                    dst = Gio.File.new_for_uri(dst_uri)
+                    m3u.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
+            except Exception as e:
+                Logger.error("MtpSync::__write_playlists(): %s", e)
 
     def __delete_old_uris(self, uris):
         """
@@ -407,19 +442,13 @@ class MtpSync(GObject.Object):
                 Logger.error("MtpSync::__get_track_files(): %s, %s" % (e, uri))
         return children
 
-    def __copy_file(self, src_uri, dst_uri):
+    def __is_convertion_needed(self, src_uri, dst_uri):
         """
-            Copy source to destination
+            Check if convertion is needed
             @param src_uri as str
             @param dst_uri as str
+            @return (bool, str) => Is needed and new dst URI
         """
-        Logger.debug("MtpSync::__copy_file(): %s -> %s"
-                     % (src_uri, dst_uri))
-        src = Gio.File.new_for_uri(src_uri)
-        dst = Gio.File.new_for_uri(dst_uri)
-        parent = dst.get_parent()
-        if not parent.query_exists():
-            parent.make_directory_with_parents()
         # Check extension for convertion
         m = match(r".*(\.[^.]*)", src_uri)
         ext = m.group(1)
@@ -432,6 +461,23 @@ class MtpSync(GObject.Object):
             dst_uri = dst_uri.replace(ext, convert_ext)
         else:
             convertion_needed = False
+        return (convertion_needed, dst_uri)
+
+    def __copy_file(self, src_uri, dst_uri):
+        """
+            Copy source to destination
+            @param src_uri as str
+            @param dst_uri as str
+        """
+        Logger.debug("MtpSync::__copy_file(): %s -> %s"
+                     % (src_uri, dst_uri))
+        src = Gio.File.new_for_uri(src_uri)
+        (convertion_needed,
+         dst_uri) = self.__is_convertion_needed(src_uri, dst_uri)
+        dst = Gio.File.new_for_uri(dst_uri)
+        parent = dst.get_parent()
+        if not parent.query_exists():
+            parent.make_directory_with_parents()
         info = src.query_info("time::modified",
                               Gio.FileQueryInfoFlags.NONE,
                               None)
