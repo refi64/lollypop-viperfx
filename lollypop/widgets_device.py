@@ -60,11 +60,6 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.__mtp_sync = MtpSync()
         self.__mtp_sync.connect("sync-finished", self.__on_sync_finished)
         self.__mtp_sync.connect("sync-progress", self.__on_sync_progress)
-        # Be sure device exists in index
-        devices = list(App().settings.get_value("devices"))
-        if name not in devices:
-            devices.append(name)
-            App().settings.set_value("devices", GLib.Variant("as", devices))
         for encoder in self.__mtp_sync._GST_ENCODER.keys():
             if not self.__mtp_sync.check_encoder_status(encoder):
                 self.__builder.get_object(encoder).set_sensitive(False)
@@ -112,7 +107,10 @@ class DeviceWidget(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         index = self.__get_device_index()
-        App().window.container.show_view([Type.DEVICE_ALBUMS], index)
+        if index is not None:
+            App().window.container.show_view([Type.DEVICE_ALBUMS], index)
+        else:
+            button.set_sensitive(False)
 
     def _on_content_playlists_clicked(self, button):
         """
@@ -120,7 +118,10 @@ class DeviceWidget(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         index = self.__get_device_index()
-        App().window.container.show_view([Type.DEVICE_PLAYLISTS], index)
+        if index is not None:
+            App().window.container.show_view([Type.DEVICE_PLAYLISTS], index)
+        else:
+            button.set_sensitive(False)
 
     def _on_sync_button_clicked(self, button):
         """
@@ -131,9 +132,10 @@ class DeviceWidget(Gtk.ListBoxRow):
             self.__progress = 0
             uri = self.__get_music_uri()
             index = self.__get_device_index()
-            App().task_helper.run(self.__mtp_sync.sync, uri, index)
-            self.emit("syncing", True)
-            button.set_label(_("Cancel"))
+            if index is not None:
+                App().task_helper.run(self.__mtp_sync.sync, uri, index)
+                self.emit("syncing", True)
+                button.set_label(_("Cancel"))
         else:
             self.__mtp_sync.cancel()
             button.set_sensitive(False)
@@ -174,7 +176,7 @@ class DeviceWidget(Gtk.ListBoxRow):
     def __get_device_index(self):
         """
             Get current device index
-            @return int
+            @return int/None
         """
         try:
             devices = list(App().settings.get_value("devices"))
@@ -182,7 +184,7 @@ class DeviceWidget(Gtk.ListBoxRow):
         except Exception as e:
             Logger.warning("DeviceWidget::__get_device_index(): %s",
                            e)
-            index = 1
+            index = None
         return index
 
     def __get_music_uri(self):
