@@ -201,6 +201,7 @@ class DevicesPopover(Gtk.Popover):
         else:
             self.__syncing -= 1
         if self.__syncing > 0 and self.__timeout_id is None:
+            self.__progressbar.set_fraction(0)
             self.__progressbar.show()
             self.__timeout_id = GLib.timeout_add(1000,
                                                  self.__update_progress)
