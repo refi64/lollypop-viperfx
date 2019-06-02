@@ -208,3 +208,4 @@ class DevicesPopover(Gtk.Popover):
             GLib.timeout_add(1000, hide_progress)
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
+            self.__progressbar.set_fraction(1)
