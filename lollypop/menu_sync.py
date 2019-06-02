@@ -12,7 +12,6 @@
 
 from gi.repository import Gio, GLib
 
-from gettext import gettext as _
 from hashlib import sha256
 
 from lollypop.define import App
@@ -66,7 +65,7 @@ class SyncMenu(Gio.Menu):
         sync_action.connect("change-state",
                             self.__on_sync_action_change_state,
                             name)
-        self.append(_("Sync with %s" % name), "app.%s" % encoded)
+        self.append(name, "app.%s" % encoded)
 
     def __set_sync_action(self):
         """
