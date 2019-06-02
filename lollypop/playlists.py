@@ -466,7 +466,7 @@ class Playlists(GObject.GObject):
                                      WHERE rowid=?", (playlist_id,))
                 v = result.fetchone()
                 if v is not None:
-                    return v[0]
+                    return v[0] & (1 << index)
                 return False
 
     def get_synced_ids(self, index):

@@ -289,6 +289,16 @@ class DeviceWidget(Gtk.ListBoxRow):
             used = size - free
             fraction = 1 * used / size
             self.__progressbar.set_fraction(fraction)
+            style_context = self.__progressbar.get_style_context()
+            style_context.remove_class("usagebar-green")
+            style_context.remove_class("usagebar-orange")
+            style_context.remove_class("usagebar-red")
+            if fraction < 0.6:
+                style_context.add_class("usagebar-green")
+            elif fraction < 0.8:
+                style_context.add_class("usagebar-orange")
+            else:
+                style_context.add_class("usagebar-red")
         except Exception as e:
             Logger.error("DeviceWiget::__on_filesystem_info(): %s", e)
 

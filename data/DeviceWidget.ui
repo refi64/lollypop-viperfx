@@ -67,6 +67,9 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
+        <style>
+          <class name="usagebar"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">0</property>

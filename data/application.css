@@ -16,6 +16,42 @@
     min-width: 28px;
 }
 
+.usagebar {
+    border: none;
+    background-color: transparent;
+    background-image: none;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.usagebar progress {
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    min-height: 6px;
+}
+
+.usagebar trough {
+    border: 1px solid shade(@theme_bg_color, 0.9);
+    background-color: transparent;
+    background-image: none;
+    min-height: 6px;
+}
+
+.usagebar-green progress{
+    background-color: shade(green, 1.4);
+}
+
+.usagebar-orange progress{
+    background-color: orange;
+}
+
+.usagebar-red progress{
+    background-color: orange;
+}
+
 .progressbar-button {
     border: none;
     background-color: transparent;
