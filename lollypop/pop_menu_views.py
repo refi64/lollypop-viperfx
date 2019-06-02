@@ -38,12 +38,20 @@ class ViewsMenuPopover(Popover):
         self.__mask = mask
         menu = Gio.Menu()
         self.bind_model(menu, None)
+
+        # Devices
+        if mask & SelectionListMask.PLAYLISTS:
+            from lollypop.menu_sync import SyncPlaylistsMenu
+            section = SyncPlaylistsMenu(rowid)
+            menu.append_section(_("Synchronization"), section)
+
         # Startup menu
-        if rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
-                     Type.ALL, Type.RECENTS, Type.YEARS,
-                     Type.RANDOMS, Type.NEVER,
-                     Type.PLAYLISTS, Type.ARTISTS] and\
-                not App().settings.get_value("save-state"):
+        if not App().settings.get_value("save-state") and\
+                (rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
+                           Type.ALL, Type.RECENTS, Type.YEARS,
+                           Type.RANDOMS, Type.NEVER,
+                           Type.PLAYLISTS, Type.ARTISTS] or
+                 mask & SelectionListMask.PLAYLISTS):
             startup_menu = Gio.Menu()
             if self.__mask & SelectionListMask.LIST_TWO:
                 exists = rowid in App().settings.get_value("startup-two-ids")
@@ -60,7 +68,7 @@ class ViewsMenuPopover(Popover):
             item = Gio.MenuItem.new(_("Default on startup"),
                                     "app.default_selection_id")
             startup_menu.append_item(item)
-            menu.insert_section(0, _("Startup"), startup_menu)
+            menu.append_section(_("Startup"), startup_menu)
         # Shown menu
         shown_menu = Gio.Menu()
         if mask & SelectionListMask.PLAYLISTS:
@@ -85,7 +93,7 @@ class ViewsMenuPopover(Popover):
             App().add_action(action)
             shown_menu.append(item[1], "app.%s" % encoded)
         # Translators: shown => items
-        menu.insert_section(1, _("Sections"), shown_menu)
+        menu.append_section(_("Sections"), shown_menu)
 
 #######################
 # PRIVATE             #
