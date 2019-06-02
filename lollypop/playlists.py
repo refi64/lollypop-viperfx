@@ -404,9 +404,7 @@ class Playlists(GObject.GObject):
             @param playlist_id as int
             @return playlist name as str
         """
-        if playlist_id == Type.LOVED:
-            return _("Loved tracks")
-        elif playlist_id < 0:
+        if playlist_id < 0:
             for (id, name, sortname) in ShownPlaylists.get(True):
                 if id == playlist_id:
                     return name
@@ -457,9 +455,9 @@ class Playlists(GObject.GObject):
             except:
                 data = {}
             synced_ids = []
-            for playlist_id in data.keys():
-                if data[playlist_id] & (1 << index):
-                    synced_ids.append(playlist_id)
+            for synced_id in data.keys():
+                if data[synced_id] & (1 << index):
+                    synced_ids.append(int(synced_id))
             return playlist_id in synced_ids
         else:
             with SqlCursor(self) as sql:
@@ -486,7 +484,7 @@ class Playlists(GObject.GObject):
             synced_ids = []
             for playlist_id in data.keys():
                 if data[playlist_id] & (1 << index):
-                    synced_ids.append(playlist_id)
+                    synced_ids.append(int(playlist_id))
             result = sql.execute("SELECT rowid\
                                   FROM playlists\
                                   WHERE synced & (1 << ?)\

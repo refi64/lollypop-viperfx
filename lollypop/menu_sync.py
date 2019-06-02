@@ -167,7 +167,7 @@ class SyncPlaylistsMenu(SyncMenu):
             @param index as int
             @param state as bool
         """
-        initial = App().playlists.get_synced(self.__playlist_id)
+        initial = App().playlists.get_synced(self.__playlist_id, index)
         if state:
             synced = initial | (1 << index)
         else:
