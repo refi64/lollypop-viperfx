@@ -167,8 +167,12 @@ class DeviceWidget(Gtk.ListBoxRow):
             @return str
         """
         if self.__combobox.get_visible():
-            uri = "%s/%s/Music" % (self.__uri,
-                                   self.__combobox.get_active_text())
+            if self.__uri.endswith("/"):
+                uri = "%s%s/Music" % (self.__uri,
+                                      self.__combobox.get_active_text())
+            else:
+                uri = "%s/%s/Music" % (self.__uri,
+                                       self.__combobox.get_active_text())
         else:
             uri = "%s/Music" % self.__uri
         return uri
