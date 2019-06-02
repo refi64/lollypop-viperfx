@@ -285,3 +285,4 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.__progress = 0
         self.__sync_button.set_label(_("Synchronize"))
         self.__sync_button.set_sensitive(True)
+        self.__calculate_free_space()
