@@ -536,7 +536,7 @@ class Playlists(GObject.GObject):
                 data = json.loads(internal_ids)
             except:
                 data = {}
-            data[playlist_id] = synced
+            data[str(playlist_id)] = synced
             internal_ids = json.dumps(data)
             App().settings.set_value("sync-internal-ids",
                                      GLib.Variant("s", internal_ids))
