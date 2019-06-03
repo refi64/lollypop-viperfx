@@ -260,7 +260,7 @@ class LyricsView(View, InformationController):
             return
         if status:
             try:
-                from beautifulsoup4 import BeautifulSoup
+                from bs4 import BeautifulSoup
                 soup = BeautifulSoup(data, 'html.parser')
                 self.__lyrics_text = soup.find_all(
                     "div", class_=cls)[0].get_text(separator=separator)
