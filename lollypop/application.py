@@ -271,10 +271,11 @@ class Application(Gtk.Application):
         def on_destroy(window):
             self.__fs_window = None
 
-        from lollypop.fullscreen import FullScreen
-        self.__fs_window = FullScreen(self)
-        self.__fs_window.show()
-        self.__fs_window.connect("destroy", on_destroy)
+        if self.__fs_window is None:
+            from lollypop.fullscreen import FullScreen
+            self.__fs_window = FullScreen(self)
+            self.__fs_window.show()
+            self.__fs_window.connect("destroy", on_destroy)
 
     @property
     def lastfm(self):
