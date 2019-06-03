@@ -207,6 +207,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                         ArtSize.BANNER,
                                         self.get_scale_factor(),
                                         ArtBehaviour.ROUNDED |
+                                        ArtBehaviour.CROP_SQUARE |
                                         ArtBehaviour.SAVE,
                                         self.__on_artist_artwork)
         else:
