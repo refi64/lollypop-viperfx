@@ -102,15 +102,17 @@ class LyricsView(View, InformationController):
     def _on_map(self, widget):
         """
             Set active ids
+            @param widget as Gtk.Widget
         """
         App().window.emit("can-go-back-changed", True)
         App().window.emit("show-can-go-back", True)
         self.__current_changed_id = App().player.connect(
             "current-changed", self.__on_current_changed)
 
-    def __on_unmap(self, widget):
+    def _on_unmap(self, widget):
         """
             Connect player signal
+            @param widget as Gtk.Widget
         """
         if self.__current_changed_id is not None:
             App().player.disconnect(self.__current_changed_id)
