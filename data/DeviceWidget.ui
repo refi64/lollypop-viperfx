@@ -49,7 +49,7 @@
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="hexpand">True</property>
-        <property name="label" translatable="yes">name</property>
+        <property name="label" translatable="yes"></property>
         <attributes>
           <attribute name="weight" value="bold"/>
         </attributes>
