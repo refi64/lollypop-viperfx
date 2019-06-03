@@ -177,6 +177,11 @@ popover.background separator {
     color: white;
 }
 
+.gnome-shell {
+  font-family: Cantarell, Sans-Serif;
+  font-size: 11pt;
+}
+
 .lyrics {
     font-weight: bold;
     background-color: alpha(@theme_bg_color, 0.90);
