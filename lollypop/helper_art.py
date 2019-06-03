@@ -175,10 +175,11 @@ class ArtHelper(GObject.Object):
             @param b as int
             @return cairo.Surface
         """
-        ctx = cairo.Context(surface)
-        ctx.rectangle(0, 0, surface.get_width(), surface.get_height())
-        ctx.set_source_rgba(r, g, b, 0.5)
-        ctx.fill()
+        if surface is not None:
+            ctx = cairo.Context(surface)
+            ctx.rectangle(0, 0, surface.get_width(), surface.get_height())
+            ctx.set_source_rgba(r, g, b, 0.5)
+            ctx.fill()
 
     def __get_album_artwork(self, album, width, height, scale_factor, effect):
         """
