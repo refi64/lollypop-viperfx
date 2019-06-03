@@ -58,7 +58,7 @@ class View(BaseView, Gtk.Grid):
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__new_ids = []
-        self._empty_message = _("Empty")
+        self._empty_message = _("No items to show")
         self._empty_icon_name = "emblem-music-symbolic"
 
         if view_type & ViewType.FILTERED:
