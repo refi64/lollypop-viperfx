@@ -46,9 +46,11 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         ProgressController.__init__(self)
         if rotate_album:
             InformationController.__init__(self, False,
-                                           ArtBehaviour.ROUNDED)
+                                           ArtBehaviour.ROUNDED |
+                                           ArtBehaviour.CROP_SQUARE)
         else:
-            InformationController.__init__(self, False, ArtBehaviour.NONE)
+            InformationController.__init__(self, False,
+                                           ArtBehaviour.CROP_SQUARE)
         self.set_application(app)
         self.__timeout_id = None
         self.__signal1_id = self.__signal2_id = None
@@ -286,11 +288,13 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             context.add_class("image-rotate")
             context.remove_class("cover-frame")
             InformationController.__init__(self, False,
-                                           ArtBehaviour.ROUNDED)
+                                           ArtBehaviour.ROUNDED |
+                                           ArtBehaviour.CROP_SQUARE)
         else:
             context.remove_class("image-rotate")
             context.add_class("cover-frame")
-            InformationController.__init__(self, False, ArtBehaviour.NONE)
+            InformationController.__init__(self, False,
+                                           ArtBehaviour.CROP_SQUARE)
         InformationController.on_current_changed(self,
                                                  self.__art_size,
                                                  self.__font_size)

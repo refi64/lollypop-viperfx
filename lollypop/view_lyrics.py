@@ -33,7 +33,8 @@ class LyricsView(View, InformationController):
             Init view
         """
         View.__init__(self)
-        InformationController.__init__(self, False, ArtBehaviour.BLUR)
+        InformationController.__init__(self, False,
+                                       ArtBehaviour.BLUR | ArtBehaviour.RESIZE)
         self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
         self.__downloads_running = 0
