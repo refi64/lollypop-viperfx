@@ -236,7 +236,7 @@ class MtpSync(GObject.Object):
             self.__done = 0
             tracks = []
 
-            Logger.info("Geting tracks to sync")
+            Logger.info("Getting tracks to sync")
             # New tracks for synced albums
             album_ids = App().albums.get_synced_ids(index)
             for album_id in album_ids:
@@ -257,10 +257,10 @@ class MtpSync(GObject.Object):
             uris = self.__get_uris_to_copy(tracks)
             self.__total = len(tracks)
 
-            Logger.info("Delete old files")
+            Logger.info("Deleting old files")
             self.__delete_old_uris(uris)
 
-            Logger.info("Copy files")
+            Logger.info("Copying files")
             for (src_uri, dst_uri) in uris:
                 self.__copy_file(src_uri, dst_uri)
                 self.__done += 1
