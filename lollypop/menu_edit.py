@@ -62,20 +62,6 @@ class EditMenu(Gio.Menu):
                                 False)
             self.append(_("Remove from collection"), "app.remove_album_action")
 
-    def __set_sync_action(self):
-        """
-            Set sync action
-        """
-        synced = self.__object.synced
-        sync_action = Gio.SimpleAction.new_stateful(
-                                           "sync_album_action",
-                                           None,
-                                           GLib.Variant.new_boolean(synced))
-        App().add_action(sync_action)
-        sync_action.connect("change-state",
-                            self.__on_sync_action_change_state)
-        self.append(_("Sync with devices"), "app.sync_album_action")
-
     def __set_edit_action(self):
         """
             Set edit action
@@ -84,16 +70,6 @@ class EditMenu(Gio.Menu):
         App().add_action(edit_tag_action)
         edit_tag_action.connect("activate", self.__on_edit_tag_action_activate)
         self.append(_("Modify information"), "app.edit_tag_action")
-
-    def __on_sync_action_change_state(self, action, variant):
-        """
-            Save album to collection
-            @param Gio.SimpleAction
-            @param GLib.Variant
-            @param save as bool
-        """
-        action.set_state(variant)
-        App().albums.set_synced(self.__object.id, variant.get_boolean())
 
     def __on_save_action_activate(self, action, variant, save):
         """

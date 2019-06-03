@@ -179,7 +179,6 @@
         <property name="visible">False</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Downloads</property>
         <signal name="toggled" handler="_on_devices_button_toggled" swapped="no"/>
         <child>
           <object class="GtkOverlay" id="overlay">
