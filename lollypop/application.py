@@ -133,7 +133,7 @@ class Application(Gtk.Application):
                              None)
         self.add_main_option("emulate-phone", b"e", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE,
-                             "Emulate an Android Phone",
+                             "Emulate a Librem phone",
                              None)
         self.add_main_option("version", b"v", GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE,
