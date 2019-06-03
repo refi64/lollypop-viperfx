@@ -530,7 +530,8 @@ class SelectionList(LazyLoadingView):
             else:
                 listbox.unselect_all()
                 row = listbox.get_row_at_y(event.y)
-                row.activate()
+                if row is not None:
+                    row.activate()
                 return True
 
     def __on_artist_artwork_changed(self, art, artist):
