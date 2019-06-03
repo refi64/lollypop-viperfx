@@ -79,9 +79,9 @@ class LyricsView(View, InformationController):
         else:
             if get_network_available("WIKIA"):
                 self.__download_wikia_lyrics()
-            elif get_network_available("GENIUS"):
+            if get_network_available("GENIUS"):
                 self.__download_genius_lyrics()
-            else:
+            if self.__downloads_running == 0:
                 self.__lyrics_label.set_text(
                     _("You have disabled lyrics search in network settings !"))
 
