@@ -580,6 +580,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         aa_sortnames = self.get_album_artist_sortnames(tags)
         album_artists = self.get_album_artists(tags)
         album_name = self.get_album_name(tags)
+        album_synced = 0
         mb_album_id = self.get_mb_album_id(tags)
         mb_track_id = self.get_mb_track_id(tags)
         mb_artist_id = self.get_mb_artist_id(tags)
