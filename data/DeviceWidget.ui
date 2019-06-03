@@ -11,9 +11,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">preferences-system-symbolic</property>
-    <style>
-      <class name="menu-button"/>
-    </style>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
@@ -305,8 +302,8 @@
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_reveal_button_clicked" swapped="no"/>
         <style>
-          <class name="menu-button"/>
-          <class name="menu-button-no-border"/>
+          <class name="light-button"/>
+          <class name="light-button-no-right-border"/>
         </style>
       </object>
       <packing>
