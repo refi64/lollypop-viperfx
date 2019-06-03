@@ -156,6 +156,7 @@ class InformationView(BaseView, Gtk.Bin):
                                     ArtSize.ARTIST_SMALL * 3,
                                     self.__artist_artwork.get_scale_factor(),
                                     ArtBehaviour.ROUNDED |
+                                    ArtBehaviour.CROP_SQUARE |
                                     ArtBehaviour.SAVE,
                                     self.__on_artist_artwork)
             albums_view = AlbumsListView(ViewType.POPOVER)
