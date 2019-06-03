@@ -428,6 +428,8 @@ def is_device(mount):
     parsed = urlparse(uri)
     if parsed.scheme == "mtp":
         return True
+    elif not App().settings.get_value("sync-usb-disks"):
+        return False
     drive = mount.get_drive()
     return drive is not None and drive.is_removable()
 

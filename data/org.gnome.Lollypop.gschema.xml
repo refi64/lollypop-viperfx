@@ -79,12 +79,17 @@
             <summary>Window maximized</summary>
             <description>Window maximized state.</description>
         </key>
-            <key type="ai" name="party-ids">
+  	<key type="ai" name="party-ids">
             <default>[]</default>
             <summary>Enabled genres in party mode</summary>
             <description>ID for genres.</description>
         </key>
-            <key type="s" name="sync-internal-ids">
+        <key type="b" name="sync-usb-disks">
+            <default>false</default>
+            <summary>Allow syncing to USB disks</summary>
+            <description></description>
+        </key>
+        <key type="s" name="sync-internal-ids">
             <default>""</default>
             <summary>INTERNAL</summary>
             <description></description>
