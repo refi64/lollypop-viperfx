@@ -306,23 +306,31 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
             Update window background
         """
+        allocation = self.get_allocation()
+        if allocation.width <= 1 or allocation.height <= 1:
+            return
+        behaviour = ArtBehaviour.BLUR_HARD | ArtBehaviour.CROP
         settings = Gtk.Settings.get_default()
         if settings.get_property("gtk-application-prefer-dark-theme"):
-            behaviour = ArtBehaviour.BLUR | ArtBehaviour.DARKER
+            behaviour |= ArtBehaviour.DARKER
         else:
-            behaviour = ArtBehaviour.BLUR | ArtBehaviour.LIGHTER
-        # Update background
-        allocation = self.get_allocation()
-        if App().settings.get_value("artist-artwork") and allocation.width > 1:
+            behaviour |= ArtBehaviour.LIGHTER
+        if App().settings.get_value("artist-artwork"):
             App().art_helper.set_artist_artwork(
                                         App().player.current_track.artists[0],
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
                                         behaviour,
-                                        self.__on_artist_artwork,)
+                                        self.__on_artwork,)
         else:
-            self.__background_artwork.set_from_surface(None)
+            App().art_helper.set_album_artwork(
+                                        App().player.current_track.album,
+                                        allocation.width,
+                                        allocation.height,
+                                        self.get_scale_factor(),
+                                        behaviour,
+                                        self.__on_artwork,)
 
     def __update_datetime(self, show_seconds=False):
         """
@@ -339,7 +347,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             return False
         return True
 
-    def __on_artist_artwork(self, surface):
+    def __on_artwork(self, surface):
         """
             Set background artwork
             @param surface as str

@@ -48,9 +48,6 @@ class PlaylistPlayer(BasePlayer):
             Remove track from player
             @param track_id as int
         """
-        # FIXME
-        print(self._playlist_tracks)
-
         for track in self._playlist_tracks:
             if track.id == track_id:
                 self._playlist_tracks.remove(track)
@@ -143,10 +140,6 @@ class PlaylistPlayer(BasePlayer):
             Get playlist track ids
             @return [int]
         """
-        tracks = [track for track in self._playlist_tracks]
-        # FIXME
-        print(tracks)
-
         return [track.id for track in self._playlist_tracks]
 
     @property

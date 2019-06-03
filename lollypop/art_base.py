@@ -104,7 +104,12 @@ class BaseArt(GObject.GObject):
                                          GdkPixbuf.InterpType.NEAREST)
         # Crop image as square
         if behaviour & ArtBehaviour.CROP_SQUARE:
-            pixbuf = self._crop_pixbuf(pixbuf)
+            pixbuf = self._crop_pixbuf_square(pixbuf)
+            pixbuf = pixbuf.scale_simple(width, height,
+                                         GdkPixbuf.InterpType.BILINEAR)
+        # Crop image keeping ratio
+        if behaviour & ArtBehaviour.CROP:
+            pixbuf = self._crop_pixbuf(pixbuf, width, height)
             pixbuf = pixbuf.scale_simple(width, height,
                                          GdkPixbuf.InterpType.BILINEAR)
         # Handle blur
@@ -118,9 +123,35 @@ class BaseArt(GObject.GObject):
                              "cover-quality").get_int32())])
         return pixbuf
 
-    def _crop_pixbuf(self, pixbuf):
+    def _crop_pixbuf(self, pixbuf, wanted_width, wanted_height):
         """
-            Return croped pixbuf if needed
+            Crop pixbuf
+            @param pixbuf as GdkPixbuf.Pixbuf
+            @param wanted_width as int
+            @param wanted height as int
+            @return GdkPixbuf.Pixbuf
+        """
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        ratio_w = 1
+        ratio_h = 1
+        if wanted_width > width:
+            ratio_w = width / wanted_width
+        if wanted_height > height:
+            ratio_h = height / wanted_height
+        ratio = min(ratio_w, ratio_h)
+        sub_width = wanted_width * ratio
+        sub_height = wanted_height * ratio
+        diff_width = (width - sub_width) / 2
+        diff_height = (height - sub_height) / 2
+        return pixbuf.new_subpixbuf(diff_width,
+                                    diff_height,
+                                    sub_width + diff_width,
+                                    sub_height + diff_height)
+
+    def _crop_pixbuf_square(self, pixbuf):
+        """
+            Crop pixbuf as square
             @param pixbuf as GdkPixbuf.Pixbuf
             @return GdkPixbuf.Pixbuf
         """
