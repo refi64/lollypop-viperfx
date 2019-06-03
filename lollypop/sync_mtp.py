@@ -14,6 +14,7 @@ from gi.repository import GLib, Gio, Gst, GObject
 
 from time import sleep
 from re import match
+from random import shuffle
 import json
 
 from lollypop.logger import Logger
@@ -255,28 +256,39 @@ class MtpSync(GObject.Object):
 
             Logger.info("Getting URIs to copy")
             uris = self.__get_uris_to_copy(tracks)
-            self.__total = len(tracks)
+            shuffle(uris)
+            self.__total = len(uris) + 2
 
             Logger.info("Deleting old files")
-            self.__delete_old_uris(uris)
+            if not self.__cancellable.is_cancelled():
+                self.__delete_old_uris(uris)
 
             Logger.info("Copying files")
             for (src_uri, dst_uri) in uris:
+                if self.__cancellable.is_cancelled():
+                    break
                 self.__copy_file(src_uri, dst_uri)
                 self.__done += 1
                 GLib.idle_add(self.emit, "sync-progress",
                               self.__done / self.__total)
-
-            self.__write_playlists(playlist_ids)
-            Logger.debug("Create unsync")
-            d = Gio.File.new_for_uri(self.__uri + "/unsync")
-            if not d.query_exists():
-                d.make_directory_with_parents()
+            Logger.debug("Writing playlists")
+            if not self.__cancellable.is_cancelled():
+                self.__write_playlists(playlist_ids)
+            GLib.idle_add(self.emit, "sync-progress",
+                          self.__done / self.__total + 1)
+            Logger.debug("Creating unsync")
+            if not self.__cancellable.is_cancelled():
+                d = Gio.File.new_for_uri(self.__uri + "/unsync")
+                if not d.query_exists():
+                    d.make_directory_with_parents()
+            GLib.idle_add(self.emit, "sync-progress",
+                          self.__done / self.__total + 2)
         except Exception as e:
             Logger.error("MtpSync::__sync(): %s" % e)
         finally:
-            Logger.debug("Save sync db")
-            self.__mtp_syncdb.save()
+            Logger.info("Save sync db")
+            if not self.__cancellable.is_cancelled():
+                self.__mtp_syncdb.save()
             self.cancel()
             if self.__errors_count != 0:
                 Logger.debug("Sync errors")
@@ -346,6 +358,8 @@ class MtpSync(GObject.Object):
             @param playlist_ids as [int]
         """
         for playlist_id in playlist_ids:
+            if self.__cancellable.is_cancelled():
+                break
             try:
                 name = escape(App().playlists.get_name(playlist_id))
                 dst_uri = "%s/%s.m3u" % (self.__uri, name)
@@ -375,6 +389,7 @@ class MtpSync(GObject.Object):
                                     Gio.FileCreateFlags.REPLACE_DESTINATION,
                                     self.__cancellable)
                     dst = Gio.File.new_for_uri(dst_uri)
+                    Logger.debug("MtpSync::__write_playlists(): %s" % dst_uri)
                     m3u.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
             except Exception as e:
                 Logger.error("MtpSync::__write_playlists(): %s", e)
