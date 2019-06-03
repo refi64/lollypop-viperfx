@@ -140,14 +140,20 @@ class BaseArt(GObject.GObject):
         if wanted_height > height:
             ratio_h = height / wanted_height
         ratio = min(ratio_w, ratio_h)
-        sub_width = wanted_width * ratio
-        sub_height = wanted_height * ratio
-        diff_width = (width - sub_width) / 2
-        diff_height = (height - sub_height) / 2
-        return pixbuf.new_subpixbuf(diff_width,
-                                    diff_height,
-                                    sub_width + diff_width,
-                                    sub_height + diff_height)
+        if wanted_width > wanted_height:
+            sub_height = wanted_height * ratio
+            diff_height = (height - sub_height) / 2
+            return pixbuf.new_subpixbuf(0,
+                                        diff_height,
+                                        width,
+                                        sub_height)
+        else:
+            sub_width = wanted_width * ratio
+            diff_width = (width - sub_width) / 2
+            return pixbuf.new_subpixbuf(diff_width,
+                                        0,
+                                        sub_width,
+                                        height)
 
     def _crop_pixbuf_square(self, pixbuf):
         """
