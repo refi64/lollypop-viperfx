@@ -339,9 +339,9 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
         now = datetime.now()
         if show_seconds:
-            self._datetime.set_label(now.strftime("%a %d %b, %X"))
+            self._datetime.set_label(now.strftime("%a %d %b %X"))
         else:
-            self._datetime.set_label(now.strftime("%a %d %b, %X")[:-3])
+            self._datetime.set_label(now.strftime("%a %d %b %X")[:-3])
         if self.__timeout_id is None:
             self.__timeout_id = GLib.timeout_add(60000, self.__update_datetime)
             return False
