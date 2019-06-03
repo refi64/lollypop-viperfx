@@ -302,6 +302,11 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
             Update window background
         """
+        settings = Gtk.Settings.get_default()
+        if settings.get_property("gtk-application-prefer-dark-theme"):
+            behaviour = ArtBehaviour.BLUR | ArtBehaviour.DARKER
+        else:
+            behaviour = ArtBehaviour.BLUR | ArtBehaviour.LIGHTER
         # Update background
         allocation = self.get_allocation()
         if App().settings.get_value("artist-artwork") and allocation.width > 1:
@@ -310,8 +315,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
-                                        ArtBehaviour.BLUR |
-                                        ArtBehaviour.DARKER,
+                                        behaviour,
                                         self.__on_artist_artwork,)
         else:
             self.__background_artwork.set_from_surface(None)

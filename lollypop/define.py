@@ -50,7 +50,8 @@ class ArtBehaviour:
     FALLBACK = 1 << 6
     SAVE = 1 << 7
     DARKER = 1 << 8
-    NO_CACHE = 1 << 9
+    LIGHTER = 1 << 9
+    NO_CACHE = 1 << 10
 
 
 class ViewType:

@@ -162,6 +162,8 @@ class ArtHelper(GObject.Object):
         """
         if effect & ArtBehaviour.DARKER:
             self.__set_color(surface, 0, 0, 0)
+        if effect & ArtBehaviour.LIGHTER:
+            self.__set_color(surface, 1, 1, 1)
         GLib.idle_add(callback, surface, *args)
 
     def __set_color(self, surface, r, g, b):
