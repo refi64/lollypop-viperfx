@@ -26,7 +26,7 @@ except Exception as e:
     WEBKIT2 = False
     Logger.warning(e)
 
-from lollypop.define import App, ArtSize, Type
+from lollypop.define import App, ArtSize, Type, NetworkAccessACL
 from lollypop.utils import get_network_available
 from lollypop.helper_task import TaskHelper
 
@@ -319,8 +319,11 @@ class ArtworkSearchWidget(Gtk.Bin):
             self.__web_search.search(search)
         else:
             self.__populate()
-            self.__label.set_text(
-                _("DuckDuckGo and Google turned off in the settings"))
+            acl = App().settings.get_value("network-access-acl").get_int32()
+            if not acl & NetworkAccessACL["DUCKDUCKGO"] and\
+                    not acl & NetworkAccessACL["GOOGLE"]:
+                self.__label.set_text(
+                    _("DuckDuckGo and Google turned off in the settings"))
 
     def __populate(self):
         """
