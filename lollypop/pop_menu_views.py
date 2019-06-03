@@ -144,7 +144,8 @@ class ViewsMenuPopover(Popover):
             @param variant as GVariant
             @param rowid as int
         """
-        if self.__mask & SelectionListMask.LIST_ONE:
+        if self.__mask & (SelectionListMask.LIST_ONE |
+                          SelectionListMask.ARTISTS_VIEW):
             if variant:
                 startup_one_ids = [rowid]
                 startup_two_ids = []
