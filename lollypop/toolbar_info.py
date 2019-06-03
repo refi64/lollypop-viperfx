@@ -32,7 +32,7 @@ class ToolbarInfo(Gtk.Bin, InformationController):
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, True,
                                        ArtBehaviour.CROP_SQUARE |
-                                       ArtBehaviour.SAVE)
+                                       ArtBehaviour.CACHE)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ToolbarInfo.ui")
         builder.connect_signals(self)

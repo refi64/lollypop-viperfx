@@ -146,7 +146,8 @@ class AlbumArt:
         return uris
 
     def get_album_artwork(self, album, width, height, scale_factor,
-                          behaviour=ArtBehaviour.SAVE):
+                          behaviour=ArtBehaviour.CACHE |
+                          ArtBehaviour.CROP_SQUARE):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album

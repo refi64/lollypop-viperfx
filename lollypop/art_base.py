@@ -117,7 +117,7 @@ class BaseArt(GObject.GObject):
             pixbuf = self._get_blur(pixbuf, 25)
         elif behaviour & ArtBehaviour.BLUR_HARD:
             pixbuf = self._get_blur(pixbuf, 50)
-        if behaviour & ArtBehaviour.SAVE:
+        if behaviour & ArtBehaviour.CACHE:
             pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                          [str(App().settings.get_value(
                              "cover-quality").get_int32())])

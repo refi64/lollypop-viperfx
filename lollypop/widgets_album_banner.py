@@ -287,7 +287,7 @@ class AlbumBannerWidget(Gtk.Bin):
                             ArtBehaviour.RESIZE |
                             ArtBehaviour.BLUR_HARD |
                             ArtBehaviour.DARKER |
-                            ArtBehaviour.SAVE)
+                            ArtBehaviour.CACHE)
 
     def __on_album_artwork(self, surface):
         """

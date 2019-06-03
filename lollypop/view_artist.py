@@ -208,7 +208,7 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                         self.get_scale_factor(),
                                         ArtBehaviour.ROUNDED |
                                         ArtBehaviour.CROP_SQUARE |
-                                        ArtBehaviour.SAVE,
+                                        ArtBehaviour.CACHE,
                                         self.__on_artist_artwork)
         else:
             self._title_label.set_margin_start(MARGIN)

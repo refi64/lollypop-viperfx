@@ -82,7 +82,7 @@ class ArtistArt:
             pixbuf.savev(filepath, "jpeg", ["quality"], ["100"])
 
     def get_artist_artwork(self, artist, width, height, scale_factor,
-                           behaviour=ArtBehaviour.SAVE):
+                           behaviour=ArtBehaviour.CACHE):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param artist as str

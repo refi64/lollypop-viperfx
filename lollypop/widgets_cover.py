@@ -48,7 +48,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                 self.__art_size,
                 self.__art_size,
                 self._artwork.get_scale_factor(),
-                ArtBehaviour.SAVE | ArtBehaviour.CROP_SQUARE,
+                ArtBehaviour.CACHE | ArtBehaviour.CROP_SQUARE,
                 self.__on_album_artwork)
         self._overlay = Gtk.Overlay.new()
         self._overlay.show()
@@ -116,7 +116,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                 self.__art_size,
                 self.__art_size,
                 self._artwork.get_scale_factor(),
-                ArtBehaviour.SAVE | ArtBehaviour.CROP_SQUARE,
+                ArtBehaviour.CACHE | ArtBehaviour.CROP_SQUARE,
                 self.__on_album_artwork)
 
     def __on_album_artwork(self, surface):

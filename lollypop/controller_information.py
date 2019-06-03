@@ -20,7 +20,7 @@ class InformationController:
         Information controller (title, artist, album, cover)
     """
 
-    def __init__(self, show_tooltip=True, effect=ArtBehaviour.SAVE):
+    def __init__(self, show_tooltip=True, effect=ArtBehaviour.CACHE):
         """
             Init controller
             @param show_tooltip as bool

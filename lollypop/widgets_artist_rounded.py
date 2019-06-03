@@ -94,7 +94,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._artwork.get_scale_factor(),
                                             ArtBehaviour.ROUNDED |
                                             ArtBehaviour.CROP_SQUARE |
-                                            ArtBehaviour.SAVE,
+                                            ArtBehaviour.CACHE,
                                             self.__on_artist_artwork)
         else:
             album_ids = App().albums.get_ids([self._data], [])
@@ -107,7 +107,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._artwork.get_scale_factor(),
                                             ArtBehaviour.ROUNDED |
                                             ArtBehaviour.CROP_SQUARE |
-                                            ArtBehaviour.SAVE,
+                                            ArtBehaviour.CACHE,
                                             self.__on_artist_artwork)
             else:
                 set_icon_name()

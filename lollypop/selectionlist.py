@@ -118,7 +118,7 @@ class SelectionListRow(Gtk.ListBoxRow):
                                     self.get_scale_factor(),
                                     ArtBehaviour.ROUNDED |
                                     ArtBehaviour.CROP_SQUARE |
-                                    ArtBehaviour.SAVE,
+                                    ArtBehaviour.CACHE,
                                     self.__on_artist_artwork)
             self.__artwork.show()
         elif self.__rowid < 0:

@@ -48,11 +48,11 @@ class ArtBehaviour:
     BLUR_HARD = 1 << 4
     RESIZE = 1 << 5
     FALLBACK = 1 << 6
-    SAVE = 1 << 7
-    DARKER = 1 << 8
-    LIGHTER = 1 << 9
-    CROP = 1 << 10
-    CROP_SQUARE = 1 << 11
+    DARKER = 1 << 7
+    LIGHTER = 1 << 8
+    CROP = 1 << 9
+    CROP_SQUARE = 1 << 10
+    CACHE = 1 << 11
     NO_CACHE = 1 << 12
 
 

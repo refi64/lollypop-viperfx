@@ -123,7 +123,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
                                            self.__art_size,
                                            self.__art_size,
                                            self._artwork.get_scale_factor(),
-                                           ArtBehaviour.SAVE |
+                                           ArtBehaviour.CACHE |
                                            ArtBehaviour.CROP_SQUARE,
                                            self.__on_album_artwork)
 

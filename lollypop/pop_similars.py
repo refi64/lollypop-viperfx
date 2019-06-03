@@ -82,7 +82,7 @@ class ArtistRow(Gtk.ListBoxRow):
                                                 ArtSize.ARTIST_SMALL,
                                                 ArtSize.ARTIST_SMALL,
                                                 scale_factor,
-                                                ArtBehaviour.SAVE,
+                                                ArtBehaviour.CACHE,
                                                 self.__on_artist_artwork,)
         except Exception as e:
             Logger.error("ArtistRow::__on_uri_content(): %s", e)

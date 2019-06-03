@@ -95,7 +95,7 @@ class RadioWidget(Gtk.FlowBoxChild, OverlayRadioHelper):
                                            self.__art_size,
                                            self.__art_size,
                                            self._artwork.get_scale_factor(),
-                                           ArtBehaviour.SAVE,
+                                           ArtBehaviour.CACHE,
                                            self.__on_radio_artwork)
 
     def set_sensitive(self, b):
