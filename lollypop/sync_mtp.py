@@ -342,8 +342,11 @@ class MtpSync(GObject.Object):
                                             track))
             album_local_uri = f.get_parent().get_uri()
             filename = f.get_basename()
-            uris.append(("%s/%s" % (album_local_uri, filename),
-                         "%s/%s" % (album_device_uri, escape(filename))))
+            src_uri = "%s/%s" % (album_local_uri, filename)
+            dst_uri = "%s/%s" % (album_device_uri, escape(filename))
+            (convertion_needed,
+             dst_uri) = self.__is_convertion_needed(src_uri, dst_uri)
+            uris.append((src_uri, dst_uri))
             art_uri = App().art.get_album_artwork_uri(track.album)
             if art_uri is not None:
                 art_filename = Gio.File.new_for_uri(art_uri).get_basename()
