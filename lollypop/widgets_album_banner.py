@@ -257,7 +257,7 @@ class AlbumBannerWidget(Gtk.Bin):
                 allocation.width + 100,
                 allocation.height,
                 self.__artwork.get_scale_factor(),
-                ArtBehaviour.RESIZE |
+                ArtBehaviour.CROP |
                 ArtBehaviour.BLUR_HARD |
                 ArtBehaviour.DARKER,
                 self.__on_album_artwork)
@@ -284,10 +284,9 @@ class AlbumBannerWidget(Gtk.Bin):
                             self.get_allocated_height(),
                             self.__artwork.get_scale_factor(),
                             self.__on_album_artwork,
-                            ArtBehaviour.RESIZE |
+                            ArtBehaviour.CROP |
                             ArtBehaviour.BLUR_HARD |
-                            ArtBehaviour.DARKER |
-                            ArtBehaviour.CACHE)
+                            ArtBehaviour.DARKER)
 
     def __on_album_artwork(self, surface):
         """
