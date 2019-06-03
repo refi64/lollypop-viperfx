@@ -39,7 +39,8 @@ class MiniPlayer(Gtk.Bin, InformationController,
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, False,
                                        ArtBehaviour.BLUR_HARD |
-                                       ArtBehaviour.DARKER)
+                                       ArtBehaviour.DARKER |
+                                       ArtBehaviour.RESIZE)
         ProgressController.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()
@@ -164,7 +165,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                 ArtSize.MINIPLAYER,
                 ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
-                ArtBehaviour.SAVE,
+                ArtBehaviour.SAVE | ArtBehaviour.CROP_SQUARE,
                 self.__on_artwork)
         else:
             App().art_helper.set_album_artwork(
@@ -172,7 +173,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
                 ArtSize.MINIPLAYER,
                 ArtSize.MINIPLAYER,
                 self._artwork.get_scale_factor(),
-                ArtBehaviour.SAVE,
+                ArtBehaviour.SAVE | ArtBehaviour.CROP_SQUARE,
                 self.__on_artwork)
 
     def __handle_size_allocate(self, allocation):

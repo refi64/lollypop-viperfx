@@ -113,7 +113,8 @@ class QueueRow(Row, DNDRow):
                                            ArtSize.MEDIUM,
                                            ArtSize.MEDIUM,
                                            self.__artwork.get_scale_factor(),
-                                           ArtBehaviour.SAVE,
+                                           ArtBehaviour.SAVE |
+                                           ArtBehaviour.CROP_SQUARE,
                                            self.__on_album_artwork)
             self.__artwork.set_margin_top(2)
             self.set_margin_bottom(2)

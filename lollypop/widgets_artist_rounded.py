@@ -93,6 +93,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._art_size,
                                             self._artwork.get_scale_factor(),
                                             ArtBehaviour.ROUNDED |
+                                            ArtBehaviour.CROP_SQUARE |
                                             ArtBehaviour.SAVE,
                                             self.__on_artist_artwork)
         else:
@@ -105,6 +106,7 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
                                             self._art_size,
                                             self._artwork.get_scale_factor(),
                                             ArtBehaviour.ROUNDED |
+                                            ArtBehaviour.CROP_SQUARE |
                                             ArtBehaviour.SAVE,
                                             self.__on_artist_artwork)
             else:

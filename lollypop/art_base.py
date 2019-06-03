@@ -102,8 +102,8 @@ class BaseArt(GObject.GObject):
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,
                                          GdkPixbuf.InterpType.NEAREST)
-        # Else center image
-        else:
+        # Crop image as square
+        if behaviour & ArtBehaviour.CROP_SQUARE:
             pixbuf = self._crop_pixbuf(pixbuf)
             pixbuf = pixbuf.scale_simple(width, height,
                                          GdkPixbuf.InterpType.BILINEAR)

@@ -51,7 +51,9 @@ class ArtBehaviour:
     SAVE = 1 << 7
     DARKER = 1 << 8
     LIGHTER = 1 << 9
-    NO_CACHE = 1 << 10
+    CROP = 1 << 10
+    CROP_SQUARE = 1 << 11
+    NO_CACHE = 1 << 12
 
 
 class ViewType:
