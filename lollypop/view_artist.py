@@ -257,11 +257,12 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             @param surface as cairo.Surface
         """
         if surface is None:
+            self._artwork.get_style_context().add_class("artwork-icon")
+            self._artwork.set_size_request(ArtSize.BANNER,
+                                           ArtSize.BANNER)
             self._artwork.set_from_icon_name(
                                               "avatar-default-symbolic",
-                                              Gtk.IconSize.DND)
+                                              Gtk.IconSize.DIALOG)
         else:
             self._artwork.set_from_surface(surface)
-            self._artwork.get_style_context().remove_class(
-                "artwork-icon")
         self._artwork.show()
