@@ -214,7 +214,7 @@ class DeviceWidget(Gtk.ListBoxRow):
         try:
             if not self.__uri.startswith("mtp://") and\
                     self.__name != "Librem phone":
-                return []
+                return None
 
             # Search for previous sync
             d = Gio.File.new_for_uri(self.__uri)
@@ -244,13 +244,17 @@ class DeviceWidget(Gtk.ListBoxRow):
             Set combobox content based on names
             @param names as [str]
         """
-        if names:
+        self.__sync_button.set_sensitive(True)
+        if names is None:
+            self.__load_uri_settings(self.__get_music_uri())
+            self.__combobox.hide()
+        elif names:
             self.__combobox.show()
             for name in names:
                 self.__combobox.append_text(name)
             self.__combobox.set_active(0)
         else:
-            self.__load_uri_settings(self.__get_music_uri())
+            self.__sync_button.set_sensitive(False)
             self.__combobox.hide()
 
     def __load_uri_settings(self, uri):
