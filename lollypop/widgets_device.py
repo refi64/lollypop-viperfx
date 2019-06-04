@@ -291,6 +291,8 @@ class DeviceWidget(Gtk.ListBoxRow):
             info = source.query_filesystem_info_finish(result)
             size = info.get_attribute_uint64(FILE_ATTRIBUTE_FILESYSTEM_SIZE)
             free = info.get_attribute_uint64(FILE_ATTRIBUTE_FILESYSTEM_FREE)
+            if size == 0:
+                return
             used = size - free
             fraction = 1 * used / size
             self.__progressbar.set_fraction(fraction)
