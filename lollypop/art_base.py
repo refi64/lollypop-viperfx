@@ -108,15 +108,15 @@ class BaseArt(GObject.GObject):
 
         # Handle blur
         if behaviour & ArtBehaviour.BLUR:
+            pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                         height * scale_factor,
+                                         GdkPixbuf.InterpType.NEAREST)
             pixbuf = self._get_blur(pixbuf, 25)
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
-                                         GdkPixbuf.InterpType.NEAREST)
         elif behaviour & ArtBehaviour.BLUR_HARD:
-            pixbuf = self._get_blur(pixbuf, 50)
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,
                                          GdkPixbuf.InterpType.NEAREST)
+            pixbuf = self._get_blur(pixbuf, 50)
         else:
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,
