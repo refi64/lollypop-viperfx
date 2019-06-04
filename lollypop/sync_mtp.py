@@ -191,10 +191,10 @@ class MtpSync(GObject.Object):
                                       ! oggmux",
                   "convert_flac": " ! flacenc",
                   "convert_aac": " ! faac bitrate=%s ! mp4mux"}
-    _GST_ENCODER = {"convert_mp3": "lamemp3enc",
-                    "convert_ogg": "vorbisenc",
-                    "convert_flac": "flacenc",
-                    "convert_aac": "faac"}
+    _GST_ENCODER = {"convert_mp3": ["lamemp3enc", "id3v2mux"],
+                    "convert_ogg": ["vorbisenc", "oggmux"],
+                    "convert_flac": ["flacenc"],
+                    "convert_aac": ["faac", "mp4mux"]}
 
     def __init__(self):
         """
@@ -216,9 +216,11 @@ class MtpSync(GObject.Object):
             @param encoder as str
             @return bool
         """
-        if Gst.ElementFactory.find(self._GST_ENCODER[encoder]):
-            return True
-        return False
+        ok = True
+        for item in self._GST_ENCODER[encoder]:
+            if not Gst.ElementFactory.find(item):
+                ok = False
+        return ok
 
     def sync(self, uri, index):
         """
