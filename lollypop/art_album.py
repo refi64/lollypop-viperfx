@@ -159,16 +159,30 @@ class AlbumArt:
             @thread safe
         """
         filename = self.get_album_cache_name(album)
-        cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH, filename,
-                                              width * scale_factor,
-                                              height * scale_factor)
+        # Blur when reading from tags can be slow, so prefer cached version
+        # Blur allows us to ignore width/height until we want CROP/CACHE
+        optimized_blur = behaviour & (ArtBehaviour.BLUR |
+                                      ArtBehaviour.BLUR_HARD) and\
+            not behaviour & (ArtBehaviour.CACHE |
+                             ArtBehaviour.CROP |
+                             ArtBehaviour.CROP_SQUARE)
+        if optimized_blur:
+            w = ArtSize.BIG * scale_factor
+            h = ArtSize.BIG * scale_factor
+        else:
+            w = width * scale_factor
+            h = height * scale_factor
+        cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH, filename, w, h)
         pixbuf = None
-
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_jpg)
             if not behaviour & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
+                if optimized_blur:
+                    pixbuf = self._load_behaviour(pixbuf, None,
+                                                  width, height,
+                                                  scale_factor, behaviour)
                 return pixbuf
             else:
                 # Use favorite folder artwork

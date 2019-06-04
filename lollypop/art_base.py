@@ -121,7 +121,7 @@ class BaseArt(GObject.GObject):
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,
                                          GdkPixbuf.InterpType.BILINEAR)
-        if behaviour & ArtBehaviour.CACHE:
+        if behaviour & ArtBehaviour.CACHE and cache_path_jpg is not None:
             pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                          [str(App().settings.get_value(
                              "cover-quality").get_int32())])
