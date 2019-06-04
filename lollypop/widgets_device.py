@@ -48,6 +48,7 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.__builder.add_from_resource("/org/gnome/Lollypop/DeviceWidget.ui")
         self.__progressbar = self.__builder.get_object("progress")
         self.__revealer = self.__builder.get_object("revealer")
+        self.__switch_normalize = self.__builder.get_object("switch_normalize")
         self.__builder.get_object("name").set_label(self.__name)
         self.__combobox = self.__builder.get_object("combobox")
         self.__sync_button = self.__builder.get_object("sync_button")
@@ -265,7 +266,6 @@ class DeviceWidget(Gtk.ListBoxRow):
         self.__mtp_sync.db.load(uri)
         encoder = self.__mtp_sync.db.encoder
         normalize = self.__mtp_sync.db.normalize
-        self.__switch_normalize = self.__builder.get_object("switch_normalize")
         self.__switch_normalize.set_sensitive(False)
         self.__switch_normalize.set_active(normalize)
         self.__builder.get_object(encoder).set_active(True)
