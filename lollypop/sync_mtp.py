@@ -267,12 +267,15 @@ class MtpSync(GObject.Object):
 
             Logger.info("Copying files")
             for (src_uri, dst_uri) in uris:
-                if self.__cancellable.is_cancelled():
-                    break
-                self.__copy_file(src_uri, dst_uri)
-                self.__done += 1
-                GLib.idle_add(self.emit, "sync-progress",
-                              self.__done / self.__total)
+                try:
+                    if self.__cancellable.is_cancelled():
+                        break
+                    self.__copy_file(src_uri, dst_uri)
+                    self.__done += 1
+                    GLib.idle_add(self.emit, "sync-progress",
+                                  self.__done / self.__total)
+                except Exception as e:
+                    Logger.error("MtpSync::__copy_files(): %s", e)
             Logger.debug("Writing playlists")
             if not self.__cancellable.is_cancelled():
                 self.__write_playlists(playlist_ids)
