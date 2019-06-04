@@ -97,11 +97,6 @@ class BaseArt(GObject.GObject):
             @param scale_factor as int
             @param behaviour as ArtBehaviour
         """
-        # Handle resize
-        if behaviour & ArtBehaviour.RESIZE:
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
-                                         GdkPixbuf.InterpType.NEAREST)
         # Crop image as square
         if behaviour & ArtBehaviour.CROP_SQUARE:
             pixbuf = self._crop_pixbuf_square(pixbuf)
@@ -110,13 +105,22 @@ class BaseArt(GObject.GObject):
         # Crop image keeping ratio
         if behaviour & ArtBehaviour.CROP:
             pixbuf = self._crop_pixbuf(pixbuf, width, height)
-            pixbuf = pixbuf.scale_simple(width, height,
-                                         GdkPixbuf.InterpType.BILINEAR)
+
         # Handle blur
         if behaviour & ArtBehaviour.BLUR:
             pixbuf = self._get_blur(pixbuf, 25)
+            pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                         height * scale_factor,
+                                         GdkPixbuf.InterpType.NEAREST)
         elif behaviour & ArtBehaviour.BLUR_HARD:
             pixbuf = self._get_blur(pixbuf, 50)
+            pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                         height * scale_factor,
+                                         GdkPixbuf.InterpType.NEAREST)
+        else:
+            pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                         height * scale_factor,
+                                         GdkPixbuf.InterpType.BILINEAR)
         if behaviour & ArtBehaviour.CACHE:
             pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
                          [str(App().settings.get_value(

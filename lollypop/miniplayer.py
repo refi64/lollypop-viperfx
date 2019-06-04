@@ -39,8 +39,7 @@ class MiniPlayer(Gtk.Bin, InformationController,
         Gtk.Bin.__init__(self)
         InformationController.__init__(self, False,
                                        ArtBehaviour.BLUR_HARD |
-                                       ArtBehaviour.DARKER |
-                                       ArtBehaviour.RESIZE)
+                                       ArtBehaviour.DARKER)
         ProgressController.__init__(self)
         PlaybackController.__init__(self)
         builder = Gtk.Builder()

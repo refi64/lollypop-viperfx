@@ -186,7 +186,8 @@ class AlbumArt:
                 # Use tags artwork
                 if pixbuf is None and album.tracks and album.uri != "":
                     try:
-                        if behaviour & ArtBehaviour.RESIZE:
+                        if behaviour & (ArtBehaviour.BLUR |
+                                        ArtBehaviour.BLUR_HARD):
                             track = album.tracks[0]
                         else:
                             track = choice(album.tracks)
