@@ -236,7 +236,7 @@ class DeviceWidget(Gtk.ListBoxRow):
             infos.close(None)
         except Exception as e:
             Logger.error("DeviceWidget::__get_best_uri_for_sync: %s: %s"
-                         % (uri, e))
+                         % (self.__uri, e))
         return names
 
     def __set_combobox_content(self, names):
