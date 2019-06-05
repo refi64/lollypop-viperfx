@@ -346,9 +346,9 @@ class MtpSync(GObject.Object):
                                           self.__get_album_on_device_uri(
                                             track))
             album_local_uri = f.get_parent().get_uri()
-            filename = f.get_basename()
+            filename = GLib.uri_escape_string(f.get_basename(), None, True)
             src_uri = "%s/%s" % (album_local_uri, filename)
-            dst_uri = "%s/%s" % (album_device_uri, escape(filename))
+            dst_uri = "%s/%s" % (album_device_uri, filename)
             (convertion_needed,
              dst_uri) = self.__is_convertion_needed(src_uri, dst_uri)
             uris.append((src_uri, dst_uri))
