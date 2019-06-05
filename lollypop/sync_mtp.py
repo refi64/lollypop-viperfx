@@ -327,11 +327,11 @@ class MtpSync(GObject.Object):
         album_name = track.album_name.lower()
         is_compilation = track.album.artist_ids[0] == Type.COMPILATIONS
         if is_compilation:
-            return escape(album_name[:100])
+            string = escape(album_name)
         else:
             artists = ", ".join(track.album.artists).lower()
             string = escape("%s_%s" % (artists, album_name))
-            return string[:100]
+        return GLib.uri_escape_string(string[:100], None, True)
 
     def __get_uris_to_copy(self, tracks):
         """
@@ -346,9 +346,11 @@ class MtpSync(GObject.Object):
                                           self.__get_album_on_device_uri(
                                             track))
             album_local_uri = f.get_parent().get_uri()
-            filename = GLib.uri_escape_string(f.get_basename(), None, True)
-            src_uri = "%s/%s" % (album_local_uri, filename)
-            dst_uri = "%s/%s" % (album_device_uri, filename)
+            src_uri = "%s/%s" % (album_local_uri,
+                                 GLib.uri_escape_string(f.get_basename(),
+                                                        None,
+                                                        True))
+            dst_uri = "%s/%s" % (album_device_uri, escape(f.get_basename()))
             (convertion_needed,
              dst_uri) = self.__is_convertion_needed(src_uri, dst_uri)
             uris.append((src_uri, dst_uri))
