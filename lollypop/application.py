@@ -235,6 +235,8 @@ class Application(Gtk.Application):
             self.__vacuum()
             self.art.clean_web()
         self.__window.hide()
+        for scrobbler in self.scrobblers:
+            scrobbler.save()
         Gio.Application.quit(self)
 
     def is_fullscreen(self):

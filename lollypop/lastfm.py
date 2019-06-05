@@ -25,11 +25,11 @@ except Exception as e:
 
 from pylast import LastFMNetwork, LibreFMNetwork, md5, WSError
 from pylast import SessionKeyGenerator
-from gettext import gettext as _
 from locale import getdefaultlocale
+from pickle import load, dump
 import re
 
-from lollypop.define import App
+from lollypop.define import App, LOLLYPOP_DATA_PATH
 from lollypop.objects import Track
 from lollypop.utils import get_network_available
 from lollypop.logger import Logger
@@ -62,7 +62,12 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         self.session_key = ""
         self.__password = None
         self.__goa = None
-        self.__queue = []
+        try:
+            self.__queue = load(
+                open(LOLLYPOP_DATA_PATH + "/%s_queue.bin" % self.__name, "rb"))
+        except Exception as e:
+            Logger.info("LastFM::__init__(): %s", e)
+            self.__queue = []
         if name == "librefm":
             LibreFMNetwork.__init__(self)
             Logger.debug("LibreFMNetwork.__init__()")
@@ -102,6 +107,14 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
                        full_sync,
                        callback,
                        *args)
+
+    def save(self):
+        """
+            Save queue to disk
+        """
+        with open(LOLLYPOP_DATA_PATH + "/%s_queue.bin" % self.__name,
+                  "wb") as f:
+            dump(list(self.__queue), f)
 
     def get_artist_artwork_uri(self, artist):
         """

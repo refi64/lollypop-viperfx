@@ -15,9 +15,10 @@ from gi.repository import Soup, GObject, GLib
 
 import json
 import time
+from pickle import load, dump
 
 from lollypop.logger import Logger
-from lollypop.define import App
+from lollypop.define import App, LOLLYPOP_DATA_PATH
 from lollypop.utils import get_network_available
 
 HOST_NAME = "api.listenbrainz.org"
@@ -38,7 +39,12 @@ class ListenBrainz(GObject.GObject):
             Init ListenBrainz object
         """
         GObject.GObject.__init__(self)
-        self.__queue = []
+        try:
+            self.__queue = load(
+                open(LOLLYPOP_DATA_PATH + "/listenbrainz_queue.bin", "rb"))
+        except Exception as e:
+            Logger.info("LastFM::__init__(): %s", e)
+            self.__queue = []
         self.__next_request_time = 0
 
     def listen(self, track, time):
@@ -62,6 +68,13 @@ class ListenBrainz(GObject.GObject):
             return
         payload = self.__get_payload(track)
         self.__submit("playing_now", payload)
+
+    def save(self):
+        """
+            Save queue to disk
+        """
+        with open(LOLLYPOP_DATA_PATH + "/listenbrainz_queue.bin", "wb") as f:
+            dump(list(self.__queue), f)
 
     @property
     def can_love(self):
