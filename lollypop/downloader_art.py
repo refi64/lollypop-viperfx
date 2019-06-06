@@ -243,8 +243,7 @@ class ArtDownloader(Downloader):
                                                                        None)
                     break
         except Exception as e:
-            Logger.error("ArtDownloader::_get_album_art_spotify: %s [%s/%s]" %
-                         (e, artist, album))
+            Logger.error("ArtDownloader::_get_album_art_spotify: %s" % e)
         return image
 
     def _get_itunes_album_artwork(self, artist, album):

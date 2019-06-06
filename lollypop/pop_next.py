@@ -45,6 +45,8 @@ class NextPopover(Gtk.Popover):
         """
             Update widget with next track
         """
+        if App().player.next_track.id is None:
+            return
         self.__artist_label.set_text(
             ", ".join(App().player.next_track.artists))
         self.__title_label.set_text(App().player.next_track.title)
@@ -68,6 +70,7 @@ class NextPopover(Gtk.Popover):
         """
         return not self.__inhibited and\
             App().player.is_party and\
+            App().player.next_track.id is not None and\
             not App().window.is_adaptive
 
     def inhibit(self, b):
