@@ -70,14 +70,14 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="can_default">True</property>
+        <property name="margin_bottom">20</property>
         <property name="column_homogeneous">True</property>
         <child>
           <object class="GtkBox" id="box1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
             <property name="valign">start</property>
-            <property name="margin_top">20</property>
+            <property name="margin_left">50</property>
             <property name="orientation">vertical</property>
             <property name="homogeneous">True</property>
             <property name="baseline_position">top</property>
@@ -116,13 +116,11 @@
               <object class="GtkLabel" id="album">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="opacity">0.80000000000000004</property>
                 <property name="ellipsize">end</property>
                 <attributes>
                   <attribute name="scale" value="3"/>
                 </attributes>
-                <style>
-                  <class name="dim-label"/>
-                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -134,13 +132,15 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">2</property>
-            <property name="width">3</property>
+            <property name="width">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkBox" id="box2">
+            <property name="width_request">500</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">center</property>
             <property name="valign">end</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">10</property>
@@ -196,14 +196,18 @@
             </style>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">0</property>
             <property name="top_attach">4</property>
+            <property name="width">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkGrid" id="title-box">
+            <property name="width_request">500</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="margin_left">50</property>
             <property name="margin_top">20</property>
             <child>
               <object class="GtkLabel" id="playback">
@@ -253,8 +257,9 @@
             </child>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">0</property>
             <property name="top_attach">3</property>
+            <property name="width">2</property>
           </packing>
         </child>
         <child>
@@ -282,6 +287,7 @@
             <property name="can_focus">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
+            <property name="margin_right">50</property>
             <signal name="button-release-event" handler="_on_image_button_release_event" swapped="no"/>
             <signal name="realize" handler="_on_image_realize" swapped="no"/>
             <child>
@@ -292,13 +298,10 @@
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-            <property name="width">3</property>
+            <property name="left_attach">2</property>
+            <property name="top_attach">2</property>
+            <property name="height">3</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>
