@@ -10,26 +10,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+from gi.repository import Gio, GObject
 
 from lollypop.utils import escape
 from lollypop.define import App
+from lollypop.logger import Logger
+from lollypop.downloader_info import InfoDownloader
 
 
-class InformationStore:
+class InformationStore(GObject.Object, InfoDownloader):
     """
-        Generic class to cache text and images
+        Generic class to cache information
     """
 
-    def init():
+    __gsignals__ = {
+        "artist-info-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+    }
+
+    def __init__(self):
         """
             Init store
         """
-        pass
+        GObject.Object.__init__(self)
+        InfoDownloader.__init__(self)
 
-    def get_bio(artist):
+    def get_information(self, artist):
         """
-            Get content from cache
+            Get artist information
             @param artist as str
             @return content as bytes
         """
@@ -41,18 +48,22 @@ class InformationStore:
             (status, content, tag) = f.load_contents()
         return content
 
-    def add_artist_bio(artist, content):
+    def save_artist_information(self, artist, content):
         """
-            Add artist bio to store
+            Save artist information
             @param artist as str
-            @param content as str
+            @param content as bytes
         """
-        filepath = "%s/%s.txt" % (App().art._INFO_PATH,
-                                  escape(artist))
-        if content is not None:
-            f = Gio.File.new_for_path(filepath)
-            fstream = f.replace(None, False,
-                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
-            if fstream is not None:
-                fstream.write(content, None)
-                fstream.close()
+        try:
+            if content is not None:
+                filepath = "%s/%s.txt" % (App().art._INFO_PATH,
+                                          escape(artist))
+                f = Gio.File.new_for_path(filepath)
+                fstream = f.replace(None, False,
+                                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                    None)
+                if fstream is not None:
+                    fstream.write(content, None)
+                    fstream.close()
+        except Exception as e:
+            Logger.error("InformationStore::save_artist_information(): %s", e)

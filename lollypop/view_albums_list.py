@@ -416,7 +416,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
             return True
         if self._album.mtime == 0:
             App().art.copy_from_web_to_store(self._album.id)
-            App().art.cache_artists_info()
+            App().art.cache_artists_artwork()
             self._album.save(True)
             self.destroy()
         elif self.__view_type & ViewType.SEARCH:

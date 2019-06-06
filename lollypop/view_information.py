@@ -25,71 +25,6 @@ from lollypop.view import BaseView
 from lollypop.utils import on_realize
 
 
-class Wikipedia:
-    """
-        Helper for wikipedia search
-    """
-
-    def __init__(self, cancellable):
-        """
-            Init wikipedia
-            @param cancellable as Gio.Cancellable
-            @raise exception  is wikipedia module not installed
-        """
-        self.__cancellable = cancellable
-        import wikipedia
-        wikipedia
-
-    def get_content(self, string):
-        """
-            Get content for string
-            @param string as str
-            @return str/None
-        """
-        content = None
-        try:
-            name = self.__get_duckduck_name(string)
-            if name is None:
-                return None
-            from locale import getdefaultlocale
-            import wikipedia
-            language = getdefaultlocale()[0][0:2]
-            wikipedia.set_lang(language)
-            page = wikipedia.page(name)
-            if page is None:
-                wikipedia.set_lang("en")
-                page = wikipedia.page(name)
-            if page is not None:
-                content = page.content.encode(encoding="UTF-8")
-        except Exception as e:
-            Logger.error("Wikipedia::get_content(): %s", e)
-        return content
-
-#######################
-# PRIVATE             #
-#######################
-    def __get_duckduck_name(self, string):
-        """
-            Get wikipedia duck duck name for string
-            @param string as str
-            @return str
-        """
-        name = None
-        try:
-            uri = "https://api.duckduckgo.com/?q=%s&format=json&pretty=1"\
-                % string
-            (status, data) = App().task_helper.load_uri_content_sync(uri)
-            if status:
-                import json
-                decode = json.loads(data.decode("utf-8"))
-                uri = decode["AbstractURL"]
-                if uri:
-                    name = uri.split("/")[-1]
-        except Exception as e:
-            Logger.error("Wikipedia::__get_duckduck_name(): %s", e)
-        return name
-
-
 class InformationView(BaseView, Gtk.Bin):
     """
         View with artist information
@@ -102,6 +37,9 @@ class InformationView(BaseView, Gtk.Bin):
         """
         BaseView.__init__(self)
         Gtk.Bin.__init__(self)
+        self.__information_store = InformationStore()
+        self.__information_store.connect("artist-info-changed",
+                                         self.__on_artist_info_changed)
         self.__cancellable = Gio.Cancellable()
         self.__minimal = minimal
         self.__artist_name = ""
@@ -127,7 +65,7 @@ class InformationView(BaseView, Gtk.Bin):
         eventbox = builder.get_object("eventbox")
         eventbox.connect("button-release-event",
                          self.__on_label_button_release_event)
-        self.__bio_label = builder.get_object("bio_label")
+        self.__information_label = builder.get_object("bio_label")
         if artist_id is None and App().player.current_track.id is not None:
             builder.get_object("header").show()
             builder.get_object("lyrics_button").show()
@@ -139,10 +77,10 @@ class InformationView(BaseView, Gtk.Bin):
             title_label.set_text(App().player.current_track.title)
         self.__artist_name = App().artists.get_name(artist_id)
         if self.__minimal:
-            self.__bio_label.set_margin_start(MARGIN)
-            self.__bio_label.set_margin_end(MARGIN)
-            self.__bio_label.set_margin_top(MARGIN)
-            self.__bio_label.set_margin_bottom(MARGIN)
+            self.__information_label.set_margin_start(MARGIN)
+            self.__information_label.set_margin_end(MARGIN)
+            self.__information_label.set_margin_top(MARGIN)
+            self.__information_label.set_margin_bottom(MARGIN)
             self.__artist_artwork.hide()
         else:
             self.__artist_artwork.set_margin_start(MARGIN_SMALL)
@@ -171,8 +109,9 @@ class InformationView(BaseView, Gtk.Bin):
                 albums = [App().player.current_track.album]
             # Allows view to be shown without lag
             GLib.idle_add(albums_view.populate, albums)
-        App().task_helper.run(InformationStore.get_bio, self.__artist_name,
-                              callback=(self.__on_get_bio,))
+        App().task_helper.run(self.__information_store.get_information,
+                              self.__artist_name,
+                              callback=(self.__set_information_content, True))
 
 #######################
 # PROTECTED           #
@@ -186,53 +125,23 @@ class InformationView(BaseView, Gtk.Bin):
         except:
             Logger.warning(_("You are using a broken cursor theme!"))
 
-    def _on_enable_network_access_state_set(self, widget, state):
-        """
-            Save network access state
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        App().settings.set_value("network-access",
-                                 GLib.Variant("b", state))
-        self.__stack.set_visible_child_name("bio")
-        self.__artist_label.hide()
-        self.__bio_label.set_text(_("Loading information"))
-        App().task_helper.run(
-            self.__get_bio_content, callback=(self.__set_bio_content,))
-
 #######################
 # PRIVATE             #
 #######################
-    def __get_bio_content(self):
+    def __set_information_content(self, content, initial):
         """
-            Get bio content and call callback
-            @param content as str
-        """
-        content = None
-        try:
-            wikipedia = Wikipedia(self.__cancellable)
-            content = wikipedia.get_content(self.__artist_name)
-        except Exception as e:
-            Logger.info("InformationPopover::__get_bio_content(): %s" % e)
-        try:
-            if content is None and App().lastfm is not None:
-                content = App().lastfm.get_artist_bio(self.__artist_name)
-        except Exception as e:
-            Logger.info("InformationPopover::__get_bio_content(): %s" % e)
-        return content
-
-    def __set_bio_content(self, content):
-        """
-            Set bio content
+            Set information
             @param content as bytes
+            @param initial as bool => initial loading
         """
-        if content is not None:
-            App().task_helper.run(InformationStore.add_artist_bio,
-                                  self.__artist_name, content)
-            self.__bio_label.set_markup(
+        if content:
+            self.__information_label.set_markup(
                 GLib.markup_escape_text(content.decode("utf-8")))
+        elif initial:
+            self.__information_label.set_text(_("Loading information"))
+            self.__information_store.cache_artist_info(self.__artist_name)
         else:
-            self.__bio_label.set_text(
+            self.__information_label.set_text(
                 _("No information for %s") % self.__artist_name)
 
     def __get_artist_artwork_path_from_cache(self, artist, size):
@@ -279,7 +188,7 @@ class InformationView(BaseView, Gtk.Bin):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        uri = "file://%s/%s.txt" % (InformationStore._INFO_PATH,
+        uri = "file://%s/%s.txt" % (App().art._INFO_PATH,
                                     escape(self.__artist_name))
         f = Gio.File.new_for_uri(uri)
         if not f.query_exists():
@@ -306,24 +215,14 @@ class InformationView(BaseView, Gtk.Bin):
         else:
             self.__artist_artwork.set_from_surface(surface)
 
-    def __on_get_bio(self, content):
+    def __on_artist_info_changed(self, information_store, artist):
         """
-            Set bio content or get a new one if None
-            @param content as bytes
+            Update information
+            @param information_store as InformationStore
+            @param artist as str
         """
-        if content is not None:
-            # Allows view to be shown without lag
-            GLib.idle_add(self.__bio_label.set_markup,
-                          GLib.markup_escape_text(content.decode("utf-8")))
-        elif not App().settings.get_value("network-access"):
-            if self.__minimal:
-                self.__stack.set_visible_child_name("data")
-                self.__artist_label.set_text(
-                    _("No information for %s") % self.__artist_name)
-                self.__artist_label.show()
-            else:
-                self.__scrolled.hide()
-        else:
-            self.__bio_label.set_text(_("Loading information"))
-            App().task_helper.run(self.__get_bio_content,
-                                  callback=(self.__set_bio_content,))
+        if artist == self.__artist_name:
+            App().task_helper.run(self.__information_store.get_information,
+                                  self.__artist_name,
+                                  callback=(self.__set_information_content,
+                                            False))

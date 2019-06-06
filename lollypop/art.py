@@ -15,13 +15,13 @@ from lollypop.art_album import AlbumArt
 from lollypop.art_artist import ArtistArt
 from lollypop.art_radio import RadioArt
 from lollypop.logger import Logger
-from lollypop.downloader import Downloader
+from lollypop.downloader_art import ArtDownloader
 from lollypop.utils import create_dir
 
 from shutil import rmtree
 
 
-class Art(BaseArt, AlbumArt, ArtistArt, RadioArt, Downloader):
+class Art(BaseArt, AlbumArt, ArtistArt, RadioArt, ArtDownloader):
     """
         Global artwork manager
     """
@@ -34,7 +34,7 @@ class Art(BaseArt, AlbumArt, ArtistArt, RadioArt, Downloader):
         AlbumArt.__init__(self)
         ArtistArt.__init__(self)
         RadioArt.__init__(self)
-        Downloader.__init__(self)
+        ArtDownloader.__init__(self)
         create_dir(self._CACHE_PATH)
         create_dir(self._STORE_PATH)
         create_dir(self._WEB_PATH)

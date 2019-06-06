@@ -153,7 +153,7 @@ class ApplicationActions:
         """
         if self.__user_scan:
             if App().settings.get_value("artist-artwork"):
-                App().art.cache_artists_info()
+                App().art.cache_artists_artwork()
         self.__user_scan = False
 
     def __on_about_activate_response(self, dialog, response_id):

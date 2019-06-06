@@ -113,7 +113,7 @@ class AppearanceSettingsWidget(Gtk.Bin):
                     break
             App().window.container.reload_view()
         if state:
-            App().art.cache_artists_info()
+            App().art.cache_artists_artwork()
 
     def _on_combo_order_by_changed(self, widget):
         """

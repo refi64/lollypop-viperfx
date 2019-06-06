@@ -36,72 +36,21 @@
             <property name="can_focus">False</property>
             <property name="valign">start</property>
             <child>
-              <object class="GtkStack" id="stack">
+              <object class="GtkEventBox" id="eventbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="transition_type">crossfade</property>
+                <signal name="realize" handler="_on_label_realize" swapped="no"/>
                 <child>
-                  <object class="GtkEventBox" id="eventbox">
+                  <object class="GtkLabel" id="bio_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <signal name="realize" handler="_on_label_realize" swapped="no"/>
-                    <child>
-                      <object class="GtkLabel" id="bio_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="wrap">True</property>
-                        <property name="width_chars">30</property>
-                        <property name="max_width_chars">30</property>
-                        <style>
-                          <class name="padding"/>
-                        </style>
-                      </object>
-                    </child>
+                    <property name="wrap">True</property>
+                    <property name="width_chars">30</property>
+                    <property name="max_width_chars">30</property>
+                    <style>
+                      <class name="padding"/>
+                    </style>
                   </object>
-                  <packing>
-                    <property name="name">bio</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkGrid" id="background_data">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="margin_top">20</property>
-                    <property name="hexpand">True</property>
-                    <property name="column_spacing">10</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">Turn on background data</property>
-                        <property name="wrap">True</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSwitch" id="switch_network_access">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Turn on background data</property>
-                        <property name="halign">start</property>
-                        <property name="valign">center</property>
-                        <signal name="state-set" handler="_on_enable_network_access_state_set" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="name">data</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </object>
             </child>
