@@ -210,11 +210,12 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                         ArtBehaviour.CROP_SQUARE |
                                         ArtBehaviour.CACHE,
                                         self.__on_artist_artwork)
+            height = self._banner.default_height
         else:
             self._title_label.set_margin_start(MARGIN)
             height = self._banner.default_height // 3
-            self._banner.set_height(height)
-            self._scrolled.get_vscrollbar().set_margin_start(height)
+        self._banner.set_height(height)
+        self._scrolled.get_vscrollbar().set_margin_top(height)
 
     def __update_jump_button(self):
         """
