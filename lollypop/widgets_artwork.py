@@ -536,7 +536,6 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__timeout_id = None
         self.__cancellable.cancel()
         for child in self.__view.get_children():
-            image = child.get_child()
-            if image.get_name() == "web":
+            if child.get_name() == "web":
                 child.destroy()
         GLib.timeout_add(250, self.__search_for_artwork)
