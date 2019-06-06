@@ -151,11 +151,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             @param widget as Gtk.Widget
         """
         self.__on_album_changed(App().player)
-        if self.__show_artwork:
-            self._album_box.set_margin_top(self._banner.default_height + 15)
-        else:
-            self._album_box.set_margin_top(self._banner.default_height // 3 +
-                                           15)
         self.__art_signal_id = App().art.connect(
                                            "artist-artwork-changed",
                                            self.__on_artist_artwork_changed)
@@ -216,6 +211,11 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             height = self._banner.default_height // 3
         self._banner.set_height(height)
         self._scrolled.get_vscrollbar().set_margin_top(height)
+        if self.__show_artwork:
+            self._album_box.set_margin_top(self._banner.default_height + 15)
+        else:
+            self._album_box.set_margin_top(self._banner.default_height // 3 +
+                                           15)
 
     def __update_jump_button(self):
         """
