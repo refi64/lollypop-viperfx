@@ -106,7 +106,7 @@ class ArtSize:
     BANNER = 150
     BIG = 200
     MINIPLAYER = 300
-    FULLSCREEN = 500
+    FULLSCREEN = 400
     ARTIST = 800
     MONSTER = 900
     MAX = 4000

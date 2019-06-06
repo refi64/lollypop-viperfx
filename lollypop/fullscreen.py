@@ -65,12 +65,11 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         screen = Gdk.Screen.get_default()
         monitor = screen.get_monitor_at_window(App().main_window.get_window())
         geometry = screen.get_monitor_geometry(monitor)
-        # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
             self.__art_size = int(ArtSize.FULLSCREEN * geometry.height / 1080)
         else:
             self.__art_size = int(ArtSize.FULLSCREEN * geometry.width / 1920)
-        self.__font_size = int(14 * geometry.height / 1080)
+        self.__font_size = int(11 * geometry.height / 1080)
         widget = builder.get_object("widget")
         self.__overlay_grid = builder.get_object("overlay_grid")
         self._play_button = builder.get_object("play_btn")
