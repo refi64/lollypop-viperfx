@@ -224,7 +224,7 @@ class AlbumArt:
                             stream, None)
                         stream.close()
                 if pixbuf is None:
-                    self.cache_album_art(album.id)
+                    self.cache_album_artwork(album.id)
                     return None
                 pixbuf = self._load_behaviour(pixbuf, cache_path_jpg,
                                               width, height,

@@ -38,7 +38,40 @@ class ArtDownloader(Downloader):
         self.__in_albums_download = False
         self.__cache_artists_running = False
 
-    def cache_album_art(self, album_id):
+    def get_album_artworks_bytes(self, artist, album):
+        """
+            Get album artworks
+            @param artist as str
+            @param album as str
+            @return [bytes]
+        """
+        artworks = []
+        for (api, a_helper, helper, b_helper) in self._WEBSERVICES:
+            if helper is None:
+                continue
+            method = getattr(self, helper)
+            data = method(artist, album)
+            if data is not None:
+                artworks.append(data)
+        return artworks
+
+    def get_artist_artworks_bytes(self, artist):
+        """
+            Get artist artworks.
+            @param album as str
+            @return [bytes]
+        """
+        artworks = []
+        for (api, helper, a_helper, b_helper) in self._WEBSERVICES:
+            if helper is None:
+                continue
+            method = getattr(self, helper)
+            data = method(artist)
+            if data is not None:
+                artworks.append(data)
+        return artworks
+
+    def cache_album_artwork(self, album_id):
         """
             Download album artwork
             @param album_id as int
@@ -77,7 +110,7 @@ class ArtDownloader(Downloader):
         """
             Get artwork from Google search content
             @param content as bytes
-            @return [urls as string]
+            @return [urls as str]
         """
         if not get_network_available("GOOGLE"):
             return []
@@ -170,8 +203,8 @@ class ArtDownloader(Downloader):
     def _get_deezer_album_artwork(self, artist, album):
         """
             Get album artwork from deezer
-            @param artist as string
-            @param album as string
+            @param artist as str
+            @param album as str
             @return image as bytes
             @tread safe
         """
@@ -202,8 +235,8 @@ class ArtDownloader(Downloader):
     def _get_spotify_album_artwork(self, artist, album):
         """
             Get album artwork from spotify
-            @param artist as string
-            @param album as string
+            @param artist as str
+            @param album as str
             @return image as bytes
             @tread safe
         """
@@ -249,8 +282,8 @@ class ArtDownloader(Downloader):
     def _get_itunes_album_artwork(self, artist, album):
         """
             Get album artwork from itunes
-            @param artist as string
-            @param album as string
+            @param artist as str
+            @param album as str
             @return image as bytes
             @tread safe
         """
@@ -326,10 +359,16 @@ class ArtDownloader(Downloader):
             (status, data) = App().task_helper.load_uri_content_sync(uri, None)
             if status:
                 decode = json.loads(data.decode("utf-8"))
+                uri = None
                 for item in decode["artists"]:
-                    uri = item["strArtistThumb"]
-                    (status,
-                     image) = App().task_helper.load_uri_content_sync(uri,
+                    for key in ["strArtistFanart", "strArtistThumb"]:
+                        uri = item[key]
+                        if uri is not None:
+                            break
+                    if uri is not None:
+                        (status,
+                         image) = App().task_helper.load_uri_content_sync(
+                                                                      uri,
                                                                       None)
                     break
         except Exception as e:
@@ -340,8 +379,8 @@ class ArtDownloader(Downloader):
     def _get_lastfm_album_artwork(self, artist, album):
         """
             Get album artwork from lastfm
-            @param artist as string
-            @param album as string
+            @param artist as str
+            @param album as str
             @return data as bytes
             @tread safe
         """

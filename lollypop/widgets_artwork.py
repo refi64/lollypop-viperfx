@@ -119,7 +119,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             self.__artist = ""
         else:
             self.__artist = App().artists.get_name(artist_id)
-        self.__contents = {}
+        self.__bytes = {}
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtworkSearch.ui")
         builder.connect_signals(self)
@@ -296,13 +296,27 @@ class ArtworkSearchWidget(Gtk.Bin):
             search = self.__artist
         return search
 
+    def __search_from_downloader(self, search):
+        """
+            Load artwork from downloader
+        """
+        if self.__album is None:
+            App().task_helper.run(
+                App().art.get_artist_artworks_bytes,
+                self.__artist, callback=(self.__on_artwork,))
+        else:
+            App().task_helper.run(
+                App().art.get_album_artworks_bytes,
+                self.__artist,
+                self.__album.name, callback=(self.__on_artwork,))
+
     def __search_for_artwork(self):
         """
             Search artwork on the web
-            @param string as str
         """
         self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
+        self.__search_from_downloader(search)
         if get_network_available("GOOGLE"):
             self.__spinner.start()
             uri = App().art.get_google_search_uri(search)
@@ -358,36 +372,46 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param content as bytes
             @param callback as function
         """
-        try:
-            if loaded:
-                scale_factor = self.get_scale_factor()
-                bytes = GLib.Bytes(content)
-                stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-                if stream is not None:
-                    big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                        stream, ArtSize.BIG * scale_factor,
-                        ArtSize.BIG * scale_factor,
-                        True,
-                        None)
-                    stream.close()
-                image = Gtk.Image()
-                image.get_style_context().add_class("cover-frame")
-                image.set_property("halign", Gtk.Align.CENTER)
-                image.set_property("valign", Gtk.Align.CENTER)
+        if loaded:
+            image = self.__get_image(content)
+            if image is not None:
                 if not uri.startswith("file://"):
                     image.set_name("web")
-                self.__contents[image] = content
-                surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                       big,
-                                                       scale_factor,
-                                                       None)
-                image.set_from_surface(surface)
-                image.show()
                 self.__view.add(image)
-        except Exception as e:
-            Logger.error("ArtworkSearch::__add_pixbuf: %s" % e)
         if not self.__cancellable.is_cancelled():
             callback(*args)
+
+    def __get_image(self, bytes):
+        """
+            Get Gtk.Image for bytes
+            @return Gtk.Image
+        """
+        try:
+            scale_factor = self.get_scale_factor()
+            gbytes = GLib.Bytes(bytes)
+            stream = Gio.MemoryInputStream.new_from_bytes(gbytes)
+            if stream is not None:
+                big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                    stream, ArtSize.BIG * scale_factor,
+                    ArtSize.BIG * scale_factor,
+                    True,
+                    None)
+                stream.close()
+            image = Gtk.Image()
+            image.get_style_context().add_class("cover-frame")
+            image.set_property("halign", Gtk.Align.CENTER)
+            image.set_property("valign", Gtk.Align.CENTER)
+            self.__bytes[image] = bytes
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                   big,
+                                                   scale_factor,
+                                                   None)
+            image.set_from_surface(surface)
+            image.show()
+            return image
+        except Exception as e:
+            Logger.error("ArtworkSearch::__get_image: %s" % e)
+        return None
 
     def __close_popover(self):
         """
@@ -399,6 +423,17 @@ class ArtworkSearchWidget(Gtk.Bin):
                 widget.hide()
                 break
             widget = widget.get_parent()
+
+    def __on_artwork(self, artworks):
+        """
+            Add artwork to view
+            @param artworks as [bytes]
+        """
+        for bytes in artworks:
+            image = self.__get_image(bytes)
+            if image is not None:
+                image.set_name("web")
+                self.__view.insert(image, 1)
 
     def __on_unmap(self, widget):
         """
@@ -437,7 +472,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             Reset cache and use player object to announce cover change
         """
         try:
-            data = self.__contents[child.get_child()]
+            data = self.__bytes[child.get_child()]
             self.__close_popover()
             if self.__album is not None:
                 App().art.save_album_artwork(data, self.__album.id)
