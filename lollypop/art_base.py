@@ -121,6 +121,7 @@ class BaseArt(GObject.GObject):
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,
                                          GdkPixbuf.InterpType.HYPER)
+            pass
         else:
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,
@@ -141,27 +142,22 @@ class BaseArt(GObject.GObject):
         """
         width = pixbuf.get_width()
         height = pixbuf.get_height()
-        ratio_w = 1
-        ratio_h = 1
-        if wanted_width > width:
-            ratio_w = width / wanted_width
-        if wanted_height > height:
-            ratio_h = height / wanted_height
-        ratio = min(ratio_w, ratio_h)
-        if wanted_width > wanted_height:
-            sub_height = wanted_height * ratio
-            diff_height = (height - sub_height) / 2
-            return pixbuf.new_subpixbuf(0,
-                                        diff_height,
-                                        width,
-                                        sub_height)
-        else:
-            sub_width = wanted_width * ratio
-            diff_width = (width - sub_width) / 2
-            return pixbuf.new_subpixbuf(diff_width,
+        aspect = width / height
+        wanted_aspect = wanted_width / wanted_height
+        if aspect > wanted_aspect:
+            new_width = height * wanted_aspect
+            offset = (width - new_width)
+            return pixbuf.new_subpixbuf(offset / 2,
                                         0,
-                                        sub_width,
+                                        width - offset,
                                         height)
+        else:
+            new_height = width / wanted_aspect
+            offset = (height - new_height)
+            return pixbuf.new_subpixbuf(0,
+                                        offset / 2,
+                                        width,
+                                        height - offset)
 
     def _crop_pixbuf_square(self, pixbuf):
         """
@@ -175,14 +171,14 @@ class BaseArt(GObject.GObject):
             return pixbuf
         elif width > height:
             diff = (width - height)
-            return pixbuf.new_subpixbuf(diff // 2,
+            return pixbuf.new_subpixbuf(diff / 2,
                                         0,
                                         width - diff,
                                         height)
         else:
             diff = (height - width)
             return pixbuf.new_subpixbuf(0,
-                                        diff // 2,
+                                        diff / 2,
                                         width,
                                         height - diff)
 
