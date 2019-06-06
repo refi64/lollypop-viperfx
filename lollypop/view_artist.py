@@ -264,5 +264,6 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
                                               "avatar-default-symbolic",
                                               Gtk.IconSize.DIALOG)
         else:
+            self._artwork.get_style_context().remove_class("artwork-icon")
             self._artwork.set_from_surface(surface)
         self._artwork.show()

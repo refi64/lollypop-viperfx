@@ -189,8 +189,6 @@ class Application(Gtk.Application):
         self.task_helper = TaskHelper()
         self.art_helper = ArtHelper()
         self.spotify = SpotifyHelper()
-        if self.settings.get_value("artist-artwork"):
-            GLib.timeout_add(5000, self.art.cache_artists_info)
         if not self.settings.get_value("disable-mpris"):
             from lollypop.mpris import MPRIS
             MPRIS(self)

@@ -84,7 +84,8 @@ NetworkAccessACL = {
     "ITUNES": 1 << 10,
     "DEEZER": 1 << 11,
     "WIKIA": 1 << 12,
-    "GENIUS": 1 << 13
+    "GENIUS": 1 << 13,
+    "AUDIODB": 1 << 14
 }
 
 
@@ -208,7 +209,7 @@ UTF_8_ENCODING = b"\x03"
 
 SPOTIFY_CLIENT_ID = "0b144843878a46b2b12e0958c342c3ac"
 SPOTIFY_SECRET = "265ab8e057684f1b9e69e0c58f4881c1"
-
+AUDIODB_CLIENT_ID = "195003"
 
 STATIC_ALBUM_NAME = {
     Type.POPULARS: "Popular albums",

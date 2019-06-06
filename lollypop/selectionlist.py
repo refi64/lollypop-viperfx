@@ -179,6 +179,7 @@ class SelectionListRow(Gtk.ListBoxRow):
                                               "avatar-default-symbolic",
                                               Gtk.IconSize.DND)
         else:
+            self.__artwork.get_style_context().remove_class("artwork-icon")
             self.__artwork.set_from_surface(surface)
         self.emit("populated")
 

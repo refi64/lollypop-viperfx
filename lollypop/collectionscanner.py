@@ -330,8 +330,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         self.emit("scan-finished", modifications)
         # Update max count value
         App().albums.update_max_count()
-        if App().settings.get_value("artist-artwork"):
-            App().art.cache_artists_info()
 
     def __add_monitor(self, dirs):
         """

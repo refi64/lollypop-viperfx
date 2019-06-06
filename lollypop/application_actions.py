@@ -24,6 +24,7 @@ class ApplicationActions:
         """
             Init actions
         """
+        self.__user_scan = False
         settings_action = Gio.SimpleAction.new("settings",
                                                GLib.VariantType("i"))
         settings_action.connect("activate", self.__on_settings_activate)
@@ -80,6 +81,7 @@ class ApplicationActions:
         App().add_action(search_action)
         App().set_accels_for_action("app.search('')", ["<Control>f"])
 
+        App().scanner.connect("scan-finished", self.__on_scan_finished)
         self.__setup_global_shortcuts()
 
 #######################
@@ -140,7 +142,19 @@ class ApplicationActions:
             @param param as GLib.Variant
         """
         if App().window:
+            self.__user_scan = True
             App().scanner.update(ScanType.FULL)
+
+    def __on_scan_finished(self, scanner, modifications):
+        """
+            Run artwork update if needed
+            @param scanner as CollectionScanner
+            @param modifications as bool
+        """
+        if self.__user_scan:
+            if App().settings.get_value("artist-artwork"):
+                App().art.cache_artists_info()
+        self.__user_scan = False
 
     def __on_about_activate_response(self, dialog, response_id):
         """

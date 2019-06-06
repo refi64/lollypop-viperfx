@@ -16,7 +16,7 @@ import json
 from base64 import b64encode
 
 from lollypop.information_store import InformationStore
-from lollypop.define import App, GOOGLE_API_ID, Type
+from lollypop.define import App, GOOGLE_API_ID, Type, AUDIODB_CLIENT_ID
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 from lollypop.utils import get_network_available, noaccents
 from lollypop.logger import Logger
@@ -31,11 +31,13 @@ class Downloader:
     _WEBSERVICES = [
                    ("spotify", "_get_spotify_artist_artwork_uri",
                     "_get_spotify_album_artwork"),
+                   ("audiodb", "_get_audiodb_artist_artwork",
+                    "_get_audiodb_album_artwork"),
                    ("deezer", "_get_deezer_artist_artwork_uri",
                     "_get_deezer_album_artwork"),
                    ("itunes", None,
                     "_get_itunes_album_artwork"),
-                   ("lastfm", "_get_lastfm_artist_artwork_uri",
+                   ("lastfm", None,  # Doesn't work anymore
                     "_get_lastfm_album_artwork")]
 
     def __init__(self):
@@ -116,44 +118,58 @@ class Downloader:
         """
             Return lastfm artist information
             @param artist as str
-            @return uri as str
+            @return image as bytes
+            @tread safe
         """
+        image = None
         if get_network_available("LASTFM") and App().lastfm is not None:
-            return App().lastfm.get_artist_artwork_uri(artist)
-        else:
-            return None
+            uri = App().lastfm.get_artist_artwork_uri(artist)
+            if uri is not None:
+                (status,
+                 image) = App().task_helper.load_uri_content_sync(uri,
+                                                                  None)
+        return image
 
     def _get_deezer_artist_artwork_uri(self, artist):
         """
             Return deezer artist information
             @param artist as str
-            @return uri as str/None
+            @return image as bytes
+            @tread safe
         """
         if not get_network_available("DEEZER"):
             return None
         try:
+            image = None
             artist_formated = GLib.uri_escape_string(
                 artist, None, True).replace(" ", "+")
             uri = "https://api.deezer.com/search/artist/?" +\
                   "q=%s&output=json&index=0&limit=1&" % artist_formated
             (status, data) = App().task_helper.load_uri_content_sync(uri, None)
             if status:
+                uri = None
                 decode = json.loads(data.decode("utf-8"))
-                return decode["data"][0]["picture_xl"]
+                uri = decode["data"][0]["picture_xl"]
+                if uri is not None:
+                    (status,
+                     image) = App().task_helper.load_uri_content_sync(uri,
+                                                                      None)
         except Exception as e:
             Logger.debug("Downloader::_get_deezer_artist_artwork(): %s [%s]" %
                          (e, artist))
-        return None
+        return image
 
     def _get_spotify_artist_artwork_uri(self, artist):
         """
             Return spotify artist information
             @param artist as str
-            @return uri as str/None
+            @return image as bytes
+            @tread safe
         """
         if not get_network_available("SPOTIFY"):
             return None
         try:
+            image = None
             artist_formated = GLib.uri_escape_string(
                 artist, None, True).replace(" ", "+")
             uri = "https://api.spotify.com/v1/search?q=%s" % artist_formated +\
@@ -163,15 +179,21 @@ class Downloader:
             helper.add_header("Authorization", token)
             (status, data) = helper.load_uri_content_sync(uri, None)
             if status:
+                uri = None
                 decode = json.loads(data.decode("utf-8"))
                 for item in decode["artists"]["items"]:
                     if noaccents(item["name"].lower()) ==\
                             noaccents(artist.lower()):
-                        return item["images"][0]["url"]
+                        uri = item["images"][0]["url"]
+                        break
+                if uri is not None:
+                    (status,
+                     image) = App().task_helper.load_uri_content_sync(uri,
+                                                                      None)
         except Exception as e:
             Logger.debug("Downloader::_get_spotify_artist_artwork(): %s [%s]" %
                          (e, artist))
-        return None
+        return image
 
     def _get_deezer_album_artwork(self, artist, album):
         """
@@ -286,6 +308,64 @@ class Downloader:
                          (e, artist, album))
         return image
 
+    def _get_audiodb_album_artwork(self, artist, album):
+        """
+            Get album artwork from audiodb
+            @param artist as str
+            @param album as str
+            @return image as bytes
+        """
+        if not get_network_available("AUDIODB"):
+            return None
+        image = None
+        try:
+            album = GLib.uri_escape_string(album, None, True)
+            artist = GLib.uri_escape_string(artist, None, True)
+            uri = "https://theaudiodb.com/api/v1/json/"
+            uri += "%s/searchalbum.php?s=%s&a=%s" % (AUDIODB_CLIENT_ID,
+                                                     artist,
+                                                     album)
+            (status, data) = App().task_helper.load_uri_content_sync(uri, None)
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["album"]:
+                    uri = item["strAlbumThumb"]
+                    (status,
+                     image) = App().task_helper.load_uri_content_sync(uri,
+                                                                      None)
+                    break
+        except Exception as e:
+            Logger.error("Downloader::_get_audiodb_album_artwork: %s [%s/%s]" %
+                         (e, artist, album))
+        return image
+
+    def _get_audiodb_artist_artwork(self, artist):
+        """
+            Get artist artwork from audiodb
+            @param artist as str
+            @return image as bytes
+        """
+        if not get_network_available("AUDIODB"):
+            return None
+        image = None
+        try:
+            artist = GLib.uri_escape_string(artist, None, True)
+            uri = "https://theaudiodb.com/api/v1/json/"
+            uri += "%s/search.php?s=%s" % (AUDIODB_CLIENT_ID, artist)
+            (status, data) = App().task_helper.load_uri_content_sync(uri, None)
+            if status:
+                decode = json.loads(data.decode("utf-8"))
+                for item in decode["artists"]:
+                    uri = item["strArtistThumb"]
+                    (status,
+                     image) = App().task_helper.load_uri_content_sync(uri,
+                                                                      None)
+                    break
+        except Exception as e:
+            Logger.error("Downloader::_get_audiodb_album_artwork: %s, %s" %
+                         (e, artist))
+        return image
+
     def _get_lastfm_album_artwork(self, artist, album):
         """
             Get album artwork from lastfm
@@ -353,18 +433,10 @@ class Downloader:
                     continue
                 try:
                     method = getattr(self, helper)
-                    uri = method(artist)
-                    if uri is not None:
-                        (status,
-                         data) = App().task_helper.load_uri_content_sync(uri,
-                                                                         None)
-                        if status:
-                            App().art.add_artist_artwork(artist, data)
-                            artwork_set = True
-                            Logger.debug("""Downloader::
-                                         __cache_artists_info(): %s""" % uri)
-                        else:
-                            App().art.add_artist_artwork(artist, None)
+                    data = method(artist)
+                    if data is not None:
+                        App().art.add_artist_artwork(artist, data)
+                        artwork_set = True
                         break
                 except Exception as e:
                     Logger.error("Downloader::__cache_artists_info(): %s, %s" %
