@@ -24,6 +24,15 @@ from lollypop.adaptive import AdaptiveWindow
 from lollypop.logger import Logger
 
 
+class FSType:
+    SQUARE = 0
+    SQUARE_CROP = 1
+    SQUARE_BLUR = 2
+    ROUNDED = 3
+    ROUNDED_CROP = 4
+    ROUNDED_BLUR = 5
+
+
 class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                  PlaybackController, ProgressController):
     """
@@ -41,16 +50,8 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self.__allocation = Gdk.Rectangle()
         self.connect("motion-notify-event", self.__on_motion_notify_event)
         self.connect("leave-notify-event", self.__on_leave_notify_event)
-        rotate_album = App().settings.get_value("rotate-fullscreen-album")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
-        if rotate_album:
-            InformationController.__init__(self, False,
-                                           ArtBehaviour.ROUNDED |
-                                           ArtBehaviour.CROP_SQUARE)
-        else:
-            InformationController.__init__(self, False,
-                                           ArtBehaviour.CROP_SQUARE)
         self.set_application(app)
         self.__timeout_id = None
         self.__signal1_id = self.__signal2_id = None
@@ -87,10 +88,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             self.__overlay_grid.attach(close_btn, 2, 0, 1, 1)
             close_btn.set_property("halign", Gtk.Align.END)
         self._artwork = builder.get_object("cover")
-        if rotate_album:
-            self._artwork.get_style_context().add_class("image-rotate")
-        else:
-            self._artwork.get_style_context().add_class("cover-frame")
+        self.__setup_controller()
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._album_label = builder.get_object("album")
@@ -194,13 +192,6 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
         ProgressController.on_status_changed(self, player)
         PlaybackController.on_status_changed(self, player)
-        context = self._artwork.get_style_context()
-        if not App().settings.get_value("rotate-fullscreen-album"):
-            return
-        if player.is_playing:
-            context.add_class("image-rotate")
-        else:
-            context.remove_class("image-rotate")
 
     def on_current_changed(self, player):
         """
@@ -280,21 +271,15 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        rotate_album = not App().settings.get_value("rotate-fullscreen-album")
-        App().settings.set_value("rotate-fullscreen-album",
-                                 GLib.Variant("b", rotate_album))
-        context = self._artwork.get_style_context()
-        if rotate_album:
-            context.add_class("image-rotate")
-            context.remove_class("cover-frame")
-            InformationController.__init__(self, False,
-                                           ArtBehaviour.ROUNDED |
-                                           ArtBehaviour.CROP_SQUARE)
+        fs_type = App().settings.get_value("fullscreen-type").get_int32()
+        if fs_type < FSType.ROUNDED_BLUR:
+            fs_type += 1
         else:
-            context.remove_class("image-rotate")
-            context.add_class("cover-frame")
-            InformationController.__init__(self, False,
-                                           ArtBehaviour.CROP_SQUARE)
+            fs_type = 0
+        App().settings.set_value("fullscreen-type",
+                                 GLib.Variant("i", fs_type))
+        self.__setup_controller()
+        self.__update_background()
         InformationController.on_current_changed(self,
                                                  self.__art_size,
                                                  self.__font_size)
@@ -302,6 +287,24 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
 #######################
 # PRIVATE             #
 #######################
+    def __setup_controller(self):
+        """
+            Setup controller
+        """
+        fs_type = App().settings.get_value("fullscreen-type").get_int32()
+        context = self._artwork.get_style_context()
+        behaviour = ArtBehaviour.CROP_SQUARE
+        if fs_type in [FSType.ROUNDED,
+                       FSType.ROUNDED_CROP,
+                       FSType.ROUNDED_BLUR]:
+            context.add_class("image-rotate")
+            context.remove_class("cover-frame")
+            behaviour |= ArtBehaviour.ROUNDED
+        else:
+            context.remove_class("image-rotate")
+            context.add_class("cover-frame")
+        InformationController.__init__(self, False, behaviour)
+
     def __update_background(self):
         """
             Update window background
@@ -309,22 +312,28 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         allocation = self.get_allocation()
         if allocation.width <= 1 or allocation.height <= 1:
             return
-        behaviour = ArtBehaviour.BLUR_HARD | ArtBehaviour.CROP
-        settings = Gtk.Settings.get_default()
-        if settings.get_property("gtk-application-prefer-dark-theme"):
-            behaviour |= ArtBehaviour.DARKER
+        fs_type = App().settings.get_value("fullscreen-type").get_int32()
+        if fs_type in [FSType.SQUARE, FSType.ROUNDED]:
+            self.__background_artwork.set_from_surface(None)
         else:
-            behaviour |= ArtBehaviour.LIGHTER
-        if App().settings.get_value("artist-artwork"):
-            App().art_helper.set_artist_artwork(
+            behaviour = ArtBehaviour.CROP
+            if fs_type in [FSType.ROUNDED_BLUR, FSType.SQUARE_BLUR]:
+                behaviour |= ArtBehaviour.BLUR_HARD
+            settings = Gtk.Settings.get_default()
+            if settings.get_property("gtk-application-prefer-dark-theme"):
+                behaviour |= ArtBehaviour.DARKER
+            else:
+                behaviour |= ArtBehaviour.LIGHTER
+            if App().settings.get_value("artist-artwork"):
+                App().art_helper.set_artist_artwork(
                                         App().player.current_track.artists[0],
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
                                         behaviour,
                                         self.__on_artwork,)
-        else:
-            App().art_helper.set_album_artwork(
+            else:
+                App().art_helper.set_album_artwork(
                                         App().player.current_track.album,
                                         allocation.width,
                                         allocation.height,

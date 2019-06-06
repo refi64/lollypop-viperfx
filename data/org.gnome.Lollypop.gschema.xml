@@ -232,9 +232,9 @@
             <default>false</default>
             <summary>Disable notifications upon change of song</summary>
         </key>
-        <key type="b" name="rotate-fullscreen-album">
-            <default>true</default>
-            <summary>Fullscreen album rotates</summary>
+        <key type="i" name="fullscreen-type">
+            <default>0</default>
+            <summary>INTERNAL</summary>
         </key>
         <key type="b" name="show-tag-tracknumber">
             <default>false</default>
