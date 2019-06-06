@@ -372,7 +372,7 @@ class ArtDownloader(Downloader):
                                                                       None)
                     break
         except Exception as e:
-            Logger.error("ArtDownloader::_get_audiodb_album_artwork: %s"
+            Logger.error("ArtDownloader::_get_audiodb_artist_artwork: %s"
                          % e)
         return image
 
