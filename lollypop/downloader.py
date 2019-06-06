@@ -114,22 +114,6 @@ class Downloader:
 #######################
 # PROTECTED           #
 #######################
-    def _get_lastfm_artist_artwork_uri(self, artist):
-        """
-            Return lastfm artist information
-            @param artist as str
-            @return image as bytes
-            @tread safe
-        """
-        image = None
-        if get_network_available("LASTFM") and App().lastfm is not None:
-            uri = App().lastfm.get_artist_artwork_uri(artist)
-            if uri is not None:
-                (status,
-                 image) = App().task_helper.load_uri_content_sync(uri,
-                                                                  None)
-        return image
-
     def _get_deezer_artist_artwork_uri(self, artist):
         """
             Return deezer artist information
