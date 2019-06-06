@@ -115,9 +115,9 @@ class ArtistArt:
             if not behaviour & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 if optimized_blur:
-                    pixbuf = self._load_behaviour(pixbuf, None,
-                                                  width, height,
-                                                  scale_factor, behaviour)
+                    pixbuf = self.load_behaviour(pixbuf, None,
+                                                 width, height,
+                                                 scale_factor, behaviour)
                 return pixbuf
             else:
                 (exists, path) = self.artist_artwork_exists(artist)
@@ -128,9 +128,9 @@ class ArtistArt:
                         pass  # Empty file
                 if pixbuf is None:
                     return None
-                pixbuf = self._load_behaviour(pixbuf, cache_path_jpg,
-                                              width, height,
-                                              scale_factor, behaviour)
+                pixbuf = self.load_behaviour(pixbuf, cache_path_jpg,
+                                             width, height,
+                                             scale_factor, behaviour)
             return pixbuf
         except Exception as e:
             Logger.error("ArtistArt::get_artist_artwork(): %s" % e)

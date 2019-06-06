@@ -44,51 +44,8 @@ class BaseArt(GObject.GObject):
         self.__kid3_cli_search()
         self.__tag_editor_search()
 
-    def update_art_size(self):
-        """
-            Update value with some check
-        """
-        value = App().settings.get_value("cover-size").get_int32()
-        # Check value as user can enter bad value via dconf
-        if value < ArtSize.SMALL or value > ArtSize.MAX:
-            value = 200
-        ArtSize.BIG = value
-        ArtSize.BANNER = ArtSize.BIG * 150 / 200
-        ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
-
-    def clean_store(self, filename):
-        """
-            @param filename as str
-        """
-        try:
-            filepath = self._STORE_PATH + "/" + filename + ".jpg"
-            f = Gio.File.new_for_path(filepath)
-            if f.query_exists():
-                f.delete()
-        except Exception as e:
-            Logger.error("Art::clean_store(): %s" % e)
-
-    @property
-    def kid3_available(self):
-        """
-            True if kid3 is available
-            @return bool
-        """
-        return self.__kid3_available
-
-    @property
-    def tag_editor(self):
-        """
-            Get tag editor
-            @return bool
-        """
-        return self.__tag_editor
-
-#######################
-# PROTECTED           #
-#######################
-    def _load_behaviour(self, pixbuf, cache_path_jpg, width, height,
-                        scale_factor, behaviour):
+    def load_behaviour(self, pixbuf, cache_path_jpg, width, height,
+                       scale_factor, behaviour):
         """
             Load behaviour on pixbuf
             @param cache_path_jpg as pixbuf cache path
@@ -132,6 +89,49 @@ class BaseArt(GObject.GObject):
                              "cover-quality").get_int32())])
         return pixbuf
 
+    def update_art_size(self):
+        """
+            Update value with some check
+        """
+        value = App().settings.get_value("cover-size").get_int32()
+        # Check value as user can enter bad value via dconf
+        if value < ArtSize.SMALL or value > ArtSize.MAX:
+            value = 200
+        ArtSize.BIG = value
+        ArtSize.BANNER = ArtSize.BIG * 150 / 200
+        ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
+
+    def clean_store(self, filename):
+        """
+            @param filename as str
+        """
+        try:
+            filepath = self._STORE_PATH + "/" + filename + ".jpg"
+            f = Gio.File.new_for_path(filepath)
+            if f.query_exists():
+                f.delete()
+        except Exception as e:
+            Logger.error("Art::clean_store(): %s" % e)
+
+    @property
+    def kid3_available(self):
+        """
+            True if kid3 is available
+            @return bool
+        """
+        return self.__kid3_available
+
+    @property
+    def tag_editor(self):
+        """
+            Get tag editor
+            @return bool
+        """
+        return self.__tag_editor
+
+#######################
+# PROTECTED           #
+#######################
     def _crop_pixbuf(self, pixbuf, wanted_width, wanted_height):
         """
             Crop pixbuf

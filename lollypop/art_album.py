@@ -180,9 +180,9 @@ class AlbumArt:
             if not behaviour & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 if optimized_blur:
-                    pixbuf = self._load_behaviour(pixbuf, None,
-                                                  width, height,
-                                                  scale_factor, behaviour)
+                    pixbuf = self.load_behaviour(pixbuf, None,
+                                                 width, height,
+                                                 scale_factor, behaviour)
                 return pixbuf
             else:
                 # Use favorite folder artwork
@@ -226,9 +226,9 @@ class AlbumArt:
                 if pixbuf is None:
                     self.cache_album_artwork(album.id)
                     return None
-                pixbuf = self._load_behaviour(pixbuf, cache_path_jpg,
-                                              width, height,
-                                              scale_factor, behaviour)
+                pixbuf = self.load_behaviour(pixbuf, cache_path_jpg,
+                                             width, height,
+                                             scale_factor, behaviour)
                 return pixbuf
         except Exception as e:
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)

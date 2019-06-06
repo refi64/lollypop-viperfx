@@ -26,7 +26,7 @@ except Exception as e:
     WEBKIT2 = False
     Logger.warning(e)
 
-from lollypop.define import App, ArtSize, Type, NetworkAccessACL
+from lollypop.define import App, ArtSize, Type, NetworkAccessACL, ArtBehaviour
 from lollypop.utils import get_network_available
 from lollypop.helper_task import TaskHelper
 
@@ -106,10 +106,18 @@ class ArtworkSearchChild(Gtk.FlowBoxChild):
         self.__bytes = None
         self.__image = Gtk.Image()
         self.__image.show()
-        self.get_style_context().add_class("cover-frame")
+        self.__label = Gtk.Label()
+        self.__label.show()
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
+        grid.show()
+        grid.add(self.__image)
+        grid.add(self.__label)
+        grid.set_row_spacing(5)
+        self.__image.get_style_context().add_class("cover-frame")
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
-        self.add(self.__image)
+        self.add(grid)
 
     def populate(self, bytes):
         """
@@ -122,15 +130,19 @@ class ArtworkSearchChild(Gtk.FlowBoxChild):
             gbytes = GLib.Bytes(bytes)
             stream = Gio.MemoryInputStream.new_from_bytes(gbytes)
             if stream is not None:
-                big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                    stream, ArtSize.BIG * scale_factor,
-                    ArtSize.BIG * scale_factor,
-                    True,
-                    None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+                self.__label.set_text("%s x %s" % (pixbuf.get_width(),
+                                                   pixbuf.get_height()))
+                pixbuf = App().art.load_behaviour(pixbuf,
+                                                  None,
+                                                  ArtSize.BIG,
+                                                  ArtSize.BIG,
+                                                  scale_factor,
+                                                  ArtBehaviour.CROP)
                 stream.close()
             self.__bytes = bytes
             surface = Gdk.cairo_surface_create_from_pixbuf(
-                                                   big,
+                                                   pixbuf,
                                                    scale_factor,
                                                    None)
             self.__image.set_from_surface(surface)
