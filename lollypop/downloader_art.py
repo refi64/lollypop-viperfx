@@ -19,6 +19,7 @@ from lollypop.define import App, GOOGLE_API_ID, Type, AUDIODB_CLIENT_ID
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET
 from lollypop.utils import get_network_available, noaccents
 from lollypop.logger import Logger
+from lollypop.objects import Album
 from lollypop.downloader import Downloader
 from lollypop.helper_task import TaskHelper
 
@@ -478,7 +479,7 @@ class ArtDownloader(Downloader):
                     data = method(artist, album)
                     if data is not None:
                         self.__albums_history.append(album_id)
-                        App().art.save_album_artwork(data, album_id)
+                        App().art.save_album_artwork(data, Album(album_id))
                         break
         except Exception as e:
             Logger.error("ArtDownloader::__cache_albums_art: %s" % e)

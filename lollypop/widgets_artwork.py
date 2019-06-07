@@ -248,7 +248,11 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__view.add(image)
 
         # First load local files
-        if self.__album is not None:
+        if self.__album is None:
+            (exists, path) = App().art.artist_artwork_exists(self.__artist)
+            if exists:
+                self.__uris = [GLib.filename_to_uri(path)]
+        else:
             self.__uris = App().art.get_album_artworks(self.__album)
         self.__search_for_artwork()
 
@@ -290,7 +294,7 @@ class ArtworkSearchWidget(Gtk.Bin):
                 if not status:
                     raise
                 if self.__album is not None:
-                    App().art.save_album_artwork(data, self.__album.id)
+                    App().art.save_album_artwork(data, self.__album)
                 else:
                     App().art.uncache_artist_artwork(self.__artist)
                     App().art.add_artist_artwork(self.__artist, data)
@@ -308,6 +312,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__infobar.hide()
         if self.__album is not None:
             App().art.remove_album_artwork(self.__album)
+            App().art.save_album_artwork(None, self.__album)
             App().art.clean_album_cache(self.__album)
             App().art.emit("album-artwork-changed", self.__album.id)
         else:
@@ -529,19 +534,22 @@ class ArtworkSearchWidget(Gtk.Bin):
             Reset cache and use player object to announce cover change
         """
         try:
-            self.__close_popover()
-            if self.__album is not None:
-                App().art.save_album_artwork(child.bytes, self.__album.id)
+            if isinstance(child, ArtworkSearchChild):
+                self.__close_popover()
+                if self.__album is not None:
+                    App().art.save_album_artwork(child.bytes, self.__album)
+                else:
+                    App().art.uncache_artist_artwork(self.__artist)
+                    App().art.add_artist_artwork(self.__artist, child.bytes)
+                    App().art.emit("artist-artwork-changed", self.__artist)
+                self._streams = {}
             else:
-                App().art.uncache_artist_artwork(self.__artist)
-                App().art.add_artist_artwork(self.__artist, child.bytes)
-                App().art.emit("artist-artwork-changed", self.__artist)
-            self._streams = {}
-        except:
-            self.__infobar_label.set_text(_("Reset artwork?"))
-            self.__infobar.show()
-            # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
-            self.__infobar.queue_resize()
+                self.__infobar_label.set_text(_("Reset artwork?"))
+                self.__infobar.show()
+                # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+                self.__infobar.queue_resize()
+        except Exception as e:
+            Logger.error("ArtworkWidget::__on_activate(): %s", e)
 
     def __on_search_timeout(self, string):
         """

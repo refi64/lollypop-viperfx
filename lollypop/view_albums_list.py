@@ -346,7 +346,7 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, DNDRow):
         """
         try:
             if status:
-                App().art.save_album_artwork(data, self._album.id)
+                App().art.save_album_artwork(data, self._album)
                 self.set_artwork()
         except Exception as e:
             Logger.error("AlbumRow::__on_cover_uri_content(): %s", e)
