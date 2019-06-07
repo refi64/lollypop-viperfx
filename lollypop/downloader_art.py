@@ -302,7 +302,7 @@ class ArtDownloader(Downloader):
                     if noaccents(item["artistName"].lower()) ==\
                             noaccents(artist.lower()):
                         uri = item["artworkUrl60"].replace("60x60",
-                                                           "512x512")
+                                                           "1024x1024")
                         (status,
                          image) = App().task_helper.load_uri_content_sync(uri,
                                                                           None)

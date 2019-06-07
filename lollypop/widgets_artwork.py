@@ -488,7 +488,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             status = child.populate(bytes)
             if status:
                 child.set_name("web")
-                self.__view.append(child)
+                self.__view.add(child)
             else:
                 child.destroy()
 
