@@ -282,9 +282,9 @@ class AlbumBannerWidget(Gtk.Bin):
                             self.get_allocated_width() + 100,
                             self.get_allocated_height(),
                             self.__artwork.get_scale_factor(),
-                            self.__on_album_artwork,
                             ArtBehaviour.BLUR_HARD |
-                            ArtBehaviour.DARKER)
+                            ArtBehaviour.DARKER,
+                            self.__on_album_artwork)
 
     def __on_album_artwork(self, surface):
         """

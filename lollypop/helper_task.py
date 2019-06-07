@@ -136,7 +136,8 @@ class TaskHelper:
                 if callback is not None:
                     GLib.idle_add(callback, result, *callback_args)
         except Exception as e:
-            Logger.error("TaskHelper::__run(): %s" % e)
+            Logger.error("TaskHelper::__run(): %s: %s -> %s"
+                         % (e, command, kwd))
 
     def __on_read_bytes_async(self, stream, result, content,
                               cancellable, callback, uri, *args):
