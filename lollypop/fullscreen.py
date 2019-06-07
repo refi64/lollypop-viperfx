@@ -332,8 +332,12 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         else:
             behaviour |= ArtBehaviour.LIGHTER
         if App().settings.get_value("artist-artwork"):
+            if App().player.current_track.album.artists:
+                artist = App().player.current_track.album.artists[0]
+            else:
+                artist = App().player.current_track.artists[0]
             App().art_helper.set_artist_artwork(
-                                App().player.current_track.album.artists[0],
+                                artist,
                                 allocation.width,
                                 allocation.height,
                                 self.get_scale_factor(),
