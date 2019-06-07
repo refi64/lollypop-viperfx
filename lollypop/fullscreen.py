@@ -108,7 +108,6 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self.add_paned(self.__container.paned_two, self.__container.list_two)
         self.__container.show()
         self.__container.show_sidebar(True)
-        self.set_adaptive_stack(True)
         self.__sidebar = Gtk.Grid()
         self.__sidebar.set_size_request(400, -1)
         self.__sidebar.set_orientation(Gtk.Orientation.VERTICAL)
@@ -255,6 +254,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             button.get_image().set_from_icon_name("pan-start-symbolic",
                                                   Gtk.IconSize.BUTTON)
         else:
+            self.set_adaptive_stack(True)
             self.__revealer.set_reveal_child(True)
             button.get_image().set_from_icon_name("pan-end-symbolic",
                                                   Gtk.IconSize.BUTTON)
