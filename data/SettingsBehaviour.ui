@@ -491,7 +491,6 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">DuckDuckGo
@@ -576,7 +575,6 @@
                 <child>
                   <object class="GtkSwitch" id="DUCKDUCKGO">
                     <property name="name">DUCKDUCKGO</property>
-                    <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>

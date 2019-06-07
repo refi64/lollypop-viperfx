@@ -61,6 +61,7 @@ class ArtistArt:
             @param artist as str
             @param data as bytes
             @param is_web as bool
+            @thread safe
         """
         self.uncache_artist_artwork(artist)
         if is_web:
@@ -80,6 +81,7 @@ class ArtistArt:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
             stream.close()
             pixbuf.savev(filepath, "jpeg", ["quality"], ["100"])
+        GLib.idle_add(self.emit, "artist-artwork-changed", artist)
 
     def get_artist_artwork(self, artist, width, height, scale_factor,
                            behaviour=ArtBehaviour.CACHE):

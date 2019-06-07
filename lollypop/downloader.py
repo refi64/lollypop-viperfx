@@ -18,15 +18,17 @@ class Downloader:
 
     _WEBSERVICES = [
                    ("Spotify", "_get_spotify_artist_artwork_uri",
-                    "_get_spotify_album_artwork", None),
-                   ("AudioDB", "_get_audiodb_artist_artwork",
-                    "_get_audiodb_album_artwork", "_get_audiodb_artist_info"),
+                    "_get_spotify_album_artwork_uri", None),
+                   ("AudioDB", "_get_audiodb_artist_artwork_uri",
+                    "_get_audiodb_album_artwork_uri",
+                    "_get_audiodb_artist_info"),
                    ("Deezer", "_get_deezer_artist_artwork_uri",
-                    "_get_deezer_album_artwork", None),
+                    "_get_deezer_album_artwork_uri", None),
                    ("Itunes", None,
-                    "_get_itunes_album_artwork", None),
+                    "_get_itunes_album_artwork_uri", None),
                    ("Last.fm", None,  # Doesn't work anymore
-                    "_get_lastfm_album_artwork", "_get_lastfm_artist_info"),
+                    "_get_lastfm_album_artwork_uri",
+                    "_get_lastfm_artist_info"),
                    ("Wikipedia", None, None, None)]
 
     def __init__(self):

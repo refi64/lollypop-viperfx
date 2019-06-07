@@ -10,87 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject, Gdk, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
-from urllib.parse import urlparse
 from lollypop.widgets_utils import Popover
 
 from lollypop.logger import Logger
-try:
-    import gi
-    gi.require_version('WebKit2', '4.0')
-    from gi.repository import WebKit2
-    WEBKIT2 = True
-except Exception as e:
-    WEBKIT2 = False
-    Logger.warning(e)
 
-from lollypop.define import App, ArtSize, Type, NetworkAccessACL, ArtBehaviour
-from lollypop.utils import get_network_available
-from lollypop.helper_task import TaskHelper
-
-
-class ArtworkSearchWebView(Gtk.OffscreenWindow):
-    """
-        Search for image through Duckduckgo Image
-    """
-
-    __gsignals__ = {
-        "populated": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
-    }
-
-    def __init__(self):
-        """
-            Init webview
-        """
-        Gtk.OffscreenWindow.__init__(self)
-        self.__webview = WebKit2.WebView()
-        self.__webview.show()
-        self.add(self.__webview)
-        self.__webview.connect("load-changed", self.__on_load_changed)
-        self.__webview.connect("resource-load-started",
-                               self.__on_resource_load_started)
-        self.show()
-
-    def search(self, terms):
-        """
-            Search for terms
-            @param terms as str
-        """
-        uri = "https://duckduckgo.com/?q=%s&t=h_&iax=images&ia=images" %\
-            GLib.uri_escape_string(terms, None, True)
-        self.__webview.load_uri(uri)
-
-    def do_get_preferred_size(self):
-        requisition = Gtk.Requisiton()
-        requisition.width = 300
-        requisition.height = 300
-        Gtk.Bin.do_get_preferred_size(requisition, requisition)
-
-#######################
-# PRIVATE             #
-#######################
-    def __on_load_changed(self, webview, event):
-        """
-            Stop spinner
-            @param webview as WebView
-            @param event as WebKit2.LoadEvent
-        """
-        if event == WebKit2.LoadEvent.FINISHED:
-            self.emit("populated", None)
-
-    def __on_resource_load_started(self, webview, resource, request):
-        """
-            Find opened google image
-            @param webview as WebView
-            @param resource as WebKit2.WebResource
-            @param request as WebKit2.URIRequest
-        """
-        uri = resource.get_uri()
-        parsed = urlparse(uri)
-        if parsed.netloc == "proxy.duckduckgo.com":
-            self.emit("populated", uri)
+from lollypop.define import App, ArtSize, Type, ArtBehaviour
 
 
 class ArtworkSearchChild(Gtk.FlowBoxChild):
@@ -180,12 +107,13 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param album as Album/None
         """
         Gtk.Bin.__init__(self)
+        self.connect("map", self.__on_map)
         self.connect("unmap", self.__on_unmap)
         self.__timeout_id = None
-        self.__web_search = None
+        self.__uri_artwork_id = None
         self.__album = album
         self.__artist_id = artist_id
-        self.__uris = []
+        self.__loaders = 0
         self.__cancellable = Gio.Cancellable()
         is_compilation = album is not None and\
             album.artist_ids and\
@@ -231,30 +159,43 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
             Populate view
         """
-        self.__uris = []
-        image = Gtk.Image.new_from_icon_name("edit-clear-all-symbolic",
-                                             Gtk.IconSize.DIALOG)
-        image.set_property("valign", Gtk.Align.CENTER)
-        image.set_property("halign", Gtk.Align.CENTER)
-        context = image.get_style_context()
-        context.add_class("cover-frame")
-        padding = context.get_padding(Gtk.StateFlags.NORMAL)
-        border = context.get_border(Gtk.StateFlags.NORMAL)
-        image.set_size_request(ArtSize.BIG + padding.left +
-                               padding.right + border.left + border.right,
-                               ArtSize.BIG + padding.top +
-                               padding.bottom + border.top + border.bottom)
-        image.show()
-        self.__view.add(image)
+        try:
+            image = Gtk.Image.new_from_icon_name("edit-clear-all-symbolic",
+                                                 Gtk.IconSize.DIALOG)
+            image.set_property("valign", Gtk.Align.CENTER)
+            image.set_property("halign", Gtk.Align.CENTER)
+            context = image.get_style_context()
+            context.add_class("cover-frame")
+            padding = context.get_padding(Gtk.StateFlags.NORMAL)
+            border = context.get_border(Gtk.StateFlags.NORMAL)
+            image.set_size_request(ArtSize.BIG + padding.left +
+                                   padding.right + border.left + border.right,
+                                   ArtSize.BIG + padding.top +
+                                   padding.bottom + border.top + border.bottom)
+            image.show()
+            self.__view.add(image)
 
-        # First load local files
-        if self.__album is None:
-            (exists, path) = App().art.artist_artwork_exists(self.__artist)
-            if exists:
-                self.__uris = [GLib.filename_to_uri(path)]
-        else:
-            self.__uris = App().art.get_album_artworks(self.__album)
-        self.__search_for_artwork()
+            # First load local files
+            uris = []
+            if self.__album is None:
+                (exists, path) = App().art.artist_artwork_exists(self.__artist)
+                if exists:
+                    uris = [GLib.filename_to_uri(path)]
+            else:
+                uris = App().art.get_album_artworks(self.__album)
+            # Direct load, not using loopback because not many items
+            for uri in uris:
+                child = ArtworkSearchChild(_("Local"))
+                child.show()
+                f = Gio.File.new_for_uri(uri)
+                (status, content, tag) = f.load_contents()
+                if status:
+                    status = child.populate(content)
+                if status:
+                    self.__view.add(child)
+            self.__search_for_artwork()
+        except Exception as e:
+            Logger.error("ArtworkWidget::populate(): %s", e)
 
     def stop(self):
         """
@@ -379,15 +320,18 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
             Load artwork from downloader
         """
+        self.__loaders += 1
         if self.__album is None:
             App().task_helper.run(
-                App().art.get_artist_artworks_bytes,
-                self.__artist, callback=(self.__on_artwork,))
+                App().art.search_artist_artwork,
+                self.__artist,
+                self.__cancellable)
         else:
             App().task_helper.run(
-                App().art.get_album_artworks_bytes,
+                App().art.search_album_artworks,
                 self.__artist,
-                self.__album.name, callback=(self.__on_artwork,))
+                self.__album.name,
+                self.__cancellable)
 
     def __search_for_artwork(self):
         """
@@ -395,81 +339,26 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
         self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
+        self.__spinner.start()
         self.__search_from_downloader(search)
-        if get_network_available("GOOGLE"):
-            self.__spinner.start()
-            uri = App().art.get_google_search_uri(search)
-            helper = TaskHelper()
-            helper.load_uri_content(uri,
-                                    self.__cancellable,
-                                    self.__on_google_content_loaded)
-        elif get_network_available("DUCKDUCKGO") and WEBKIT2:
-            self.__spinner.start()
-            if self.__web_search is None:
-                self.__web_search = ArtworkSearchWebView()
-                self.__web_search.connect("populated",
-                                          self.__on_web_search_populated)
-            self.__web_search.search(search)
-        else:
-            self.__populate()
-            acl = App().settings.get_value("network-access-acl").get_int32()
-            if not acl & NetworkAccessACL["DUCKDUCKGO"] and\
-                    not acl & NetworkAccessACL["GOOGLE"]:
-                self.__label.set_text(
-                    _("DuckDuckGo and Google turned off in the settings"))
+        self.__loaders += 1
+        App().task_helper.run(App().art.search_artwork_from_google,
+                              search,
+                              self.__cancellable)
 
-    def __populate(self):
+    def __add_pixbuf(self, content, api):
         """
-            Add uris to view
-        """
-        if self.__cancellable.is_cancelled():
-            return
-        try:
-            helper = TaskHelper()
-            if self.__uris:
-                uri = self.__uris.pop(0)
-                if uri.startswith("file://"):
-                    f = Gio.File.new_for_uri(uri)
-                    (status, content, tag) = f.load_contents()
-                    self.__add_pixbuf(uri, status,
-                                      content, self.__populate)
-                else:
-                    helper.load_uri_content(uri,
-                                            self.__cancellable,
-                                            self.__add_pixbuf,
-                                            self.__populate)
-            else:
-                self.__spinner.stop()
-        except Exception as e:
-            Logger.error("ArtworkSearch::__populate(): %s" % e)
-
-    def __add_pixbuf(self, uri, loaded, content, callback, *args):
-        """
-            Add uri to the view and load callback
-            @param uri as str
-            @param loaded as bool
+            Add content to view
             @param content as bytes
-            @param callback as function
+            @param api as str
         """
-        if loaded:
-            local = uri.startswith("file://")
-            if local:
-                api = _("Local")
-            elif get_network_available("GOOGLE"):
-                api = "Google"
-            else:
-                api = "DuckDuckGo"
-            child = ArtworkSearchChild(api)
-            child.show()
-            status = child.populate(content)
-            if status:
-                if not local:
-                    child.set_name("web")
-                self.__view.add(child)
-            else:
-                child.destroy()
-        if not self.__cancellable.is_cancelled():
-            callback(*args)
+        child = ArtworkSearchChild(api)
+        child.show()
+        status = child.populate(content)
+        if status:
+            self.__view.add(child)
+        else:
+            child.destroy()
 
     def __close_popover(self):
         """
@@ -482,51 +371,52 @@ class ArtworkSearchWidget(Gtk.Bin):
                 break
             widget = widget.get_parent()
 
-    def __on_artwork(self, artworks):
-        """
-            Add artwork to view
-            @param artworks as [bytes]
-        """
-        for (api, bytes) in artworks:
-            child = ArtworkSearchChild(api)
-            child.show()
-            status = child.populate(bytes)
-            if status:
-                child.set_name("web")
-                self.__view.add(child)
-            else:
-                child.destroy()
-
-    def __on_unmap(self, widget):
+    def __on_map(self, widget):
         """
             Cancel loading
             @param widget as Gtk.Widget
         """
-        if self.__web_search is not None:
-            self.__web_search.destroy()
+        self.__uri_artwork_id = App().art.connect(
+            "uri-artwork-found", self.__on_uri_artwork_found)
+
+    def __on_unmap(self, widget):
+        """
+            Cancel loading and disconnect signals
+            @param widget as Gtk.Widget
+        """
         self.__cancellable.cancel()
+        if self.__uri_artwork_id is not None:
+            App().art.disconnect(self.__uri_artwork_id)
+            self.__uri_artwork_id = None
 
-    def __on_web_search_populated(self, web_search, uri):
+    def __on_uri_artwork_found(self, art, uri, api):
         """
-            Load available uri
-            @param web_search as ArtworkSearchWebView
-            @param uri as str
+            Load content in view
+            @param art as Art
+            @param uri as str/None
+            @param api as str
         """
-        if uri is None:
-            self.__populate()
+        if uri is not None:
+            App().task_helper.load_uri_content(uri,
+                                               self.__cancellable,
+                                               self.__on_load_uri_content,
+                                               api)
         else:
-            self.__uris.append(uri)
+            self.__loaders -= 1
+            if self.__loaders == 0:
+                self.__spinner.stop()
 
-    def __on_google_content_loaded(self, uri, loaded, content):
+    def __on_load_uri_content(self, uri, loaded, content, api):
         """
-            Extract content
+            Add loaded pixbuf
             @param uri as str
             @param loaded as bool
             @param content as bytes
+            @param uris as [str]
+            @param api as str
         """
         if loaded:
-            self.__uris += App().art.get_google_artwork(content)
-        self.__populate()
+            self.__add_pixbuf(content, api)
 
     def __on_activate(self, flowbox, child):
         """
