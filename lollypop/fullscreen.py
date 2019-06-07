@@ -333,20 +333,20 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             behaviour |= ArtBehaviour.LIGHTER
         if App().settings.get_value("artist-artwork"):
             App().art_helper.set_artist_artwork(
-                                        App().player.current_track.artists[0],
-                                        allocation.width,
-                                        allocation.height,
-                                        self.get_scale_factor(),
-                                        behaviour,
-                                        self.__on_artwork)
+                                App().player.current_track.album.artists[0],
+                                allocation.width,
+                                allocation.height,
+                                self.get_scale_factor(),
+                                behaviour,
+                                self.__on_artwork)
         else:
             App().art_helper.set_album_artwork(
-                                        App().player.current_track.album,
-                                        allocation.width,
-                                        allocation.height,
-                                        self.get_scale_factor(),
-                                        behaviour,
-                                        self.__on_artwork)
+                                App().player.current_track.album,
+                                allocation.width,
+                                allocation.height,
+                                self.get_scale_factor(),
+                                behaviour,
+                                self.__on_artwork)
 
     def __update_datetime(self, show_seconds=False):
         """
