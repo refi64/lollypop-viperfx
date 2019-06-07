@@ -39,8 +39,6 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         AdaptiveWindow.__init__(self)
         self.set_title("Lollypop")
         self.__allocation = Gdk.Rectangle()
-        self.connect("motion-notify-event", self.__on_motion_notify_event)
-        self.connect("leave-notify-event", self.__on_leave_notify_event)
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
         self.set_application(app)
@@ -83,7 +81,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self._title_label = builder.get_object("title")
         self._artist_label = builder.get_object("artist")
         self._album_label = builder.get_object("album")
-        self.__revealer = builder.get_object("reveal")
+        self.__revealer = builder.get_object("revealer")
         self._datetime = builder.get_object("datetime")
         self._progress = builder.get_object("progress_scale")
         self._timelabel = builder.get_object("playback")
@@ -112,6 +110,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self.__container.show_sidebar(True)
         self.set_adaptive_stack(True)
         self.__sidebar = Gtk.Grid()
+        self.__sidebar.set_size_request(400, -1)
         self.__sidebar.set_orientation(Gtk.Orientation.VERTICAL)
         self.__sidebar.get_style_context().add_class("borders-left-top")
         self.__sidebar.show()
@@ -239,12 +238,26 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             InformationController._on_artwork(self, surface)
             self._artwork.set_size_request(-1, -1)
 
-    def _on_close_button_clicked(self, widget):
+    def _on_close_button_clicked(self, button):
         """
             Destroy self
-            @param widget as Gtk.Button
+            @param button as Gtk.Button
         """
         self.destroy()
+
+    def _on_reveal_button_clicked(self, button):
+        """
+            Reveal widget
+            @param button as Gtk.Button
+        """
+        if self.__revealer.get_reveal_child():
+            self.__revealer.set_reveal_child(False)
+            button.get_image().set_from_icon_name("pan-start-symbolic",
+                                                  Gtk.IconSize.BUTTON)
+        else:
+            self.__revealer.set_reveal_child(True)
+            button.get_image().set_from_icon_name("pan-end-symbolic",
+                                                  Gtk.IconSize.BUTTON)
 
     def _on_image_realize(self, eventbox):
         """
@@ -356,31 +369,6 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             @param surface as str
         """
         self.__background_artwork.set_from_surface(surface)
-
-    def __on_leave_notify_event(self, widget, event):
-        """
-            Hide tracks
-            @param widget as Gtk.Widget
-            @param event as Gdk.EventCrossing
-        """
-        allocation = widget.get_allocation()
-        if event.x <= 0 or\
-           event.x >= allocation.width or\
-           event.y <= 0 or\
-           event.y >= allocation.height:
-            self.__revealer.set_reveal_child(False)
-
-    def __on_motion_notify_event(self, widget, event):
-        """
-            Show/Hide track list if mouse on the right
-            @param widget as Gtk.Widget
-            @param event as Gdk.EventMotion
-        """
-        # No idea why grid receives event
-        if event.window == self.__overlay_grid.get_window():
-            reveal = event.x > widget.get_allocated_width() -\
-                self.__sidebar.get_allocated_width() - 100
-            self.__revealer.set_reveal_child(reveal)
 
     def __on_key_release_event(self, widget, event):
         """

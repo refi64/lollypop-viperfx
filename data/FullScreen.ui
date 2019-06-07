@@ -25,6 +25,11 @@
     <property name="can_focus">False</property>
     <property name="icon_name">media-skip-forward-symbolic</property>
   </object>
+  <object class="GtkImage" id="pan_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">pan-start-symbolic</property>
+  </object>
   <object class="GtkImage" id="pause_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -308,15 +313,39 @@
       </object>
     </child>
     <child type="overlay">
-      <object class="GtkRevealer" id="reveal">
-        <property name="width_request">350</property>
+      <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="margin_top">48</property>
-        <property name="transition_type">crossfade</property>
         <child>
-          <placeholder/>
+          <object class="GtkRevealer" id="revealer">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="transition_type">slide-left</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="valign">end</property>
+            <property name="image">pan_image</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_reveal_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
         </child>
       </object>
       <packing>
