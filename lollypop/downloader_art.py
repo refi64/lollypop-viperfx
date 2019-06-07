@@ -52,7 +52,7 @@ class ArtDownloader(Downloader):
             method = getattr(self, helper)
             data = method(artist, album)
             if data is not None:
-                artworks.append(data)
+                artworks.append((api, data))
         return artworks
 
     def get_artist_artworks_bytes(self, artist):
@@ -68,7 +68,7 @@ class ArtDownloader(Downloader):
             method = getattr(self, helper)
             data = method(artist)
             if data is not None:
-                artworks.append(data)
+                artworks.append((api, data))
         return artworks
 
     def cache_album_artwork(self, album_id):

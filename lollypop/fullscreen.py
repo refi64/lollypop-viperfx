@@ -376,7 +376,8 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             @param widget as Gtk.Widget
             @param event as Gdk.EventMotion
         """
-        if event.window == widget.get_window():
+        # No idea why grid receives event
+        if event.window == self.__overlay_grid.get_window():
             reveal = event.x > widget.get_allocated_width() -\
                 self.__sidebar.get_allocated_width() - 100
             self.__revealer.set_reveal_child(reveal)

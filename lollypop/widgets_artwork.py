@@ -98,12 +98,14 @@ class ArtworkSearchChild(Gtk.FlowBoxChild):
         Child for ArtworkSearch
     """
 
-    def __init__(self):
+    def __init__(self, api=None):
         """
             Init child
+            @param api as str
         """
         Gtk.FlowBoxChild.__init__(self)
         self.__bytes = None
+        self.__api = api
         self.__image = Gtk.Image()
         self.__image.show()
         self.__label = Gtk.Label()
@@ -131,8 +133,14 @@ class ArtworkSearchChild(Gtk.FlowBoxChild):
             stream = Gio.MemoryInputStream.new_from_bytes(gbytes)
             if stream is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
-                self.__label.set_text("%s x %s" % (pixbuf.get_width(),
-                                                   pixbuf.get_height()))
+                if self.__api is None:
+                    text = "%sx%s" % (pixbuf.get_width(),
+                                      pixbuf.get_height())
+                else:
+                    text = "%s: %sx%s" % (self.__api,
+                                          pixbuf.get_width(),
+                                          pixbuf.get_height())
+                self.__label.set_text(text)
                 pixbuf = App().art.load_behaviour(pixbuf,
                                                   None,
                                                   ArtSize.BIG,
@@ -439,11 +447,18 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param callback as function
         """
         if loaded:
-            child = ArtworkSearchChild()
+            local = uri.startswith("file://")
+            if local:
+                api = _("Local")
+            elif get_network_available("GOOGLE"):
+                api = "Google"
+            else:
+                api = "DuckDuckGo"
+            child = ArtworkSearchChild(api)
             child.show()
             status = child.populate(content)
             if status:
-                if not uri.startswith("file://"):
+                if not local:
                     child.set_name("web")
                 self.__view.add(child)
             else:
@@ -467,13 +482,13 @@ class ArtworkSearchWidget(Gtk.Bin):
             Add artwork to view
             @param artworks as [bytes]
         """
-        for bytes in artworks:
-            child = ArtworkSearchChild()
+        for (api, bytes) in artworks:
+            child = ArtworkSearchChild(api)
             child.show()
             status = child.populate(bytes)
             if status:
                 child.set_name("web")
-                self.__view.insert(child, 1)
+                self.__view.append(child)
             else:
                 child.destroy()
 
