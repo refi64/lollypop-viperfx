@@ -289,17 +289,6 @@ class ArtworkSearchWidget(Gtk.Bin):
         value = entry.get_text().strip()
         App().settings.set_value("cs-api-key", GLib.Variant("s", value))
 
-    def _on_back_button_clicked(self, button):
-        """
-            Show web view
-            @param button as Gtk.Button
-        """
-        if self.__stack.get_visible_child_name() == "web":
-            self.__stack.set_visible_child_name("main")
-        else:
-            self.__stack.set_visible_child_name("web")
-        self.__back_button.set_sensitive(False)
-
 #######################
 # PRIVATE             #
 #######################
@@ -360,6 +349,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         child.show()
         status = child.populate(content)
         if status:
+            child.set_name("web")
             self.__view.add(child)
         else:
             child.destroy()

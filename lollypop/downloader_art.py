@@ -493,11 +493,15 @@ class ArtDownloader(Downloader):
             @param content as bytes
         """
         try:
+            uris = []
             import re
             data = content.decode("utf-8")
             res = re.findall(r'.*oiu=([^&]*).*', data)
             for data in res:
                 uri = GLib.uri_unescape_string(data, "")
+                if uri in uris:
+                    continue
+                uris.append(uri)
                 self.emit("uri-artwork-found", uri, "Startpage")
         except Exception as e:
             self.emit("uri-artwork-found", None, "Startpage")
