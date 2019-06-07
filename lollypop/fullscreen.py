@@ -24,15 +24,6 @@ from lollypop.adaptive import AdaptiveWindow
 from lollypop.logger import Logger
 
 
-class FSType:
-    SQUARE = 0
-    SQUARE_CROP = 1
-    SQUARE_BLUR = 2
-    ROUNDED = 3
-    ROUNDED_CROP = 4
-    ROUNDED_BLUR = 5
-
-
 class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                  PlaybackController, ProgressController):
     """
@@ -272,10 +263,18 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             @param event as Gdk.Event
         """
         fs_type = App().settings.get_value("fullscreen-type").get_int32()
-        if fs_type < FSType.ROUNDED_BLUR:
-            fs_type += 1
+        if fs_type & ArtBehaviour.BLUR_HARD and\
+                fs_type & ArtBehaviour.ROUNDED:
+            fs_type = ArtBehaviour.NONE
+        elif fs_type & ArtBehaviour.NONE:
+            fs_type = ArtBehaviour.BLUR_HARD
+        elif fs_type & ArtBehaviour.BLUR_HARD:
+            fs_type |= ArtBehaviour.ROUNDED
+            fs_type &= ~ArtBehaviour.BLUR_HARD
+        elif fs_type & ArtBehaviour.ROUNDED:
+            fs_type |= ArtBehaviour.BLUR_HARD
         else:
-            fs_type = 0
+            fs_type = ArtBehaviour.NONE
         App().settings.set_value("fullscreen-type",
                                  GLib.Variant("i", fs_type))
         self.__setup_controller()
@@ -294,9 +293,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         fs_type = App().settings.get_value("fullscreen-type").get_int32()
         context = self._artwork.get_style_context()
         behaviour = ArtBehaviour.CROP_SQUARE
-        if fs_type in [FSType.ROUNDED,
-                       FSType.ROUNDED_CROP,
-                       FSType.ROUNDED_BLUR]:
+        if fs_type & ArtBehaviour.ROUNDED:
             context.add_class("image-rotate")
             context.remove_class("cover-frame")
             behaviour |= ArtBehaviour.ROUNDED
@@ -312,34 +309,31 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         allocation = self.get_allocation()
         if allocation.width <= 1 or allocation.height <= 1:
             return
-        fs_type = App().settings.get_value("fullscreen-type").get_int32()
-        if fs_type in [FSType.SQUARE, FSType.ROUNDED]:
-            self.__background_artwork.set_from_surface(None)
+        behaviour = App().settings.get_value("fullscreen-type").get_int32()
+        behaviour |= ArtBehaviour.CROP
+        # We don't want this for background, stored for album cover
+        behaviour &= ~ArtBehaviour.ROUNDED
+        settings = Gtk.Settings.get_default()
+        if settings.get_property("gtk-application-prefer-dark-theme"):
+            behaviour |= ArtBehaviour.DARKER
         else:
-            behaviour = ArtBehaviour.CROP
-            if fs_type in [FSType.ROUNDED_BLUR, FSType.SQUARE_BLUR]:
-                behaviour |= ArtBehaviour.BLUR_HARD
-            settings = Gtk.Settings.get_default()
-            if settings.get_property("gtk-application-prefer-dark-theme"):
-                behaviour |= ArtBehaviour.DARKER
-            else:
-                behaviour |= ArtBehaviour.LIGHTER
-            if App().settings.get_value("artist-artwork"):
-                App().art_helper.set_artist_artwork(
+            behaviour |= ArtBehaviour.LIGHTER
+        if App().settings.get_value("artist-artwork"):
+            App().art_helper.set_artist_artwork(
                                         App().player.current_track.artists[0],
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
                                         behaviour,
-                                        self.__on_artwork,)
-            else:
-                App().art_helper.set_album_artwork(
+                                        self.__on_artwork)
+        else:
+            App().art_helper.set_album_artwork(
                                         App().player.current_track.album,
                                         allocation.width,
                                         allocation.height,
                                         self.get_scale_factor(),
                                         behaviour,
-                                        self.__on_artwork,)
+                                        self.__on_artwork)
 
     def __update_datetime(self, show_seconds=False):
         """

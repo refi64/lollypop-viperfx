@@ -233,7 +233,7 @@
             <summary>Disable notifications upon change of song</summary>
         </key>
         <key type="i" name="fullscreen-type">
-            <default>0</default>
+            <default>1</default>
             <summary>INTERNAL</summary>
         </key>
         <key type="b" name="show-tag-tracknumber">
