@@ -77,7 +77,7 @@ NetworkAccessACL = {
     "SPOTIFY": 1 << 3,
     "YOUTUBE": 1 << 4,
     "GOOGLE": 1 << 5,
-    "DUCKDUCKGO": 1 << 6,
+    "STARTPAGE": 1 << 6,
     "WIKIPEDIA": 1 << 7,
     "TUNEIN": 1 << 8,
     "MUSICBRAINZ": 1 << 9,

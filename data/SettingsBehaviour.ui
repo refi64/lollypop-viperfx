@@ -491,10 +491,11 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
+                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">DuckDuckGo
-&lt;span size="x-small" alpha="70%"&gt;Artist biography, artwork search, …&lt;/span&gt;</property>
+                    <property name="label" translatable="yes">Startpage
+&lt;span size="x-small" alpha="70%"&gt;Artwork search&lt;/span&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                   <packing>
@@ -573,8 +574,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSwitch" id="DUCKDUCKGO">
-                    <property name="name">DUCKDUCKGO</property>
+                  <object class="GtkSwitch" id="STARTPAGE">
+                    <property name="name">STARTPAGE</property>
+                    <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>

@@ -113,6 +113,21 @@ class ArtDownloader(Downloader):
                                            cancellable,
                                            self.__on_load_google_content)
 
+    def search_artwork_from_startpage(self, search, cancellable):
+        """
+            Get google uri for search
+            @param search as str
+            @param cancellable as Gio.Cancellable
+        """
+        if not get_network_available("STARTPAGE"):
+            GLib.idle_add(self.emit, "uri-artwork-found", None, "Startpage")
+            return
+        uri = "https://www.startpage.com/do/search?cat=pics&query=%s" %\
+            GLib.uri_escape_string(search, "", False)
+        App().task_helper.load_uri_content(uri,
+                                           cancellable,
+                                           self.__on_load_startpage_content)
+
     def reset_history(self):
         """
             Reset download history
@@ -469,3 +484,22 @@ class ArtDownloader(Downloader):
             self.emit("uri-artwork-found", None, "Google")
             Logger.error("ArtDownloader::__on_load_google_content(): %s: %s"
                          % (e, content))
+
+    def __on_load_startpage_content(self, uri, loaded, content):
+        """
+            Extract uris from content
+            @param uri as str
+            @param loaded as bool
+            @param content as bytes
+        """
+        try:
+            import re
+            data = content.decode("utf-8")
+            res = re.findall(r'.*oiu=([^&]*).*', data)
+            for data in res:
+                uri = GLib.uri_unescape_string(data, "")
+                self.emit("uri-artwork-found", uri, "Startpage")
+        except Exception as e:
+            self.emit("uri-artwork-found", None, "Startpage")
+            Logger.error("ArtDownloader::__on_load_startpage_content(): %s"
+                         % e)

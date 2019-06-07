@@ -345,6 +345,10 @@ class ArtworkSearchWidget(Gtk.Bin):
         App().task_helper.run(App().art.search_artwork_from_google,
                               search,
                               self.__cancellable)
+        self.__loaders += 1
+        App().task_helper.run(App().art.search_artwork_from_startpage,
+                              search,
+                              self.__cancellable)
 
     def __add_pixbuf(self, content, api):
         """
