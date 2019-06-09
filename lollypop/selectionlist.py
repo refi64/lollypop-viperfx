@@ -456,7 +456,7 @@ class SelectionList(LazyLoadingView):
             @param sortname as str
             @return row as SelectionListRow
         """
-        if rowid > 0 and sortname and\
+        if rowid > 0 and sortname and name and\
                 self.__mask & SelectionListMask.ARTISTS:
             self.__fastscroll.add_char(sortname[0])
         row = SelectionListRow(rowid, name, sortname,
