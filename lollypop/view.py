@@ -337,7 +337,7 @@ class LazyLoadingView(View):
         if not widget.is_populated:
             widget.populate()
         else:
-            self.lazy_loading()
+            GLib.idle_add(self.lazy_loading)
 
 #######################
 # PRIVATE             #
