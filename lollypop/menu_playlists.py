@@ -92,8 +92,9 @@ class PlaylistsMenu(Gio.Menu):
                 tracks = [Track(self.__object.id)]
             App().playlists.add_tracks(playlist_id, tracks, True)
             if playlist_id in App().player.playlist_ids:
+                track_ids = App().playlists.get_track_ids(playlist_id)
                 App().player.update_playlist(
-                    App().playlists.get_track_ids(playlist_id))
+                    [Track(track_id) for track_id in track_ids])
         App().task_helper.run(add, playlist_id)
 
     def __remove_from_playlist(self, action, variant, playlist_id):
@@ -114,8 +115,9 @@ class PlaylistsMenu(Gio.Menu):
                 tracks = [Track(self.__object.id)]
             App().playlists.remove_tracks(playlist_id, tracks, True)
             if playlist_id in App().player.playlist_ids:
+                track_ids = App().playlists.get_track_ids(playlist_id)
                 App().player.update_playlist(
-                    App().playlists.get_track_ids(playlist_id))
+                    [Track(track_id) for track_id in track_ids])
         App().task_helper.run(remove, playlist_id)
 
     def __add_to_loved(self, action, variant):
