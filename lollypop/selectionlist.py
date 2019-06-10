@@ -203,6 +203,7 @@ class SelectionList(LazyLoadingView):
         self.__base_type = base_type
         self.__sort = False
         self.__mask = 0
+        self.__selected_ids = []
         self.__height = SelectionListRow.get_best_height(self)
         self.__listbox = Gtk.ListBox()
         self.__listbox.connect("row-selected", self.__on_row_selected)
@@ -316,6 +317,7 @@ class SelectionList(LazyLoadingView):
         """
         self.__listbox.unselect_all()
         if ids:
+            self.__selected_ids = ids
             first_row = None
             for row in self.__listbox.get_children():
                 if row.id in ids:
@@ -325,6 +327,8 @@ class SelectionList(LazyLoadingView):
             # Scroll to first item
             if first_row is not None:
                 GLib.idle_add(self.__scroll_to_row, first_row)
+        else:
+            self.__selected_ids = []
 
     def grab_focus(self):
         """
@@ -375,8 +379,10 @@ class SelectionList(LazyLoadingView):
             Select first available item
         """
         try:
+            self.__listbox.unselect_all()
             row = self.__listbox.get_children()[0]
             self.__listbox.select_row(row)
+            self.__selected_ids = [row.id]
         except Exception as e:
             Logger.warning("SelectionList::select_first(): %s", e)
 
@@ -417,7 +423,7 @@ class SelectionList(LazyLoadingView):
             Get selected ids
             @return array of ids as [int]
         """
-        return [row.id for row in self.__listbox.get_selected_rows()]
+        return self.__selected_ids
 
 #######################
 # PRIVATE             #
@@ -530,8 +536,10 @@ class SelectionList(LazyLoadingView):
                     not state & Gdk.ModifierType.SHIFT_MASK) or\
                     static_selected:
                 listbox.unselect_all()
+                self.__selected_ids = []
             row = listbox.get_row_at_y(event.y)
             if row is not None and not (row.id < 0 and self.selected_ids):
+                self.__selected_ids.append(row.id)
                 listbox.select_row(row)
         return True
 
@@ -576,5 +584,7 @@ class SelectionList(LazyLoadingView):
         """
             Emit selected item signal
         """
-        if row is not None:
+        if not self.__selected_ids:
+            self.__selected_ids.append(row.id)
+        if row is not None and row.id == self.__selected_ids[-1]:
             self.emit("item-selected")
