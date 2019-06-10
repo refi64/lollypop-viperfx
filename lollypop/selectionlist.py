@@ -525,15 +525,13 @@ class SelectionList(LazyLoadingView):
             popover.popup()
         elif event.button == 1:
             state = event.get_state()
-            if state & Gdk.ModifierType.CONTROL_MASK or\
-                    state & Gdk.ModifierType.SHIFT_MASK:
-                return False
-            else:
+            if not state & Gdk.ModifierType.CONTROL_MASK and\
+                    not state & Gdk.ModifierType.SHIFT_MASK:
                 listbox.unselect_all()
-                row = listbox.get_row_at_y(event.y)
-                if row is not None:
-                    row.activate()
-                return True
+            row = listbox.get_row_at_y(event.y)
+            if row is not None:
+                listbox.select_row(row)
+        return True
 
     def __on_artist_artwork_changed(self, art, artist):
         """
