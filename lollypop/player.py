@@ -560,15 +560,14 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             On stream start, set next and previous track
         """
-        if self._current_track.id is not None and self._current_track.id >= 0:
-            ShufflePlayer._on_stream_start(self, bus, message)
         if self.track_in_queue(self._current_track):
             self.remove_from_queue(self._current_track.id)
         else:
             self._current_playback_track = self._current_track
+        ShufflePlayer._on_stream_start(self, bus, message)
+        BinPlayer._on_stream_start(self, bus, message)
         self.set_prev()
         self.set_next()
-        BinPlayer._on_stream_start(self, bus, message)
 
 #######################
 # PRIVATE             #

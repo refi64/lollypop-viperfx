@@ -164,30 +164,34 @@ class ShufflePlayer(BasePlayer):
         """
             On stream start add to shuffle history
         """
+        if self._current_playback_track.id is None or\
+                self._current_playback_track.id < 0:
+            return
         # Add track to shuffle history if needed
         if self._shuffle == Shuffle.TRACKS or self.__is_party:
             if self.__history:
                 next = self.__history.next
                 prev = self.__history.prev
-                # Next track
+                # Remove next track
                 if next is not None and\
                         self._current_playback_track == next.value:
                     next = self.__history.next
                     next.set_prev(self.__history)
                     self.__history = next
-                # Previous track
+                # Remove previous track
                 elif prev is not None and\
                         self._current_playback_track == prev.value:
                     prev = self.__history.prev
                     prev.set_next(self.__history)
                     self.__history = prev
-                # New track
+                # Add a new track
                 elif self.__history.value != self._current_playback_track:
                     new_list = LinkedList(self._current_playback_track,
                                           None,
                                           self.__history)
                     self.__history = new_list
             else:
+                # Initial history
                 new_list = LinkedList(self._current_playback_track)
                 self.__history = new_list
             self.__add_to_shuffle_history(self._current_playback_track)
