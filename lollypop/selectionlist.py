@@ -525,11 +525,13 @@ class SelectionList(LazyLoadingView):
             popover.popup()
         elif event.button == 1:
             state = event.get_state()
-            if not state & Gdk.ModifierType.CONTROL_MASK and\
-                    not state & Gdk.ModifierType.SHIFT_MASK:
+            static_selected = self.selected_ids and self.selected_ids[0] < 0
+            if (not state & Gdk.ModifierType.CONTROL_MASK and
+                    not state & Gdk.ModifierType.SHIFT_MASK) or\
+                    static_selected:
                 listbox.unselect_all()
             row = listbox.get_row_at_y(event.y)
-            if row is not None:
+            if row is not None and not (row.id < 0 and self.selected_ids):
                 listbox.select_row(row)
         return True
 
