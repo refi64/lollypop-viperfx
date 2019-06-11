@@ -381,8 +381,8 @@ class SelectionList(LazyLoadingView):
         try:
             self.__listbox.unselect_all()
             row = self.__listbox.get_children()[0]
-            self.__listbox.select_row(row)
             self.__selected_ids = [row.id]
+            self.__listbox.select_row(row)
         except Exception as e:
             Logger.warning("SelectionList::select_first(): %s", e)
 
