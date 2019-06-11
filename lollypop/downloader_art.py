@@ -481,9 +481,9 @@ class ArtDownloader(Downloader):
             for item in decode["items"]:
                 self.emit("uri-artwork-found", item["link"], "Google")
         except Exception as e:
-            self.emit("uri-artwork-found", None, "Google")
             Logger.error("ArtDownloader::__on_load_google_content(): %s: %s"
                          % (e, content))
+        self.emit("uri-artwork-found", None, "Google")
 
     def __on_load_startpage_content(self, uri, loaded, content):
         """
@@ -504,6 +504,6 @@ class ArtDownloader(Downloader):
                 uris.append(uri)
                 self.emit("uri-artwork-found", uri, "Startpage")
         except Exception as e:
-            self.emit("uri-artwork-found", None, "Startpage")
             Logger.error("ArtDownloader::__on_load_startpage_content(): %s"
                          % e)
+        self.emit("uri-artwork-found", None, "Startpage")
