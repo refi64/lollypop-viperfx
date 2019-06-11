@@ -584,7 +584,7 @@ class SelectionList(LazyLoadingView):
         """
             Emit selected item signal
         """
-        if not self.__selected_ids:
-            self.__selected_ids.append(row.id)
-        if row is not None and row.id == self.__selected_ids[-1]:
+        if row is None or not self.__selected_ids:
+            return
+        if row.id == self.__selected_ids[-1]:
             self.emit("item-selected")
