@@ -113,8 +113,8 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__uri_artwork_id = None
         self.__album = album
         self.__artist_id = artist_id
-        self.__loaders = 0
         self.__uris = []
+        self.__count = 0
         self.__cancellable = Gio.Cancellable()
         is_compilation = album is not None and\
             album.artist_ids and\
@@ -310,7 +310,6 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
             Load artwork from downloader
         """
-        self.__loaders += 1
         if self.__album is None:
             App().task_helper.run(
                 App().art.search_artist_artwork,
@@ -328,15 +327,14 @@ class ArtworkSearchWidget(Gtk.Bin):
             Search artwork on the web
         """
         self.__uris = []
+        self.__count = 0
         self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
         self.__spinner.start()
         self.__search_from_downloader(search)
-        self.__loaders += 1
         App().task_helper.run(App().art.search_artwork_from_google,
                               search,
                               self.__cancellable)
-        self.__loaders += 1
         App().task_helper.run(App().art.search_artwork_from_startpage,
                               search,
                               self.__cancellable)
@@ -385,27 +383,24 @@ class ArtworkSearchWidget(Gtk.Bin):
             App().art.disconnect(self.__uri_artwork_id)
             self.__uri_artwork_id = None
 
-    def __on_uri_artwork_found(self, art, uri, api):
+    def __on_uri_artwork_found(self, art, uris):
         """
             Load content in view
             @param art as Art
-            @param uri as str/None
-            @param api as str
+            @param uris as (str, str)
         """
-        if uri is not None:
-            self.__uris.append((uri, api))
-        else:
-            self.__loaders -= 1
-            if self.__loaders == 0:
-                if self.__uris:
-                    (uri, api) = self.__uris.pop(0)
-                    App().task_helper.load_uri_content(
-                                                   uri,
-                                                   self.__cancellable,
-                                                   self.__on_load_uri_content,
-                                                   api)
+        if uris:
+            self.__count += len(uris)
+            (uri, api) = uris.pop(0)
+            App().task_helper.load_uri_content(uri,
+                                               self.__cancellable,
+                                               self.__on_load_uri_content,
+                                               api,
+                                               uris)
+        elif uris is not None and self.__count == 0:
+            self.__spinner.stop()
 
-    def __on_load_uri_content(self, uri, loaded, content, api):
+    def __on_load_uri_content(self, uri, loaded, content, api, uris):
         """
             Add loaded pixbuf
             @param uri as str
@@ -413,20 +408,22 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param content as bytes
             @param uris as [str]
             @param api as str
+            @param last as bool
         """
         try:
             if loaded:
                 self.__add_pixbuf(content, api)
-            if self.__uris:
-                (uri, api) = self.__uris.pop(0)
+            if uris:
+                (uri, api) = uris.pop(0)
                 App().task_helper.load_uri_content(uri,
                                                    self.__cancellable,
                                                    self.__on_load_uri_content,
-                                                   api)
-            else:
-                self.__spinner.stop()
+                                                   api,
+                                                   uris)
         except Exception as e:
             Logger.warning("ArtworkWidget::__on_load_uri_content(): %s", e)
+        self.__count -= 1
+        if self.__count == 0:
             self.__spinner.stop()
 
     def __on_activate(self, flowbox, child):

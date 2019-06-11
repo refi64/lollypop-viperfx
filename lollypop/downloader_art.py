@@ -47,14 +47,14 @@ class ArtDownloader(Downloader):
             @param cancellable as Gio.Cancellable
             @thread safe
         """
+        uris = []
         for (api, a_helper, helper, b_helper) in self._WEBSERVICES:
             if helper is None:
                 continue
             method = getattr(self, helper)
             uri = method(artist, album, cancellable)
-            if uri is not None:
-                GLib.idle_add(self.emit, "uri-artwork-found", uri, api)
-        GLib.idle_add(self.emit, "uri-artwork-found", None, "")
+            uris.append((uri, api))
+        GLib.idle_add(self.emit, "uri-artwork-found", uris)
 
     def search_artist_artwork(self, artist, cancellable):
         """
@@ -63,14 +63,14 @@ class ArtDownloader(Downloader):
             @param cancellable as Gio.Cancellable
             @thread safe
         """
+        uris = []
         for (api, helper, a_helper, b_helper) in self._WEBSERVICES:
             if helper is None:
                 continue
             method = getattr(self, helper)
             uri = method(artist, cancellable)
-            if uri is not None:
-                GLib.idle_add(self.emit, "uri-artwork-found", uri, api)
-        GLib.idle_add(self.emit, "uri-artwork-found", None, "")
+            uris.append((uri, api))
+        GLib.idle_add(self.emit, "uri-artwork-found", uris)
 
     def cache_album_artwork(self, album_id):
         """
@@ -100,7 +100,7 @@ class ArtDownloader(Downloader):
             @param cancellable as Gio.Cancellable
         """
         if not get_network_available("GOOGLE"):
-            GLib.idle_add(self.emit, "uri-artwork-found", None, "Google")
+            GLib.idle_add(self.emit, "uri-artwork-found", None)
             return
         key = App().settings.get_value("cs-api-key").get_string() or\
             App().settings.get_default_value("cs-api-key").get_string()
@@ -120,7 +120,7 @@ class ArtDownloader(Downloader):
             @param cancellable as Gio.Cancellable
         """
         if not get_network_available("STARTPAGE"):
-            GLib.idle_add(self.emit, "uri-artwork-found", None, "Startpage")
+            GLib.idle_add(self.emit, "uri-artwork-found", None)
             return
         uri = "https://www.startpage.com/do/search?cat=pics&query=%s" %\
             GLib.uri_escape_string(search, "", False)
@@ -478,16 +478,18 @@ class ArtDownloader(Downloader):
         """
         try:
             if not loaded:
-                self.emit("uri-artwork-found", None, "Google")
+                self.emit("uri-artwork-found", None)
                 return
             decode = json.loads(content.decode("utf-8"))
+            uris = []
             for item in decode["items"]:
                 if item["link"] is not None:
-                    self.emit("uri-artwork-found", item["link"], "Google")
+                    uris.append((item["link"], "Google"))
+            self.emit("uri-artwork-found", uris)
         except Exception as e:
+            self.emit("uri-artwork-found", None)
             Logger.error("ArtDownloader::__on_load_google_content(): %s: %s"
                          % (e, content))
-        self.emit("uri-artwork-found", None, "Google")
 
     def __on_load_startpage_content(self, uri, loaded, content):
         """
@@ -498,7 +500,7 @@ class ArtDownloader(Downloader):
         """
         try:
             if not loaded:
-                self.emit("uri-artwork-found", None, "Startpage")
+                self.emit("uri-artwork-found", None)
                 return
             uris = []
             import re
@@ -508,9 +510,9 @@ class ArtDownloader(Downloader):
                 uri = GLib.uri_unescape_string(data, "")
                 if uri in uris:
                     continue
-                uris.append(uri)
-                self.emit("uri-artwork-found", uri, "Startpage")
+                uris.append((uri, "Startpage"))
+            self.emit("uri-artwork-found", uris)
         except Exception as e:
+            self.emit("uri-artwork-found", None)
             Logger.error("ArtDownloader::__on_load_startpage_content(): %s"
                          % e)
-        self.emit("uri-artwork-found", None, "Startpage")

@@ -32,7 +32,8 @@ class BaseArt(GObject.GObject):
         "artist-artwork-changed": (GObject.SignalFlags.RUN_FIRST,
                                    None, (str,)),
         "radio-artwork-changed": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
-        "uri-artwork-found": (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
+        "uri-artwork-found": (GObject.SignalFlags.RUN_FIRST, None,
+                              (GObject.TYPE_PYOBJECT,)),
     }
 
     def __init__(self):
