@@ -184,7 +184,6 @@ popover.background separator {
 
 .lyrics {
     font-weight: bold;
-    background-color: alpha(@theme_bg_color, 0.90);
     min-width: 200px;
 }
 

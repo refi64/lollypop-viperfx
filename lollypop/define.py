@@ -46,13 +46,14 @@ class ArtBehaviour:
     ROUNDED = 1 << 1
     BLUR = 1 << 2
     BLUR_HARD = 1 << 3
-    FALLBACK = 1 << 4
-    DARKER = 1 << 5
-    LIGHTER = 1 << 6
-    CROP = 1 << 7
-    CROP_SQUARE = 1 << 8
-    CACHE = 1 << 9
-    NO_CACHE = 1 << 10
+    BLUR_MAX = 1 << 4
+    FALLBACK = 1 << 5
+    DARKER = 1 << 6
+    LIGHTER = 1 << 7
+    CROP = 1 << 8
+    CROP_SQUARE = 1 << 9
+    CACHE = 1 << 10
+    NO_CACHE = 1 << 11
 
 
 class ViewType:

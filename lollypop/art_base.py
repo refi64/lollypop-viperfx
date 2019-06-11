@@ -75,6 +75,11 @@ class BaseArt(GObject.GObject):
                                          height * scale_factor,
                                          GdkPixbuf.InterpType.NEAREST)
             pixbuf = self._get_blur(pixbuf, 50)
+        elif behaviour & ArtBehaviour.BLUR_MAX:
+            pixbuf = pixbuf.scale_simple(width * scale_factor,
+                                         height * scale_factor,
+                                         GdkPixbuf.InterpType.NEAREST)
+            pixbuf = self._get_blur(pixbuf, 100)
         elif behaviour & ArtBehaviour.CROP:
             pixbuf = pixbuf.scale_simple(width * scale_factor,
                                          height * scale_factor,

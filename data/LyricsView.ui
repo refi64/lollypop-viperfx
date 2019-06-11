@@ -76,6 +76,9 @@
             <property name="image">image1</property>
             <property name="relief">none</property>
             <signal name="toggled" handler="_on_translate_toggled" swapped="no"/>
+            <style>
+              <class name="white-text"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -87,5 +90,8 @@
         <property name="index">1</property>
       </packing>
     </child>
+    <style>
+      <class name="white-text"/>
+    </style>
   </object>
 </interface>
