@@ -146,6 +146,9 @@
                 <property name="image">prev_image</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="_on_prev_button_clicked" swapped="no"/>
+                <style>
+                  <class name="menu-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -161,6 +164,9 @@
                 <property name="image">play_image</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
+                <style>
+                  <class name="menu-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -176,6 +182,9 @@
                 <property name="image">next_image</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="_on_next_button_clicked" swapped="no"/>
+                <style>
+                  <class name="menu-button"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -183,9 +192,6 @@
                 <property name="position">2</property>
               </packing>
             </child>
-            <style>
-              <class name="linked"/>
-            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
