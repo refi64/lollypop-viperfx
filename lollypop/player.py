@@ -222,7 +222,7 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
             album_ids += App().albums.get_recents()
         # We are in randoms view, add random albums
         elif filter1_ids and filter1_ids[0] == Type.RANDOMS:
-            album_ids += App().albums.get_cached_randoms()
+            album_ids += App().albums.get_randoms()
         # We are in compilation view without genre
         elif filter1_ids and filter1_ids[0] == Type.COMPILATIONS:
             album_ids += App().albums.get_compilation_ids([])

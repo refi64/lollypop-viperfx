@@ -539,6 +539,10 @@ class SelectionList(LazyLoadingView):
                 self.__selected_ids = []
             row = listbox.get_row_at_y(event.y)
             if row is not None and not (row.id < 0 and self.selected_ids):
+                # User clicked on random, clear cached one
+                if row.id == Type.RANDOMS:
+                    App().albums.clear_cached_randoms()
+                    App().tracks.clear_cached_randoms()
                 self.__selected_ids.append(row.id)
                 listbox.select_row(row)
         return True
