@@ -53,7 +53,8 @@ class ArtDownloader(Downloader):
                 continue
             method = getattr(self, helper)
             uri = method(artist, album, cancellable)
-            uris.append((uri, api))
+            if uri is not None:
+                uris.append((uri, api))
         GLib.idle_add(self.emit, "uri-artwork-found", uris)
 
     def search_artist_artwork(self, artist, cancellable):
@@ -69,7 +70,8 @@ class ArtDownloader(Downloader):
                 continue
             method = getattr(self, helper)
             uri = method(artist, cancellable)
-            uris.append((uri, api))
+            if uri is not None:
+                uris.append((uri, api))
         GLib.idle_add(self.emit, "uri-artwork-found", uris)
 
     def cache_album_artwork(self, album_id):
@@ -508,10 +510,11 @@ class ArtDownloader(Downloader):
             res = re.findall(r'.*oiu=([^&]*).*', data)
             for data in res:
                 uri = GLib.uri_unescape_string(data, "")
-                if uri in uris:
+                if uri in uris or uri is None:
                     continue
-                uris.append((uri, "Startpage"))
-            self.emit("uri-artwork-found", uris)
+                uris.append(uri)
+            self.emit("uri-artwork-found",
+                      [(uri, "Startpage") for uri in uris])
         except Exception as e:
             self.emit("uri-artwork-found", None)
             Logger.error("ArtDownloader::__on_load_startpage_content(): %s"
