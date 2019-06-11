@@ -479,7 +479,8 @@ class ArtDownloader(Downloader):
         try:
             decode = json.loads(content.decode("utf-8"))
             for item in decode["items"]:
-                self.emit("uri-artwork-found", item["link"], "Google")
+                if item["link"] is not None:
+                    self.emit("uri-artwork-found", item["link"], "Google")
         except Exception as e:
             Logger.error("ArtDownloader::__on_load_google_content(): %s: %s"
                          % (e, content))
