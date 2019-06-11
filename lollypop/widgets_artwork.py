@@ -114,6 +114,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__album = album
         self.__artist_id = artist_id
         self.__loaders = 0
+        self.__uris = []
         self.__cancellable = Gio.Cancellable()
         is_compilation = album is not None and\
             album.artist_ids and\
@@ -326,6 +327,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
             Search artwork on the web
         """
+        self.__uris = []
         self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
         self.__spinner.start()
@@ -391,14 +393,17 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param api as str
         """
         if uri is not None:
-            App().task_helper.load_uri_content(uri,
-                                               self.__cancellable,
-                                               self.__on_load_uri_content,
-                                               api)
+            self.__uris.append((uri, api))
         else:
             self.__loaders -= 1
             if self.__loaders == 0:
-                self.__spinner.stop()
+                if self.__uris:
+                    (uri, api) = self.__uris.pop(0)
+                    App().task_helper.load_uri_content(
+                                                   uri,
+                                                   self.__cancellable,
+                                                   self.__on_load_uri_content,
+                                                   api)
 
     def __on_load_uri_content(self, uri, loaded, content, api):
         """
@@ -409,8 +414,20 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param uris as [str]
             @param api as str
         """
-        if loaded:
-            self.__add_pixbuf(content, api)
+        try:
+            if loaded:
+                self.__add_pixbuf(content, api)
+            if self.__uris:
+                (uri, api) = self.__uris.pop(0)
+                App().task_helper.load_uri_content(uri,
+                                                   self.__cancellable,
+                                                   self.__on_load_uri_content,
+                                                   api)
+            else:
+                self.__spinner.stop()
+        except Exception as e:
+            Logger.warning("ArtworkWidget::__on_load_uri_content(): %s", e)
+            self.__spinner.stop()
 
     def __on_activate(self, flowbox, child):
         """
