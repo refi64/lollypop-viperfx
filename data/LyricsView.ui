@@ -78,6 +78,7 @@
             <signal name="toggled" handler="_on_translate_toggled" swapped="no"/>
             <style>
               <class name="white-text"/>
+              <class name="menu-button"/>
             </style>
           </object>
           <packing>
