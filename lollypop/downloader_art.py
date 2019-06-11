@@ -477,6 +477,9 @@ class ArtDownloader(Downloader):
             @param content as bytes
         """
         try:
+            if not loaded:
+                self.emit("uri-artwork-found", None, "Google")
+                return
             decode = json.loads(content.decode("utf-8"))
             for item in decode["items"]:
                 if item["link"] is not None:
@@ -494,6 +497,9 @@ class ArtDownloader(Downloader):
             @param content as bytes
         """
         try:
+            if not loaded:
+                self.emit("uri-artwork-found", None, "Startpage")
+                return
             uris = []
             import re
             data = content.decode("utf-8")
