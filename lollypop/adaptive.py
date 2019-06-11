@@ -212,13 +212,6 @@ class AdaptiveWindow:
                 self.__stack.set_visible_child(widget)
                 self.emit("can-go-back-changed", False)
 
-    def set_initial_view(self):
-        """
-            Set initial view
-        """
-        if self._adaptive_stack:
-            self.__stack.set_visible_child(self.__paned[0][1])
-
     def set_adaptive_stack(self, b):
         """
             Move paned child to stack
