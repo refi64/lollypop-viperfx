@@ -323,14 +323,9 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         if allocation.width <= 1 or allocation.height <= 1:
             return
         behaviour = App().settings.get_value("fullscreen-type").get_int32()
-        behaviour |= ArtBehaviour.CROP
+        behaviour |= (ArtBehaviour.CROP | ArtBehaviour.DARKER)
         # We don't want this for background, stored for album cover
         behaviour &= ~ArtBehaviour.ROUNDED
-        settings = Gtk.Settings.get_default()
-        if settings.get_property("gtk-application-prefer-dark-theme"):
-            behaviour |= ArtBehaviour.DARKER
-        else:
-            behaviour |= ArtBehaviour.LIGHTER
         if App().settings.get_value("artist-artwork"):
             if App().player.current_track.album.artists:
                 artist = App().player.current_track.album.artists[0]

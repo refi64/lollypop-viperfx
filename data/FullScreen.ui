@@ -82,6 +82,9 @@
                   <attribute name="weight" value="semibold"/>
                   <attribute name="scale" value="5"/>
                 </attributes>
+                <style>
+                  <class name="white-text"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -97,6 +100,9 @@
                 <attributes>
                   <attribute name="scale" value="4"/>
                 </attributes>
+                <style>
+                  <class name="white-text"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -113,6 +119,9 @@
                 <attributes>
                   <attribute name="scale" value="3"/>
                 </attributes>
+                <style>
+                  <class name="white-text"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
