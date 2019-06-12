@@ -316,9 +316,6 @@
         <child>
           <placeholder/>
         </child>
-        <style>
-          <class name="white-text"/>
-        </style>
       </object>
     </child>
     <child type="overlay">

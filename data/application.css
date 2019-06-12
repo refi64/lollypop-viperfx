@@ -242,10 +242,6 @@ popover.background separator {
     color: black;
 }
 
-.white-text {
-    color: white;
-}
-
 .black-transparent {
     background-color: alpha(black, 0.5);
     color: white;

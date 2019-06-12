@@ -218,6 +218,7 @@ class LyricsView(View, InformationController):
         for cls in context.list_classes():
             context.remove_class(cls)
         context.add_class("lyrics")
+        context.add_class("black")
         width = self.get_allocated_width()
         if width > Sizing.LARGE:
             context.add_class("text-x-large")

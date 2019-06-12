@@ -37,6 +37,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
         Gtk.Window.__init__(self)
         AdaptiveWindow.__init__(self)
+        self.get_style_context().add_class("black")
         self.set_title("Lollypop")
         self.__allocation = Gdk.Rectangle()
         PlaybackController.__init__(self)
