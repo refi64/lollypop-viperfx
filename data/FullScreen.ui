@@ -8,9 +8,12 @@
     <property name="icon_name">window-close-symbolic</property>
   </object>
   <object class="GtkButton" id="close_btn">
+    <property name="width_request">32</property>
+    <property name="height_request">32</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>
     <property name="receives_default">True</property>
+    <property name="halign">end</property>
     <property name="valign">start</property>
     <property name="margin_left">3</property>
     <property name="margin_right">3</property>
@@ -19,6 +22,10 @@
     <property name="image">close_image</property>
     <property name="relief">none</property>
     <signal name="clicked" handler="_on_close_button_clicked" swapped="no"/>
+    <style>
+      <class name="menu-button"/>
+      <class name="black-transparent"/>
+    </style>
   </object>
   <object class="GtkImage" id="next_image">
     <property name="visible">True</property>
