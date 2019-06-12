@@ -114,7 +114,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__album = album
         self.__artist_id = artist_id
         self.__uris = []
-        self.__count = 0
+        self.__loaders = 0
         self.__cancellable = Gio.Cancellable()
         is_compilation = album is not None and\
             album.artist_ids and\
@@ -306,7 +306,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             search = self.__artist
         return search
 
-    def __search_from_downloader(self, search):
+    def __search_from_downloader(self):
         """
             Load artwork from downloader
         """
@@ -327,11 +327,11 @@ class ArtworkSearchWidget(Gtk.Bin):
             Search artwork on the web
         """
         self.__uris = []
-        self.__count = 0
+        self.__loaders = 3
         self.__cancellable = Gio.Cancellable()
         search = self.__get_current_search()
         self.__spinner.start()
-        self.__search_from_downloader(search)
+        self.__search_from_downloader()
         App().task_helper.run(App().art.search_artwork_from_google,
                               search,
                               self.__cancellable)
@@ -390,15 +390,16 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param uris as (str, str)
         """
         if uris:
-            self.__count += len(uris)
             (uri, api) = uris.pop(0)
             App().task_helper.load_uri_content(uri,
                                                self.__cancellable,
                                                self.__on_load_uri_content,
                                                api,
                                                uris)
-        elif uris is not None and self.__count == 0:
-            self.__spinner.stop()
+        else:
+            self.__loaders -= 1
+            if self.__loaders == 0:
+                self.__spinner.stop()
 
     def __on_load_uri_content(self, uri, loaded, content, api, uris):
         """
@@ -420,10 +421,12 @@ class ArtworkSearchWidget(Gtk.Bin):
                                                    self.__on_load_uri_content,
                                                    api,
                                                    uris)
+            else:
+                self.__loaders -= 1
         except Exception as e:
+            self.__loaders -= 1
             Logger.warning("ArtworkWidget::__on_load_uri_content(): %s", e)
-        self.__count -= 1
-        if self.__count == 0:
+        if self.__loaders == 0:
             self.__spinner.stop()
 
     def __on_activate(self, flowbox, child):
@@ -459,4 +462,4 @@ class ArtworkSearchWidget(Gtk.Bin):
         for child in self.__view.get_children():
             if child.get_name() == "web":
                 child.destroy()
-        GLib.timeout_add(250, self.__search_for_artwork)
+        GLib.timeout_add(500, self.__search_for_artwork)

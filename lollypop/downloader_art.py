@@ -47,15 +47,15 @@ class ArtDownloader(Downloader):
             @param cancellable as Gio.Cancellable
             @thread safe
         """
-        uris = []
+        results = []
         for (api, a_helper, helper, b_helper) in self._WEBSERVICES:
             if helper is None:
                 continue
             method = getattr(self, helper)
             uri = method(artist, album, cancellable)
             if uri is not None:
-                uris.append((uri, api))
-        GLib.idle_add(self.emit, "uri-artwork-found", uris)
+                results.append((uri, api))
+        GLib.idle_add(self.emit, "uri-artwork-found", results)
 
     def search_artist_artwork(self, artist, cancellable):
         """
@@ -64,15 +64,15 @@ class ArtDownloader(Downloader):
             @param cancellable as Gio.Cancellable
             @thread safe
         """
-        uris = []
+        results = []
         for (api, helper, a_helper, b_helper) in self._WEBSERVICES:
             if helper is None:
                 continue
             method = getattr(self, helper)
             uri = method(artist, cancellable)
             if uri is not None:
-                uris.append((uri, api))
-        GLib.idle_add(self.emit, "uri-artwork-found", uris)
+                results.append((uri, api))
+        GLib.idle_add(self.emit, "uri-artwork-found", results)
 
     def cache_album_artwork(self, album_id):
         """
@@ -480,16 +480,16 @@ class ArtDownloader(Downloader):
         """
         try:
             if not loaded:
-                self.emit("uri-artwork-found", None)
+                self.emit("uri-artwork-found", [])
                 return
             decode = json.loads(content.decode("utf-8"))
-            uris = []
+            results = []
             for item in decode["items"]:
                 if item["link"] is not None:
-                    uris.append((item["link"], "Google"))
-            self.emit("uri-artwork-found", uris)
+                    results.append((item["link"], "Google"))
+            self.emit("uri-artwork-found", results)
         except Exception as e:
-            self.emit("uri-artwork-found", None)
+            self.emit("uri-artwork-found", [])
             Logger.error("ArtDownloader::__on_load_google_content(): %s: %s"
                          % (e, content))
 
@@ -502,20 +502,20 @@ class ArtDownloader(Downloader):
         """
         try:
             if not loaded:
-                self.emit("uri-artwork-found", None)
+                self.emit("uri-artwork-found", [])
                 return
-            uris = []
+            found_uris = []
             import re
             data = content.decode("utf-8")
             res = re.findall(r'.*oiu=([^&]*).*', data)
             for data in res:
                 uri = GLib.uri_unescape_string(data, "")
-                if uri in uris or uri is None:
+                if uri in found_uris or uri is None:
                     continue
-                uris.append(uri)
-            self.emit("uri-artwork-found",
-                      [(uri, "Startpage") for uri in uris])
+                found_uris.append(uri)
+            results = [(uri, "Startpage") for uri in found_uris]
+            self.emit("uri-artwork-found", results)
         except Exception as e:
-            self.emit("uri-artwork-found", None)
+            self.emit("uri-artwork-found", [])
             Logger.error("ArtDownloader::__on_load_startpage_content(): %s"
                          % e)
