@@ -347,6 +347,8 @@
         </child>
         <child>
           <object class="GtkButton">
+            <property name="width_request">32</property>
+            <property name="height_request">32</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -354,6 +356,10 @@
             <property name="image">pan_image</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="_on_reveal_button_clicked" swapped="no"/>
+            <style>
+              <class name="menu-button"/>
+              <class name="black-transparent"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
