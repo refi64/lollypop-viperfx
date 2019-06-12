@@ -316,9 +316,10 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             context.add_class("cover-frame")
         InformationController.__init__(self, False, behaviour)
 
-    def __update_background(self):
+    def __update_background(self, album_artwork=False):
         """
             Update window background
+            @param album_artwork as bool
         """
         allocation = self.get_allocation()
         if allocation.width <= 1 or allocation.height <= 1:
@@ -327,7 +328,7 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         behaviour |= (ArtBehaviour.CROP | ArtBehaviour.DARKER)
         # We don't want this for background, stored for album cover
         behaviour &= ~ArtBehaviour.ROUNDED
-        if App().settings.get_value("artist-artwork"):
+        if not album_artwork and App().settings.get_value("artist-artwork"):
             if App().player.current_track.album.artists:
                 artist = App().player.current_track.album.artists[0]
             else:
@@ -338,15 +339,17 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
                                 allocation.height,
                                 self.get_scale_factor(),
                                 behaviour,
-                                self.__on_artwork)
+                                self.__on_artwork,
+                                False)
         else:
             App().art_helper.set_album_artwork(
                                 App().player.current_track.album,
                                 allocation.width,
                                 allocation.height,
                                 self.get_scale_factor(),
-                                behaviour,
-                                self.__on_artwork)
+                                behaviour | ArtBehaviour.BLUR_MAX,
+                                self.__on_artwork,
+                                True)
 
     def __update_datetime(self, show_seconds=False):
         """
@@ -363,12 +366,16 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             return False
         return True
 
-    def __on_artwork(self, surface):
+    def __on_artwork(self, surface, album_artwork):
         """
             Set background artwork
             @param surface as str
+            @param album_artwork as bool
         """
-        self.__background_artwork.set_from_surface(surface)
+        if surface is None and not album_artwork:
+            self.__update_background(True)
+        else:
+            self.__background_artwork.set_from_surface(surface)
 
     def __on_key_release_event(self, widget, event):
         """
