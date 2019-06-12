@@ -124,8 +124,9 @@ class ArtDownloader(Downloader):
         if not get_network_available("STARTPAGE"):
             GLib.idle_add(self.emit, "uri-artwork-found", None)
             return
-        uri = "https://www.startpage.com/do/search?cat=pics&query=%s" %\
-            GLib.uri_escape_string(search, "", False)
+        uri = "https://www.startpage.com/do/search?flimgsize=isz%3Al"
+        uri += "&image-size-select=&flimgexwidth=&flimgexheight=&abp=-1"
+        uri += "&cat=pics&query=%s" % GLib.uri_escape_string(search, "", False)
         App().task_helper.load_uri_content(uri,
                                            cancellable,
                                            self.__on_load_startpage_content)
