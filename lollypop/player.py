@@ -473,17 +473,23 @@ class Player(BinPlayer, QueuePlayer, PlaylistPlayer, RadioPlayer,
         """
             Skip current album
         """
-        # In party or shuffle, just update next track
-        if self.is_party or\
-                App().settings.get_enum("shuffle") == Shuffle.TRACKS:
-            self.set_next()
-            # We send this signal to update next popover
-            self.emit("queue-changed")
-        elif self._current_track.id is not None:
-            self.pause()
-            self.load(self._current_track.album.tracks[-1])
-            self.set_next()
-            self.next()
+        try:
+            # In party or shuffle, just update next track
+            if self.is_party or\
+                    App().settings.get_enum("shuffle") == Shuffle.TRACKS:
+                self.set_next()
+                # We send this signal to update next popover
+                self.emit("queue-changed")
+            elif self._current_track.id is not None:
+                index = self.album_ids.index(
+                    App().player._current_playback_track.album.id)
+                if index + 1 >= len(self._albums):
+                    next_album = self._albums[0]
+                else:
+                    next_album = self._albums[index + 1]
+                self.load(next_album.tracks[0])
+        except Exception as e:
+            Logger.error("Player::skip_album(): %s" % e)
 
     def update_crossfading(self):
         """
