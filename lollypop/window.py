@@ -56,21 +56,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.connect("realize", self.__on_realize)
         self.connect("adaptive-changed", self.__on_adaptive_changed)
 
-    def setup(self):
-        """
-            Setup window position and size, callbacks
-        """
-        size = App().settings.get_value("window-size")
-        pos = App().settings.get_value("window-position")
-        self.__setup_size(size)
-        self.__setup_pos(pos)
-        if App().settings.get_value("window-maximized"):
-            # Lets resize happen
-            GLib.idle_add(self.maximize)
-            self.do_adaptive_mode(self._ADAPTIVE_STACK)
-        else:
-            self.do_adaptive_mode(size[0])
-
     def do_event(self, event):
         """
             Update overlays as internal widget may not have received the signal
@@ -110,6 +95,21 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
 ############
 # PRIVATE  #
 ############
+    def __setup(self):
+        """
+            Setup window position and size, callbacks
+        """
+        size = App().settings.get_value("window-size")
+        pos = App().settings.get_value("window-position")
+        self.__setup_size(size)
+        self.__setup_pos(pos)
+        if App().settings.get_value("window-maximized"):
+            # Lets resize happen
+            GLib.idle_add(self.maximize)
+            self.do_adaptive_mode(self._ADAPTIVE_STACK)
+        else:
+            self.do_adaptive_mode(size[0])
+
     def __show_miniplayer(self, show):
         """
             Show/hide subtoolbar
@@ -371,7 +371,7 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
             Run scanner on realize
             @param widget as Gtk.Widget
         """
-        self.setup()
+        self.__setup()
         if App().settings.get_value("auto-update") or App().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer

@@ -202,7 +202,6 @@ class MPRIS(Server):
         App().settings.connect("changed::repeat", self.__on_repeat_changed)
 
     def Raise(self):
-        self.__app.window.setup()
         self.__app.window.present_with_time(Gtk.get_current_event_time())
 
     def Quit(self):

@@ -496,7 +496,6 @@ class Application(Gtk.Application):
                 else:
                     self.__on_parse_finished(None, None, uris)
             elif self.__window is not None:
-                self.__window.setup()
                 if not self.__window.is_visible():
                     self.__window.present()
                     self.player.emit("status-changed")
