@@ -211,6 +211,10 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         return App().main_window.toolbar
 
     @property
+    def is_adaptive(self):
+        return True
+
+    @property
     def container(self):
         """
             Get container

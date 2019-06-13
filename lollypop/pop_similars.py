@@ -35,6 +35,7 @@ class ArtistRow(Gtk.ListBoxRow):
         self.__artist_name = artist_name
         self.__cover_uri = cover_uri
         self.__cancellable = cancellable
+        self.__store = InformationStore()
         grid = Gtk.Grid()
         grid.set_column_spacing(5)
         label = Gtk.Label.new(artist_name)
@@ -47,6 +48,9 @@ class ArtistRow(Gtk.ListBoxRow):
                                             ArtSize.ARTIST_SMALL,
                                             ArtSize.ARTIST_SMALL,
                                             self.get_scale_factor(),
+                                            ArtBehaviour.CROP |
+                                            ArtBehaviour.CACHE |
+                                            ArtBehaviour.ROUNDED,
                                             self.__on_artist_artwork)
         grid.add(self.__artwork)
         grid.add(label)
@@ -76,14 +80,15 @@ class ArtistRow(Gtk.ListBoxRow):
                 return
             self.__cover_data = data
             scale_factor = self.get_scale_factor()
-            InformationStore.add_artist_artwork(self.__artist_name,
-                                                data, True)
+            self.__store.save_artist_information(self.__artist_name, data)
             App().art_helper.set_artist_artwork(self.__artist_name,
                                                 ArtSize.ARTIST_SMALL,
                                                 ArtSize.ARTIST_SMALL,
                                                 scale_factor,
-                                                ArtBehaviour.CACHE,
-                                                self.__on_artist_artwork,)
+                                                ArtBehaviour.CROP |
+                                                ArtBehaviour.CACHE |
+                                                ArtBehaviour.ROUNDED,
+                                                self.__on_artist_artwork)
         except Exception as e:
             Logger.error("ArtistRow::__on_uri_content(): %s", e)
 
