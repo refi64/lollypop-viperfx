@@ -128,7 +128,6 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
             Setup window for current screen
         """
-        App().main_window.hide()
         self.__signal1_id = App().player.connect("current-changed",
                                                  self.on_current_changed)
         self.__signal2_id = App().player.connect("status-changed",
@@ -160,8 +159,6 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         """
             Clean window
         """
-        App().main_window.setup()
-        App().main_window.show()
         Gtk.Window.do_hide(self)
         if self.__signal1_id is not None:
             App().player.disconnect(self.__signal1_id)
