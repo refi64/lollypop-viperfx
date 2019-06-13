@@ -590,7 +590,7 @@ popover.background separator {
 }
 
 .light-button {
-    opacity: 0.4;
+    opacity: 0.6;
     box-shadow: none;
 	min-height: 24px;
 	min-width: 24px;
@@ -621,7 +621,7 @@ popover.background separator {
 }
 
 .menu-button {
-    opacity: 0.4;
+    opacity: 0.6;
 	box-shadow: none;
 	min-height: 24px;
 	min-width: 24px;
@@ -652,7 +652,7 @@ popover.background separator {
 }
 
 .album-menu-button {
-    opacity: 0.4;
+    opacity: 0.6;
 	box-shadow: none;
 	min-height: 24px;
 	min-width: 24px;
