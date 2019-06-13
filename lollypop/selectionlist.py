@@ -98,7 +98,8 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__grid.show()
             self.__grid.add(self.__artwork)
             self.__grid.add(self.__label)
-            self.__grid.set_margin_end(20)
+            if self.__mask & SelectionListMask.ARTISTS:
+                self.__grid.set_margin_end(20)
             self.add(self.__grid)
             self.set_artwork()
 
