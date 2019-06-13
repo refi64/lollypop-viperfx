@@ -67,9 +67,13 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.get_style_context().add_class("row")
             if height < ArtSize.ARTIST_SMALL:
                 height = ArtSize.ARTIST_SMALL
+            # Padding => application.css
+            height += 12
         elif App().settings.get_enum("sidebar-content") ==\
                 SidebarContent.DEFAULT:
             self.get_style_context().add_class("row-big")
+            # Padding => application.css
+            height += 30
         else:
             self.get_style_context().add_class("row")
         self.set_size_request(-1, height)
@@ -319,15 +323,9 @@ class SelectionList(LazyLoadingView):
         self.__listbox.unselect_all()
         if ids:
             self.__selected_ids = ids
-            first_row = None
             for row in self.__listbox.get_children():
                 if row.id in ids:
-                    if first_row is None:
-                        first_row = row
                     self.__listbox.select_row(row)
-            # Scroll to first item
-            if first_row is not None:
-                GLib.idle_add(self.__scroll_to_row, first_row)
         else:
             self.__selected_ids = []
 
@@ -454,6 +452,13 @@ class SelectionList(LazyLoadingView):
             self.__sort = True
             self.emit("populated")
             GLib.idle_add(self.lazy_loading)
+            # Scroll to first selected item
+            if self.__selected_ids:
+                selected_id = self.__selected_ids[0]
+                for row in self.__listbox.get_children():
+                    if row.id == selected_id:
+                        GLib.idle_add(self.__scroll_to_row, row)
+                        break
 
     def __add_value(self, rowid, name, sortname):
         """
