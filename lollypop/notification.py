@@ -86,7 +86,7 @@ class NotificationManager:
         state = App().window.get_window().get_state()
         if player.current_track.id is None or\
                 state & Gdk.WindowState.FOCUSED or\
-                App().is_fullscreen():
+                App().is_fullscreen:
             return
 
         if self.__is_gnome:

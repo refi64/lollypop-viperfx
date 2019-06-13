@@ -237,12 +237,6 @@ class Application(Gtk.Application):
             scrobbler.save()
         Gio.Application.quit(self)
 
-    def is_fullscreen(self):
-        """
-            Return True if application is fullscreen
-        """
-        return self.__fs_window is not None
-
     def set_mini(self):
         """
             Set mini player on/off
@@ -276,6 +270,13 @@ class Application(Gtk.Application):
             self.__fs_window = FullScreen(self)
             self.__fs_window.show()
             self.__fs_window.connect("destroy", on_destroy)
+
+    @property
+    def is_fullscreen(self):
+        """
+            Return True if application is fullscreen
+        """
+        return self.__fs_window is not None
 
     @property
     def lastfm(self):
