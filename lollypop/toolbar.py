@@ -49,7 +49,6 @@ class Toolbar(Gtk.HeaderBar):
         App().player.connect("current-changed", self.__on_current_changed)
         App().player.connect("next-changed", self.__on_next_changed)
         App().player.connect("prev-changed", self.__on_prev_changed)
-        window.connect("adaptive-changed", self.__on_adaptive_changed)
 
     def do_get_preferred_width(self):
         """
@@ -148,7 +147,6 @@ class Toolbar(Gtk.HeaderBar):
             @param player as Player
         """
         self.__toolbar_playback.on_next_changed(player)
-        self.__toolbar_end.on_next_changed(player)
 
     def __on_status_changed(self, player):
         """
@@ -157,14 +155,3 @@ class Toolbar(Gtk.HeaderBar):
         """
         self.__toolbar_playback.on_status_changed(player)
         self.__toolbar_title.on_status_changed(player)
-
-    def __on_adaptive_changed(self, window, adaptive):
-        """
-            Show/hide next popover
-            @param window as Window
-            @param adaptive as bool
-        """
-        if adaptive:
-            self.__toolbar_end.next_popover.hide()
-        elif self.__toolbar_end.next_popover.should_be_shown():
-            self.__toolbar_end.next_popover.popup()

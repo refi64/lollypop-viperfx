@@ -389,6 +389,8 @@ popover.background separator {
 
 .no-padding {
     padding: 0px;
+    min-width: 0px;
+    min-height: 0px;
 }
 
 .no-border {
