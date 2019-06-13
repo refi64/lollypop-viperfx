@@ -322,35 +322,41 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             Update window background
             @param album_artwork as bool
         """
-        allocation = self.get_allocation()
-        if allocation.width <= 1 or allocation.height <= 1:
-            return
-        behaviour = App().settings.get_value("fullscreen-type").get_int32()
-        behaviour |= (ArtBehaviour.CROP | ArtBehaviour.DARKER)
-        # We don't want this for background, stored for album cover
-        behaviour &= ~ArtBehaviour.ROUNDED
-        if not album_artwork and App().settings.get_value("artist-artwork"):
-            if App().player.current_track.album.artists:
-                artist = App().player.current_track.album.artists[0]
+        try:
+            if App().player.current_track.id is None:
+                return
+            allocation = self.get_allocation()
+            if allocation.width <= 1 or allocation.height <= 1:
+                return
+            behaviour = App().settings.get_value("fullscreen-type").get_int32()
+            behaviour |= (ArtBehaviour.CROP | ArtBehaviour.DARKER)
+            # We don't want this for background, stored for album cover
+            behaviour &= ~ArtBehaviour.ROUNDED
+            if not album_artwork and\
+                    App().settings.get_value("artist-artwork"):
+                if App().player.current_track.album.artists:
+                    artist = App().player.current_track.album.artists[0]
+                else:
+                    artist = App().player.current_track.artists[0]
+                App().art_helper.set_artist_artwork(
+                                    artist,
+                                    allocation.width,
+                                    allocation.height,
+                                    self.get_scale_factor(),
+                                    behaviour,
+                                    self.__on_artwork,
+                                    False)
             else:
-                artist = App().player.current_track.artists[0]
-            App().art_helper.set_artist_artwork(
-                                artist,
-                                allocation.width,
-                                allocation.height,
-                                self.get_scale_factor(),
-                                behaviour,
-                                self.__on_artwork,
-                                False)
-        else:
-            App().art_helper.set_album_artwork(
-                                App().player.current_track.album,
-                                allocation.width,
-                                allocation.height,
-                                self.get_scale_factor(),
-                                behaviour | ArtBehaviour.BLUR_MAX,
-                                self.__on_artwork,
-                                True)
+                App().art_helper.set_album_artwork(
+                                    App().player.current_track.album,
+                                    allocation.width,
+                                    allocation.height,
+                                    self.get_scale_factor(),
+                                    behaviour | ArtBehaviour.BLUR_MAX,
+                                    self.__on_artwork,
+                                    True)
+        except Exception as e:
+            Logger.error("Fullscreen::__update_background(): %s", e)
 
     def __update_datetime(self, show_seconds=False):
         """
