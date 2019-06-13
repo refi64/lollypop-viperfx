@@ -18,7 +18,6 @@ from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.controller_view import ViewController, ViewControllerType
-from lollypop.shown import ShownLists
 from lollypop.utils import get_icon_name, get_network_available
 
 
@@ -34,7 +33,6 @@ class RadiosView(FlowBoxView, ViewController):
         FlowBoxView.__init__(self)
         ViewController.__init__(self, ViewControllerType.RADIO)
         self._widget_class = RadioWidget
-        self._empty_message = ShownLists.IDS[Type.RADIOS][0]
         self._empty_icon_name = get_icon_name(Type.RADIOS)
         self.__radios = Radios()
         builder = Gtk.Builder()

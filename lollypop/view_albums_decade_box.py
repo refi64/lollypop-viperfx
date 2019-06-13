@@ -15,7 +15,6 @@ from gi.repository import GLib
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_albums_decade import AlbumsDecadeWidget
 from lollypop.define import App, Type, ViewType, SidebarContent
-from lollypop.shown import ShownLists
 from lollypop.utils import get_icon_name
 
 
@@ -31,7 +30,6 @@ class AlbumsDecadeBoxView(FlowBoxView):
         """
         FlowBoxView.__init__(self, view_type)
         self._widget_class = AlbumsDecadeWidget
-        self._empty_message = ShownLists.IDS[Type.YEARS][0]
         self._empty_icon_name = get_icon_name(Type.YEARS)
 
 #######################

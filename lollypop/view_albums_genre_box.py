@@ -15,7 +15,6 @@ from gi.repository import GLib
 from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_albums_genre import AlbumsGenreWidget
 from lollypop.define import App, Type, ViewType
-from lollypop.shown import ShownLists
 from lollypop.utils import get_icon_name
 
 
@@ -31,7 +30,6 @@ class AlbumsGenreBoxView(FlowBoxView):
         """
         FlowBoxView.__init__(self, view_type)
         self._widget_class = AlbumsGenreWidget
-        self._empty_message = ShownLists.IDS[Type.GENRES][0]
         self._empty_icon_name = get_icon_name(Type.GENRES)
 
 #######################

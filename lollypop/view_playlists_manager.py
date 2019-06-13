@@ -33,7 +33,6 @@ class PlaylistsManagerView(FlowBoxView):
             @param view_type as ViewType
         """
         FlowBoxView.__init__(self, view_type)
-        self._empty_message = _("Playlists")
         self._empty_icon_name = "emblem-documents-symbolic"
         self.__obj = obj
         self.__signal_id = None

@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gdk, Gio, GLib, GObject, Pango
 from gettext import gettext as _
 
 from lollypop.utils import get_icon_name
-from lollypop.shown import ShownLists
 from lollypop.view_tracks import TracksView
 from lollypop.view import LazyLoadingView
 from lollypop.objects import Album, Track
@@ -488,8 +487,6 @@ class AlbumsListView(LazyLoadingView, ViewController):
             if genre_ids[0] == Type.WEB and\
                     GLib.find_program_in_path("youtube-dl") is None:
                 self._empty_message = _("Missing youtube-dl command")
-            else:
-                self._empty_message = ShownLists.IDS[genre_ids[0]][0]
             self._empty_icon_name = get_icon_name(genre_ids[0])
         self.__autoscroll_timeout_id = None
         self.__reveals = []
