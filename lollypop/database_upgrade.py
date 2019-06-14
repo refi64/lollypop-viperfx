@@ -153,7 +153,8 @@ class DatabaseAlbumsUpgrade(DatabaseUpgrade):
             31: self.__upgrade_31,
             32: "ALTER TABLE tracks ADD bpm DOUBLE",
             33: "ALTER TABLE artists ADD mb_artist_id TEXT",
-            34: self.__upgrade_31
+            34: self.__upgrade_31,
+            35: "UPDATE albums SET synced=2 WHERE synced=1",
         }
 
 #######################
