@@ -85,98 +85,95 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEventBox">
+      <object class="GtkBox" id="box-button">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
-        <property name="margin_left">10</property>
-        <property name="vexpand">True</property>
         <child>
-          <object class="GtkBox" id="box-button">
+          <object class="GtkButton" id="play-button">
+            <property name="width_request">48</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">center</property>
-            <property name="spacing">20</property>
-            <child>
-              <object class="GtkButton" id="play-button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Play albums</property>
-                <property name="image">image1</property>
-                <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
-                <style>
-                  <class name="light-button"/>
-                  <class name="light-button-no-right-border"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="add-button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes" context="artist context">Add to current playlist</property>
-                <property name="image">image3</property>
-                <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
-                <style>
-                  <class name="light-button"/>
-                  <class name="light-button-no-right-border"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="lastfm-button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Similar artists</property>
-                <property name="image">image4</property>
-                <signal name="toggled" handler="_on_similars_button_toggled" swapped="no"/>
-                <style>
-                  <class name="light-button"/>
-                  <class name="light-button-no-right-border"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="jump-button">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Go to current track</property>
-                <property name="margin_end">2</property>
-                <property name="image">image2</property>
-                <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
-                <style>
-                  <class name="light-button"/>
-                  <class name="light-button-no-right-border"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Play albums</property>
+            <property name="image">image1</property>
+            <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
+            <style>
+              <class name="menu-button"/>
+              <class name="black-transparent"/>
+            </style>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="add-button">
+            <property name="width_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes" context="artist context">Add to current playlist</property>
+            <property name="image">image3</property>
+            <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
+            <style>
+              <class name="menu-button"/>
+              <class name="black-transparent"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="lastfm-button">
+            <property name="width_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Similar artists</property>
+            <property name="image">image4</property>
+            <signal name="toggled" handler="_on_similars_button_toggled" swapped="no"/>
+            <style>
+              <class name="menu-button"/>
+              <class name="black-transparent"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="jump-button">
+            <property name="width_request">48</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Go to current track</property>
+            <property name="margin_end">2</property>
+            <property name="image">image2</property>
+            <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+            <style>
+              <class name="menu-button"/>
+              <class name="black-transparent"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <style>
+          <class name="linked"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">2</property>
