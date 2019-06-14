@@ -17,12 +17,11 @@ from hashlib import sha256
 
 from lollypop.define import Type, App, SelectionListMask
 from lollypop.shown import ShownLists, ShownPlaylists
-from lollypop.widgets_utils import Popover
 
 
-class ViewsMenuPopover(Popover):
+class SelectionListMenu(Gio.Menu):
     """
-        Configure defaults items
+        A menu for configuring SelectionList
     """
 
     def __init__(self, widget, rowid, mask):
@@ -32,18 +31,16 @@ class ViewsMenuPopover(Popover):
             @param rowid as int
             @param mask as SelectionListMask
         """
-        Popover.__init__(self)
+        Gio.Menu.__init__(self)
         self.__widget = widget
         self.__rowid = rowid
         self.__mask = mask
-        menu = Gio.Menu()
-        self.bind_model(menu, None)
 
         # Devices
         if mask & SelectionListMask.PLAYLISTS:
             from lollypop.menu_sync import SyncPlaylistsMenu
             section = SyncPlaylistsMenu(rowid)
-            menu.append_section(_("Synchronization"), section)
+            self.append_section(_("Synchronization"), section)
 
         # Startup menu
         if not App().settings.get_value("save-state") and\
@@ -68,7 +65,7 @@ class ViewsMenuPopover(Popover):
             item = Gio.MenuItem.new(_("Default on startup"),
                                     "app.default_selection_id")
             startup_menu.append_item(item)
-            menu.append_section(_("Startup"), startup_menu)
+            self.append_section(_("Startup"), startup_menu)
         # Shown menu
         shown_menu = Gio.Menu()
         if mask & SelectionListMask.PLAYLISTS:
@@ -93,7 +90,7 @@ class ViewsMenuPopover(Popover):
             App().add_action(action)
             shown_menu.append(item[1], "app.%s" % encoded)
         # Translators: shown => items
-        menu.append_section(_("Sections"), shown_menu)
+        self.append_section(_("Sections"), shown_menu)
 
 #######################
 # PRIVATE             #

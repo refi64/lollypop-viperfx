@@ -103,11 +103,14 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
             Popup menu for track
             @param widget as Gtk.Widget
         """
-        from lollypop.pop_menu_views import ViewsMenuPopover
         from lollypop.view_playlists_manager import PlaylistsManagerView
-        popover = ViewsMenuPopover(self.get_ancestor(PlaylistsManagerView),
-                                   self.data,
-                                   SelectionListMask.PLAYLISTS)
+        from lollypop.menu_selectionlist import SelectionListMenu
+        from lollypop.widgets_utils import Popover
+        menu = SelectionListMenu(self.get_ancestor(PlaylistsManagerView),
+                                 self.data,
+                                 SelectionListMask.PLAYLISTS)
+        popover = Popover()
+        popover.bind_model(menu, None)
         popover.set_relative_to(widget)
         popover.popup()
 

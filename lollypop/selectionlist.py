@@ -525,9 +525,12 @@ class SelectionList(LazyLoadingView):
         if event.button != 1 and\
                 self.__base_type in [SelectionListMask.LIST_ONE,
                                      SelectionListMask.LIST_TWO]:
-            from lollypop.pop_menu_views import ViewsMenuPopover
+            from lollypop.menu_selectionlist import SelectionListMenu
+            from lollypop.widgets_utils import Popover
             row = listbox.get_row_at_y(event.y)
-            popover = ViewsMenuPopover(self, row.id, self.mask)
+            menu = SelectionListMenu(self, row.id, self.mask)
+            popover = Popover()
+            popover.bind_model(menu, None)
             popover.set_relative_to(listbox)
             rect = Gdk.Rectangle()
             rect.x = event.x

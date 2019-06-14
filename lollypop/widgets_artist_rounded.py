@@ -122,11 +122,14 @@ class RoundedArtistWidget(RoundedFlowBoxWidget):
         """
         if App().settings.get_value("show-sidebar"):
             return
-        from lollypop.pop_menu_views import ViewsMenuPopover
         from lollypop.view_artists_rounded import RoundedArtistsView
-        popover = ViewsMenuPopover(self.get_ancestor(RoundedArtistsView),
-                                   self.data,
-                                   SelectionListMask.ARTISTS_VIEW)
+        from lollypop.menu_selectionlist import SelectionListMenu
+        from lollypop.widgets_utils import Popover
+        menu = SelectionListMenu(self.get_ancestor(RoundedArtistsView),
+                                 self.data,
+                                 SelectionListMask.ARTISTS_VIEW)
+        popover = Popover()
+        popover.bind_model(menu, None)
         popover.set_relative_to(widget)
         popover.popup()
 
