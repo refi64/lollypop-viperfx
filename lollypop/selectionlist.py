@@ -528,16 +528,17 @@ class SelectionList(LazyLoadingView):
             from lollypop.menu_selectionlist import SelectionListMenu
             from lollypop.widgets_utils import Popover
             row = listbox.get_row_at_y(event.y)
-            menu = SelectionListMenu(self, row.id, self.mask)
-            popover = Popover()
-            popover.bind_model(menu, None)
-            popover.set_relative_to(listbox)
-            rect = Gdk.Rectangle()
-            rect.x = event.x
-            rect.y = event.y
-            rect.width = rect.height = 1
-            popover.set_pointing_to(rect)
-            popover.popup()
+            if row is not None:
+                menu = SelectionListMenu(self, row.id, self.mask)
+                popover = Popover()
+                popover.bind_model(menu, None)
+                popover.set_relative_to(listbox)
+                rect = Gdk.Rectangle()
+                rect.x = event.x
+                rect.y = event.y
+                rect.width = rect.height = 1
+                popover.set_pointing_to(rect)
+                popover.popup()
         elif event.button == 1:
             state = event.get_state()
             static_selected = self.selected_ids and self.selected_ids[0] < 0
