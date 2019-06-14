@@ -131,7 +131,7 @@ class SelectionListMask:
     LIST_TWO = 1 << 2
     LIST_DEVICE = 1 << 3
     ARTISTS = 1 << 4
-    GENRE = 1 << 5
+    GENRES = 1 << 5
     PLAYLISTS = 1 << 6
     COMPILATIONS = 1 << 7
     ARTISTS_VIEW = 1 << 8

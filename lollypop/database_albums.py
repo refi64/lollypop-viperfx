@@ -217,7 +217,7 @@ class AlbumsDatabase:
         """
             Get album synced status
             @param album_id as int
-            @return synced as bool
+            @return synced as int
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT synced FROM albums WHERE\

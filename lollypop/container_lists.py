@@ -170,7 +170,7 @@ class ListsContainer:
             return genres
 
         def setup(genres):
-            selection_list.mark_as(SelectionListMask.GENRE)
+            selection_list.mark_as(SelectionListMask.GENRES)
             items = selection_list.get_headers(selection_list.mask)
             items += genres
             if update:
@@ -235,11 +235,11 @@ class ListsContainer:
             return
         # Update lists
         if selected_ids[0] in [Type.PLAYLISTS, Type.YEARS] and\
-                self._list_one.mask & SelectionListMask.GENRE:
+                self._list_one.mask & SelectionListMask.GENRES:
             self.__update_list_playlists(False, selected_ids[0])
             self._list_two.show()
         elif (selected_ids[0] > 0 or selected_ids[0] == Type.ALL) and\
-                self._list_one.mask & SelectionListMask.GENRE:
+                self._list_one.mask & SelectionListMask.GENRES:
             self.__update_list_artists(self._list_two, selected_ids, False)
             self._list_two.show()
         else:

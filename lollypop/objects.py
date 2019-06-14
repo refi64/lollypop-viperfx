@@ -367,6 +367,15 @@ class Album(Base):
         App().scanner.emit("album-updated", self.id, save)
 
     @property
+    def synced(self):
+        """
+            Get synced state
+            Remove from cache
+            @return int
+        """
+        return App().albums.get_synced(self.id)
+
+    @property
     def title(self):
         """
             Get album name

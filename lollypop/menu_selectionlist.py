@@ -37,9 +37,20 @@ class SelectionListMenu(Gio.Menu):
         self.__mask = mask
 
         # Devices
+        section = None
         if mask & SelectionListMask.PLAYLISTS:
             from lollypop.menu_sync import SyncPlaylistsMenu
             section = SyncPlaylistsMenu(rowid)
+        elif rowid > 0:
+            from lollypop.menu_sync import SyncAlbumsMenu
+            if mask & SelectionListMask.GENRES:
+                section = SyncAlbumsMenu([rowid], [])
+            elif mask & SelectionListMask.ARTISTS:
+                section = SyncAlbumsMenu([], [rowid])
+        elif rowid == Type.ALL or rowid == Type.ARTISTS:
+            from lollypop.menu_sync import SyncAlbumsMenu
+            section = SyncAlbumsMenu([], [])
+        if section is not None:
             self.append_section(_("Synchronization"), section)
 
         # Startup menu
@@ -47,7 +58,7 @@ class SelectionListMenu(Gio.Menu):
                 (rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
                            Type.ALL, Type.RECENTS, Type.YEARS,
                            Type.RANDOMS, Type.NEVER,
-                           Type.PLAYLISTS, Type.ARTISTS] or
+                           Type.PLAYLISTS, Type.ARTISTS, Type.WEB] or
                  mask & SelectionListMask.PLAYLISTS):
             startup_menu = Gio.Menu()
             if self.__mask & SelectionListMask.LIST_TWO:
@@ -67,30 +78,32 @@ class SelectionListMenu(Gio.Menu):
             startup_menu.append_item(item)
             self.append_section(_("Startup"), startup_menu)
         # Shown menu
-        shown_menu = Gio.Menu()
-        if mask & SelectionListMask.PLAYLISTS:
-            lists = ShownPlaylists.get(True)
-            wanted = App().settings.get_value("shown-playlists")
-        else:
-            mask |= SelectionListMask.COMPILATIONS
-            if mask & SelectionListMask.LIST_ONE:
-                mask |= SelectionListMask.LIST_DEVICE
-            lists = ShownLists.get(mask, True)
-            wanted = App().settings.get_value("shown-album-lists")
-        for item in lists:
-            exists = item[0] in wanted
-            encoded = sha256(item[1].encode("utf-8")).hexdigest()
-            action = Gio.SimpleAction.new_stateful(
-                encoded,
-                None,
-                GLib.Variant.new_boolean(exists))
-            action.connect("change-state",
-                           self.__on_shown_change_state,
-                           item[0])
-            App().add_action(action)
-            shown_menu.append(item[1], "app.%s" % encoded)
-        # Translators: shown => items
-        self.append_section(_("Sections"), shown_menu)
+        if mask & (SelectionListMask.LIST_ONE |
+                   SelectionListMask.LIST_TWO) and rowid < 0:
+            shown_menu = Gio.Menu()
+            if mask & SelectionListMask.PLAYLISTS:
+                lists = ShownPlaylists.get(True)
+                wanted = App().settings.get_value("shown-playlists")
+            else:
+                mask |= SelectionListMask.COMPILATIONS
+                if mask & SelectionListMask.LIST_ONE:
+                    mask |= SelectionListMask.LIST_DEVICE
+                lists = ShownLists.get(mask, True)
+                wanted = App().settings.get_value("shown-album-lists")
+            for item in lists:
+                exists = item[0] in wanted
+                encoded = sha256(item[1].encode("utf-8")).hexdigest()
+                action = Gio.SimpleAction.new_stateful(
+                    encoded,
+                    None,
+                    GLib.Variant.new_boolean(exists))
+                action.connect("change-state",
+                               self.__on_shown_change_state,
+                               item[0])
+                App().add_action(action)
+                shown_menu.append(item[1], "app.%s" % encoded)
+            # Translators: shown => items
+            self.append_section(_("Sections"), shown_menu)
 
 #######################
 # PRIVATE             #
