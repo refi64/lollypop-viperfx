@@ -640,7 +640,7 @@ popover.background separator {
     color: inherit;
 }
 
-.menu-button:insensitive {
+.menu-button:disabled {
     opacity: 0.4;
 }
 
