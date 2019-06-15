@@ -14,7 +14,6 @@ from gi.repository import Gtk, Gio, GLib, Pango, GObject
 
 from lollypop.define import App, ArtSize, ArtBehaviour
 from lollypop.widgets_utils import Popover
-from lollypop.information_store import InformationStore
 from lollypop.logger import Logger
 from lollypop.utils import get_network_available
 
@@ -35,7 +34,6 @@ class ArtistRow(Gtk.ListBoxRow):
         self.__artist_name = artist_name
         self.__cover_uri = cover_uri
         self.__cancellable = cancellable
-        self.__store = InformationStore()
         grid = Gtk.Grid()
         grid.set_column_spacing(5)
         label = Gtk.Label.new(artist_name)
@@ -80,7 +78,7 @@ class ArtistRow(Gtk.ListBoxRow):
                 return
             self.__cover_data = data
             scale_factor = self.get_scale_factor()
-            self.__store.save_artist_information(self.__artist_name, data)
+            App().art.add_artist_artwork(self.__artist_name, data, True)
             App().art_helper.set_artist_artwork(self.__artist_name,
                                                 ArtSize.ARTIST_SMALL,
                                                 ArtSize.ARTIST_SMALL,
