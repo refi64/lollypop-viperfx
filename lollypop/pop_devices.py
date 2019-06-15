@@ -89,9 +89,8 @@ class DevicesPopover(Gtk.Popover):
             @return [str]
         """
         devices = [child.name for child in self.__listbox.get_children()]
-        if not devices:
-            devices = list(App().settings.get_value("devices"))
-        return devices
+        devices += list(App().settings.get_value("devices"))
+        return list(filter(("").__ne__, set(devices)))
 
 #######################
 # PROTECTED           #
