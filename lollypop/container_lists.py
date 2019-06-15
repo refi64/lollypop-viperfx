@@ -107,7 +107,7 @@ class ListsContainer:
         """
         def select_list_two(selection_list, ids):
             # For some reasons, we need to delay this
-            # If list two list is short, we may receive list two selected-item
+            # If list two is short, we may receive list two selected-item
             # signal before list one
             GLib.idle_add(self._list_two.select_ids, ids)
             self._list_two.disconnect_by_func(select_list_two)
@@ -127,10 +127,10 @@ class ListsContainer:
                                        select_list_two,
                                        state_two_ids)
             if state_one_ids:
-                if state_one_ids[0] == Type.ALBUM:
+                if state_one_ids and state_one_ids[0] == Type.ALBUM:
                     self._list_one.select_first()
                     album = Album(state_two_ids[0])
-                    self.show_view(state_one_ids, album)
+                    self.show_view([Type.ALBUM], album)
                 # Here we are just handling missing Type.ARTISTS from list
                 elif state_one_ids[0] == Type.ARTISTS:
                     from lollypop.shown import ShownLists

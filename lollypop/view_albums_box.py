@@ -128,6 +128,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Set active ids
         """
+        FlowBoxView._on_map(self, widget)
         if self._view_type & ViewType.SMALL:
             return
         if self.__genre_ids:

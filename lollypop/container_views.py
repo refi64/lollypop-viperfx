@@ -535,8 +535,12 @@ class ViewsContainer:
             self._rounded_artists_view = self._get_view_artists_rounded(True)
             self._stack.set_visible_child(self._rounded_artists_view)
         if state_one_ids and state_two_ids:
-            self.show_view(state_one_ids, None, False)
-            self.show_view(state_one_ids, state_two_ids)
+            if state_one_ids and state_one_ids[0] == Type.ALBUM:
+                album = Album(state_two_ids[0])
+                self.show_view([Type.ALBUM], album)
+            else:
+                self.show_view(state_one_ids, None, False)
+                self.show_view(state_one_ids, state_two_ids)
         elif state_one_ids and state_one_ids != Type.ARTISTS:
             self.show_view(state_one_ids)
         elif state_two_ids:

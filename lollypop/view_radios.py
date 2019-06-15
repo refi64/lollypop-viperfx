@@ -100,6 +100,7 @@ class RadiosView(FlowBoxView, ViewController):
         """
             Set active ids
         """
+        FlowBoxView._on_map(self, widget)
         if not App().settings.get_value("show-sidebar"):
             App().window.emit("show-can-go-back", True)
             App().window.emit("can-go-back-changed", True)

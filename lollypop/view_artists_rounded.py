@@ -31,7 +31,6 @@ class RoundedArtistsView(FlowBoxView):
         """
         FlowBoxView.__init__(self)
         self.__destroy = destroy
-        self.__lazy_queue_backup = None
         self._widget_class = RoundedArtistWidget
         self.connect("destroy", self.__on_destroy)
         self._empty_icon_name = get_icon_name(Type.ARTISTS)
@@ -65,8 +64,6 @@ class RoundedArtistsView(FlowBoxView):
         """
             We want this view to be populated anyway (no sidebar mode)
         """
-        if self._lazy_queue is not None:
-            self.__lazy_queue_backup = self._lazy_queue
         FlowBoxView.stop(self)
 
     def make_destroyable(self):
@@ -107,16 +104,7 @@ class RoundedArtistsView(FlowBoxView):
         """
             Set active ids
         """
-        # Restore lazy loading queue
-        if self.__lazy_queue_backup:
-            self._lazy_queue = self.__lazy_queue_backup
-            self.__lazy_queue_backup = None
-        elif self._items:
-            self._lazy_queue = []
-        # Force reloading remaining items
-        # If empty, it will load lazy loading queue anyway
-        if self._items:
-            self._add_items(self._items)
+        FlowBoxView._on_map(self, widget)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.ARTISTS]))
         App().settings.set_value("state-two-ids",

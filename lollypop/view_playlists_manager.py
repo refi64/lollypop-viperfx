@@ -107,6 +107,7 @@ class PlaylistsManagerView(FlowBoxView):
         """
             Setup widget
         """
+        FlowBoxView._on_map(self, widget)
         self.__signal_id = App().playlists.connect("playlists-changed",
                                                    self.__on_playlist_changed)
         if self.__obj is None:

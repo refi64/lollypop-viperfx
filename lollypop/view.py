@@ -283,6 +283,7 @@ class LazyLoadingView(View):
         View.__init__(self, view_type)
         self._lazy_queue = []  # Widgets not initialized
         self.__priority_queue = []
+        self.__backup_queue = []
         self.__scroll_timeout_id = None
         self._scrolled.get_vadjustment().connect("value-changed",
                                                  self._on_value_changed)
@@ -292,6 +293,7 @@ class LazyLoadingView(View):
         """
             Stop loading
         """
+        self.__backup_queue = self._lazy_queue + self.__priority_queue
         self._lazy_queue = []
         self.__priority_queue = []
         View.stop(self)
@@ -316,6 +318,15 @@ class LazyLoadingView(View):
 #######################
 # PROTECTED           #
 #######################
+    def _on_map(self, widget):
+        """
+            Restore backup and load
+            @param widget as Gtk.Widget
+        """
+        if self.__backup_queue:
+            self._lazy_queue = self.__backup_queue
+            GLib.idle_add(self.lazy_loading)
+
     def _on_value_changed(self, adj):
         """
             Update scroll value and check for lazy queue
