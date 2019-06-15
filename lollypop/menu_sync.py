@@ -31,9 +31,9 @@ class SyncMenu(Gio.Menu):
         Gio.Menu.__init__(self)
         self.__actions = []
         self.__all_devices = _("All devices")
-        if App().window.toolbar.end.devices_popover.devices:
+        if App().devices:
             synced = self.__add_sync_action(self.__all_devices)
-            for name in App().window.toolbar.end.devices_popover.devices:
+            for name in App().devices:
                 self.__add_sync_action(name)
             if synced:
                 for action in self.__actions:

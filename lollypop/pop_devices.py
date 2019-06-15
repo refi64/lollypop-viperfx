@@ -88,9 +88,7 @@ class DevicesPopover(Gtk.Popover):
             Get current devices
             @return [str]
         """
-        devices = [child.name for child in self.__listbox.get_children()]
-        devices += list(App().settings.get_value("devices"))
-        return list(filter(("").__ne__, set(devices)))
+        return [child.name for child in self.__listbox.get_children()]
 
 #######################
 # PROTECTED           #

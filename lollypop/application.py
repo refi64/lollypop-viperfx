@@ -274,6 +274,22 @@ class Application(Gtk.Application):
             self.__fs_window.connect("destroy", on_destroy)
 
     @property
+    def devices(self):
+        """
+            Get available devices
+            Merge connected and known
+            @return [str]
+        """
+        devices = self.__window.toolbar.end.devices_popover.devices
+        devices += list(self.settings.get_value("devices"))
+        result = []
+        # Do not use set() + filter() because we want to keep order
+        for device in devices:
+            if device not in result:
+                result.append(device)
+        return result
+
+    @property
     def is_fullscreen(self):
         """
             Return True if application is fullscreen
