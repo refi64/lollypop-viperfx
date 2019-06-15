@@ -13,6 +13,7 @@
 from gi.repository import Gio, GLib
 
 from hashlib import sha256
+from gettext import gettext as _
 
 from lollypop.define import App
 from lollypop.logger import Logger
@@ -28,8 +29,15 @@ class SyncMenu(Gio.Menu):
             Init menu
         """
         Gio.Menu.__init__(self)
-        for name in App().window.toolbar.end.devices_popover.devices:
-            self.__add_sync_action(name)
+        self.__actions = []
+        self.__all_devices = _("All devices")
+        if App().window.toolbar.end.devices_popover.devices:
+            synced = self.__add_sync_action(self.__all_devices)
+            for name in App().window.toolbar.end.devices_popover.devices:
+                self.__add_sync_action(name)
+            if synced:
+                for action in self.__actions:
+                    action.set_enabled(False)
 
 #######################
 # PROTECTED           #
@@ -47,25 +55,32 @@ class SyncMenu(Gio.Menu):
         """
             Add sync action
             @param name as str
+            @param status as bool
         """
+        synced = False
         devices = list(App().settings.get_value("devices"))
         action_name = "sync_%s" % name
         encoded = sha256(action_name.encode("utf-8")).hexdigest()
         try:
-            index = devices.index(name) + 1
+            if name == self.__all_devices:
+                index = 0
+            else:
+                index = devices.index(name) + 1
             synced = self._get_synced(index)
         except Exception as e:
             Logger.warning("SyncMenu::__add_sync_action(): %s", e)
-            synced = False
         sync_action = Gio.SimpleAction.new_stateful(
                                           encoded,
                                           None,
                                           GLib.Variant.new_boolean(synced))
         App().add_action(sync_action)
+        if name != self.__all_devices:
+            self.__actions.append(sync_action)
         sync_action.connect("change-state",
                             self.__on_sync_action_change_state,
                             name)
         self.append(name, "app.%s" % encoded)
+        return synced
 
     def __set_sync_action(self):
         """
@@ -90,12 +105,19 @@ class SyncMenu(Gio.Menu):
             @param name as str
         """
         action.set_state(variant)
-        devices = list(App().settings.get_value("devices"))
-        if name not in devices:
-            devices.append(name)
-            App().settings.set_value("devices", GLib.Variant("as", devices))
-        index = devices.index(name) + 1
-        self._set_synced(index, variant.get_boolean())
+        if name == self.__all_devices:
+            synced = variant.get_boolean()
+            self._set_synced(0, synced)
+            for action in self.__actions:
+                action.set_enabled(not synced)
+        else:
+            devices = list(App().settings.get_value("devices"))
+            if name not in devices:
+                devices.append(name)
+                App().settings.set_value("devices",
+                                         GLib.Variant("as", devices))
+            index = devices.index(name) + 1
+            self._set_synced(index, variant.get_boolean())
 
 
 class SyncAlbumMenu(SyncMenu):

@@ -269,7 +269,9 @@ class ViewsContainer:
             @param index as int
         """
         def load():
-            return App().playlists.get_synced_ids(index)
+            playlist_ids = App().playlists.get_synced_ids(0)
+            playlist_ids += App().playlists.get_synced_ids(index)
+            return playlist_ids
 
         from lollypop.view_playlists_manager import PlaylistsManagerView
         view = PlaylistsManagerView(None, ViewType.SCROLLED)
@@ -451,7 +453,8 @@ class ViewsContainer:
             @param index as int
         """
         def load():
-            album_ids = App().albums.get_synced_ids(index)
+            album_ids = App().albums.get_synced_ids(0)
+            album_ids += App().albums.get_synced_ids(index)
             return [Album(album_id) for album_id in album_ids]
 
         if App().window.is_adaptive:

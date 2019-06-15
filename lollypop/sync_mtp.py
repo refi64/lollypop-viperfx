@@ -241,12 +241,14 @@ class MtpSync(GObject.Object):
 
             Logger.info("Getting tracks to sync")
             # New tracks for synced albums
-            album_ids = App().albums.get_synced_ids(index)
+            album_ids = App().albums.get_synced_ids(0)
+            album_ids += App().albums.get_synced_ids(index)
             for album_id in album_ids:
                 album = Album(album_id)
                 tracks += album.tracks
             # New tracks for playlists
-            playlist_ids = App().playlists.get_synced_ids(index)
+            playlist_ids = App().playlists.get_synced_ids(0)
+            playlist_ids += App().playlists.get_synced_ids(index)
             for playlist_id in playlist_ids:
                 if App().playlists.get_smart(playlist_id):
                     request = App().playlists.get_smart_sql(playlist_id)
