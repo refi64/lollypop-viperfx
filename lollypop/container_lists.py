@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from lollypop.loader import Loader
 from lollypop.logger import Logger
+from lollypop.objects import Album
 from lollypop.selectionlist import SelectionList
 from lollypop.define import App, Type, SelectionListMask, SidebarContent
 
@@ -110,31 +111,39 @@ class ListsContainer:
             # signal before list one
             GLib.idle_add(self._list_two.select_ids, ids)
             self._list_two.disconnect_by_func(select_list_two)
-
-        state_one_ids = App().settings.get_value("state-one-ids")
-        state_two_ids = App().settings.get_value("state-two-ids")
-        if state_two_ids and not state_one_ids:
-            sidebar_content = App().settings.get_enum("sidebar-content")
-            if sidebar_content == SidebarContent.GENRES:
-                self.show_artists_albums(state_two_ids)
-                return
-            else:
-                state_one_ids = state_two_ids
-                state_two_ids = []
-        if state_two_ids:
-            self._list_two.connect("populated", select_list_two, state_two_ids)
-        if state_one_ids:
-            # Here we are just handling missing Type.ARTISTS from list
-            if state_one_ids[0] == Type.ARTISTS:
-                from lollypop.shown import ShownLists
-                shown_lists = ShownLists.get(SelectionListMask.LIST_ONE)
-                ids = [l[0] for l in shown_lists]
-                if Type.ARTISTS not in ids:
-                    self._list_one.add_value((Type.ARTISTS,
-                                             _("All artists"), ""))
-            self._list_one.select_ids(state_one_ids)
-        elif not App().window.is_adaptive:
-            self._list_one.select_first()
+        try:
+            state_one_ids = App().settings.get_value("state-one-ids")
+            state_two_ids = App().settings.get_value("state-two-ids")
+            if state_two_ids and not state_one_ids:
+                sidebar_content = App().settings.get_enum("sidebar-content")
+                if sidebar_content == SidebarContent.GENRES:
+                    self.show_artists_albums(state_two_ids)
+                    return
+                else:
+                    state_one_ids = state_two_ids
+                    state_two_ids = []
+            if state_two_ids:
+                self._list_two.connect("populated",
+                                       select_list_two,
+                                       state_two_ids)
+            if state_one_ids:
+                if state_one_ids[0] == Type.ALBUM:
+                    self._list_one.select_first()
+                    album = Album(state_two_ids[0])
+                    self.show_view(state_one_ids, album)
+                # Here we are just handling missing Type.ARTISTS from list
+                elif state_one_ids[0] == Type.ARTISTS:
+                    from lollypop.shown import ShownLists
+                    shown_lists = ShownLists.get(SelectionListMask.LIST_ONE)
+                    ids = [l[0] for l in shown_lists]
+                    if Type.ARTISTS not in ids:
+                        self._list_one.add_value((Type.ARTISTS,
+                                                 _("All artists"), ""))
+                self._list_one.select_ids(state_one_ids)
+            elif not App().window.is_adaptive:
+                self._list_one.select_first()
+        except Exception as e:
+            Logger.error("ListsContainer::_reload_list_view(): %s", e)
 
 ############
 # PRIVATE  #
