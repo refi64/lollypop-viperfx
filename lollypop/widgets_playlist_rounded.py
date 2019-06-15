@@ -130,6 +130,10 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayPlaylistHelper):
             @param event as Gdk.Event
         """
         if event.button == 1:
+            # User clicked on random, clear cached one
+            if self._data == Type.RANDOMS:
+                App().albums.clear_cached_randoms()
+                App().tracks.clear_cached_randoms()
             self.activate()
         elif event.button == 3:
             self.__popup_menu(self)
