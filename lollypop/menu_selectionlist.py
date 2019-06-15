@@ -145,7 +145,6 @@ class SelectionListMenu(Gio.Menu):
                                          GLib.Variant("ai", ids))
                 App().settings.set_value("startup-two-ids",
                                          GLib.Variant("ai", []))
-        self.popdown()
 
     def __on_default_change_state(self, action, variant, rowid):
         """
@@ -168,7 +167,7 @@ class SelectionListMenu(Gio.Menu):
             else:
                 startup_one_ids = None
                 startup_two_ids = [rowid]
-        self.popdown()
+
         if startup_one_ids is not None:
             App().settings.set_value("startup-one-ids",
                                      GLib.Variant("ai", startup_one_ids))
