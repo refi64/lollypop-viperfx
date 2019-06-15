@@ -19,6 +19,7 @@ from lollypop.widgets_settings_appearance import AppearanceSettingsWidget
 from lollypop.widgets_settings_behaviour import BehaviourSettingsWidget
 from lollypop.widgets_settings_collections import CollectionsSettingsWidget
 from lollypop.widgets_settings_web import WebSettingsWidget
+from lollypop.widgets_settings_devices import DevicesSettingsWidget
 
 
 class SettingsDialog:
@@ -55,6 +56,11 @@ class SettingsDialog:
         web_label = Gtk.Label.new(_("Web"))
         web_label.set_tooltip_text(_("Configure Web services"))
         web_label.show()
+        device_widget = DevicesSettingsWidget()
+        device_widget.show()
+        device_label = Gtk.Label.new(_("Devices"))
+        device_label.set_tooltip_text(_("Manage devices"))
+        device_label.show()
 
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/SettingsDialog.ui")
@@ -63,6 +69,7 @@ class SettingsDialog:
         notebook.append_page(behaviour_widget, behaviour_label)
         notebook.append_page(collections_widget, collections_label)
         notebook.append_page(web_widget, web_label)
+        notebook.append_page(device_widget, device_label)
 
         if dialog_type == Type.SETTINGS_BEHAVIOUR:
             notebook.set_current_page(1)

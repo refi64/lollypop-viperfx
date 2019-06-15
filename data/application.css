@@ -40,16 +40,20 @@
     min-height: 6px;
 }
 
-.usagebar-green progress{
+.usagebar-green progress {
     background-color: shade(green, 1.4);
 }
 
-.usagebar-orange progress{
+.usagebar-orange progress {
     background-color: orange;
 }
 
-.usagebar-red progress{
+.usagebar-red progress {
     background-color: red;
+}
+
+.red {
+    color: red;
 }
 
 .progressbar-button {

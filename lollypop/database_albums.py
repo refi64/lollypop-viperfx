@@ -1075,6 +1075,15 @@ class AlbumsDatabase:
             Logger.error("AlbumsDatabase::calculate_artist_ids(): %s" % e)
         return ret
 
+    def remove_device(self, index):
+        """
+            Remove device from DB
+            @param index as int => device index
+        """
+        with SqlCursor(App().db, True) as sql:
+            sql.execute("UPDATE albums SET synced = synced & ~(1<<?)",
+                        (index,))
+
     def count(self):
         """
             Count albums

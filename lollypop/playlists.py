@@ -678,6 +678,15 @@ class Playlists(GObject.GObject):
         track_uris = album.track_uris
         return len(set(playlist_uris) & set(track_uris)) == len(track_uris)
 
+    def remove_device(self, index):
+        """
+            Remove device from DB
+            @param index as int => device index
+        """
+        with SqlCursor(self, True) as sql:
+            sql.execute("UPDATE playlists SET synced = synced & ~(1<<?)",
+                        (index,))
+
     def import_tracks(self, f):
         """
             Import file as playlist

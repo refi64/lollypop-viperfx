@@ -113,7 +113,12 @@ class SyncMenu(Gio.Menu):
         else:
             devices = list(App().settings.get_value("devices"))
             if name not in devices:
-                devices.append(name)
+                # Take an empty device index
+                if "" in devices:
+                    index = devices.index("")
+                    devices[index] = name
+                else:
+                    devices.append(name)
                 App().settings.set_value("devices",
                                          GLib.Variant("as", devices))
             index = devices.index(name) + 1
