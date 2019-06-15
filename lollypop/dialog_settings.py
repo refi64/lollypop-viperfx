@@ -69,7 +69,10 @@ class SettingsDialog:
         notebook.append_page(behaviour_widget, behaviour_label)
         notebook.append_page(collections_widget, collections_label)
         notebook.append_page(web_widget, web_label)
-        notebook.append_page(device_widget, device_label)
+        devices = list(filter(("").__ne__,
+                              App().settings.get_value("devices")))
+        if devices:
+            notebook.append_page(device_widget, device_label)
 
         if dialog_type == Type.SETTINGS_BEHAVIOUR:
             notebook.set_current_page(1)
