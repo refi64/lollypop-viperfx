@@ -189,8 +189,9 @@ class Type:
     SETTINGS_DEVICES = -19
     EQUALIZER = -20
     GENRES = -21
-    ALBUM = -22
-    WEB = -23
+    # WEB is stored in DB, can't be changed
+    WEB = -22
+    ALBUM = -23
     ALL = -100
     CURRENT = -101
     DEVICE_ALBUMS = -1000
