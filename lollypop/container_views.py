@@ -541,7 +541,7 @@ class ViewsContainer:
             else:
                 self.show_view(state_one_ids, None, False)
                 self.show_view(state_one_ids, state_two_ids)
-        elif state_one_ids and state_one_ids != Type.ARTISTS:
+        elif state_one_ids and state_one_ids[0] != Type.ARTISTS:
             self.show_view(state_one_ids)
         elif state_two_ids:
             self.show_view(state_two_ids)
