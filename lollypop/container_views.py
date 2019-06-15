@@ -275,7 +275,7 @@ class ViewsContainer:
             return playlist_ids
 
         from lollypop.view_playlists_manager import PlaylistsManagerView
-        view = PlaylistsManagerView(None, ViewType.SCROLLED)
+        view = PlaylistsManagerView(None, ViewType.SCROLLED | ViewType.DEVICES)
         view.show()
         loader = Loader(target=load, view=view)
         loader.start()

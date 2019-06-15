@@ -36,14 +36,16 @@ class PlaylistsManagerView(FlowBoxView):
         self._empty_icon_name = "emblem-documents-symbolic"
         self.__obj = obj
         self.__signal_id = None
-        new_playlist_button = Gtk.Button(_("New playlist"))
-        new_playlist_button.connect("clicked", self.__on_new_button_clicked)
-        new_playlist_button.set_property("halign", Gtk.Align.CENTER)
-        new_playlist_button.set_hexpand(True)
-        new_playlist_button.set_margin_top(5)
-        new_playlist_button.show()
-        self.insert_row(0)
-        self.attach(new_playlist_button, 0, 0, 1, 1)
+        if not view_type & ViewType.DEVICES:
+            new_playlist_button = Gtk.Button(_("New playlist"))
+            new_playlist_button.connect("clicked",
+                                        self.__on_new_button_clicked)
+            new_playlist_button.set_property("halign", Gtk.Align.CENTER)
+            new_playlist_button.set_hexpand(True)
+            new_playlist_button.set_margin_top(5)
+            new_playlist_button.show()
+            self.insert_row(0)
+            self.attach(new_playlist_button, 0, 0, 1, 1)
         self._widget_class = PlaylistRoundedWidget
 
     def populate(self, items=None):
