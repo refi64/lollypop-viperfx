@@ -46,6 +46,9 @@ class SettingsViewRow(Gtk.ListBoxRow):
         elif row_type == Type.SETTINGS_WEB:
             main_label = Gtk.Label.new(_("Web"))
             sub_label = Gtk.Label.new(_("Configure Web services"))
+        elif row_type == Type.SETTINGS_DEVICES:
+            main_label = Gtk.Label.new(_("Devices"))
+            sub_label = Gtk.Label.new(_("Manage devices"))
         main_label.set_property("halign", Gtk.Align.START)
         main_label.get_style_context().add_class("bold")
         sub_label.set_property("halign", Gtk.Align.START)
@@ -87,7 +90,8 @@ class SettingsView(View):
         for row_type in [Type.SETTINGS_APPEARANCE,
                          Type.SETTINGS_BEHAVIOUR,
                          Type.SETTINGS_COLLECTIONS,
-                         Type.SETTINGS_WEB]:
+                         Type.SETTINGS_WEB,
+                         Type.SETTINGS_DEVICES]:
             row = SettingsViewRow(row_type)
             row.show()
             self.__listbox.add(row)
@@ -160,6 +164,10 @@ class SettingsChildView(View):
             from lollypop.widgets_settings_web\
                 import WebSettingsWidget
             widget = WebSettingsWidget()
+        elif view_type == Type.SETTINGS_DEVICES:
+            from lollypop.widgets_settings_devices\
+                import DevicesSettingsWidget
+            widget = DevicesSettingsWidget()
         child = widget.get_child()
         if isinstance(child, Gtk.Box):
             child.set_spacing(20)

@@ -93,7 +93,8 @@ class ViewsContainer:
                              Type.SETTINGS_APPEARANCE,
                              Type.SETTINGS_BEHAVIOUR,
                              Type.SETTINGS_COLLECTIONS,
-                             Type.SETTINGS_WEB]:
+                             Type.SETTINGS_WEB,
+                             Type.SETTINGS_DEVICES]:
             view = self._get_view_settings(item_ids[0])
         elif item_ids[0] == Type.ALL:
             view = self._get_view_albums(item_ids, [])

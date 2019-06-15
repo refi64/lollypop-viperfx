@@ -186,10 +186,11 @@ class Type:
     SETTINGS_BEHAVIOUR = -16
     SETTINGS_COLLECTIONS = -17
     SETTINGS_WEB = -18
-    EQUALIZER = -19
-    GENRES = -20
-    ALBUM = -21
-    WEB = -22
+    SETTINGS_DEVICES = -19
+    EQUALIZER = -20
+    GENRES = -21
+    ALBUM = -22
+    WEB = -23
     ALL = -100
     CURRENT = -101
     DEVICE_ALBUMS = -1000
