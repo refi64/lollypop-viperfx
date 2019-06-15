@@ -13,7 +13,6 @@
 from gi.repository import Gio, GLib
 
 from hashlib import sha256
-from gettext import gettext as _
 
 from lollypop.define import App
 from lollypop.logger import Logger
@@ -31,8 +30,6 @@ class SyncMenu(Gio.Menu):
         Gio.Menu.__init__(self)
         for name in App().window.toolbar.end.devices_popover.devices:
             self.__add_sync_action(name)
-        if not App().window.toolbar.end.devices_popover.devices:
-            self.append(_("No device connected"), "app.none")
 
 #######################
 # PROTECTED           #
