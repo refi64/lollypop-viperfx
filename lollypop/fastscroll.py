@@ -202,7 +202,8 @@ class FastScroll(Gtk.ScrolledWindow):
             @param scrolled as Gtk.ScrolledWindow
             @param event as Gdk.Event
         """
-        self.__main_scrolled.do_scroll_event(self.__main_scrolled, event)
+        adj = self.__main_scrolled.get_vadjustment()
+        adj.set_value(adj.get_value() + (event.delta_y * 50))
         return True
 
     def __on_main_scrolled(self, adj):
