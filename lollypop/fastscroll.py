@@ -102,8 +102,8 @@ class FastScroll(Gtk.ScrolledWindow):
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▼")
         label.show()
         self.__grid.add(label)
-        GLib.idle_add(self.__check_value_to_mark)
-        GLib.idle_add(self.__set_margin)
+        GLib.idle_add(self.__set_margin, priority=GLib.PRIORITY_LOW)
+        GLib.idle_add(self.__check_value_to_mark, priority=GLib.PRIORITY_LOW)
 
 #######################
 # PRIVATE             #
