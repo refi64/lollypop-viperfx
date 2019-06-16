@@ -200,7 +200,7 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Pass event to main scrolled
             @param scrolled as Gtk.ScrolledWindow
-            @param event as Gdk.Event
+            @param event as Gdk.EventScroll
         """
         adj = self.__main_scrolled.get_vadjustment()
         adj.set_value(adj.get_value() + (event.delta_y * 50))

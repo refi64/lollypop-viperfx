@@ -57,7 +57,7 @@ class SelectionListMenu(Gio.Menu):
         if not App().settings.get_value("save-state") and\
                 (rowid in [Type.POPULARS, Type.RADIOS, Type.LOVED,
                            Type.ALL, Type.RECENTS, Type.YEARS,
-                           Type.RANDOMS, Type.NEVER,
+                           Type.RANDOMS, Type.NEVER, Type.GENRES,
                            Type.PLAYLISTS, Type.ARTISTS, Type.WEB] or
                  mask & SelectionListMask.PLAYLISTS):
             startup_menu = Gio.Menu()
