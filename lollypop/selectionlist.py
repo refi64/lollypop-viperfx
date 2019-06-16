@@ -220,8 +220,6 @@ class SelectionList(LazyLoadingView):
         self.__listbox.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.__listbox.show()
         self._viewport.add(self.__listbox)
-        self._scrolled.connect("enter-notify-event", self.__on_enter_notify)
-        self._scrolled.connect("leave-notify-event", self.__on_leave_notify)
         overlay = Gtk.Overlay.new()
         overlay.set_hexpand(True)
         overlay.set_vexpand(True)
@@ -571,31 +569,6 @@ class SelectionList(LazyLoadingView):
                 if row.id >= 0 and row.name == artist:
                     row.set_artwork()
                     break
-
-    def __on_enter_notify(self, widget, event):
-        """
-            Disable shortcuts
-            @param widget as Gtk.widget
-            @param event as Gdk.Event
-        """
-        if widget.get_vadjustment().get_upper() >\
-                widget.get_allocated_height() and\
-                self.__mask & SelectionListMask.ARTISTS:
-            self.__fastscroll.show()
-
-    def __on_leave_notify(self, widget, event):
-        """
-            Hide popover
-            @param widget as Gtk.widget
-            @param event as GdK.Event
-        """
-        allocation = widget.get_allocation()
-        if event.x <= 0 or\
-           event.x >= allocation.width or\
-           event.y <= 0 or\
-           event.y >= allocation.height:
-            if self.__mask & SelectionListMask.ARTISTS:
-                self.__fastscroll.hide()
 
     def __on_row_selected(self, listbox, row):
         """

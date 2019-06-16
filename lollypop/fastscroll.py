@@ -22,7 +22,6 @@ from lollypop.localized import index_of
 class FastScroll(Gtk.ScrolledWindow):
     """
         Widget showing letter and allowing fast scroll on click
-        Do not call show on widget, not needed
     """
 
     def __init__(self, listbox, scrolled):
@@ -33,7 +32,6 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         Gtk.ScrolledWindow.__init__(self)
         self.__main_scrolled = scrolled
-        self.__leave_timeout_id = None
         self.get_style_context().add_class("no-border")
         self.set_margin_end(10)
         self.set_vexpand(True)
@@ -61,9 +59,9 @@ class FastScroll(Gtk.ScrolledWindow):
         """
             Clear values
         """
+        self.hide()
         for child in self.__grid.get_children():
             child.destroy()
-        self.hide()
 
     def clear_chars(self):
         """
@@ -86,6 +84,7 @@ class FastScroll(Gtk.ScrolledWindow):
         """
         if not self.__chars:
             return
+        self.show()
         label = Gtk.Label.new()
         label.set_margin_start(10)
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▲")
@@ -105,22 +104,6 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__grid.add(label)
         GLib.idle_add(self.__check_value_to_mark)
         GLib.idle_add(self.__set_margin)
-
-    def show(self):
-        """
-            Show widget, remove hide timeout if running
-        """
-        if self.__leave_timeout_id is not None:
-            GLib.source_remove(self.__leave_timeout_id)
-            self.__leave_timeout_id = None
-        Gtk.ScrolledWindow.show(self)
-
-    def hide(self):
-        """
-            Hide widget, clean timeout
-        """
-        self.__leave_timeout_id = None
-        Gtk.ScrolledWindow.hide(self)
 
 #######################
 # PRIVATE             #
@@ -231,15 +214,3 @@ class FastScroll(Gtk.ScrolledWindow):
         if self.__chars:
             GLib.idle_add(self.__check_value_to_mark)
             GLib.idle_add(self.__set_margin)
-
-    def __on_leave_notify(self, widget, event):
-        """
-            Force hide after a timeout that can be killed by show
-        """
-        def hide():
-            self.__leave_timeout_id = None
-            self.hide()
-        if self.__leave_timeout_id is not None:
-            GLib.source_remove(self.__leave_timeout_id)
-            self.__leave_timeout_id = None
-        self.__leave_timeout_id = GLib.timeout_add(250, hide)
