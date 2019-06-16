@@ -155,7 +155,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             self.__clean_queue()
             App().task_helper.run(
                        self.__scrobble,
-                       ", ".join(track.artists),
+                       track.artists[0],
                        track.album_name,
                        track.title,
                        timestamp,
@@ -172,7 +172,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
                 track.id > 0 and self.available:
             App().task_helper.run(
                        self.__now_playing,
-                       ", ".join(track.artists),
+                       track.artists[0],
                        track.album_name,
                        track.title,
                        int(track.duration),

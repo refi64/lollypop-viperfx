@@ -177,10 +177,9 @@ class ListenBrainz(GObject.GObject):
             Build payload from track
             @param track as Track
         """
-        artists = ", ".join(track.artists)
         payload = {
             "track_metadata": {
-                "artist_name": artists,
+                "artist_name": track.artists[0],
                 "track_name": track.title,
                 "release_name": track.album_name,
                 "additional_info": {
