@@ -103,24 +103,6 @@ class FastScroll(Gtk.ScrolledWindow):
         label.set_markup('<span font="Monospace"><b>%s</b></span>' % "▼")
         label.show()
         self.__grid.add(label)
-        GLib.idle_add(self.__set_margin, priority=GLib.PRIORITY_LOW)
-        GLib.idle_add(self.__check_value_to_mark, priority=GLib.PRIORITY_LOW)
-
-    def show(self):
-        """
-            Show widget, remove hide timeout if running
-        """
-        if self.__leave_timeout_id is not None:
-            GLib.source_remove(self.__leave_timeout_id)
-            self.__leave_timeout_id = None
-        Gtk.ScrolledWindow.show(self)
-
-    def hide(self):
-        """
-            Hide widget, clean timeout
-        """
-        self.__leave_timeout_id = None
-        Gtk.ScrolledWindow.hide(self)
 
 #######################
 # PRIVATE             #
@@ -229,17 +211,6 @@ class FastScroll(Gtk.ScrolledWindow):
             @param adj as Gtk.Adjustement
         """
         if self.__chars:
+            self.show()
             GLib.idle_add(self.__check_value_to_mark)
             GLib.idle_add(self.__set_margin)
-
-    def __on_leave_notify(self, widget, event):
-        """
-            Force hide after a timeout that can be killed by show
-        """
-        def hide():
-            self.__leave_timeout_id = None
-            self.hide()
-        if self.__leave_timeout_id is not None:
-            GLib.source_remove(self.__leave_timeout_id)
-            self.__leave_timeout_id = None
-        self.__leave_timeout_id = GLib.timeout_add(250, hide)
