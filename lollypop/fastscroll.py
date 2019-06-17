@@ -38,9 +38,8 @@ class FastScroll(Gtk.ScrolledWindow):
         self.set_margin_end(10)
         self.set_vexpand(True)
         self.set_policy(Gtk.PolicyType.NEVER,
-                        Gtk.PolicyType.EXTERNAL)
+                        Gtk.PolicyType.NEVER)
         self.set_property("halign", Gtk.Align.END)
-        self.get_vscrollbar().hide()
         self.__chars = []
         self.__listbox = listbox
         self.__scrolled = scrolled
@@ -54,7 +53,7 @@ class FastScroll(Gtk.ScrolledWindow):
         eventbox.show()
         self.add(eventbox)
         self.__main_scrolled.get_vadjustment().connect(
-            "value_changed", self.__on_main_scrolled)
+            "value_changed", self.__on_value_changed)
         self.connect("scroll-event", self.__on_scroll_event)
 
     def clear(self):
@@ -206,7 +205,7 @@ class FastScroll(Gtk.ScrolledWindow):
         adj.set_value(adj.get_value() + (event.delta_y * 50))
         return True
 
-    def __on_main_scrolled(self, adj):
+    def __on_value_changed(self, adj):
         """
             Show a popover with current letter
             @param adj as Gtk.Adjustement
