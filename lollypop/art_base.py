@@ -139,6 +139,28 @@ class BaseArt(GObject.GObject):
 #######################
 # PROTECTED           #
 #######################
+    def _save_pixbuf_from_data(self, path, data):
+        """
+            Save a pixbuf at path from data
+            @param path as str
+            @param data as bytes
+        """
+        # Create an empty file
+        if data is None:
+            f = Gio.File.new_for_path(path)
+            fstream = f.replace(None, False,
+                                Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                None)
+            fstream.close()
+        else:
+            bytes = GLib.Bytes(data)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+            stream.close()
+            pixbuf.savev(path, "jpeg", ["quality"],
+                         [str(App().settings.get_value(
+                             "cover-quality").get_int32())])
+
     def _crop_pixbuf(self, pixbuf, wanted_width, wanted_height):
         """
             Crop pixbuf
