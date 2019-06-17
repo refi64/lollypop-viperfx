@@ -246,9 +246,9 @@ class SelectionList(LazyLoadingView):
             @param [(int, str, optional str)], will be deleted
         """
         self.__sort = False
+        self._scrolled.get_vadjustment().set_value(0)
         self.clear()
         self.__add_values(values)
-        self._scrolled.get_vadjustment().set_value(0)
 
     def remove_value(self, object_id):
         """
