@@ -285,7 +285,7 @@ class Application(Gtk.Application):
         result = []
         # Do not use set() + filter() because we want to keep order
         for device in devices:
-            if device not in result:
+            if device not in result and device != "":
                 result.append(device)
         return result
 

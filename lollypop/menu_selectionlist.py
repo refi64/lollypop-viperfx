@@ -35,21 +35,26 @@ class SelectionListMenu(Gio.Menu):
         self.__widget = widget
         self.__rowid = rowid
         self.__mask = mask
-
-        # Devices
         section = None
-        if mask & SelectionListMask.PLAYLISTS:
+
+        if not App().devices and mask & (SelectionListMask.LIST_ONE |
+                                         SelectionListMask.LIST_TWO |
+                                         SelectionListMask.ARTISTS_VIEW):
+            section = Gio.Menu()
+            section.append(_("No connected devices"), "app.none")
+        elif mask & SelectionListMask.PLAYLISTS:
             from lollypop.menu_sync import SyncPlaylistsMenu
             section = SyncPlaylistsMenu(rowid)
         elif rowid > 0:
             from lollypop.menu_sync import SyncAlbumsMenu
             if mask & SelectionListMask.GENRES:
                 section = SyncAlbumsMenu([rowid], [])
-            elif mask & SelectionListMask.ARTISTS:
+            else:
                 section = SyncAlbumsMenu([], [rowid])
         elif rowid == Type.ALL or rowid == Type.ARTISTS:
             from lollypop.menu_sync import SyncAlbumsMenu
             section = SyncAlbumsMenu([], [])
+
         if section is not None:
             self.append_section(_("Synchronization"), section)
 
@@ -79,15 +84,14 @@ class SelectionListMenu(Gio.Menu):
             self.append_section(_("Startup"), startup_menu)
         # Shown menu
         if mask & (SelectionListMask.LIST_ONE |
-                   SelectionListMask.LIST_TWO) and rowid < 0:
+                   SelectionListMask.LIST_TWO |
+                   SelectionListMask.ARTISTS_VIEW) and rowid < 0:
             shown_menu = Gio.Menu()
             if mask & SelectionListMask.PLAYLISTS:
                 lists = ShownPlaylists.get(True)
                 wanted = App().settings.get_value("shown-playlists")
             else:
                 mask |= SelectionListMask.COMPILATIONS
-                if mask & SelectionListMask.LIST_ONE:
-                    mask |= SelectionListMask.LIST_DEVICE
                 lists = ShownLists.get(mask, True)
                 wanted = App().settings.get_value("shown-album-lists")
             for item in lists:

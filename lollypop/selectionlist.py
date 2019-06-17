@@ -528,9 +528,6 @@ class SelectionList(LazyLoadingView):
             row = listbox.get_row_at_y(event.y)
             if row is not None:
                 menu = SelectionListMenu(self, row.id, self.mask)
-                if row.id > 0 and\
-                        not App().window.toolbar.end.devices_popover.devices:
-                    menu.append(_("No connected devices"), "app.none")
                 popover = Popover()
                 popover.bind_model(menu, None)
                 popover.set_relative_to(listbox)
