@@ -324,9 +324,10 @@ class ArtDownloader(Downloader):
                 uri, cancellable)
             if status:
                 decode = json.loads(data.decode("utf-8"))
-                for item in decode["album"]:
-                    uri = item["strAlbumThumb"]
-                    return uri
+                if decode["album"]:
+                    for item in decode["album"]:
+                        uri = item["strAlbumThumb"]
+                        return uri
         except Exception as e:
             Logger.error("ArtDownloader::_get_audiodb_album_artwork_uri: %s"
                          % e)
