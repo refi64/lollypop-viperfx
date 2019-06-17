@@ -49,7 +49,7 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__grid.show()
         eventbox = Gtk.EventBox()
         eventbox.add(self.__grid)
-        eventbox.connect("button-press-event", self.__on_button_press)
+        eventbox.connect("button-press-event", self.__on_button_press_event)
         eventbox.show()
         self.add(eventbox)
         self.__main_scrolled.get_vadjustment().connect(
@@ -165,7 +165,7 @@ class FastScroll(Gtk.ScrolledWindow):
             else:
                 child.set_opacity(0.4)
 
-    def __on_button_press(self, eventbox, event):
+    def __on_button_press_event(self, eventbox, event):
         """
             Scroll to activated child char
         """
