@@ -15,12 +15,12 @@ from gi.repository import Gtk, GLib, Gio
 from gettext import gettext as _
 
 from lollypop.view import View
-from lollypop.define import App, Sizing, Type
+from lollypop.define import App, Sizing, Type, ArtBehaviour
 from lollypop.controller_information import InformationController
 from lollypop.utils import escape, get_network_available
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
-from lollypop.helper_art import ArtBehaviour
+from lollypop.helper_lyrics import SyncLyricsHelper
 
 
 class LyricsView(View, InformationController):
@@ -39,6 +39,7 @@ class LyricsView(View, InformationController):
                                        ArtBehaviour.DARKER)
         self.__current_changed_id = None
         self.__size_allocate_timeout_id = None
+        self.__lyrics_timeout_id = None
         self.__downloads_running = 0
         self.__lyrics_text = ""
         self.__size = 0
@@ -53,12 +54,14 @@ class LyricsView(View, InformationController):
         # an overlay
         self.add(builder.get_object("widget"))
         self.connect("size-allocate", self.__on_size_allocate)
+        self.__sync_lyrics_helper = SyncLyricsHelper()
 
     def populate(self, track):
         """
             Set lyrics
             @param track as Track
         """
+        self.__update_lyrics_style()
         self.__current_track = track
         self.update_artwork(self.__size, self.__size)
         self.__lyrics_text = ""
@@ -66,6 +69,14 @@ class LyricsView(View, InformationController):
         self.__lyrics_label.set_text(_("Loading…"))
         self.__cancellable.cancel()
         self.__cancellable = Gio.Cancellable()
+
+        self.__sync_lyrics_helper.load(track)
+        if self.__sync_lyrics_helper.available:
+            if self.__lyrics_timeout_id is None:
+                self.__lyrics_timeout_id = GLib.timeout_add(
+                    250, self.__show_sync_lyrics)
+            return
+
         # First try to get lyrics from tags
         from lollypop.tagreader import TagReader
         reader = TagReader()
@@ -116,6 +127,9 @@ class LyricsView(View, InformationController):
             Connect player signal
             @param widget as Gtk.Widget
         """
+        if self.__lyrics_timeout_id is not None:
+            GLib.source_remove(self.__lyrics_timeout_id)
+            self.__lyrics_timeout_id = None
         if self.__current_changed_id is not None:
             App().player.disconnect(self.__current_changed_id)
             self.__current_changed_id = None
@@ -123,6 +137,28 @@ class LyricsView(View, InformationController):
 ############
 # PRIVATE  #
 ############
+    def __show_sync_lyrics(self):
+        """
+            Show sync lyrics for track
+        """
+        timestamp = App().player.position / 1000000
+        (previous, current, next) =\
+            self.__sync_lyrics_helper.get_lyrics_for_timestamp(timestamp)
+        lyrics = ""
+        for line in previous:
+            if line:
+                escaped = GLib.markup_escape_text(line)
+                lyrics += "<span alpha='20000'>%s</span>" % escaped + "\n"
+        for line in current:
+            escaped = GLib.markup_escape_text(line)
+            lyrics += "<span>%s</span>" % escaped + "\n"
+        for line in next:
+            if line:
+                escaped = GLib.markup_escape_text(line)
+                lyrics += "<span alpha='20000'>%s</span>" % escaped + "\n"
+        self.__lyrics_label.set_markup(lyrics)
+        return True
+
     def __get_blob(self, text):
         """
             Translate text with current user locale
@@ -221,10 +257,21 @@ class LyricsView(View, InformationController):
         context.add_class("black")
         width = self.get_allocated_width()
         if width > Sizing.LARGE:
-            context.add_class("text-x-large")
+            if self.__sync_lyrics_helper.available:
+                context.add_class("text-xx-large")
+            else:
+                context.add_class("text-x-large")
         elif width > Sizing.MONSTER:
-            context.add_class("text-large")
+            if self.__sync_lyrics_helper.available:
+                context.add_class("text-x-large")
+            else:
+                context.add_class("text-large")
         elif width > Sizing.BIG:
+            if self.__sync_lyrics_helper.available:
+                context.add_class("text-large")
+            else:
+                context.add_class("text-medium")
+        elif self.__sync_lyrics_helper.available:
             context.add_class("text-medium")
 
     def __handle_size_allocation(self):
