@@ -61,16 +61,14 @@ class LyricsView(View, InformationController):
             Set lyrics
             @param track as Track
         """
-        self.__update_lyrics_style()
         self.__current_track = track
         self.update_artwork(self.__size, self.__size)
         self.__lyrics_text = ""
-        self.__update_lyrics_style()
         self.__lyrics_label.set_text(_("Loading…"))
         self.__cancellable.cancel()
         self.__cancellable = Gio.Cancellable()
-
         self.__sync_lyrics_helper.load(track)
+        self.__update_lyrics_style()
         if self.__sync_lyrics_helper.available:
             self.__translate_button.hide()
             if self.__lyrics_timeout_id is None:
