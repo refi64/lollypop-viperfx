@@ -72,11 +72,13 @@ class LyricsView(View, InformationController):
 
         self.__sync_lyrics_helper.load(track)
         if self.__sync_lyrics_helper.available:
+            self.__translate_button.hide()
             if self.__lyrics_timeout_id is None:
                 self.__lyrics_timeout_id = GLib.timeout_add(
                     250, self.__show_sync_lyrics)
             return
-
+        else:
+            self.__translate_button.show()
         # First try to get lyrics from tags
         from lollypop.tagreader import TagReader
         reader = TagReader()
