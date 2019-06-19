@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
 
@@ -21,6 +21,61 @@ from lollypop.utils import escape, get_network_available
 from lollypop.logger import Logger
 from lollypop.helper_task import TaskHelper
 from lollypop.helper_lyrics import SyncLyricsHelper
+
+
+class LyricsLabel(Gtk.Stack):
+    """
+        Lyrics label with effect on change
+    """
+
+    def __init__(self):
+        """
+            Init label
+        """
+        Gtk.Stack.__init__(self)
+        self.__label1 = Gtk.Label.new()
+        self.__label1.set_line_wrap_mode(Pango.WrapMode.WORD)
+        self.__label1.set_line_wrap(True)
+        self.__label1.set_justify(Gtk.Justification.CENTER)
+        self.__label2 = Gtk.Label.new()
+        self.__label2.set_line_wrap_mode(Pango.WrapMode.WORD)
+        self.__label2.set_line_wrap(True)
+        self.__label2.set_justify(Gtk.Justification.CENTER)
+        self.__label1.show()
+        self.__label2.show()
+        self.add(self.__label1)
+        self.add(self.__label2)
+        self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.set_transition_duration(200)
+        self.set_size_request(300, -1)
+
+    def set_text(self, text):
+        """
+            Set label text
+            @param text as str
+        """
+        self.next()
+        self.get_visible_child().set_text(text)
+
+    def set_markup(self, markup):
+        """
+            Set label markup
+            @param markup as str
+        """
+        self.next()
+        self.get_visible_child().set_markup(markup)
+
+    def next(self):
+        """
+            Show next label
+        """
+        for child in self.get_children():
+            if child != self.get_visible_child():
+                self.set_visible_child(child)
+                break
+
+    def do_get_preferred_width(self):
+        return (300, 300)
 
 
 class LyricsView(View, InformationController):
@@ -48,7 +103,9 @@ class LyricsView(View, InformationController):
         builder.add_from_resource("/org/gnome/Lollypop/LyricsView.ui")
         builder.connect_signals(self)
         self._artwork = builder.get_object("cover")
-        self.__lyrics_label = builder.get_object("lyrics_label")
+        self.__lyrics_label = LyricsLabel()
+        self.__lyrics_label.show()
+        builder.get_object("viewport").add(self.__lyrics_label)
         self.__translate_button = builder.get_object("translate_button")
         # We do not use View scrolled window because it does not work with
         # an overlay
