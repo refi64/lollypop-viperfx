@@ -47,7 +47,6 @@ class LyricsLabel(Gtk.Stack):
         self.add(self.__label2)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self.set_transition_duration(200)
-        self.set_size_request(300, -1)
 
     def set_text(self, text):
         """
@@ -73,9 +72,6 @@ class LyricsLabel(Gtk.Stack):
             if child != self.get_visible_child():
                 self.set_visible_child(child)
                 break
-
-    def do_get_preferred_width(self):
-        return (300, 300)
 
 
 class LyricsView(View, InformationController):
