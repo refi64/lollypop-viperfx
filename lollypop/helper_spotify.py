@@ -17,7 +17,7 @@ from base64 import b64encode
 from time import time, sleep
 
 from lollypop.logger import Logger
-from lollypop.objects import Album
+from lollypop.objects import Album, Track
 from lollypop.helper_task import TaskHelper
 from lollypop.define import SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, App
 
@@ -305,10 +305,17 @@ class SpotifyHelper(GObject.Object):
         for item in payload:
             if cancellable.is_cancelled():
                 raise Exception("cancelled")
-            if App().db.exists_in_db(item["album"]["name"],
-                                     [artist["name"]
-                                     for artist in item["artists"]],
-                                     item["name"]):
+            track_id = App().db.exists_in_db(item["album"]["name"],
+                                             [artist["name"]
+                                             for artist in item["artists"]],
+                                             item["name"])
+            if track_id is not None:
+                track = Track(track_id)
+                if track.album.id not in album_ids:
+                    print("track", track.is_web)
+                    if track.is_web:
+                        self.__create_album(track.album.id, None, cancellable)
+                    album_ids.append(track.album.id)
                 continue
             (album_id,
              track_id,
@@ -334,10 +341,19 @@ class SpotifyHelper(GObject.Object):
         for album_item in payload:
             if cancellable.is_cancelled():
                 return
-            if App().db.exists_in_db(album_item["name"],
+            album_id = App().db.exists_in_db(
+                                     album_item["name"],
                                      [artist["name"]
-                                     for artist in album_item["artists"]],
-                                     None):
+                                      for artist in album_item["artists"]],
+                                     None)
+            if album_id is not None:
+                if album_id not in album_ids:
+                    album = Album(album_id)
+                    if album.tracks:
+                        track = album.tracks[0]
+                        if track.is_web:
+                            self.__create_album(album_id, None, cancellable)
+                    album_ids.append(album_id)
                 continue
             uri = "https://api.spotify.com/v1/albums/%s" % album_item["id"]
             token = "Bearer %s" % self.__token

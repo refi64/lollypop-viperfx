@@ -196,7 +196,7 @@ class Database:
             @param track as str
             @param album as str
             @param artists as [str]
-            @return bool
+            @return object
         """
         artist_ids = []
         for artist in artists:
@@ -204,14 +204,14 @@ class Database:
             artist_ids.append(artist_id)
         album_id = App().albums.get_id_by_name_artists(album, artist_ids)
         if album_id is None:
-            return False
+            return None
         elif App().albums.get_mtime(album_id) > 0 or track is None:
-            return True
+            return album_id
         else:
             track_id = App().tracks.get_id_by(track,
                                               album_id,
                                               artist_ids)
-            return track_id is not None
+            return track_id
 
 #######################
 # PRIVATE             #
