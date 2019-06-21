@@ -13,6 +13,7 @@
 from gi.repository import GLib
 
 from lollypop.define import Type, App, ArtBehaviour
+from lollypop.objects import Album
 
 
 class InformationController:
@@ -98,7 +99,7 @@ class InformationController:
         elif App().player.current_track.id is not None:
             if self.__per_track_cover:
                 effect = self.__effect | ArtBehaviour.NO_CACHE
-                album = App().player.current_track.album
+                album = Album(App().player.current_track.album.id)
                 App().art.clean_album_cache(album)
                 album.set_tracks([App().player.current_track])
             else:
