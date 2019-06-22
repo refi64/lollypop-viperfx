@@ -91,7 +91,6 @@
         <property name="valign">center</property>
         <child>
           <object class="GtkButton" id="play-button">
-            <property name="width_request">48</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -99,7 +98,7 @@
             <property name="image">image1</property>
             <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
             <style>
-              <class name="menu-button"/>
+              <class name="menu-button-48"/>
               <class name="black-transparent"/>
             </style>
           </object>
@@ -111,7 +110,6 @@
         </child>
         <child>
           <object class="GtkButton" id="add-button">
-            <property name="width_request">48</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -119,7 +117,7 @@
             <property name="image">image3</property>
             <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
             <style>
-              <class name="menu-button"/>
+              <class name="menu-button-48"/>
               <class name="black-transparent"/>
             </style>
           </object>
@@ -131,7 +129,6 @@
         </child>
         <child>
           <object class="GtkToggleButton" id="lastfm-button">
-            <property name="width_request">48</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -139,7 +136,7 @@
             <property name="image">image4</property>
             <signal name="toggled" handler="_on_similars_button_toggled" swapped="no"/>
             <style>
-              <class name="menu-button"/>
+              <class name="menu-button-48"/>
               <class name="black-transparent"/>
             </style>
           </object>
@@ -151,7 +148,6 @@
         </child>
         <child>
           <object class="GtkButton" id="jump-button">
-            <property name="width_request">48</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
@@ -161,7 +157,7 @@
             <property name="image">image2</property>
             <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
             <style>
-              <class name="menu-button"/>
+              <class name="menu-button-48"/>
               <class name="black-transparent"/>
             </style>
           </object>

@@ -593,36 +593,37 @@ popover.background separator {
   	color: inherit;
 }
 
-.light-button {
+.menu-button-48 {
     opacity: 0.6;
-    box-shadow: none;
-	min-height: 24px;
-	min-width: 24px;
+	box-shadow: none;
+	min-height: 36px;
+	min-width: 48px;
 	padding-left: 4px;
 	padding-right: 4px;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	background-image: none;
-	background-color: transparent;
 	border-style: solid;
 	border-image-source: none;
-    border-bottom-width: 0px;
-    border-top-width: 0px;
-    border-left-width: 0px;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    border-left-width: 1px;
     border-right-width: 1px;
-    border-radius: 0px;
-    border-color: alpha(@theme_fg_color, 0.3);
+    border-color: transparent;
     color: inherit;
 }
 
-.light-button-no-right-border {
-    border-right-width: 0px;
+
+.menu-button-48:disabled {
+    opacity: 0.4;
 }
 
-.light-button:hover {
+.menu-button-48:hover {
     color: inherit;
+    border-color: alpha(@theme_fg_color, 0.1);
   	opacity: 1;
 }
+
 
 .menu-button {
     opacity: 0.6;
@@ -654,10 +655,6 @@ popover.background separator {
   	opacity: 1;
 }
 
-.menu-button-no-border:hover
-{
-    border-color: transparent;
-}
 
 .album-menu-button {
     opacity: 0.6;

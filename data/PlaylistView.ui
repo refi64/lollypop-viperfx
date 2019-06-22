@@ -36,7 +36,6 @@
     <property name="can_focus">False</property>
     <property name="halign">end</property>
     <property name="valign">center</property>
-    <property name="column_spacing">20</property>
     <child>
       <object class="GtkButton" id="play_button">
         <property name="visible">True</property>
@@ -45,11 +44,10 @@
         <property name="tooltip_text" translatable="yes">Play</property>
         <property name="halign">start</property>
         <property name="image">image1</property>
-        <property name="relief">none</property>
         <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
         <style>
-          <class name="light-button"/>
-          <class name="light-button-no-right-border"/>
+          <class name="menu-button-48"/>
+          <class name="black-transparent"/>
         </style>
       </object>
       <packing>
@@ -65,11 +63,10 @@
         <property name="tooltip_text" translatable="yes">Play playlist randomized</property>
         <property name="halign">start</property>
         <property name="image">image5</property>
-        <property name="relief">none</property>
         <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
         <style>
-          <class name="light-button"/>
-          <class name="light-button-no-right-border"/>
+          <class name="menu-button-48"/>
+          <class name="black-transparent"/>
         </style>
       </object>
       <packing>
@@ -86,11 +83,10 @@
         <property name="tooltip_text" translatable="yes">Go to current track</property>
         <property name="halign">start</property>
         <property name="image">image2</property>
-        <property name="relief">none</property>
         <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
         <style>
-          <class name="light-button"/>
-          <class name="light-button-no-right-border"/>
+          <class name="menu-button-48"/>
+          <class name="black-transparent"/>
         </style>
       </object>
       <packing>
@@ -105,11 +101,10 @@
         <property name="receives_default">True</property>
         <property name="halign">start</property>
         <property name="image">image7</property>
-        <property name="relief">none</property>
         <signal name="clicked" handler="_on_menu_button_clicked" swapped="no"/>
         <style>
-          <class name="menu-button"/>
-          <class name="light-button-no-right-border"/>
+          <class name="menu-button-48"/>
+          <class name="black-transparent"/>
         </style>
       </object>
       <packing>
@@ -117,6 +112,9 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
+    <style>
+      <class name="linked"/>
+    </style>
   </object>
   <object class="GtkLabel" id="title">
     <property name="height_request">32</property>
