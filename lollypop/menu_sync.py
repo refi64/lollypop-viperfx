@@ -57,23 +57,29 @@ class SyncMenu(Gio.Menu):
             @param name as str
             @param status as bool
         """
+        def on_get_synced(synced, sync_action):
+            sync_action.set_state(GLib.Variant.new_boolean(synced))
+            sync_action.set_enabled(True)
+
         synced = False
         devices = list(App().settings.get_value("devices"))
         action_name = "sync_%s" % name
         encoded = sha256(action_name.encode("utf-8")).hexdigest()
-        try:
-            if name == self.__all_devices:
-                index = 0
-            else:
-                index = devices.index(name) + 1
-            synced = self._get_synced(index)
-        except Exception as e:
-            Logger.warning("SyncMenu::__add_sync_action(): %s", e)
         sync_action = Gio.SimpleAction.new_stateful(
                                           encoded,
                                           None,
                                           GLib.Variant.new_boolean(synced))
         App().add_action(sync_action)
+        sync_action.set_enabled(False)
+        try:
+            if name == self.__all_devices:
+                index = 0
+            else:
+                index = devices.index(name) + 1
+            App().task_helper.run(self._get_synced, index,
+                                  callback=(on_get_synced, sync_action))
+        except Exception as e:
+            Logger.warning("SyncMenu::__add_sync_action(): %s", e)
         if name != self.__all_devices:
             self.__actions.append(sync_action)
         sync_action.connect("change-state",
@@ -107,7 +113,7 @@ class SyncMenu(Gio.Menu):
         action.set_state(variant)
         if name == self.__all_devices:
             synced = variant.get_boolean()
-            self._set_synced(0, synced)
+            App().task_helper.run(self._set_synced, 0, synced)
             for action in self.__actions:
                 action.set_enabled(not synced)
         else:
@@ -122,7 +128,9 @@ class SyncMenu(Gio.Menu):
                 App().settings.set_value("devices",
                                          GLib.Variant("as", devices))
             index = devices.index(name) + 1
-            self._set_synced(index, variant.get_boolean())
+            App().task_helper.run(self._set_synced,
+                                  index,
+                                  variant.get_boolean())
 
 
 class SyncAlbumMenu(SyncMenu):
