@@ -107,6 +107,14 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.add(self.__grid)
             self.set_artwork()
 
+    def set_label(self, string):
+        """
+            Set label for row
+            @param string as str
+        """
+        self.__name = string
+        self.__label.set_markup(GLib.markup_escape_text(string))
+
     def set_artwork(self):
         """
             set_artwork widget
@@ -282,12 +290,12 @@ class SelectionList(LazyLoadingView):
         found = False
         for child in self.__listbox.get_children():
             if child.id == object_id:
-                child.set_name(name)
+                child.set_label(name)
                 found = True
                 break
         if not found:
             self.__fastscroll.clear()
-            row = self.__add_value((object_id, name, name))
+            row = self.__add_value(object_id, name, name)
             row.populate()
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__fastscroll.populate()
@@ -308,7 +316,7 @@ class SelectionList(LazyLoadingView):
         item_ids = set([child.id for child in self.__listbox.get_children()])
         for value in values:
             if not value[0] in item_ids:
-                row = self.__add_value(value)
+                row = self.__add_value(value[0], value[1], value[2])
                 row.populate()
         if self.__mask & SelectionListMask.ARTISTS:
             self.__fastscroll.populate()
@@ -437,7 +445,7 @@ class SelectionList(LazyLoadingView):
     def __add_values(self, values):
         """
             Add values to the list
-            @param items as [(int,str)]
+            @param items as [(int, str, str)]
         """
         if values:
             (rowid, name, sortname) = values.pop(0)
