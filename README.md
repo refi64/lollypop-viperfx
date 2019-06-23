@@ -60,12 +60,12 @@ Installation of `pylast` is required for integration with [Last.fm](http://last.
 # pip3 install pylast
 ```
 
-### On Debian GNU/Linux (Jessie)
+### On Debian/Ubuntu
 
 ```bash
 $ git clone https://gitlab.gnome.org/World/lollypop.git
 $ cd lollypop
-# apt-get install meson libglib2.0-dev yelp-tools libgirepository1.0-dev libgtk-3-dev
+# apt-get install meson libglib2.0-dev yelp-tools libgirepository1.0-dev libgtk-3-dev gir1.2-totemplparser-1.0
 $ meson builddir --prefix=/usr
 # sudo ninja -C builddir install
 ```
