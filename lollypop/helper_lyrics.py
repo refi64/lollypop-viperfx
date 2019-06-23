@@ -35,7 +35,19 @@ class SyncLyricsHelper:
         self.__timestamps = {}
         uri_no_ext = ".".join(track.uri.split(".")[:-1])
         self.__lrc_file = Gio.File.new_for_uri(uri_no_ext + ".lrc")
-        self.__get_timestamps()
+        if self.__lrc_file.query_exists():
+            self.__get_timestamps()
+        else:
+            from lollypop.tagreader import TagReader
+            reader = TagReader()
+            try:
+                info = reader.get_info(track.uri)
+            except:
+                info = None
+            if info is not None:
+                tags = info.get_tags()
+                for (lyrics, timestamp) in reader.get_synced_lyrics(tags):
+                    self.__timestamps[timestamp] = lyrics
 
     def get_lyrics_for_timestamp(self, timestamp):
         """

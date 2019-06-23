@@ -467,7 +467,6 @@ class TagReader(Discoverer):
     def get_lyrics(self, tags):
         """
             Return lyrics for tags
-            All this code sucks
             @parma tags as Gst.TagList
             @return lyrics as str
         """
@@ -533,6 +532,54 @@ class TagReader(Discoverer):
             lyrics = get_id3()
         if not lyrics:
             lyrics = get_ogg()
+        return lyrics
+
+    def get_synced_lyrics(self, tags):
+        """
+            Return synced lyrics for tags
+            @parma tags as Gst.TagList
+            @return lyrics as ([str, int])
+        """
+        def decode_lyrics(bytes_list, encoding):
+            lyrics = []
+            from lollypop.utils import decodeUnicode, splitUnicode
+            try:
+                for frame in bytes_list:
+                    (l, t) = splitUnicode(frame, encoding)
+                    if l:
+                        lyrics.append((decodeUnicode(l, encoding),
+                                       int.from_bytes(t[1:4], "big")))
+            except Exception as e:
+                Logger.warning("TagReader::get_synced_lyrics1(): %s", e)
+            return lyrics
+
+        def get_id3():
+            try:
+                size = tags.get_tag_size("private-id3v2-frame")
+                for i in range(0, size):
+                    (exists, sample) = tags.get_sample_index(
+                        "private-id3v2-frame",
+                        i)
+                    if not exists:
+                        continue
+                    (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
+                    if not exists:
+                        continue
+                    prefix = (m.data[0:4])
+                    if prefix not in [b"SYLT"]:
+                        continue
+                    frame = m.data[10:]
+                    encoding = frame[0:1]
+                    string = decode_lyrics(frame.split(b"\n"), encoding)
+                    if string is not None:
+                        return string
+            except Exception as e:
+                Logger.error("TagReader::get_synced_lyrics2(): %s" % e)
+            return ""
+
+        if tags is None:
+            return ""
+        lyrics = get_id3()
         return lyrics
 
     def add_artists(self, artists, sortnames, mb_artist_ids=""):
