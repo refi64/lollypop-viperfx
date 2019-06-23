@@ -193,6 +193,7 @@ class SettingsChildView(View):
             @param widget as Gtk.Widget
         """
         App().lookup_action("settings").set_enabled(False)
+        App().enable_special_shortcuts(False)
 
     def _on_unmap(self, widget):
         """
@@ -200,3 +201,4 @@ class SettingsChildView(View):
             @param widget as Gtk.Widget
         """
         App().lookup_action("settings").set_enabled(True)
+        App().enable_special_shortcuts(True)

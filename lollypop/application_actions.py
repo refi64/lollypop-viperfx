@@ -83,6 +83,35 @@ class ApplicationActions:
 
         App().scanner.connect("scan-finished", self.__on_scan_finished)
         self.__setup_global_shortcuts()
+        self.enable_special_shortcuts(True)
+
+    def enable_special_shortcuts(self, enable):
+        """
+            Enable special shortcuts
+            @param enable as bool
+        """
+        if enable:
+            if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
+                App().set_accels_for_action("app.seek(10)", ["Left"])
+                App().set_accels_for_action("app.seek(-10)", ["Right"])
+            else:
+                App().set_accels_for_action("app.seek(10)", ["Right"])
+                App().set_accels_for_action("app.seek(-10)", ["Left"])
+            App().set_accels_for_action("app.shortcut::play_pause",
+                                        ["c", "space"])
+            App().set_accels_for_action("app.shortcut::play", ["x"])
+            App().set_accels_for_action("app.shortcut::stop", ["v"])
+            App().set_accels_for_action("app.shortcut::next", ["n"])
+            App().set_accels_for_action("app.shortcut::prev", ["p"])
+        else:
+            App().set_accels_for_action("app.seek(10)", [])
+            App().set_accels_for_action("app.seek(-10)", [])
+            App().set_accels_for_action("app.shortcut::go_back", [])
+            App().set_accels_for_action("app.shortcut::play_pause", [])
+            App().set_accels_for_action("app.shortcut::play", [])
+            App().set_accels_for_action("app.shortcut::stop", [])
+            App().set_accels_for_action("app.shortcut::next", [])
+            App().set_accels_for_action("app.shortcut::prev", [])
 
 #######################
 # PRIVATE             #
@@ -91,6 +120,12 @@ class ApplicationActions:
         """
             Setup global shortcuts
         """
+        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
+            App().set_accels_for_action("app.shortcut::go_back",
+                                        ["<Alt>Right", "Back"])
+        else:
+            App().set_accels_for_action("app.shortcut::go_back",
+                                        ["<Alt>Left", "Back"])
         App().set_accels_for_action("app.shortcut::filter", ["<Control>i"])
         App().set_accels_for_action("app.shortcut::volume",
                                     ["<Shift><Alt>v"])
@@ -108,26 +143,6 @@ class ApplicationActions:
         App().set_accels_for_action("app.shortcuts", ["F2"])
         App().set_accels_for_action("app.help", ["F1"])
         App().set_accels_for_action("app.quit", ["<Control>q"])
-        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-            App().set_accels_for_action("app.seek(10)",
-                                        ["<Shift><Alt>Left"])
-            App().set_accels_for_action("app.seek(-10)",
-                                        ["<Shift><Alt>Right"])
-            App().set_accels_for_action("app.shortcut::go_back",
-                                        ["<Alt>Right", "Back"])
-        else:
-            App().set_accels_for_action("app.seek(10)",
-                                        ["<Shift><Alt>Right"])
-            App().set_accels_for_action("app.seek(-10)",
-                                        ["<Shift><Alt>Left"])
-            App().set_accels_for_action("app.shortcut::go_back",
-                                        ["<Alt>Left", "Back"])
-        App().set_accels_for_action("app.shortcut::play_pause",
-                                    ["<Alt>c"])
-        App().set_accels_for_action("app.shortcut::play", ["<Alt>x"])
-        App().set_accels_for_action("app.shortcut::stop", ["<Alt>v"])
-        App().set_accels_for_action("app.shortcut::next", ["<Alt>n"])
-        App().set_accels_for_action("app.shortcut::prev", ["<Alt>p"])
         App().set_accels_for_action("app.shortcut::loved", ["<Alt>l"])
         App().set_accels_for_action("app.shortcut::reload", ["<Control>r"])
         App().set_accels_for_action("app.shortcut::volume_up",

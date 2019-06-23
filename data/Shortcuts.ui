@@ -112,28 +112,28 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Pause</property>
-                <property name="accelerator">&lt;Alt&gt;c</property>
+                <property name="accelerator">c</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Stop</property>
-                <property name="accelerator">&lt;Alt&gt;v</property>
+                <property name="accelerator">v</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Next track</property>
-                <property name="accelerator">&lt;Alt&gt;n</property>
+                <property name="accelerator">n</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Previous track</property>
-                <property name="accelerator">&lt;Alt&gt;p</property>
+                <property name="accelerator">p</property>
               </object>
             </child>
             <child>
@@ -161,14 +161,14 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Skip backward in track</property>
-                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;Left</property>
+                <property name="accelerator">Left</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Skip forward in track</property>
-                <property name="accelerator">&lt;Shift&gt;&lt;Alt&gt;Right</property>
+                <property name="accelerator">Right</property>
               </object>
             </child>
             <child>

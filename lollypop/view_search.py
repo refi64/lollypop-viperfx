@@ -258,6 +258,7 @@ class SearchView(BaseView, Gtk.Bin):
             Init signals and grab focus
             @param widget as Gtk.Widget
         """
+        App().enable_special_shortcuts(False)
         if GLib.find_program_in_path("youtube-dl") is None or\
                 not get_network_available("SPOTIFY") or\
                 not get_network_available("YOUTUBE"):
@@ -277,6 +278,7 @@ class SearchView(BaseView, Gtk.Bin):
             Clean up
             @param widget as Gtk.Widget
         """
+        App().enable_special_shortcuts(True)
         if self.__new_album_signal_id is not None:
             App().spotify.disconnect(self.__new_album_signal_id)
             self.__new_album_signal_id = None

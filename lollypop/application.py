@@ -55,7 +55,7 @@ from lollypop.helper_art import ArtHelper
 from lollypop.collectionscanner import CollectionScanner
 
 
-class Application(Gtk.Application):
+class Application(Gtk.Application, ApplicationActions):
     """
         Lollypop application:
             - Handle appmenu
@@ -199,7 +199,7 @@ class Application(Gtk.Application):
         if not self.__gtk_dark:
             dark = self.settings.get_value("dark-ui")
             settings.set_property("gtk-application-prefer-dark-theme", dark)
-        ApplicationActions()
+        ApplicationActions.__init__(self)
         startup_one_ids = self.settings.get_value("startup-one-ids")
         startup_two_ids = self.settings.get_value("startup-two-ids")
         if startup_one_ids:
