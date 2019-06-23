@@ -18,6 +18,7 @@ from lollypop.utils import get_human_duration
 from lollypop.view import LazyLoadingView
 from lollypop.widgets_playlist import PlaylistsWidget
 from lollypop.define import App, Type, ViewType, SidebarContent, MARGIN
+from lollypop.define import MARGIN_SMALL
 from lollypop.controller_view import ViewController, ViewControllerType
 from lollypop.widgets_playlist_banner import PlaylistBannerWidget
 
@@ -63,17 +64,24 @@ class PlaylistsView(LazyLoadingView, ViewController):
         self.__playlists_widget.show()
         self._viewport.add(self.__playlists_widget)
         self.__title_label.set_margin_start(MARGIN)
-        self.__duration_label.set_margin_start(MARGIN)
         self.__buttons.set_margin_end(MARGIN)
         if self.__view_type & (ViewType.POPOVER | ViewType.FULLSCREEN):
-            self.__duration_label.set_margin_end(MARGIN)
             self.__title_label.get_style_context().add_class("dim-label")
             self.__duration_label.get_style_context().add_class("dim-label")
             self.__widget.add(self.__title_label)
+            self.__jump_button = Gtk.Button.new_from_icon_name(
+                "go-jump-symbolic", Gtk.IconSize.BUTTON)
+            self.__jump_button.connect("clicked", self._on_jump_button_clicked)
+            self.__jump_button.set_relief(Gtk.ReliefStyle.NONE)
+            self.__jump_button.show()
+            self.__jump_button.set_margin_end(MARGIN_SMALL)
             self.__widget.add(self.__duration_label)
+            self.__widget.add(self.__jump_button)
+            self.__widget.set_margin_bottom(MARGIN_SMALL)
             self.add(self.__widget)
             self.add(self._scrolled)
         else:
+            self.__duration_label.set_margin_start(MARGIN)
             self._overlay = Gtk.Overlay.new()
             self._overlay.add(self._scrolled)
             self._overlay.show()
