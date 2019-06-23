@@ -27,11 +27,10 @@
     </ul>
   </description>
   <releases>
-    <release version="1.1.0" date="2019-06-20">
+    <release version="1.1.1" date="2019-06-23">
       <description>
-	<ul>New fullscreen mode</ul>
-	<ul>New MTP sync mode</ul>
-	<ul>New synced lyrics support</ul>
+	<ul>Bug fixes</ul>
+	<ul>Read synced lyrics from tags</ul>
       </description>
     </release>
   </releases>
