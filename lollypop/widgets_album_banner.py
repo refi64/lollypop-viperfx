@@ -101,6 +101,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__grid = builder.get_object("grid")
         self.__widget = builder.get_object("widget")
         if view_type & ViewType.ALBUM:
+            menu_button.get_style_context().add_class("black-transparent")
             self.get_style_context().add_class("black")
             self.__artwork.get_style_context().add_class("black")
             self.connect("size-allocate", self.__on_size_allocate)

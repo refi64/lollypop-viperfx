@@ -84,7 +84,6 @@
                 <signal name="clicked" handler="_on_menu_button_clicked" swapped="no"/>
                 <style>
                   <class name="menu-button-48"/>
-                  <class name="black-transparent"/>
                 </style>
               </object>
               <packing>
