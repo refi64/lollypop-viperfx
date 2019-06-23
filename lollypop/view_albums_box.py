@@ -18,6 +18,7 @@ from lollypop.view_flowbox import FlowBoxView
 from lollypop.widgets_album_simple import AlbumSimpleWidget
 from lollypop.define import App, Type, ViewType
 from lollypop.objects import Album
+from lollypop.logger import Logger
 from lollypop.utils import get_icon_name, get_network_available
 from lollypop.controller_view import ViewController, ViewControllerType
 
@@ -128,19 +129,23 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
             Set active ids
         """
-        FlowBoxView._on_map(self, widget)
-        if self._view_type & ViewType.SMALL:
-            return
-        if self.__genre_ids:
-            App().settings.set_value("state-one-ids",
-                                     GLib.Variant("ai", self.__genre_ids))
-            App().settings.set_value("state-two-ids",
-                                     GLib.Variant("ai", self.__artist_ids))
-        else:
-            App().settings.set_value("state-one-ids",
-                                     GLib.Variant("ai", self.__artist_ids))
-            App().settings.set_value("state-two-ids",
-                                     GLib.Variant("ai", []))
+        try:
+            FlowBoxView._on_map(self, widget)
+            if self._view_type & ViewType.SMALL:
+                return
+            if self.__genre_ids:
+                App().settings.set_value("state-one-ids",
+                                         GLib.Variant("ai", self.__genre_ids))
+                App().settings.set_value("state-two-ids",
+                                         GLib.Variant("ai", self.__artist_ids))
+            else:
+                App().settings.set_value("state-one-ids",
+                                         GLib.Variant("ai", self.__artist_ids))
+                App().settings.set_value("state-two-ids",
+                                         GLib.Variant("ai", []))
+        except:
+            Logger.warning(
+                "https://gitlab.gnome.org/World/lollypop/issues/1864")
 
 #######################
 # PRIVATE             #
