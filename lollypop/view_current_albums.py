@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.view_albums_list import AlbumsListView
-from lollypop.define import App, ViewType
+from lollypop.define import App, ViewType, MARGIN_SMALL
 
 
 class CurrentAlbumsView(AlbumsListView):
@@ -39,6 +39,7 @@ class CurrentAlbumsView(AlbumsListView):
             "light-button-no-right-border")
         self.__clear_button.set_sensitive(App().player.albums)
         self.__clear_button.connect("clicked", self.__on_clear_clicked)
+        self.__clear_button.set_margin_end(MARGIN_SMALL)
         self.__save_button = Gtk.Button.new_from_icon_name(
             "document-new-symbolic",
             Gtk.IconSize.MENU)
@@ -70,6 +71,7 @@ class CurrentAlbumsView(AlbumsListView):
             grid.add(self.__save_button)
             grid.add(self.__clear_button)
         grid.show_all()
+        grid.set_margin_bottom(MARGIN_SMALL)
         self.set_row_spacing(2)
         self.insert_row(0)
         self.attach(grid, 0, 0, 1, 1)
