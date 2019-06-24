@@ -216,7 +216,6 @@ class SelectionList(LazyLoadingView):
         self.__base_type = base_type
         self.__sort = False
         self.__mask = 0
-        self.__selected_ids = []
         self.__height = SelectionListRow.get_best_height(self)
         self.__listbox = Gtk.ListBox()
         self.__listbox.connect("row-selected", self.__on_row_selected)
@@ -327,13 +326,9 @@ class SelectionList(LazyLoadingView):
             @param ids as [int]
         """
         self.__listbox.unselect_all()
-        if ids:
-            self.__selected_ids = ids
-            for row in self.__listbox.get_children():
-                if row.id in ids:
-                    self.__listbox.select_row(row)
-        else:
-            self.__selected_ids = []
+        for row in self.__listbox.get_children():
+            if row.id in ids:
+                row.activate()
 
     def grab_focus(self):
         """
@@ -386,8 +381,7 @@ class SelectionList(LazyLoadingView):
         try:
             self.__listbox.unselect_all()
             row = self.__listbox.get_children()[0]
-            self.__selected_ids = [row.id]
-            self.__listbox.select_row(row)
+            row.activate()
         except Exception as e:
             Logger.warning("SelectionList::select_first(): %s", e)
 
@@ -428,7 +422,7 @@ class SelectionList(LazyLoadingView):
             Get selected ids
             @return array of ids as [int]
         """
-        return self.__selected_ids
+        return [row.id for row in self.__listbox.get_selected_rows()]
 
 #######################
 # PRIVATE             #
@@ -459,12 +453,9 @@ class SelectionList(LazyLoadingView):
             self.emit("populated")
             GLib.idle_add(self.lazy_loading)
             # Scroll to first selected item
-            if self.__selected_ids:
-                selected_id = self.__selected_ids[0]
-                for row in self.__listbox.get_children():
-                    if row.id == selected_id:
-                        GLib.idle_add(self.__scroll_to_row, row)
-                        break
+            for row in self.__listbox.get_selected_rows():
+                GLib.idle_add(self.__scroll_to_row, row)
+                break
 
     def __add_value(self, rowid, name, sortname):
         """
@@ -545,23 +536,21 @@ class SelectionList(LazyLoadingView):
                 rect.width = rect.height = 1
                 popover.set_pointing_to(rect)
                 popover.popup()
+                return True
         elif event.button == 1:
             state = event.get_state()
             static_selected = self.selected_ids and self.selected_ids[0] < 0
             if (not state & Gdk.ModifierType.CONTROL_MASK and
                     not state & Gdk.ModifierType.SHIFT_MASK) or\
                     static_selected:
-                listbox.unselect_all()
-                self.__selected_ids = []
+                listbox.set_selection_mode(Gtk.SelectionMode.SINGLE)
             row = listbox.get_row_at_y(event.y)
             if row is not None and not (row.id < 0 and self.selected_ids):
                 # User clicked on random, clear cached one
                 if row.id == Type.RANDOMS:
                     App().albums.clear_cached_randoms()
                     App().tracks.clear_cached_randoms()
-                self.__selected_ids.append(row.id)
-                listbox.select_row(row)
-        return True
+            listbox.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
 
     def __on_artist_artwork_changed(self, art, artist):
         """
@@ -579,7 +568,6 @@ class SelectionList(LazyLoadingView):
         """
             Emit selected item signal
         """
-        if row is None or not self.__selected_ids:
+        if row is None:
             return
-        if row.id == self.__selected_ids[-1]:
-            self.emit("item-selected")
+        self.emit("item-selected")
