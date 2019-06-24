@@ -302,8 +302,7 @@
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_reveal_button_clicked" swapped="no"/>
         <style>
-          <class name="light-button"/>
-          <class name="light-button-no-right-border"/>
+          <class name="menu-button"/>
         </style>
       </object>
       <packing>
