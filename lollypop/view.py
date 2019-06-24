@@ -71,8 +71,16 @@ class View(BaseView, Gtk.Grid):
             self.__search_entry.connect("key-press-event",
                                         self.__on_key_press_event)
             self.__search_entry.show()
+            button = Gtk.Button.new_from_icon_name("window-close-symbolic",
+                                                   Gtk.IconSize.MENU)
+            button.set_relief(Gtk.ReliefStyle.NONE)
+            button.connect("clicked", lambda x: self.__close_search_widget())
+            button.show()
+            grid.add(self.__search_entry)
+            grid.add(button)
+            grid.show()
             self.__search_bar = Gtk.SearchBar.new()
-            self.__search_bar.add(self.__search_entry)
+            self.__search_bar.add(grid)
             self.add(self.__search_bar)
         else:
             self._filter = None
@@ -227,18 +235,24 @@ class View(BaseView, Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+    def __close_search_widget(self):
+        """
+            Close search widget
+        """
+        self.__search_entry.set_text("")
+        self.__search_bar.set_search_mode(False)
+        self.__search_bar.hide()
+        App().enable_special_shortcuts(True)
+
     def __on_key_press_event(self, widget, event):
         """
-            If Esc, hide widget, why GTK doesn"t do that?
+            If Esc, hide widget, why GTK doesn't do that?
             Otherwise, we get an ugly frame
             @param widget as Gtk.SearchEntry
             @param event as Gdk.Event
         """
         if event.keyval == 65307:
-            self.__search_entry.set_text("")
-            self.__search_bar.set_search_mode(False)
-            self.__search_bar.hide()
-            App().enable_special_shortcuts(True)
+            self.__close_search_widget()
             return True
 
     def __on_leave_notify(self, widget, event):

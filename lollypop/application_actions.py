@@ -300,13 +300,6 @@ class ApplicationActions:
                                      GLib.Variant("b", not value))
             App().main_window.container.show_sidebar(not value)
         elif string == "filter":
-            from lollypop.selectionlist import SelectionList
-            focused = App().window.get_focus()
-            if focused is not None:
-                ancestor = focused.get_ancestor(SelectionList)
-                if ancestor is not None:
-                    ancestor.enable_filter()
-                    return
             if App().main_window.container.view is not None:
                 App().main_window.container.view.enable_filter()
         elif string == "volume":

@@ -18,7 +18,7 @@ from locale import strcoll
 from lollypop.view import LazyLoadingView
 from lollypop.fastscroll import FastScroll
 from lollypop.define import Type, App, ArtSize, SelectionListMask
-from lollypop.define import SidebarContent, ArtBehaviour, ViewType
+from lollypop.define import SidebarContent, ArtBehaviour
 from lollypop.logger import Logger
 from lollypop.utils import get_icon_name, on_query_tooltip
 from lollypop.shown import ShownLists, ShownPlaylists
@@ -58,7 +58,6 @@ class SelectionListRow(Gtk.ListBoxRow):
         self.__name = name
         self.__sortname = sortname
         self.__mask = mask
-        self.__filtered = False
 
         if rowid == Type.SEPARATOR:
             height = -1
@@ -145,15 +144,6 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__artwork.hide()
             self.emit("populated")
 
-    def set_filtered(self, b):
-        """
-            Set widget filtered
-            @param b as bool
-            @return bool (should be shown)
-        """
-        self.__filtered = b
-        return not b
-
     @property
     def is_populated(self):
         """
@@ -177,21 +167,6 @@ class SelectionListRow(Gtk.ListBoxRow):
             @return str
         """
         return self.__sortname
-
-    @property
-    def filtered(self):
-        """
-            True if filtered by parent
-            @return bool
-        """
-        return self.__filtered
-
-    @property
-    def filter(self):
-        """
-            @return str
-        """
-        return self.__name
 
     @property
     def id(self):
@@ -237,7 +212,7 @@ class SelectionList(LazyLoadingView):
             Init Selection list ui
             @param base_type as SelectionListMask
         """
-        LazyLoadingView.__init__(self, view_type=ViewType.FILTERED)
+        LazyLoadingView.__init__(self)
         self.__base_type = base_type
         self.__sort = False
         self.__mask = 0
