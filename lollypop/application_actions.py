@@ -106,7 +106,6 @@ class ApplicationActions:
         else:
             App().set_accels_for_action("app.seek(10)", [])
             App().set_accels_for_action("app.seek(-10)", [])
-            App().set_accels_for_action("app.shortcut::go_back", [])
             App().set_accels_for_action("app.shortcut::play_pause", [])
             App().set_accels_for_action("app.shortcut::play", [])
             App().set_accels_for_action("app.shortcut::stop", [])
