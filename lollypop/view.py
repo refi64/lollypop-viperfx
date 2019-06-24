@@ -209,10 +209,20 @@ class View(BaseView, Gtk.Grid):
         pass
 
     def _on_map(self, widget):
-        pass
+        """
+            Handles special shortcuts
+            @param widget as Gtk.Widget
+        """
+        if self._filter is not None and self.__search_bar.get_search_mode():
+            App().enable_special_shortcuts(False)
 
     def _on_unmap(self, widget):
-        pass
+        """
+            Handles special shortcuts
+            @param widget as Gtk.Widget
+        """
+        if self._filter is not None and self.__search_bar.get_search_mode():
+            App().enable_special_shortcuts(True)
 
 #######################
 # PRIVATE             #
@@ -253,7 +263,6 @@ class View(BaseView, Gtk.Grid):
             App().scanner.disconnect(self.__scanner_signal_id)
             self.__scanner_signal_id = None
         self._viewport = None
-        App().enable_special_shortcuts(True)
         gc.collect()
 
 
@@ -310,6 +319,7 @@ class LazyLoadingView(View):
             Restore backup and load
             @param widget as Gtk.Widget
         """
+        View._on_map(self, widget)
         if self.__backup_queue:
             self._lazy_queue = self.__backup_queue
             GLib.idle_add(self.lazy_loading)
