@@ -105,7 +105,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Play</property>
-                <property name="accelerator">&lt;Alt&gt;x</property>
+                <property name="accelerator">x</property>
               </object>
             </child>
             <child>
