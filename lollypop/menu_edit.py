@@ -91,12 +91,12 @@ class EditMenu(Gio.Menu):
             @param Gio.SimpleAction
             @param GLib.Variant
         """
-        path = GLib.filename_from_uri(self.__object.uri)[0]
-        if GLib.find_program_in_path("flatpak-spawn") is not None:
-            argv = ["flatpak-spawn", "--host", App().art.tag_editor, path]
-        else:
-            argv = [App().art.tag_editor, path]
         try:
+            path = GLib.filename_from_uri(self.__object.uri)[0]
+            if GLib.find_program_in_path("flatpak-spawn") is not None:
+                argv = ["flatpak-spawn", "--host", App().art.tag_editor, path]
+            else:
+                argv = [App().art.tag_editor, path]
             (pid, stdin, stdout, stderr) = GLib.spawn_async(
                 argv, flags=GLib.SpawnFlags.SEARCH_PATH |
                 GLib.SpawnFlags.STDOUT_TO_DEV_NULL,
