@@ -312,7 +312,6 @@ class SpotifyHelper(GObject.Object):
             if track_id is not None:
                 track = Track(track_id)
                 if track.album.id not in album_ids:
-                    print("track", track.is_web)
                     if track.is_web:
                         self.__create_album(track.album.id, None, cancellable)
                     album_ids.append(track.album.id)
