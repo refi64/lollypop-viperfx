@@ -513,10 +513,10 @@ class SelectionList(LazyLoadingView):
                 b = row_b.name
             return strcoll(a, b)
 
-    def __on_key_press_event(self, entry, event):
+    def __on_key_press_event(self, listbox, event):
         """
-            Forward to popover history listbox if needed
-            @param entry as Gtk.Entry
+            Pass focus as signal
+            @param listbox as Gtk.ListBox
             @param event as Gdk.Event
         """
         if event.keyval in [Gdk.KEY_Left, Gdk.KEY_Right]:
