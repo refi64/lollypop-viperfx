@@ -96,6 +96,7 @@ class SelectionListRow(Gtk.ListBoxRow):
 
         if rowid == Type.SEPARATOR:
             height = -1
+            self.set_sensitive(False)
         elif self.__mask & SelectionListMask.ARTISTS and\
                 self.__rowid >= 0 and\
                 App().settings.get_value("artist-artwork"):
@@ -237,7 +238,6 @@ class SelectionList(LazyLoadingView):
         A list for artists/genres
     """
     __gsignals__ = {
-        "item-selected": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "populated": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "pass-focus": (GObject.SignalFlags.RUN_FIRST, None, ())
     }
@@ -252,23 +252,22 @@ class SelectionList(LazyLoadingView):
         self.__sort = False
         self.__mask = 0
         self.__height = SelectionListRow.get_best_height(self)
-        self._box = Gtk.ListBox()
-        self._box.connect("row-selected", self.__on_row_selected)
-        self._box.connect("button-release-event",
-                          self.__on_button_release_event)
-        self._box.connect("key-press-event",
-                          self.__on_key_press_event)
-        self._box.set_sort_func(self.__sort_func)
-        self._box.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
-        self._box.set_filter_func(self._filter_func)
-        self._box.show()
-        self._viewport.add(self._box)
+        self._listbox = Gtk.ListBox()
+        self._listbox.connect("button-release-event",
+                              self.__on_button_release_event)
+        self._listbox.connect("key-press-event",
+                              self.__on_key_press_event)
+        self._listbox.set_sort_func(self.__sort_func)
+        self._listbox.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
+        self._listbox.set_filter_func(self._filter_func)
+        self._listbox.show()
+        self._viewport.add(self._listbox)
         overlay = Gtk.Overlay.new()
         overlay.set_hexpand(True)
         overlay.set_vexpand(True)
         overlay.show()
         overlay.add(self._scrolled)
-        self.__fastscroll = FastScroll(self._box,
+        self.__fastscroll = FastScroll(self._listbox,
                                        self._scrolled)
         overlay.add_overlay(self.__fastscroll)
         self.add(overlay)
@@ -304,7 +303,7 @@ class SelectionList(LazyLoadingView):
             Remove id from list
             @param object_id as int
         """
-        for child in self._box.get_children():
+        for child in self._listbox.get_children():
             if child.id == object_id:
                 child.destroy()
                 break
@@ -316,7 +315,7 @@ class SelectionList(LazyLoadingView):
         """
         self.__sort = True
         # Do not add value if already exists
-        for child in self._box.get_children():
+        for child in self._listbox.get_children():
             if child.id == value[0]:
                 return
         row = self.__add_value(value[0], value[1], value[2])
@@ -329,7 +328,7 @@ class SelectionList(LazyLoadingView):
             @param name as str
         """
         found = False
-        for child in self._box.get_children():
+        for child in self._listbox.get_children():
             if child.id == object_id:
                 child.set_label(name)
                 found = True
@@ -350,11 +349,11 @@ class SelectionList(LazyLoadingView):
             self.__fastscroll.clear()
         # Remove not found items
         value_ids = set([v[0] for v in values])
-        for child in self._box.get_children():
+        for child in self._listbox.get_children():
             if child.id not in value_ids:
                 self.remove_value(child.id)
         # Add items which are not already in the list
-        item_ids = set([child.id for child in self._box.get_children()])
+        item_ids = set([child.id for child in self._listbox.get_children()])
         for value in values:
             if not value[0] in item_ids:
                 row = self.__add_value(value[0], value[1], value[2])
@@ -367,8 +366,8 @@ class SelectionList(LazyLoadingView):
             Select listbox items
             @param ids as [int]
         """
-        self._box.unselect_all()
-        for row in self._box.get_children():
+        self._listbox.unselect_all()
+        for row in self._listbox.get_children():
             if row.id in ids:
                 row.activate()
 
@@ -376,13 +375,13 @@ class SelectionList(LazyLoadingView):
         """
             Grab focus on treeview
         """
-        self._box.grab_focus()
+        self._listbox.grab_focus()
 
     def clear(self):
         """
             Clear treeview
         """
-        for child in self._box.get_children():
+        for child in self._listbox.get_children():
             child.destroy()
         self.__fastscroll.clear()
         self.__fastscroll.clear_chars()
@@ -421,8 +420,8 @@ class SelectionList(LazyLoadingView):
             Select first available item
         """
         try:
-            self._box.unselect_all()
-            row = self._box.get_children()[0]
+            self._listbox.unselect_all()
+            row = self._listbox.get_children()[0]
             row.activate()
         except Exception as e:
             Logger.warning("SelectionList::select_first(): %s", e)
@@ -431,7 +430,7 @@ class SelectionList(LazyLoadingView):
         """
             Redraw list
         """
-        for row in self._box.get_children():
+        for row in self._listbox.get_children():
             row.set_artwork()
 
     @property
@@ -441,6 +440,14 @@ class SelectionList(LazyLoadingView):
             @return TypeAheadPopover
         """
         return self.__type_ahead_popover
+
+    @property
+    def listbox(self):
+        """
+            Get listbox
+            @return Gtk.ListBox
+        """
+        return self._listbox
 
     @property
     def should_destroy(self):
@@ -464,7 +471,7 @@ class SelectionList(LazyLoadingView):
             Get items count in list
             @return int
         """
-        return len(self._box.get_children())
+        return len(self._listbox.get_children())
 
     @property
     def selected_ids(self):
@@ -472,7 +479,7 @@ class SelectionList(LazyLoadingView):
             Get selected ids
             @return array of ids as [int]
         """
-        return [row.id for row in self._box.get_selected_rows()]
+        return [row.id for row in self._listbox.get_selected_rows()]
 
 #######################
 # PRIVATE             #
@@ -482,7 +489,7 @@ class SelectionList(LazyLoadingView):
             Scroll to row
             @param row as SelectionListRow
         """
-        coordinates = row.translate_coordinates(self._box, 0, 0)
+        coordinates = row.translate_coordinates(self._listbox, 0, 0)
         if coordinates:
             self._scrolled.get_vadjustment().set_value(coordinates[1])
 
@@ -503,7 +510,7 @@ class SelectionList(LazyLoadingView):
             self.emit("populated")
             GLib.idle_add(self.lazy_loading)
             # Scroll to first selected item
-            for row in self._box.get_selected_rows():
+            for row in self._listbox.get_selected_rows():
                 GLib.idle_add(self.__scroll_to_row, row)
                 break
 
@@ -521,7 +528,7 @@ class SelectionList(LazyLoadingView):
         row = SelectionListRow(rowid, name, sortname,
                                self.__mask, self.__height)
         row.show()
-        self._box.add(row)
+        self._listbox.add(row)
         return row
 
     def __sort_func(self, row_a, row_b):
@@ -609,27 +616,19 @@ class SelectionList(LazyLoadingView):
             @param artist as str
         """
         if self.__mask & SelectionListMask.ARTISTS:
-            for row in self._box.get_children():
+            for row in self._listbox.get_children():
                 if row.id >= 0 and row.name == artist:
                     row.set_artwork()
                     break
-
-    def __on_row_selected(self, listbox, row):
-        """
-            Emit selected item signal
-        """
-        if row is None:
-            return
-        self.emit("item-selected")
 
     def __on_type_ahead_activate(self, entry):
         """
             Close popover and activate row
             @param entry as Gtk.Entry
         """
-        self._box.unselect_all()
+        self._listbox.unselect_all()
         self.__type_ahead_popover.popdown()
-        for row in self._box.get_children():
+        for row in self._listbox.get_children():
             style_context = row.get_style_context()
             if style_context.has_class("typeahead"):
                 row.activate()
@@ -641,12 +640,12 @@ class SelectionList(LazyLoadingView):
             @param entry as Gtk.Entry
         """
         search = entry.get_text().lower()
-        for row in self._box.get_children():
+        for row in self._listbox.get_children():
             style_context = row.get_style_context()
             style_context.remove_class("typeahead")
         if not search:
             return
-        for row in self._box.get_children():
+        for row in self._listbox.get_children():
             if row.name.lower().find(search) != -1:
                 style_context = row.get_style_context()
                 style_context.add_class("typeahead")

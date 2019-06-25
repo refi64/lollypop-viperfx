@@ -32,10 +32,12 @@ class ListsContainer:
         """
         self._list_one = SelectionList(SelectionListMask.LIST_ONE)
         self._list_two = SelectionList(SelectionListMask.LIST_TWO)
-        self._list_one.connect("item-selected", self.__on_list_one_selected)
+        self._list_one.listbox.connect("row-activated",
+                                       self.__on_list_one_activated)
+        self._list_two.listbox.connect("row-activated",
+                                       self.__on_list_two_activated)
         self._list_one.connect("populated", self.__on_list_one_populated)
         self._list_one.connect("pass-focus", self.__on_pass_focus)
-        self._list_two.connect("item-selected", self.__on_list_two_selected)
         self._list_two.connect("pass-focus", self.__on_pass_focus)
 
     def update_list_one(self, update=False):
@@ -226,12 +228,13 @@ class ListsContainer:
                         on_finished=lambda r: setup(*r))
         loader.start()
 
-    def __on_list_one_selected(self, selection_list):
+    def __on_list_one_activated(self, listbox, row):
         """
             Update view based on selected object
-            @param list as SelectionList
+            @param listbox as Gtk.ListBox
+            @param row as Gtk.ListBoxRow
         """
-        Logger.debug("Container::__on_list_one_selected()")
+        Logger.debug("Container::__on_list_one_activated()")
         self._stack.destroy_children()
         if App().window.is_adaptive:
             App().window.emit("can-go-back-changed", True)
@@ -275,7 +278,7 @@ class ListsContainer:
             view = self._get_view_genres()
         elif selected_ids[0] == Type.ARTISTS:
             view = self._get_view_artists_rounded(False)
-        elif selection_list.mask & SelectionListMask.ARTISTS:
+        elif self._list_one.mask & SelectionListMask.ARTISTS:
             if selected_ids[0] == Type.ALL:
                 view = self._get_view_albums(selected_ids, [])
             elif selected_ids[0] == Type.COMPILATIONS:
@@ -302,12 +305,13 @@ class ListsContainer:
         """
         pass
 
-    def __on_list_two_selected(self, selection_list):
+    def __on_list_two_activated(self, listbox, row):
         """
             Update view based on selected object
-            @param selection_list as SelectionList
+            @param listbox as Gtk.ListBox
+            @param row as Gtk.ListBoxRow
         """
-        Logger.debug("Container::__on_list_two_selected()")
+        Logger.debug("Container::__on_list_two_activated()")
         self._stack.destroy_children()
         if not App().window.is_adaptive:
             App().window.emit("show-can-go-back", False)
