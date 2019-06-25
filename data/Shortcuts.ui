@@ -95,6 +95,20 @@
                 <property name="accelerator">F11</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Search list one</property>
+                <property name="accelerator">&lt;Primary&gt;o</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Search list two</property>
+                <property name="accelerator">&lt;Primary&gt;t</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
