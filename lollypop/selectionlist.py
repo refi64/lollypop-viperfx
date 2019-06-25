@@ -369,7 +369,10 @@ class SelectionList(LazyLoadingView):
         self._listbox.unselect_all()
         for row in self._listbox.get_children():
             if row.id in ids:
-                row.activate()
+                self._listbox.select_row(row)
+        for row in self._listbox.get_selected_rows():
+            row.activate()
+            break
 
     def grab_focus(self):
         """
