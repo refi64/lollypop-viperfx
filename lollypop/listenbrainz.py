@@ -53,7 +53,7 @@ class ListenBrainz(GObject.GObject):
             @param track as Track
             @param time as int
         """
-        if App().settings.get_value("disable-scrobbling"):
+        if App().settings.get_value("disable-scrobbling") or track.id < 0:
             return
         payload = self.__get_payload(track)
         payload[0]["listened_at"] = time
@@ -64,7 +64,7 @@ class ListenBrainz(GObject.GObject):
             Submit a playing now notification for a track
             @param track as Track
         """
-        if App().settings.get_value("disable-scrobbling"):
+        if App().settings.get_value("disable-scrobbling") or track.id < 0:
             return
         payload = self.__get_payload(track)
         self.__submit("playing_now", payload)

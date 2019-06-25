@@ -151,7 +151,8 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param track as Track
             @param timestamp as int
         """
-        if get_network_available("LASTFM") and self.available:
+        if get_network_available("LASTFM") and\
+                track.id >= 0 and self.available:
             self.__clean_queue()
             App().task_helper.run(
                        self.__scrobble,
@@ -169,7 +170,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param track as Track
         """
         if get_network_available("LASTFM") and\
-                track.id > 0 and self.available:
+                track.id >= 0 and self.available:
             App().task_helper.run(
                        self.__now_playing,
                        track.artists[0],
