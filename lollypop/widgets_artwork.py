@@ -346,6 +346,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
         self.__timeout_id = None
         self._cancellable.cancel()
+        self._cancellable = Gio.Cancellable()
         for child in self._flowbox.get_children():
             if child.get_name() == "web":
                 child.destroy()
