@@ -37,6 +37,7 @@ class TypeAheadPopover(Gtk.Popover):
         self.__entry = Gtk.Entry()
         self.__entry.show()
         self.add(self.__entry)
+        self.connect("unmap", self.__on_unmap)
 
     @property
     def entry(self):
@@ -49,6 +50,12 @@ class TypeAheadPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __on_unmap(self, popover):
+        """
+            Clear entry
+            @param popover as Gtk.popover
+        """
+        self.__entry.set_text("")
 
 
 class SelectionListRow(Gtk.ListBoxRow):
@@ -624,7 +631,6 @@ class SelectionList(LazyLoadingView):
         for row in self._box.get_children():
             style_context = row.get_style_context()
             if style_context.has_class("typeahead"):
-                style_context.add_class("typeahead")
                 row.activate()
             style_context.remove_class("typeahead")
 
@@ -637,6 +643,8 @@ class SelectionList(LazyLoadingView):
         for row in self._box.get_children():
             style_context = row.get_style_context()
             style_context.remove_class("typeahead")
+        if not search:
+            return
         for row in self._box.get_children():
             if row.name.lower().find(search) != -1:
                 style_context = row.get_style_context()
