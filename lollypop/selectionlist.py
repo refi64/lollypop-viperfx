@@ -37,6 +37,7 @@ class TypeAheadPopover(Gtk.Popover):
         self.__entry = Gtk.Entry()
         self.__entry.show()
         self.add(self.__entry)
+        self.get_style_context().add_class("padding")
         self.connect("unmap", self.__on_unmap)
 
     @property

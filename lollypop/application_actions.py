@@ -299,9 +299,11 @@ class ApplicationActions:
         elif string == "volume_down":
             App().player.set_volume(App().player.volume - 0.1)
         elif string == "list_one_type_ahead":
-            App().window.container.list_one.type_ahead_popover.popup()
+            if App().window.container.list_one.is_visible():
+                App().window.container.list_one.type_ahead_popover.popup()
         elif string == "list_two_type_ahead":
-            App().window.container.list_two.type_ahead_popover.popup()
+            if App().window.container.list_two.is_visible():
+                App().window.container.list_two.type_ahead_popover.popup()
         elif string == "show_sidebar":
             value = App().settings.get_value("show-sidebar")
             App().settings.set_value("show-sidebar",
