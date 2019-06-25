@@ -16,6 +16,7 @@ import re
 
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
+from lollypop.utils import escape
 
 
 class RadioArt:
@@ -87,9 +88,10 @@ class RadioArt:
                                                                 width,
                                                                 height)
             else:
-                path = self.__get_radio_art_path(name)
-                if path is not None:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
+                filepath = self.__get_radio_art_path(name)
+                f = Gio.File.new_for_path(filepath)
+                if f.query_exists():
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
                                                                     width,
                                                                     height)
                 if cache and pixbuf is not None:
@@ -121,38 +123,41 @@ class RadioArt:
             @param old_name as str
             @param new_name as str
         """
-        old = "%s/%s.png" % (self._RADIOS_PATH, old_name)
-        new = "%s/%s.png" % (self._RADIOS_PATH, new_name)
+        old = self.__get_radio_art_path(old_name)
+        new = self.__get_radio_art_path(new_name)
         try:
             src = Gio.File.new_for_path(old)
             dst = Gio.File.new_for_path(new)
-            src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
+            if src.query_exists():
+                src.move(dst, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             Logger.error("RadioArt::rename_radio(): %s" % e)
 
-    def save_radio_artwork(self, pixbuf, radio):
+    def add_radio_artwork(self, name, data):
         """
-            Save pixbuf for radio
-            @param pixbuf as Gdk.Pixbuf
-            @param radio name as string
+            Add radio artwork to store
+            @param name as str
+            @param data as bytes
+            @thread safe
         """
-        try:
-            artpath = self._RADIOS_PATH + "/" +\
-                radio.replace("/", "-") + ".png"
-            pixbuf.savev(artpath, "png", [None], [None])
-        except Exception as e:
-            Logger.error("RadioArt::save_radio_artwork(): %s" % e)
+        self.uncache_radio_artwork(name)
+        filepath = "%s/%s.png" % (self._RADIOS_PATH, escape(name))
+        if data is None:
+            f = Gio.File.new_for_path(filepath)
+            fstream = f.replace(None, False,
+                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
+            fstream.close()
+        else:
+            bytes = GLib.Bytes(data)
+            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+            stream.close()
+            pixbuf.savev(filepath, "png", [None], [None])
+        GLib.idle_add(self.emit, "radio-artwork-changed", name)
 
-    def radio_artwork_update(self, name):
+    def uncache_radio_artwork(self, name):
         """
-            Announce radio logo update
-            @param name as string
-        """
-        self.emit("radio-artwork-changed", name)
-
-    def clean_radio_cache(self, name):
-        """
-            Remove logo from cache for radio
+            Remove radio artwork from cache
             @param name as string
         """
         cache_name = self.__get_radio_cache_name(name)
@@ -176,18 +181,11 @@ class RadioArt:
 #######################
     def __get_radio_art_path(self, name):
         """
-            Look for radio covers
-            @param radio name as string
-            @return cover file path as string
+            Get radio artwork path
+            @param name as str
+            @return filepath as str
         """
-        try:
-            name = name.replace("/", "-")
-            f = Gio.File.new_for_path(self._RADIOS_PATH + "/" + name + ".png")
-            if f.query_exists():
-                return self._RADIOS_PATH + "/" + name + ".png"
-            return None
-        except Exception as e:
-            Logger.error("Art::__get_radio_art_path(): %s" % e)
+        return "%s/%s.png" % (self._RADIOS_PATH, escape(name))
 
     def __get_radio_cache_name(self, name):
         """
@@ -195,7 +193,7 @@ class RadioArt:
             @param album_id as int
             @param sql as sqlite cursor
         """
-        return "@@" + name.replace("/", "-") + "@@radio@@"
+        return "@@" + escape(name) + "@@radio@@"
 
     def __on_uri_content(self, uri, status, content, name, width, height):
         """

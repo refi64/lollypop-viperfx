@@ -10,15 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, Gio
 
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
-from lollypop.define import App, ArtSize
-from lollypop.logger import Logger
-from lollypop.utils import get_network_available
+from lollypop.define import App
 from lollypop.widgets_utils import Popover
-from lollypop.helper_task import TaskHelper
+from lollypop.widgets_artwork_radio import RadioArtworkSearchWidget
 from lollypop.art import Art
 
 
@@ -35,12 +33,9 @@ class RadioPopover(Popover):
             @param radios as Radios
         """
         Popover.__init__(self)
-        self.connect("map", self.__on_map)
+        self.__uri_artwork_id = None
         self.__radio_id = radio_id
         self.__radios = radios
-        self.__start = 0
-        self.__orig_pixbufs = {}
-        self.__cancellable = Gio.Cancellable()
 
         self.__stack = Gtk.Stack()
         self.__stack.set_transition_duration(1000)
@@ -51,62 +46,30 @@ class RadioPopover(Popover):
         builder.add_from_resource("/org/gnome/Lollypop/RadioPopover.ui")
         builder.connect_signals(self)
 
-        self.__view = Gtk.FlowBox()
-        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.__view.connect("child-activated", self.__on_activate)
-        self.__view.set_max_children_per_line(100)
-        self.__view.set_property("row-spacing", 10)
-        self.__view.show()
-
-        builder.get_object("viewport").add(self.__view)
-
         self.__name_entry = builder.get_object("name")
         self.__uri_entry = builder.get_object("uri")
         self.__image_button = builder.get_object("image_button")
         self.__save_button = builder.get_object("save_button")
-        self.__spinner = builder.get_object("spinner")
-        self.__stack.add_named(builder.get_object("spinner-grid"), "spinner")
-        self.__stack.add_named(builder.get_object("notfound"), "notfound")
-        self.__stack.add_named(builder.get_object("logo"), "logo")
         self.__stack.add_named(builder.get_object("widget"), "widget")
         self.__stack.set_visible_child_name("widget")
         self.add(self.__stack)
 
         track = Track()
         if radio_id is not None:
+            name = radios.get_name(radio_id)
             track.set_radio_id(radio_id)
             rating = RatingWidget(track)
             rating.show()
             builder.get_object("widget").attach(rating, 0, 2, 2, 1)
             builder.get_object("delete_button").show()
-            self.__name_entry.set_text(radios.get_name(radio_id))
-            uri = self.__radios.get_uri(radio_id)
+            self.__name_entry.set_text(name)
+            uri = radios.get_uri(radio_id)
             if uri:
                 self.__uri_entry.set_text(uri)
 
 #######################
 # PROTECTED           #
 #######################
-    def _on_image_button_clicked(self, widget):
-        """
-            Update radio image
-            @param widget as Gtk.Widget
-        """
-        self.__save_radio()
-        self.__stack.get_visible_child().hide()
-        self.__stack.set_visible_child_name("spinner")
-        if get_network_available("GOOGLE"):
-            name = self.__radios.get_name(self.__radio_id)
-            uri = App().art.get_google_search_uri("%s+%s+%s" %
-                                                  (name, "logo", "radio"))
-            helper = TaskHelper()
-            helper.load_uri_content(uri,
-                                    self.__cancellable,
-                                    self.__on_google_content_loaded)
-        else:
-            self.__on_google_content_loaded(False, [], None)
-        self.set_size_request(700, 400)
-
     def _on_save_button_clicked(self, widget):
         """
             Save radio
@@ -125,7 +88,7 @@ class RadioPopover(Popover):
             store = Art._RADIOS_PATH
             name = self.__radios.get_name(self.__radio_id)
             self.__radios.remove(self.__radio_id)
-            App().art.clean_radio_cache(name)
+            App().art.uncache_radio_artwork(name)
             f = Gio.File.new_for_path(store + "/%s.png" % name)
             if f.query_exists():
                 f.delete()
@@ -144,28 +107,20 @@ class RadioPopover(Popover):
             self.__image_button.set_sensitive(False)
             self.__save_button.set_sensitive(False)
 
-    def _on_button_clicked(self, button):
+    def _on_image_button_clicked(self, widget):
         """
-            Show file chooser
-            @param button as Gtk.button
+            Update radio image
+            @param widget as Gtk.Widget
         """
-        dialog = Gtk.FileChooserDialog()
-        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-        dialog.set_transient_for(App().window)
-        self.hide()
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            try:
-                name = self.__radios.get_name(self.__radio_id)
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file(dialog.get_filename())
-                App().art.save_radio_artwork(pixbuf, name)
-                App().art.clean_radio_cache(name)
-                App().art.radio_artwork_update(name)
-                self._streams = {}
-            except Exception as e:
-                Logger.error("RadioPopover::_on_button_clicked(): %s" % e)
-        dialog.destroy()
+        self.__stack.get_visible_child().hide()
+        self.__save_radio()
+        name = self.__radios.get_name(self.__radio_id)
+        artwork_widget = RadioArtworkSearchWidget(name)
+        artwork_widget.populate()
+        artwork_widget.show()
+        self.__stack.add_named(artwork_widget, "artwork")
+        self.__stack.set_visible_child_name("artwork")
+        self.set_size_request(700, 400)
 
 #######################
 # PRIVATE             #
@@ -185,102 +140,3 @@ class RadioPopover(Popover):
                 self.__radios.rename(self.__radio_id, new_name)
                 self.__radios.set_uri(self.__radio_id, new_uri)
                 App().art.rename_radio(name, new_name)
-
-    def __populate(self, uris):
-        """
-            Add uris to view
-            @param uris as [str]
-        """
-        if uris:
-            uri = uris.pop(0)
-            helper = TaskHelper()
-            helper.load_uri_content(uri,
-                                    self.__cancellable,
-                                    self.__add_pixbuf,
-                                    self.__populate,
-                                    uris)
-        elif len(self.__view.get_children()) == 0:
-            self.__stack.set_visible_child_name("notfound")
-
-    def __add_pixbuf(self, uri, loaded, content, callback, *args):
-        """
-            Add uri to the view and load callback
-            @param uri as str
-            @param loaded as bool
-            @param content as bytes
-            @param callback as function
-        """
-        if self.__cancellable.is_cancelled():
-            return
-        if loaded:
-            bytes = GLib.Bytes(content)
-            stream = Gio.MemoryInputStream.new_from_bytes(bytes)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                stream, ArtSize.MONSTER,
-                ArtSize.MONSTER,
-                True,
-                None)
-            stream.close()
-            image = Gtk.Image()
-            image.get_style_context().add_class("cover-frame")
-            image.set_property("halign", Gtk.Align.CENTER)
-            image.set_property("valign", Gtk.Align.CENTER)
-            self.__orig_pixbufs[image] = pixbuf
-            # Scale preserving aspect ratio
-            width = pixbuf.get_width()
-            height = pixbuf.get_height()
-            if width > height:
-                height = height * ArtSize.BIG * self.get_scale_factor() / width
-                width = ArtSize.BIG * self.get_scale_factor()
-            else:
-                width = width * ArtSize.BIG * self.get_scale_factor() / height
-                height = ArtSize.BIG * self.get_scale_factor()
-            scaled_pixbuf = pixbuf.scale_simple(width,
-                                                height,
-                                                GdkPixbuf.InterpType.BILINEAR)
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                scaled_pixbuf,
-                self.get_scale_factor(),
-                None)
-            image.set_from_surface(surface)
-            image.show()
-            self.__view.add(image)
-        # Switch on first image
-        if self.__stack.get_visible_child_name() == "spinner":
-            self.__spinner.stop()
-            self.__stack.set_visible_child_name("logo")
-        callback(*args)
-
-    def __on_map(self, widget):
-        """
-            Grab focus/Disable global shortcuts
-            @param widget as Gtk.Widget
-        """
-        GLib.idle_add(self.__name_entry.grab_focus)
-
-    def __on_google_content_loaded(self, uri, loaded, content):
-        """
-            Extract content
-            @param uri as str
-            @param loaded as bool
-            @param content as bytes
-        """
-        if loaded:
-            uris = App().art.get_google_artwork(content)
-            self.__populate(uris)
-        else:
-            self.__stack.set_visible_child_name("notfound")
-
-    def __on_activate(self, flowbox, child):
-        """
-            Use pixbuf as cover
-            Reset cache and use player object to announce cover change
-        """
-        self.__cancellable.cancel()
-        name = self.__radios.get_name(self.__radio_id)
-        pixbuf = self.__orig_pixbufs[child.get_child()]
-        App().art.save_radio_artwork(pixbuf, name)
-        App().art.clean_radio_cache(name)
-        App().art.radio_artwork_update(name)
-        self._streams = {}
-        self.popdown()

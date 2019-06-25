@@ -17,7 +17,7 @@ from lollypop.widgets_utils import Popover
 
 from lollypop.logger import Logger
 
-from lollypop.define import App, ArtSize, Type, ArtBehaviour
+from lollypop.define import App, ArtSize, ArtBehaviour
 
 
 class ArtworkSearchChild(Gtk.FlowBoxChild):
@@ -100,29 +100,16 @@ class ArtworkSearchWidget(Gtk.Bin):
         Search for artwork
     """
 
-    def __init__(self, artist_id, album):
+    def __init__(self):
         """
-            Init search
-            @param artist_id as int/None
-            @param album as Album/None
+            Init widget
         """
         Gtk.Bin.__init__(self)
-        self.connect("map", self.__on_map)
-        self.connect("unmap", self.__on_unmap)
         self.__timeout_id = None
         self.__uri_artwork_id = None
-        self.__album = album
-        self.__artist_id = artist_id
         self.__uris = []
         self.__loaders = 0
-        self.__cancellable = Gio.Cancellable()
-        is_compilation = album is not None and\
-            album.artist_ids and\
-            album.artist_ids[0] == Type.COMPILATIONS
-        if is_compilation:
-            self.__artist = ""
-        else:
-            self.__artist = App().artists.get_name(artist_id)
+        self._cancellable = Gio.Cancellable()
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/ArtworkSearch.ui")
         builder.connect_signals(self)
@@ -134,27 +121,24 @@ class ArtworkSearchWidget(Gtk.Bin):
         self.__api_entry = builder.get_object("api_entry")
         self.__back_button = builder.get_object("back_button")
 
-        self.__view = Gtk.FlowBox()
-        self.__view.set_selection_mode(Gtk.SelectionMode.SINGLE)
-        self.__view.connect("child-activated", self.__on_activate)
-        self.__view.set_max_children_per_line(100)
-        self.__view.set_property("row-spacing", 10)
-        self.__view.show()
-
-        self._popover = builder.get_object("popover")
+        self._flowbox = Gtk.FlowBox()
+        self._flowbox.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self._flowbox.connect("child-activated", self._on_activate)
+        self._flowbox.set_max_children_per_line(100)
+        self._flowbox.set_property("row-spacing", 10)
+        self._flowbox.show()
 
         self.__label = builder.get_object("label")
         self.__label.set_text(_("Select artwork"))
 
-        builder.get_object("viewport").add(self.__view)
+        builder.get_object("viewport").add(self._flowbox)
 
         self.__spinner = builder.get_object("spinner")
         self.__stack.add_named(builder.get_object("scrolled"), "main")
         self.__stack.set_visible_child_name("main")
         self.add(widget)
-        key = App().settings.get_value("cs-api-key").get_string() or\
-            App().settings.get_default_value("cs-api-key").get_string()
-        self.__api_entry.set_text(key)
+        self.connect("map", self.__on_map)
+        self.connect("unmap", self.__on_unmap)
 
     def populate(self):
         """
@@ -174,39 +158,47 @@ class ArtworkSearchWidget(Gtk.Bin):
                                    ArtSize.BIG + padding.top +
                                    padding.bottom + border.top + border.bottom)
             image.show()
-            self.__view.add(image)
-
-            # First load local files
-            uris = []
-            if self.__album is None:
-                (exists, path) = App().art.artist_artwork_exists(self.__artist)
-                if exists:
-                    uris = [GLib.filename_to_uri(path)]
-            else:
-                uris = App().art.get_album_artworks(self.__album)
-            # Direct load, not using loopback because not many items
-            for uri in uris:
-                child = ArtworkSearchChild(_("Local"))
-                child.show()
-                f = Gio.File.new_for_uri(uri)
-                (status, content, tag) = f.load_contents()
-                if status:
-                    status = child.populate(content)
-                if status:
-                    self.__view.add(child)
+            self._flowbox.add(image)
             self.__search_for_artwork()
         except Exception as e:
-            Logger.error("ArtworkWidget::populate(): %s", e)
+            Logger.error("ArtworkSearchWidget::populate(): %s", e)
 
     def stop(self):
         """
             Stop loading
         """
-        self.__cancellable.cancel()
+        self._cancellable.cancel()
 
 #######################
 # PROTECTED           #
 #######################
+    def _close_popover(self):
+        """
+            Search for a popover in parents and close it
+        """
+        widget = self.get_parent()
+        while widget is not None:
+            if isinstance(widget, Popover):
+                widget.hide()
+                break
+            widget = widget.get_parent()
+
+    def _get_current_search(self):
+        """
+            Return current searches
+            @return str
+        """
+        search = ""
+        if self.__entry.get_text() != "":
+            search = self.__entry.get_text()
+        return search
+
+    def _search_from_downloader(self):
+        """
+            Load artwork from downloader
+        """
+        self.__loaders -= 1
+
     def _on_search_changed(self, entry):
         """
             Launch search based on current text
@@ -218,50 +210,13 @@ class ArtworkSearchWidget(Gtk.Bin):
                                              self.__on_search_timeout,
                                              entry.get_text())
 
-    def _on_button_clicked(self, button):
-        """
-            Show file chooser
-            @param button as Gtk.button
-        """
-        dialog = Gtk.FileChooserDialog()
-        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-        dialog.set_transient_for(App().window)
-        self.__close_popover()
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            try:
-                f = Gio.File.new_for_path(dialog.get_filename())
-                (status, data, tag) = f.load_contents()
-                if not status:
-                    raise
-                if self.__album is not None:
-                    App().art.save_album_artwork(data, self.__album)
-                else:
-                    App().art.uncache_artist_artwork(self.__artist)
-                    App().art.add_artist_artwork(self.__artist, data)
-                    App().art.emit("artist-artwork-changed", self.__artist)
-                self._streams = {}
-            except Exception as e:
-                Logger.error("ArtworkSearch::_on_button_clicked(): %s" % e)
-        dialog.destroy()
-
     def _on_reset_confirm(self, button):
         """
             Reset cover
             @param button as Gtk.Button
         """
         self.__infobar.hide()
-        if self.__album is not None:
-            App().art.remove_album_artwork(self.__album)
-            App().art.save_album_artwork(None, self.__album)
-            App().art.clean_album_cache(self.__album)
-            App().art.emit("album-artwork-changed", self.__album.id)
-        else:
-            App().art.uncache_artist_artwork(self.__artist)
-            App().art.add_artist_artwork(self.__artist, None)
-            App().art.emit("artist-artwork-changed", self.__artist)
-        self.__close_popover()
+        self._close_popover()
 
     def _on_info_response(self, infobar, response_id):
         """
@@ -271,73 +226,38 @@ class ArtworkSearchWidget(Gtk.Bin):
         """
         if response_id == Gtk.ResponseType.CLOSE:
             self.__infobar.hide()
-            self.__view.unselect_all()
+            self._flowbox.unselect_all()
 
-    def _on_settings_button_clicked(self, button):
+    def _on_activate(self, flowbox, child):
         """
-            Show popover
-            @param button as Gtk.Button
+            An artwork has been activated
+            @param flowbox as Gtk.FlowBox
+            @param child as ArtworkSearchChild
         """
-        self._popover.popup()
-        self.__api_entry.set_text(
-            App().settings.get_value("cs-api-key").get_string())
-
-    def _on_api_entry_changed(self, entry):
-        """
-            Save key
-            @param entry as Gtk.Entry
-        """
-        value = entry.get_text().strip()
-        App().settings.set_value("cs-api-key", GLib.Variant("s", value))
+        self.__infobar_label.set_text(_("Reset artwork?"))
+        self.__infobar.show()
+        # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+        self.__infobar.queue_resize()
 
 #######################
 # PRIVATE             #
 #######################
-    def __get_current_search(self):
-        """
-            Return current searches
-            @return str
-        """
-        if self.__entry.get_text() != "":
-            search = self.__entry.get_text()
-        elif self.__album is not None:
-            search = "%s+%s" % (self.__artist, self.__album.name)
-        elif self.__artist_id is not None:
-            search = self.__artist
-        return search
-
-    def __search_from_downloader(self):
-        """
-            Load artwork from downloader
-        """
-        if self.__album is None:
-            App().task_helper.run(
-                App().art.search_artist_artwork,
-                self.__artist,
-                self.__cancellable)
-        else:
-            App().task_helper.run(
-                App().art.search_album_artworks,
-                self.__artist,
-                self.__album.name,
-                self.__cancellable)
-
     def __search_for_artwork(self):
         """
             Search artwork on the web
         """
         self.__uris = []
         self.__loaders = 3
-        self.__cancellable = Gio.Cancellable()
-        search = self.__get_current_search()
+        self._cancellable = Gio.Cancellable()
+        search = self._get_current_search()
         self.__spinner.start()
-        self.__search_from_downloader()
+        self._search_from_downloader()
         App().task_helper.run(App().art.search_artwork_from_google,
                               search,
-                              self.__cancellable)
+                              self._cancellable)
         App().task_helper.run(App().art.search_artwork_from_startpage,
                               search,
-                              self.__cancellable)
+                              self._cancellable)
 
     def __add_pixbuf(self, content, api):
         """
@@ -350,20 +270,9 @@ class ArtworkSearchWidget(Gtk.Bin):
         status = child.populate(content)
         if status:
             child.set_name("web")
-            self.__view.add(child)
+            self._flowbox.add(child)
         else:
             child.destroy()
-
-    def __close_popover(self):
-        """
-            Search for a popover in parents and close it
-        """
-        widget = self.get_parent()
-        while widget is not None:
-            if isinstance(widget, Popover):
-                widget.hide()
-                break
-            widget = widget.get_parent()
 
     def __on_map(self, widget):
         """
@@ -378,7 +287,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             Cancel loading and disconnect signals
             @param widget as Gtk.Widget
         """
-        self.__cancellable.cancel()
+        self._cancellable.cancel()
         if self.__uri_artwork_id is not None:
             App().art.disconnect(self.__uri_artwork_id)
             self.__uri_artwork_id = None
@@ -392,7 +301,7 @@ class ArtworkSearchWidget(Gtk.Bin):
         if uris:
             (uri, api) = uris.pop(0)
             App().task_helper.load_uri_content(uri,
-                                               self.__cancellable,
+                                               self._cancellable,
                                                self.__on_load_uri_content,
                                                api,
                                                uris)
@@ -417,7 +326,7 @@ class ArtworkSearchWidget(Gtk.Bin):
             if uris:
                 (uri, api) = uris.pop(0)
                 App().task_helper.load_uri_content(uri,
-                                                   self.__cancellable,
+                                                   self._cancellable,
                                                    self.__on_load_uri_content,
                                                    api,
                                                    uris)
@@ -425,32 +334,10 @@ class ArtworkSearchWidget(Gtk.Bin):
                 self.__loaders -= 1
         except Exception as e:
             self.__loaders -= 1
-            Logger.warning("ArtworkWidget::__on_load_uri_content(): %s", e)
+            Logger.warning(
+                "ArtworkSearchWidget::__on_load_uri_content(): %s", e)
         if self.__loaders == 0:
             self.__spinner.stop()
-
-    def __on_activate(self, flowbox, child):
-        """
-            Use pixbuf as cover
-            Reset cache and use player object to announce cover change
-        """
-        try:
-            if isinstance(child, ArtworkSearchChild):
-                self.__close_popover()
-                if self.__album is not None:
-                    App().art.save_album_artwork(child.bytes, self.__album)
-                else:
-                    App().art.uncache_artist_artwork(self.__artist)
-                    App().art.add_artist_artwork(self.__artist, child.bytes)
-                    App().art.emit("artist-artwork-changed", self.__artist)
-                self._streams = {}
-            else:
-                self.__infobar_label.set_text(_("Reset artwork?"))
-                self.__infobar.show()
-                # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
-                self.__infobar.queue_resize()
-        except Exception as e:
-            Logger.error("ArtworkWidget::__on_activate(): %s", e)
 
     def __on_search_timeout(self, string):
         """
@@ -458,8 +345,8 @@ class ArtworkSearchWidget(Gtk.Bin):
             @param string as str
         """
         self.__timeout_id = None
-        self.__cancellable.cancel()
-        for child in self.__view.get_children():
+        self._cancellable.cancel()
+        for child in self._flowbox.get_children():
             if child.get_name() == "web":
                 child.destroy()
         GLib.timeout_add(500, self.__search_for_artwork)

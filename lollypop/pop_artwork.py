@@ -10,7 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.widgets_artwork import ArtworkSearchWidget
 from lollypop.define import App
 from lollypop.widgets_utils import Popover
 
@@ -59,13 +58,12 @@ class CoversPopover(CommonPopover):
             Init Popover
             @param album as album
         """
+        from lollypop.widgets_artwork_album import AlbumArtworkSearchWidget
         CommonPopover.__init__(self)
         if not album.artist_ids:
             self._widget = None
             return
-        # FIXME We only search with first artist
-        self._widget = ArtworkSearchWidget(album.artist_ids[0],
-                                           album)
+        self._widget = AlbumArtworkSearchWidget(album)
         self._widget.show()
         self.add(self._widget)
         self._widget.populate()
@@ -81,8 +79,9 @@ class ArtworkPopover(CommonPopover):
             Init Popover
             @param album as album
         """
+        from lollypop.widgets_artwork_artist import ArtistArtworkSearchWidget
         CommonPopover.__init__(self)
-        self._widget = ArtworkSearchWidget(artist_id, None)
+        self._widget = ArtistArtworkSearchWidget(artist_id)
         self._widget.show()
         self.add(self._widget)
         self._widget.populate()
