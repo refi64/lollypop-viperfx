@@ -70,9 +70,8 @@ class ArtworkSearchChild(Gtk.FlowBoxChild):
                 self.__label.set_text(text)
                 pixbuf = App().art.load_behaviour(pixbuf,
                                                   None,
-                                                  ArtSize.BIG,
-                                                  ArtSize.BIG,
-                                                  scale_factor,
+                                                  ArtSize.BIG * scale_factor,
+                                                  ArtSize.BIG * scale_factor,
                                                   ArtBehaviour.CROP)
                 stream.close()
             self.__bytes = bytes
