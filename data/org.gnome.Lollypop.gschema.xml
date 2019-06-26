@@ -204,6 +204,11 @@
             <summary>Continue playback when closed</summary>
             <description></description>
         </key>
+        <key type="b" name="append-albums">
+            <default>true</default>
+            <summary>Append albums by default</summary>
+            <description></description>
+        </key>
         <key type="b" name="smart-artist-sort">
             <default>true</default>
             <summary>Smart sort for artist</summary>

@@ -502,6 +502,8 @@ class TracksView:
                 not App().player.track_in_playback(track):
             album = self._album.clone(True)
             album.set_tracks(tracks)
+            if not App().settings.get_value("append-albums"):
+                App().player.clear_albums()
             App().player.add_album(album)
             App().player.load(album.get_track(track.id))
         else:
