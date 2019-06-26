@@ -144,6 +144,10 @@ class ArtworkSearchWidget(Gtk.Bin):
             Populate view
         """
         try:
+            grid = Gtk.Grid()
+            grid.set_orientation(Gtk.Orientation.VERTICAL)
+            grid.show()
+            grid.set_row_spacing(5)
             image = Gtk.Image.new_from_icon_name("edit-clear-all-symbolic",
                                                  Gtk.IconSize.DIALOG)
             image.set_property("valign", Gtk.Align.CENTER)
@@ -157,7 +161,11 @@ class ArtworkSearchWidget(Gtk.Bin):
                                    ArtSize.BIG + padding.top +
                                    padding.bottom + border.top + border.bottom)
             image.show()
-            self._flowbox.add(image)
+            label = Gtk.Label.new(_("Remove"))
+            label.show()
+            grid.add(image)
+            grid.add(label)
+            self._flowbox.add(grid)
             self.__search_for_artwork()
         except Exception as e:
             Logger.error("ArtworkSearchWidget::populate(): %s", e)
