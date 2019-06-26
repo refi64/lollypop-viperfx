@@ -364,7 +364,7 @@ class Application(Gtk.Application, ApplicationActions):
 
         if self.player.current_track.id is None or\
                 self.player.current_track.mtime == 0:
-            track_id = -1
+            track_id = None
         elif self.player.current_track.id == Type.RADIOS:
             from lollypop.radios import Radios
             radios = Radios()
