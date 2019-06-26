@@ -289,16 +289,27 @@ class AlbumArt:
                     Logger.error("AlbumArt::remove_album_artwork(): %s" % e)
         self.__write_image_to_tags("", album.id)
 
-    def clean_album_cache(self, album):
+    def clean_album_cache(self, album, width=-1, height=-1):
         """
             Remove cover from cache for album id
             @param album as Album
+            @param width as int
+            @param height as int
         """
         try:
             from pathlib import Path
             name = self.get_album_cache_name(album)
-            for p in Path(self._CACHE_PATH).glob("%s*.jpg" % name):
-                p.unlink()
+            if width == -1 or height == -1:
+                for p in Path(self._CACHE_PATH).glob("%s*.jpg" % name):
+                    p.unlink()
+            else:
+                filename = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH,
+                                                name,
+                                                width,
+                                                height)
+                f = Gio.File.new_for_path(filename)
+                if f.query_exists():
+                    f.delete()
         except Exception as e:
             Logger.error("AlbumArt::clean_album_cache(): %s" % e)
 

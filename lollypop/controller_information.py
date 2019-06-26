@@ -88,19 +88,22 @@ class InformationController:
         if width < 1 or height < 1 or same_artwork:
             return
         self._previous_artwork_id = App().player.current_track.album.id
+        scale_factor = self._artwork.get_scale_factor()
         if App().player.current_track.id == Type.RADIOS:
             App().art_helper.set_radio_artwork(
                 App().player.current_track.radio_name,
                 width,
                 height,
-                self._artwork.get_scale_factor(),
+                scale_factor,
                 self.__effect,
                 self._on_artwork,)
         elif App().player.current_track.id is not None:
             if self.__per_track_cover:
                 effect = self.__effect | ArtBehaviour.NO_CACHE
                 album = Album(App().player.current_track.album.id)
-                App().art.clean_album_cache(album)
+                App().art.clean_album_cache(album,
+                                            width * scale_factor,
+                                            height * scale_factor)
                 album.set_tracks([App().player.current_track])
             else:
                 effect = self.__effect
@@ -109,7 +112,7 @@ class InformationController:
                 album,
                 width,
                 height,
-                self._artwork.get_scale_factor(),
+                scale_factor,
                 effect,
                 self._on_artwork,)
             if self.__show_tooltip:
