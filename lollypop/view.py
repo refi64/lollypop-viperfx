@@ -303,9 +303,10 @@ class LazyLoadingView(View):
         """
             Stop loading
         """
-        self.__backup_queue = self._lazy_queue + self.__priority_queue
-        self._lazy_queue = []
-        self.__priority_queue = []
+        if self._lazy_queue or self.__priority_queue:
+            self.__backup_queue = self._lazy_queue + self.__priority_queue
+            self._lazy_queue = []
+            self.__priority_queue = []
         View.stop(self)
 
     def lazy_loading(self):
