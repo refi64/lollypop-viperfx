@@ -82,9 +82,6 @@
                 <property name="valign">center</property>
                 <property name="image">image1</property>
                 <signal name="clicked" handler="_on_menu_button_clicked" swapped="no"/>
-                <style>
-                  <class name="menu-button-48"/>
-                </style>
               </object>
               <packing>
                 <property name="left_attach">4</property>
@@ -98,6 +95,7 @@
                 <property name="halign">start</property>
                 <property name="valign">center</property>
                 <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
                 <style>
                   <class name="dim-label"/>
                 </style>

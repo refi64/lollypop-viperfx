@@ -50,6 +50,7 @@ class AlbumBannerWidget(Gtk.Bin):
         menu_button = builder.get_object("menu_button")
         if view_type & ViewType.SMALL:
             art_size = ArtSize.LARGE
+            style = "menu-button"
             icon_size = Gtk.IconSize.BUTTON
             self.__title_label.get_style_context().add_class(
                 "text-large")
@@ -58,6 +59,7 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__cover_widget = CoverWidget(album, ArtSize.LARGE)
         elif view_type & ViewType.MEDIUM:
             art_size = ArtSize.BANNER
+            style = "menu-button-48"
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
                 "text-x-large")
@@ -66,6 +68,7 @@ class AlbumBannerWidget(Gtk.Bin):
             self.__cover_widget = CoverWidget(album)
         else:
             art_size = ArtSize.BANNER
+            style = "menu-button-48"
             icon_size = Gtk.IconSize.LARGE_TOOLBAR
             self.__title_label.get_style_context().add_class(
                 "text-xx-large")
@@ -74,6 +77,7 @@ class AlbumBannerWidget(Gtk.Bin):
         self.__cover_widget = CoverWidget(album, art_size)
         self.__cover_widget.set_vexpand(True)
         self.__cover_widget.show()
+        menu_button.get_style_context().add_class(style)
         menu_button.get_image().set_from_icon_name("view-more-symbolic",
                                                    icon_size)
         album_name = GLib.markup_escape_text(album.name)
