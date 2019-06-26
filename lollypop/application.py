@@ -226,7 +226,22 @@ class Application(Gtk.Application, ApplicationActions):
             Quit Lollypop
             @param vacuum as bool
         """
-        if not self.settings.get_value("save-state"):
+        if self.settings.get_value("save-state"):
+            # Special case, we can't handle this earlier
+            if self.window.is_adaptive:
+                visible = self.window.container.stack.get_visible_child()
+                if visible == self.window.container.list_one:
+                    self.settings.set_value("state-one-ids",
+                                            GLib.Variant("ai", []))
+                    self.settings.set_value("state-two-ids",
+                                            GLib.Variant("ai", []))
+                elif visible == self.window.container.list_two:
+                    selected_ids = self.window.container.list_one.selected_ids
+                    self.settings.set_value("state-one-ids",
+                                            GLib.Variant("ai", selected_ids))
+                    self.settings.set_value("state-two-ids",
+                                            GLib.Variant("ai", []))
+        else:
             self.settings.set_value("state-one-ids", GLib.Variant("ai", []))
             self.settings.set_value("state-two-ids", GLib.Variant("ai", []))
         # Then vacuum db
