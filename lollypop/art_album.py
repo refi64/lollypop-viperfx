@@ -206,9 +206,7 @@ class AlbumArt:
                             track = album.tracks[0]
                         else:
                             track = choice(album.tracks)
-                        pixbuf = self.pixbuf_from_tags(track.uri,
-                                                       width,
-                                                       height)
+                        pixbuf = self.pixbuf_from_tags(track.uri)
                     except Exception as e:
                         Logger.error("AlbumArt::get_album_artwork(): %s", e)
 
@@ -304,12 +302,10 @@ class AlbumArt:
         except Exception as e:
             Logger.error("AlbumArt::clean_album_cache(): %s" % e)
 
-    def pixbuf_from_tags(self, uri, width, height):
+    def pixbuf_from_tags(self, uri):
         """
             Return cover from tags
             @param uri as str
-            @param width as int
-            @param height as int
         """
         pixbuf = None
         if uri.startswith("web:"):
