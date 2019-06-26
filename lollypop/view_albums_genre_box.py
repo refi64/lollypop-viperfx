@@ -54,6 +54,8 @@ class AlbumsGenreBoxView(FlowBoxView):
                                  GLib.Variant("ai", [Type.GENRES]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
+        App().settings.set_value("state-three-ids",
+                                 GLib.Variant("ai", []))
 
     def _on_item_activated(self, flowbox, widget):
         """

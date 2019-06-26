@@ -24,6 +24,9 @@ class AlbumWidget:
     def __init__(self, album, genre_ids, artist_ids):
         """
             Init Album widget
+            @param album as Album
+            @param genre_ids as [int]
+            @param artist_ids as [int]
         """
         self._artwork = None
         self._album = album

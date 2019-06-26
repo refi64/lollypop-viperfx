@@ -74,13 +74,13 @@ class AlbumsBoxView(FlowBoxView, ViewController):
 #######################
 # PROTECTED           #
 #######################
-    def _add_items(self, album_ids):
+    def _add_items(self, albums):
         """
             Add albums to the view
             Start lazy loading
-            @param album_ids as [int]
+            @param albums as [Album]
         """
-        widget = FlowBoxView._add_items(self, album_ids,
+        widget = FlowBoxView._add_items(self, albums,
                                         self.__genre_ids,
                                         self.__artist_ids,
                                         self._view_type)
@@ -123,7 +123,9 @@ class AlbumsBoxView(FlowBoxView, ViewController):
             return
         if album_widget.artwork is None:
             return
-        App().window.container.show_view([Type.ALBUM], album_widget.album)
+        album = Album(album_widget.album.id,
+                      self.__genre_ids, self.__artist_ids)
+        App().window.container.show_view([Type.ALBUM], album)
 
     def _on_map(self, widget):
         """
@@ -131,6 +133,7 @@ class AlbumsBoxView(FlowBoxView, ViewController):
         """
         try:
             FlowBoxView._on_map(self, widget)
+            # Others albums from ...
             if self._view_type & ViewType.SMALL:
                 return
             if self.__genre_ids:
@@ -143,6 +146,8 @@ class AlbumsBoxView(FlowBoxView, ViewController):
                                          GLib.Variant("ai", self.__artist_ids))
                 App().settings.set_value("state-two-ids",
                                          GLib.Variant("ai", []))
+            App().settings.set_value("state-three-ids",
+                                     GLib.Variant("ai", []))
         except:
             Logger.warning(
                 "https://gitlab.gnome.org/World/lollypop/issues/1864")

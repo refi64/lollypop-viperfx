@@ -269,6 +269,8 @@ class PlaylistsView(LazyLoadingView, ViewController):
                                  GLib.Variant("ai", [Type.PLAYLISTS]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", self.__playlist_ids))
+        App().settings.set_value("state-three-ids",
+                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

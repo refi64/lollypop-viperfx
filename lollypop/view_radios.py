@@ -110,6 +110,8 @@ class RadiosView(FlowBoxView, ViewController):
                                  GLib.Variant("ai", [Type.RADIOS]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
+        App().settings.set_value("state-three-ids",
+                                 GLib.Variant("ai", []))
 
     def _on_unmap(self, widget):
         """

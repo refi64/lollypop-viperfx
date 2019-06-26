@@ -683,6 +683,8 @@ class AlbumsListView(LazyLoadingView, ViewController):
                                      GLib.Variant("ai", self.__artist_ids))
             App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", []))
+        App().settings.set_value("state-three-ids",
+                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

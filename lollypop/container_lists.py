@@ -116,6 +116,7 @@ class ListsContainer:
         try:
             state_one_ids = App().settings.get_value("state-one-ids")
             state_two_ids = App().settings.get_value("state-two-ids")
+            state_three_ids = App().settings.get_value("state-three-ids")
             if state_two_ids and not state_one_ids:
                 sidebar_content = App().settings.get_enum("sidebar-content")
                 if sidebar_content == SidebarContent.GENRES:
@@ -124,17 +125,15 @@ class ListsContainer:
                 else:
                     state_one_ids = state_two_ids
                     state_two_ids = []
-            if state_two_ids:
+
+            if state_two_ids and not state_three_ids:
                 self._list_two.connect("populated",
                                        select_list_two,
                                        state_two_ids)
+
             if state_one_ids:
-                if state_one_ids and state_one_ids[0] == Type.ALBUM:
-                    self._list_one.select_first()
-                    album = Album(state_two_ids[0])
-                    self.show_view([Type.ALBUM], album)
                 # Here we are just handling missing Type.ARTISTS from list
-                elif state_one_ids[0] == Type.ARTISTS:
+                if state_one_ids[0] == Type.ARTISTS:
                     from lollypop.shown import ShownLists
                     shown_lists = ShownLists.get(SelectionListMask.LIST_ONE)
                     ids = [l[0] for l in shown_lists]
@@ -142,6 +141,11 @@ class ListsContainer:
                         self._list_one.add_value((Type.ARTISTS,
                                                  _("All artists"), ""))
                 self._list_one.select_ids(state_one_ids)
+                if state_three_ids:
+                    album = Album(state_three_ids[0],
+                                  state_one_ids,
+                                  state_two_ids)
+                    self.show_view([Type.ALBUM], album)
             elif not App().window.is_adaptive:
                 self._list_one.select_first()
         except Exception as e:

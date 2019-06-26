@@ -63,6 +63,8 @@ class ArtistViewSmall(View, ArtistViewCommon):
                                  GLib.Variant("ai", self._genre_ids))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", self._artist_ids))
+        App().settings.set_value("state-three-ids",
+                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #

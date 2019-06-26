@@ -109,6 +109,8 @@ class RoundedArtistsView(FlowBoxView):
                                  GLib.Variant("ai", [Type.ARTISTS]))
         App().settings.set_value("state-two-ids",
                                  GLib.Variant("ai", []))
+        App().settings.set_value("state-three-ids",
+                                 GLib.Variant("ai", []))
         self.__art_signal_id = App().art.connect(
                                               "artist-artwork-changed",
                                               self.__on_artist_artwork_changed)

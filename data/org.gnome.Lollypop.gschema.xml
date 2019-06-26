@@ -286,6 +286,11 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
+        <key type="ai" name="state-three-ids">
+            <default>[]</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="ai" name="startup-one-ids">
             <default>[]</default>
             <summary>INTERNAL</summary>

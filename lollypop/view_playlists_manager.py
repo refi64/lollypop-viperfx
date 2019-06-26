@@ -117,6 +117,8 @@ class PlaylistsManagerView(FlowBoxView):
                                      GLib.Variant("ai", [Type.PLAYLISTS]))
             App().settings.set_value("state-two-ids",
                                      GLib.Variant("ai", []))
+            App().settings.set_value("state-three-ids",
+                                     GLib.Variant("ai", []))
         else:
             App().window.emit("can-go-back-changed", True)
             App().window.emit("show-can-go-back", True)

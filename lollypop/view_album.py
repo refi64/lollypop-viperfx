@@ -120,8 +120,10 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
         App().window.emit("show-can-go-back", True)
         App().window.emit("can-go-back-changed", True)
         App().settings.set_value("state-one-ids",
-                                 GLib.Variant("ai", [Type.ALBUM]))
+                                 GLib.Variant("ai", self.__genre_ids))
         App().settings.set_value("state-two-ids",
+                                 GLib.Variant("ai", self.__artist_ids))
+        App().settings.set_value("state-three-ids",
                                  GLib.Variant("ai", [self._album.id]))
 
     def _on_tracks_populated(self, disc_number):

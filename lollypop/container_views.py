@@ -518,8 +518,9 @@ class ViewsContainer:
         """
         self._stack.destroy_children()
         App().window.emit("show-can-go-back", True)
-        state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
+        state_two_ids = App().settings.get_value("state-two-ids")
+        state_three_ids = App().settings.get_value("state-three-ids")
         # We do not support genres in navigation mode
         sidebar_content = App().settings.get_enum("sidebar-content")
         if sidebar_content == SidebarContent.GENRES and\
@@ -535,12 +536,12 @@ class ViewsContainer:
             self._rounded_artists_view = self._get_view_artists_rounded(True)
             self._stack.set_visible_child(self._rounded_artists_view)
         if state_one_ids and state_two_ids:
-            if state_one_ids and state_one_ids[0] == Type.ALBUM:
-                album = Album(state_two_ids[0])
-                self.show_view([Type.ALBUM], album)
-            else:
-                self.show_view(state_one_ids, None, False)
-                self.show_view(state_one_ids, state_two_ids)
+            self.show_view(state_one_ids, None, False)
+            self.show_view(state_one_ids, state_two_ids)
+        if state_one_ids and state_three_ids:
+            self.show_view(state_one_ids, None, False)
+            album = Album(state_three_ids[0], state_one_ids, state_two_ids)
+            self.show_view([Type.ALBUM], album)
         elif state_one_ids and state_one_ids[0] != Type.ARTISTS:
             self.show_view(state_one_ids)
         elif state_two_ids:
