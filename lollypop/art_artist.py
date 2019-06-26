@@ -95,6 +95,8 @@ class ArtistArt:
             @return cairo surface
             @thread safe
         """
+        width *= scale_factor
+        height *= scale_factor
         # Blur when reading from tags can be slow, so prefer cached version
         # Blur allows us to ignore width/height until we want CROP/CACHE
         optimized_blur = behaviour & (ArtBehaviour.BLUR |
@@ -106,8 +108,8 @@ class ArtistArt:
             w = ArtSize.BANNER * scale_factor
             h = ArtSize.BANNER * scale_factor
         else:
-            w = width * scale_factor
-            h = height * scale_factor
+            w = width
+            h = height
         filename = self.get_artist_cache_name(artist)
         cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH, filename, w, h)
         pixbuf = None
@@ -118,8 +120,7 @@ class ArtistArt:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 if optimized_blur:
                     pixbuf = self.load_behaviour(pixbuf, None,
-                                                 width, height,
-                                                 scale_factor, behaviour)
+                                                 width, height, behaviour)
                 return pixbuf
             else:
                 (exists, path) = self.artist_artwork_exists(artist)
@@ -131,8 +132,7 @@ class ArtistArt:
                 if pixbuf is None:
                     return None
                 pixbuf = self.load_behaviour(pixbuf, cache_path_jpg,
-                                             width, height,
-                                             scale_factor, behaviour)
+                                             width, height, behaviour)
             return pixbuf
         except Exception as e:
             Logger.error("ArtistArt::get_artist_artwork(): %s" % e)

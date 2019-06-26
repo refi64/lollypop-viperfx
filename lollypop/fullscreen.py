@@ -66,6 +66,9 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
         self._play_button = builder.get_object("play_btn")
         self._next_button = builder.get_object("next_btn")
         self._prev_button = builder.get_object("prev_btn")
+        if App().player.current_track.id == Type.RADIOS:
+            self._next_button.hide()
+            self._prev_button.hide()
         self._play_image = builder.get_object("play_image")
         self._pause_image = builder.get_object("pause_image")
         close_btn = builder.get_object("close_btn")
@@ -332,7 +335,16 @@ class FullScreen(Gtk.Window, AdaptiveWindow, InformationController,
             behaviour |= (ArtBehaviour.CROP | ArtBehaviour.DARKER)
             # We don't want this for background, stored for album cover
             behaviour &= ~ArtBehaviour.ROUNDED
-            if not album_artwork and\
+            if App().player.current_track.id == Type.RADIOS:
+                App().art_helper.set_radio_artwork(
+                                    App().player.current_track.radio_name,
+                                    allocation.width,
+                                    allocation.height,
+                                    self.get_scale_factor(),
+                                    behaviour | ArtBehaviour.BLUR_MAX,
+                                    self.__on_artwork,
+                                    False)
+            elif not album_artwork and\
                     App().settings.get_value("artist-artwork"):
                 if App().player.current_track.album.artists:
                     artist = App().player.current_track.album.artists[0]

@@ -46,14 +46,12 @@ class BaseArt(GObject.GObject):
         self.__kid3_cli_search()
         self.__tag_editor_search()
 
-    def load_behaviour(self, pixbuf, cache_path_jpg, width, height,
-                       scale_factor, behaviour):
+    def load_behaviour(self, pixbuf, cache_path, width, height, behaviour):
         """
             Load behaviour on pixbuf
-            @param cache_path_jpg as pixbuf cache path
+            @param cache_path as str
             @param width as int
             @param height as int
-            @param scale_factor as int
             @param behaviour as ArtBehaviour
         """
         # Crop image as square
@@ -67,33 +65,36 @@ class BaseArt(GObject.GObject):
 
         # Handle blur
         if behaviour & ArtBehaviour.BLUR:
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
+            pixbuf = pixbuf.scale_simple(width,
+                                         height,
                                          GdkPixbuf.InterpType.NEAREST)
             pixbuf = self._get_blur(pixbuf, 25)
         elif behaviour & ArtBehaviour.BLUR_HARD:
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
+            pixbuf = pixbuf.scale_simple(width,
+                                         height,
                                          GdkPixbuf.InterpType.NEAREST)
             pixbuf = self._get_blur(pixbuf, 50)
         elif behaviour & ArtBehaviour.BLUR_MAX:
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
+            pixbuf = pixbuf.scale_simple(width,
+                                         height,
                                          GdkPixbuf.InterpType.NEAREST)
             pixbuf = self._get_blur(pixbuf, 100)
         elif behaviour & ArtBehaviour.CROP:
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
+            pixbuf = pixbuf.scale_simple(width,
+                                         height,
                                          GdkPixbuf.InterpType.HYPER)
             pass
         else:
-            pixbuf = pixbuf.scale_simple(width * scale_factor,
-                                         height * scale_factor,
+            pixbuf = pixbuf.scale_simple(width,
+                                         height,
                                          GdkPixbuf.InterpType.BILINEAR)
-        if behaviour & ArtBehaviour.CACHE and cache_path_jpg is not None:
-            pixbuf.savev(cache_path_jpg, "jpeg", ["quality"],
-                         [str(App().settings.get_value(
-                             "cover-quality").get_int32())])
+        if behaviour & ArtBehaviour.CACHE and cache_path is not None:
+            if cache_path.endswith(".jpg"):
+                pixbuf.savev(cache_path, "jpeg", ["quality"],
+                             [str(App().settings.get_value(
+                                 "cover-quality").get_int32())])
+            else:
+                pixbuf.savev(cache_path, "png", [None], [None])
         return pixbuf
 
     def update_art_size(self):

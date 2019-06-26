@@ -63,7 +63,7 @@ class AlbumArt:
                 if f.query_exists():
                     return cache_path_jpg
         except Exception as e:
-            print("Art::get_album_cache_path(): %s" % e, ascii(filename))
+            Logger.error("Art::get_album_cache_path(): %s" % e)
             return None
 
     def get_album_artwork_uri(self, album):
@@ -97,7 +97,7 @@ class AlbumArt:
                 if f.query_exists():
                     return uri
         except Exception as e:
-            print("AlbumArt::get_album_artwork_uri():", e)
+            Logger.error("AlbumArt::get_album_artwork_uri(): %s", e)
         return None
 
     def get_first_album_artwork(self, album):
@@ -142,7 +142,7 @@ class AlbumArt:
                               all_uris):
                 uris.append(uri)
         except Exception as e:
-            print("AlbumArt::get_album_artworks()", e)
+            Logger.error("AlbumArt::get_album_artworks(): %s", e)
         return uris
 
     def get_album_artwork(self, album, width, height, scale_factor,
@@ -158,6 +158,8 @@ class AlbumArt:
             @return cairo surface
             @thread safe
         """
+        width *= scale_factor
+        height *= scale_factor
         filename = self.get_album_cache_name(album)
         # Blur when reading from tags can be slow, so prefer cached version
         # Blur allows us to ignore width/height until we want CROP/CACHE
@@ -170,8 +172,8 @@ class AlbumArt:
             w = ArtSize.BIG * scale_factor
             h = ArtSize.BIG * scale_factor
         else:
-            w = width * scale_factor
-            h = height * scale_factor
+            w = width
+            h = height
         cache_path_jpg = "%s/%s_%s_%s.jpg" % (self._CACHE_PATH, filename, w, h)
         pixbuf = None
         try:
@@ -181,8 +183,7 @@ class AlbumArt:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(cache_path_jpg)
                 if optimized_blur:
                     pixbuf = self.load_behaviour(pixbuf, None,
-                                                 width, height,
-                                                 scale_factor, behaviour)
+                                                 width, height, behaviour)
                 return pixbuf
             else:
                 # Use favorite folder artwork
@@ -206,10 +207,10 @@ class AlbumArt:
                         else:
                             track = choice(album.tracks)
                         pixbuf = self.pixbuf_from_tags(track.uri,
-                                                       width * scale_factor,
-                                                       height * scale_factor)
+                                                       width,
+                                                       height)
                     except Exception as e:
-                        print("AlbumArt::get_album_artwork()", e)
+                        Logger.error("AlbumArt::get_album_artwork(): %s", e)
 
                 # Use folder artwork
                 if pixbuf is None and album.uri != "":
@@ -227,8 +228,7 @@ class AlbumArt:
                     self.cache_album_artwork(album.id)
                     return None
                 pixbuf = self.load_behaviour(pixbuf, cache_path_jpg,
-                                             width, height,
-                                             scale_factor, behaviour)
+                                             width, height, behaviour)
                 return pixbuf
         except Exception as e:
             Logger.error("AlbumArt::get_album_artwork(): %s" % e)

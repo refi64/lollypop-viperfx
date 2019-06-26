@@ -205,7 +205,7 @@ class ArtHelper(GObject.Object):
             @return GdkPixbuf.Pixbuf
         """
         return App().art.get_radio_artwork(radio, width, height,
-                                           scale_factor, True)
+                                           scale_factor, effect)
 
     def __get_artist_artwork(self, artist, width, height,
                              scale_factor, effect):

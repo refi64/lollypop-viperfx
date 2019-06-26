@@ -16,6 +16,7 @@ import re
 
 from lollypop.helper_task import TaskHelper
 from lollypop.logger import Logger
+from lollypop.define import ArtBehaviour
 from lollypop.utils import escape
 
 
@@ -64,18 +65,20 @@ class RadioArt:
                          (e, ascii(filename)))
             return None
 
-    def get_radio_artwork(self, name, width, height, scale, cache=True):
+    def get_radio_artwork(self, name, width, height, scale_factor,
+                          behaviour=ArtBehaviour.CACHE |
+                          ArtBehaviour.CROP_SQUARE):
         """
             Return a cairo surface for radio name
             @param name as string
             @param width as int
             @param height as int
-            @param scale factor as int
-            @param cache as bool
+            @param scale_factor as int
+            @param behaviour as ArtBehaviour
             @return GdkPixbuf.Pixbuf
         """
-        width *= scale
-        height *= scale
+        width *= scale_factor
+        height *= scale_factor
         filename = self.__get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s_%s.png" % (self._CACHE_PATH, filename,
                                               width, height)
@@ -83,7 +86,7 @@ class RadioArt:
         try:
             # Look in cache
             f = Gio.File.new_for_path(cache_path_png)
-            if f.query_exists():
+            if not behaviour & ArtBehaviour.NO_CACHE and f.query_exists():
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
                                                                 width,
                                                                 height)
@@ -94,8 +97,8 @@ class RadioArt:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
                                                                     width,
                                                                     height)
-                if cache and pixbuf is not None:
-                    pixbuf.savev(cache_path_png, "png", [None], [None])
+                    pixbuf = self.load_behaviour(pixbuf, cache_path_png,
+                                                 width, height, behaviour)
         except Exception as e:
             Logger.error("RadioArt::get_radio_artwork(): %s" % e)
         return pixbuf
