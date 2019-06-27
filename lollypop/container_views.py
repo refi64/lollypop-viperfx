@@ -413,13 +413,11 @@ class ViewsContainer:
                 items += App().albums.get_albums_for_year(year)
             return [Album(album_id, [Type.YEARS], [])
                     for album_id in items]
+        from lollypop.view_albums_box import AlbumsBoxView
+        view_type = ViewType.SCROLLED
         if App().window.is_adaptive:
-            from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ViewType.DEFAULT, years, [Type.YEARS])
-            view.set_margin_start(MARGIN_SMALL)
-        else:
-            from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView([Type.YEARS], years)
+            view_type |= ViewType.MEDIUM
+        view = AlbumsBoxView([Type.YEARS], years, view_type)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -436,13 +434,11 @@ class ViewsContainer:
             return [Album(album_id, genre_ids, artist_ids)
                     for album_id in album_ids]
 
+        from lollypop.view_albums_box import AlbumsBoxView
+        view_type = ViewType.SCROLLED
         if App().window.is_adaptive:
-            from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ViewType.DEFAULT, genre_ids, artist_ids)
-            view.set_margin_start(MARGIN_SMALL)
-        else:
-            from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView(genre_ids, artist_ids)
+            view_type |= ViewType.MEDIUM
+        view = AlbumsBoxView(genre_ids, artist_ids, view_type)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -458,13 +454,11 @@ class ViewsContainer:
             album_ids += App().albums.get_synced_ids(index)
             return [Album(album_id) for album_id in album_ids]
 
+        from lollypop.view_albums_box import AlbumsBoxView
+        view_type = ViewType.SCROLLED
         if App().window.is_adaptive:
-            from lollypop.view_albums_list import AlbumsListView
-            view = AlbumsListView(ViewType.DEFAULT, [], [])
-            view.set_margin_start(MARGIN_SMALL)
-        else:
-            from lollypop.view_albums_box import AlbumsBoxView
-            view = AlbumsBoxView([], [])
+            view_type |= ViewType.MEDIUM
+        view = AlbumsBoxView([], [], view_type)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
