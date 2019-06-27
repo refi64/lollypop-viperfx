@@ -472,12 +472,12 @@ class AlbumsListView(LazyLoadingView, ViewController):
         View showing albums
     """
 
-    def __init__(self, view_type, genre_ids=[], artist_ids=[]):
+    def __init__(self, genre_ids, artist_ids, view_type):
         """
             Init widget
-            @param view_type as ViewType
             @param genre_ids as int
             @param artist_ids as int
+            @param view_type as ViewType
         """
         LazyLoadingView.__init__(self, view_type | ViewType.FILTERED)
         ViewController.__init__(self, ViewControllerType.ALBUM)

@@ -66,7 +66,7 @@ class SearchView(BaseView, Gtk.Bin):
         self.__button_stack = builder.get_object("button_stack")
         self.__stack = builder.get_object("stack")
         self.__placeholder = builder.get_object("placeholder")
-        self.__view = AlbumsListView(ViewType.SEARCH)
+        self.__view = AlbumsListView([], [], ViewType.SEARCH)
         self.__view.set_margin_start(MARGIN_SMALL)
         self.__view.show()
         self.__stack.add_named(self.__view, "view")

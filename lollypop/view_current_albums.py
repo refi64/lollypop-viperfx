@@ -28,7 +28,7 @@ class CurrentAlbumsView(AlbumsListView):
             Init view
             @param view_type as ViewType
         """
-        AlbumsListView.__init__(self,  view_type)
+        AlbumsListView.__init__(self, [], [], view_type)
         self.__clear_button = Gtk.Button.new_from_icon_name(
             "edit-clear-all-symbolic",
             Gtk.IconSize.MENU)
