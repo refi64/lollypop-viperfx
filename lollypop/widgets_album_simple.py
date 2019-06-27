@@ -62,7 +62,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         """
             Populate widget content
         """
-        OverlayAlbumHelper.__init__(self)
+        OverlayAlbumHelper.__init__(self, self.__view_type)
         self._watch_loading = self._album.mtime <= 0
         self.set_property("halign", Gtk.Align.CENTER)
         self.set_property("valign", Gtk.Align.CENTER)
@@ -105,9 +105,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
         grid.add(eventbox)
         self.set_artwork()
         self.set_selection()
-        if not self.__view_type & (ViewType.SMALL | ViewType.MEDIUM):
-            self.__widget.connect("enter-notify-event", self._on_enter_notify)
-            self.__widget.connect("leave-notify-event", self._on_leave_notify)
+        self.__widget.connect("enter-notify-event", self._on_enter_notify)
+        self.__widget.connect("leave-notify-event", self._on_leave_notify)
         self.__widget.connect("button-press-event", self._on_button_release)
         self.__widget.connect("realize", on_realize)
         self.connect("destroy", self.__on_destroy)
@@ -164,20 +163,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             return
         OverlayAlbumHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
-            # Play button
-            self.__play_button = Gtk.Button.new_from_icon_name(
-                "media-playback-start-symbolic",
-                Gtk.IconSize.INVALID)
-            self.__play_button.get_image().set_pixel_size(self._pixel_size +
-                                                          20)
-            self.__play_button.set_property("has-tooltip", True)
-            self.__play_button.set_tooltip_text(_("Play"))
-            self.__play_button.connect("realize", on_realize)
-            self.__play_button.connect("clicked", self.__on_play_clicked)
-            self.__play_button.show()
-            self._big_grid.add(self.__play_button)
-            self.__play_button.get_style_context().add_class(
-                "overlay-button-rounded")
             # Play all button
             self.__play_all_button = Gtk.Button.new()
             self.__play_all_button.set_property("has-tooltip", True)
@@ -193,8 +178,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self.__play_all_button.get_style_context().add_class(
                 "overlay-button")
         else:
-            self.__play_button.destroy()
-            self.__play_button = None
             self.__play_all_button.destroy()
             self.__play_all_button = None
 
@@ -242,18 +225,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget, OverlayAlbumHelper):
             self._artwork.set_from_surface(surface)
         self.show_all()
         self.emit("populated")
-
-    def __on_play_clicked(self, button):
-        """
-            Play album
-            @param button as Gtk.Button
-        """
-        if App().player.is_party:
-            action = App().lookup_action("party")
-            action.change_state(GLib.Variant("b", False))
-        App().player.play_album(self._album.clone(True))
-        self._show_append(False)
-        return True
 
     def __on_play_all_clicked(self, button):
         """

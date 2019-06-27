@@ -14,7 +14,7 @@ from gi.repository import Gtk, GObject
 
 from gettext import gettext as _
 
-from lollypop.define import App, ArtSize, ArtBehaviour
+from lollypop.define import App, ArtSize, ArtBehaviour, ViewType
 from lollypop.helper_overlay_album import OverlayAlbumHelper
 from lollypop.utils import on_realize
 
@@ -27,10 +27,12 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
         "overlayed": (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
-    def __init__(self, album, art_size=ArtSize.BANNER):
+    def __init__(self, album, art_size=ArtSize.BANNER,
+                 view_type=ViewType.DEFAULT):
         """
             Init cover widget
-            @param art_size as int
+            @param art_size as ArtSize
+            @param view_type as ViewType
         """
         Gtk.EventBox.__init__(self)
         self.set_property("halign", Gtk.Align.CENTER)
@@ -52,7 +54,7 @@ class CoverWidget(Gtk.EventBox, OverlayAlbumHelper):
                 self.__on_album_artwork)
         self._overlay = Gtk.Overlay.new()
         self._overlay.show()
-        OverlayAlbumHelper.__init__(self)
+        OverlayAlbumHelper.__init__(self, view_type)
         self._overlay.add(self._artwork)
         self.add(self._overlay)
         self.connect("enter-notify-event", self._on_enter_notify)

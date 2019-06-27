@@ -10,11 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import App
+from lollypop.define import App, ViewType
 from lollypop.utils import on_realize
 from lollypop.helper_overlay import OverlayHelper
 
@@ -24,11 +24,20 @@ class OverlayAlbumHelper(OverlayHelper):
         An overlay helper for albums
     """
 
-    def __init__(self):
+    def __init__(self, view_type=ViewType.DEFAULT):
         """
             Init helper
+            @param view_type as ViewType
         """
         OverlayHelper.__init__(self)
+        if view_type & ViewType.SMALL:
+            self.__play_pixel_size = -1
+        elif view_type & ViewType.MEDIUM:
+            self.__play_pixel_size = self._pixel_size
+        elif not view_type & ViewType.ALBUM:
+            self.__play_pixel_size = self._pixel_size + 20
+        else:
+            self.__play_pixel_size = self._pixel_size
 
 #######################
 # PROTECTED           #
@@ -42,6 +51,21 @@ class OverlayAlbumHelper(OverlayHelper):
             return
         OverlayHelper._show_overlay_func(self, show_overlay)
         if show_overlay:
+            if self.__play_pixel_size > 0:
+                # Play button
+                self.__play_button = Gtk.Button.new_from_icon_name(
+                    "media-playback-start-symbolic",
+                    Gtk.IconSize.INVALID)
+                self.__play_button.get_image().set_pixel_size(
+                    self.__play_pixel_size)
+                self.__play_button.set_property("has-tooltip", True)
+                self.__play_button.set_tooltip_text(_("Play"))
+                self.__play_button.connect("realize", on_realize)
+                self.__play_button.connect("clicked", self.__on_play_clicked)
+                self.__play_button.show()
+                self._big_grid.add(self.__play_button)
+                self.__play_button.get_style_context().add_class(
+                    "overlay-button-rounded")
             # Action button
             self.__action_button = Gtk.Button.new()
             self.__action_button.set_property("has-tooltip", True)
@@ -55,6 +79,9 @@ class OverlayAlbumHelper(OverlayHelper):
             self.__action_button.get_style_context().add_class(
                     "overlay-button")
         else:
+            if self.__play_pixel_size > 0:
+                self.__play_button.destroy()
+                self.__play_button = None
             self.__action_button.destroy()
             self.__action_button = None
 
@@ -77,6 +104,18 @@ class OverlayAlbumHelper(OverlayHelper):
 #######################
 # PRIVATE             #
 #######################
+    def __on_play_clicked(self, button):
+        """
+            Play album
+            @param button as Gtk.Button
+        """
+        if App().player.is_party:
+            action = App().lookup_action("party")
+            action.change_state(GLib.Variant("b", False))
+        App().player.play_album(self._album.clone(True))
+        self._show_append(False)
+        return True
+
     def __on_action_clicked(self, button):
         """
             Append album to current list if not present

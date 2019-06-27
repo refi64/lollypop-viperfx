@@ -56,7 +56,6 @@ class AlbumBannerWidget(Gtk.Bin):
                 "text-large")
             self.__year_label.get_style_context().add_class(
                 "text-large")
-            self.__cover_widget = CoverWidget(album, ArtSize.LARGE)
         elif view_type & ViewType.MEDIUM:
             art_size = ArtSize.BANNER
             style = "menu-button-48"
@@ -65,7 +64,6 @@ class AlbumBannerWidget(Gtk.Bin):
                 "text-x-large")
             self.__year_label.get_style_context().add_class(
                 "text-large")
-            self.__cover_widget = CoverWidget(album)
         else:
             art_size = ArtSize.BANNER
             style = "menu-button-48"
@@ -74,7 +72,7 @@ class AlbumBannerWidget(Gtk.Bin):
                 "text-xx-large")
             self.__year_label.get_style_context().add_class(
                 "text-x-large")
-        self.__cover_widget = CoverWidget(album, art_size)
+        self.__cover_widget = CoverWidget(album, art_size, view_type)
         self.__cover_widget.set_vexpand(True)
         self.__cover_widget.show()
         menu_button.get_style_context().add_class(style)
