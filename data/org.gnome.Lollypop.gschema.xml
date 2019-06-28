@@ -277,12 +277,12 @@
             <description></description>
         </key>
         <key type="ad" name="equalizer">
-            <default>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</default>
+            <default>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>
         <key type="ad" name="equalizer-custom">
-            <default>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</default>
+            <default>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>

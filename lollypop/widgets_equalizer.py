@@ -45,6 +45,10 @@ PRESETS = {
 }
 
 
+# https://github.com/vipersaudio/viper4android_fx/blob/master/android_4.x/res/values/arrays.xml#L614
+CLARITY_VALUES = [0.0, 3.5, 6.0, 8.0, 10.0, 11.0, 12.0, 13.0, 14.0, 14.8]
+
+
 class EqualizerWidget(Gtk.Bin):
     """
         An equalizer manager widget
@@ -61,13 +65,14 @@ class EqualizerWidget(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/EqualizerWidget.ui")
         self.__combobox = builder.get_object("combobox")
+        self.__labelvc = builder.get_object("labelvc")
         equalizer = App().settings.get_value("equalizer")
         enabled_equalizer = App().settings.get_value("equalizer-enabled")
         if enabled_equalizer:
             builder.get_object("equalizer_checkbox").set_active(True)
         else:
             self.__combobox.set_sensitive(False)
-        for i in range(0, 10):
+        for i in range(11):
             scale = builder.get_object("scale%s" % i)
             scale.set_value(equalizer[i])
             setattr(self, "__scale%s" % i, scale)
@@ -152,7 +157,7 @@ class EqualizerWidget(Gtk.Bin):
         """
         self.__timeout_id = None
         preset = []
-        for i in range(0, 10):
+        for i in range(11):
             attr = getattr(self, "__scale%s" % i)
             preset.append(attr.get_value())
         App().settings.set_value("equalizer", GLib.Variant("ad", preset))
@@ -166,6 +171,8 @@ class EqualizerWidget(Gtk.Bin):
         """
         for plugin in App().player.plugins:
             plugin.set_equalizer(band, scale.get_value())
+        if band == 10:
+            self.__labelvc.set_label(f"{CLARITY_VALUES[int(scale.get_value())]} dB")
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
         self.__timeout_id = GLib.timeout_add(250, self.__save_equalizer)

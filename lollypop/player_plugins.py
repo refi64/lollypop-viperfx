@@ -73,8 +73,11 @@ class PluginsPlayer:
         bin.add(rg_audiosink)
 
         if App().settings.get_value("equalizer-enabled"):
-            self.__equalizer = Gst.ElementFactory.make("equalizer-10bands",
-                                                       "equalizer-10bands")
+            self.__equalizer = Gst.ElementFactory.make("viperfx", "viperfx")
+            self.__equalizer.set_property("fx_enable", True)
+            self.__equalizer.set_property("eq_enable", True)
+            self.__equalizer.set_property("vc_enable", True)
+            self.__equalizer.set_property("vc-mode", 0)
             rg_audioconvert4 = Gst.ElementFactory.make("audioconvert",
                                                        "audioconvert4")
             bin.add(rg_audioconvert4)
@@ -118,7 +121,10 @@ class PluginsPlayer:
         """
         try:
             if self.__equalizer is not None:
-                self.__equalizer.set_property("band%s" % band, value)
+                if band == 10:
+                    self.__equalizer.set_property("vc_level", int(value) * 50)
+                else:
+                    self.__equalizer.set_property("eq_band%s" % (band + 1), int(value * 100))
         except Exception as e:
             Logger.error("PluginsPlayer::set_equalizer():", e)
 

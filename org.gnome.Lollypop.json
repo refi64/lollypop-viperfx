@@ -5,7 +5,7 @@
   "sdk": "org.gnome.Sdk",
   "command": "lollypop",
   "tags": ["devel", "development", "nightly"],
-  "desktop-file-name-prefix": "(Development) ",
+  "desktop-file-name-prefix": "(ViPER) ",
   "finish-args": [
     "--share=ipc",
     "--share=network",
@@ -318,11 +318,37 @@
       }]
     },
     {
+      "name": "viperfx",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -Dm 755 libviperfx_x64_linux.so /app/lib/libviperfx.so"
+      ],
+      "sources": [{
+        "type": "git",
+        "url": "https://github.com/vipersaudio/viperfx_core_binary.git",
+        "commit": "6f7d0da725affe854f083baf5d90c70e172e4488"
+      }]
+    },
+    {
+      "name": "gst-plugin-viperfx",
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/vipersaudio/gst-plugin-viperfx",
+          "commit": "227da1f25d3a40c957375e06369db332bd1abb94"
+        },
+        {
+          "type": "patch",
+          "path": "gstfx-license.patch"
+        }
+      ]
+    },
+    {
       "name": "lollypop",
       "buildsystem": "meson",
       "sources": [{
-        "type": "git",
-        "url": "https://gitlab.gnome.org/World/lollypop.git"
+        "type": "dir",
+        "path": "."
       }]
     }
   ]
