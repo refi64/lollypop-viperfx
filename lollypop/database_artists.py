@@ -15,7 +15,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, Type
-from lollypop.utils import format_artist_name, noaccents
+from lollypop.utils import format_artist_name, noaccents, remove_static
 
 
 class ArtistsDatabase:
@@ -145,7 +145,7 @@ class ArtistsDatabase:
     def get_albums(self, artist_ids):
         """
             Get all availables albums for artists
-            @return Array of id as int
+            @return [int]
         """
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid\
@@ -160,7 +160,7 @@ class ArtistsDatabase:
     def get_compilations(self, artist_ids):
         """
             Get all availables compilations for artist
-            @return Array of id as int
+            @return [int]
         """
         with SqlCursor(App().db) as sql:
             request = "SELECT DISTINCT albums.rowid FROM albums,\
@@ -182,6 +182,7 @@ class ArtistsDatabase:
             @param genre_ids as [int]
             @return [int, str, str]
         """
+        genre_ids = remove_static(genre_ids)
         if App().settings.get_value("show-artist-sort"):
             select = "artists.rowid, artists.sortname, artists.sortname"
         else:

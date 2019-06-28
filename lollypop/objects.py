@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 from lollypop.radios import Radios
 from lollypop.logger import Logger
 from lollypop.define import App, Type
-from lollypop.utils import remove_static, escape
+from lollypop.utils import escape
 
 
 class Base:
@@ -209,13 +209,11 @@ class Disc:
             @return [Track]
         """
         if not self.__tracks and self.album.id is not None:
-            artist_ids = remove_static(self.album.artist_ids)
-            genre_ids = remove_static(self.album.genre_ids)
             self.__tracks = [Track(track_id, self.album)
                              for track_id in self.db.get_disc_track_ids(
                 self.album.id,
-                genre_ids,
-                artist_ids,
+                self.album.genre_ids,
+                self.album.artist_ids,
                 self.number,
                 self.__disallow_ignored_tracks)]
         return self.__tracks
@@ -430,8 +428,7 @@ class Album(Base):
             @return [Disc]
         """
         if not self._discs:
-            genre_ids = remove_static(self.genre_ids)
-            disc_numbers = self.db.get_discs(self.id, genre_ids)
+            disc_numbers = self.db.get_discs(self.id, self.genre_ids)
             self._discs = [Disc(self, number, self.__disallow_ignored_tracks)
                            for number in disc_numbers]
         return self._discs

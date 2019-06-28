@@ -15,7 +15,7 @@ import itertools
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import App, Type, OrderBy
 from lollypop.logger import Logger
-from lollypop.utils import noaccents, get_network_available
+from lollypop.utils import noaccents, get_network_available, remove_static
 
 
 class AlbumsDatabase:
@@ -447,7 +447,7 @@ class AlbumsDatabase:
         """
             Get album artist id
             @param album_id
-            @return artist ids as [int]
+            @return artist ids as [int]artist_ids
         """
         with SqlCursor(App().db) as sql:
             result = sql.execute("SELECT artist_id\
@@ -651,6 +651,7 @@ class AlbumsDatabase:
             @param genre_ids as [int]
             @return [disc as int]
         """
+        genre_ids = remove_static(genre_ids)
         with SqlCursor(App().db) as sql:
             filters = (album_id,)
             filters += tuple(genre_ids)
@@ -691,6 +692,8 @@ class AlbumsDatabase:
             @param disallow_ignored_tracks as bool
             @return [int]
         """
+        genre_ids = remove_static(genre_ids)
+        artist_ids = remove_static(artist_ids)
         with SqlCursor(App().db) as sql:
             filters = (album_id, disc)
             request = "SELECT DISTINCT tracks.rowid\
@@ -743,6 +746,8 @@ class AlbumsDatabase:
             @param ignore as bool => ignore albums with loved == 1
             @return albums ids as [int]
         """
+        genre_ids = remove_static(genre_ids)
+        artist_ids = remove_static(artist_ids)
         orderby = App().settings.get_enum("orderby")
         if artist_ids or orderby == OrderBy.ARTIST:
             order = " ORDER BY artists.sortname\
@@ -843,6 +848,7 @@ class AlbumsDatabase:
             @param ignore as bool => ignore albums with loved == 1
             @return [int]
         """
+        genre_ids = remove_static(genre_ids)
         with SqlCursor(App().db) as sql:
             order = " ORDER BY albums.name, albums.timestamp"
             result = []
@@ -889,6 +895,7 @@ class AlbumsDatabase:
             @param genre_ids as [int]
             @return album duration as int
         """
+        genre_ids = remove_static(genre_ids)
         with SqlCursor(App().db) as sql:
             if genre_ids and genre_ids[0] > 0:
                 filters = (album_id,)

@@ -98,7 +98,7 @@ class RoundedArtistsView(FlowBoxView):
         """
         App().window.emit("show-can-go-back", True)
         App().window.emit("can-go-back-changed", True)
-        App().window.container.show_view([widget.data])
+        App().window.container.show_view([Type.ARTISTS], [widget.data])
 
     def _on_map(self, widget):
         """

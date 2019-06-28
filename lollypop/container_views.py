@@ -100,6 +100,8 @@ class ViewsContainer:
             view = self._get_view_albums(item_ids, [])
         elif item_ids[0] == Type.COMPILATIONS:
             view = self._get_view_albums([], item_ids)
+        elif item_ids[0] == Type.ARTISTS:
+            view = self._get_view_artists(item_ids, data)
         else:
             view = self._get_view_artists([], item_ids)
         view.show()
