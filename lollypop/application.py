@@ -204,7 +204,7 @@ class Application(Gtk.Application, ApplicationActions):
         startup_two_ids = self.settings.get_value("startup-two-ids")
         if startup_one_ids:
             self.settings.set_value("state-one-ids", startup_one_ids)
-            self.settings.set_value("state-three-ids", [])
+            self.settings.set_value("state-three-ids", GLib.Variant("ai", []))
         if startup_two_ids:
             self.settings.set_value("state-two-ids", startup_two_ids)
 
