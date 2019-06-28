@@ -117,14 +117,6 @@ class ListsContainer:
             state_one_ids = App().settings.get_value("state-one-ids")
             state_two_ids = App().settings.get_value("state-two-ids")
             state_three_ids = App().settings.get_value("state-three-ids")
-            if state_two_ids and not state_one_ids:
-                sidebar_content = App().settings.get_enum("sidebar-content")
-                if sidebar_content == SidebarContent.GENRES:
-                    self.show_artists_albums(state_two_ids)
-                    return
-                else:
-                    state_one_ids = state_two_ids
-                    state_two_ids = []
 
             if state_two_ids and not state_three_ids:
                 self._list_two.connect("populated",

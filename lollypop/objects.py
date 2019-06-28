@@ -210,10 +210,11 @@ class Disc:
         """
         if not self.__tracks and self.album.id is not None:
             artist_ids = remove_static(self.album.artist_ids)
+            genre_ids = remove_static(self.album.genre_ids)
             self.__tracks = [Track(track_id, self.album)
                              for track_id in self.db.get_disc_track_ids(
                 self.album.id,
-                self.album.genre_ids,
+                genre_ids,
                 artist_ids,
                 self.number,
                 self.__disallow_ignored_tracks)]
@@ -248,7 +249,7 @@ class Album(Base):
         """
         Base.__init__(self, App().albums)
         self.id = album_id
-        self.genre_ids = remove_static(genre_ids)
+        self.genre_ids = genre_ids
         self._tracks = []
         self._discs = []
         self.__disallow_ignored_tracks = disallow_ignored_tracks
@@ -429,7 +430,8 @@ class Album(Base):
             @return [Disc]
         """
         if not self._discs:
-            disc_numbers = self.db.get_discs(self.id, self.genre_ids)
+            genre_ids = remove_static(self.genre_ids)
+            disc_numbers = self.db.get_discs(self.id, genre_ids)
             self._discs = [Disc(self, number, self.__disallow_ignored_tracks)
                            for number in disc_numbers]
         return self._discs
