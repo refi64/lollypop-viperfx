@@ -33,7 +33,6 @@ class AlbumBannerWidget(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self.__width = 0
-        self.__padding = 0
         art_size = 0
         self.__allocation_timeout_id = None
         self.__album = album
@@ -113,8 +112,6 @@ class AlbumBannerWidget(Gtk.Bin):
                                                self.__on_album_artwork_changed)
         else:
             self.__grid.get_style_context().add_class("banner-frame")
-            # See application.css: cover-frame
-            self.__padding = 8
         self.__grid.attach(self.__cover_widget, 0, 0, 1, 3)
         self.__rating_grid = builder.get_object("rating_grid")
         if album.mtime <= 0:
