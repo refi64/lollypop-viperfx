@@ -1,6 +1,21 @@
-# Lollypop music player
+# Lollypop music player (with ViPER's audio support)
 
-[![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
+## ViPER's audio notes
+
+- **Don't redistribute this.** The terms of it are a bit hazy and not something you probably
+  want to play with.
+- Only supports Clarity and the EQ for now, because I'm probably going to have to redo the entire
+  stinking equalizer screen to make the others configurable. :(
+
+### Installing
+
+```bash
+$ flatpak-builder --force-clean --install --user _build org.gnome.Lollypop.json
+```
+
+## Original README
+
+[![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
 
 ![Lollypop logo](https://gitlab.gnome.org/gnumdk/lollypop/raw/master/data/icons/hicolor/256x256/apps/org.gnome.Lollypop.png)
 
@@ -53,7 +68,7 @@ $ meson builddir --prefix=/usr
 # sudo ninja -C builddir install
 ```
 
-Installation of `pylast` is required for integration with [Last.fm](http://last.fm) 
+Installation of `pylast` is required for integration with [Last.fm](http://last.fm)
 
 ```bash
 # apt-get install python3-pip
