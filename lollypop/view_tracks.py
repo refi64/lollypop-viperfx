@@ -47,6 +47,8 @@ class TracksView:
             Init widget
             @param view_type as ViewType
         """
+        if App().settings.get_value("force-single-column"):
+            view_type &= ~ViewType.TWO_COLUMNS
         self._view_type = view_type
         self._width = None
         self.__discs = []
@@ -416,15 +418,18 @@ class TracksView:
         if redraw:
             for child in self._responsive_widget.get_children():
                 self._responsive_widget.remove(child)
-            # Grid index
             idx = 0
-            # Disc label width / right box position
-            if orientation == Gtk.Orientation.VERTICAL:
-                width = 1
-                pos = 0
-            else:
-                width = 2
-                pos = 1
+            # Vertical
+            ##########################
+            #  --------Label-------- #
+            #  |     Column 1      | #
+            #  |     Column 2      | #
+            ##########################
+            # Horizontal
+            ###########################
+            # ---------Label--------- #
+            # | Column 1 | Column 2 | #
+            ###########################
             for disc in self.__discs:
                 if not disc.tracks:
                     continue
@@ -449,17 +454,29 @@ class TracksView:
                                      disc)
                     eventbox.add(label)
                     eventbox.show()
-                    self._responsive_widget.attach(eventbox, 0, idx, width, 1)
+                    if orientation == Gtk.Orientation.VERTICAL:
+                        self._responsive_widget.attach(eventbox, 0, idx, 1, 1)
+                    else:
+                        self._responsive_widget.attach(eventbox, 0, idx, 2, 1)
                     idx += 1
-                self._responsive_widget.attach(
+                if orientation == Gtk.Orientation.VERTICAL:
+                    self._responsive_widget.attach(
+                              self._tracks_widget_left[disc.number],
+                              0, idx, 2, 1)
+                    idx += 1
+                else:
+                    self._responsive_widget.attach(
                               self._tracks_widget_left[disc.number],
                               0, idx, 1, 1)
-                if orientation == Gtk.Orientation.VERTICAL:
-                    idx += 1
                 if self._view_type & ViewType.TWO_COLUMNS:
-                    self._responsive_widget.attach(
-                               self._tracks_widget_right[disc.number],
-                               pos, idx, 1, 1)
+                    if orientation == Gtk.Orientation.VERTICAL:
+                        self._responsive_widget.attach(
+                                   self._tracks_widget_right[disc.number],
+                                   0, idx, 2, 1)
+                    else:
+                        self._responsive_widget.attach(
+                                   self._tracks_widget_right[disc.number],
+                                   1, idx, 1, 1)
                 idx += 1
 
     def __on_row_destroy(self, row):
@@ -665,8 +682,7 @@ class TracksView:
         if self.__allocation_timeout_id is not None:
             GLib.source_remove(self.__allocation_timeout_id)
         self.__allocation_timeout_id = GLib.idle_add(
-            self.__handle_size_allocate, allocation,
-            priority=GLib.PRIORITY_HIGH)
+            self.__handle_size_allocate, allocation)
 
     def __on_disc_button_press_event(self, button, event, disc):
         """

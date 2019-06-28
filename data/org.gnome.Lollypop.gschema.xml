@@ -266,6 +266,11 @@
             <summary>JPG cover quality</summary>
             <description>0-100</description>
         </key>
+        <key type="b" name="force-single-column">
+            <default>false</default>
+            <summary>Force single column mode</summary>
+            <description></description>
+        </key>
         <key type="b" name="equalizer-enabled">
             <default>false</default>
             <summary>Equalizer enabled</summary>

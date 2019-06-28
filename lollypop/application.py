@@ -204,7 +204,7 @@ class Application(Gtk.Application, ApplicationActions):
         startup_two_ids = self.settings.get_value("startup-two-ids")
         if startup_one_ids:
             self.settings.set_value("state-one-ids", startup_one_ids)
-            self.settings.set_value("state-three-ids", [])
+            self.settings.set_value("state-three-ids", GLib.Variant("ai", []))
         if startup_two_ids:
             self.settings.set_value("state-two-ids", startup_two_ids)
 
@@ -572,8 +572,10 @@ class Application(Gtk.Application, ApplicationActions):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        # Quit if background mode is on but player is off
         if not self.settings.get_value("background-mode") or\
                 not self.player.is_playing:
+            self.player.pause()
             GLib.timeout_add(500, self.quit, True)
         return widget.hide_on_delete()
 
