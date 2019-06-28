@@ -47,6 +47,8 @@ class TracksView:
             Init widget
             @param view_type as ViewType
         """
+        if App().settings.get_value("force-single-column"):
+            view_type &= ~ViewType.TWO_COLUMNS
         self._view_type = view_type
         self._width = None
         self.__discs = []
@@ -453,7 +455,7 @@ class TracksView:
                     idx += 1
                 self._responsive_widget.attach(
                               self._tracks_widget_left[disc.number],
-                              0, idx, 1, 1)
+                              0, idx, width, 1)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
                 if self._view_type & ViewType.TWO_COLUMNS:
